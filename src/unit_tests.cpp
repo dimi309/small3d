@@ -5,9 +5,7 @@
  *      Author: Dimitri Kourkoulis
  *     License: BSD 3-Clause License (see LICENSE file)
  */
-
-#include <gtest/gtest.h>
-
+#include <iostream>
 #include <small3d/Renderer.hpp>
 
 #include <small3d/Logger.hpp>
@@ -21,75 +19,71 @@
 using namespace small3d;
 using namespace std;
 
-TEST(LoggerTest, LogSomething) {
+int LoggerTest() {
   deleteLogger();
   ostringstream oss;
-  initLogger(oss);
-  
-  LOGINFO("It works");
-  EXPECT_TRUE(oss.str().find("It works") != (string::npos));
-  
-  LOGERROR("Error test");
-  EXPECT_TRUE(oss.str().find("Error test") != (string::npos));
+  initLogger();
+  LOGINFO("Logger info test works");
+  LOGERROR("Logger error test works");
   deleteLogger();
-  
+  return 1;
 }
 
-TEST(ImageTest, LoadImage) {
+int ImageTest() {
   
   Image image("resources/images/testImage.png");
-  
+
   cout << "Image width " << image.getWidth() << ", height " <<
     image.getHeight() << endl;
-  
-  const float *imageData = image.getData();
-  
+
+  const float* imageData = image.getData();
+
   unsigned long x = 0, y = 0;
-  
+
   while (y < image.getHeight()) {
     x = 0;
     while (x < image.getWidth()) {
       
-      const float *colour = &imageData[4 * y * image.getWidth() + 4 * x];
+      const float *colour = &imageData[4 * y * image.getWidth() + 4 * x];       
       
-      EXPECT_GE(colour[0], 0.0f);
-      EXPECT_LE(colour[0], 1.0f);
-      EXPECT_GE(colour[1], 0.0f);
-      EXPECT_LE(colour[1], 1.0f);
-      EXPECT_GE(colour[2], 0.0f);
-      EXPECT_LE(colour[2], 1.0f);
-      EXPECT_EQ(1.0f, colour[3]);
+      if (colour[0] <  0.0f) return 0;
+      if (colour[0] > 1.0f) return 0;
+      if (colour[1] < 0.0f) return 0;
+      if (colour[1] > 1.0f) return 0;
+      if (colour[2] < 0.0f) return 0;
+      if (colour[2] > 1.0f) return 0;
+      if (colour[3] != 1.0f) return 0;
       
       ++x;
     }
     ++y;
   }
+  return 1;
 }
 
-TEST(ModelTest, LoadModel) {
+int ModelTest() {
   
   Model model("resources/models/Cube/Cube.obj");
   
-  EXPECT_NE(0, model.vertexData.size());
-  EXPECT_NE(0, model.indexData.size());
-  EXPECT_NE(0, model.normalsData.size());
-  EXPECT_NE(0, model.textureCoordsData.size());
+  if (model.vertexData.size() == 0) return 0;
+  if (model.indexData.size() == 0) return 0;
+  if (model.normalsData.size() == 0) return 0;
+  if (model.textureCoordsData.size() == 0) return 0;
   
   cout << "Vertex data component count: "
-       << model.vertexData.size() << endl << "Index count: "
-       << model.indexData.size() << endl
-       << "Normals data component count: "
-       << model.normalsData.size() << endl
-       << "Texture coordinates count: "
-       << model.textureCoordsData.size() << endl;
-  
+    << model.vertexData.size() << endl << "Index count: "
+    << model.indexData.size() << endl
+    << "Normals data component count: "
+    << model.normalsData.size() << endl
+    << "Texture coordinates count: "
+    << model.textureCoordsData.size() << endl;
+
   Model modelWithNoTexture("resources/models/Cube/CubeNoTexture.obj");
   
-  EXPECT_NE(0, modelWithNoTexture.vertexData.size());
-  EXPECT_NE(0, modelWithNoTexture.indexData.size());
-  EXPECT_NE(0, modelWithNoTexture.normalsData.size());
-  EXPECT_EQ(0, modelWithNoTexture.textureCoordsData.size());
-  
+  if (modelWithNoTexture.vertexData.size() == 0) return 0;
+  if (modelWithNoTexture.indexData.size() == 0) return 0;
+  if (modelWithNoTexture.normalsData.size() == 0) return 0;
+
   cout << "Vertex data component count: "
        << modelWithNoTexture.vertexData.size() << endl << "Index count: "
        << modelWithNoTexture.indexData.size() << endl
@@ -97,24 +91,24 @@ TEST(ModelTest, LoadModel) {
        << modelWithNoTexture.normalsData.size() << endl
        << "Texture coordinates count: "
        << modelWithNoTexture.textureCoordsData.size() << endl;
-  
+  return 1;
 }
 
-TEST(BoundingBoxesTest, LoadBoundingBoxes) {
+int BoundingBoxesTest() {
   
   BoundingBoxSet bboxes("resources/models/GoatBB/GoatBB.obj");
   
-  EXPECT_EQ(16, bboxes.vertices.size());
-  EXPECT_EQ(12, bboxes.facesVertexIndexes.size());
+  if (bboxes.vertices.size() != 16) return 0;
+  if (bboxes.facesVertexIndexes.size() != 12) return 0;
   
   cout << "Bounding boxes vertices: " << endl;
   for (unsigned long idx = 0; idx < 16; idx++) {
     cout << bboxes.vertices[idx][0] << ", " <<
       bboxes.vertices[idx][1] << ", " <<
       bboxes.vertices[idx][2] << ", " << endl;
-    
+
   }
-  
+
   cout << "Bounding boxes faces vertex indexes: " << endl;
   for (unsigned long idx = 0; idx < 12; idx++) {
     cout << bboxes.facesVertexIndexes[idx][0] << ", " <<
@@ -123,96 +117,148 @@ TEST(BoundingBoxesTest, LoadBoundingBoxes) {
       bboxes.facesVertexIndexes[idx][3] << ", " << endl;
   }
   
-  EXPECT_FALSE(bboxes.collidesWith(glm::vec3(0.1f, 0.1f, 0.1f),
-				   glm::vec3(0.0f, 0.1f, 0.1f), 
-				   glm::vec3(0.0f, 0.0f, 0.0f)));
-  
+  if (bboxes.collidesWith(glm::vec3(0.1f, 0.1f, 0.1f),
+			  glm::vec3(0.0f, 0.1f, 0.1f), 
+			  glm::vec3(0.0f, 0.0f, 0.0f))) {
+    return 0;
+  }
+  return 1;
 }
 
+int RendererTest() {
 
-TEST(RendererTest, StartAndUse) {
+  Renderer* renderer = &Renderer::getInstance("test", 640, 480);
 
-  Renderer *renderer = &Renderer::getInstance("test", 640, 480);
-  renderer->clearScreen();
-  
+  renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
+
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
   renderer->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-  renderer->renderRectangle(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
-			    glm::vec3(-1.0f, 0.0f, 1.0f),
-			    glm::vec3(-0.5f, -0.5f, 1.0f), false);
-
   SceneObject object2("texutredCube", "resources/models/Cube/Cube.obj");
   object2.offset = glm::vec3(-2.0f, -1.0f, -7.0f);
   object2.rotation = glm::vec3(0.3f, 1.3f, 0.0f);
-  
+
   Image cubeTexture("resources/models/Cube/cubeTexture.png");
   renderer->generateTexture("cubeTexture", cubeTexture);
 
-  renderer->render(object2, "cubeTexture");
+  glfwShowWindow(renderer->getWindow());
 
-  renderer->write("small3d :)", glm::vec3(0.0f, 1.0f, 0.0f),
-		  glm::vec2(-1.0f, 0.0f), glm::vec2(0.5f, -0.5f));
+  double startSeconds = glfwGetTime();
 
-  renderer->swapBuffers();
-  
+  while (glfwGetTime() - startSeconds < 3.0) {
+    glfwPollEvents();
+    renderer->clearScreen();
+    renderer->renderRectangle(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+      glm::vec3(-1.0f, 0.0f, 1.0f),
+      glm::vec3(-0.5f, -0.5f, 1.0f), false);
+
+    renderer->renderRectangle("cubeTexture",
+      glm::vec3(0.0f, 0.5f, -2.0f),
+      glm::vec3(1.0f, -1.0f, -2.0f), true);
+
+    renderer->render(object2, "cubeTexture");
+
+    renderer->write("small3d :) p q", glm::vec3(0.0f, 1.0f, 0.0f),
+      glm::vec2(-1.0f, 0.0f), glm::vec2(0.5f, -0.5f));
+    renderer->swapBuffers();
+  }
+  renderer->clearBuffers(object);
+  renderer->clearBuffers(object2);
   renderer->deleteTexture("cubeTexture");
-  
+  glfwDestroyWindow(renderer->getWindow());
+
+  return 1;
 }
 
-
-
-TEST(SoundTest, LoadAndPlay) {
+int SoundTest() {
   Sound snd("resources/sounds/bah.ogg");
   snd.play();
   double startSeconds = glfwGetTime();
-  while(glfwGetTime() - startSeconds < 0.5);
+  while (glfwGetTime() - startSeconds < 0.5);
   snd.stop();
   startSeconds = glfwGetTime();
-  while(glfwGetTime() - startSeconds < 0.5);
+  while (glfwGetTime() - startSeconds < 0.5);
   snd.play();
   // Make sure the sound is stopped by the stop function and not the destructor.
   startSeconds = glfwGetTime();
   while(glfwGetTime() - startSeconds < 2.0);
+  return 1;
 }
 
-
-TEST(SoundTest, ThreeAtTheSameTime) {
+int SoundTest2() {
   Sound snd1("resources/sounds/bah.ogg");
   Sound snd2(snd1);
   Sound snd3 = snd2;
   snd1.play();
   double startSeconds = glfwGetTime();
-  while(glfwGetTime() - startSeconds < 0.3);
+  while (glfwGetTime() - startSeconds < 0.3);
   snd2.play();
   startSeconds = glfwGetTime();
-  while(glfwGetTime() - startSeconds < 0.3);
+  while (glfwGetTime() - startSeconds < 0.3);
   snd3.play();
   startSeconds = glfwGetTime();
   while(glfwGetTime() - startSeconds < 1.0);
+  return 1;
 }
 
-
-TEST(SoundTest, RepeatSound) {
+int SoundTest3() {
   Sound snd("resources/sounds/bah.ogg");
   snd.play(true);
   double startSeconds = glfwGetTime();
   while(glfwGetTime() - startSeconds < 6.0);
+  return 1;
 }
 
-
-TEST(TokenTest, GetFourTokens) {
+int TokenTest() {
   string strTest = "a-b-c-d";
   std::vector<std::string> tokens;
   
   int tokenCount=getTokens(strTest, '-', tokens);
   
-  EXPECT_EQ(4, tokenCount);
-  EXPECT_EQ("b", tokens[1]);
+  if (tokenCount != 4) return 0;
+  if (tokens[1] != "b") return 0;
+  return 1;
 }
 
 int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+
+  if (!LoggerTest()) {
+    printf("*** Failing LoggerTest.\n\r");
+    return 1;
+  }
+  if (!ImageTest()) {
+    printf("*** Failing ImageTest.\n\r");
+    return 1;
+  }
+  if (!ModelTest()) {
+    printf("*** Failing ModelTest.\n\r");
+    return 1;
+  }
+  if (!BoundingBoxesTest()) {
+    printf("*** Failing BoundingBoxesTest.\n\r");
+    return 1;
+  }
+  if (!RendererTest()) {
+    printf("*** Failing RendererTest.\n\r");
+    return 1;
+  }
+  if (!SoundTest()) {
+    printf("*** Failing SoundTest.\n\r");
+    return 1;
+  }
+  if (!SoundTest2()) {
+    printf("*** Failing SoundTest2.\n\r");
+    return 1;
+  }
+  if (!SoundTest3()) {
+    printf("*** Failing SoundTest3.\n\r");
+    return 1;
+  }
+  if (!TokenTest()) {
+    printf("*** Failing TokenTest.\n\r");
+    return 1;
+  }
+  printf("All tests have executed successfully.\n\r");
+  return 0;
 }

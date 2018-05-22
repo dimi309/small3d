@@ -9,8 +9,14 @@
 
 #pragma once
 
-#include <GL/glew.h>
+#if defined(__ANDROID__)
+#include <android/asset_manager.h>
+#elif defined(SMALL3D_IOS)
+ // todo: Add ios includes if necessary
+#else
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#endif
 
 #include "Logger.hpp"
 #include "Image.hpp"
@@ -27,66 +33,229 @@
 
 namespace small3d
 {
+  /**
+   * @brief Structure used to keep track of information related to images
+   *        created on the GPU. Used internally
+   */
+  struct VulkanImage {
+    VkImageView imageView;
+    VkImage image;
+    VkDeviceMemory imageMemory;
+    VkDescriptorSet descriptorSet;
+    VkDescriptorSet orthoDescriptorSet;
+    bool replace = false;
+  };
+
+  /**
+   * @brief Structure used to keep track of the orientation uniform buffers
+   *        created on the GPU. Used internally
+   */
+  struct UboOrientation {
+    glm::mat4x4 xRotationMatrix;
+    glm::mat4x4 yRotationMatrix;
+    glm::mat4x4 zRotationMatrix;
+    glm::vec3 offset;
+    float padding[13];
+  };
+
+  /**
+   * @brief Structure used to keep track of the colour uniform buffers
+   *        created on the GPU. Used internally
+   */
+  struct UboColour {
+    glm::vec4 colour;
+    float padding[4];
+  };
 
   /**
    * @class Renderer
-   * @brief Renderer class, which can render using either OpenGL v3.3 or v2.1
+   * @brief The renderer. It works as a singleton.
    */
   class Renderer
   {
 
   private:
 
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     GLFWwindow* window;
+#endif
 
-    GLuint perspectiveProgram;
-    GLuint orthographicProgram;
-    GLuint vao;
+    std::string windowTitle = "";
 
-    bool isOpenGL33Supported;
-    bool noShaders;
+    int realScreenWidth = 0, realScreenHeight = 0;
 
-    float frustumScale;
-    float zNear;
-    float zFar;
-    float zOffsetFromCamera;
+    std::string shadersPath = "";
 
-    std::unordered_map<std::string, GLuint> textures;
+    uint32_t maxObjectsPerPass;
 
-    FT_Library library;
+    uint32_t perspectivePipelineIndex = 100;
+    uint32_t orthographicPipelineIndex = 100;
+
+    uint32_t currentSwapchainImageIndex = 0;
+
+    std::vector<VkBuffer> renderOrientationBuffersDynamic;
+    std::vector<VkDeviceMemory> renderOrientationBuffersDynamicMemory;
+
+    std::vector<VkBuffer> cameraOrientationBuffers;
+    std::vector<VkDeviceMemory> cameraOrientationBufferMemories;
+
+    std::vector<VkBuffer> worldDetailsBuffers;
+    std::vector<VkDeviceMemory> worldDetailsBufferMemories;
+
+    std::vector<VkBuffer> lightIntensityBuffers;
+    std::vector<VkDeviceMemory> lightIntensityBufferMemories;
+
+    std::vector<VkBuffer> colourBuffersDynamic;
+    std::vector<VkDeviceMemory> colourBuffersDynamicMemory;
+
+    VkSampler textureSampler;
+
+    std::vector<VkImageView> boundTextureViews;
+
+    std::allocator<char> alloc;
+
+    float frustumScale = 0.0f;
+    float zNear = 0.0f;
+    float zFar = 0.0f;
+    float zOffsetFromCamera = 0.0f;
+
+    std::unordered_map<std::string, VulkanImage> textures;
+
+    FT_Library library = 0;
     std::vector<float> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
 
-    std::string loadShaderFromFile(const std::string fileLocation) const;
-    GLuint compileShader(const std::string shaderSourceFile,
-			 const GLenum shaderType) const;
-    std::string getProgramInfoLog(const GLuint linkedProgram) const;
-    std::string getShaderInfoLog(const GLuint shader) const;
-    void initOpenGL();
-    void checkForOpenGLErrors(const std::string when, const bool abort) const;
+#ifdef __ANDROID__
+    std::vector<AAsset*> fontAssets;
+#endif
+
+    static std::vector<Model> nextModelsToDraw;
+
+    static VkVertexInputBindingDescription bd[3];
+    static VkVertexInputAttributeDescription ad[3];
+
+    static VkDescriptorSetLayout descriptorSetLayout;
+    static VkDescriptorSet descriptorSet;
+    static VkDescriptorSetLayout textureDescriptorSetLayout;
+    static VkDescriptorSetLayout perspectiveLayouts[2];
+
+    static VkVertexInputBindingDescription orthobd[2];
+    static VkVertexInputAttributeDescription orthoad[2];
+
+    static VkDescriptorSetLayout orthoDescriptorSetLayout;
+    static VkDescriptorSet orthoDescriptorSet;
+    static VkDescriptorSetLayout textureOrthoDescriptorSetLayout;
+    static VkDescriptorSetLayout orthographicLayouts[2];
+
+    size_t dynamicOrientationAlignment;
+    UboOrientation* uboOrientationDynamic;
+    uint32_t orientationMemIndex = 0;
+    size_t uboOrientationDynamicSize;
+
+    size_t dynamicColourAlignment;
+    UboColour* uboColourDynamic;
+    uint32_t colourMemIndex = 0;
+    size_t uboColourDynamicSize;
+
+    static int setInputStateCallback(VkPipelineVertexInputStateCreateInfo*
+      inputStateCreateInfo);
+    static int setPipelineLayoutCallback(VkPipelineLayoutCreateInfo*
+      pipelineLayoutCreateInfo);
+
+    int bindBuffers(VkCommandBuffer commandBuffer, const Model& model);
+    void recordDrawCommand(VkCommandBuffer commandBuffer,
+      VkPipelineLayout pipelineLayout, const Model& model,
+      uint32_t swapchainImageIndex);
+
+    static int setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo*
+      inputStateCreateInfo);
+    static int setOrthoPipelineLayoutCallback(VkPipelineLayoutCreateInfo*
+      pipelineLayoutCreateInfo);
+
+    int bindOrthoBuffers(VkCommandBuffer commandBuffer,
+      const Model& model);
+    void recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
+      VkPipelineLayout pipelineLayout, const Model& model,
+      uint32_t swapchainImageIndex);
+
+    void initVulkan();
+
+    VkDescriptorPool descriptorPool;
+    bool descriptorPoolCreated = false;
+    void createDescriptorPool();
+
+    VkDescriptorPool orthoDescriptorPool;
+    bool orthoDescriptorPoolCreated = false;
+    void createOrthoDescriptorPool();
+
+    VkCommandBuffer nextCommandBuffer;
+
+    std::vector<Model> garbageModels;
+
+    void allocateDescriptorSets();
+    void updateDescriptorSets();
+
+    void allocateOrthoDescriptorSets();
+    void updateOrthoDescriptorSets();
+
+    void setColourBuffer(glm::vec4 colour, uint32_t memIndex);
 
     void positionNextObject(const glm::vec3 offset,
-			    const glm::vec3 rotation) const;
-    void positionCamera() const;
-    GLuint getTextureHandle(const std::string name) const;
-    GLuint generateTexture(const std::string name, const float *data,
-			   const unsigned long width,
-			   const unsigned long height);
+      const glm::vec3 rotation,
+      uint32_t memIndex);
+    void positionCamera();
+    VulkanImage getTextureHandle(const std::string name) const;
+    VulkanImage generateTexture(const std::string name,
+      const float* data,
+      const unsigned long width,
+      const unsigned long height,
+      const bool replaceable);
 
-    void init(const int width, const int height, const std::string windowTitle,
-              const float frustumScale , const float zNear,
-              const float zFar, const float zOffsetFromCamera,
-              const std::string shadersPath);
-    void initWindow(int &width, int &height,
-		    const std::string windowTitle = "");
+    void init(const int width, const int height,
+      const std::string shadersPath);
+    void initWindow(int& width, int& height);
 
-    Renderer(const std::string windowTitle, const int width, const int height,
-	     const float frustumScale, const float zNear, const float zFar,
-	     const float zOffsetFromCamera, const std::string shadersPath);
-    
-    Renderer() {};
-    
+    void setPerspectiveAndLight();
+
+    // On Android and iOS, it is useful to be able to destroy and recreate the
+    // renderer, so it is not provided only as a singleton for that platform.
+    // By the way, do NOT create a renderer using getInstance and then
+    // try to delete it in code. That will make an app crash. Either
+    // create it with getInstance and assume it is a singleton which
+    // will be destroyed automatically when the program terminates,
+    // or instantiate it with "new" if you would like to delete it
+    // later.
+#if defined(__ANDROID__) || defined(SMALL3D_IOS)
   public:
+    Renderer(const std::string windowTitle = "",
+      const int width = 0,
+      const int height = 0,
+      const float frustumScale = 1.0f,
+      const float zNear = 1.0f,
+      const float zFar = 24.0f,
+      const float zOffsetFromCamera = -1.0f,
+      const std::string shadersPath =
+#ifndef SMALL3D_IOS
+      "resources/shaders/",
+#else
+      "resources1/shaders/",
+#endif
+      const uint32_t maxObjectsPerPass = 20);
+#else
+    Renderer(const std::string windowTitle, const int width,
+      const int height, const float frustumScale, const float zNear,
+      const float zFar, const float zOffsetFromCamera,
+      const std::string shadersPath, const uint32_t maxObjectsPerPass);
+
+
+#endif
+
+    Renderer();
+
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
+  public:
+#endif
+
     /**
      * @brief Vector, indicating the direction of the light in the scene.
      */
@@ -103,9 +272,21 @@ namespace small3d
     glm::vec3 cameraRotation;
 
     /**
+     * @brief Get the real screen width
+     * @return The screen width
+     */
+    int getScreenWidth();
+
+    /**
+     * @brief Get the real screen height
+     * @return The screen height
+     */
+    int getScreenHeight();
+
+    /**
      * @brief The light intensity (set to -1.0f if no lighting is to be used).
      */
-    float lightIntensity;
+    float lightIntensity = 1.0f;
 
     /**
      * @brief Get the instance of the Renderer (the Renderer is a singleton).
@@ -132,7 +313,11 @@ namespace small3d
      *                          provided. The shader code can be changed,
      *                          provided that their inputs and outputs are
      *                          maintained the same.
-     * @return                  The Renderer object. It can only be assigned to 
+     * @param maxObjectsPerPass Maximum number of Models and / or SceneObjects
+     *                          that will be rendered on the screen during a render
+     *                          pass at the same time. This is used to pre-allocate
+     *                          the needed memory buffers.
+     * @return                  The Renderer object. It can only be assigned to
      *                          a pointer by its address (Renderer *r =
      *                          &Renderer::getInstance(...), since declaring
      *                          another Renderer variable and assigning to it
@@ -140,24 +325,27 @@ namespace small3d
      *                          been deleted.
      */
     static Renderer& getInstance(const std::string windowTitle = "",
-				 const int width = 0, 
-				 const int height = 0,
-				 const float frustumScale = 1.0f,
-				 const float zNear = 1.0f,
-				 const float zFar = 24.0f,
-				 const float zOffsetFromCamera = -1.0f,
-				 const std::string shadersPath =
-				 "resources/shaders/");
+      const int width = 0,
+      const int height = 0,
+      const float frustumScale = 1.0f,
+      const float zNear = 1.0f,
+      const float zFar = 24.0f,
+      const float zOffsetFromCamera = -1.0f,
+      const std::string shadersPath =
+      "resources/shaders/",
+      const uint32_t maxObjectsPerPass = 20);
 
     /**
      * @brief Destructor
      */
     ~Renderer();
 
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     /**
      * @brief Get the GLFW window object, associated with the Renderer.
      */
     GLFWwindow* getWindow() const;
+#endif
 
     /**
      * @brief Generate a texture on the GPU from the given image
@@ -165,6 +353,24 @@ namespace small3d
      * @param image The image from which the texture will be generated
      */
     void generateTexture(const std::string name, const Image image);
+
+    /**
+     * @brief Generate a texture on the GPU that contains the given text
+     * @param name     The name by which the texture will be known
+     * @param text     The text that will be contained in the texture
+     * @param colour   The colour of the text
+     * @param fontSize The size of the font which will be used
+     * @param fontPath Path to the TrueType font (.ttf) which will be used
+     * @param noCache  If true, don't keep the generated textue containing the
+     *                 text in memory, but delete it upon the creation of a new
+     *                 texture.
+     */
+    void generateTexture(const std::string name, const std::string text,
+      const glm::vec3 colour,
+      const int fontSize,
+      const std::string fontPath =
+      "resources/fonts/CrusoeText/CrusoeText-Regular.ttf",
+      bool noCache = false);
 
     /**
      * @brief Deletes the texture indicated by the given name.
@@ -186,24 +392,24 @@ namespace small3d
      *                    textureName will be ignored.
      */
     void renderRectangle(const std::string textureName, const glm::vec3 topLeft,
-			 const glm::vec3 bottomRight,
-			 const bool perspective = false,
-			 const glm::vec4 colour =
-			 glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) const;
+      const glm::vec3 bottomRight,
+      const bool perspective = false,
+      const glm::vec4 colour =
+      glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
     /**
      * @brief Render a rectangle, using two of its corners that are diagonally
      *        opposed to each other to position it.
      * @param colour      The colour of the rectangle (RGBA)
-     * @param topLeft     Where to place the top left corner 
-     * @param bottomRight Where to place the bottom right corner 
+     * @param topLeft     Where to place the top left corner
+     * @param bottomRight Where to place the bottom right corner
      * @param perspective If set to true, use perspective rendering.
      *                    Otherwise use orthographic rendering.
      */
     void renderRectangle(const glm::vec4 colour, const glm::vec3 topLeft,
-			 const glm::vec3 bottomRight, 
-			 const bool perspective = false) const;
-    
+      const glm::vec3 bottomRight,
+      const bool perspective = false);
+
     /**
      * @brief Render a Model
      * @param model       The model
@@ -214,9 +420,11 @@ namespace small3d
      *                    (optional). The texture has to have been generated
      *                    already. If this is set, the colour parameter will
      *                    be ignored.
+     * @param perspective True = perspective drawing, otherwise orthographic
      */
-    void render(Model &model, const glm::vec3 offset, const glm::vec3 rotation, 
-		const glm::vec4 colour, const std::string textureName="") const;
+    void render(Model& model, const glm::vec3 offset, const glm::vec3 rotation,
+      const glm::vec4 colour, const std::string textureName = "",
+      const bool perspective = true);
 
     /**
      * @brief Render a Model.
@@ -226,70 +434,91 @@ namespace small3d
      * @param textureName The name of the texture to attach to the model.
      *                    The texture has to have been generated already.
      */
-    void render(Model &model, const glm::vec3 offset, const glm::vec3 rotation,
-		const std::string textureName) const;
+    void render(Model& model, const glm::vec3 offset, const glm::vec3 rotation,
+      const std::string textureName);
 
     /**
      * @brief Render a SceneObject
      * @param sceneObject The object
-     * @param colour The colour the object. 
+     * @param colour The colour the object.
      */
-    void render(SceneObject &sceneObject, const glm::vec4 colour) const;
+    void render(SceneObject& sceneObject, const glm::vec4 colour);
 
     /**
      * @brief Render a SceneObject
      * @param sceneObject The object
      * @param textureName The name of the texture to attach to the object.
-     *                    The texture has to have been generated already. 
+     *                    The texture has to have been generated already.
      */
-    void render(SceneObject &sceneObject, const std::string textureName) const;
+    void render(SceneObject& sceneObject, const std::string textureName);
 
     /**
      * @brief Render some text on the screen.
      * @param text The text to be rendered
-     * @param colour      The colour in which the text will be rendered (r, g, b)
+     * @param colour      The colour in which the text will be rendered
+     *                    (r, g, b)
      * @param topLeft     Where to place the top left corner of the text
      *                    rectangle
      * @param bottomRight Where to place the bottom right corner of the text
      *                    rectangle
      * @param fontSize    The size of the font which will be used
      * @param fontPath    Path to the TrueType font (.ttf) which will be used
+     * @param noCache     If true, don't keep the generated textue containing the
+     *                    text in memory, but delete it upon the creation of a new
+     *                    texture.
      */
     void write(const std::string text, const glm::vec3 colour,
-	       const glm::vec2 topLeft, const glm::vec2 bottomRight,
-	       const int fontSize=48,
-	       const std::string fontPath =
-	       "resources/fonts/CrusoeText/CrusoeText-Regular.ttf");
-
+      const glm::vec2 topLeft, const glm::vec2 bottomRight,
+      const int fontSize = 48,
+      const std::string fontPath =
+#ifndef SMALL3D_IOS
+      "resources/fonts/CrusoeText/CrusoeText-Regular.ttf", bool noCache = false);
+#else
+      "resources1/fonts/CrusoeText/CrusoeText-Regular.ttf", bool noCache = false);
+#endif
     /**
      * @brief Clear a Model from the GPU buffers (the object itself remains
      *        intact).
      * @param model The model
      */
-    void clearBuffers(Model &model) const;
+    void clearBuffers(Model& model) const;
 
     /**
-     * @brief Clears the screen.
+     * @brief Clear an object (multiple models) from the GPU buffers
+     * (the object itself remains intact).
+     * @param sceneObject The object
+     */
+    void clearBuffers(SceneObject& sceneObject) const;
+
+    /**
+     * @brief Clears the screen. DEPRECATED: this function no longer
+     *        does anything, as the screen is automatically cleared
+     *        for every render pass in the Vulkan edition of small3d.
+     *        It has not been deleted so as not to break legacy code
+     *        that uses the framework.
      */
     void clearScreen() const;
 
     /**
-     * @brief Clears the screen.
+     * @brief Clears the screen. DEPRECATED: this function no longer
+     *        does anything, as the screen is automatically cleared
+     *        for every render pass in the Vulkan edition of small3d.
+     *        It has not been deleted so as not to break legacy code
+     *        that uses the framework.
      * @param colour The colour with which the screen is to be cleared
      */
-    void clearScreen(const glm::vec4 colour) const;
+    void clearScreen(const glm::vec4 colour);
 
     /**
-     * @brief This is a double buffered system and this command swaps
-     * the buffers.
+     * @brief Swap the buffers.
      */
-    void swapBuffers() const;
+    void swapBuffers();
 
     Renderer(Renderer const&) = delete;
     void operator=(Renderer const&) = delete;
-    Renderer(Renderer &&) = delete;
-    void operator=(Renderer &&) = delete;
+    Renderer(Renderer&&) = delete;
+    void operator=(Renderer&&) = delete;
 
   };
-  
+
 }

@@ -35,7 +35,6 @@ namespace small3d
   class SceneObject
   {
   private:
-    std::vector<Model> model;
     bool animating;
     int frameDelay;
     int currentFrame;
@@ -44,24 +43,47 @@ namespace small3d
     std::string name;
 
   public:
+    /**
+     * @brief The models making up the object's animation. Do not manipulate
+     *        directly.
+     */
+    std::vector<Model> models;
 
     /**
      * @brief Constructor
      *
      * @param name      The name of the object
-     * @param modelPath The path to the file containing the object's model
+     * @param modelPath The path to the file containing the object's model.
+     *                  When animating (also see numFrames parameter) it is
+     *                  assumed that multiple files will be loaded, the name
+     *                  of which contains a 6 digit suffix (after an 
+     *                  underscore) representing the animation sequence, and
+     *                  terminates with the .obj extension. This is also the
+     *                  format used by Blender when exporting animations to
+     *                  Wavefront files. When loading multiple models for 
+     *                  animation do not enter a full filename. Skip the
+     *                  suffix and the extension. For example an animation
+     *                  sequence made up of files named frog_000001.obj,
+     *                  frog_000002.obj etc. should be loaded using the 
+     *                  parameter "directory/frog" here.
+     *
      * @param numFrames The number of frames, if the object is animated. A
      *                  single animation sequence is supported per object and
-     *                  the first frame is considered to be the non-moving state.
+     *                  the first frame is considered to be the non-moving 
+     *                  state.
      *
      * @param boundingBoxSetPath The path to the file containing the object's
      *                           bounding box set. If no such path is given, the
      *                           object cannot be checked for collision
      *                           detection.
+     * @param startFrameIndex The index number in the filename of the first file
+     *                        of the animation sequence. The default value is 1.
+     *                        If not loading an animation sequence, this parameter
+     *                        is ignored.
      */
     SceneObject(const std::string name, const std::string modelPath,
 		const int numFrames = 1,
-		const std::string boundingBoxSetPath = "");
+		const std::string boundingBoxSetPath = "", const int startFrameIndex = 1);
 
     /**
      * @brief Destructor

@@ -11,87 +11,97 @@
 #include <ctime>
 #include <iostream>
 
+#ifdef __ANDROID__
+#include <android/log.h>
+#endif
+
 std::shared_ptr<small3d::Logger> logger;
 
 namespace small3d {
 
-  std::string intToStr(const int number)
-  {
+  std::string intToStr(const int number) {
     char buffer[100];
-#if defined(_WIN32) && !defined(__MINGW32__)
-    sprintf_s(buffer, "%d", number);
-#else
     sprintf(buffer, "%d", number);
-#endif
+    return std::string(buffer);
+  }
+  
+  std::string floatToStr(const float number) {
+    char buffer[100];
+    sprintf(buffer, "%f", number);
     return std::string(buffer);
   }
 
-  Logger::Logger(std::ostream &stream) {
-    logStream = &stream;
+  Logger::Logger() {
+    this->append(loggerinfo, "Logger created");
   }
 
   Logger::~Logger() {
     this->append(loggerinfo, "Logger getting destroyed");
-    logStream = NULL;
-
   }
 
   void Logger::append(const LogLevel level, const std::string message) const {
-    if (!logger) return;
-    std::ostringstream dateTimeOstringstream;
+      if (!logger) return;
 
-    time_t now;
 
-    time(&now);
+#ifdef __ANDROID__
 
-    tm *t;
+      android_LogPriority lp;
 
-#if defined(_WIN32) && !defined(__MINGW32__)
-    t = new tm();
-    localtime_s(t, &now);
+      switch (level) {
+        case loggerinfo:
+          lp = ANDROID_LOG_INFO;
+              break;
+        case loggerdebug:
+          lp = ANDROID_LOG_DEBUG;
+              break;
+        case loggererror:
+          lp = ANDROID_LOG_ERROR;
+              break;
+        default:
+          lp = ANDROID_LOG_UNKNOWN;
+              break;
+      }
 
+      __android_log_write(lp, "small3d logger", message.c_str());
+    
 #else
-    t = localtime(&now);
+      std::ostringstream dateTimeOstringstream;
+
+      time_t now;
+
+      time(&now);
+
+      tm *t = localtime(&now);
+
+      char buf[20];
+
+      strftime(buf, 20,"%Y-%m-%d %H:%M:%S", t);
+
+      dateTimeOstringstream << buf;
+
+      std::string indicator;
+      switch (level) {
+      case loggerinfo:
+        indicator = "INFO";
+        break;
+      case loggerdebug:
+        indicator = "DEBUG";
+        break;
+      case loggererror:
+        indicator = "ERROR";
+        break;
+      default:
+        indicator = "";
+        break;
+      }
+      std::cout << dateTimeOstringstream.str().c_str() << " - " << indicator
+             << ": " << message.c_str() << std::endl;
 #endif
-    char buf[20];
 
-    strftime(buf, 20,"%Y-%m-%d %H:%M:%S", t);
-
-    // localtime (used on Linux) does not allocate memory, but
-    // returns a pointer to a pre-existing location. Hence,
-    // we should not delete it.
-#if defined(_WIN32) && !defined(__MINGW32__)
-    delete t;
-#endif
-
-    dateTimeOstringstream << buf;
-
-    std::string indicator;
-    switch (level) {
-    case loggerinfo:
-      indicator = "INFO";
-      break;
-    case loggerdebug:
-      indicator = "DEBUG";
-      break;
-    case loggererror:
-      indicator = "ERROR";
-      break;
-    default:
-      indicator = "";
-      break;
     }
 
-    *logStream << dateTimeOstringstream.str().c_str() << " - " << indicator
-	       << ": " << message.c_str() << std::endl;
-  }
-
   void initLogger() {
-    if (!logger) logger = std::shared_ptr<Logger>(new Logger(std::cout));
-  }
-
-  void initLogger(std::ostream &stream) {
-    if (!logger) logger = std::shared_ptr<Logger>(new Logger(stream));
+    if (!logger) logger = std::shared_ptr<Logger>(new Logger());
   }
 
   void deleteLogger() {

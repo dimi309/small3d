@@ -10,8 +10,10 @@
 
 #include <string>
 #include <vector>
+#include <vulkan/vulkan.h>
 
-#include <GL/glew.h>
+#define GLM_FORCE_RADIANS
+#include <glm/glm.hpp>
 
 namespace small3d {
   /**
@@ -46,30 +48,28 @@ namespace small3d {
 
   public:
 
-    /**
-     * @brief OpenGL position buffer object id. It is suggested not to manipulate
-     *        this directly.
-     */
-    GLuint positionBufferObjectId = 0;
+    // Vulkan-specific variables. Avoid manipulating these directly.
 
-    /**
-     * @brief OpenGL index buffer object id. It is suggested not to manipulate
-     *        this directly.
-     */
-    GLuint indexBufferObjectId = 0;
+    bool alreadyInGPU = false;
 
-    /**
-     * @brief OpenGL normals buffer object id. It is suggested not to manipulate
-     *        this directly.
-     */
-    GLuint normalsBufferObjectId = 0;
+    VkBuffer positionBuffer;
+    VkDeviceMemory positionBufferMemory;
 
-    /**
-     * @brief OpenGL UV buffer object id. It is suggested not to manipulate this
-     *        directly.
-     */
-    GLuint uvBufferObjectId = 0;
-    
+    VkBuffer indexBuffer;
+    VkDeviceMemory indexBufferMemory;
+
+    VkBuffer normalsBuffer;
+    VkDeviceMemory normalsBufferMemory;
+
+    VkBuffer uvBuffer;
+    VkDeviceMemory uvBufferMemory;
+
+    uint32_t orientationMemIndex = 0;
+
+    uint32_t colourMemIndex = 0;
+
+    // End of Vulkan-specific variables.
+        
     /**
      * @brief The vertex data. This is an array, which is to be treated as a 4
      *        column table, holding the x, y, z values in each column. The
@@ -80,19 +80,19 @@ namespace small3d {
     /**
      * @brief Size of the vertex data, in bytes.
      */
-    int vertexDataByteSize;
+    int vertexDataByteSize = 0;
 
     /**
      * @brief 3 column table. Each element refers to a "row" in the vertex data
      *        table. Each "row" in the index data table forms a triangle.
      *
      */
-    std::vector<unsigned int> indexData;
+    std::vector<uint32_t> indexData;
 
     /**
      * @brief Size of the index data, in bytes
      */
-    int indexDataByteSize;
+    int indexDataByteSize = 0;
 
     /**
      * @brief Array, to be treated as a 3 column table. Each "row" contains the
@@ -105,7 +105,7 @@ namespace small3d {
     /**
      * @brief Size of the normals data, in bytes.
      */
-    int normalsDataByteSize;
+    int normalsDataByteSize = 0;
 
     /**
      * @brief Array, to be treated as a 2 column table. Each "row" contains the
@@ -118,10 +118,29 @@ namespace small3d {
     /**
      * @brief Size of the texture coordinates data, in bytes.
      */
-    int textureCoordsDataByteSize;
+    int textureCoordsDataByteSize = 0;
 
     /**
-     * @brief constructor
+    * @brief Name of the texture the model will be rendered with. The texture has to
+    *        have been previously generated with Renderer.generateTexture().
+    */
+    std::string textureName = "";
+
+    /**
+     * @brief True if the model is to be rendered with perspective, False for orthographic
+     *        rendering
+     */
+    bool perspective = false;
+
+    
+    /**
+     * @brief Default constructor
+     *
+     */
+    Model();
+
+    /**
+     * @brief Constructor that loads model from file
      * @param fileLocation Location of the Wavefront file from which to load the
      *                     model.
      */

@@ -1,0 +1,99 @@
+@page changelog
+
+small3d changes per version
+===========================
+
+v1.702 2019-10-26
+
+- Introduced noCache flag for rendered text, allowing for the enclosing
+  texture to be replaced when a new texture is created.
+
+v1.701 2019-10-19
+
+- Rationalised use of Vulkan synchronisation objects.
+
+v1.700 2019-10-10
+
+- Migrated to Vulkan
+
+v1.697 2019-05-28
+
+- README improvements
+
+v1.696 2019-05-26
+
+- Upgraded glfw to released v3.3.
+
+v1.695 2019-04-28
+
+- Stopped using Google Test.
+- Improved dependency preparation scripts.
+
+v1.694 2019-04-19
+
+- Reorganisation and improvement of shader logic.
+
+v1.693 2019-03-17
+
+- Corrected google test related bug in VS Debug build.
+
+v1.692 2019-01-19
+
+- Removed all secure CRT functions from Visual Studio build.
+
+v1.691 2018-12-11
+
+ - Model now has a default constructor.
+
+v1.69 2018-12-10
+
+ - Now using google test v1.8.1.
+
+v1.68 2018-12-09
+
+ - Lower case characters like p and q were not being rendered entirely.
+   This has now been corrected.
+ - Upgraded FreeType to v2.9.1.
+ - Bug fixes.
+
+v1.67 2018-11-29
+
+ - Added a generateTexture function to the Renderer, which creates a
+   texture with some given text rendered within it.
+
+v1.66 2018-11-16
+
+ - Corrected texture mapping issue that occured when rendering textured 
+   rectangles using the perspective shaders.
+
+v1.65 2018-10-20
+
+ - This project is now called the small3d framework, instead of the
+   small3d game engine.
+ - Documentation reorganisation.
+	
+v1.64 2018-10-18
+
+ - Corrected blank window issue on Mojave (when not in full screen
+   mode, nothing was being rendered until the game window was moved).
+
+v1.63 2018-10-08
+
+ - No more "window not responding" messages in Linux during unit tests.
+ - On MacOS, the window used during unit testing is now visible.
+ - Another GLFW update.
+
+v1.62 2018-09-27
+
+ - Improved documentation generation procedure.
+ - Using the latest GLFW snapshot on MacOS.	
+
+v1.60 2018-09-15
+
+- OpenGL v2.1 support dropped. small3d now only supports OpenGL v3.3 Core
+  Profile.
+
+v1.51 2018-06-06
+
+- History reset. Changes that have taken place up to this point have now
+  endured for so long that they are considered small3d's initial state.

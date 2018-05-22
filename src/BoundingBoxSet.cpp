@@ -12,45 +12,92 @@
 #include "GetTokens.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
+#if defined(__ANDROID__)
+#include "vkzos.h"
+#include <streambuf>
+#include <istream>
+#elif defined(SMALL3D_IOS)
+#include "interop.h"
+#endif
+
 namespace small3d {
-  
+
   /**
    * Constructor
    */
-  
+
   BoundingBoxSet::BoundingBoxSet(const std::string fileLocation) {
-    initLogger();
     vertices.clear();
     facesVertexIndexes.clear();
     numBoxes = 0;
-    
-    if (fileLocation != "") this->loadFromFile(fileLocation);
-    
+
+    if (fileLocation != "") {
+#ifdef SMALL3D_IOS
+      std::string basePath = get_base_path();
+      basePath += "/";
+      this->loadFromFile(basePath + fileLocation);
+#else
+      this->loadFromFile(fileLocation);
+#endif
+      
+    }
+
   }
-  
-  void BoundingBoxSet::loadFromFile(std::string fileLocation) {
+
+#ifdef __ANDROID__
+    struct membuf : std::streambuf
+    {
+        membuf(char* begin, char* end) {
+            this->setg(begin, begin, end);
+        }
+    };
+
+#endif
+
+
+    void BoundingBoxSet::loadFromFile(std::string fileLocation) {
     if (vertices.size() != 0) {
       throw std::runtime_error("Illegal attempt to reload bounding boxes. "
-			       "Please use another object.");
+        "Please use another object.");
     }
+      std::string line;
+#ifdef __ANDROID__
+    AAsset *asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+                                       fileLocation.c_str(),
+                                       AASSET_MODE_STREAMING);
+    if(!asset) {
+      throw std::runtime_error(
+        "Opening asset " + fileLocation + " has failed!");
+    }
+    off_t length;
+    length = AAsset_getLength(asset);
+    const void* buffer = AAsset_getBuffer(asset);
+    membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * length);
+    std::istream in(&sbuf);
+    if (in) {
+      while (std::getline(in, line)) {
+      LOGDEBUG("Got line: " + line);
+#else
     std::ifstream file(fileLocation.c_str());
-    std::string line;
+
     if (file.is_open()) {
       while (getline(file, line)) {
+#endif
+
         if (line[0] == 'v' || line[0] == 'f') {
           std::vector<std::string> tokens;
-          
+
           // Wavefront file
           getTokens(line, ' ', tokens);
-          
+
           int idx = 0;
-          
+
           if (line[0] == 'v') {
             // get vertex
             std::vector<float> v;
-            
-            for (size_t tokenIdx = 0, tokenCount= tokens.size();
-		 tokenIdx < tokenCount; ++tokenIdx) {
+
+            for (size_t tokenIdx = 0, tokenCount = tokens.size();
+              tokenIdx < tokenCount; ++tokenIdx) {
               std::string t = tokens[tokenIdx];
               if (idx > 0)   // The first token is the vertex indicator
               {
@@ -63,13 +110,13 @@ namespace small3d {
           else {
             // get vertex index
             std::vector<unsigned int> v;
-            
+
             for (size_t tokenIdx = 0, tokenCount = tokens.size();
-		 tokenIdx < tokenCount; ++tokenIdx) {
+              tokenIdx < tokenCount; ++tokenIdx) {
               std::string t = tokens[tokenIdx];
               if (idx > 0)   // The first token is face indicator
               {
-                v.push_back((unsigned int) atoi(t.c_str()));
+                v.push_back((unsigned int)atoi(t.c_str()));
               }
               ++idx;
             }
@@ -77,70 +124,74 @@ namespace small3d {
           }
         }
       }
+#ifdef __ANDROID__
+      AAsset_close(asset);
+#else
       file.close();
-      numBoxes = (int) (facesVertexIndexes.size() / 6);
-      
+#endif
+      numBoxes = (int)(facesVertexIndexes.size() / 6);
+
       // Correct indices. OpenGL indices are 0 based. Wavefront indices start
       // from 1 and the numbering continues for multiple objects.
-      
+
       for (int idx = 0; idx < numBoxes; ++idx) {
-        for(int idx2 = 0; idx2 < 6; ++idx2) {
-          for(int idx3 = 0; idx3 < 4; ++idx3) {
+        for (int idx2 = 0; idx2 < 6; ++idx2) {
+          for (int idx3 = 0; idx3 < 4; ++idx3) {
             facesVertexIndexes[6 * idx + idx2][idx3] -= 1 + 8 * idx;
           }
         }
       }
-      
+
       LOGINFO("Loaded " + intToStr(numBoxes) + " bounding boxes.");
     }
     else
       throw std::runtime_error(
-                      "Could not open file " + fileLocation);
-    
+        "Could not open file " + fileLocation);
+
   }
-  
+
   bool BoundingBoxSet::collidesWith(const glm::vec3 point,
-				    const glm::vec3 thisOffset,
-				    const glm::vec3 thisRotation) const {
+    const glm::vec3 thisOffset,
+    const glm::vec3 thisRotation) const {
     bool collides = false;
-    glm::mat4 rotationMatrix = 
+    glm::mat4 rotationMatrix =
       glm::rotate(
         glm::rotate(
           glm::rotate(glm::mat4x4(1.0f), -thisRotation.y,
-		      glm::vec3(0.0f, -1.0f, 0.0f)),
-	  -thisRotation.x,
-	  glm::vec3(-1.0f, 0.0f, 0.0f)), -thisRotation.z,
-	glm::vec3(0.0f, 0.0f, -1.0f)
+            glm::vec3(0.0f, -1.0f, 0.0f)),
+          -thisRotation.x,
+          glm::vec3(-1.0f, 0.0f, 0.0f)), -thisRotation.z,
+        glm::vec3(0.0f, 0.0f, -1.0f)
       );
-    
+
     glm::vec4 pointInBoxSpace = glm::vec4(point, 1.0f) -
       glm::vec4(thisOffset, 0.0f);
-    
+
     pointInBoxSpace = rotationMatrix * pointInBoxSpace;
-    
+
     for (int idx = 0; idx < numBoxes; ++idx) {
       float minZ, maxZ, minX, maxX, minY, maxY;
-      
+
       glm::vec4 coords(vertices[static_cast<unsigned int>(idx * 8)][0],
-		       vertices[static_cast<unsigned int>(idx * 8)][1],
-                       vertices[static_cast<unsigned int>(idx * 8)][2], 1);
-      
+        vertices[static_cast<unsigned int>(idx * 8)][1],
+        vertices[static_cast<unsigned int>(idx * 8)][2], 1);
+
       glm::vec4 rotatedCoords;
       rotatedCoords = coords;
-      
+
       minX = rotatedCoords.x;
       maxX = rotatedCoords.x;
       minY = rotatedCoords.y;
       maxY = rotatedCoords.y;
       minZ = rotatedCoords.z;
       maxZ = rotatedCoords.z;
-      
+
       for (int checkidx = idx * 8; checkidx < (idx + 1) * 8; ++checkidx) {
         coords = glm::vec4(vertices[static_cast<unsigned int>(checkidx)][0],
-			   vertices[static_cast<unsigned int>(checkidx)][1],
-                           vertices[static_cast<unsigned int>(checkidx)][2], 1);
+          vertices[static_cast<unsigned int>(checkidx)][1],
+          vertices[static_cast<unsigned int>(checkidx)][2], 1);
         rotatedCoords = coords;
-        
+
         if (rotatedCoords.x < minX)
           minX = rotatedCoords.x;
         if (rotatedCoords.x > maxX)
@@ -154,60 +205,60 @@ namespace small3d {
         if (rotatedCoords.z > maxZ)
           maxZ = rotatedCoords.z;
       }
-      
+
       if (pointInBoxSpace.x > minX && pointInBoxSpace.x < maxX &&
-          pointInBoxSpace.y > minY && pointInBoxSpace.y < maxY &&
-          pointInBoxSpace.z > minZ && pointInBoxSpace.z < maxZ) {
-        
+        pointInBoxSpace.y > minY && pointInBoxSpace.y < maxY &&
+        pointInBoxSpace.z > minZ && pointInBoxSpace.z < maxZ) {
+
         collides = true;
         break;
       }
     }
     return collides;
   }
-  
+
   bool BoundingBoxSet::collidesWith(const BoundingBoxSet otherBoxSet,
-				    const glm::vec3 thisOffset,
-				    const glm::vec3 thisRotation,
-				    const glm::vec3 otherOffset,
-				    const glm::vec3 otherRotation) const {
+    const glm::vec3 thisOffset,
+    const glm::vec3 thisRotation,
+    const glm::vec3 otherOffset,
+    const glm::vec3 otherRotation) const {
     bool collides = false;
-    
+
     glm::mat4 rotationMatrix =
       glm::rotate(
         glm::rotate(
           glm::rotate(glm::mat4x4(1.0f), otherRotation.z,
-		      glm::vec3(0.0f, 0.0f, -1.0f)),
-	  otherRotation.x,
-	  glm::vec3(-1.0f, 0.0f, 0.0f)),
-	otherRotation.y, glm::vec3(0.0f, -1.0f, 0.0f));
-    
+            glm::vec3(0.0f, 0.0f, -1.0f)),
+          otherRotation.x,
+          glm::vec3(-1.0f, 0.0f, 0.0f)),
+        otherRotation.y, glm::vec3(0.0f, -1.0f, 0.0f));
+
     for (auto vertex = otherBoxSet.vertices.begin();
-         vertex != otherBoxSet.vertices.end(); ++vertex) {
-      
+      vertex != otherBoxSet.vertices.end(); ++vertex) {
+
       glm::vec4 otherCoords(vertex->at(0), vertex->at(1), vertex->at(2), 1.0f);
       glm::vec4 rotatedOtherCoords;
-      
-      rotatedOtherCoords =  rotationMatrix * otherCoords;
-      
+
+      rotatedOtherCoords = rotationMatrix * otherCoords;
+
       rotatedOtherCoords.x += otherOffset.x;
       rotatedOtherCoords.y += otherOffset.y;
       rotatedOtherCoords.z += otherOffset.z;
-      
+
       if (collidesWith(glm::vec3(rotatedOtherCoords.x, rotatedOtherCoords.y,
-				 rotatedOtherCoords.z),
-		       thisOffset, thisRotation)) {
-        
+        rotatedOtherCoords.z),
+        thisOffset, thisRotation)) {
+
         collides = true;
         break;
       }
     }
-    
+
     return collides;
   }
-  
+
   int BoundingBoxSet::getNumBoxes() const {
     return numBoxes;
   }
-  
+
 }

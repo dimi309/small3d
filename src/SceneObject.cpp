@@ -12,7 +12,8 @@ namespace small3d {
 
   SceneObject::SceneObject(const std::string name, const std::string modelPath,
 			   const int numFrames,
-			   const std::string boundingBoxSetPath) :
+			   const std::string boundingBoxSetPath,
+         const int startFrameIndex) :
     offset(0,0,0), rotation(0,0,0), boundingBoxSet(boundingBoxSetPath) {
     
     initLogger();
@@ -30,20 +31,20 @@ namespace small3d {
         lss << "Frame " << idx + 1 << " of " << numFrames << "...";
         LOGINFO(lss.str());
         std::stringstream ss;
-        ss << std::setfill('0') << std::setw(6) << idx + 1;
+        ss << std::setfill('0') << std::setw(6) << idx + startFrameIndex;
         std::string frameNum = ss.str();
         Model model1(modelPath + "_" + frameNum + ".obj");
-        model.push_back(model1);
+        models.push_back(model1);
       }
     }
     else {
       Model model1(modelPath);
-      model.push_back(model1);
+      models.push_back(model1);
     }
   }
 
   Model& SceneObject::getModel() {
-    return model[currentFrame];
+    return models[currentFrame];
   }
 
   const std::string SceneObject::getName() const {

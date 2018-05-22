@@ -2,6 +2,7 @@
 *\~
 *swp
 *blend[0-9]
+*\.bak
 
 #MacOS
 Thumbs.db
@@ -12,8 +13,10 @@ Thumbs.db
 \.\#*
 
 /\.idea
+/\.vs
 
 /build
 /_build
 /Win32
 /bin
+/docs
