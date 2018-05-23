@@ -71,7 +71,7 @@ $(function() {
 <p>This is a free, open-source, minimalistic 3D game engine, developed in C++ and using OpenGL with shaders.</p>
 <h2>Features </h2>
 <ul>
-<li>Runs on Windows, Mac, Linux (tested on Debian, Fedora and Ubuntu).</li>
+<li>Runs on Windows (Visual Studio and MinGW builds), Mac, Linux (tested on Debian, Fedora and Ubuntu).</li>
 <li>It works with GLFW.</li>
 <li>Uses OpenGL 3.3 and defaults to 2.1 if the former is not available.</li>
 <li>Uses C++11.</li>
@@ -88,7 +88,7 @@ $(function() {
 <li>Very permissive license (3-clause BSD). The libraries it uses have been chosen to have a permissive license also.</li>
 </ul>
 <h2>Building </h2>
-<p>Before starting, note that cmake has to be installed on your system and accessible on the command line. On Windows, 7zip also has to be in the path. Note that I am using MinGW there and I don't support Visual Studio.</p>
+<p>Before starting, note that cmake has to be installed on your system and accessible on the command line. On Windows, 7zip also has to be in the path.</p>
 <p>The source code for all of small3d's dependencies can be found in the <em>deps</em> directory. These are the required libraries:</p>
 <ul>
 <li><a href="http://www.glfw.org/">GLFW</a> <em>Not needed on Linux, where it is deployed as a package by the prepare.sh script.</em></li>
@@ -103,12 +103,12 @@ $(function() {
 <li><a href="http://download.savannah.gnu.org/releases/freetype/">FreeType</a></li>
 <li><a href="http://bzip.org/">bzip2</a> <em>Not needed on Windows.</em></li>
 </ul>
-<p>Run the <em>prepare.bat</em> (Windows) or <em>prepare.sh</em> script from within the <em>deps</em> directory, in order to build the dependencies.</p>
+<p>Run the <em>prepare.bat</em> (Windows MinGW), <em>prepare-vs.bat</em> (Windows Visual Studio) or <em>prepare.sh</em> script from within the <em>deps</em> directory, in order to build the dependencies.</p>
 <p>Then, create a directory inside <em>small3d</em>, called <em>build</em>. Then, build like this: </p><pre class="fragment">cd build
 cmake ..
 cmake --build .
-</pre><p>On Windows, you need to execute <code>cmake .. -G"MinGW Makefiles"</code>, otherwise cmake will probably try to configure the project with Visual Studio.</p>
-<p>The unit tests can be run by running the <em>unittests</em> binary from <em>build/bin</em>. For building your own project, you need the header files from the <em>build/include</em> directory, the libraries from the <em>build/lib</em> directory and the shaders from <em>small3d/resources/shaders</em>. If you are using cmake, the modules in <em>small3d/cmake</em> can be useful. Also, if you are on a Mac, remember to set the linker flags of your own projects the way I do for the unit tests (see src/CMakeLists.txt).</p>
+</pre><p>On Windows, you need to execute <code>cmake .. -G"MinGW Makefiles"</code>, or with the preferred Visual Studio configuration (e.g. <code>cmake .. -G"Visual Studio 15 2017 Win64"</code>). Make sure that <em>prepare-vs.bat</em> is run with the same configuration (see the parameters at the top, inside the file). Also, make sure to run build under the configuration also defined in <em>prepare-vs.bat</em> parameters, e.g. <code>cmake --build . --config Release</code>.</p>
+<p>The unit tests can be run via the <em>unittests</em> binary from <em>build/bin</em>. For building your own project, you need the header files from the <em>build/include</em> directory, the libraries from the <em>build/lib</em> directory and the shaders from <em>small3d/resources/shaders</em>. If you are using cmake, the modules in <em>small3d/cmake</em> can be useful. Check the CMakeLists.txt and src/CMakeLists.txt files for other configuration details (link flags, etc) that may also be required or useful.</p>
 <h2>Note on 3D models and textures </h2>
 <p>The Wavefront .obj files used for the engine's models have to have a certain structure. Exporting them from Blender for example, we need to make sure we set the options <b>Write Normals</b>, <b>Triangulate Faces</b>, and <b>Keep Vertex Order</b>. When exporting animations, also set <b>Apply modifiers</b>. Only one object should be exported to each Wavefront file (the engine cannot read more than one).</p>
 <p>If a texture has been created, the option <b>Include UVs</b> must also be set. The texture should be saved as a PNG file.</p>
