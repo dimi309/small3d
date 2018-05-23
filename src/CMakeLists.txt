@@ -47,11 +47,6 @@ target_include_directories(unittests PUBLIC
 target_link_libraries(unittests PUBLIC ${GTEST_BOTH_LIBRARIES}  small3d)
 
 if(MSVC)
-#  set_target_properties(unittests PROPERTIES LINK_FLAGS_DEBUG
-#    "-NODEFAULTLIB:MSVCRT")
-#  set_target_properties(unittests PROPERTIES LINK_FLAGS_RELEASE
-#    "-NODEFAULTLIB:MSVCRTD")
-  
   set_target_properties(unittests PROPERTIES LINK_FLAGS_DEBUG
     "-NODEFAULTLIB:LIBCMTD")
   set_target_properties(unittests PROPERTIES LINK_FLAGS_RELEASE
