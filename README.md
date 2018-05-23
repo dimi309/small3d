@@ -8,7 +8,7 @@ This is a free, open-source, minimalistic 3D game engine, developed in C++ and u
 Features
 --------
 
-- Runs on Windows, Mac, Linux (tested on Debian, Fedora and Ubuntu).
+- Runs on Windows (Visual Studio and MinGW builds), Mac, Linux (tested on Debian, Fedora and Ubuntu).
 - It works with GLFW.
 - Uses OpenGL 3.3 and defaults to 2.1 if the former is not available.
 - Uses C++11.
@@ -28,7 +28,7 @@ Features
 Building
 --------
 
-Before starting, note that cmake has to be installed on your system and accessible on the command line. On Windows, 7zip also has to be in the path. Note that I am using MinGW there and I don't support Visual Studio.
+Before starting, note that cmake has to be installed on your system and accessible on the command line. On Windows, 7zip also has to be in the path. 
 
 The source code for all of small3d's dependencies can be found in the *deps* directory. These are the required libraries:
 
@@ -44,7 +44,7 @@ The source code for all of small3d's dependencies can be found in the *deps* dir
 - [FreeType](http://download.savannah.gnu.org/releases/freetype/)
 - [bzip2](http://bzip.org/) *Not needed on Windows.*
 
-Run the *prepare.bat* (Windows) or *prepare.sh* script from within the *deps* directory, in order to build the dependencies.
+Run the *prepare.bat* (Windows MinGW), *prepare-vs.bat* (Windows Visual Studio) or *prepare.sh* script from within the *deps* directory, in order to build the dependencies.
 
 Then, create a directory inside *small3d*, called *build*. Then, build like this:
 
@@ -52,9 +52,9 @@ Then, create a directory inside *small3d*, called *build*. Then, build like this
     cmake ..
     cmake --build .
 	
-On Windows, you need to execute `cmake .. -G"MinGW Makefiles"`, otherwise cmake will probably try to configure the project with Visual Studio.
+On Windows, you need to execute `cmake .. -G"MinGW Makefiles"`, or with the preferred Visual Studio configuration (e.g. `cmake .. -G"Visual Studio 15 2017 Win64"`). Make sure that *prepare-vs.bat* is run with the same configuration (see the parameters at the top, inside the file). Also, make sure to run build under the configuration also defined in *prepare-vs.bat* parameters, e.g. `cmake --build . --config Release`.
 	
-The unit tests can be run by running the *unittests* binary from *build/bin*. For building your own project, you need the header files from the *build/include* directory, the libraries from the *build/lib* directory and the shaders from *small3d/resources/shaders*. If you are using cmake, the modules in *small3d/cmake* can be useful. Also, if you are on a Mac, remember to set the linker flags of your own projects the way I do for the unit tests (see src/CMakeLists.txt).
+The unit tests can be run via the *unittests* binary from *build/bin*. For building your own project, you need the header files from the *build/include* directory, the libraries from the *build/lib* directory and the shaders from *small3d/resources/shaders*. If you are using cmake, the modules in *small3d/cmake* can be useful. Check the CMakeLists.txt and src/CMakeLists.txt files for other configuration details (link flags, etc) that may also be required or useful.
 
 Note on 3D models and textures
 ------------------------------

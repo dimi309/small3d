@@ -13,17 +13,19 @@ include_directories(
   ${OGG_INCLUDE_DIRS}
   ${VORBIS_INCLUDE_DIR}
   ${PORTAUDIO_INCLUDE_DIRS}
-  ${FREETYPE_INCLUDE_DIRS})
+  ${FREETYPE_INCLUDE_DIRS}
+  )
 
 target_link_libraries(small3d PUBLIC
-  ${FREETYPE_LIBRARIES}
-  ${GLEW_LIBRARIES}
   ${OPENGL_LIBRARIES}
   ${GLFW_LIBRARIES}
+  ${GLEW_LIBRARIES}
   ${PNG_LIBRARIES}
   ${VORBIS_LIBRARIES}
   ${OGG_LIBRARIES}
-  ${PORTAUDIO_LIBRARIES})
+  ${PORTAUDIO_LIBRARIES}
+  ${FREETYPE_LIBRARIES}
+  )
 
 if(UNIX)
   include_directories(${BZIP2_INCLUDE_DIRS})
@@ -45,10 +47,16 @@ target_include_directories(unittests PUBLIC
 target_link_libraries(unittests PUBLIC ${GTEST_BOTH_LIBRARIES}  small3d)
 
 if(MSVC)
+#  set_target_properties(unittests PROPERTIES LINK_FLAGS_DEBUG
+#    "-NODEFAULTLIB:MSVCRT")
+#  set_target_properties(unittests PROPERTIES LINK_FLAGS_RELEASE
+#    "-NODEFAULTLIB:MSVCRTD")
+  
   set_target_properties(unittests PROPERTIES LINK_FLAGS_DEBUG
-    "-NODEFAULTLIB:MSVCRTD")
+    "-NODEFAULTLIB:LIBCMTD")
   set_target_properties(unittests PROPERTIES LINK_FLAGS_RELEASE
-    "-NODEFAULTLIB:MSVCRT")
+    "-NODEFAULTLIB:LIBCMT")
+  
   set_target_properties(unittests PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
     "${small3d_BINARY_DIR}/bin")
 endif(MSVC)

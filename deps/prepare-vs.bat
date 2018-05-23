@@ -131,15 +131,18 @@ cmake .. -G"%VSCONFIG%" -DPA_USE_WDMKS=OFF -DCMAKE_BUILD_TYPE=Release
 cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy ..\include\* ..\..\include
-copy %BUILDTYPE%\portaudio_static*.lib ..\..\lib\portaudio_static.lib
+move %BUILDTYPE%\portaudio_static*.lib ..\..\lib\portaudio_static.lib
 cd ..\..\
 rmdir /Q /S portaudio
 del pa_stable_v190600_20161030.tar
 
-7z x freetype-2.9.tar.gz
+REM Using slightly modified version, exporting symbols differently, to avoid linking
+REM errors in Visual Studio. Look for "small3d" in include/freetype/config/ftconfig.h, to see
+REM what is different.
+7z x freetype-2.9-modified-ftexport.tar.gz
 if %errorlevel% neq 0 exit /b %errorlevel%
-7z x freetype-2.9.tar
-cd freetype-2.9
+7z x freetype-2.9-modified-ftexport.tar
+cd freetype-2.9-modified-ftexport
 mkdir build
 cd build
 cmake .. -G"%VSCONFIG%" -DBUILD_SHARED_LIBS=OFF
@@ -148,6 +151,6 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include ..\..\include /s /e
 copy %BUILDTYPE%\freetype*.lib ..\..\lib
 cd ..\..
-rmdir /Q /S freetype-2.9
-del freetype-2.9.tar
+rmdir /Q /S freetype-2.9-modified-ftexport
+del freetype-2.9-modified-ftexport.tar
 
