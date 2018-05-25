@@ -24,10 +24,10 @@ copy lib\libglew32.a ..\lib\
 cd ..
 rmdir /Q /S glew-2.1.0
 
-7z x glm-master-20180508.zip
+7z x glm-0.9.9.0.zip
 if %errorlevel% neq 0 exit /b %errorlevel%
-xcopy glm-master\glm include\glm /i /s
-rmdir /Q /S glm-master
+xcopy glm\glm include\glm /i /s
+rmdir /Q /S glm
 
 7z x zlib-1.2.11.tar.gz
 if %errorlevel% neq 0 exit /b %errorlevel%

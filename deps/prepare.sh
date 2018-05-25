@@ -44,9 +44,9 @@ cp lib/libGLEW.a ../lib/
 cd ..
 rm -rf glew-2.1.0
 
-unzip glm-master-20180508.zip
-cp -rf glm-master/glm include/
-rm -rf glm-master
+unzip glm-0.9.9.0.zip
+cp -rf glm/glm include/
+rm -rf glm
 
 tar xvf zlib-1.2.11.tar.gz
 cd zlib-1.2.11
