@@ -10,7 +10,7 @@
 
 #include <string>
 #include <vector>
-
+#define GLEW_NO_GLU
 #include <GL/glew.h>
 
 namespace small3d {
