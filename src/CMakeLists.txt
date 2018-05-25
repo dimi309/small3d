@@ -17,9 +17,9 @@ include_directories(
   )
 
 target_link_libraries(small3d PUBLIC
+  ${GLEW_LIBRARIES}
   ${OPENGL_LIBRARIES}
   ${GLFW_LIBRARIES}
-  ${GLEW_LIBRARIES}
   ${PNG_LIBRARIES}
   ${VORBIS_LIBRARIES}
   ${OGG_LIBRARIES}
