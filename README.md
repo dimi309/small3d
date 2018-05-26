@@ -3,7 +3,22 @@ small3d
 
 ![logo](img/logo.png)
 
-This is a free, open-source, minimalistic 3D game engine, developed in C++ and using OpenGL with shaders. 
+This is a free, open-source, minimalistic 3D game engine, developed in C++ and using OpenGL with shaders.
+
+Source code: https://github.com/small3d/small3d 
+
+Docmentation: https://small3d.github.io
+
+Games made with the engine 
+--------------------------
+
+Avoid the Bug 3D: https://github.com/small3d/avoidthebug
+
+![Demo 1](img/demo1.gif)
+
+Chase the Goat 3D: https://github.com/small3d/chasethegoat
+
+![Demo 2](img/demo2.gif)
 
 Features
 --------
@@ -72,4 +87,3 @@ The engine supports collision detection via manually created bounding boxes. In 
 
 Export the bounding boxes to a Wavefront file separately from the model. You can do this if you "save as" a new file after placing the boxes and deleting the original model. During export, only set the options **Apply Modifiers**, **Include Edges**, **Objects as OBJ Objects** and **Keep Vertex Order**. On the contrary to what is the case when exporting the model itself, more than one bounding box objects can be exported to the same Wavefront file.
 
-![Demo 1](img/demo1.gif) ![Demo 2](img/demo2.gif)
