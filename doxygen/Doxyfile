@@ -781,7 +781,12 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = ../include ../src ../README.md RelatedPages/SwitchingBetweenIntelNvidia.md RelatedPages/ChooseEmulateLinuxOpenGL.md RelatedPages/SimpleModel.md
+INPUT                  = ../include \
+                         ../src \
+			 ../README.md \
+			 blog/SimpleModel.md \
+			 blog/ChooseEmulateLinuxOpenGL.md \
+                         blog/SwitchingBetweenIntelNvidia.md
  
 
 # This tag can be used to specify the character encoding of the source files
@@ -1170,7 +1175,7 @@ HTML_FOOTER            =
 # obsolete.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_STYLESHEET        = 
+HTML_STYLESHEET        = customdoxygen.css
 
 # The HTML_EXTRA_STYLESHEET tag can be used to specify additional user-defined
 # cascading style sheets that are included after the standard style sheets

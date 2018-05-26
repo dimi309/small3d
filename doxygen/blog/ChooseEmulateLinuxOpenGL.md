@@ -1,5 +1,5 @@
-Choosing and emulating OpenGL versions on Linux
-===============================================
+@page  opengl_version Choosing and emulating OpenGL versions on Linux
+@brief 2015-01-23
 
 One matter that required attention during the early days of [small3d](https://github.com/dimi309/small3d)'s development was selecting an OpenGL version for the engine and making sure it works.
 

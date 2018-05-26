@@ -9,15 +9,20 @@
 
 #pragma once
 
-/**
- * Logging is accessed through macros so that it can be completely
- * omitted if deactivated.
- */
 
+/**
+ *  Log an error
+ */
 #define LOGERROR(MESSAGE) logger->append(loggererror, MESSAGE)
 
+/**
+ * Log information (shows up even when not debugging)
+ */
 #define LOGINFO(MESSAGE) logger->append(loggerinfo, MESSAGE)
 
+/** 
+ * Log debug information (only shows up when debugging)
+ */
 #if defined(DEBUG) || defined(_DEBUG) || !defined (NDEBUG)
 #define LOGDEBUG(MESSAGE) logger->append(loggerdebug, MESSAGE)
 #else
@@ -29,6 +34,9 @@
 
 namespace small3d {
 
+  /**
+   * Convert an integer to a string.
+   */
   std::string intToStr(const int number);
 
   /**
@@ -73,11 +81,27 @@ namespace small3d {
     void append(const LogLevel level, const std::string message) const;
   };
 
+  /**
+   * @brief Initialise the logger.
+   */
   void initLogger();
 
+  
+  /**
+   * @brief Initialise the logger.
+   *
+   * @param stream The stream to output logging entries to.
+   *
+   */
   void initLogger(std::ostream &stream);
 
+  /**
+   * @brief Destroy the logger.
+   */
   void deleteLogger();
 }
 
+/**
+ * @brief The logger object used by the logging macros.
+ */
 extern std::shared_ptr<small3d::Logger> logger;

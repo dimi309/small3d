@@ -1,5 +1,5 @@
-How to create a simple 3D model for small3d 
-===========================================
+@page  simple_model How to create a simple 3D model for small3d
+@brief 2016-06-14
 
 This is an example of how to use  [Blender](https://www.blender.org) to create a Wavefront file that can be used by small3d.
 
