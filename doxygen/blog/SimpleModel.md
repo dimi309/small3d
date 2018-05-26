@@ -5,8 +5,6 @@ This is an example of how to use  [Blender](https://www.blender.org) to create a
 
 ![ball](img/ball.png)
 
-There is no code listed here. For coding examples, have a look at two games that have been developed with small3d, [Avoid the Bug](https://github.com/dimi309/avoidthebug) and [Chase the Goat](https://github.com/dimi309/chasethegoat).
-
 When you start Blender, you see a cube:
 
 ![blendercube](img/cube.png)
@@ -34,5 +32,3 @@ We now need to create the Wavefront file. From the menu at the top, select File 
 ![wavefrontexportoptions](img/export.png)
 
 Save the exported file as "ball.obj" in the "resources" directory, created earlier (there is a location and name selector at the top and an "Export OBJ" button to actually save the file).
-
-

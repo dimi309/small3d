@@ -1,8 +1,6 @@
 small3d
 =======
 
-![logo](img/logo.png)
-
 This is a free, open-source, minimalistic 3D game engine, developed in C++ and using OpenGL with shaders.
 
 Source code: https://github.com/small3d/small3d 

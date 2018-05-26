@@ -1,7 +1,7 @@
 @page  opengl_version Choosing and emulating OpenGL versions on Linux
 @brief 2015-01-23
 
-One matter that required attention during the early days of [small3d](https://github.com/dimi309/small3d)'s development was selecting an OpenGL version for the engine and making sure it works.
+One matter that required attention during the early days of small3d's development was selecting an OpenGL version for the engine and making sure it works.
 
 I decided to program small3d for OpenGL 3.3 and make it fall back to OpenGL 2.1 on systems that do not support the later API. Version 3.3 was widespread among new Windows and OSX systems and was considered to be pretty modern and a good foundation for understanding future versions. small3d is, if nothing else, a learning exercise in any case. I reached the conclusion that v2.1 was the lowest common denominator between older machines, especially those running Linux, since it was supported, by[Mesa](http://www.mesa3d.org/intro.html) software emulation at least, on my Debian system. Of course, when querying the supported version like this:
 

@@ -1,7 +1,7 @@
 @page  linux_nvidia Make sure you are using your NVIDIA chip on Linux
 @brief 2015-01-26
 
-In the early days of [small3d](https://github.com/dimi309/small3d)'s development, I was using a laptop which I was dual booting into Windows and Debian. The machine had been purchased with Windows pre-installed, and then I also installed the Linux instance. Even though the Windows system reported support for OpenGL 4.2, my Linux image reported OpenGL 3.0 when running glxinfo:
+In the early days of small3d's development, I was using a laptop which I was dual booting into Windows and Debian. The machine had been purchased with Windows pre-installed, and then I also installed the Linux instance. Even though the Windows system reported support for OpenGL 4.2, my Linux image reported OpenGL 3.0 when running glxinfo:
 
 	glxinfo | grep Open
 	
