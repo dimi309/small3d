@@ -11,10 +11,10 @@ I would get OpenGL v1.4 returned. But when running this:
 
 	LIBGL_ALWAYS_SOFTWARE=1 glxinfo | grep Open
 
-I would indeed receive a result indicating OpenGL 2.1 support. The *LIBGL_ALWAYS_SOFTWARE* variable makes programs that run with it set to always use software rendering. So executing small3d's sample game like this:
+I would indeed receive a result indicating OpenGL 2.1 support. The *LIBGL_ALWAYS_SOFTWARE* variable makes programs that run with it set to always use software rendering. So executing small3d's unit tests like this:
 
-	LIBGL_ALWAYS_SOFTWARE=1 ./samplegame
+	LIBGL_ALWAYS_SOFTWARE=1 ./unittests
 	
 did indeed allow it to run on OpenGL 2.1 and use the corresponding shaders.
 
-Now that things have evolved, my Debian does support v2.1 without emulation. However, this little trick is still useful. My current Linux box is even older than the one I had back then and, when running the sample game on it, the background looks a little messy. This does not happen on Windows or Apple machines. Still, I thought that perhaps I was not covering some special condition which causes the problem. I was about to spend time trying to solve it. But then I executed the game with the *LIBGL_ALWAYS_SOFTWARE* variable set, it switched to software emulation, and everything was looking fine. So I reached the conclusion that it is either the hardware driver or my very old GPU that is defective and decided not to worry about it, as far as correcting my code is concerned.
+Now that things have evolved, my Debian does support v2.1 without emulation. However, this little trick is still useful. My current Linux box is even older than the one I had back then and, when running the unit tests on it, rendering is a little messy. This does not happen on Windows or Apple machines. Still, I thought that perhaps I was not covering some special condition which causes the problem. I was about to spend time trying to solve it. But then I executed the unit tests with the *LIBGL_ALWAYS_SOFTWARE* variable set, it switched to software emulation, and everything was looking fine. So I reached the conclusion that it is either the hardware driver or my very old GPU that is defective and decided not to worry about it, as far as correcting my code is concerned.
