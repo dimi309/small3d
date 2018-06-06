@@ -3,18 +3,14 @@ small3d
 
 This is a free, open-source, minimalistic 3D game engine, developed in C++ and using OpenGL with shaders.
 
-Source code: https://github.com/small3d/small3d 
-
-Docmentation: https://small3d.github.io
-
 Games made with the engine 
 --------------------------
 
-Avoid the Bug 3D: https://github.com/small3d/avoidthebug
+Avoid the Bug 3D
 
 ![Demo 1](img/demo1.gif)
 
-Chase the Goat 3D: https://github.com/small3d/chasethegoat
+Chase the Goat 3D
 
 ![Demo 2](img/demo2.gif)
 
