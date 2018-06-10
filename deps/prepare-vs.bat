@@ -3,6 +3,7 @@ set BUILDTYPE=Release
 
 mkdir include
 mkdir lib
+mkdir bin
 
 7z x glfw-master-20180409.zip
 if %errorlevel% neq 0 exit /b %errorlevel%
@@ -14,6 +15,7 @@ cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include\GLFW ..\..\include\GLFW /i /s
 copy src\%BUILDTYPE%\glfw3.lib ..\..\lib\
+for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 cd ..\..
 rmdir /Q /S glfw-master
 
@@ -24,7 +26,8 @@ cmake -G"%VSCONFIG%" build/cmake -DBUILD_UTILS=OFF
 cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy include\GL ..\include\GL /i /s
-copy lib\%BUILDTYPE%\libglew32.lib ..\lib\glew.lib
+if %BUILDTYPE%==Debug (copy lib\%BUILDTYPE%\libglew32d.lib ..\lib\glew.lib) else (copy lib\%BUILDTYPE%\libglew32.lib ..\lib\glew.lib)
+for /r %%a in (*.pdb) do @copy /y "%%a" ..\bin
 cd ..
 rmdir /Q /S glew-2.1.0
 
@@ -44,7 +47,8 @@ cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy ..\zlib.h ..\..\include
 copy zconf.h ..\..\include
-copy %BUILDTYPE%\zlibstatic.lib ..\..\lib\zlib.lib
+if %BUILDTYPE%==Debug (copy %BUILDTYPE%\zlibstaticd.lib ..\..\lib\zlib.lib) else (copy %BUILDTYPE%\zlibstatic.lib ..\..\lib\zlib.lib)
+for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 cd ..\..\
 rmdir /Q /S zlib-1.2.11
 del zlib-1.2.11.tar
@@ -60,7 +64,8 @@ cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy ..\*.h ..\..\include
 copy pnglibconf.h ..\..\include
-copy %BUILDTYPE%\libpng16_static.lib ..\..\lib\png.lib
+if %BUILDTYPE%==Debug (copy %BUILDTYPE%\libpng16_staticd.lib ..\..\lib\png.lib) else (copy %BUILDTYPE%\libpng16_static.lib ..\..\lib\png.lib)
+for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 cd ..\..\
 rmdir /Q /S libpng-1.6.34
 del libpng-1.6.34.tar
@@ -81,6 +86,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\googletest\include\gtest ..\..\include\gtest /i /s
 copy googletest\%BUILDTYPE%\gtest.lib ..\..\lib
 copy googletest\%BUILDTYPE%\gtest_main.lib ..\..\lib\
+for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 cd ..\..
 rmdir /Q /S googletest-release-1.8.0-not-strict
 del googletest-release-1.8.0-not-strict.tar
@@ -98,6 +104,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include\ogg ..\..\include\ogg /i /s
 copy include\ogg\config_types.h ..\..\include\ogg
 copy %BUILDTYPE%\ogg.lib ..\..\lib
+for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 cd ..\..\
 rmdir /Q /S ogg-1.3.3
 del ogg-1.3.3.tar
@@ -116,6 +123,7 @@ cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include\vorbis ..\..\include\vorbis /i /s
 copy lib\%BUILDTYPE%\*.lib ..\..\lib
+for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 cd ..\..\
 rmdir /Q /S vorbis-1.3.6
 del vorbis-1.3.6.tar
@@ -132,6 +140,7 @@ cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy ..\include\* ..\..\include
 move %BUILDTYPE%\portaudio_static*.lib ..\..\lib\portaudio_static.lib
+for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 cd ..\..\
 rmdir /Q /S portaudio
 del pa_stable_v190600_20161030.tar
@@ -150,6 +159,7 @@ cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include ..\..\include /s /e
 copy %BUILDTYPE%\freetype*.lib ..\..\lib
+for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 cd ..\..
 rmdir /Q /S freetype-2.9-modified-ftexport
 del freetype-2.9-modified-ftexport.tar
