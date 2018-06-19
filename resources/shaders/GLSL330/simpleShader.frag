@@ -6,9 +6,7 @@ uniform vec4 colour;
 
 out vec4 outputColour;
 
-void main()
-{
-
+void main() {
   if (colour != vec4(0, 0, 0, 0)) {
     outputColour = vec4(colour.rgb, colour.a);
   }
@@ -16,7 +14,5 @@ void main()
 
     vec4 tcolour = texture(textureImage, textureCoords);
     outputColour = tcolour;
-
   }
-
 }
