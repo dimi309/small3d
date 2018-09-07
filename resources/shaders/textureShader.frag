@@ -1,4 +1,4 @@
-#version 450
+#version 410
 
 layout(location = 0) smooth in float cosAngIncidence;
 layout(location = 1) in vec2 textureCoords;
