@@ -1,12 +1,12 @@
-#version 330
+#version 450
 
-smooth in float cosAngIncidence;
-in vec2 textureCoords;
+layout(location = 0) smooth in float cosAngIncidence;
+layout(location = 1) in vec2 textureCoords;
 uniform sampler2D textureImage;
 uniform vec4 colour;
 uniform float lightIntensity;
 
-out vec4 outputColour;
+layout(location = 0) out vec4 outputColour;
 
 void main() {
   if (colour != vec4(0, 0, 0, 0)) {

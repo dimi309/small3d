@@ -1,4 +1,4 @@
-#version 330
+#version 450
 
 layout(location = 0) in vec4 position;
 layout(location = 1) in vec3 normal;
@@ -18,8 +18,8 @@ uniform mat4 zCameraRotationMatrix;
 
 uniform vec3 lightDirection;
 
-smooth out float cosAngIncidence;
-out vec2 textureCoords;
+layout(location = 0) smooth out float cosAngIncidence;
+layout(location = 1) out vec2 textureCoords;
 
 void main()
 {
