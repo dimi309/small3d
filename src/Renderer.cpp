@@ -101,9 +101,9 @@ namespace small3d {
   }
 
   void Renderer::initOpenGL() {
-#ifdef __APPLE__
+
     glewExperimental = GL_TRUE;
-#endif
+
     GLenum initResult = glewInit();
 
     if (initResult != GLEW_OK) {
@@ -121,18 +121,6 @@ namespace small3d {
       std::string(reinterpret_cast<char *>
 		  (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
 
-    if (glewIsSupported("GL_VERSION_3_3")) {
-      LOGINFO("Using OpenGL 3.3");
-      isOpenGL33Supported = true;
-    }
-    else if (glewIsSupported("GL_VERSION_2_1")) {
-      LOGINFO("Using OpenGL 2.1");
-    }
-    else {
-      noShaders = true;
-      throw std::runtime_error(
-        "None of the supported OpenGL versions (3.3 nor 2.1) are available.");
-    }
   }
 
   void Renderer::checkForOpenGLErrors(const std::string when, const bool abort)
@@ -224,7 +212,7 @@ namespace small3d {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
-    GLint internalFormat = isOpenGL33Supported ? GL_RGBA32F : GL_RGBA;
+    GLint internalFormat = GL_RGBA32F;
 
     glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, GL_RGBA,
       GL_FLOAT, data);
@@ -252,27 +240,6 @@ namespace small3d {
 
     this->initOpenGL();
 
-    std::string vertexShaderPath;
-    std::string fragmentShaderPath;
-    std::string simpleVertexShaderPath;
-    std::string simpleFragmentShaderPath;
-
-    if (isOpenGL33Supported) {
-      vertexShaderPath = shadersPath +
-	"GLSL330/perspectiveMatrixLightedShader.vert";
-      fragmentShaderPath = shadersPath + "GLSL330/textureShader.frag";
-      simpleVertexShaderPath = shadersPath + "GLSL330/simpleShader.vert";
-      simpleFragmentShaderPath = shadersPath + "GLSL330/simpleShader.frag";
-
-    }
-    else {
-      vertexShaderPath = shadersPath +
-	"GLSL120/perspectiveMatrixLightedShader.vert";
-      fragmentShaderPath = shadersPath + "GLSL120/textureShader.frag";
-      simpleVertexShaderPath = shadersPath + "GLSL120/simpleShader.vert";
-      simpleFragmentShaderPath = shadersPath + "GLSL120/simpleShader.frag";
-    }
-
     glViewport(0, 0, static_cast<GLsizei>(screenWidth),
 	       static_cast<GLsizei>(screenHeight));
 
@@ -284,8 +251,10 @@ namespace small3d {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    GLuint vertexShader = compileShader(vertexShaderPath, GL_VERTEX_SHADER);
-    GLuint fragmentShader = compileShader(fragmentShaderPath,
+    GLuint vertexShader = compileShader(shadersPath +
+					"perspectiveMatrixLightedShader.vert",
+					GL_VERTEX_SHADER);
+    GLuint fragmentShader = compileShader(shadersPath + "textureShader.frag",
 					  GL_FRAGMENT_SHADER);
 
     perspectiveProgram = glCreateProgram();
@@ -337,10 +306,12 @@ namespace small3d {
 
     // Program (with shaders) for orthographic rendering for text
 
-    GLuint simpleVertexShader = compileShader(simpleVertexShaderPath,
-      GL_VERTEX_SHADER);
-    GLuint simpleFragmentShader = compileShader(simpleFragmentShaderPath,
-      GL_FRAGMENT_SHADER);
+    GLuint simpleVertexShader = compileShader(shadersPath +
+					      "simpleShader.vert",
+					      GL_VERTEX_SHADER);
+    GLuint simpleFragmentShader = compileShader(shadersPath +
+						"simpleShader.frag",
+						GL_FRAGMENT_SHADER);
 
     orthographicProgram = glCreateProgram();
     glAttachShader(orthographicProgram, simpleVertexShader);
@@ -372,12 +343,10 @@ namespace small3d {
       throw std::runtime_error("Unable to initialise GLFW");
     }
 
-#ifdef __APPLE__
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#endif
 
     bool fullScreen = false;
 
@@ -418,7 +387,6 @@ namespace small3d {
 		     const float zOffsetFromCamera,
                      const std::string shadersPath) {
     
-    isOpenGL33Supported = false;
     window = 0;
     perspectiveProgram = 0;
     orthographicProgram = 0;
@@ -437,13 +405,9 @@ namespace small3d {
       throw std::runtime_error("Unable to initialise font system");
     }
 
-#ifdef __APPLE__
-    if (isOpenGL33Supported) {
-      // Generate VAO
-      glGenVertexArrays(1, &vao);
-      glBindVertexArray(vao);
-    }
-#endif
+    // Generate VAO
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
 
   }
   
@@ -474,12 +438,10 @@ namespace small3d {
     
     if (!noShaders) {
       glUseProgram(0);
-#ifdef __APPLE__
-      if (isOpenGL33Supported) {
-        glDeleteVertexArrays(1, &vao);
-        glBindVertexArray(0);
-      }
-#endif
+
+      glDeleteVertexArrays(1, &vao);
+      glBindVertexArray(0);
+
     }
     
     if (orthographicProgram != 0) {

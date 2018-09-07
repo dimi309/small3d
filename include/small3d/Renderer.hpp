@@ -43,7 +43,6 @@ namespace small3d
     GLuint orthographicProgram;
     GLuint vao;
 
-    bool isOpenGL33Supported;
     bool noShaders;
 
     float frustumScale;
