@@ -1,7 +1,7 @@
 small3d
 =======
 
-This is a free, open-source, minimalistic 3D game engine, developed in C++ and using OpenGL with shaders.
+This is a free, open-source, minimalistic 3D game engine, developed in C++ and using OpenGL with shaders (version 3.3 required as a minimum).
 
 Games made with the engine 
 --------------------------
@@ -19,7 +19,6 @@ Features
 
 - Runs on Windows (Visual Studio and MinGW builds), Mac, Linux (tested on Debian, Fedora and Ubuntu).
 - It works with GLFW.
-- Uses OpenGL 3.3 and defaults to 2.1 if the former is not available.
 - Uses C++11.
 - You can tweak the engine's shaders, as long as you keep the same incoming variables and uniforms.
 - Plays sounds from .ogg files.
@@ -32,7 +31,6 @@ Features
 - Simple collision detection with bounding boxes.
 - It renders text.
 - Very permissive license (3-clause BSD). The libraries it uses have been chosen to have a permissive license also.
-
 
 Building
 --------
@@ -80,4 +78,3 @@ The engine supports collision detection via manually created bounding boxes. In 
 ![boundingboxes](img/boundingboxes.png)
 
 Export the bounding boxes to a Wavefront file separately from the model. You can do this if you "save as" a new file after placing the boxes and deleting the original model. During export, only set the options **Apply Modifiers**, **Include Edges**, **Objects as OBJ Objects** and **Keep Vertex Order**. On the contrary to what is the case when exporting the model itself, more than one bounding box objects can be exported to the same Wavefront file.
-
