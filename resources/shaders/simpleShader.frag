@@ -1,4 +1,5 @@
-#version 410
+#version 330
+#extension GL_ARB_separate_shader_objects : enable
 
 in vec2 textureCoords;
 uniform sampler2D textureImage;
