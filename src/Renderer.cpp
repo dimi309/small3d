@@ -112,12 +112,12 @@ namespace small3d {
     else {
       std::string glewVersion = reinterpret_cast<char *>
 	(const_cast<GLubyte*>(glewGetString(GLEW_VERSION)));
-      LOGINFO("Using GLEW version " + glewVersion);
+      LOGDEBUG("Using GLEW version " + glewVersion);
     }
 
     checkForOpenGLErrors("initialising GLEW", false);
 
-    LOGDEBUG("OpenGL version supported by machine: " +
+    LOGINFO("OpenGL version detected: " +
       std::string(reinterpret_cast<char *>
 		  (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
 
