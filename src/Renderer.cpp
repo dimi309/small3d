@@ -117,7 +117,7 @@ namespace small3d {
 
     checkForOpenGLErrors("initialising GLEW", false);
 
-    LOGINFO("OpenGL version detected: " +
+    LOGINFO("OpenGL version: " +
       std::string(reinterpret_cast<char *>
 		  (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
 
@@ -342,9 +342,13 @@ namespace small3d {
     if (!glfwInit()) {
       throw std::runtime_error("Unable to initialise GLFW");
     }
-
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+#else
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+#endif
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
