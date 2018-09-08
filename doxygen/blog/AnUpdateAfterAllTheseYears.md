@@ -21,4 +21,6 @@ Vulkan
 ------
 I have learned how to use this thing and started preparing a library that will allow small3d to use it in addition to OpenGL. But I have decided to put that on hold for now. This new library is about 2K lines of code, and will increase the complexity of small3d, missing the whole point of keeping the game engine *small*. Also, I'm not sure what good it would do. Vulkan works on fewer machines than OpenGL does right now as far as I can tell. On MacOS it is running on a Metal layer. Also, the only platform on which OpenGL may stop working at some point seems to be the Mac. So it probably makes sense to look into incorporating Metal before Vulkan. But I will not be doing that either until the day when the engine stops working on MacOS.
 
+**September 2018 update: Metal support seems less likely now, with a Vulkan migration being the most likely future scenario IF OpenGL really does stop working on MacOS and IF Vulkan gets more wide adoption and its drivers improve somewhat. See changelog under v1.60 for more details.**
+
 
