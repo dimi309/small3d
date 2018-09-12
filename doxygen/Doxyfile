@@ -784,6 +784,7 @@ WARN_LOGFILE           =
 INPUT                  = ../include \
                          ../src \
 			 ../README.md \
+			 ../changelog.md \
 			 blog/AnUpdateAfterAllTheseYears.md \
 			 blog/SimpleModel.md \
 			 blog/ChooseEmulateLinuxOpenGL.md \

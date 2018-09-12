@@ -1,3 +1,5 @@
+@page changelog
+
 small3d changes per version
 ===========================
 
@@ -19,8 +21,8 @@ v1.60 (not yet released)
   like system freezes on various machines I have access to. So my layman's,
   totally humble conclusion which I would totally understand if better educated
   people than myself might disagree with is this: Vulkan is not that good yet.
-  I am also slowly abandoning the idea of incorporating Metal support. The Vulkan-
-  over-Metal adaptor (let's say) that is MoltenVK which has now been open
+  I am also slowly abandoning the idea of incorporating Metal support. The
+  Vulkan-over-Metal adaptor (let's say) that is MoltenVK which has now been open
   sourced seems to work pretty well on MacOS. So IF OpenGL really does stop
   working on MacOS someday, it would probably be a good reason to migrate
   only to Vulkan, assuming that the latter has gotten a bit more widely adopted
