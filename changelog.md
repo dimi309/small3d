@@ -3,7 +3,7 @@
 small3d changes per version
 ===========================
 
-v1.60 (not yet released)
+v1.60 2018-09-15
 
 - OpenGL v2.1 support dropped. small3d now only supports OpenGL v3.3 Core
   Profile, which in turn is now supported by a wide variety of operating systems
