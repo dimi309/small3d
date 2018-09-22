@@ -20,8 +20,8 @@ Chase the Goat 3D
 Features
 --------
 
-- Runs on Windows (Visual Studio and MinGW builds), Mac, Linux (tested on Debian,
-  Fedora and Ubuntu).
+- Runs on Windows (Visual Studio and MinGW builds), Mac, Linux (tested on
+Debian, Fedora and Ubuntu).
 - It works with GLFW.
 - Uses C++11.
 - You can tweak the engine's shaders, as long as you keep the same incoming
@@ -69,7 +69,8 @@ Run the *prepare.bat* (Windows MinGW), *prepare-vs.bat* (Windows Visual Studio)
 or *prepare.sh* script from within the *deps* directory, in order to build the
 dependencies.
 
-Then, create a directory inside *small3d*, called *build*. Then, build like this:
+Then, create a directory inside *small3d*, called *build*. Then, build like
+this:
 
     cd build
     cmake ..
@@ -79,15 +80,16 @@ On Windows, you need to execute `cmake .. -G"MinGW Makefiles"`, or with the
 preferred Visual Studio configuration (e.g. `cmake .. -G"Visual Studio 15 2017 Win64"`).
 Make sure that *prepare-vs.bat* is run with the same configuration (see the
 parameters at the top, inside the file). Also, make sure to run build under the
-configuration also defined in *prepare-vs.bat* parameters, e.g. `cmake --build . --config Release`.
+configuration also defined in *prepare-vs.bat* parameters, e.g.
+`cmake --build . --config Release`.
 	
 The unit tests can be run via the *unittests* binary from *build/bin*. For
 building your own project, you need the header files from the *build/include*
 directory, the libraries from the *build/lib* directory and the shaders from
 *small3d/resources/shaders*. If you are using cmake, the modules in
 *small3d/cmake* can be useful. Check the CMakeLists.txt and src/CMakeLists.txt
-files for other configuration details (link flags, etc) that may also be required
-or useful.
+files for other configuration details (link flags, etc) that may also be
+required or useful.
 
 Note on 3D models and textures
 ------------------------------
