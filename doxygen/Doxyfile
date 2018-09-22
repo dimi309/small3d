@@ -785,11 +785,10 @@ INPUT                  = ../include \
                          ../src \
 			 ../README.md \
 			 ../changelog.md \
-			 blog/AnUpdateAfterAllTheseYears.md \
-			 blog/SimpleModel.md \
-			 blog/ChooseEmulateLinuxOpenGL.md \
-                         blog/SwitchingBetweenIntelNvidia.md
- 
+			 notes/AnUpdateAfterAllTheseYears.md \
+			 notes/SimpleModel.md \
+                         notes/SwitchingBetweenIntelNvidia.md \
+			 notes/ChooseEmulateLinuxOpenGL.md  
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
