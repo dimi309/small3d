@@ -785,7 +785,6 @@ INPUT                  = ../include \
                          ../src \
 			 ../README.md \
 			 ../changelog.md \
-			 notes/AnUpdateAfterAllTheseYears.md \
 			 notes/SimpleModel.md \
                          notes/SwitchingBetweenIntelNvidia.md \
 			 notes/ChooseEmulateLinuxOpenGL.md  
