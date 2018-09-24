@@ -4,8 +4,6 @@ small3d
 This is a free, open-source, minimalistic 3D game engine, developed in C++ and
 using OpenGL with shaders (version 3.3 required as a minimum).
 
-[Download](https://sourceforge.net/projects/small3d/)
-
 Games made with the engine 
 --------------------------
 
