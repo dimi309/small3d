@@ -119,7 +119,7 @@ order to create these in Blender for example, just place them in the preferred
 position over the model. Ideally, they should be aligned with the axes but that
 is not mandatory. It will just increase the detection accuracy.
 
-![boundingboxes](img/boundingboxes.png)
+![Bounding boxes](img/boundingboxes.png)
 
 Export the bounding boxes to a Wavefront file separately from the model. You can
 do this if you "save as" a new file after placing the boxes and deleting the
