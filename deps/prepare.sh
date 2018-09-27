@@ -21,7 +21,7 @@ mkdir lib
 
 # Not linking to GFLW statically on Linux, because on Ubuntu the needed static libraries are a mess.
 if [ $(uname) != 'Linux' ]; then
-    unzip glfw-master-20180409.zip
+    unzip glfw-master-20180912.zip
     cd glfw-master
     mkdir build
     cd build
