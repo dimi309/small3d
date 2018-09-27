@@ -4,6 +4,12 @@ small3d
 This is a free, open-source, minimalistic 3D game engine, developed in C++ and
 using OpenGL with shaders (version 3.3 required as a minimum).
 
+**Note: On MacOS Mojave, in windowed mode, if nothing appears on the screen when
+running a game built with the engine, just move the game window a bit. That will
+fix it. This is the only problem found after the deprecation of OpenGL on this 
+new version of MacOS. Everything else is fine and full screen mode is not
+affected either.**
+
 Games made with the engine 
 --------------------------
 

@@ -3,6 +3,11 @@
 small3d changes per version
 ===========================
 
+v1.61 2018-09-27
+
+ - Improved documentation generation procedure.
+ - Using the latest GLFW snapshot on MacOS.	
+
 v1.60 2018-09-15
 
 - OpenGL v2.1 support dropped. small3d now only supports OpenGL v3.3 Core
