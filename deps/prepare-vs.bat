@@ -5,7 +5,7 @@ mkdir include
 mkdir lib
 mkdir bin
 
-7z x glfw-master-20180409.zip
+7z x glfw-master-20180912.zip
 if %errorlevel% neq 0 exit /b %errorlevel%
 cd glfw-master
 mkdir build
