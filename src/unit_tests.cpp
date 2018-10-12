@@ -50,7 +50,7 @@ TEST(ImageTest, LoadImage) {
     x = 0;
     while (x < image.getWidth()) {
       
-      const float *colour = &imageData[4 * y * image.getWidth() + 4 * x];
+      const float *colour = &imageData[4 * y * image.getWidth() + 4 * x];       
       
       EXPECT_GE(colour[0], 0.0f);
       EXPECT_LE(colour[0], 1.0f);
@@ -133,15 +133,11 @@ TEST(BoundingBoxesTest, LoadBoundingBoxes) {
 TEST(RendererTest, StartAndUse) {
 
   Renderer *renderer = &Renderer::getInstance("test", 640, 480);
-  renderer->clearScreen();
+  
   
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
   renderer->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-
-  renderer->renderRectangle(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
-			    glm::vec3(-1.0f, 0.0f, 1.0f),
-			    glm::vec3(-0.5f, -0.5f, 1.0f), false);
 
   SceneObject object2("texutredCube", "resources/models/Cube/Cube.obj");
   object2.offset = glm::vec3(-2.0f, -1.0f, -7.0f);
@@ -150,14 +146,26 @@ TEST(RendererTest, StartAndUse) {
   Image cubeTexture("resources/models/Cube/cubeTexture.png");
   renderer->generateTexture("cubeTexture", cubeTexture);
 
-  renderer->render(object2, "cubeTexture");
+  
+  glfwShowWindow(renderer->getWindow());
 
-  renderer->write("small3d :)", glm::vec3(0.0f, 1.0f, 0.0f),
-		  glm::vec2(-1.0f, 0.0f), glm::vec2(0.5f, -0.5f));
+  double startSeconds = glfwGetTime();
+  while(glfwGetTime() - startSeconds < 3.0) {
+    
+    glfwPollEvents();
+    renderer->clearScreen();
+    renderer->renderRectangle(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+			      glm::vec3(-1.0f, 0.0f, 1.0f),
+			      glm::vec3(-0.5f, -0.5f, 1.0f), false);
+    renderer->render(object2, "cubeTexture");
 
-  renderer->swapBuffers();
+    renderer->write("small3d :)", glm::vec3(0.0f, 1.0f, 0.0f),
+		    glm::vec2(-1.0f, 0.0f), glm::vec2(0.5f, -0.5f));
+    renderer->swapBuffers();
+  }
   
   renderer->deleteTexture("cubeTexture");
+  glfwDestroyWindow(renderer->getWindow());
   
 }
 
