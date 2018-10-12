@@ -3,13 +3,13 @@
 small3d changes per version
 ===========================
 
-v1.62 2018-10-18
+v1.63 2018-10-18
 
  - No more "window not responding" messages in Linux during unit tests.
  - On MacOS, the window used during unit testing is now visible.
  - Another GLFW update.
 
-v1.61 2018-09-27
+v1.62 2018-09-27
 
  - Improved documentation generation procedure.
  - Using the latest GLFW snapshot on MacOS.	
