@@ -4,12 +4,6 @@ small3d
 This is a free, open-source, minimalistic 3D game engine, developed in C++ and
 using OpenGL with shaders (version 3.3 required as a minimum).
 
-**Note: On MacOS Mojave, in windowed mode, if nothing appears on the screen when
-running a game built with the engine, just move the game window a bit. That will
-fix it. This is the only problem found after the deprecation of OpenGL on this 
-new version of MacOS. Everything else is fine and full screen mode is not
-affected either.**
-
 Games made with the engine 
 --------------------------
 
@@ -24,8 +18,8 @@ Chase the Goat 3D
 Features
 --------
 
-- Runs on Windows (Visual Studio and MinGW builds), Mac, Linux (tested on
-Debian, Fedora and Ubuntu).
+- Runs on Windows (MinGW builds), Mac, Linux (tested on Debian, Fedora and
+  Ubuntu).
 - It works with GLFW.
 - Uses C++11.
 - You can tweak the engine's shaders, as long as you keep the same incoming
@@ -50,7 +44,8 @@ Building
 --------
 
 Before starting, note that cmake has to be installed on your system and
-accessible on the command line. On Windows, 7zip also has to be in the path. 
+accessible on the command line. On Windows, 7zip also has to be in the path and
+you also need to install the MinGW compiler.
 
 The source code for all of small3d's dependencies can be found in the *deps*
 directory. These are the required libraries:
@@ -69,9 +64,8 @@ directory. These are the required libraries:
 - [FreeType](http://download.savannah.gnu.org/releases/freetype/)
 - [bzip2](http://bzip.org/) *Not needed on Windows.*
 
-Run the *prepare.bat* (Windows MinGW), *prepare-vs.bat* (Windows Visual Studio)
-or *prepare.sh* script from within the *deps* directory, in order to build the
-dependencies.
+Run the *prepare.bat* (Windows MinGW) or *prepare.sh* script from within
+the *deps* directory, in order to build the dependencies.
 
 Then, create a directory inside *small3d*, called *build*. Then, build like
 this:
@@ -80,12 +74,7 @@ this:
     cmake ..
     cmake --build .
 	
-On Windows, you need to execute `cmake .. -G"MinGW Makefiles"`, or with the
-preferred Visual Studio configuration (e.g. `cmake .. -G"Visual Studio 15 2017 Win64"`).
-Make sure that *prepare-vs.bat* is run with the same configuration (see the
-parameters at the top, inside the file). Also, make sure to run build under the
-configuration also defined in *prepare-vs.bat* parameters, e.g.
-`cmake --build . --config Release`.
+(On Windows, you need to execute `cmake .. -G"MinGW Makefiles"`).
 	
 The unit tests can be run via the *unittests* binary from *build/bin*. For
 building your own project, you need the header files from the *build/include*

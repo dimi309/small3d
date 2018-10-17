@@ -103,7 +103,7 @@ namespace small3d {
   void Renderer::initOpenGL() {
 
     glewExperimental = GL_TRUE;
-
+    
     GLenum initResult = glewInit();
 
     if (initResult != GLEW_OK) {
@@ -345,6 +345,9 @@ namespace small3d {
 #ifdef __APPLE__
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    
+    // Workaround for rendering on Mojave
+    glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
 #else
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -412,6 +415,7 @@ namespace small3d {
     // Generate VAO
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
+    
 
   }
   
@@ -853,11 +857,17 @@ namespace small3d {
   }
   
   void Renderer::clearScreen() const {
+#ifdef __APPLE__
+    // Needed to avoid transparent rendering in Mojave by default
+    // (caused by the transparency hint in initWindow, which is
+    // a workaround for a GLFW problem on that platform)
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 
+#endif
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
   
   void Renderer::clearScreen(const glm::vec4 colour) const {
-    glClearColor(colour.r, colour.g, colour.b, colour.a);
+    glClearColor(colour.r, colour.g, colour.b, colour.a); 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
   

@@ -3,6 +3,11 @@
 small3d changes per version
 ===========================
 
+v1.64 (still open)
+
+ - Corrected blank window issue on Mojave (when not in full screen
+   mode, nothing was being rendered until the game window was moved).
+
 v1.63 2018-10-18
 
  - No more "window not responding" messages in Linux during unit tests.
