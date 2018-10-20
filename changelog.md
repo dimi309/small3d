@@ -3,6 +3,12 @@
 small3d changes per version
 ===========================
 
+v1.65 2018-10-20
+
+ - This project is now called the small3d framework, instead of the
+   small3d game engine.
+ - Documentation reorganisation.
+	
 v1.64 2018-10-18
 
  - Corrected blank window issue on Mojave (when not in full screen
