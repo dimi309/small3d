@@ -42,15 +42,12 @@ configuration also defined in *prepare-vs.bat* parameters, e.g.
 	
 The unit tests can be run via the *unittests* binary from *build/bin*. 
 
-
-For
-building your own project, you need the header files from the *build/include*
+For building your own project, you need the header files from the *build/include*
 directory, the libraries from the *build/lib* directory and the shaders from
 *small3d/resources/shaders*. If you are using cmake, the modules in
 *small3d/cmake* can be useful. Check the CMakeLists.txt and src/CMakeLists.txt
 files for other configuration details (link flags, etc) that may also be
 required or useful.
-
 
 Example
 =======
@@ -156,9 +153,9 @@ another CMakeLists.txt file:
 
 	add_executable(ball main.cpp)
 
-	target_include_directories(avoidthebug3d PUBLIC "${CMAKE_SOURCE_DIR}/include")
+	target_include_directories(ball PUBLIC "${CMAKE_SOURCE_DIR}/include")
 
-	target_include_directories(avoidthebug3d PUBLIC
+	target_include_directories(ball PUBLIC
 		${SMALL3D_INCLUDE_DIR}
 		${GLFW_INCLUDE_DIRS}
 		${OPENGL_INCLUDE_DIR}
@@ -170,7 +167,7 @@ another CMakeLists.txt file:
 		${FREETYPE_INCLUDE_DIRS}
 	)
 
-	target_link_libraries(avoidthebug3d PUBLIC
+	target_link_libraries(ball PUBLIC
 		${SMALL3D_LIBRARY}
 		${GLEW_LIBRARIES}
 		${OPENGL_LIBRARIES}
@@ -183,29 +180,29 @@ another CMakeLists.txt file:
 	)
 
 	if(UNIX)
-		target_include_directories(avoidthebug3d PUBLIC
+		target_include_directories(ball PUBLIC
 			${BZIP2_INCLUDE_DIRS})
-		target_link_libraries(avoidthebug3d PUBLIC
+		target_link_libraries(ball PUBLIC
 			${BZIP2_LIBRARIES})
 	endif(UNIX)
 
 	if(WIN32)
-		target_link_libraries(avoidthebug3d PUBLIC winmm)
+		target_link_libraries(ball PUBLIC winmm)
 	endif(WIN32)
 
 	if(APPLE)
-		set_target_properties(avoidthebug3d PROPERTIES LINK_FLAGS "-framework \
+		set_target_properties(ball PROPERTIES LINK_FLAGS "-framework \
 		AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
 		-framework IOKit -framework CoreVideo")
 	endif(APPLE)
 
 	if(MSVC)
-		set_target_properties(avoidthebug3d PROPERTIES LINK_FLAGS_DEBUG
+		set_target_properties(ball PROPERTIES LINK_FLAGS_DEBUG
 			"-NODEFAULTLIB:LIBCMTD")
-		set_target_properties(avoidthebug3d PROPERTIES LINK_FLAGS_RELEASE
+		set_target_properties(ball PROPERTIES LINK_FLAGS_RELEASE
 			"-NODEFAULTLIB:LIBCMT")
   
-	    set_target_properties(avoidthebug3d PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
+	    set_target_properties(ball PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
 			"${small3d_BINARY_DIR}/bin")
 	endif(MSVC)
 
@@ -221,7 +218,7 @@ Inside ball/src, create the main.cpp file:
 
 Include small3d's Renderer and SceneObject classes:
 
-	#include <small3d/OpenGL/Renderer.hpp>
+	#include <small3d/Renderer.hpp>
 	#include <small3d/SceneObject.hpp>
 
 Now we need the GLFW header files:
@@ -271,7 +268,7 @@ We will later need to access the window of the application, in order to pick up 
 
 We create the ball:
 
-	SceneObject<WavefrontLoader> ball("ball", "resources/ball.obj");
+	SceneObject ball("ball", "resources/ball.obj");
 
 small3d uses vectors a lot as parameters for convenience. When positioning the ball, the components are in order, x (-left, +right), y(+up, -down), and z(-away from the camera, +towards the camera):
 
@@ -283,7 +280,7 @@ So let's start our main loop now. small3d uses GLFW and you can use it too! Firs
 
 Now in every iteration, we need to check whether we want to exit the program. Let's say that we'll be doing that with the Esc key:
 
-	while (!glfwWindowShouldClose(window) && !esc) {
+	while (!glfwWindowShouldClose(window) && !esckey) {
 
 	glfwPollEvents();
 		if (esckey)
@@ -308,7 +305,7 @@ Ok, the ball is positioned. Now we need to actually draw it. We clear the screen
 
 Then we render the ball. The second parameter is the colour. Let's say it's yellow (the vector below symbolises an rgb colour, together with the alpha channel):
 	
-	renderer->render(ball.getModel(), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+	renderer->render(ball, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 
 We are using a double-buffered system (we draw on one buffer, while the user is looking at the other one), so we also need to swap the buffers:
 
@@ -318,11 +315,17 @@ And we close the loop :)
 
 	}
 
-That's it! Remember you can review the full listing of this program in this GitHub repository.
+That's it!
 
-Let's try it out:
+Let's try it out. Create a ball/deps directory and from the built small3d framework
+(see Building section above) copy the build/include and build/lib directories to this
+deps directory. Also, copy the small3d/resources/shaders directory to this resources
+directory and the cmake directory from the root of the small3d framework repository to
+the root ball directory. Then, back from the root ball directory execute:
 
+	mkdir build
 	cd build
+	cmake ..
 	cmake --build .
 	cd bin
 	./ball
