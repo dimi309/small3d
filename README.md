@@ -1,8 +1,8 @@
 small3d
 =======
 
-This is a free, open source, minimalistic 3D game framework for the C++ 
-programmer who would like to make games for PCs using a minimal set of libraries
+This is a free, open source, minimalistic 3D framework for the C++ programmer
+who would like to make games for PCs using a minimal set of libraries
 (glfw, glew, glm, png, zlib, gtest, ogg, vorbis, portaudio, freetype, bzip) and
 relying on C++ code to do the rest. It works on Windows, Linux and MacOS and
 supporting Visual Studio, gcc (even MinGW) and clang for compilation.
@@ -42,12 +42,12 @@ configuration also defined in *prepare-vs.bat* parameters, e.g.
 	
 The unit tests can be run via the *unittests* binary from *build/bin*. 
 
-For building your own project, you need the header files from the *build/include*
-directory, the libraries from the *build/lib* directory and the shaders from
-*small3d/resources/shaders*. If you are using cmake, the modules in
-*small3d/cmake* can be useful. Check the CMakeLists.txt and src/CMakeLists.txt
-files for other configuration details (link flags, etc) that may also be
-required or useful.
+For building your own project, you need the header files from 
+the *build/include* directory, the libraries from the *build/lib* directory and
+the shaders from *small3d/resources/shaders*. If you are using cmake, the
+modules in *small3d/cmake* can be useful. Check the CMakeLists.txt and
+src/CMakeLists.txt files for other configuration details (link flags, etc) that 
+may also be required or useful.
 
 Example
 =======
@@ -98,9 +98,10 @@ Save the exported file as "ball.obj".
 Setup
 -----
 
-Let's proceed to make our first program. Create a directory, called "ball".
-Then create another directory within it, called "resources" and place "ball.obj"
-in it. Also add the following code to a CMakeFiles.txt within the "ball" directory:
+Let's proceed to make our first program. Create a directory, called *ball*.
+Then create another directory within it, called *resources* and place *ball.obj*
+in it. Also add the following code to a CMakeFiles.txt within the *ball*
+directory:
 
 	cmake_minimum_required(VERSION 3.0.2)
 
@@ -148,8 +149,8 @@ in it. Also add the following code to a CMakeFiles.txt within the "ball" directo
 
 	subdirs(src)
 
-Create a directory called "src" within the "ball" directory and, inside it,
-another CMakeLists.txt file:
+Create a directory called *src* within the *ball* directory and, inside it,
+another *CMakeLists.txt* file:
 
 	add_executable(ball main.cpp)
 
@@ -209,7 +210,7 @@ another CMakeLists.txt file:
 The code
 --------
 
-Inside ball/src, create the main.cpp file:
+Inside *ball/src*, create the *main.cpp* file:
 
 	int main(int argc, char **argv) {
 	
@@ -225,7 +226,8 @@ Now we need the GLFW header files:
 
 	#include <GLFW/glfw3.h>
 
-We also need to be using the small3d namespace, so this goes under our include statements:
+We also need to be using the small3d namespace, so this goes under our include
+statements:
 
 	using namespace small3d;
 	
@@ -233,7 +235,8 @@ We also need to write the logic that will be detecting key presses:
 
 	bool downkey, leftkey, rightkey, upkey, esckey;
 
-	void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+	void keyCallback(GLFWwindow* window, int key, int scancode, int action,
+		int mods)
 	{
 	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
       downkey = true;
@@ -258,11 +261,14 @@ We also need to write the logic that will be detecting key presses:
 
 	}
 
-And finally, we go to the main program, and we create the renderer. The renderer is a singleton, so it can only be retrieved via the getInstance method, and assigned to a pointer:
+And finally, we go to the main program, and we create the renderer. The
+renderer is a singleton, so it can only be retrieved via the getInstance
+method, and assigned to a pointer:
 
 	Renderer *renderer = &Renderer::getInstance("Ball demo");
     
-We will later need to access the window of the application, in order to pick up key events:
+We will later need to access the window of the application, in order to pick up
+key events:
 
     GLFWwindow* window = renderer->getWindow();
 
@@ -270,15 +276,20 @@ We create the ball:
 
 	SceneObject ball("ball", "resources/ball.obj");
 
-small3d uses vectors a lot as parameters for convenience. When positioning the ball, the components are in order, x (-left, +right), y(+up, -down), and z(-away from the camera, +towards the camera):
+small3d uses vectors a lot as parameters for convenience. When positioning the
+ball, the components are in order, x (-left, +right), y(+up, -down), and
+z(-away from the camera, +towards the camera):
 
 	ball.offset = glm::vec3(0.0f, -1.0f, -8.0f);
 
-So let's start our main loop now. small3d uses GLFW and you can use it too! First we need to declare the callback function, which will be the keyCallback method we wrote above.
+So let's start our main loop now. small3d uses GLFW and you can use it too!
+First we need to declare the callback function, which will be the keyCallback
+method we wrote above.
 
 	glfwSetKeyCallback(window, keyCallback);
 
-Now in every iteration, we need to check whether we want to exit the program. Let's say that we'll be doing that with the Esc key:
+Now in every iteration, we need to check whether we want to exit the program.
+Let's say that we'll be doing that with the Esc key:
 
 	while (!glfwWindowShouldClose(window) && !esckey) {
 
@@ -286,9 +297,11 @@ Now in every iteration, we need to check whether we want to exit the program. Le
 		if (esckey)
 			break;
 
-If after that we are still in the loop (so, no Esc key pressed), we will want to move the ball around with the keyboard. 
+If after that we are still in the loop (so, no Esc key pressed), we will want to
+move the ball around with the keyboard. 
 
-We will have the up arrow move the ball away from the camera. Down will do the opposite. Guess what left and right will do :)
+We will have the up arrow move the ball away from the camera. Down will do the
+opposite. Guess what left and right will do :)
 
 	if (upkey)
       ball.offset.z -= 0.1f;
@@ -299,15 +312,19 @@ We will have the up arrow move the ball away from the camera. Down will do the o
     else if (rightkey)
       ball.offset.x += 0.1f;
 
-Ok, the ball is positioned. Now we need to actually draw it. We clear the screen first:
+Ok, the ball is positioned. Now we need to actually draw it. We clear the screen
+first:
 
 	renderer->clearScreen();
 
-Then we render the ball. The second parameter is the colour. Let's say it's yellow (the vector below symbolises an rgb colour, together with the alpha channel):
+Then we render the ball. The second parameter is the colour. Let's say it's 
+yellow (the vector below symbolises an rgb colour, together with the alpha
+channel):
 	
 	renderer->render(ball, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 
-We are using a double-buffered system (we draw on one buffer, while the user is looking at the other one), so we also need to swap the buffers:
+We are using a double-buffered system (we draw on one buffer, while the user is
+looking at the other one), so we also need to swap the buffers:
 
 	renderer->swapBuffers();
 
@@ -317,11 +334,12 @@ And we close the loop :)
 
 That's it!
 
-Let's try it out. Create a ball/deps directory and from the built small3d framework
-(see Building section above) copy the build/include and build/lib directories to this
-deps directory. Also, copy the small3d/resources/shaders directory to this resources
-directory and the cmake directory from the root of the small3d framework repository to
-the root ball directory. Then, back from the root ball directory execute:
+Let's try it out. Create a *ball/deps* directory and from the built small3d
+framework (see Building section above) copy the *build/include* and *build/lib*
+directories to this *deps* directory. Also, copy the *small3d/resources/shaders*
+directory to the *resources* directory and the *cmake* directory from the root
+of the small3d framework repository to the root *ball* directory. Then, back
+from the root *ball* directory execute:
 
 	mkdir build
 	cd build
@@ -330,10 +348,33 @@ the root ball directory. Then, back from the root ball directory execute:
 	cd bin
 	./ball
 
-Note that you have to be inside the build/bin directory in order to execute the program, otherwise it will not find the necessary resource files (shaders, textures, etc).
+On Windows, you need to execute `cmake .. -G"MinGW Makefiles"`,
+or with the preferred Visual Studio configuration
+(e.g. `cmake .. -G"Visual Studio 15 2017 Win64"`).
+
+Note that you have to be inside the build/bin directory in order to execute the
+program, otherwise it will not find the necessary resource files (shaders,
+textures, etc).
 
 There's our ball:
 
 ![The ball](img/ball.png)
 
-Try moving it around with the arrows.
+Try moving it around with the arrows. A good way to learn about the other features of small3d is to read the documentation (in docs) and also to explore the source code of the sample games.
+
+Collision Detection
+-------------------
+
+The engine supports collision detection via manually created bounding boxes. In
+order to create these in Blender for example, just place them in the preferred
+position over the model. Ideally, they should be aligned with the axes but that
+is not mandatory. It will just increase the detection accuracy.
+
+![Bounding boxes](img/boundingboxes.png)
+
+Export the bounding boxes to a Wavefront file separately from the model. You can
+do this if you "save as" a new file after placing the boxes and deleting the
+original model. During export, only set the options **Apply Modifiers**,
+**Include Edges**, **Objects as OBJ Objects** and **Keep Vertex Order**.
+On the contrary to what is the case when exporting the model itself, more than
+one bounding box objects can be exported to the same Wavefront file.
