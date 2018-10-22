@@ -46,6 +46,16 @@ target_include_directories(unittests PUBLIC
 
 target_link_libraries(unittests PUBLIC ${GTEST_BOTH_LIBRARIES}  small3d)
 
+if(MSVC)
+  set_target_properties(unittests PROPERTIES LINK_FLAGS_DEBUG
+    "-NODEFAULTLIB:LIBCMTD")
+  set_target_properties(unittests PROPERTIES LINK_FLAGS_RELEASE
+    "-NODEFAULTLIB:LIBCMT")
+  
+  set_target_properties(unittests PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
+    "${small3d_BINARY_DIR}/bin")
+endif(MSVC)
+
 if(APPLE)
   set_target_properties(unittests PROPERTIES LINK_FLAGS "-framework \
 AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
