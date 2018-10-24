@@ -379,24 +379,3 @@ original model. During export, only set the options **Apply Modifiers**,
 **Include Edges**, **Objects as OBJ Objects** and **Keep Vertex Order**.
 On the contrary to what is the case when exporting the model itself, more than
 one bounding box objects can be exported to the same Wavefront file.
-
-What about Vulkan / Metal?
---------------------------
-
-No matter what is being said about it lately, OpenGL has the very important
-feature of requiring a lot less code than Vulkan or Metal to perform
-rendering. Moreover, after resolving a couple of glitches, I have gotten small3d
-working on MacOS Mojave on which OpenGL is now officially deprecated, so there
-is no need to migrate to a "modern" 3D API for the time being. Nevertheless, I
-would not want to ignore these new technologies so I have started preparing some
-code in Vulkan with a view to incorporating it into small3d, if for example
-someday OpenGL really stops working on a specific platform. Note that Vulkan
-can run on MacOS now via a layer that translates it to Metal. I have tried this
-myself and it works. However, an interesting observation I have made while
-coding my Vulkan implementation is that Vulkan is not supported on a couple of
-Windows and Linux machines I have tried to use it on and, on one Windows 10 PC
-on which it is supported, it freezes the whole system requiring a hard reset.
-I have managed to get it working on one specific terminal, but I wonder how many
-other systems there are out there that would present issues such as these for
-the moment and how advisable it would thus be to start providing a Vulkan
-implementation that would not run on or crash them.
