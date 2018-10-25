@@ -38,7 +38,7 @@ namespace small3d {
   }
 
   GLuint Renderer::compileShader(const std::string shaderSourceFile,
-  const GLenum shaderType) const {
+  const uint32_t shaderType) const {
     GLuint shader = glCreateShader(shaderType);
     std::string shaderSource = this->loadShaderFromFile(shaderSourceFile);
     if (shaderSource.length() == 0) {

@@ -10,8 +10,6 @@
 
 #include <string>
 #include <vector>
-#define GLEW_NO_GLU
-#include <GL/glew.h>
 
 namespace small3d {
   /**
@@ -47,28 +45,28 @@ namespace small3d {
   public:
 
     /**
-     * @brief OpenGL position buffer object id. It is suggested not to manipulate
+     * @brief Position buffer object id. It is suggested not to manipulate
      *        this directly.
      */
-    GLuint positionBufferObjectId = 0;
+    uint32_t positionBufferObjectId = 0;
 
     /**
-     * @brief OpenGL index buffer object id. It is suggested not to manipulate
+     * @brief Index buffer object id. It is suggested not to manipulate
      *        this directly.
      */
-    GLuint indexBufferObjectId = 0;
+    uint32_t indexBufferObjectId = 0;
 
     /**
-     * @brief OpenGL normals buffer object id. It is suggested not to manipulate
+     * @brief Normals buffer object id. It is suggested not to manipulate
      *        this directly.
      */
-    GLuint normalsBufferObjectId = 0;
+    uint32_t normalsBufferObjectId = 0;
 
     /**
-     * @brief OpenGL UV buffer object id. It is suggested not to manipulate this
+     * @brief UV buffer object id. It is suggested not to manipulate this
      *        directly.
      */
-    GLuint uvBufferObjectId = 0;
+    uint32_t uvBufferObjectId = 0;
     
     /**
      * @brief The vertex data. This is an array, which is to be treated as a 4

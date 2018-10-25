@@ -8,6 +8,7 @@
  */
 
 #pragma once
+
 #define GLEW_NO_GLU
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -39,9 +40,9 @@ namespace small3d
 
     GLFWwindow* window;
 
-    GLuint perspectiveProgram;
-    GLuint orthographicProgram;
-    GLuint vao;
+    uint32_t perspectiveProgram;
+    uint32_t orthographicProgram;
+    uint32_t vao;
 
     bool noShaders;
 
@@ -50,25 +51,25 @@ namespace small3d
     float zFar;
     float zOffsetFromCamera;
 
-    std::unordered_map<std::string, GLuint> textures;
+    std::unordered_map<std::string, uint32_t> textures;
 
     FT_Library library;
     std::vector<float> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
 
     std::string loadShaderFromFile(const std::string fileLocation) const;
-    GLuint compileShader(const std::string shaderSourceFile,
-			 const GLenum shaderType) const;
-    std::string getProgramInfoLog(const GLuint linkedProgram) const;
-    std::string getShaderInfoLog(const GLuint shader) const;
+    uint32_t compileShader(const std::string shaderSourceFile,
+			 const uint32_t shaderType) const;
+    std::string getProgramInfoLog(const uint32_t linkedProgram) const;
+    std::string getShaderInfoLog(const uint32_t shader) const;
     void initOpenGL();
     void checkForOpenGLErrors(const std::string when, const bool abort) const;
 
     void positionNextObject(const glm::vec3 offset,
 			    const glm::vec3 rotation) const;
     void positionCamera() const;
-    GLuint getTextureHandle(const std::string name) const;
-    GLuint generateTexture(const std::string name, const float *data,
+    uint32_t getTextureHandle(const std::string name) const;
+    uint32_t generateTexture(const std::string name, const float *data,
 			   const unsigned long width,
 			   const unsigned long height);
 
