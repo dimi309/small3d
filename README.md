@@ -361,7 +361,9 @@ There's our ball:
 
 ![The ball](img/ball.png)
 
-Try moving it around with the arrows. A good way to learn about the other features of small3d is to read the documentation (in docs) and also to explore the source code of the sample games.
+Try moving it around with the arrows. A good way to learn about the other 
+features of small3d is to read the documentation (in docs) and also to explore 
+the source code of the sample games.
 
 Collision Detection
 -------------------
