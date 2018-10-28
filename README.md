@@ -57,7 +57,7 @@ Let's move an object around the screen.
 
 Get a 3D model
 --------------
-We need a wavefront file. Suppose that it is a model of a ball, called 
+We need a Wavefront file. Suppose that it is a model of a ball, called 
 ball.obj. Here's how to make one with Blender (skip the following part if you
 already have a model ready and go to the Setup section).
 
@@ -93,6 +93,10 @@ the "Export OBJ" menu on the left. Only select "Write Normals",
 "Triangulate Faces" and "Keep Vertex Order":
 
 ![Wavefront export options](img/export.png)
+
+*Note: Later, for exporting animations to a series of Wavefront files in a way 
+that will allow small3d to load them, also select "Animation" and 
+"Apply Modifiers".*
 
 Save the exported file as "ball.obj".
 
