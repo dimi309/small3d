@@ -5,14 +5,17 @@ This is a free, open source, minimalistic 3D framework for the C++ programmer
 who would like to make games for PCs using a minimal set of libraries
 (glfw, glew, glm, png, zlib, gtest, ogg, vorbis, portaudio, freetype, bzip) and
 relying on C++ code to do the rest. It works on Windows, Linux and MacOS and
-supporting Visual Studio, gcc (even MinGW) and clang for compilation.
+supports Visual Studio, gcc (even MinGW) and clang for compilation.
 
 It helps you by providing you with cross-platform rendering code based on glfw
-and OpenGL that can render wavefront models, animate them as frames, map
+and OpenGL that can render Wavefront models, animate them as frames, map
 textures on them, provide some basic lighting (Gouraud shading) and also
 render images and text. A very easy to use Sound object is also provided that
-can play ogg files on all supported platforms via a common interface. Basic
+can play OGG files on all supported platforms via a common interface. Basic
 collision detection has also been implemented.
+
+All small3d dependencies are distributed together with its source code. They can
+be built by executing a single script (see below).
 
 Building
 --------
