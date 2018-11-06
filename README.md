@@ -375,10 +375,10 @@ the source code of the sample games.
 Collision Detection
 -------------------
 
-The engine supports collision detection via manually created bounding boxes. In
-order to create these in Blender for example, just place them in the preferred
-position over the model. Ideally, they should be aligned with the axes but that
-is not mandatory. It will just increase the detection accuracy.
+The framework supports collision detection via manually created bounding boxes. 
+In order to create these in Blender for example, just place them in the 
+preferred position over the model. Ideally, they should be aligned with the axes
+but that is not mandatory. It will just increase the detection accuracy.
 
 ![Bounding boxes](img/boundingboxes.png)
 
