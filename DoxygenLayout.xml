@@ -20,7 +20,6 @@
     </tab>
     <tab type="examples" visible="yes" title="" intro=""/>
     <tab type="user" visible="yes" title="changelog" url="@ref changelog"/>
-    <tab type="user" visible="yes" title="Source Code" url="https://github.com/dimi309/small3d"/>
   </navindex>
 
   <!-- Layout definition for a class page -->

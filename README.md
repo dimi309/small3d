@@ -17,8 +17,6 @@ collision detection has also been implemented.
 All small3d dependencies are distributed together with its source code. They can
 be built by executing a single script (see below).
 
-[Online Documentation](https://dimi309.github.io/small3d/)
-
 Building
 --------
 
