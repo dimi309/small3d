@@ -508,15 +508,13 @@ namespace small3d {
     
     GLuint boxBuffer = 0;
     glGenBuffers(1, &boxBuffer);
-    
+
+    // Vertices
     glBindBuffer(GL_ARRAY_BUFFER, boxBuffer);
     glBufferData(GL_ARRAY_BUFFER,
 		 sizeof(float) * 16,
 		 &vertices[0],
 		 GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
     
     unsigned int vertexIndexes[6] = {
       0, 1, 2,
@@ -526,12 +524,23 @@ namespace small3d {
     GLuint indexBufferObject = 0;
     
     glGenBuffers(1, &indexBufferObject);
+
+    // Vertex indices
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 6,
 		 vertexIndexes, GL_STATIC_DRAW);
-    
-    GLuint coordBuffer = 0;
 
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    GLint colourUniform =
+      glGetUniformLocation( perspective ? perspectiveProgram :
+			    orthographicProgram, "colour");
+    glUniform4fv(colourUniform, 1, glm::value_ptr(colour));
+
+    GLuint coordBuffer = 0;
+    
     if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
       
       GLuint textureHandle = getTextureHandle(textureName);
@@ -548,7 +557,7 @@ namespace small3d {
         1.0f, 0.0f,
         0.0f, 0.0f,
         0.0f, 1.0f
-      };
+	};
 
       glGenBuffers(1, &coordBuffer);
       glBindBuffer(GL_ARRAY_BUFFER, coordBuffer);
@@ -556,15 +565,10 @@ namespace small3d {
 		   sizeof(float) * 8,
 		   textureCoords,
 		   GL_STATIC_DRAW);
-      glEnableVertexAttribArray(1);
-      glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+      glEnableVertexAttribArray(perspective? 2 : 1);
+      glVertexAttribPointer(perspective? 2 : 1, 2, GL_FLOAT, GL_FALSE, 0, 0);
       
     }
-    
-    GLint colourUniform =
-      glGetUniformLocation( perspective ? perspectiveProgram :
-			    orthographicProgram, "colour");
-    glUniform4fv(colourUniform, 1, glm::value_ptr(colour));
 
     if (perspective) {
 
@@ -590,7 +594,7 @@ namespace small3d {
     glDeleteBuffers(1, &boxBuffer);
     if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
       glDeleteBuffers(1, &coordBuffer);
-      glDisableVertexAttribArray(1);
+      glDisableVertexAttribArray(perspective? 2 : 1);
       glBindTexture(GL_TEXTURE_2D, 0);
     }
     
@@ -625,7 +629,7 @@ namespace small3d {
       glGenBuffers(1, &model.uvBufferObjectId);
     }     
 
-    // Vertex
+    // Vertices
     glBindBuffer(GL_ARRAY_BUFFER, model.positionBufferObjectId);
     if (!alreadyInGPU) {
       glBufferData(GL_ARRAY_BUFFER,
@@ -667,9 +671,14 @@ namespace small3d {
       glUniform4fv(colourUniform, 1,
 		   glm::value_ptr(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)));
       
-      GLuint textureId = this->getTextureHandle(textureName);
+      GLuint textureHandle = this->getTextureHandle(textureName);
+
+      if (textureHandle == 0) {
+        throw std::runtime_error("Texture " + textureName +
+				 "has not been generated");
+      }
       
-      glBindTexture(GL_TEXTURE_2D, textureId);
+      glBindTexture(GL_TEXTURE_2D, textureHandle);
       
       // UV Coordinates
       

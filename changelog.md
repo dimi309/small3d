@@ -3,6 +3,11 @@
 small3d changes per version
 ===========================
 
+v1.66 
+
+ - Corrected texture mapping issue that occured when rendering textured 
+   rectangles using the perspective shaders.
+
 v1.65 2018-10-20
 
  - This project is now called the small3d framework, instead of the
