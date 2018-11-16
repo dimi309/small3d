@@ -3,7 +3,7 @@
 small3d changes per version
 ===========================
 
-v1.66 
+v1.66 2018-11-16
 
  - Corrected texture mapping issue that occured when rendering textured 
    rectangles using the perspective shaders.
