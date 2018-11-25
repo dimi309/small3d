@@ -167,6 +167,18 @@ namespace small3d
     void generateTexture(const std::string name, const Image image);
 
     /**
+     * @brief Generate a texture on the GPU that contains the given text
+     * @param name     The name by which the texture will be known
+     * @param text     The text that will be contained in the texture
+     * @param fontSize The size of the font which will be used
+     * @param fontPath Path to the TrueType font (.ttf) which will be used
+     */
+    void generateTexture(const std::string name, const std::string text,
+			 const int fontSize,
+			 const std::string fontPath =
+			 "resources/fonts/CrusoeText/CrusoeText-Regular.ttf");
+
+    /**
      * @brief Deletes the texture indicated by the given name.
      *
      * @param	name	The name of the texture.

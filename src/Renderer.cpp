@@ -7,7 +7,6 @@
  */
 
 #include "Renderer.hpp"
-
 #include <stdexcept>
 #include <fstream>
 
@@ -480,6 +479,11 @@ namespace small3d {
   void Renderer::generateTexture(const std::string name, const Image image) {
     this->generateTexture(name, image.getData(), image.getWidth(),
 			  image.getHeight());
+  }
+
+  void generateTexture(const std::string name, const std::string text,
+		       const int fontSize,
+		       const std::string fontPath) {
   }
   
   void Renderer::deleteTexture(const std::string name) {
