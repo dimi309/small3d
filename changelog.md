@@ -3,6 +3,11 @@
 small3d changes per version
 ===========================
 
+v1.67 (open)
+
+ - Added a generateTexture function to the Renderer, which creates a
+   texture with some given text rendered within it.
+
 v1.66 2018-11-16
 
  - Corrected texture mapping issue that occured when rendering textured 

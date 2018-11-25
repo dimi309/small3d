@@ -170,7 +170,7 @@ namespace small3d
      * @brief Generate a texture on the GPU that contains the given text
      * @param name     The name by which the texture will be known
      * @param text     The text that will be contained in the texture
-     * @param colour   The colour of the text will be rendered (r, g, b)
+     * @param colour   The colour of the text
      * @param fontSize The size of the font which will be used
      * @param fontPath Path to the TrueType font (.ttf) which will be used
      */
