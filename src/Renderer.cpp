@@ -481,9 +481,95 @@ namespace small3d {
 			  image.getHeight());
   }
 
-  void generateTexture(const std::string name, const std::string text,
-		       const int fontSize,
+  void Renderer::generateTexture(const std::string name, const std::string text,
+		       const glm::vec3 colour, const int fontSize,
 		       const std::string fontPath) {
+    
+    std::string faceId = intToStr(fontSize) + fontPath;
+    
+    auto idFacePair = fontFaces.find(faceId);
+    FT_Face face;
+    FT_Error error;
+    
+    if (idFacePair == fontFaces.end()) {
+      std::string faceFullPath = fontPath;
+      LOGDEBUG("Loading font from " + faceFullPath);
+      error = FT_New_Face(library, faceFullPath.c_str(), 0, &face);
+      if (error != 0) {
+        throw std::runtime_error("Failed to load font from " + faceFullPath);
+      }
+      else{
+        LOGDEBUG("Font loaded successfully");
+        fontFaces.insert(make_pair(faceId, face));
+      }
+    } else {
+      face = idFacePair->second;
+    }
+    
+    // Multiplying by 64 to convert to 26.6 fractional points. Using 100dpi.
+    error = FT_Set_Char_Size(face, 64 * fontSize, 0, 100, 0);
+    
+    if (error != 0) {
+      throw std::runtime_error("Failed to set font size.");
+    }
+    
+    unsigned long width = 0, height =0;
+    
+    // Figure out bitmap dimensions
+    for(const char &c: text) {
+      error = FT_Load_Char(face, (FT_ULong) c, FT_LOAD_RENDER);
+      if (error != 0) {
+        throw std::runtime_error("Failed to load character glyph.");
+      }
+      FT_GlyphSlot slot = face->glyph;
+      width += slot->advance.x / 64;
+      if (height < static_cast<unsigned long>(slot->bitmap.rows))
+	height = slot->bitmap.rows;
+    }
+    
+    textMemory.resize(4 * width * height * sizeof(float));
+    memset(&textMemory[0], 0, 4 * width * height * sizeof(float));
+    
+    unsigned long totalAdvance = 0;
+    
+    for(const char &c: text) {
+      error = FT_Load_Char(face, (FT_ULong) c, FT_LOAD_RENDER);
+      if (error != 0) {
+        throw std::runtime_error("Failed to load character glyph.");
+      }
+      
+      FT_GlyphSlot slot = face->glyph;
+      
+      if (slot->bitmap.width * slot->bitmap.rows > 0) {
+        for (int row = 0; row < static_cast<int>(slot->bitmap.rows); ++row){
+          for (int col = 0; col < static_cast<int>(slot->bitmap.width); ++col) {
+            glm::vec4 colourAlpha = glm::vec4(colour, 0.0f);
+            colourAlpha.a =
+	      floorf(100.0f * (static_cast<float>
+			       (slot->bitmap.buffer[row * slot->bitmap.width +
+						    col]) /
+			       255.0f) + 0.5f) / 100.0f;
+            memcpy(&textMemory[4 *
+			       width *
+			       (height - static_cast<unsigned long>
+				(slot->bitmap_top) +
+				static_cast<unsigned long>(row)) // row position
+			       + totalAdvance + 4 *
+			       (static_cast<unsigned long>(col) +
+				static_cast<unsigned long>
+				(slot->bitmap_left)) // column position
+			       ],
+		   glm::value_ptr(colourAlpha),
+		   4 * sizeof(float));
+          }
+        }
+      }
+      totalAdvance += 4 * static_cast<unsigned long>(slot->advance.x / 64);
+      
+    }
+    
+    generateTexture(name, &textMemory[0], width, height);
+
   }
   
   void Renderer::deleteTexture(const std::string name) {
@@ -765,92 +851,11 @@ namespace small3d {
   void Renderer::write(const std::string text, const glm::vec3 colour,
 		       const glm::vec2 topLeft, const glm::vec2 bottomRight,
 		       const int fontSize, std::string fontPath) {
-    
-    std::string faceId = intToStr(fontSize) + fontPath;
-    
-    auto idFacePair = fontFaces.find(faceId);
-    FT_Face face;
-    FT_Error error;
-    
-    if (idFacePair == fontFaces.end()) {
-      std::string faceFullPath = fontPath;
-      LOGDEBUG("Loading font from " + faceFullPath);
-      error = FT_New_Face(library, faceFullPath.c_str(), 0, &face);
-      if (error != 0) {
-        throw std::runtime_error("Failed to load font from " + faceFullPath);
-      }
-      else{
-        LOGDEBUG("Font loaded successfully");
-        fontFaces.insert(make_pair(faceId, face));
-      }
-    } else {
-      face = idFacePair->second;
-    }
-    
-    // Multiplying by 64 to convert to 26.6 fractional points. Using 100dpi.
-    error = FT_Set_Char_Size(face, 64 * fontSize, 0, 100, 0);
-    
-    if (error != 0) {
-      throw std::runtime_error("Failed to set font size.");
-    }
-    
-    unsigned long width = 0, height =0;
-    
-    // Figure out bitmap dimensions
-    for(const char &c: text) {
-      error = FT_Load_Char(face, (FT_ULong) c, FT_LOAD_RENDER);
-      if (error != 0) {
-        throw std::runtime_error("Failed to load character glyph.");
-      }
-      FT_GlyphSlot slot = face->glyph;
-      width += slot->advance.x / 64;
-      if (height < static_cast<unsigned long>(slot->bitmap.rows))
-	height = slot->bitmap.rows;
-    }
-    
-    textMemory.resize(4 * width * height * sizeof(float));
-    memset(&textMemory[0], 0, 4 * width * height * sizeof(float));
-    
-    unsigned long totalAdvance = 0;
-    
-    for(const char &c: text) {
-      error = FT_Load_Char(face, (FT_ULong) c, FT_LOAD_RENDER);
-      if (error != 0) {
-        throw std::runtime_error("Failed to load character glyph.");
-      }
-      
-      FT_GlyphSlot slot = face->glyph;
-      
-      if (slot->bitmap.width * slot->bitmap.rows > 0) {
-        for (int row = 0; row < static_cast<int>(slot->bitmap.rows); ++row){
-          for (int col = 0; col < static_cast<int>(slot->bitmap.width); ++col) {
-            glm::vec4 colourAlpha = glm::vec4(colour, 0.0f);
-            colourAlpha.a =
-	      floorf(100.0f * (static_cast<float>
-			       (slot->bitmap.buffer[row * slot->bitmap.width +
-						    col]) /
-			       255.0f) + 0.5f) / 100.0f;
-            memcpy(&textMemory[4 *
-			       width *
-			       (height - static_cast<unsigned long>
-				(slot->bitmap_top) +
-				static_cast<unsigned long>(row)) // row position
-			       + totalAdvance + 4 *
-			       (static_cast<unsigned long>(col) +
-				static_cast<unsigned long>
-				(slot->bitmap_left)) // column position
-			       ],
-		   glm::value_ptr(colourAlpha),
-		   4 * sizeof(float));
-          }
-        }
-      }
-      totalAdvance += 4 * static_cast<unsigned long>(slot->advance.x / 64);
-      
-    }
-    
+
     std::string textureName = intToStr(fontSize) + "text_" + text;
-    generateTexture(textureName, &textMemory[0], width, height);
+    
+    this->generateTexture(textureName, text, colour, fontSize, fontPath);
+    
     renderRectangle(textureName, glm::vec3(topLeft.x, topLeft.y, -0.5f),
 		    glm::vec3(bottomRight.x, bottomRight.y, -0.5f));
     
