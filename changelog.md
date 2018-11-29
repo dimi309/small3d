@@ -3,7 +3,7 @@
 small3d changes per version
 ===========================
 
-v1.67 (open)
+v1.67 2018-11-29
 
  - Added a generateTexture function to the Renderer, which creates a
    texture with some given text rendered within it.
