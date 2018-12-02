@@ -637,7 +637,7 @@ namespace small3d {
 
       if (textureHandle == 0) {
         throw std::runtime_error("Texture " + textureName +
-				 "has not been generated");
+				 " has not been generated");
       }
 
       glBindTexture(GL_TEXTURE_2D, textureHandle);
