@@ -129,10 +129,10 @@ cd ..\..\
 rmdir /Q /S portaudio
 del pa_stable_v190600_20161030.tar
 
-7z x freetype-2.9.tar.gz
+7z x freetype-2.9.1.tar.gz
 if %errorlevel% neq 0 exit /b %errorlevel%
-7z x freetype-2.9.tar
-cd freetype-2.9
+7z x freetype-2.9.1.tar
+cd freetype-2.9.1
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF
@@ -141,6 +141,6 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include ..\..\include /s /e
 copy libfreetype.a ..\..\lib
 cd ..\..
-rmdir /Q /S freetype-2.9
-del freetype-2.9.tar
+rmdir /Q /S freetype-2.9.1
+del freetype-2.9.1.tar
 

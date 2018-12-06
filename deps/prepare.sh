@@ -137,8 +137,8 @@ cp libbz2.a ../lib/
 cd ..
 rm -rf bzip2-1.0.6
 
-tar xvf freetype-2.9.tar.gz
-cd freetype-2.9
+tar xvf freetype-2.9.1.tar.gz
+cd freetype-2.9.1
 mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../
@@ -147,4 +147,4 @@ rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp -rf ../include/* ../../include/
 cp libfreetype.a ../../lib/
 cd ../..
-rm -rf freetype-2.9
+rm -rf freetype-2.9.1
