@@ -164,7 +164,7 @@ TEST(RendererTest, StartAndUse) {
     
     renderer->render(object2, "cubeTexture");
 
-    renderer->write("small3d :)", glm::vec3(0.0f, 1.0f, 0.0f),
+    renderer->write("small3d :) p q", glm::vec3(0.0f, 1.0f, 0.0f),
 		    glm::vec2(-1.0f, 0.0f), glm::vec2(0.5f, -0.5f));
     renderer->swapBuffers();
   }
