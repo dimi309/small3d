@@ -513,7 +513,7 @@ namespace small3d {
       throw std::runtime_error("Failed to set font size.");
     }
     
-    unsigned long width = 0, height =0;
+    unsigned long width = 0, maxTop = 0, height = 0;
     
     // Figure out bitmap dimensions
     for(const char &c: text) {
@@ -523,9 +523,11 @@ namespace small3d {
       }
       FT_GlyphSlot slot = face->glyph;
       width += slot->advance.x / 64;
-      if (height < static_cast<unsigned long>(slot->bitmap.rows))
-	height = slot->bitmap.rows;
+      if (maxTop < static_cast<unsigned long>(slot->bitmap_top))
+	maxTop = static_cast<unsigned long>(slot->bitmap_top);
     }
+
+    height = maxTop + static_cast<unsigned long>(0.3 * maxTop);
     
     textMemory.resize(4 * width * height * sizeof(float));
     memset(&textMemory[0], 0, 4 * width * height * sizeof(float));
@@ -543,33 +545,30 @@ namespace small3d {
       if (slot->bitmap.width * slot->bitmap.rows > 0) {
         for (int row = 0; row < static_cast<int>(slot->bitmap.rows); ++row){
           for (int col = 0; col < static_cast<int>(slot->bitmap.width); ++col) {
-            glm::vec4 colourAlpha = glm::vec4(colour, 0.0f);
-            colourAlpha.a =
+
+	    glm::vec4 colourAlpha = glm::vec4(colour, 0.0f);
+
+	    colourAlpha.a =
 	      floorf(100.0f * (static_cast<float>
 			       (slot->bitmap.buffer[row * slot->bitmap.width +
 						    col]) /
 			       255.0f) + 0.5f) / 100.0f;
-            memcpy(&textMemory[4 *
-			       width *
-			       (height - static_cast<unsigned long>
-				(slot->bitmap_top) +
-				static_cast<unsigned long>(row)) // row position
-			       + totalAdvance + 4 *
-			       (static_cast<unsigned long>(col) +
-				static_cast<unsigned long>
-				(slot->bitmap_left)) // column position
-			       ],
+	    
+            memcpy(&textMemory[4 * (maxTop -
+				    static_cast<unsigned long>(slot->bitmap_top)
+				    + static_cast<unsigned long>(row)) * width +
+			       4 *
+			       (static_cast<unsigned long>(slot->bitmap_left) +
+				    static_cast<unsigned long>(col)) 
+			       + totalAdvance],
 		   glm::value_ptr(colourAlpha),
 		   4 * sizeof(float));
           }
         }
       }
       totalAdvance += 4 * static_cast<unsigned long>(slot->advance.x / 64);
-      
     }
-    
     generateTexture(name, &textMemory[0], width, height);
-
   }
   
   void Renderer::deleteTexture(const std::string name) {

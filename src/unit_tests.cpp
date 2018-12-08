@@ -175,7 +175,7 @@ TEST(RendererTest, StartAndUse) {
 }
 
 
-
+/*
 TEST(SoundTest, LoadAndPlay) {
   Sound snd("resources/sounds/bah.ogg");
   snd.play();
@@ -213,7 +213,7 @@ TEST(SoundTest, RepeatSound) {
   double startSeconds = glfwGetTime();
   while(glfwGetTime() - startSeconds < 6.0);
 }
-
+*/
 
 TEST(TokenTest, GetFourTokens) {
   string strTest = "a-b-c-d";
