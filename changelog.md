@@ -8,6 +8,7 @@ v1.68 (open)
  - Lower case characters like p and q were not being rendered entirely.
    This has now been corrected.
  - Upgraded FreeType to v2.9.1.
+ - Bug fixes.
 
 v1.67 2018-11-29
 
