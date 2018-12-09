@@ -3,7 +3,7 @@
 small3d changes per version
 ===========================
 
-v1.68 (open)
+v1.68 2018-12-09
 
  - Lower case characters like p and q were not being rendered entirely.
    This has now been corrected.
