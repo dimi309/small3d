@@ -174,8 +174,6 @@ TEST(RendererTest, StartAndUse) {
   
 }
 
-
-/*
 TEST(SoundTest, LoadAndPlay) {
   Sound snd("resources/sounds/bah.ogg");
   snd.play();
@@ -189,7 +187,6 @@ TEST(SoundTest, LoadAndPlay) {
   startSeconds = glfwGetTime();
   while(glfwGetTime() - startSeconds < 2.0);
 }
-
 
 TEST(SoundTest, ThreeAtTheSameTime) {
   Sound snd1("resources/sounds/bah.ogg");
@@ -206,14 +203,12 @@ TEST(SoundTest, ThreeAtTheSameTime) {
   while(glfwGetTime() - startSeconds < 1.0);
 }
 
-
 TEST(SoundTest, RepeatSound) {
   Sound snd("resources/sounds/bah.ogg");
   snd.play(true);
   double startSeconds = glfwGetTime();
   while(glfwGetTime() - startSeconds < 6.0);
 }
-*/
 
 TEST(TokenTest, GetFourTokens) {
   string strTest = "a-b-c-d";
