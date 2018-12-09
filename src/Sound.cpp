@@ -109,8 +109,10 @@ namespace small3d {
     
     --numInstances;
     if(numInstances == 0) {
-      LOGDEBUG("Last Sound instance destroyed. Terminating PortAudio.");
-      Pa_Terminate();
+      // This was causing a segmentation fault on MacOS when a Sound object was
+      // declared as a global.
+      //LOGDEBUG("Last Sound instance destroyed. Terminating PortAudio.");
+      //Pa_Terminate();
     }
   }
 
