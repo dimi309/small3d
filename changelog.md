@@ -3,6 +3,10 @@
 small3d changes per version
 ===========================
 
+v1.69 2018-12-10
+
+ - Now using google test v1.8.1.
+
 v1.68 2018-12-09
 
  - Lower case characters like p and q were not being rendered entirely.

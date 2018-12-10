@@ -78,7 +78,7 @@ tar xvf googletest-release-1.8.1.tar.gz
 cd googletest-release-1.8.1
 mkdir build
 cd build
-cmake .. -DBUILD_GMOCK=OFF -DBUILD_GTEST=ON -Dgtest_disable_pthreads=ON
+cmake .. -DBUILD_GMOCK=OFF -Dgtest_disable_pthreads=ON
 cmake --build .
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp -rf ../googletest/include/gtest ../../include/
