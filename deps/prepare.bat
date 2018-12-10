@@ -62,21 +62,21 @@ rmdir /Q /S libpng-1.6.34
 del libpng-1.6.34.tar
 del pax_global_header
 
-7z x googletest-release-1.8.0.tar.gz
+7z x googletest-release-1.8.1.tar.gz
 if %errorlevel% neq 0 exit /b %errorlevel%
-7z x googletest-release-1.8.0.tar
-cd googletest-release-1.8.0
+7z x googletest-release-1.8.1.tar
+cd googletest-release-1.8.1
 mkdir build
 cd build
-cmake .. -G"MinGW Makefiles" -DBUILD_GMOCK=OFF -DBUILD_GTEST=ON -Dgtest_disable_pthreads=ON
+cmake .. -G"MinGW Makefiles" -DBUILD_GMOCK=OFF -Dgtest_disable_pthreads=ON
 cmake --build .
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\googletest\include\gtest ..\..\include\gtest /i /s
 copy googletest\libgtest.a ..\..\lib
 copy googletest\libgtest_main.a ..\..\lib\
 cd ..\..
-rmdir /Q /S googletest-release-1.8.0
-del googletest-release-1.8.0.tar
+rmdir /Q /S googletest-release-1.8.1
+del googletest-release-1.8.1.tar
 del pax_global_header
 
 7z x ogg-1.3.3.tar.gz

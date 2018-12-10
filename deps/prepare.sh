@@ -74,8 +74,8 @@ cp libpng.a ../../lib/
 cd ../../
 rm -rf libpng-1.6.34
 
-tar xvf googletest-release-1.8.0.tar.gz
-cd googletest-release-1.8.0
+tar xvf googletest-release-1.8.1.tar.gz
+cd googletest-release-1.8.1
 mkdir build
 cd build
 cmake .. -DBUILD_GMOCK=OFF -DBUILD_GTEST=ON -Dgtest_disable_pthreads=ON
@@ -85,7 +85,7 @@ cp -rf ../googletest/include/gtest ../../include/
 cp googletest/libgtest.a ../../lib/
 cp googletest/libgtest_main.a ../../lib/
 cd ../..
-rm -rf googletest-release-1.8.0
+rm -rf googletest-release-1.8.1
 
 tar xvf ogg-1.3.3.tar.gz
 cd ogg-1.3.3
