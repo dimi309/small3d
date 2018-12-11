@@ -3,6 +3,10 @@
 small3d changes per version
 ===========================
 
+v1.691 2018-12-11
+
+ - Model now has a default constructor.
+
 v1.69 2018-12-10
 
  - Now using google test v1.8.1.

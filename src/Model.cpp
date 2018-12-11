@@ -191,6 +191,8 @@ namespace small3d {
     textureCoordsIndices.clear();
   }
 
+  Model::Model() {
+  }
 
   Model::Model(const std::string fileLocation) {
     std::ifstream file(fileLocation.c_str());

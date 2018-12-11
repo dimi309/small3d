@@ -119,7 +119,13 @@ namespace small3d {
     int textureCoordsDataByteSize;
 
     /**
-     * @brief constructor
+     * @brief Default constructor
+     *
+     */
+    Model();
+
+    /**
+     * @brief Constructor that loads model from file
      * @param fileLocation Location of the Wavefront file from which to load the
      *                     model.
      */
