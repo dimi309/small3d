@@ -18,11 +18,7 @@ namespace small3d {
   std::string intToStr(const int number)
   {
     char buffer[100];
-#if defined(_WIN32) && !defined(__MINGW32__)
-    sprintf_s(buffer, "%d", number);
-#else
     sprintf(buffer, "%d", number);
-#endif
     return std::string(buffer);
   }
 
@@ -44,25 +40,11 @@ namespace small3d {
 
     time(&now);
 
-    tm *t;
+    tm *t = localtime(&now);
 
-#if defined(_WIN32) && !defined(__MINGW32__)
-    t = new tm();
-    localtime_s(t, &now);
-
-#else
-    t = localtime(&now);
-#endif
     char buf[20];
 
     strftime(buf, 20,"%Y-%m-%d %H:%M:%S", t);
-
-    // localtime (used on Linux) does not allocate memory, but
-    // returns a pointer to a pre-existing location. Hence,
-    // we should not delete it.
-#if defined(_WIN32) && !defined(__MINGW32__)
-    delete t;
-#endif
 
     dateTimeOstringstream << buf;
 
