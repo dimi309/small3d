@@ -1,10 +1,11 @@
-small3d
-=======
+# small3d
+
+## Introduction
 
 This is a free, open source, minimalistic 3D framework for the C++ programmer
 who would like to make games for PCs using a minimal set of libraries
 (glfw, glew, glm, png, zlib, gtest, ogg, vorbis, portaudio, freetype, bzip) and
-relying on C++ code to do the rest. It works on Windows, Linux and MacOS and
+relying on C++ code to do the rest. It works on Windows, Linux and MacOS* and
 supports Visual Studio, gcc (even MinGW) and clang for compilation.
 
 It helps you by providing you with cross-platform rendering code based on glfw
@@ -17,8 +18,32 @@ collision detection has also been implemented.
 All small3d dependencies are distributed together with its source code. They can
 be built by executing a single script (see below).
 
-Building
---------
+### *Note on MacOS support
+
+I have been supporting MacOS for a long time, reaching up to resolving all the
+problems and glitches introduced by MacOS Mojave in 2018. However, I no longer
+own an Apple computer, so my capability to test small3d there is limited. I will
+of course leave the Apple-specific code as it is and maybe I will get a chance
+to test it from time to time, but it is more likely now that issues will begin
+to occur that I will not notice and thus will not be able to resolve. Of course,
+if you ever detect such an issue and correct it, I would greatly appreciate
+hearing about it and your solution.
+
+### No Git?
+
+You may be wondering why this project is not on GitHub or some other on-line 
+source code repository. It used to be. But I have become a minimalist over the
+past few years. I have come to see GitHub as a social platform and I think that
+social platforms create a lot of potential to waste one's time aimlessly. Were
+small3d to become a large project with many contributors I might reconsider but,
+for the time being, maintaining its public release as a plain compressed archive
+helps me save time, avoid clutter and focus on the parts of the project that
+really matter. If you are wondering about how I could forgo the benefits of
+source control, notice that I have mentioned that the *released* version of the
+code is stripped of such meta-information. That does not affect how I maintain
+the project locally.
+
+## Building
 
 Before starting, note that cmake has to be installed on your system and
 accessible on the command line. On Windows, 7zip also has to be in the path and
@@ -53,13 +78,12 @@ modules in *small3d/cmake* can be useful. Check the CMakeLists.txt and
 src/CMakeLists.txt files for other configuration details (link flags, etc) that 
 may also be required or useful.
 
-Example
-=======
+# Example
 
 Let's move an object around the screen.
 
-Get a 3D model
---------------
+## Get a 3D model
+
 We need a Wavefront file. Suppose that it is a model of a ball, called 
 ball.obj. Here's how to make one with Blender (skip the following part if you
 already have a model ready and go to the Setup section).
@@ -103,8 +127,7 @@ that will allow small3d to load them, also select "Animation" and
 
 Save the exported file as "ball.obj".
 
-Setup
------
+## Setup
 
 Let's proceed to make our first program. Create a directory, called *ball*.
 Then create another directory within it, called *resources* and place *ball.obj*
@@ -215,8 +238,7 @@ another *CMakeLists.txt* file:
 			"${small3d_BINARY_DIR}/bin")
 	endif(MSVC)
 
-The code
---------
+## The code
 
 Inside *ball/src*, create the *main.cpp* file:
 
@@ -372,8 +394,7 @@ Try moving it around with the arrows. A good way to learn about the other
 features of small3d is to read the documentation (in docs) and also to explore 
 the source code of the sample games.
 
-Collision Detection
--------------------
+## Collision Detection
 
 The framework supports collision detection via manually created bounding boxes. 
 In order to create these in Blender for example, just place them in the 
