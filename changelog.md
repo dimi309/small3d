@@ -3,6 +3,10 @@
 small3d changes per version
 ===========================
 
+v1.692 2019-01-19
+
+- Removed all secure CRT functions from Visual Studio build.
+
 v1.691 2018-12-11
 
  - Model now has a default constructor.
