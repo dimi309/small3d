@@ -5,8 +5,10 @@
 This is a free, open source, minimalistic 3D framework for the C++ programmer
 who would like to make games for PCs using a minimal set of libraries
 (glfw, glew, glm, png, zlib, gtest, ogg, vorbis, portaudio, freetype, bzip) and
-relying on C++ code to do the rest. It works on Windows, Linux and MacOS* and
-supports Visual Studio, gcc (even MinGW) and clang for compilation.
+relying on C++ code to do the rest. It works on Windows and Linux and supports
+Visual Studio, gcc (even MinGW) and clang for compilation. It should also work
+on MacOS, at least it used to. But since I no longer have an Apple computer, 
+MacOS support will probably degrade over time.
 
 It helps you by providing you with cross-platform rendering code based on glfw
 and OpenGL that can render Wavefront models, animate them as frames, map
@@ -17,31 +19,6 @@ collision detection has also been implemented.
 
 All small3d dependencies are distributed together with its source code. They can
 be built by executing a single script (see below).
-
-### *Note on MacOS support
-
-I have been supporting MacOS for a long time, reaching up to resolving all the
-problems and glitches introduced by MacOS Mojave in 2018. However, I no longer
-own an Apple computer, so my capability to test small3d there is limited. I will
-of course leave the Apple-specific code as it is and maybe I will get a chance
-to test it from time to time, but it is more likely now that issues will begin
-to occur that I will not notice and thus will not be able to resolve. Of course,
-if you ever detect such an issue and correct it, I would greatly appreciate
-hearing about it and your solution.
-
-### No Git?
-
-You may be wondering why this project is not on GitHub or some other on-line 
-source code repository. It used to be. But I have become a minimalist over the
-past few years. I have come to see GitHub as a social platform and I think that
-social platforms create a lot of potential to waste one's time aimlessly. Were
-small3d to become a large project with many contributors I might reconsider but,
-for the time being, maintaining its public release as a plain compressed archive
-helps me save time, avoid clutter and focus on the parts of the project that
-really matter. If you are wondering about how I could forgo the benefits of
-source control, notice that I have mentioned that the *released* version of the
-code is stripped of such meta-information. That does not affect how I maintain
-the project locally.
 
 ## Building
 
