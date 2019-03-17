@@ -3,6 +3,10 @@
 small3d changes per version
 ===========================
 
+v1.693 2019-03-17
+
+- Corrected google test related bug in VS Debug build.
+
 v1.692 2019-01-19
 
 - Removed all secure CRT functions from Visual Studio build.
