@@ -12,6 +12,7 @@ Thumbs.db
 \.\#*
 
 /\.idea
+/\.vs
 
 /build
 /_build
