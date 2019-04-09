@@ -40,10 +40,18 @@ namespace small3d
 
     GLFWwindow* window;
 
+    int realScreenWidth, realScreenHeight;
+
     uint32_t perspectiveProgram;
     uint32_t orthographicProgram;
     uint32_t vao;
 
+    uint32_t renderOrientation = 0;
+    uint32_t cameraOrientation = 0;
+    uint32_t worldDetails = 0;
+    uint32_t lightUboId = 0;
+    uint32_t colourUboId = 0;
+    
     bool noShaders;
 
     float frustumScale;
@@ -66,8 +74,8 @@ namespace small3d
     void checkForOpenGLErrors(const std::string when, const bool abort) const;
 
     void positionNextObject(const glm::vec3 offset,
-			    const glm::vec3 rotation) const;
-    void positionCamera() const;
+			    const glm::vec3 rotation);
+    void positionCamera();
     uint32_t getTextureHandle(const std::string name) const;
     uint32_t generateTexture(const std::string name, const float *data,
 			   const unsigned long width,
@@ -79,6 +87,8 @@ namespace small3d
               const std::string shadersPath);
     void initWindow(int &width, int &height,
 		    const std::string windowTitle = "");
+
+    void setPerspectiveAndLight();
 
     Renderer(const std::string windowTitle, const int width, const int height,
 	     const float frustumScale, const float zNear, const float zFar,
@@ -203,7 +213,7 @@ namespace small3d
 			 const glm::vec3 bottomRight,
 			 const bool perspective = false,
 			 const glm::vec4 colour =
-			 glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) const;
+			 glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
     /**
      * @brief Render a rectangle, using two of its corners that are diagonally
@@ -216,7 +226,7 @@ namespace small3d
      */
     void renderRectangle(const glm::vec4 colour, const glm::vec3 topLeft,
 			 const glm::vec3 bottomRight, 
-			 const bool perspective = false) const;
+			 const bool perspective = false);
     
     /**
      * @brief Render a Model
@@ -230,7 +240,7 @@ namespace small3d
      *                    be ignored.
      */
     void render(Model &model, const glm::vec3 offset, const glm::vec3 rotation, 
-		const glm::vec4 colour, const std::string textureName="") const;
+		const glm::vec4 colour, const std::string textureName="");
 
     /**
      * @brief Render a Model.
@@ -241,14 +251,14 @@ namespace small3d
      *                    The texture has to have been generated already.
      */
     void render(Model &model, const glm::vec3 offset, const glm::vec3 rotation,
-		const std::string textureName) const;
+		const std::string textureName);
 
     /**
      * @brief Render a SceneObject
      * @param sceneObject The object
      * @param colour The colour the object. 
      */
-    void render(SceneObject &sceneObject, const glm::vec4 colour) const;
+    void render(SceneObject &sceneObject, const glm::vec4 colour);
 
     /**
      * @brief Render a SceneObject
@@ -256,7 +266,7 @@ namespace small3d
      * @param textureName The name of the texture to attach to the object.
      *                    The texture has to have been generated already. 
      */
-    void render(SceneObject &sceneObject, const std::string textureName) const;
+    void render(SceneObject &sceneObject, const std::string textureName);
 
     /**
      * @brief Render some text on the screen.

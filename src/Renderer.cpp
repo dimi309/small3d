@@ -19,6 +19,33 @@ namespace small3d {
   {
     LOGERROR(std::string(description));
   }
+
+  struct uboWorld {
+    float perspectiveMatrix[16];
+    glm::vec3 lightDirection;
+  };
+
+  struct uboOrientation {
+    glm::vec3 offset;
+    glm::mat4x4 xRotationMatrix;
+    glm::mat4x4 yRotationMatrix;
+    glm::mat4x4 zRotationMatrix;
+  };
+
+  struct uboCamera {
+    glm::vec3 position;
+    glm::mat4x4 xRotationMatrix;
+    glm::mat4x4 yRotationMatrix;
+    glm::mat4x4 zRotationMatrix;
+  };
+
+  struct uboColour {
+    glm::vec4 colour;
+  };
+
+  struct uboLight {
+    float intensity;
+  };
   
   static std::string openglErrorToString(GLenum error);
 
@@ -139,38 +166,86 @@ namespace small3d {
   }
 
   void Renderer::positionNextObject(const glm::vec3 offset,
-				    const glm::vec3 rotation) const {
-    // Rotation
+				    const glm::vec3 rotation) {
 
-    GLint xRotationMatrixUniform = glGetUniformLocation(perspectiveProgram,
-							"xRotationMatrix");
-    glUniformMatrix4fv(xRotationMatrixUniform, 1, GL_TRUE,
-		       glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.x,
-						  glm::vec3(-1.0f, 0.0f, 0.0f)))
-		       );
+    uboOrientation orientation;
 
-    GLint yRotationMatrixUniform = glGetUniformLocation(perspectiveProgram,
-							"yRotationMatrix");
-    glUniformMatrix4fv(yRotationMatrixUniform, 1, GL_TRUE,
-		       glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.y,
-						  glm::vec3(0.0f, -1.0f, 0.0f)))
-		       );
+    orientation.xRotationMatrix = glm::rotate(glm::mat4x4(1.0f), rotation.x,
+					      glm::vec3(-1.0f, 0.0f, 0.0f));
+    orientation.yRotationMatrix = glm::rotate(glm::mat4x4(1.0f), rotation.y,
+					      glm::vec3(0.0f, -1.0f, 0.0f));
+    orientation.zRotationMatrix = glm::rotate(glm::mat4x4(1.0f), rotation.z,
+					      glm::vec3(0.0f, 0.0f, -1.0f));
+    orientation.offset = offset;
 
-    GLint zRotationMatrixUniform = glGetUniformLocation(perspectiveProgram,
-							"zRotationMatrix");
-    glUniformMatrix4fv(zRotationMatrixUniform, 1, GL_TRUE,
-		       glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.z,
-						  glm::vec3(0.0f, 0.0f, -1.0f)))
-		       );
 
-    GLint offsetUniform = glGetUniformLocation(perspectiveProgram, "offset");
-    glUniform3fv(offsetUniform, 1, glm::value_ptr(offset));
+    if (renderOrientation == 0) {
+      GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram,
+						       "uboOrientation");
+      glUniformBlockBinding(perspectiveProgram, orientationIndex, 1);
+      glGenBuffers(1, &renderOrientation);
+      glBindBuffer(GL_UNIFORM_BUFFER, renderOrientation);
+      glBindBufferBase(GL_UNIFORM_BUFFER, orientationIndex, renderOrientation);
+      glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+
+    glBindBuffer(GL_UNIFORM_BUFFER, renderOrientation);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(uboOrientation), &orientation, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    
+
+    /*GLint xRotationMatrixUniform = glGetUniformLocation(perspectiveProgram,
+      "xRotationMatrix");
+      glUniformMatrix4fv(xRotationMatrixUniform, 1, GL_TRUE,
+      glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.x,
+      glm::vec3(-1.0f, 0.0f, 0.0f)))
+      );
+
+      GLint yRotationMatrixUniform = glGetUniformLocation(perspectiveProgram,
+      "yRotationMatrix");
+      glUniformMatrix4fv(yRotationMatrixUniform, 1, GL_TRUE,
+      glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.y,
+      glm::vec3(0.0f, -1.0f, 0.0f)))
+      );
+
+      GLint zRotationMatrixUniform = glGetUniformLocation(perspectiveProgram,
+      "zRotationMatrix");
+      glUniformMatrix4fv(zRotationMatrixUniform, 1, GL_TRUE,
+      glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.z,
+      glm::vec3(0.0f, 0.0f, -1.0f)))
+      );
+
+      GLint offsetUniform = glGetUniformLocation(perspectiveProgram, "offset");
+      glUniform3fv(offsetUniform, 1, glm::value_ptr(offset));*/
   }
 
 
-  void Renderer::positionCamera() const {
-    // Camera rotation
+  void Renderer::positionCamera() {
 
+    uboCamera camera;
+    camera.position = cameraPosition;
+    camera.xRotationMatrix = glm::rotate(glm::mat4x4(1.0f), -cameraRotation.x,
+					 glm::vec3(-1.0f, 0.0f, 0.0f));
+    camera.yRotationMatrix = glm::rotate(glm::mat4x4(1.0f), -cameraRotation.y,
+					 glm::vec3(0.0f, -1.0f, 0.0f));
+    camera.zRotationMatrix = glm::rotate(glm::mat4x4(1.0f), -cameraRotation.z,
+					 glm::vec3(0.0f, 0.0f, -1.0f));
+
+     if (cameraOrientation == 0) {
+      GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram,
+						       "uboCamera");
+      glUniformBlockBinding(perspectiveProgram, orientationIndex, 2);
+      glGenBuffers(1, &cameraOrientation);
+      glBindBuffer(GL_UNIFORM_BUFFER, cameraOrientation);
+      glBindBufferBase(GL_UNIFORM_BUFFER, orientationIndex, cameraOrientation);
+      glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+
+    glBindBuffer(GL_UNIFORM_BUFFER, cameraOrientation);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(uboCamera), &camera, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    
+    /*
     GLint xCameraRotationMatrixUniform =
       glGetUniformLocation(perspectiveProgram, "xCameraRotationMatrix");
     GLint yCameraRotationMatrixUniform =
@@ -199,6 +274,7 @@ namespace small3d {
     GLint cameraPositionUniform = glGetUniformLocation(perspectiveProgram,
 						       "cameraPosition");
     glUniform3fv(cameraPositionUniform, 1, glm::value_ptr(cameraPosition));
+    */
   }
 
   GLuint Renderer::getTextureHandle(const std::string name) const {
@@ -236,10 +312,10 @@ namespace small3d {
 		      const float zFar, const float zOffsetFromCamera,
 		      const std::string shadersPath) {
 
-    int screenWidth = width;
-    int screenHeight = height;
+    realScreenWidth = width;
+    realScreenHeight = height;
 
-    this->initWindow(screenWidth, screenHeight, windowTitle);
+    this->initWindow(realScreenWidth, realScreenHeight, windowTitle);
 
     this->frustumScale = frustumScale;
     this->zNear = zNear;
@@ -248,8 +324,8 @@ namespace small3d {
 
     this->initOpenGL();
 
-    glViewport(0, 0, static_cast<GLsizei>(screenWidth),
-	       static_cast<GLsizei>(screenHeight));
+    glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
+	       static_cast<GLsizei>(realScreenHeight));
 
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
@@ -282,22 +358,17 @@ namespace small3d {
 
       glUseProgram(perspectiveProgram);
 
-      // Perspective
+      // Perspective set for the first time here
 
-      GLint perspectiveMatrixUniform =
+      setPerspectiveAndLight();
+      
+      /*      GLint perspectiveMatrixUniform =
 	glGetUniformLocation(perspectiveProgram, "perspectiveMatrix");
 
-      float perspectiveMatrix[16];
-      memset(perspectiveMatrix, 0, sizeof(float) * 16);
-      perspectiveMatrix[0] = frustumScale;
-      perspectiveMatrix[5] = frustumScale * screenWidth / screenHeight;
-      perspectiveMatrix[10] = (zNear + zFar) / (zNear - zFar);
-      perspectiveMatrix[14] = 2.0f * zNear * zFar / (zNear - zFar);
-      perspectiveMatrix[11] = zOffsetFromCamera;
-
+      
       glUniformMatrix4fv(perspectiveMatrixUniform, 1, GL_FALSE,
 			 perspectiveMatrix);
-
+      */
       glUseProgram(0);
     }
     glDetachShader(perspectiveProgram, vertexShader);
@@ -350,16 +421,8 @@ namespace small3d {
     if (!glfwInit()) {
       throw std::runtime_error("Unable to initialise GLFW");
     }
-#ifdef __APPLE__
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    
-    // Workaround for rendering on Mojave
-    glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
-#else
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-#endif
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
@@ -393,6 +456,50 @@ namespace small3d {
     }
 
     glfwMakeContextCurrent(window);
+
+  }
+
+  void Renderer::setPerspectiveAndLight() {
+    uboWorld world;
+    world.perspectiveMatrix[0] = frustumScale;
+    world.perspectiveMatrix[5] = frustumScale * realScreenWidth / realScreenHeight;
+    world.perspectiveMatrix[10] = (zNear + zFar) / (zNear - zFar);
+    world.perspectiveMatrix[14] = 2.0f * zNear * zFar / (zNear - zFar);
+    world.perspectiveMatrix[11] = zOffsetFromCamera;
+    world.lightDirection = lightDirection;
+
+
+    if (worldDetails == 0) {
+      GLuint worldIndex = glGetUniformBlockIndex(perspectiveProgram,
+						 "uboWorld");
+      glUniformBlockBinding(perspectiveProgram, worldIndex, 0);
+      glGenBuffers(1, &worldDetails);
+      glBindBuffer(GL_UNIFORM_BUFFER, worldDetails);
+      glBindBufferBase(GL_UNIFORM_BUFFER, worldIndex, worldDetails);
+      glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+
+    glBindBuffer(GL_UNIFORM_BUFFER, worldDetails);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(uboWorld), &world, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+    uboLight light;
+    light.intensity = lightIntensity;
+
+    if (lightUboId == 0) {
+      GLuint lightUboIndex = glGetUniformBlockIndex(perspectiveProgram,
+        "uboLight");
+      glUniformBlockBinding(perspectiveProgram, lightUboIndex, 2);
+      glGenBuffers(1, &lightUboId);
+      glBindBuffer(GL_UNIFORM_BUFFER, lightUboId);
+      glBindBufferBase(GL_UNIFORM_BUFFER, lightUboIndex, lightUboId);
+      glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+
+    glBindBuffer(GL_UNIFORM_BUFFER, lightUboId);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(uboLight), &light, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
 
   }
   
@@ -584,7 +691,7 @@ namespace small3d {
 				 const glm::vec3 topLeft,
 				 const glm::vec3 bottomRight,
 				 const bool perspective,
-				 const glm::vec4 colour) const {
+				 const glm::vec4 colour) {
     
     float vertices[16] = {
       bottomRight.x, bottomRight.y, bottomRight.z, 1.0f,
@@ -623,10 +730,28 @@ namespace small3d {
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
     //glBindBuffer(GL_ARRAY_BUFFER, 0);
     
-    GLint colourUniform =
+    uboColour colourStruct;
+    colourStruct.colour = colour;
+    
+    if (colourUboId == 0) {
+      GLuint colourUboIndex = glGetUniformBlockIndex(perspective ? perspectiveProgram :
+        orthographicProgram, "uboColour");
+      glUniformBlockBinding(perspective ? perspectiveProgram :
+        orthographicProgram, colourUboIndex, 1);
+      glGenBuffers(1, &colourUboId);
+      glBindBuffer(GL_UNIFORM_BUFFER, colourUboId);
+      glBindBufferBase(GL_UNIFORM_BUFFER, colourUboIndex, colourUboId);
+      glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+
+    glBindBuffer(GL_UNIFORM_BUFFER, colourUboId);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+   /* GLint colourUniform =
       glGetUniformLocation( perspective ? perspectiveProgram :
 			    orthographicProgram, "colour");
-    glUniform4fv(colourUniform, 1, glm::value_ptr(colour));
+    glUniform4fv(colourUniform, 1, glm::value_ptr(colour));*/
 
     GLuint coordBuffer = 0;
     
@@ -662,15 +787,17 @@ namespace small3d {
     if (perspective) {
 
       // Lighting
-      GLint lightDirectionUniform = glGetUniformLocation(perspectiveProgram,
+      setPerspectiveAndLight();
+      /*      GLint lightDirectionUniform = glGetUniformLocation(perspectiveProgram,
 							 "lightDirection");
       glUniform3fv(lightDirectionUniform, 1,
 		   glm::value_ptr(lightDirection));
       
+
       GLint lightIntensityUniform = glGetUniformLocation(perspectiveProgram,
 							 "lightIntensity");
       glUniform1f(lightIntensityUniform, lightIntensity);
-      
+      */
       positionNextObject(glm::vec3(0.0f, 0.0f, 0.0f),
 			 glm::vec3(0.0f, 0.0f, 0.0f));
       positionCamera();
@@ -698,14 +825,14 @@ namespace small3d {
   void Renderer::renderRectangle(const glm::vec4 colour,
 				 const glm::vec3 topLeft,
 				 const glm::vec3 bottomRight,
-				 const bool perspective) const {
+				 const bool perspective) {
     this->renderRectangle("", topLeft, bottomRight, perspective, colour);
   }
   
   void Renderer::render(Model &model, const glm::vec3 offset,
 			const glm::vec3 rotation, 
 			const glm::vec4 colour,
-			const std::string textureName) const {
+			const std::string textureName) {
     
     glUseProgram(perspectiveProgram);
     
@@ -752,13 +879,31 @@ namespace small3d {
     
     
     // Find the colour uniform
-    GLint colourUniform = glGetUniformLocation(perspectiveProgram, "colour");
+    //GLint colourUniform = glGetUniformLocation(perspectiveProgram, "colour");
+
+    if (colourUboId == 0) {
+      GLuint colourUboIndex = glGetUniformBlockIndex( perspectiveProgram, "uboColour");
+      glUniformBlockBinding(perspectiveProgram, colourUboIndex, 1);
+      glGenBuffers(1, &colourUboId);
+      glBindBuffer(GL_UNIFORM_BUFFER, colourUboId);
+      glBindBufferBase(GL_UNIFORM_BUFFER, colourUboIndex, colourUboId);
+      glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+
+    uboColour colourStruct;
     
     if (textureName != "") {
       
       // "Disable" colour since there is a texture
-      glUniform4fv(colourUniform, 1,
-		   glm::value_ptr(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)));
+      //glUniform4fv(colourUniform, 1,
+		  // glm::value_ptr(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)));
+
+      
+      colourStruct.colour = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+
+      glBindBuffer(GL_UNIFORM_BUFFER, colourUboId);
+      glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
+      glBindBuffer(GL_UNIFORM_BUFFER, 0);
       
       GLuint textureHandle = this->getTextureHandle(textureName);
 
@@ -786,11 +931,17 @@ namespace small3d {
     }
     else {
       // If there is no texture, use the given colour
-      glUniform4fv(colourUniform, 1, glm::value_ptr(colour));
+      //glUniform4fv(colourUniform, 1, glm::value_ptr(colour));
+      colourStruct.colour = colour;
+
+      glBindBuffer(GL_UNIFORM_BUFFER, colourUboId);
+      glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
+      glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
     
-    // Lighting
-    GLint lightDirectionUniform = glGetUniformLocation(perspectiveProgram,
+    
+    setPerspectiveAndLight();
+    /*GLint lightDirectionUniform = glGetUniformLocation(perspectiveProgram,
 						       "lightDirection");
     glUniform3fv(lightDirectionUniform, 1,
 		 glm::value_ptr(lightDirection));
@@ -798,7 +949,9 @@ namespace small3d {
     GLint lightIntensityUniform = glGetUniformLocation(perspectiveProgram,
 						       "lightIntensity");
     glUniform1f(lightIntensityUniform, lightIntensity);
+    */
     
+
     positionNextObject(offset, rotation);
     
     positionCamera();
@@ -829,19 +982,19 @@ namespace small3d {
 
   void Renderer::render(Model &model, const glm::vec3 offset,
 			const glm::vec3 rotation,
-			const std::string textureName) const {
+			const std::string textureName) {
     this->render(model, offset, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
 		 textureName);
   }
 
   void Renderer::render(SceneObject &sceneObject,
-			const glm::vec4 colour) const {
+			const glm::vec4 colour) {
     this->render(sceneObject.getModel(), sceneObject.offset,
 		 sceneObject.rotation, colour, "");
   }
 
   void Renderer::render(SceneObject &sceneObject,
-			const std::string textureName) const {
+			const std::string textureName) {
     this->render(sceneObject.getModel(), sceneObject.offset,
 		 sceneObject.rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
 		 textureName);
@@ -883,12 +1036,6 @@ namespace small3d {
   }
   
   void Renderer::clearScreen() const {
-#ifdef __APPLE__
-    // Needed to avoid transparent rendering in Mojave by default
-    // (caused by the transparency hint in initWindow, which is
-    // a workaround for a GLFW problem on that platform)
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 
-#endif
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
   
