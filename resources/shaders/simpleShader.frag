@@ -1,15 +1,19 @@
-#version 330
+#version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-in vec2 textureCoords;
-uniform sampler2D textureImage;
-uniform vec4 colour;
+layout(location = 0) in vec2 textureCoords;
 
-out vec4 outputColour;
+layout(binding = 0) uniform sampler2D textureImage;
+
+layout(binding = 1) uniform uboColour {
+  vec4 colour;
+} col;
+
+layout(location = 0) out vec4 outputColour;
 
 void main() {
-  if (colour != vec4(0, 0, 0, 0)) {
-    outputColour = vec4(colour.rgb, colour.a);
+  if (col.colour != vec4(0, 0, 0, 0)) {
+    outputColour = vec4(col.colour.rgb, col.colour.a);
   }
   else {
 
