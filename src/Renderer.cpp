@@ -94,7 +94,9 @@ namespace small3d {
     GLint infoLogLength;
     glGetProgramiv(linkedProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-    GLchar *infoLog = new GLchar[infoLogLength + 1];
+    uint32_t infoLogCharLength = (uint32_t)infoLogLength + (uint32_t)1;
+
+    GLchar *infoLog = new GLchar[infoLogCharLength];
     GLsizei lengthReturned = 0;
     glGetProgramInfoLog(linkedProgram, infoLogLength, &lengthReturned, infoLog);
 
@@ -112,7 +114,7 @@ namespace small3d {
     GLint infoLogLength;
     glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-    GLchar *infoLog = new GLchar[infoLogLength + 1];
+    GLchar *infoLog = new GLchar[(uint32_t)infoLogLength + (uint32_t)1];
     GLsizei lengthReturned = 0;
     glGetShaderInfoLog(shader, infoLogLength, &lengthReturned, infoLog);
 
@@ -310,19 +312,12 @@ namespace small3d {
 
   void Renderer::init(const int width, const int height,
 		      const std::string windowTitle,
-		      const float frustumScale, const float zNear,
-		      const float zFar, const float zOffsetFromCamera,
 		      const std::string shadersPath) {
 
     realScreenWidth = width;
     realScreenHeight = height;
 
     this->initWindow(realScreenWidth, realScreenHeight, windowTitle);
-
-    this->frustumScale = frustumScale;
-    this->zNear = zNear;
-    this->zFar = zFar;
-    this->zOffsetFromCamera = zOffsetFromCamera;
 
     this->initOpenGL();
 
@@ -505,6 +500,17 @@ namespace small3d {
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
   }
+
+  Renderer::Renderer() {
+    window = 0;
+    perspectiveProgram = 0;
+    orthographicProgram = 0;
+    noShaders = false;
+    lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
+    cameraPosition = glm::vec3(0, 0, 0);
+    cameraRotation = glm::vec3(0, 0, 0);
+  
+  }
   
   Renderer::Renderer(const std::string windowTitle, const int width,
 		     const int height, const float frustumScale,
@@ -519,10 +525,13 @@ namespace small3d {
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
     cameraPosition = glm::vec3(0, 0, 0);
     cameraRotation = glm::vec3(0, 0, 0);
-    lightIntensity = 1.0f;
+    this->zNear = zNear;
+    this->zFar = zFar;
+    this->frustumScale = frustumScale;
+    this->zOffsetFromCamera = zOffsetFromCamera;
+
     
-    init(width, height, windowTitle, frustumScale, zNear, zFar,
-	 zOffsetFromCamera, shadersPath);
+    init(width, height, windowTitle, shadersPath);
     
     FT_Error ftError = FT_Init_FreeType( &library );
     

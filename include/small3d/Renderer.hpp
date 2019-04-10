@@ -40,11 +40,11 @@ namespace small3d
 
     GLFWwindow* window;
 
-    int realScreenWidth, realScreenHeight;
+    int realScreenWidth = 0, realScreenHeight = 0;
 
-    uint32_t perspectiveProgram;
-    uint32_t orthographicProgram;
-    uint32_t vao;
+    uint32_t perspectiveProgram = 0;
+    uint32_t orthographicProgram = 0;
+    uint32_t vao = 0;
 
     uint32_t renderOrientation = 0;
     uint32_t cameraOrientation = 0;
@@ -54,14 +54,14 @@ namespace small3d
     
     bool noShaders;
 
-    float frustumScale;
-    float zNear;
-    float zFar;
-    float zOffsetFromCamera;
+    float frustumScale = 0.0f;
+    float zNear = 0.0f;
+    float zFar = 0.0f;
+    float zOffsetFromCamera = 0.0f;
 
     std::unordered_map<std::string, uint32_t> textures;
 
-    FT_Library library;
+    FT_Library library = 0;
     std::vector<float> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
 
@@ -82,8 +82,6 @@ namespace small3d
 			   const unsigned long height);
 
     void init(const int width, const int height, const std::string windowTitle,
-              const float frustumScale , const float zNear,
-              const float zFar, const float zOffsetFromCamera,
               const std::string shadersPath);
     void initWindow(int &width, int &height,
 		    const std::string windowTitle = "");
@@ -94,7 +92,7 @@ namespace small3d
 	     const float frustumScale, const float zNear, const float zFar,
 	     const float zOffsetFromCamera, const std::string shadersPath);
     
-    Renderer() {};
+    Renderer();
     
   public:
     /**
@@ -115,7 +113,7 @@ namespace small3d
     /**
      * @brief The light intensity (set to -1.0f if no lighting is to be used).
      */
-    float lightIntensity;
+    float lightIntensity = 1.0f;
 
     /**
      * @brief Get the instance of the Renderer (the Renderer is a singleton).
