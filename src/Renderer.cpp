@@ -185,7 +185,7 @@ namespace small3d {
       glUniformBlockBinding(perspectiveProgram, orientationIndex, 1);
       glGenBuffers(1, &renderOrientation);
       glBindBuffer(GL_UNIFORM_BUFFER, renderOrientation);
-      glBindBufferBase(GL_UNIFORM_BUFFER, orientationIndex, renderOrientation);
+      //glBindBufferBase(GL_UNIFORM_BUFFER, orientationIndex, renderOrientation);
       glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
@@ -237,7 +237,7 @@ namespace small3d {
       glUniformBlockBinding(perspectiveProgram, orientationIndex, 2);
       glGenBuffers(1, &cameraOrientation);
       glBindBuffer(GL_UNIFORM_BUFFER, cameraOrientation);
-      glBindBufferBase(GL_UNIFORM_BUFFER, orientationIndex, cameraOrientation);
+      //glBindBufferBase(GL_UNIFORM_BUFFER, orientationIndex, cameraOrientation);
       glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
@@ -475,7 +475,7 @@ namespace small3d {
       glUniformBlockBinding(perspectiveProgram, worldIndex, 0);
       glGenBuffers(1, &worldDetails);
       glBindBuffer(GL_UNIFORM_BUFFER, worldDetails);
-      glBindBufferBase(GL_UNIFORM_BUFFER, worldIndex, worldDetails);
+      //glBindBufferBase(GL_UNIFORM_BUFFER, worldIndex, worldDetails);
       glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
@@ -492,14 +492,13 @@ namespace small3d {
       glUniformBlockBinding(perspectiveProgram, lightUboIndex, 2);
       glGenBuffers(1, &lightUboId);
       glBindBuffer(GL_UNIFORM_BUFFER, lightUboId);
-      glBindBufferBase(GL_UNIFORM_BUFFER, lightUboIndex, lightUboId);
+      //glBindBufferBase(GL_UNIFORM_BUFFER, lightUboIndex, lightUboId);
       glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
     glBindBuffer(GL_UNIFORM_BUFFER, lightUboId);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboLight), &light, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
 
   }
   
@@ -740,7 +739,7 @@ namespace small3d {
         orthographicProgram, colourUboIndex, 1);
       glGenBuffers(1, &colourUboId);
       glBindBuffer(GL_UNIFORM_BUFFER, colourUboId);
-      glBindBufferBase(GL_UNIFORM_BUFFER, colourUboIndex, colourUboId);
+      //glBindBufferBase(GL_UNIFORM_BUFFER, colourUboIndex, colourUboId);
       glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
@@ -886,7 +885,7 @@ namespace small3d {
       glUniformBlockBinding(perspectiveProgram, colourUboIndex, 1);
       glGenBuffers(1, &colourUboId);
       glBindBuffer(GL_UNIFORM_BUFFER, colourUboId);
-      glBindBufferBase(GL_UNIFORM_BUFFER, colourUboIndex, colourUboId);
+      //glBindBufferBase(GL_UNIFORM_BUFFER, colourUboIndex, colourUboId);
       glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
