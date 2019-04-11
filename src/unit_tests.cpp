@@ -129,11 +129,11 @@ TEST(BoundingBoxesTest, LoadBoundingBoxes) {
   
 }
 
-
 TEST(RendererTest, StartAndUse) {
 
   Renderer *renderer = &Renderer::getInstance("test", 640, 480);
-  
+
+  renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.0f);
   
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
@@ -149,6 +149,7 @@ TEST(RendererTest, StartAndUse) {
   glfwShowWindow(renderer->getWindow());
 
   double startSeconds = glfwGetTime();
+
   while(glfwGetTime() - startSeconds < 3.0) {
   //  while(true) {
     glfwPollEvents();

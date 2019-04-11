@@ -28,17 +28,17 @@ namespace small3d {
   struct uboOrientation {
     glm::vec3 offset;
     float padding;
-    glm::mat4 xRotationMatrix;
-    glm::mat4 yRotationMatrix;
-    glm::mat4 zRotationMatrix;
+    glm::mat4x4 xRotationMatrix;
+    glm::mat4x4 yRotationMatrix;
+    glm::mat4x4 zRotationMatrix;
   };
 
   struct uboCamera {
     glm::vec3 position;
     float padding;
-    glm::mat4 xRotationMatrix;
-    glm::mat4 yRotationMatrix;
-    glm::mat4 zRotationMatrix;
+    glm::mat4x4 xRotationMatrix;
+    glm::mat4x4 yRotationMatrix;
+    glm::mat4x4 zRotationMatrix;
   };
 
   struct uboColour {
@@ -175,12 +175,12 @@ namespace small3d {
     uboOrientation orientation;
     memset(&orientation, 0, sizeof(uboOrientation));
 
-    orientation.xRotationMatrix = glm::rotate(glm::mat4(1.0f), rotation.x,
-      glm::vec3(-1.0f, 0.0f, 0.0f));
-    orientation.yRotationMatrix = glm::rotate(glm::mat4(1.0f), rotation.y,
-      glm::vec3(0.0f, -1.0f, 0.0f));
-    orientation.zRotationMatrix = glm::rotate(glm::mat4(1.0f), rotation.z,
-      glm::vec3(0.0f, 0.0f, -1.0f));
+    orientation.xRotationMatrix = glm::rotate(glm::mat4x4(1.0f), rotation.x,
+      glm::vec3(1.0f, 0.0f, 0.0f));
+    orientation.yRotationMatrix = glm::rotate(glm::mat4x4(1.0f), rotation.y,
+      glm::vec3(0.0f, 1.0f, 0.0f));
+    orientation.zRotationMatrix = glm::rotate(glm::mat4x4(1.0f), rotation.z,
+      glm::vec3(0.0f, 0.0f, 1.0f));
     orientation.offset = offset;
 
 
@@ -229,19 +229,18 @@ namespace small3d {
     uboCamera camera;
     memset(&camera, 0, sizeof(uboCamera));
     camera.position = cameraPosition;
-    camera.xRotationMatrix = glm::rotate(glm::mat4(1.0f), -cameraRotation.x,
-      glm::vec3(-1.0f, 0.0f, 0.0f));
-    camera.yRotationMatrix = glm::rotate(glm::mat4(1.0f), -cameraRotation.y,
-      glm::vec3(0.0f, -1.0f, 0.0f));
-    camera.zRotationMatrix = glm::rotate(glm::mat4(1.0f), -cameraRotation.z,
-      glm::vec3(0.0f, 0.0f, -1.0f));
+    camera.xRotationMatrix = glm::rotate(glm::mat4x4(1.0f), -cameraRotation.x,
+      glm::vec3(1.0f, 0.0f, 0.0f));
+    camera.yRotationMatrix = glm::rotate(glm::mat4x4(1.0f), -cameraRotation.y,
+      glm::vec3(0.0f, 1.0f, 0.0f));
+    camera.zRotationMatrix = glm::rotate(glm::mat4x4(1.0f), -cameraRotation.z,
+      glm::vec3(0.0f, 0.0f, 1.0f));
 
     if (cameraOrientation == 0) {
       GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram, "uboCamera");
       glUniformBlockBinding(perspectiveProgram, orientationIndex, 2);
       glGenBuffers(1, &cameraOrientation);
     }
-
 
     glBindBuffer(GL_UNIFORM_BUFFER, cameraOrientation);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboCamera), &camera, GL_DYNAMIC_DRAW);
