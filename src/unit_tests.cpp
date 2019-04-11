@@ -145,7 +145,6 @@ TEST(RendererTest, StartAndUse) {
   
   Image cubeTexture("resources/models/Cube/cubeTexture.png");
   renderer->generateTexture("cubeTexture", cubeTexture);
-
   
   glfwShowWindow(renderer->getWindow());
 
