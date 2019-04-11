@@ -499,6 +499,25 @@ namespace small3d {
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
   }
+  void Renderer::bindTexture(std::string name, bool perspective) {
+    GLuint textureHandle = getTextureHandle(name);
+
+    if (textureHandle == 0) {
+      throw std::runtime_error("Texture " + name +
+        " has not been generated");
+    }
+
+    if (perspective)
+      glActiveTexture(GL_TEXTURE0);
+    else
+      glActiveTexture(GL_TEXTURE1);
+
+    glBindTexture(GL_TEXTURE_2D, textureHandle);
+    GLint loc = glGetUniformLocation(perspective ? perspectiveProgram : orthographicProgram, "textureImage");
+
+    glUniform1i(loc, perspective ? 0 : 1);
+
+  }
 
   Renderer::Renderer() {
     window = 0;
@@ -776,20 +795,7 @@ namespace small3d {
 
     if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
 
-      GLuint textureHandle = getTextureHandle(textureName);
-
-      if (textureHandle == 0) {
-        throw std::runtime_error("Texture " + textureName +
-          " has not been generated");
-      }
-      if (perspective)
-        glActiveTexture(GL_TEXTURE0);
-      else
-        glActiveTexture(GL_TEXTURE1);
-
-      glBindTexture(GL_TEXTURE_2D, textureHandle);
-      GLint loc = glGetUniformLocation(perspective? perspectiveProgram : orthographicProgram, "textureImage");
-      glUniform1i(loc, perspective ? 0 : 1);
+      bindTexture(textureName, perspective);
 
       float textureCoords[8] = {
         1.0f, 1.0f,
@@ -930,14 +936,7 @@ namespace small3d {
       glBindBufferBase(GL_UNIFORM_BUFFER, 4, perspColourUboId);
       glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-      GLuint textureHandle = this->getTextureHandle(textureName);
-
-      if (textureHandle == 0) {
-        throw std::runtime_error("Texture " + textureName +
-          "has not been generated");
-      }
-
-      glBindTexture(GL_TEXTURE_2D, textureHandle);
+      bindTexture(textureName, true);
 
       // UV Coordinates
 

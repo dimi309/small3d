@@ -89,6 +89,8 @@ namespace small3d
 
     void setPerspectiveAndLight();
 
+    void bindTexture(std::string name, bool perspective);
+
     Renderer(const std::string windowTitle, const int width, const int height,
 	     const float frustumScale, const float zNear, const float zFar,
 	     const float zOffsetFromCamera, const std::string shadersPath);
