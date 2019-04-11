@@ -50,7 +50,8 @@ namespace small3d
     uint32_t cameraOrientation = 0;
     uint32_t worldDetails = 0;
     uint32_t lightUboId = 0;
-    uint32_t colourUboId = 0;
+    uint32_t perspColourUboId = 0;
+    uint32_t orthoColourUboId = 0;
     
     bool noShaders;
 
