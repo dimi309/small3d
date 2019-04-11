@@ -21,7 +21,7 @@ namespace small3d {
   }
 
   struct uboWorld {
-    float perspectiveMatrix[16];
+    glm::mat4 perspectiveMatrix;
     glm::vec3 lightDirection;
   };
 
@@ -187,8 +187,7 @@ namespace small3d {
 						       "uboOrientation");
       glUniformBlockBinding(perspectiveProgram, orientationIndex, 1);
       glGenBuffers(1, &renderOrientation);
-      glBindBuffer(GL_UNIFORM_BUFFER, renderOrientation);
-      glBindBuffer(GL_UNIFORM_BUFFER, 0);
+      
     }
 
     glBindBuffer(GL_UNIFORM_BUFFER, renderOrientation);
@@ -234,19 +233,18 @@ namespace small3d {
 					 glm::vec3(0.0f, -1.0f, 0.0f));
     camera.zRotationMatrix = glm::rotate(glm::mat4x4(1.0f), -cameraRotation.z,
 					 glm::vec3(0.0f, 0.0f, -1.0f));
-
-     if (cameraOrientation == 0) {
-      GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram,
-						       "uboCamera");
-      glUniformBlockBinding(perspectiveProgram, orientationIndex, 1);
+  
+    if (cameraOrientation == 0) {
+      GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram, "uboCamera");
+      glUniformBlockBinding(perspectiveProgram, orientationIndex, 2);
       glGenBuffers(1, &cameraOrientation);
-      glBindBuffer(GL_UNIFORM_BUFFER, cameraOrientation);
-      glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
+    
     glBindBuffer(GL_UNIFORM_BUFFER, cameraOrientation);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboCamera), &camera, GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 1, cameraOrientation);
+    checkForOpenGLErrors("camera data", true);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 2, cameraOrientation);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
     
     /*
@@ -458,27 +456,28 @@ namespace small3d {
 
   void Renderer::setPerspectiveAndLight() {
     uboWorld world;
-    memset(&world, 0, sizeof(uboWorld));
-    world.perspectiveMatrix[0] = frustumScale;
-    world.perspectiveMatrix[5] = frustumScale * realScreenWidth / realScreenHeight;
-    world.perspectiveMatrix[10] = (zNear + zFar) / (zNear - zFar);
-    world.perspectiveMatrix[14] = 2.0f * zNear * zFar / (zNear - zFar);
-    world.perspectiveMatrix[11] = zOffsetFromCamera;
+    float tmpmat4[16];
+    memset(&tmpmat4, 0, 16 * sizeof(float));
+    tmpmat4[0] = frustumScale;
+    tmpmat4[5] = frustumScale * realScreenWidth / realScreenHeight;
+    tmpmat4[10] = (zNear + zFar) / (zNear - zFar);
+    tmpmat4[14] = 2.0f * zNear * zFar / (zNear - zFar);
+    tmpmat4[11] = zOffsetFromCamera;
+    world.perspectiveMatrix = glm::make_mat4(tmpmat4);
     world.lightDirection = lightDirection;
 
-
     if (worldDetails == 0) {
-      GLuint worldIndex = glGetUniformBlockIndex(perspectiveProgram,
-						 "uboWorld");
+      GLuint worldIndex = glGetUniformBlockIndex(perspectiveProgram, "uboWorld");
       glUniformBlockBinding(perspectiveProgram, worldIndex, 0);
+      checkForOpenGLErrors("world data binding", true);
       glGenBuffers(1, &worldDetails);
-      glBindBuffer(GL_UNIFORM_BUFFER, worldDetails);
-      glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
-
+    
     glBindBuffer(GL_UNIFORM_BUFFER, worldDetails);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboWorld), &world, GL_DYNAMIC_DRAW);
+    checkForOpenGLErrors("world data", true);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, worldDetails);
+    checkForOpenGLErrors("world data bind base", true);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     uboLight light;
@@ -490,10 +489,8 @@ namespace small3d {
         "uboLight");
       glUniformBlockBinding(perspectiveProgram, lightUboIndex, 5);
       glGenBuffers(1, &lightUboId);
-      glBindBuffer(GL_UNIFORM_BUFFER, lightUboId);
-      glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
-
+    
     glBindBuffer(GL_UNIFORM_BUFFER, lightUboId);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboLight), &light, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 5, lightUboId);
@@ -748,12 +745,11 @@ namespace small3d {
       GLuint colourUboIndex = glGetUniformBlockIndex(perspective ? perspectiveProgram :
         orthographicProgram, "uboColour");
       glUniformBlockBinding(perspective ? perspectiveProgram :
-        orthographicProgram, colourUboIndex, perspective? 4 : 1);
+        orthographicProgram, colourUboIndex, perspective ? 4 : 1);
       glGenBuffers(1, &colourUboId);
-      glBindBuffer(GL_UNIFORM_BUFFER, colourUboId);
-      glBindBuffer(GL_UNIFORM_BUFFER, 0);
+     
     }
-
+    
     glBindBuffer(GL_UNIFORM_BUFFER, colourUboId);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, perspective ? 4 : 1, colourUboId);
@@ -893,11 +889,11 @@ namespace small3d {
     //GLint colourUniform = glGetUniformLocation(perspectiveProgram, "colour");
 
     if (colourUboId == 0) {
-      GLuint colourUboIndex = glGetUniformBlockIndex( perspectiveProgram, "uboColour");
+      
+      GLuint colourUboIndex = glGetUniformBlockIndex(perspectiveProgram, "uboColour");
       glUniformBlockBinding(perspectiveProgram, colourUboIndex, 4);
       glGenBuffers(1, &colourUboId);
-      glBindBuffer(GL_UNIFORM_BUFFER, colourUboId);
-      glBindBuffer(GL_UNIFORM_BUFFER, 0);
+     
     }
 
     uboColour colourStruct;
@@ -908,9 +904,8 @@ namespace small3d {
       // "Disable" colour since there is a texture
       //glUniform4fv(colourUniform, 1,
 		  // glm::value_ptr(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)));
-      
       colourStruct.colour = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-
+      
       glBindBuffer(GL_UNIFORM_BUFFER, colourUboId);
       glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
       glBindBufferBase(GL_UNIFORM_BUFFER, 4, colourUboId);
@@ -944,7 +939,7 @@ namespace small3d {
       // If there is no texture, use the given colour
       //glUniform4fv(colourUniform, 1, glm::value_ptr(colour));
       colourStruct.colour = colour;
-
+      
       glBindBuffer(GL_UNIFORM_BUFFER, colourUboId);
       glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
       glBindBufferBase(GL_UNIFORM_BUFFER, 4, colourUboId);

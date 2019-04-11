@@ -150,7 +150,7 @@ TEST(RendererTest, StartAndUse) {
 
   double startSeconds = glfwGetTime();
   while(glfwGetTime() - startSeconds < 3.0) {
-    
+  //  while(true) {
     glfwPollEvents();
     renderer->clearScreen();
     renderer->renderRectangle(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
@@ -173,6 +173,7 @@ TEST(RendererTest, StartAndUse) {
   
 }
 
+/*
 TEST(SoundTest, LoadAndPlay) {
   Sound snd("resources/sounds/bah.ogg");
   snd.play();
@@ -218,7 +219,7 @@ TEST(TokenTest, GetFourTokens) {
   EXPECT_EQ(4, tokenCount);
   EXPECT_EQ("b", tokens[1]);
 }
-
+*/
 int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
