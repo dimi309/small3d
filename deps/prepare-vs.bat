@@ -1,5 +1,5 @@
 set VSCONFIG=-G"Visual Studio 16 2019" -A x64
-set BUILDTYPE=Release
+set BUILDTYPE=Debug
 
 mkdir include
 mkdir lib
