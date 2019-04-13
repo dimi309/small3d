@@ -36,14 +36,13 @@ void main()
 				    cam.cposition.z, 0.0)) * 
     cam.yRotationMatrix * cam.xRotationMatrix * cam.zRotationMatrix;
 
-  gl_Position =  cameraPos * world.perspectiveMatrix;
+  gl_Position =  world.perspectiveMatrix * cameraPos;
 
   vec4 normalInWorld = normalize(world.perspectiveMatrix *
 				 (vec4(normal, 1) * ori.zRotationMatrix *
 				  ori.xRotationMatrix * ori.yRotationMatrix));
     
-  vec4 lightDirectionWorld = normalize(world.perspectiveMatrix * vec4(world.lightDirection, 1)
-				       * cam.yRotationMatrix * cam.xRotationMatrix * cam.zRotationMatrix);
+  vec4 lightDirectionWorld = normalize(world.perspectiveMatrix * vec4(world.lightDirection, 1));
 
   cosAngIncidence = clamp(dot(normalInWorld, lightDirectionWorld), 0, 1);
   textureCoords = uvCoords;
