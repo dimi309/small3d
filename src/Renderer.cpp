@@ -23,22 +23,22 @@ namespace small3d {
   struct uboWorld {
     glm::mat4 perspectiveMatrix;
     glm::vec3 lightDirection;
+    float padding;
   };
 
   struct uboOrientation {
-    glm::vec3 offset;
-    float padding;
     glm::mat4x4 xRotationMatrix;
     glm::mat4x4 yRotationMatrix;
     glm::mat4x4 zRotationMatrix;
+    glm::vec3 offset;
+    float padding;
   };
 
   struct uboCamera {
-    glm::vec3 position;
-    float padding;
     glm::mat4x4 xRotationMatrix;
     glm::mat4x4 yRotationMatrix;
     glm::mat4x4 zRotationMatrix;
+    glm::vec3 position;
   };
 
   struct uboColour {
@@ -183,7 +183,6 @@ namespace small3d {
       glm::vec3(0.0f, 0.0f, 1.0f));
     orientation.offset = offset;
 
-
     if (renderOrientation == 0) {
       GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram,
         "uboOrientation");
@@ -197,32 +196,7 @@ namespace small3d {
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, renderOrientation);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-
-    /*GLint xRotationMatrixUniform = glGetUniformLocation(perspectiveProgram,
-      "xRotationMatrix");
-      glUniformMatrix4fv(xRotationMatrixUniform, 1, GL_TRUE,
-      glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.x,
-      glm::vec3(-1.0f, 0.0f, 0.0f)))
-      );
-
-      GLint yRotationMatrixUniform = glGetUniformLocation(perspectiveProgram,
-      "yRotationMatrix");
-      glUniformMatrix4fv(yRotationMatrixUniform, 1, GL_TRUE,
-      glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.y,
-      glm::vec3(0.0f, -1.0f, 0.0f)))
-      );
-
-      GLint zRotationMatrixUniform = glGetUniformLocation(perspectiveProgram,
-      "zRotationMatrix");
-      glUniformMatrix4fv(zRotationMatrixUniform, 1, GL_TRUE,
-      glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.z,
-      glm::vec3(0.0f, 0.0f, -1.0f)))
-      );
-
-      GLint offsetUniform = glGetUniformLocation(perspectiveProgram, "offset");
-      glUniform3fv(offsetUniform, 1, glm::value_ptr(offset));*/
   }
-
 
   void Renderer::positionCamera() {
 
@@ -230,11 +204,11 @@ namespace small3d {
     memset(&camera, 0, sizeof(uboCamera));
     camera.position = cameraPosition;
     camera.xRotationMatrix = glm::rotate(glm::mat4x4(1.0f), -cameraRotation.x,
-      glm::vec3(1.0f, 0.0f, 0.0f));
+      glm::vec3(-1.0f, 0.0f, 0.0f));
     camera.yRotationMatrix = glm::rotate(glm::mat4x4(1.0f), -cameraRotation.y,
-      glm::vec3(0.0f, 1.0f, 0.0f));
+      glm::vec3(0.0f, -1.0f, 0.0f));
     camera.zRotationMatrix = glm::rotate(glm::mat4x4(1.0f), -cameraRotation.z,
-      glm::vec3(0.0f, 0.0f, 1.0f));
+      glm::vec3(0.0f, 0.0f, -1.0f));
 
     if (cameraOrientation == 0) {
       GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram, "uboCamera");
@@ -247,37 +221,7 @@ namespace small3d {
     checkForOpenGLErrors("camera data", true);
     glBindBufferBase(GL_UNIFORM_BUFFER, 2, cameraOrientation);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-    /*
-    GLint xCameraRotationMatrixUniform =
-      glGetUniformLocation(perspectiveProgram, "xCameraRotationMatrix");
-    GLint yCameraRotationMatrixUniform =
-      glGetUniformLocation(perspectiveProgram, "yCameraRotationMatrix");
-    GLint zCameraRotationMatrixUniform =
-      glGetUniformLocation(perspectiveProgram, "zCameraRotationMatrix");
-
-
-    glUniformMatrix4fv(xCameraRotationMatrixUniform, 1, GL_TRUE,
-           glm::value_ptr(glm::rotate(glm::mat4x4(1.0f),
-              -cameraRotation.x,
-              glm::vec3(-1.0f, 0.0f, 0.0f)))
-           );
-    glUniformMatrix4fv(yCameraRotationMatrixUniform, 1, GL_TRUE,
-           glm::value_ptr(glm::rotate(glm::mat4x4(1.0f),
-              -cameraRotation.y,
-              glm::vec3(0.0f, -1.0f, 0.0f)))
-           );
-    glUniformMatrix4fv(zCameraRotationMatrixUniform, 1, GL_TRUE,
-           glm::value_ptr(glm::rotate(glm::mat4x4(1.0f),
-              -cameraRotation.z,
-              glm::vec3(0.0f, 0.0f, -1.0f)))
-           );
-
-    // Camera position
-    GLint cameraPositionUniform = glGetUniformLocation(perspectiveProgram,
-                   "cameraPosition");
-    glUniform3fv(cameraPositionUniform, 1, glm::value_ptr(cameraPosition));
-    */
+    
   }
 
   GLuint Renderer::getTextureHandle(const std::string name) const {
@@ -354,17 +298,8 @@ namespace small3d {
 
       glUseProgram(perspectiveProgram);
 
-      // Perspective set for the first time here
-
       setPerspectiveAndLight();
 
-      /*      GLint perspectiveMatrixUniform =
-  glGetUniformLocation(perspectiveProgram, "perspectiveMatrix");
-
-
-      glUniformMatrix4fv(perspectiveMatrixUniform, 1, GL_FALSE,
-       perspectiveMatrix);
-      */
       glUseProgram(0);
     }
     glDetachShader(perspectiveProgram, vertexShader);
@@ -418,7 +353,7 @@ namespace small3d {
       throw std::runtime_error("Unable to initialise GLFW");
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
@@ -457,13 +392,14 @@ namespace small3d {
 
   void Renderer::setPerspectiveAndLight() {
     uboWorld world;
+    memset(&world, 0, sizeof(uboWorld));
     float tmpmat4[16];
     memset(&tmpmat4, 0, 16 * sizeof(float));
     tmpmat4[0] = frustumScale;
     tmpmat4[5] = frustumScale * realScreenWidth / realScreenHeight;
     tmpmat4[10] = (zNear + zFar) / (zNear - zFar);
-    tmpmat4[14] = 2.0f * zNear * zFar / (zNear - zFar);
-    tmpmat4[11] = zOffsetFromCamera;
+    tmpmat4[11] = 2.0f * zNear * zFar / (zNear - zFar);
+    tmpmat4[14] = zOffsetFromCamera;
     world.perspectiveMatrix = glm::make_mat4(tmpmat4);
     world.lightDirection = lightDirection;
 
