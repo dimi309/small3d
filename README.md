@@ -12,10 +12,8 @@ shading) and also render images and text. A very easy to use Sound object is
 also provided that can play OGG files on all supported platforms via a common 
 interface. Basic collision detection has also been implemented.
 
-small3d works on Windows and Linux and supports Visual Studio, gcc (even MinGW) 
-and clang for compilation. It should also work on MacOS, at least it used to.
-But since I no longer have an Apple computer, MacOS support will probably 
-degrade over time.
+small3d works on Windows, MacOS and Linux and supports Visual Studio, gcc (even 
+MinGW) and clang for compilation.
 
 All small3d dependencies are distributed together with its source code. They can
 be built by executing a single script (see below).
