@@ -292,8 +292,8 @@ namespace small3d {
       perspectiveMatrix[0] = frustumScale;
       perspectiveMatrix[5] = frustumScale * screenWidth / screenHeight;
       perspectiveMatrix[10] = (zNear + zFar) / (zNear - zFar);
-      perspectiveMatrix[14] = 2.0f * zNear * zFar / (zNear - zFar);
-      perspectiveMatrix[11] = zOffsetFromCamera;
+      perspectiveMatrix[11] = 2.0f * zNear * zFar / (zNear - zFar);
+      perspectiveMatrix[14] = zOffsetFromCamera;
 
       glUniformMatrix4fv(perspectiveMatrixUniform, 1, GL_FALSE,
 			 perspectiveMatrix);
