@@ -175,12 +175,12 @@ namespace small3d {
     uboOrientation orientation;
     memset(&orientation, 0, sizeof(uboOrientation));
 
-    orientation.xRotationMatrix = glm::rotate(glm::mat4x4(1.0f), rotation.x,
-      glm::vec3(1.0f, 0.0f, 0.0f));
-    orientation.yRotationMatrix = glm::rotate(glm::mat4x4(1.0f), rotation.y,
-      glm::vec3(0.0f, 1.0f, 0.0f));
-    orientation.zRotationMatrix = glm::rotate(glm::mat4x4(1.0f), rotation.z,
-      glm::vec3(0.0f, 0.0f, 1.0f));
+    orientation.xRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.x,
+      glm::vec3(1.0f, 0.0f, 0.0f)));
+    orientation.yRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.y,
+      glm::vec3(0.0f, 1.0f, 0.0f)));
+    orientation.zRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.z,
+      glm::vec3(0.0f, 0.0f, 1.0f)));
     orientation.offset = offset;
 
     if (renderOrientation == 0) {
@@ -203,11 +203,11 @@ namespace small3d {
     uboCamera camera;
     memset(&camera, 0, sizeof(uboCamera));
     camera.position = cameraPosition;
-    camera.xRotationMatrix = glm::rotate(glm::mat4x4(1.0f), -cameraRotation.x,
+    camera.xRotationMatrix = glm::rotate(glm::mat4x4(1.0f), cameraRotation.x,
       glm::vec3(1.0f, 0.0f, 0.0f));
-    camera.yRotationMatrix = glm::rotate(glm::mat4x4(1.0f), -cameraRotation.y,
+    camera.yRotationMatrix = glm::rotate(glm::mat4x4(1.0f), cameraRotation.y,
       glm::vec3(0.0f, 1.0f, 0.0f));
-    camera.zRotationMatrix = glm::rotate(glm::mat4x4(1.0f), -cameraRotation.z,
+    camera.zRotationMatrix = glm::rotate(glm::mat4x4(1.0f), cameraRotation.z,
       glm::vec3(0.0f, 0.0f, 1.0f));
 
     if (cameraOrientation == 0) {

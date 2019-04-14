@@ -29,21 +29,21 @@ layout(location = 1) out vec2 textureCoords;
 
 void main()
 {
-  vec4 worldPos = position * ori.zRotationMatrix * ori.xRotationMatrix *
-    ori.yRotationMatrix + vec4(ori.offset.x, ori.offset.y, ori.offset.z, 0.0);
+  vec4 worldPos = ori.yRotationMatrix * ori.xRotationMatrix *
+    ori.zRotationMatrix * position + vec4(ori.offset, 0.0);
 
-  vec4 cameraPos = (worldPos - vec4(cam.cposition.x, cam.cposition.y,
-				    cam.cposition.z, 0.0)) * 
-    cam.yRotationMatrix * cam.xRotationMatrix * cam.zRotationMatrix;
+  vec4 cameraPos = cam.zRotationMatrix * cam.xRotationMatrix *
+    cam.yRotationMatrix * (worldPos - vec4(cam.cposition, 0.0));
 
   gl_Position =  world.perspectiveMatrix * cameraPos;
 
-  vec4 normalInWorld = normalize(world.perspectiveMatrix *
-				 (vec4(normal, 1) * ori.zRotationMatrix *
-				  ori.xRotationMatrix * ori.yRotationMatrix));
+  vec4 normalInWorld = normalize(ori.yRotationMatrix * ori.xRotationMatrix *
+				 ori.zRotationMatrix * vec4(normal, 1) * world.perspectiveMatrix);
     
-  vec4 lightDirectionWorld = normalize(world.perspectiveMatrix * vec4(world.lightDirection, 1));
+  vec4 lightDirectionWorld = normalize(vec4(world.lightDirection, 1) * world.perspectiveMatrix);
 
   cosAngIncidence = clamp(dot(normalInWorld, lightDirectionWorld), 0, 1);
+
   textureCoords = uvCoords;
+  
 }
