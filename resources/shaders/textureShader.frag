@@ -18,7 +18,12 @@ layout(location = 0) out vec4 outputColour;
 
 void main() {
   if (col.colour != vec4(0, 0, 0, 0)) {
-    outputColour = vec4((cosAngIncidence * col.colour).rgb, col.colour.a);
+    if (light.intensity == -1) {
+      outputColour = col.colour;
+    }
+    else {
+      outputColour = vec4((cosAngIncidence * col.colour).rgb, col.colour.a);
+    }
   }
   else {
     vec4 tcolour = texture(textureImage, textureCoords);

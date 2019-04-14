@@ -133,15 +133,14 @@ TEST(RendererTest, StartAndUse) {
 
   Renderer *renderer = &Renderer::getInstance("test", 640, 480);
 
-  renderer->cameraPosition = glm::vec3(5.0f, 5.0f, 5.0f);
-  //renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
+  renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
   
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
   renderer->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
   SceneObject object2("texutredCube", "resources/models/Cube/Cube.obj");
-  object2.offset = glm::vec3(-2.0f, -1.0f, -4.0f);
+  object2.offset = glm::vec3(-2.0f, -1.0f, -7.0f);
   object2.rotation = glm::vec3(0.3f, 1.3f, 0.0f);
   
   Image cubeTexture("resources/models/Cube/cubeTexture.png");
@@ -159,8 +158,8 @@ TEST(RendererTest, StartAndUse) {
 			      glm::vec3(-0.5f, -0.5f, 1.0f), false);
 
     renderer->renderRectangle("cubeTexture",
-			      glm::vec3(0.0f, 0.5f, -1.0f),
-			      glm::vec3(1.0f, -1.0f, -1.0f), true);
+			      glm::vec3(0.0f, 0.5f, -2.0f),
+			      glm::vec3(1.0f, -1.0f, -2.0f), true);
     
     renderer->render(object2, "cubeTexture");
 
@@ -174,7 +173,6 @@ TEST(RendererTest, StartAndUse) {
   
 }
 
-/*
 TEST(SoundTest, LoadAndPlay) {
   Sound snd("resources/sounds/bah.ogg");
   snd.play();
@@ -220,7 +218,7 @@ TEST(TokenTest, GetFourTokens) {
   EXPECT_EQ(4, tokenCount);
   EXPECT_EQ("b", tokens[1]);
 }
-*/
+
 int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
