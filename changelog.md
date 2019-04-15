@@ -3,6 +3,10 @@
 small3d changes per version
 ===========================
 
+v1.694 2019-04-19
+
+- Reorganisation and improvement of shader logic.
+
 v1.693 2019-03-17
 
 - Corrected google test related bug in VS Debug build.
