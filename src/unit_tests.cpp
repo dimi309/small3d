@@ -129,11 +129,11 @@ TEST(BoundingBoxesTest, LoadBoundingBoxes) {
   
 }
 
-
 TEST(RendererTest, StartAndUse) {
 
   Renderer *renderer = &Renderer::getInstance("test", 640, 480);
-  
+
+  renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
   
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
@@ -145,13 +145,12 @@ TEST(RendererTest, StartAndUse) {
   
   Image cubeTexture("resources/models/Cube/cubeTexture.png");
   renderer->generateTexture("cubeTexture", cubeTexture);
-
   
   glfwShowWindow(renderer->getWindow());
 
   double startSeconds = glfwGetTime();
+
   while(glfwGetTime() - startSeconds < 3.0) {
-    
     glfwPollEvents();
     renderer->clearScreen();
     renderer->renderRectangle(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),

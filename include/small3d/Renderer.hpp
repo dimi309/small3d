@@ -40,20 +40,29 @@ namespace small3d
 
     GLFWwindow* window;
 
-    uint32_t perspectiveProgram;
-    uint32_t orthographicProgram;
-    uint32_t vao;
+    int realScreenWidth = 0, realScreenHeight = 0;
 
+    uint32_t perspectiveProgram = 0;
+    uint32_t orthographicProgram = 0;
+    uint32_t vao = 0;
+
+    uint32_t renderOrientation = 0;
+    uint32_t cameraOrientation = 0;
+    uint32_t worldDetails = 0;
+    uint32_t lightUboId = 0;
+    uint32_t perspColourUboId = 0;
+    uint32_t orthoColourUboId = 0;
+    
     bool noShaders;
 
-    float frustumScale;
-    float zNear;
-    float zFar;
-    float zOffsetFromCamera;
+    float frustumScale = 0.0f;
+    float zNear = 0.0f;
+    float zFar = 0.0f;
+    float zOffsetFromCamera = 0.0f;
 
     std::unordered_map<std::string, uint32_t> textures;
 
-    FT_Library library;
+    FT_Library library = 0;
     std::vector<float> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
 
@@ -74,17 +83,19 @@ namespace small3d
 			   const unsigned long height);
 
     void init(const int width, const int height, const std::string windowTitle,
-              const float frustumScale , const float zNear,
-              const float zFar, const float zOffsetFromCamera,
               const std::string shadersPath);
     void initWindow(int &width, int &height,
 		    const std::string windowTitle = "");
+
+    void setPerspectiveAndLight();
+
+    void bindTexture(std::string name, bool perspective);
 
     Renderer(const std::string windowTitle, const int width, const int height,
 	     const float frustumScale, const float zNear, const float zFar,
 	     const float zOffsetFromCamera, const std::string shadersPath);
     
-    Renderer() {};
+    Renderer();
     
   public:
     /**
@@ -105,7 +116,7 @@ namespace small3d
     /**
      * @brief The light intensity (set to -1.0f if no lighting is to be used).
      */
-    float lightIntensity;
+    float lightIntensity = 1.0f;
 
     /**
      * @brief Get the instance of the Renderer (the Renderer is a singleton).
@@ -203,7 +214,7 @@ namespace small3d
 			 const glm::vec3 bottomRight,
 			 const bool perspective = false,
 			 const glm::vec4 colour =
-			 glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) const;
+			 glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
     /**
      * @brief Render a rectangle, using two of its corners that are diagonally
@@ -216,7 +227,7 @@ namespace small3d
      */
     void renderRectangle(const glm::vec4 colour, const glm::vec3 topLeft,
 			 const glm::vec3 bottomRight, 
-			 const bool perspective = false) const;
+			 const bool perspective = false);
     
     /**
      * @brief Render a Model
@@ -230,7 +241,7 @@ namespace small3d
      *                    be ignored.
      */
     void render(Model &model, const glm::vec3 offset, const glm::vec3 rotation, 
-		const glm::vec4 colour, const std::string textureName="") const;
+		const glm::vec4 colour, const std::string textureName="");
 
     /**
      * @brief Render a Model.
@@ -241,14 +252,14 @@ namespace small3d
      *                    The texture has to have been generated already.
      */
     void render(Model &model, const glm::vec3 offset, const glm::vec3 rotation,
-		const std::string textureName) const;
+		const std::string textureName);
 
     /**
      * @brief Render a SceneObject
      * @param sceneObject The object
      * @param colour The colour the object. 
      */
-    void render(SceneObject &sceneObject, const glm::vec4 colour) const;
+    void render(SceneObject &sceneObject, const glm::vec4 colour);
 
     /**
      * @brief Render a SceneObject
@@ -256,7 +267,7 @@ namespace small3d
      * @param textureName The name of the texture to attach to the object.
      *                    The texture has to have been generated already. 
      */
-    void render(SceneObject &sceneObject, const std::string textureName) const;
+    void render(SceneObject &sceneObject, const std::string textureName);
 
     /**
      * @brief Render some text on the screen.
