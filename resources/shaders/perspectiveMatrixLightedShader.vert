@@ -35,7 +35,7 @@ void main()
   vec4 cameraPos = cam.zRotationMatrix * cam.xRotationMatrix *
     cam.yRotationMatrix * (worldPos - vec4(cam.cposition, 0.0));
 
-  gl_Position =  world.perspectiveMatrix * cameraPos;
+  gl_Position =  cameraPos * world.perspectiveMatrix;
 
   vec4 normalInWorld = normalize(ori.yRotationMatrix * ori.xRotationMatrix *
 				 ori.zRotationMatrix * vec4(normal, 1) * world.perspectiveMatrix);
