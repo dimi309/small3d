@@ -38,9 +38,11 @@ void main()
   gl_Position =  cameraPos * world.perspectiveMatrix;
 
   vec4 normalInWorld = normalize(ori.yRotationMatrix * ori.xRotationMatrix *
-				 ori.zRotationMatrix * vec4(normal, 1) * world.perspectiveMatrix);
+				 ori.zRotationMatrix * vec4(normal, 1) *
+				 world.perspectiveMatrix);
     
-  vec4 lightDirectionWorld = normalize(vec4(world.lightDirection, 1) * world.perspectiveMatrix);
+  vec4 lightDirectionWorld = normalize(vec4(world.lightDirection, 1) *
+				       world.perspectiveMatrix);
 
   cosAngIncidence = clamp(dot(normalInWorld, lightDirectionWorld), 0, 1);
 
