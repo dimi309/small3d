@@ -96,9 +96,7 @@ namespace small3d {
     GLint infoLogLength;
     glGetProgramiv(linkedProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-    uint32_t infoLogCharLength = (uint32_t)infoLogLength + (uint32_t)1;
-
-    GLchar* infoLog = new GLchar[infoLogCharLength];
+    GLchar* infoLog = new GLchar[infoLogLength + 1];
     GLsizei lengthReturned = 0;
     glGetProgramInfoLog(linkedProgram, infoLogLength, &lengthReturned, infoLog);
 
@@ -766,7 +764,8 @@ namespace small3d {
       glUniform1f(lightIntensityUniform, lightIntensity);
       */
 
-      positionNextObject(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+      positionNextObject(glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(0.0f, 0.0f, 0.0f));
       positionCamera();
     }
 
