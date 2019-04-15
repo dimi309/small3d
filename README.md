@@ -12,10 +12,8 @@ shading) and also render images and text. A very easy to use Sound object is
 also provided that can play OGG files on all supported platforms via a common 
 interface. Basic collision detection has also been implemented.
 
-small3d works on Windows and Linux and supports Visual Studio, gcc (even MinGW) 
-and clang for compilation. It should also work on MacOS, at least it used to.
-But since I no longer have an Apple computer, MacOS support will probably 
-degrade over time.
+small3d works on Windows, MacOS and Linux and supports Visual Studio, gcc (even 
+MinGW) and clang for compilation.
 
 All small3d dependencies are distributed together with its source code. They can
 be built by executing a single script (see below).
@@ -40,7 +38,7 @@ this:
 	
 On Windows, you need to execute `cmake .. -G"MinGW Makefiles"`, 
 or with the preferred Visual Studio configuration
-(e.g. `cmake .. -G"Visual Studio 15 2017 Win64"`).
+(e.g. `cmake .. -G"Visual Studio 16 2019" -A x64`).
 Make sure that *prepare-vs.bat* is run with the same configuration (see the
 parameters at the top, inside the file). Also, make sure to run build under the
 configuration also defined in *prepare-vs.bat* parameters, e.g.
@@ -357,7 +355,7 @@ from the root *ball* directory execute:
 
 On Windows, you need to execute `cmake .. -G"MinGW Makefiles"`,
 or with the preferred Visual Studio configuration
-(e.g. `cmake .. -G"Visual Studio 15 2017 Win64"`).
+(e.g. `cmake .. -G"Visual Studio 16 2019" -A x64`).
 
 Note that you have to be inside the build/bin directory in order to execute the
 program, otherwise it will not find the necessary resource files (shaders,

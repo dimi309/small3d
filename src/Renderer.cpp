@@ -216,10 +216,9 @@ namespace small3d {
 
     glBindBuffer(GL_UNIFORM_BUFFER, cameraOrientation);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboCamera), &camera, GL_DYNAMIC_DRAW);
-    checkForOpenGLErrors("camera data", true);
     glBindBufferBase(GL_UNIFORM_BUFFER, 2, cameraOrientation);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
-    
+
   }
 
   GLuint Renderer::getTextureHandle(const std::string name) const {
@@ -404,15 +403,12 @@ namespace small3d {
     if (worldDetails == 0) {
       GLuint worldIndex = glGetUniformBlockIndex(perspectiveProgram, "uboWorld");
       glUniformBlockBinding(perspectiveProgram, worldIndex, 0);
-      checkForOpenGLErrors("world data binding", true);
       glGenBuffers(1, &worldDetails);
     }
 
     glBindBuffer(GL_UNIFORM_BUFFER, worldDetails);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboWorld), &world, GL_DYNAMIC_DRAW);
-    checkForOpenGLErrors("world data", true);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, worldDetails);
-    checkForOpenGLErrors("world data bind base", true);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     uboLight light;
@@ -713,16 +709,10 @@ namespace small3d {
 
     }
 
-
     glBindBuffer(GL_UNIFORM_BUFFER, perspective ? perspColourUboId : orthoColourUboId);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, perspective ? 4 : 1, perspective ? perspColourUboId : orthoColourUboId);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-    /* GLint colourUniform =
-       glGetUniformLocation( perspective ? perspectiveProgram :
-           orthographicProgram, "colour");
-     glUniform4fv(colourUniform, 1, glm::value_ptr(colour));*/
 
     GLuint coordBuffer = 0;
 
@@ -750,19 +740,7 @@ namespace small3d {
 
     if (perspective) {
 
-      // Lighting
       setPerspectiveAndLight();
-
-      /*      GLint lightDirectionUniform = glGetUniformLocation(perspectiveProgram,
-               "lightDirection");
-      glUniform3fv(lightDirectionUniform, 1,
-       glm::value_ptr(lightDirection));
-
-
-      GLint lightIntensityUniform = glGetUniformLocation(perspectiveProgram,
-               "lightIntensity");
-      glUniform1f(lightIntensityUniform, lightIntensity);
-      */
 
       positionNextObject(glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(0.0f, 0.0f, 0.0f));
@@ -785,7 +763,6 @@ namespace small3d {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-    checkForOpenGLErrors("rendering rectangle", true);
   }
 
   void Renderer::renderRectangle(const glm::vec4 colour,
@@ -843,10 +820,6 @@ namespace small3d {
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-
-    // Find the colour uniform
-    //GLint colourUniform = glGetUniformLocation(perspectiveProgram, "colour");
-
     if (perspColourUboId == 0) {
 
       GLuint colourUboIndex = glGetUniformBlockIndex(perspectiveProgram, "uboColour");
@@ -861,8 +834,7 @@ namespace small3d {
     if (textureName != "") {
 
       // "Disable" colour since there is a texture
-      //glUniform4fv(colourUniform, 1,
-      // glm::value_ptr(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)));
+
       colourStruct.colour = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
       glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
@@ -889,7 +861,7 @@ namespace small3d {
     }
     else {
       // If there is no texture, use the given colour
-      //glUniform4fv(colourUniform, 1, glm::value_ptr(colour));
+
       colourStruct.colour = colour;
 
       glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
@@ -898,26 +870,11 @@ namespace small3d {
       glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
-
     setPerspectiveAndLight();
-    /*GLint lightDirectionUniform = glGetUniformLocation(perspectiveProgram,
-                   "lightDirection");
-    glUniform3fv(lightDirectionUniform, 1,
-     glm::value_ptr(lightDirection));
-
-    GLint lightIntensityUniform = glGetUniformLocation(perspectiveProgram,
-                   "lightIntensity");
-    glUniform1f(lightIntensityUniform, lightIntensity);
-    */
-
 
     positionNextObject(offset, rotation);
 
     positionCamera();
-
-    // Throw an exception if there was an error in OpenGL, during
-    // any of the above.
-    checkForOpenGLErrors("rendering model", true);
 
     // Draw
     glDrawElements(GL_TRIANGLES,
