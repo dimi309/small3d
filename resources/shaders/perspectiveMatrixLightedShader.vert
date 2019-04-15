@@ -27,10 +27,10 @@ void main()
   vec4 worldPos = yRotationMatrix * xRotationMatrix * zRotationMatrix *
     position + vec4(offset, 0.0);
 
-  vec4 cameraPos = zRotationMatrix * xRotationMatrix
-    * yRotationMatrix * (worldPos - vec4(cameraPosition, 0.0));
+  vec4 cameraPos = zCameraRotationMatrix * xCameraRotationMatrix
+    * yCameraRotationMatrix * (worldPos - vec4(cameraPosition, 0.0));
 
-  gl_Position = perspectiveMatrix * cameraPos;
+  gl_Position = cameraPos * perspectiveMatrix;
 
   vec4 normalInWorld = normalize(yRotationMatrix * xRotationMatrix *
 				 zRotationMatrix * vec4(normal, 1) * 
