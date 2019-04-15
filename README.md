@@ -38,7 +38,7 @@ this:
 	
 On Windows, you need to execute `cmake .. -G"MinGW Makefiles"`, 
 or with the preferred Visual Studio configuration
-(e.g. `cmake .. -G"Visual Studio 15 2017 Win64"`).
+(e.g. `cmake .. -G"Visual Studio 16 2019" -A x64`).
 Make sure that *prepare-vs.bat* is run with the same configuration (see the
 parameters at the top, inside the file). Also, make sure to run build under the
 configuration also defined in *prepare-vs.bat* parameters, e.g.
@@ -355,7 +355,7 @@ from the root *ball* directory execute:
 
 On Windows, you need to execute `cmake .. -G"MinGW Makefiles"`,
 or with the preferred Visual Studio configuration
-(e.g. `cmake .. -G"Visual Studio 15 2017 Win64"`).
+(e.g. `cmake .. -G"Visual Studio 16 2019" -A x64`).
 
 Note that you have to be inside the build/bin directory in order to execute the
 program, otherwise it will not find the necessary resource files (shaders,

@@ -37,12 +37,12 @@ namespace small3d {
   }
 
   GLuint Renderer::compileShader(const std::string shaderSourceFile,
-    const uint32_t shaderType) const {
+				 const uint32_t shaderType) const {
     GLuint shader = glCreateShader(shaderType);
     std::string shaderSource = this->loadShaderFromFile(shaderSourceFile);
     if (shaderSource.length() == 0) {
       throw std::runtime_error("Shader source file '" + shaderSourceFile +
-        "' is empty or not found.");
+			       "' is empty or not found.");
     }
     const char* shaderSourceChars = shaderSource.c_str();
     glShaderSource(shader, 1, &shaderSourceChars, NULL);
@@ -53,8 +53,8 @@ namespace small3d {
 
     if (status == GL_FALSE) {
       throw std::runtime_error(
-        "Failed to compile shader:\n" + shaderSource +
-        "\n" + this->getShaderInfoLog(shader));
+			       "Failed to compile shader:\n" + shaderSource +
+			       "\n" + this->getShaderInfoLog(shader));
     }
     else {
       LOGDEBUG("Shader " + shaderSourceFile + " compiled successfully.");
@@ -117,8 +117,8 @@ namespace small3d {
     checkForOpenGLErrors("initialising GLEW", false);
 
     LOGINFO("OpenGL version: " +
-      std::string(reinterpret_cast<char*>
-      (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
+	    std::string(reinterpret_cast<char*>
+			(const_cast<GLubyte*>(glGetString(GL_VERSION)))));
 
   }
 
@@ -139,29 +139,29 @@ namespace small3d {
   }
 
   void Renderer::positionNextObject(const glm::vec3 offset,
-    const glm::vec3 rotation) const {
+				    const glm::vec3 rotation) const {
     // Rotation
 
     GLint xRotationMatrixUniform = glGetUniformLocation(perspectiveProgram,
-      "xRotationMatrix");
+							"xRotationMatrix");
     glUniformMatrix4fv(xRotationMatrixUniform, 1, GL_TRUE,
-      glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.x,
-        glm::vec3(1.0f, 0.0f, 0.0f)))
-    );
+		       glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.x,
+						  glm::vec3(1.0f, 0.0f, 0.0f)))
+		       );
 
     GLint yRotationMatrixUniform = glGetUniformLocation(perspectiveProgram,
-      "yRotationMatrix");
+							"yRotationMatrix");
     glUniformMatrix4fv(yRotationMatrixUniform, 1, GL_TRUE,
-      glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.y,
-        glm::vec3(0.0f, 1.0f, 0.0f)))
-    );
+		       glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.y,
+						  glm::vec3(0.0f, 1.0f, 0.0f)))
+		       );
 
     GLint zRotationMatrixUniform = glGetUniformLocation(perspectiveProgram,
-      "zRotationMatrix");
+							"zRotationMatrix");
     glUniformMatrix4fv(zRotationMatrixUniform, 1, GL_TRUE,
-      glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.z,
-        glm::vec3(0.0f, 0.0f, 1.0f)))
-    );
+		       glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.z,
+						  glm::vec3(0.0f, 0.0f, 1.0f)))
+		       );
 
     GLint offsetUniform = glGetUniformLocation(perspectiveProgram, "offset");
     glUniform3fv(offsetUniform, 1, glm::value_ptr(offset));
@@ -179,24 +179,24 @@ namespace small3d {
       glGetUniformLocation(perspectiveProgram, "zCameraRotationMatrix");
 
     glUniformMatrix4fv(xCameraRotationMatrixUniform, 1, GL_FALSE,
-      glm::value_ptr(glm::rotate(glm::mat4x4(1.0f),
-        cameraRotation.x,
-        glm::vec3(1.0f, 0.0f, 0.0f)))
-    );
+		       glm::value_ptr(glm::rotate(glm::mat4x4(1.0f),
+						  cameraRotation.x,
+						  glm::vec3(1.0f, 0.0f, 0.0f)))
+		       );
     glUniformMatrix4fv(yCameraRotationMatrixUniform, 1, GL_FALSE,
-      glm::value_ptr(glm::rotate(glm::mat4x4(1.0f),
-        cameraRotation.y,
-        glm::vec3(0.0f, 1.0f, 0.0f)))
-    );
+		       glm::value_ptr(glm::rotate(glm::mat4x4(1.0f),
+						  cameraRotation.y,
+						  glm::vec3(0.0f, 1.0f, 0.0f)))
+		       );
     glUniformMatrix4fv(zCameraRotationMatrixUniform, 1, GL_FALSE,
-      glm::value_ptr(glm::rotate(glm::mat4x4(1.0f),
-        cameraRotation.z,
-        glm::vec3(0.0f, 0.0f, 1.0f)))
-    );
+		       glm::value_ptr(glm::rotate(glm::mat4x4(1.0f),
+						  cameraRotation.z,
+						  glm::vec3(0.0f, 0.0f, 1.0f)))
+		       );
 
     // Camera position
     GLint cameraPositionUniform = glGetUniformLocation(perspectiveProgram,
-      "cameraPosition");
+						       "cameraPosition");
     glUniform3fv(cameraPositionUniform, 1, glm::value_ptr(cameraPosition));
   }
 
@@ -210,8 +210,8 @@ namespace small3d {
   }
 
   GLuint Renderer::generateTexture(const std::string name, const float* data,
-    const unsigned long width,
-    const unsigned long height) {
+				   const unsigned long width,
+				   const unsigned long height) {
 
     GLuint textureHandle;
     glGenTextures(1, &textureHandle);
@@ -222,7 +222,7 @@ namespace small3d {
     GLint internalFormat = GL_RGBA32F;
 
     glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, GL_RGBA,
-      GL_FLOAT, data);
+		 GL_FLOAT, data);
 
     textures.insert(make_pair(name, textureHandle));
 
@@ -230,8 +230,8 @@ namespace small3d {
   }
 
   void Renderer::init(const int width, const int height,
-    const std::string windowTitle,
-    const std::string shadersPath) {
+		      const std::string windowTitle,
+		      const std::string shadersPath) {
 
     realScreenWidth = width;
     realScreenHeight = height;
@@ -241,7 +241,7 @@ namespace small3d {
     this->initOpenGL();
 
     glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
-      static_cast<GLsizei>(realScreenHeight));
+	       static_cast<GLsizei>(realScreenHeight));
 
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
@@ -252,10 +252,10 @@ namespace small3d {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     GLuint vertexShader = compileShader(shadersPath +
-      "perspectiveMatrixLightedShader.vert",
-      GL_VERTEX_SHADER);
+					"perspectiveMatrixLightedShader.vert",
+					GL_VERTEX_SHADER);
     GLuint fragmentShader = compileShader(shadersPath + "textureShader.frag",
-      GL_FRAGMENT_SHADER);
+					  GL_FRAGMENT_SHADER);
 
     perspectiveProgram = glCreateProgram();
     glAttachShader(perspectiveProgram, vertexShader);
@@ -267,7 +267,7 @@ namespace small3d {
     glGetProgramiv(perspectiveProgram, GL_LINK_STATUS, &status);
     if (status == GL_FALSE) {
       throw std::runtime_error("Failed to link program:\n" +
-        this->getProgramInfoLog(perspectiveProgram));
+			       this->getProgramInfoLog(perspectiveProgram));
     }
     else {
       LOGDEBUG("Linked main rendering program successfully");
@@ -293,11 +293,11 @@ namespace small3d {
     // Program (with shaders) for orthographic rendering for text
 
     GLuint simpleVertexShader = compileShader(shadersPath +
-      "simpleShader.vert",
-      GL_VERTEX_SHADER);
+					      "simpleShader.vert",
+					      GL_VERTEX_SHADER);
     GLuint simpleFragmentShader = compileShader(shadersPath +
-      "simpleShader.frag",
-      GL_FRAGMENT_SHADER);
+						"simpleShader.frag",
+						GL_FRAGMENT_SHADER);
 
     orthographicProgram = glCreateProgram();
     glAttachShader(orthographicProgram, simpleVertexShader);
@@ -308,7 +308,7 @@ namespace small3d {
     glGetProgramiv(orthographicProgram, GL_LINK_STATUS, &status);
     if (status == GL_FALSE) {
       throw std::runtime_error("Failed to link program:\n" +
-        this->getProgramInfoLog(orthographicProgram));
+			       this->getProgramInfoLog(orthographicProgram));
     }
     else {
       LOGDEBUG("Linked orthographic rendering program successfully");
@@ -321,7 +321,7 @@ namespace small3d {
   }
 
   void Renderer::initWindow(int& width, int& height,
-    const std::string windowTitle) {
+			    const std::string windowTitle) {
 
     glfwSetErrorCallback(error_callback);
 
@@ -348,7 +348,7 @@ namespace small3d {
 
     if ((width == 0 && height != 0) || (width != 0 && height == 0)) {
       throw std::runtime_error("Screen width and height both have to be equal "
-        "or not equal to zero at the same time.");
+			       "or not equal to zero at the same time.");
     }
     else if (width == 0) {
 
@@ -361,11 +361,11 @@ namespace small3d {
       height = mode->height;
 
       LOGINFO("Detected screen width " + intToStr(width) + " and height " +
-        intToStr(height));
+	      intToStr(height));
     }
 
     window = glfwCreateWindow(width, height, windowTitle.c_str(), monitor,
-      nullptr);
+			      nullptr);
     if (!window) {
       throw std::runtime_error("Unable to create GLFW window");
     }
@@ -388,25 +388,24 @@ namespace small3d {
     perspectiveMatrix[14] = zOffsetFromCamera;
 
     glUniformMatrix4fv(perspectiveMatrixUniform, 1, GL_FALSE,
-      perspectiveMatrix);
+		       perspectiveMatrix);
 
     GLint lightDirectionUniform = glGetUniformLocation(perspectiveProgram,
-      "lightDirection");
+						       "lightDirection");
     glUniform3fv(lightDirectionUniform, 1,
-      glm::value_ptr(lightDirection));
+		 glm::value_ptr(lightDirection));
 
     GLint lightIntensityUniform = glGetUniformLocation(perspectiveProgram,
-      "lightIntensity");
+						       "lightIntensity");
     glUniform1f(lightIntensityUniform, lightIntensity);
 
   }
-
   void Renderer::bindTexture(std::string name, bool perspective) {
     GLuint textureHandle = getTextureHandle(name);
 
     if (textureHandle == 0) {
       throw std::runtime_error("Texture " + name +
-        " has not been generated");
+			       " has not been generated");
     }
 
     if (perspective)
@@ -433,10 +432,10 @@ namespace small3d {
   }
 
   Renderer::Renderer(const std::string windowTitle, const int width,
-    const int height, const float frustumScale,
-    const float zNear, const float zFar,
-    const float zOffsetFromCamera,
-    const std::string shadersPath) {
+		     const int height, const float frustumScale,
+		     const float zNear, const float zFar,
+		     const float zOffsetFromCamera,
+		     const std::string shadersPath) {
 
     window = 0;
     perspectiveProgram = 0;
@@ -464,21 +463,21 @@ namespace small3d {
   }
 
   Renderer& Renderer::getInstance(const std::string windowTitle,
-    const int width, const int height,
-    const float frustumScale,
-    const float zNear, const float zFar,
-    const float zOffsetFromCamera,
-    const std::string shadersPath) {
+				  const int width, const int height,
+				  const float frustumScale,
+				  const float zNear, const float zFar,
+				  const float zOffsetFromCamera,
+				  const std::string shadersPath) {
 
     static Renderer instance(windowTitle, width, height, frustumScale, zNear,
-      zFar, zOffsetFromCamera, shadersPath);
+			     zFar, zOffsetFromCamera, shadersPath);
     return instance;
   }
 
   Renderer::~Renderer() {
     LOGDEBUG("Renderer destructor running");
     for (auto it = textures.begin();
-      it != textures.end(); ++it) {
+	 it != textures.end(); ++it) {
       LOGDEBUG("Deleting texture " + it->first);
       glDeleteTextures(1, &it->second);
     }
@@ -514,12 +513,12 @@ namespace small3d {
 
   void Renderer::generateTexture(const std::string name, const Image image) {
     this->generateTexture(name, image.getData(), image.getWidth(),
-      image.getHeight());
+			  image.getHeight());
   }
 
   void Renderer::generateTexture(const std::string name, const std::string text,
-    const glm::vec3 colour, const int fontSize,
-    const std::string fontPath) {
+				 const glm::vec3 colour, const int fontSize,
+				 const std::string fontPath) {
 
     std::string faceId = intToStr(fontSize) + fontPath;
 
@@ -587,19 +586,19 @@ namespace small3d {
 
             colourAlpha.a =
               floorf(100.0f * (static_cast<float>
-              (slot->bitmap.buffer[row * slot->bitmap.width +
-                col]) /
-                255.0f) + 0.5f) / 100.0f;
+			       (slot->bitmap.buffer[row * slot->bitmap.width +
+						    col]) /
+			       255.0f) + 0.5f) / 100.0f;
 
             memcpy(&textMemory[4 * (maxTop -
-              static_cast<unsigned long>(slot->bitmap_top)
-              + static_cast<unsigned long>(row)) * width +
-              4 *
-              (static_cast<unsigned long>(slot->bitmap_left) +
-                static_cast<unsigned long>(col))
-              + totalAdvance],
-              glm::value_ptr(colourAlpha),
-              4 * sizeof(float));
+				    static_cast<unsigned long>(slot->bitmap_top)
+				    + static_cast<unsigned long>(row)) * width +
+			       4 *
+			       (static_cast<unsigned long>(slot->bitmap_left) +
+				static_cast<unsigned long>(col))
+			       + totalAdvance],
+		   glm::value_ptr(colourAlpha),
+		   4 * sizeof(float));
           }
         }
       }
@@ -618,16 +617,16 @@ namespace small3d {
   }
 
   void Renderer::renderRectangle(const std::string textureName,
-    const glm::vec3 topLeft,
-    const glm::vec3 bottomRight,
-    const bool perspective,
-    const glm::vec4 colour) {
+				 const glm::vec3 topLeft,
+				 const glm::vec3 bottomRight,
+				 const bool perspective,
+				 const glm::vec4 colour) {
 
     float vertices[16] = {
-      bottomRight.x, bottomRight.y, bottomRight.z, 1.0f,
-      bottomRight.x, topLeft.y, topLeft.z, 1.0f,
-      topLeft.x, topLeft.y, topLeft.z, 1.0f,
-      topLeft.x, bottomRight.y, bottomRight.z, 1.0f
+			  bottomRight.x, bottomRight.y, bottomRight.z, 1.0f,
+			  bottomRight.x, topLeft.y, topLeft.z, 1.0f,
+			  topLeft.x, topLeft.y, topLeft.z, 1.0f,
+			  topLeft.x, bottomRight.y, bottomRight.z, 1.0f
     };
 
     glUseProgram(perspective ? perspectiveProgram : orthographicProgram);
@@ -638,13 +637,13 @@ namespace small3d {
     // Vertices
     glBindBuffer(GL_ARRAY_BUFFER, boxBuffer);
     glBufferData(GL_ARRAY_BUFFER,
-      sizeof(float) * 16,
-      &vertices[0],
-      GL_STATIC_DRAW);
+		 sizeof(float) * 16,
+		 &vertices[0],
+		 GL_STATIC_DRAW);
 
     unsigned int vertexIndexes[6] = {
-      0, 1, 2,
-      2, 3, 0
+				     0, 1, 2,
+				     2, 3, 0
     };
 
     GLuint indexBufferObject = 0;
@@ -654,7 +653,7 @@ namespace small3d {
     // Vertex indices
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 6,
-      vertexIndexes, GL_STATIC_DRAW);
+		 vertexIndexes, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
@@ -662,7 +661,7 @@ namespace small3d {
 
     GLint colourUniform =
       glGetUniformLocation(perspective ? perspectiveProgram :
-        orthographicProgram, "colour");
+			   orthographicProgram, "colour");
     glUniform4fv(colourUniform, 1, glm::value_ptr(colour));
 
     GLuint coordBuffer = 0;
@@ -672,18 +671,18 @@ namespace small3d {
       bindTexture(textureName, perspective);
 
       float textureCoords[8] = {
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f
+				1.0f, 1.0f,
+				1.0f, 0.0f,
+				0.0f, 0.0f,
+				0.0f, 1.0f
       };
 
       glGenBuffers(1, &coordBuffer);
       glBindBuffer(GL_ARRAY_BUFFER, coordBuffer);
       glBufferData(GL_ARRAY_BUFFER,
-        sizeof(float) * 8,
-        textureCoords,
-        GL_STATIC_DRAW);
+		   sizeof(float) * 8,
+		   textureCoords,
+		   GL_STATIC_DRAW);
       glEnableVertexAttribArray(perspective ? 2 : 1);
       glVertexAttribPointer(perspective ? 2 : 1, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
@@ -691,27 +690,15 @@ namespace small3d {
 
     if (perspective) {
 
-      // Lighting
       setPerspectiveAndLight();
 
-      /*      GLint lightDirectionUniform = glGetUniformLocation(perspectiveProgram,
-               "lightDirection");
-      glUniform3fv(lightDirectionUniform, 1,
-       glm::value_ptr(lightDirection));
-
-
-      GLint lightIntensityUniform = glGetUniformLocation(perspectiveProgram,
-               "lightIntensity");
-      glUniform1f(lightIntensityUniform, lightIntensity);
-      */
-
       positionNextObject(glm::vec3(0.0f, 0.0f, 0.0f),
-        glm::vec3(0.0f, 0.0f, 0.0f));
+			 glm::vec3(0.0f, 0.0f, 0.0f));
       positionCamera();
     }
 
     glDrawElements(GL_TRIANGLES,
-      6, GL_UNSIGNED_INT, 0);
+		   6, GL_UNSIGNED_INT, 0);
 
     glDeleteBuffers(1, &indexBufferObject);
     glDeleteBuffers(1, &boxBuffer);
@@ -726,20 +713,19 @@ namespace small3d {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-    checkForOpenGLErrors("rendering rectangle", true);
   }
 
   void Renderer::renderRectangle(const glm::vec4 colour,
-    const glm::vec3 topLeft,
-    const glm::vec3 bottomRight,
-    const bool perspective) {
+				 const glm::vec3 topLeft,
+				 const glm::vec3 bottomRight,
+				 const bool perspective) {
     this->renderRectangle("", topLeft, bottomRight, perspective, colour);
   }
 
   void Renderer::render(Model & model, const glm::vec3 offset,
-    const glm::vec3 rotation,
-    const glm::vec4 colour,
-    const std::string textureName) {
+			const glm::vec3 rotation,
+			const glm::vec4 colour,
+			const std::string textureName) {
 
     glUseProgram(perspectiveProgram);
 
@@ -756,18 +742,18 @@ namespace small3d {
     glBindBuffer(GL_ARRAY_BUFFER, model.positionBufferObjectId);
     if (!alreadyInGPU) {
       glBufferData(GL_ARRAY_BUFFER,
-        model.vertexDataByteSize,
-        model.vertexData.data(),
-        GL_STATIC_DRAW);
+		   model.vertexDataByteSize,
+		   model.vertexData.data(),
+		   GL_STATIC_DRAW);
     }
 
     // Vertex indices
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model.indexBufferObjectId);
     if (!alreadyInGPU) {
       glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-        model.indexDataByteSize,
-        model.indexData.data(),
-        GL_STATIC_DRAW);
+		   model.indexDataByteSize,
+		   model.indexData.data(),
+		   GL_STATIC_DRAW);
     }
 
     glEnableVertexAttribArray(0);
@@ -777,9 +763,9 @@ namespace small3d {
     glBindBuffer(GL_ARRAY_BUFFER, model.normalsBufferObjectId);
     if (!alreadyInGPU) {
       glBufferData(GL_ARRAY_BUFFER,
-        model.normalsDataByteSize,
-        model.normalsData.data(),
-        GL_STATIC_DRAW);
+		   model.normalsDataByteSize,
+		   model.normalsData.data(),
+		   GL_STATIC_DRAW);
     }
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
@@ -792,7 +778,7 @@ namespace small3d {
 
       // "Disable" colour since there is a texture
       glUniform4fv(colourUniform, 1,
-        glm::value_ptr(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)));
+		   glm::value_ptr(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)));
 
       bindTexture(textureName, true);
 
@@ -802,9 +788,9 @@ namespace small3d {
 
       if (!alreadyInGPU) {
         glBufferData(GL_ARRAY_BUFFER,
-          model.textureCoordsDataByteSize,
-          model.textureCoordsData.data(),
-          GL_STATIC_DRAW);
+		     model.textureCoordsDataByteSize,
+		     model.textureCoordsData.data(),
+		     GL_STATIC_DRAW);
       }
 
       glEnableVertexAttribArray(2);
@@ -816,31 +802,16 @@ namespace small3d {
       glUniform4fv(colourUniform, 1, glm::value_ptr(colour));
     }
 
-
     setPerspectiveAndLight();
-    /*GLint lightDirectionUniform = glGetUniformLocation(perspectiveProgram,
-                   "lightDirection");
-    glUniform3fv(lightDirectionUniform, 1,
-     glm::value_ptr(lightDirection));
-
-    GLint lightIntensityUniform = glGetUniformLocation(perspectiveProgram,
-                   "lightIntensity");
-    glUniform1f(lightIntensityUniform, lightIntensity);
-    */
-
 
     positionNextObject(offset, rotation);
 
     positionCamera();
 
-    // Throw an exception if there was an error in OpenGL, during
-    // any of the above.
-    checkForOpenGLErrors("rendering model", true);
-
     // Draw
     glDrawElements(GL_TRIANGLES,
-      static_cast<GLsizei>(model.indexData.size()),
-      GL_UNSIGNED_INT, 0);
+		   static_cast<GLsizei>(model.indexData.size()),
+		   GL_UNSIGNED_INT, 0);
 
     // Clear stuff
     if (textureName != "") {
@@ -858,35 +829,35 @@ namespace small3d {
   }
 
   void Renderer::render(Model & model, const glm::vec3 offset,
-    const glm::vec3 rotation,
-    const std::string textureName) {
+			const glm::vec3 rotation,
+			const std::string textureName) {
     this->render(model, offset, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
-      textureName);
+		 textureName);
   }
 
   void Renderer::render(SceneObject & sceneObject,
-    const glm::vec4 colour) {
+			const glm::vec4 colour) {
     this->render(sceneObject.getModel(), sceneObject.offset,
-      sceneObject.rotation, colour, "");
+		 sceneObject.rotation, colour, "");
   }
 
   void Renderer::render(SceneObject & sceneObject,
-    const std::string textureName) {
+			const std::string textureName) {
     this->render(sceneObject.getModel(), sceneObject.offset,
-      sceneObject.rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
-      textureName);
+		 sceneObject.rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
+		 textureName);
   }
 
   void Renderer::write(const std::string text, const glm::vec3 colour,
-    const glm::vec2 topLeft, const glm::vec2 bottomRight,
-    const int fontSize, std::string fontPath) {
+		       const glm::vec2 topLeft, const glm::vec2 bottomRight,
+		       const int fontSize, std::string fontPath) {
 
     std::string textureName = intToStr(fontSize) + "text_" + text;
 
     this->generateTexture(textureName, text, colour, fontSize, fontPath);
 
     renderRectangle(textureName, glm::vec3(topLeft.x, topLeft.y, -0.5f),
-      glm::vec3(bottomRight.x, bottomRight.y, -0.5f));
+		    glm::vec3(bottomRight.x, bottomRight.y, -0.5f));
 
     deleteTexture(textureName);
   }
