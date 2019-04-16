@@ -91,11 +91,19 @@ namespace small3d {
 
     if (glfwCreateWindowSurface(vkz_instance, window, NULL, &vkz_surface) !=
       VK_SUCCESS) {
-      throw std::runtime_error("Could not create surface.\n\r");
+      throw std::runtime_error("Could not create surface.");
     }
 
     if (!vkz_init()) {
-      throw std::runtime_error("Could not initialise Vulkan.\n\r");
+      throw std::runtime_error("Could not initialise Vulkan.");
+    }
+
+    if (!vkz_create_swapchain(realScreenWidth, realScreenHeight, 1)) {
+      throw std::runtime_error("Failed to create swapchain.");
+    }
+
+    if (!vkz_create_depth_image()) {
+      throw std::runtime_error("Failed to create depth image.");
     }
 
     /*glewExperimental = GL_TRUE;
@@ -489,6 +497,8 @@ namespace small3d {
       glDeleteProgram(perspectiveProgram);
     }*/
 
+    vkz_destroy_depth_image();
+    vkz_destroy_swapchain();
     vkz_shutdown();
 
     //glfwDestroyWindow(window);
