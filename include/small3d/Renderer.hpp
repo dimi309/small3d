@@ -67,12 +67,7 @@ namespace small3d
     std::unordered_map<std::string, FT_Face> fontFaces;
 
     std::string loadShaderFromFile(const std::string fileLocation) const;
-    uint32_t compileShader(const std::string shaderSourceFile,
-			 const uint32_t shaderType) const;
-    std::string getProgramInfoLog(const uint32_t linkedProgram) const;
-    std::string getShaderInfoLog(const uint32_t shader) const;
-    void initOpenGL();
-    void checkForOpenGLErrors(const std::string when, const bool abort) const;
+    void initVulkan();
 
     void positionNextObject(const glm::vec3 offset,
 			    const glm::vec3 rotation);

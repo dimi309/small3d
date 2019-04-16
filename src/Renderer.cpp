@@ -13,6 +13,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+extern "C" {
+#include "vkzos.h"
+}
+
 namespace small3d {
 
   static void error_callback(int error, const char* description)
@@ -49,8 +53,6 @@ namespace small3d {
     float intensity;
   };
 
-  static std::string openglErrorToString(GLenum error);
-
   std::string Renderer::loadShaderFromFile(const std::string fileLocation)
     const {
     initLogger();
@@ -65,72 +67,9 @@ namespace small3d {
     return shaderSource;
   }
 
-  GLuint Renderer::compileShader(const std::string shaderSourceFile,
-    const uint32_t shaderType) const {
-    GLuint shader = glCreateShader(shaderType);
-    std::string shaderSource = this->loadShaderFromFile(shaderSourceFile);
-    if (shaderSource.length() == 0) {
-      throw std::runtime_error("Shader source file '" + shaderSourceFile +
-        "' is empty or not found.");
-    }
-    const char* shaderSourceChars = shaderSource.c_str();
-    glShaderSource(shader, 1, &shaderSourceChars, NULL);
-    glCompileShader(shader);
+  void Renderer::initVulkan() {
 
-    GLint status;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-
-    if (status == GL_FALSE) {
-      throw std::runtime_error(
-        "Failed to compile shader:\n" + shaderSource +
-        "\n" + this->getShaderInfoLog(shader));
-    }
-    else {
-      LOGDEBUG("Shader " + shaderSourceFile + " compiled successfully.");
-    }
-    return shader;
-  }
-
-  std::string Renderer::getProgramInfoLog(const GLuint linkedProgram) const {
-
-    GLint infoLogLength;
-    glGetProgramiv(linkedProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-    GLchar* infoLog = new GLchar[infoLogLength + 1];
-    GLsizei lengthReturned = 0;
-    glGetProgramInfoLog(linkedProgram, infoLogLength, &lengthReturned, infoLog);
-
-    std::string infoLogStr(infoLog);
-
-    if (lengthReturned == 0) {
-      infoLogStr = "(No info)";
-    }
-    delete[] infoLog;
-    return infoLogStr;
-  }
-
-  std::string Renderer::getShaderInfoLog(const GLuint shader) const {
-
-    GLint infoLogLength;
-    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-    GLchar* infoLog = new GLchar[infoLogLength + 1];
-    GLsizei lengthReturned = 0;
-    glGetShaderInfoLog(shader, infoLogLength, &lengthReturned, infoLog);
-
-    std::string infoLogStr(infoLog);
-    if (lengthReturned == 0) {
-      infoLogStr = "(No info)";
-    }
-
-    delete[] infoLog;
-
-    return infoLogStr;
-  }
-
-  void Renderer::initOpenGL() {
-
-    glewExperimental = GL_TRUE;
+    /*glewExperimental = GL_TRUE;
 
     GLenum initResult = glewInit();
 
@@ -148,24 +87,10 @@ namespace small3d {
     LOGINFO("OpenGL version: " +
       std::string(reinterpret_cast<char*>
       (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
-
+      */
   }
 
-  void Renderer::checkForOpenGLErrors(const std::string when, const bool abort)
-    const {
-    GLenum errorCode = glGetError();
-    if (errorCode != GL_NO_ERROR) {
-      LOGERROR("OpenGL error while " + when);
-
-      do {
-        LOGERROR(openglErrorToString(errorCode));
-        errorCode = glGetError();
-      } while (errorCode != GL_NO_ERROR);
-
-      if (abort)
-        throw std::runtime_error("OpenGL error while " + when);
-    }
-  }
+  
 
   void Renderer::positionNextObject(const glm::vec3 offset,
     const glm::vec3 rotation) {
@@ -182,17 +107,17 @@ namespace small3d {
     orientation.offset = offset;
 
     if (renderOrientation == 0) {
-      GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram,
+      /*GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram,
         "uboOrientation");
       glUniformBlockBinding(perspectiveProgram, orientationIndex, 1);
-      glGenBuffers(1, &renderOrientation);
+      glGenBuffers(1, &renderOrientation);*/
 
     }
 
-    glBindBuffer(GL_UNIFORM_BUFFER, renderOrientation);
+    /*glBindBuffer(GL_UNIFORM_BUFFER, renderOrientation);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboOrientation), &orientation, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, renderOrientation);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
 
   }
 
@@ -209,19 +134,19 @@ namespace small3d {
       glm::vec3(0.0f, 0.0f, -1.0f)));
 
     if (cameraOrientation == 0) {
-      GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram, "uboCamera");
+      /*GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram, "uboCamera");
       glUniformBlockBinding(perspectiveProgram, orientationIndex, 2);
-      glGenBuffers(1, &cameraOrientation);
+      glGenBuffers(1, &cameraOrientation);*/
     }
 
-    glBindBuffer(GL_UNIFORM_BUFFER, cameraOrientation);
+   /* glBindBuffer(GL_UNIFORM_BUFFER, cameraOrientation);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboCamera), &camera, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 2, cameraOrientation);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
 
   }
 
-  GLuint Renderer::getTextureHandle(const std::string name) const {
+  uint32_t Renderer::getTextureHandle(const std::string name) const {
     GLuint handle = 0;
     auto nameTexturePair = textures.find(name);
     if (nameTexturePair != textures.end()) {
@@ -230,12 +155,12 @@ namespace small3d {
     return handle;
   }
 
-  GLuint Renderer::generateTexture(const std::string name, const float* data,
+  uint32_t Renderer::generateTexture(const std::string name, const float* data,
     const unsigned long width,
     const unsigned long height) {
 
-    GLuint textureHandle;
-    glGenTextures(1, &textureHandle);
+    uint32_t textureHandle = 0;
+    /*glGenTextures(1, &textureHandle);
     glBindTexture(GL_TEXTURE_2D, textureHandle);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
@@ -245,7 +170,7 @@ namespace small3d {
     glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, GL_RGBA,
       GL_FLOAT, data);
 
-    textures.insert(make_pair(name, textureHandle));
+    textures.insert(make_pair(name, textureHandle));*/
 
     return textureHandle;
   }
@@ -259,86 +184,86 @@ namespace small3d {
 
     this->initWindow(realScreenWidth, realScreenHeight, windowTitle);
 
-    this->initOpenGL();
+    this->initVulkan();
 
-    glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
-      static_cast<GLsizei>(realScreenHeight));
+    //glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
+    //  static_cast<GLsizei>(realScreenHeight));
 
-    glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE);
-    glDepthFunc(GL_LEQUAL);
-    glDepthRange(zNear + zOffsetFromCamera, zFar);
+    //glEnable(GL_DEPTH_TEST);
+    //glDepthMask(GL_TRUE);
+    //glDepthFunc(GL_LEQUAL);
+    //glDepthRange(zNear + zOffsetFromCamera, zFar);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    GLuint vertexShader = compileShader(shadersPath +
-      "perspectiveMatrixLightedShader.vert",
-      GL_VERTEX_SHADER);
-    GLuint fragmentShader = compileShader(shadersPath + "textureShader.frag",
-      GL_FRAGMENT_SHADER);
+    //GLuint vertexShader = compileShader(shadersPath +
+    //  "perspectiveMatrixLightedShader.vert",
+    //  GL_VERTEX_SHADER);
+    //GLuint fragmentShader = compileShader(shadersPath + "textureShader.frag",
+    //  GL_FRAGMENT_SHADER);
 
-    perspectiveProgram = glCreateProgram();
-    glAttachShader(perspectiveProgram, vertexShader);
-    glAttachShader(perspectiveProgram, fragmentShader);
+    //perspectiveProgram = glCreateProgram();
+    //glAttachShader(perspectiveProgram, vertexShader);
+    //glAttachShader(perspectiveProgram, fragmentShader);
 
-    glLinkProgram(perspectiveProgram);
+    //glLinkProgram(perspectiveProgram);
 
-    GLint status;
-    glGetProgramiv(perspectiveProgram, GL_LINK_STATUS, &status);
-    if (status == GL_FALSE) {
-      throw std::runtime_error("Failed to link program:\n" +
-        this->getProgramInfoLog(perspectiveProgram));
-    }
-    else {
-      LOGDEBUG("Linked main rendering program successfully");
+    //GLint status;
+    //glGetProgramiv(perspectiveProgram, GL_LINK_STATUS, &status);
+    //if (status == GL_FALSE) {
+    //  throw std::runtime_error("Failed to link program:\n" +
+    //    this->getProgramInfoLog(perspectiveProgram));
+    //}
+    //else {
+    //  LOGDEBUG("Linked main rendering program successfully");
 
-      glUseProgram(perspectiveProgram);
+    //  glUseProgram(perspectiveProgram);
 
-      setPerspectiveAndLight();
+    //  setPerspectiveAndLight();
 
-      glUseProgram(0);
-    }
-    glDetachShader(perspectiveProgram, vertexShader);
-    glDetachShader(perspectiveProgram, fragmentShader);
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    //  glUseProgram(0);
+    //}
+    //glDetachShader(perspectiveProgram, vertexShader);
+    //glDetachShader(perspectiveProgram, fragmentShader);
+    //glDeleteShader(vertexShader);
+    //glDeleteShader(fragmentShader);
 
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
+    //glFrontFace(GL_CCW);
 
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClearDepth(1.0f);
+    //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    //glClearDepth(1.0f);
 
-    // Program (with shaders) for orthographic rendering for text
+    //// Program (with shaders) for orthographic rendering for text
 
-    GLuint simpleVertexShader = compileShader(shadersPath +
-      "simpleShader.vert",
-      GL_VERTEX_SHADER);
-    GLuint simpleFragmentShader = compileShader(shadersPath +
-      "simpleShader.frag",
-      GL_FRAGMENT_SHADER);
+    //GLuint simpleVertexShader = compileShader(shadersPath +
+    //  "simpleShader.vert",
+    //  GL_VERTEX_SHADER);
+    //GLuint simpleFragmentShader = compileShader(shadersPath +
+    //  "simpleShader.frag",
+    //  GL_FRAGMENT_SHADER);
 
-    orthographicProgram = glCreateProgram();
-    glAttachShader(orthographicProgram, simpleVertexShader);
-    glAttachShader(orthographicProgram, simpleFragmentShader);
+    //orthographicProgram = glCreateProgram();
+    //glAttachShader(orthographicProgram, simpleVertexShader);
+    //glAttachShader(orthographicProgram, simpleFragmentShader);
 
-    glLinkProgram(orthographicProgram);
+    //glLinkProgram(orthographicProgram);
 
-    glGetProgramiv(orthographicProgram, GL_LINK_STATUS, &status);
-    if (status == GL_FALSE) {
-      throw std::runtime_error("Failed to link program:\n" +
-        this->getProgramInfoLog(orthographicProgram));
-    }
-    else {
-      LOGDEBUG("Linked orthographic rendering program successfully");
-    }
-    glDetachShader(orthographicProgram, simpleVertexShader);
-    glDetachShader(orthographicProgram, simpleFragmentShader);
-    glDeleteShader(simpleVertexShader);
-    glDeleteShader(simpleFragmentShader);
-    glUseProgram(0);
+    //glGetProgramiv(orthographicProgram, GL_LINK_STATUS, &status);
+    //if (status == GL_FALSE) {
+    //  throw std::runtime_error("Failed to link program:\n" +
+    //    this->getProgramInfoLog(orthographicProgram));
+    //}
+    //else {
+    //  LOGDEBUG("Linked orthographic rendering program successfully");
+    //}
+    //glDetachShader(orthographicProgram, simpleVertexShader);
+    //glDetachShader(orthographicProgram, simpleFragmentShader);
+    //glDeleteShader(simpleVertexShader);
+    //glDeleteShader(simpleFragmentShader);
+    //glUseProgram(0);
   }
 
   void Renderer::initWindow(int& width, int& height,
@@ -349,10 +274,14 @@ namespace small3d {
     if (!glfwInit()) {
       throw std::runtime_error("Unable to initialise GLFW");
     }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+
+    /*glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);*/
+
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     bool fullScreen = false;
 
@@ -383,7 +312,7 @@ namespace small3d {
       throw std::runtime_error("Unable to create GLFW window");
     }
 
-    glfwMakeContextCurrent(window);
+    //glfwMakeContextCurrent(window);
 
   }
 
@@ -401,31 +330,31 @@ namespace small3d {
     world.lightDirection = lightDirection;
 
     if (worldDetails == 0) {
-      GLuint worldIndex = glGetUniformBlockIndex(perspectiveProgram, "uboWorld");
+      /*GLuint worldIndex = glGetUniformBlockIndex(perspectiveProgram, "uboWorld");
       glUniformBlockBinding(perspectiveProgram, worldIndex, 0);
-      glGenBuffers(1, &worldDetails);
+      glGenBuffers(1, &worldDetails);*/
     }
 
-    glBindBuffer(GL_UNIFORM_BUFFER, worldDetails);
+   /* glBindBuffer(GL_UNIFORM_BUFFER, worldDetails);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboWorld), &world, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, worldDetails);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
 
     uboLight light;
     memset(&light, 0, sizeof(uboLight));
     light.intensity = lightIntensity;
 
     if (lightUboId == 0) {
-      GLuint lightUboIndex = glGetUniformBlockIndex(perspectiveProgram,
+      /*GLuint lightUboIndex = glGetUniformBlockIndex(perspectiveProgram,
         "uboLight");
       glUniformBlockBinding(perspectiveProgram, lightUboIndex, 5);
-      glGenBuffers(1, &lightUboId);
+      glGenBuffers(1, &lightUboId);*/
     }
 
-    glBindBuffer(GL_UNIFORM_BUFFER, lightUboId);
+    /*glBindBuffer(GL_UNIFORM_BUFFER, lightUboId);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboLight), &light, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 5, lightUboId);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
 
   }
   void Renderer::bindTexture(std::string name, bool perspective) {
@@ -436,7 +365,7 @@ namespace small3d {
         " has not been generated");
     }
 
-    if (perspective)
+    /*if (perspective)
       glActiveTexture(GL_TEXTURE0);
     else
       glActiveTexture(GL_TEXTURE1);
@@ -444,7 +373,7 @@ namespace small3d {
     glBindTexture(GL_TEXTURE_2D, textureHandle);
     GLint loc = glGetUniformLocation(perspective ? perspectiveProgram : orthographicProgram, "textureImage");
 
-    glUniform1i(loc, perspective ? 0 : 1);
+    glUniform1i(loc, perspective ? 0 : 1);*/
 
   }
 
@@ -486,8 +415,8 @@ namespace small3d {
     }
 
     // Generate VAO
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+    /*glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);*/
   }
 
   Renderer& Renderer::getInstance(const std::string windowTitle,
@@ -507,7 +436,7 @@ namespace small3d {
     for (auto it = textures.begin();
       it != textures.end(); ++it) {
       LOGDEBUG("Deleting texture " + it->first);
-      glDeleteTextures(1, &it->second);
+      //glDeleteTextures(1, &it->second);
     }
 
     for (auto idFacePair : fontFaces) {
@@ -516,7 +445,7 @@ namespace small3d {
 
     FT_Done_FreeType(library);
 
-    if (!noShaders) {
+    /*if (!noShaders) {
       glUseProgram(0);
 
       glDeleteVertexArrays(1, &vao);
@@ -530,7 +459,7 @@ namespace small3d {
 
     if (perspectiveProgram != 0) {
       glDeleteProgram(perspectiveProgram);
-    }
+    }*/
 
     glfwTerminate();
   }
@@ -639,7 +568,7 @@ namespace small3d {
     auto nameTexturePair = textures.find(name);
 
     if (nameTexturePair != textures.end()) {
-      glDeleteTextures(1, &(nameTexturePair->second));
+      //glDeleteTextures(1, &(nameTexturePair->second));
       textures.erase(name);
     }
   }
@@ -657,35 +586,35 @@ namespace small3d {
       topLeft.x, bottomRight.y, bottomRight.z, 1.0f
     };
 
-    glUseProgram(perspective ? perspectiveProgram : orthographicProgram);
+    //glUseProgram(perspective ? perspectiveProgram : orthographicProgram);
 
-    GLuint boxBuffer = 0;
-    glGenBuffers(1, &boxBuffer);
+    //GLuint boxBuffer = 0;
+    //glGenBuffers(1, &boxBuffer);
 
-    // Vertices
-    glBindBuffer(GL_ARRAY_BUFFER, boxBuffer);
-    glBufferData(GL_ARRAY_BUFFER,
-      sizeof(float) * 16,
-      &vertices[0],
-      GL_STATIC_DRAW);
+    //// Vertices
+    //glBindBuffer(GL_ARRAY_BUFFER, boxBuffer);
+    //glBufferData(GL_ARRAY_BUFFER,
+    //  sizeof(float) * 16,
+    //  &vertices[0],
+    //  GL_STATIC_DRAW);
 
     unsigned int vertexIndexes[6] = {
       0, 1, 2,
       2, 3, 0
     };
 
-    GLuint indexBufferObject = 0;
+    //GLuint indexBufferObject = 0;
 
-    glGenBuffers(1, &indexBufferObject);
+    //glGenBuffers(1, &indexBufferObject);
 
-    // Vertex indices
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 6,
-      vertexIndexes, GL_STATIC_DRAW);
+    //// Vertex indices
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 6,
+    //  vertexIndexes, GL_STATIC_DRAW);
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //glEnableVertexAttribArray(0);
+    //glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    
 
     uboColour colourStruct;
     memset(&colourStruct, 0, sizeof(colourStruct));
@@ -693,28 +622,28 @@ namespace small3d {
 
     if (perspective) {
       if (perspColourUboId == 0) {
-        GLuint colourUboIndex = glGetUniformBlockIndex(perspectiveProgram, "uboColour");
+        /*GLuint colourUboIndex = glGetUniformBlockIndex(perspectiveProgram, "uboColour");
         glUniformBlockBinding(perspectiveProgram, colourUboIndex, 4);
-        glGenBuffers(1, &perspColourUboId);
+        glGenBuffers(1, &perspColourUboId);*/
 
       }
     }
     else {
       if (orthoColourUboId == 0) {
-        GLuint colourUboIndex = glGetUniformBlockIndex(orthographicProgram, "uboColour");
+        /*GLuint colourUboIndex = glGetUniformBlockIndex(orthographicProgram, "uboColour");
         glUniformBlockBinding(orthographicProgram, colourUboIndex, 1);
-        glGenBuffers(1, &orthoColourUboId);
+        glGenBuffers(1, &orthoColourUboId);*/
 
       }
 
     }
 
-    glBindBuffer(GL_UNIFORM_BUFFER, perspective ? perspColourUboId : orthoColourUboId);
+    /*glBindBuffer(GL_UNIFORM_BUFFER, perspective ? perspColourUboId : orthoColourUboId);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, perspective ? 4 : 1, perspective ? perspColourUboId : orthoColourUboId);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-    GLuint coordBuffer = 0;
+    GLuint coordBuffer = 0;*/
 
     if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
 
@@ -727,14 +656,14 @@ namespace small3d {
         0.0f, 1.0f
       };
 
-      glGenBuffers(1, &coordBuffer);
+      /*glGenBuffers(1, &coordBuffer);
       glBindBuffer(GL_ARRAY_BUFFER, coordBuffer);
       glBufferData(GL_ARRAY_BUFFER,
         sizeof(float) * 8,
         textureCoords,
         GL_STATIC_DRAW);
       glEnableVertexAttribArray(perspective ? 2 : 1);
-      glVertexAttribPointer(perspective ? 2 : 1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+      glVertexAttribPointer(perspective ? 2 : 1, 2, GL_FLOAT, GL_FALSE, 0, 0);*/
 
     }
 
@@ -747,21 +676,21 @@ namespace small3d {
       positionCamera();
     }
 
-    glDrawElements(GL_TRIANGLES,
-      6, GL_UNSIGNED_INT, 0);
+    /*glDrawElements(GL_TRIANGLES,
+      6, GL_UNSIGNED_INT, 0);*/
 
-    glDeleteBuffers(1, &indexBufferObject);
-    glDeleteBuffers(1, &boxBuffer);
+    /*glDeleteBuffers(1, &indexBufferObject);
+    glDeleteBuffers(1, &boxBuffer);*/
     if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
-      glDeleteBuffers(1, &coordBuffer);
+     /* glDeleteBuffers(1, &coordBuffer);
       glDisableVertexAttribArray(perspective ? 2 : 1);
-      glBindTexture(GL_TEXTURE_2D, 0);
+      glBindTexture(GL_TEXTURE_2D, 0);*/
     }
 
-    glDisableVertexAttribArray(0);
+  /*  glDisableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
 
   }
 
@@ -777,54 +706,54 @@ namespace small3d {
     const glm::vec4 colour,
     const std::string textureName) {
 
-    glUseProgram(perspectiveProgram);
+    /*glUseProgram(perspectiveProgram);*/
 
     bool alreadyInGPU = model.positionBufferObjectId != 0;
 
     if (!alreadyInGPU) {
-      glGenBuffers(1, &model.indexBufferObjectId);
+     /* glGenBuffers(1, &model.indexBufferObjectId);
       glGenBuffers(1, &model.positionBufferObjectId);
       glGenBuffers(1, &model.normalsBufferObjectId);
-      glGenBuffers(1, &model.uvBufferObjectId);
+      glGenBuffers(1, &model.uvBufferObjectId);*/
     }
 
     // Vertices
-    glBindBuffer(GL_ARRAY_BUFFER, model.positionBufferObjectId);
+   /* glBindBuffer(GL_ARRAY_BUFFER, model.positionBufferObjectId);*/
     if (!alreadyInGPU) {
-      glBufferData(GL_ARRAY_BUFFER,
+     /* glBufferData(GL_ARRAY_BUFFER,
         model.vertexDataByteSize,
         model.vertexData.data(),
-        GL_STATIC_DRAW);
+        GL_STATIC_DRAW);*/
     }
 
     // Vertex indices
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model.indexBufferObjectId);
+    /*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model.indexBufferObjectId);*/
     if (!alreadyInGPU) {
-      glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+      /*glBufferData(GL_ELEMENT_ARRAY_BUFFER,
         model.indexDataByteSize,
         model.indexData.data(),
-        GL_STATIC_DRAW);
+        GL_STATIC_DRAW);*/
     }
 
-    glEnableVertexAttribArray(0);
+   /* glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
+*/
     // Normals
-    glBindBuffer(GL_ARRAY_BUFFER, model.normalsBufferObjectId);
+    /*glBindBuffer(GL_ARRAY_BUFFER, model.normalsBufferObjectId);*/
     if (!alreadyInGPU) {
-      glBufferData(GL_ARRAY_BUFFER,
+     /* glBufferData(GL_ARRAY_BUFFER,
         model.normalsDataByteSize,
         model.normalsData.data(),
-        GL_STATIC_DRAW);
+        GL_STATIC_DRAW);*/
     }
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    /*glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);*/
 
     if (perspColourUboId == 0) {
 
-      GLuint colourUboIndex = glGetUniformBlockIndex(perspectiveProgram, "uboColour");
+      /*GLuint colourUboIndex = glGetUniformBlockIndex(perspectiveProgram, "uboColour");
       glUniformBlockBinding(perspectiveProgram, colourUboIndex, 4);
-      glGenBuffers(1, &perspColourUboId);
+      glGenBuffers(1, &perspColourUboId);*/
 
     }
 
@@ -837,26 +766,26 @@ namespace small3d {
 
       colourStruct.colour = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
-      glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
+      /*glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
       glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
       glBindBufferBase(GL_UNIFORM_BUFFER, 4, perspColourUboId);
-      glBindBuffer(GL_UNIFORM_BUFFER, 0);
+      glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
 
       bindTexture(textureName, true);
 
       // UV Coordinates
 
-      glBindBuffer(GL_ARRAY_BUFFER, model.uvBufferObjectId);
+     /* glBindBuffer(GL_ARRAY_BUFFER, model.uvBufferObjectId);*/
 
       if (!alreadyInGPU) {
-        glBufferData(GL_ARRAY_BUFFER,
+       /* glBufferData(GL_ARRAY_BUFFER,
           model.textureCoordsDataByteSize,
           model.textureCoordsData.data(),
-          GL_STATIC_DRAW);
+          GL_STATIC_DRAW);*/
       }
 
-      glEnableVertexAttribArray(2);
-      glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    /*  glEnableVertexAttribArray(2);
+      glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);*/
 
     }
     else {
@@ -864,10 +793,10 @@ namespace small3d {
 
       colourStruct.colour = colour;
 
-      glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
+     /* glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
       glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
       glBindBufferBase(GL_UNIFORM_BUFFER, 4, perspColourUboId);
-      glBindBuffer(GL_UNIFORM_BUFFER, 0);
+      glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
     }
 
     setPerspectiveAndLight();
@@ -877,22 +806,22 @@ namespace small3d {
     positionCamera();
 
     // Draw
-    glDrawElements(GL_TRIANGLES,
+    /*glDrawElements(GL_TRIANGLES,
       static_cast<GLsizei>(model.indexData.size()),
-      GL_UNSIGNED_INT, 0);
+      GL_UNSIGNED_INT, 0);*/
 
     // Clear stuff
     if (textureName != "") {
-      glDisableVertexAttribArray(2);
+      /*glDisableVertexAttribArray(2);*/
     }
 
-    glDisableVertexAttribArray(1);
+    /*glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-    glUseProgram(0);
+    glUseProgram(0);*/
 
   }
 
@@ -932,89 +861,36 @@ namespace small3d {
 
   void Renderer::clearBuffers(Model & model) const {
     if (model.positionBufferObjectId != 0) {
-      glDeleteBuffers(1, &model.positionBufferObjectId);
+     /* glDeleteBuffers(1, &model.positionBufferObjectId);*/
       model.positionBufferObjectId = 0;
     }
 
     if (model.indexBufferObjectId != 0) {
-      glDeleteBuffers(1, &model.indexBufferObjectId);
+      /*glDeleteBuffers(1, &model.indexBufferObjectId);*/
       model.indexBufferObjectId = 0;
     }
     if (model.normalsBufferObjectId != 0) {
-      glDeleteBuffers(1, &model.normalsBufferObjectId);
+      /*glDeleteBuffers(1, &model.normalsBufferObjectId);*/
       model.normalsBufferObjectId = 0;
     }
 
     if (model.uvBufferObjectId != 0) {
-      glDeleteBuffers(1, &model.uvBufferObjectId);
+      /*glDeleteBuffers(1, &model.uvBufferObjectId);*/
       model.uvBufferObjectId = 0;
     }
   }
 
   void Renderer::clearScreen() const {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    /*glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
   }
 
   void Renderer::clearScreen(const glm::vec4 colour) const {
-    glClearColor(colour.r, colour.g, colour.b, colour.a);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    /*glClearColor(colour.r, colour.g, colour.b, colour.a);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
   }
 
   void Renderer::swapBuffers() const {
-    glfwSwapBuffers(window);
-  }
-
-  /**
-   * Convert error enum returned from OpenGL to a readable string error message.
-   * @param error The error code returned from OpenGL
-   */
-  std::string openglErrorToString(GLenum error) {
-
-    std::string errorString;
-
-    switch (error) {
-    case GL_NO_ERROR:
-      errorString = "GL_NO_ERROR: No error has been recorded. "
-        "The value of this symbolic constant is guaranteed to be 0.";
-      break;
-    case GL_INVALID_ENUM:
-      errorString = "GL_INVALID_ENUM: An unacceptable value is specified for "
-        "an enumerated argument. The offending command is ignored and has no "
-        "other side effect than to set the error flag.";
-      break;
-    case GL_INVALID_VALUE:
-      errorString = "GL_INVALID_VALUE: A numeric argument is out of range. "
-        "The offending command is ignored and has no other side effect than "
-        "to set the error flag.";
-      break;
-    case GL_INVALID_OPERATION:
-      errorString = "GL_INVALID_OPERATION: The specified operation is not "
-        "allowed in the current state. The offending command is ignored "
-        "and has no other side effect than to set the error flag.";
-      break;
-    case GL_INVALID_FRAMEBUFFER_OPERATION:
-      errorString = "GL_INVALID_FRAMEBUFFER_OPERATION: The framebuffer "
-        "object is not complete. The offending command is ignored and has "
-        "no other side effect than to set the error flag.";
-      break;
-    case GL_OUT_OF_MEMORY:
-      errorString = "GL_OUT_OF_MEMORY: There is not enough memory left to "
-        "execute the command. The state of the GL is undefined, except for "
-        "the state of the error flags, after this error is recorded.";
-      break;
-    case GL_STACK_UNDERFLOW:
-      errorString = "GL_STACK_UNDERFLOW: An attempt has been made to perform "
-        "an operation that would cause an internal stack to underflow.";
-      break;
-    case GL_STACK_OVERFLOW:
-      errorString = "GL_STACK_OVERFLOW: An attempt has been made to perform "
-        "an operation that would cause an internal stack to overflow.";
-      break;
-    default:
-      errorString = "Unknown error";
-      break;
-    }
-    return errorString;
+   /* glfwSwapBuffers(window);*/
   }
 
 }
