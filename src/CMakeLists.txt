@@ -1,13 +1,15 @@
 file(GLOB SOURCE_FILES *.cpp)
 list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/unit_tests.cpp)
+list(APPEND SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/vkzos.c)
 file(GLOB HEADER_FILES ${CMAKE_SOURCE_DIR}/include/small3d/*.hpp)
+list(APPEND HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/vkzos.h)
 
 add_library(small3d ${SOURCE_FILES} ${HEADER_FILES})
 
 include_directories(
   "${CMAKE_SOURCE_DIR}/include/small3d"
   ${GLFW_INCLUDE_DIRS}
-  ${OPENGL_INCLUDE_DIR}
+  ${Vulkan_INCLUDE_DIRS}
   ${PNG_INCLUDE_DIRS}
   ${GLM_INCLUDE_DIRS}
   ${OGG_INCLUDE_DIRS}
@@ -17,9 +19,8 @@ include_directories(
   )
 
 target_link_libraries(small3d PUBLIC
-  ${GLEW_LIBRARIES}
-  ${OPENGL_LIBRARIES}
   ${GLFW_LIBRARIES}
+  ${Vulkan_LIBRARIES}
   ${PNG_LIBRARIES}
   ${VORBIS_LIBRARIES}
   ${OGG_LIBRARIES}
@@ -60,4 +61,6 @@ if(APPLE)
   set_target_properties(unittests PROPERTIES LINK_FLAGS "-framework \
 AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
 -framework IOKit -framework CoreVideo")
+elseif(UNIX)
+  target_link_libraries(tests PUBLIC "m")
 endif(APPLE)

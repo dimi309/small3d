@@ -40,9 +40,8 @@ elseif(UNIX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif(MSVC)
 
-find_package(OpenGL REQUIRED)
+find_package(Vulkan REQUIRED)
 find_package(GLFW REQUIRED)
-find_package(GLEW REQUIRED)
 find_package(PNG REQUIRED)
 find_package(GLM REQUIRED)
 find_package(OGG REQUIRED)
@@ -54,10 +53,6 @@ find_package(GTest REQUIRED)
 if(UNIX)
   find_package(BZip2 REQUIRED)
 endif(UNIX)
-
-if(WIN32)
-  add_definitions(-DGLEW_STATIC)
-endif(WIN32)
 
 add_definitions(${PNG_DEFINITIONS})
 
