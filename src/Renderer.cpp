@@ -6,6 +6,9 @@
  *     License: BSD 3-Clause License (see LICENSE file)
  */
 
+extern "C" {
+#include "vkzos.h"
+}
 #include "Renderer.hpp"
 #include <stdexcept>
 #include <fstream>
@@ -13,9 +16,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-extern "C" {
-#include "vkzos.h"
-}
+
 
 namespace small3d {
 
@@ -68,6 +69,34 @@ namespace small3d {
   }
 
   void Renderer::initVulkan() {
+
+    uint32_t glfwExtensionCount = 0;
+    const char** glfwExtensions;
+
+    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+    std::string requiredExtensions = "GLFW required extensions (";
+    requiredExtensions += intToStr(glfwExtensionCount) + ")";
+    LOGDEBUG(requiredExtensions);
+
+    for (uint32_t n = 0; n < glfwExtensionCount; n++) {
+      LOGDEBUG(glfwExtensions[n]);
+    }
+    printf("\n\r");
+
+    if (!vkz_create_instance(windowTitle.c_str(), glfwExtensions, 
+      glfwExtensionCount)) {
+      throw std::runtime_error("Failed to create Vulkan instance.");
+    }
+
+    if (glfwCreateWindowSurface(vkz_instance, window, NULL, &vkz_surface) !=
+      VK_SUCCESS) {
+      throw std::runtime_error("Could not create surface.\n\r");
+    }
+
+    if (!vkz_init()) {
+      throw std::runtime_error("Could not initialise Vulkan.\n\r");
+    }
 
     /*glewExperimental = GL_TRUE;
 
@@ -176,13 +205,12 @@ namespace small3d {
   }
 
   void Renderer::init(const int width, const int height,
-    const std::string windowTitle,
     const std::string shadersPath) {
 
     realScreenWidth = width;
     realScreenHeight = height;
 
-    this->initWindow(realScreenWidth, realScreenHeight, windowTitle);
+    this->initWindow(realScreenWidth, realScreenHeight);
 
     this->initVulkan();
 
@@ -266,8 +294,7 @@ namespace small3d {
     //glUseProgram(0);
   }
 
-  void Renderer::initWindow(int& width, int& height,
-    const std::string windowTitle) {
+  void Renderer::initWindow(int& width, int& height) {
 
     glfwSetErrorCallback(error_callback);
 
@@ -358,12 +385,12 @@ namespace small3d {
 
   }
   void Renderer::bindTexture(std::string name, bool perspective) {
-    GLuint textureHandle = getTextureHandle(name);
+    /*GLuint textureHandle = getTextureHandle(name);
 
     if (textureHandle == 0) {
       throw std::runtime_error("Texture " + name +
         " has not been generated");
-    }
+    }*/
 
     /*if (perspective)
       glActiveTexture(GL_TEXTURE0);
@@ -405,8 +432,9 @@ namespace small3d {
     this->zFar = zFar;
     this->frustumScale = frustumScale;
     this->zOffsetFromCamera = zOffsetFromCamera;
+    this->windowTitle = windowTitle;
 
-    init(width, height, windowTitle, shadersPath);
+    init(width, height, shadersPath);
 
     FT_Error ftError = FT_Init_FreeType(&library);
 
@@ -461,7 +489,14 @@ namespace small3d {
       glDeleteProgram(perspectiveProgram);
     }*/
 
-    glfwTerminate();
+    vkz_shutdown();
+
+    //glfwDestroyWindow(window);
+
+    // On linux this causes a segmentation fault
+#ifndef __linux__
+    //glfwTerminate();
+#endif
   }
 
   GLFWwindow* Renderer::getWindow() const {

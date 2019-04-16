@@ -11,6 +11,7 @@
 
 //#define GLEW_NO_GLU
 //#include <GL/glew.h>
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 #include "Logger.hpp"
@@ -39,6 +40,8 @@ namespace small3d
   private:
 
     GLFWwindow* window;
+
+    std::string windowTitle = "";
 
     int realScreenWidth = 0, realScreenHeight = 0;
 
@@ -77,18 +80,18 @@ namespace small3d
 			   const unsigned long width,
 			   const unsigned long height);
 
-    void init(const int width, const int height, const std::string windowTitle,
-              const std::string shadersPath);
-    void initWindow(int &width, int &height,
-		    const std::string windowTitle = "");
+    void init(const int width, const int height, 
+      const std::string shadersPath);
+    void initWindow(int &width, int &height);
 
     void setPerspectiveAndLight();
 
     void bindTexture(std::string name, bool perspective);
 
-    Renderer(const std::string windowTitle, const int width, const int height,
-	     const float frustumScale, const float zNear, const float zFar,
-	     const float zOffsetFromCamera, const std::string shadersPath);
+    Renderer(const std::string windowTitle, const int width, 
+      const int height, const float frustumScale, const float zNear, 
+      const float zFar, const float zOffsetFromCamera, 
+      const std::string shadersPath);
     
     Renderer();
     

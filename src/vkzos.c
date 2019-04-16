@@ -115,7 +115,7 @@ uint32_t pipeline_system_count = 0;
 pipeline_system_struct *pipeline_systems = NULL;
 
 
-int vkz_create_instance(char *application_name,
+int vkz_create_instance(const char *application_name,
 			const char **enabled_extension_names,
 			unsigned int enabled_extension_count) {
   
@@ -545,12 +545,12 @@ int create_logical_device() {
     vkz_present_family_index ? 1 : 2;
   dci.pEnabledFeatures = &pdf;
   dci.enabledExtensionCount = 1;
-  const char ** device_extensions = malloc(sizeof(char));
+  const char ** device_extensions = malloc(sizeof *device_extensions * 20);
   device_extensions[0] = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
   dci.ppEnabledExtensionNames = (const char* const*) device_extensions;
 
 #ifndef NDEBUG
-  const char** vl = malloc(sizeof(char*));
+  const char** vl = malloc(sizeof *vl * 40);
   
   if (validation_layer_ok) {
     vl[0] = "VK_LAYER_LUNARG_standard_validation";
@@ -569,7 +569,7 @@ int create_logical_device() {
     VK_SUCCESS;
   free((char **)device_extensions);
   
-#ifndef NDEBUG
+#if defined(DEBUG) || defined(_DEBUG) || !defined (NDEBUG)
   free((char **)vl);
 #endif
 

@@ -43,7 +43,7 @@ VkDescriptorPool vkz_descriptor_pool;
  * @param  enabled_extension_count Number of extensions used
  * @return 1 if successful, 0 otherwise
  */
-int vkz_create_instance(char *application_name,
+int vkz_create_instance(const char *application_name,
 			const char **enabled_extension_names,
 			unsigned int enabled_extension_count);
 /**
