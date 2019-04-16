@@ -178,20 +178,20 @@ namespace small3d {
     GLint zCameraRotationMatrixUniform =
       glGetUniformLocation(perspectiveProgram, "zCameraRotationMatrix");
 
-    glUniformMatrix4fv(xCameraRotationMatrixUniform, 1, GL_FALSE,
+    glUniformMatrix4fv(xCameraRotationMatrixUniform, 1, GL_TRUE,
 		       glm::value_ptr(glm::rotate(glm::mat4x4(1.0f),
 						  cameraRotation.x,
-						  glm::vec3(1.0f, 0.0f, 0.0f)))
+						  glm::vec3(-1.0f, 0.0f, 0.0f)))
 		       );
-    glUniformMatrix4fv(yCameraRotationMatrixUniform, 1, GL_FALSE,
+    glUniformMatrix4fv(yCameraRotationMatrixUniform, 1, GL_TRUE,
 		       glm::value_ptr(glm::rotate(glm::mat4x4(1.0f),
 						  cameraRotation.y,
-						  glm::vec3(0.0f, 1.0f, 0.0f)))
+						  glm::vec3(0.0f, -1.0f, 0.0f)))
 		       );
-    glUniformMatrix4fv(zCameraRotationMatrixUniform, 1, GL_FALSE,
+    glUniformMatrix4fv(zCameraRotationMatrixUniform, 1, GL_TRUE,
 		       glm::value_ptr(glm::rotate(glm::mat4x4(1.0f),
 						  cameraRotation.z,
-						  glm::vec3(0.0f, 0.0f, 1.0f)))
+						  glm::vec3(0.0f, 0.0f, -1.0f)))
 		       );
 
     // Camera position
