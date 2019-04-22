@@ -55,7 +55,7 @@ int vkz_init();
 
 /**
  * @brief Create the swapchain that will be used. This will also create
-          the associated image views.
+ the associated image views.
  * @param width The width of the images used in the swapchain, in pixels.
  * @param height The height of the images used in the swapchain, in pixels.
  * @param with_image_sampler 1 If an image sampler will be used, 0 otherwise.
@@ -99,12 +99,6 @@ int vkz_destroy_depth_image();
  *                             pipeline before the pipeline is created. If there is 
  *                             no such information to be added, NULL should be passed
  *                             here.
- * @param bind_vertex_buffers  Callback function, allowing for the binding of
- *                             vertex buffers to the command buffers that are
- *                             created during the construction of the pipeline.
- * @param record_draw_command  Callback function, allowing the specification of
- *                             the draw command in the command buffers
- *                             created during the construction of the pipeline.
  * @param index If 100 is passed here, a new "slot" will be used for the pipeline
  *              and returned via the same variable. If not, the pipeline will be
  *              created over a previously deleted pipeline at the index position of 
@@ -117,9 +111,23 @@ int vkz_destroy_depth_image();
 int vkz_create_pipeline(char *vertex_shader_path, char *fragment_shader_path,
 		        int (*set_input_state)(VkPipelineVertexInputStateCreateInfo *),
 			int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo *),
-			int (*bind_vertex_buffers)(VkCommandBuffer),
-			int (*record_draw_command)(VkCommandBuffer,  VkPipelineLayout, uint32_t),
 			uint32_t *index);
+
+/**
+ * @brief Create the (drawing) command buffers for a given pipeline
+ * @param pipeline_index       The index of the pipeline
+ * @param bind_vertex_buffers  Callback function, allowing for the binding of
+ *                             vertex buffers to the command buffers that are
+ *                             created during the construction of the pipeline.
+ * @param record_draw_command  Callback function, allowing the specification of
+ *                             the draw command in the command buffers
+ *                             created during the construction of the pipeline.
+ */
+int vkz_create_command_buffers(uint32_t pipeline_index,
+			       int (*bind_vertex_buffers)(VkCommandBuffer),
+			       int (*record_draw_command)(VkCommandBuffer,
+							  VkPipelineLayout, uint32_t));
+
 /**
  * @brief  Destroy a pipeline
  * @param  index The index (position in the internal array containing pipelines)
@@ -127,6 +135,14 @@ int vkz_create_pipeline(char *vertex_shader_path, char *fragment_shader_path,
  * @return 1 if successful, 0 otherwise
  */
 int vkz_destroy_pipeline(uint32_t index);
+
+/**
+ * @brief Destroy the command buffers created for a given pipeline
+ * @param pipeline_index The index of the pipeline
+ *
+ * @return 1 if successful, 0 otherwise
+ */
+int vkz_destroy_command_buffers(uint32_t pipeline_index);
 
 /**
  * @brief  Draw (and present) a frame.
