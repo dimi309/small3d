@@ -16,8 +16,6 @@ extern "C" {
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-
-
 namespace small3d {
 
   static void error_callback(int error, const char* description)
@@ -54,18 +52,17 @@ namespace small3d {
     float intensity;
   };
 
-  std::string Renderer::loadShaderFromFile(const std::string fileLocation)
-    const {
+  std::vector<char> Renderer::loadShaderFromFile(const std::string fileLocation) {
+    //TODO: Find better place for this logger initialisation.
     initLogger();
-    std::string shaderSource = "";
-    std::ifstream file(fileLocation.c_str());
-    std::string line;
-    if (file.is_open()) {
-      while (std::getline(file, line)) {
-        shaderSource += line + "\n";
-      }
-    }
-    return shaderSource;
+    std::ifstream file(fileLocation.c_str(),
+      std::ios::binary | std::ios::ate);
+    std::ifstream::pos_type pos = file.tellg();
+    std::vector<char> bytes(pos);
+    file.seekg(std::ios::beg);
+    file.read(&bytes[0], pos);
+    file.close();
+    return bytes;
   }
 
   void Renderer::initVulkan() {
@@ -84,7 +81,7 @@ namespace small3d {
     }
     printf("\n\r");
 
-    if (!vkz_create_instance(windowTitle.c_str(), glfwExtensions, 
+    if (!vkz_create_instance(windowTitle.c_str(), glfwExtensions,
       glfwExtensionCount)) {
       throw std::runtime_error("Failed to create Vulkan instance.");
     }
@@ -127,7 +124,7 @@ namespace small3d {
       */
   }
 
-  
+
 
   void Renderer::positionNextObject(const glm::vec3 offset,
     const glm::vec3 rotation) {
@@ -176,10 +173,10 @@ namespace small3d {
       glGenBuffers(1, &cameraOrientation);*/
     }
 
-   /* glBindBuffer(GL_UNIFORM_BUFFER, cameraOrientation);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(uboCamera), &camera, GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 2, cameraOrientation);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
+    /* glBindBuffer(GL_UNIFORM_BUFFER, cameraOrientation);
+     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboCamera), &camera, GL_DYNAMIC_DRAW);
+     glBindBufferBase(GL_UNIFORM_BUFFER, 2, cameraOrientation);
+     glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
 
   }
 
@@ -221,6 +218,9 @@ namespace small3d {
     this->initWindow(realScreenWidth, realScreenHeight);
 
     this->initVulkan();
+
+    std::vector<char> shader = loadShaderFromFile(shadersPath +
+      "perspectiveMatrixLightedShader.spv");
 
     //glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
     //  static_cast<GLsizei>(realScreenHeight));
@@ -370,10 +370,10 @@ namespace small3d {
       glGenBuffers(1, &worldDetails);*/
     }
 
-   /* glBindBuffer(GL_UNIFORM_BUFFER, worldDetails);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(uboWorld), &world, GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, worldDetails);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
+    /* glBindBuffer(GL_UNIFORM_BUFFER, worldDetails);
+     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboWorld), &world, GL_DYNAMIC_DRAW);
+     glBindBufferBase(GL_UNIFORM_BUFFER, 0, worldDetails);
+     glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
 
     uboLight light;
     memset(&light, 0, sizeof(uboLight));
@@ -659,7 +659,7 @@ namespace small3d {
 
     //glEnableVertexAttribArray(0);
     //glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-    
+
 
     uboColour colourStruct;
     memset(&colourStruct, 0, sizeof(colourStruct));
@@ -724,18 +724,18 @@ namespace small3d {
     /*glDrawElements(GL_TRIANGLES,
       6, GL_UNSIGNED_INT, 0);*/
 
-    /*glDeleteBuffers(1, &indexBufferObject);
-    glDeleteBuffers(1, &boxBuffer);*/
+      /*glDeleteBuffers(1, &indexBufferObject);
+      glDeleteBuffers(1, &boxBuffer);*/
     if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
-     /* glDeleteBuffers(1, &coordBuffer);
-      glDisableVertexAttribArray(perspective ? 2 : 1);
-      glBindTexture(GL_TEXTURE_2D, 0);*/
+      /* glDeleteBuffers(1, &coordBuffer);
+       glDisableVertexAttribArray(perspective ? 2 : 1);
+       glBindTexture(GL_TEXTURE_2D, 0);*/
     }
 
-  /*  glDisableVertexAttribArray(0);
+    /*  glDisableVertexAttribArray(0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
 
   }
 
@@ -756,19 +756,19 @@ namespace small3d {
     bool alreadyInGPU = model.positionBufferObjectId != 0;
 
     if (!alreadyInGPU) {
-     /* glGenBuffers(1, &model.indexBufferObjectId);
-      glGenBuffers(1, &model.positionBufferObjectId);
-      glGenBuffers(1, &model.normalsBufferObjectId);
-      glGenBuffers(1, &model.uvBufferObjectId);*/
+      /* glGenBuffers(1, &model.indexBufferObjectId);
+       glGenBuffers(1, &model.positionBufferObjectId);
+       glGenBuffers(1, &model.normalsBufferObjectId);
+       glGenBuffers(1, &model.uvBufferObjectId);*/
     }
 
     // Vertices
    /* glBindBuffer(GL_ARRAY_BUFFER, model.positionBufferObjectId);*/
     if (!alreadyInGPU) {
-     /* glBufferData(GL_ARRAY_BUFFER,
-        model.vertexDataByteSize,
-        model.vertexData.data(),
-        GL_STATIC_DRAW);*/
+      /* glBufferData(GL_ARRAY_BUFFER,
+         model.vertexDataByteSize,
+         model.vertexData.data(),
+         GL_STATIC_DRAW);*/
     }
 
     // Vertex indices
@@ -780,16 +780,16 @@ namespace small3d {
         GL_STATIC_DRAW);*/
     }
 
-   /* glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-*/
-    // Normals
-    /*glBindBuffer(GL_ARRAY_BUFFER, model.normalsBufferObjectId);*/
+    /* glEnableVertexAttribArray(0);
+     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+ */
+ // Normals
+ /*glBindBuffer(GL_ARRAY_BUFFER, model.normalsBufferObjectId);*/
     if (!alreadyInGPU) {
-     /* glBufferData(GL_ARRAY_BUFFER,
-        model.normalsDataByteSize,
-        model.normalsData.data(),
-        GL_STATIC_DRAW);*/
+      /* glBufferData(GL_ARRAY_BUFFER,
+         model.normalsDataByteSize,
+         model.normalsData.data(),
+         GL_STATIC_DRAW);*/
     }
     /*glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);*/
@@ -823,14 +823,14 @@ namespace small3d {
      /* glBindBuffer(GL_ARRAY_BUFFER, model.uvBufferObjectId);*/
 
       if (!alreadyInGPU) {
-       /* glBufferData(GL_ARRAY_BUFFER,
-          model.textureCoordsDataByteSize,
-          model.textureCoordsData.data(),
-          GL_STATIC_DRAW);*/
+        /* glBufferData(GL_ARRAY_BUFFER,
+           model.textureCoordsDataByteSize,
+           model.textureCoordsData.data(),
+           GL_STATIC_DRAW);*/
       }
 
-    /*  glEnableVertexAttribArray(2);
-      glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);*/
+      /*  glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);*/
 
     }
     else {
@@ -838,10 +838,10 @@ namespace small3d {
 
       colourStruct.colour = colour;
 
-     /* glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
-      glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
-      glBindBufferBase(GL_UNIFORM_BUFFER, 4, perspColourUboId);
-      glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
+      /* glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
+       glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
+       glBindBufferBase(GL_UNIFORM_BUFFER, 4, perspColourUboId);
+       glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
     }
 
     setPerspectiveAndLight();
@@ -855,7 +855,7 @@ namespace small3d {
       static_cast<GLsizei>(model.indexData.size()),
       GL_UNSIGNED_INT, 0);*/
 
-    // Clear stuff
+      // Clear stuff
     if (textureName != "") {
       /*glDisableVertexAttribArray(2);*/
     }
@@ -906,7 +906,7 @@ namespace small3d {
 
   void Renderer::clearBuffers(Model & model) const {
     if (model.positionBufferObjectId != 0) {
-     /* glDeleteBuffers(1, &model.positionBufferObjectId);*/
+      /* glDeleteBuffers(1, &model.positionBufferObjectId);*/
       model.positionBufferObjectId = 0;
     }
 
@@ -935,7 +935,7 @@ namespace small3d {
   }
 
   void Renderer::swapBuffers() const {
-   /* glfwSwapBuffers(window);*/
+    /* glfwSwapBuffers(window);*/
   }
 
 }

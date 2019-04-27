@@ -69,7 +69,7 @@ namespace small3d
     std::vector<float> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
 
-    std::string loadShaderFromFile(const std::string fileLocation) const;
+    std::vector<char> loadShaderFromFile(const std::string fileLocation);
     void initVulkan();
 
     void positionNextObject(const glm::vec3 offset,
