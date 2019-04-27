@@ -52,19 +52,6 @@ namespace small3d {
     float intensity;
   };
 
-  std::vector<char> Renderer::loadShaderFromFile(const std::string fileLocation) {
-    //TODO: Find better place for this logger initialisation.
-    initLogger();
-    std::ifstream file(fileLocation.c_str(),
-      std::ios::binary | std::ios::ate);
-    std::ifstream::pos_type pos = file.tellg();
-    std::vector<char> bytes(pos);
-    file.seekg(std::ios::beg);
-    file.read(&bytes[0], pos);
-    file.close();
-    return bytes;
-  }
-
   void Renderer::initVulkan() {
 
     uint32_t glfwExtensionCount = 0;
@@ -219,8 +206,13 @@ namespace small3d {
 
     this->initVulkan();
 
-    std::vector<char> shader = loadShaderFromFile(shadersPath +
-      "perspectiveMatrixLightedShader.spv");
+    std::string vertexShaderPath = shadersPath +
+      "perspectiveMatrixLightedShader.spv";
+    std::string fragmentShaderPath = shadersPath +
+      "textureShader.spv";
+    
+    vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
+      NULL, NULL, &perspectivePipelineIndex);
 
     //glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
     //  static_cast<GLsizei>(realScreenHeight));
@@ -496,6 +488,10 @@ namespace small3d {
     if (perspectiveProgram != 0) {
       glDeleteProgram(perspectiveProgram);
     }*/
+
+    if (perspectivePipelineIndex != 100) {
+      vkz_destroy_pipeline(perspectivePipelineIndex);
+    }
 
     vkz_destroy_depth_image();
     vkz_destroy_swapchain();

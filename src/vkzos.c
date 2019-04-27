@@ -994,7 +994,7 @@ VkFramebuffer* create_framebuffers(VkRenderPass render_pass) {
   return framebuffers;
 }
 
-int vkz_create_pipeline(char *vertex_shader_path, char *fragment_shader_path,
+int vkz_create_pipeline(const char *vertex_shader_path, const char *fragment_shader_path,
 			int (*set_input_state)(VkPipelineVertexInputStateCreateInfo *),
 			int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo *),
 			uint32_t *index) {
@@ -1433,10 +1433,12 @@ int vkz_create_command_buffers(uint32_t pipeline_index,
 }
 
 int vkz_destroy_pipeline(uint32_t index) {
-
+  
   if (pipeline_system_count <= index) {
     return 0;
   }
+
+  LOGDEBUG0("Destroying pipeline.\n\r");
   
   vkDestroyPipeline(vkz_logical_device,
 		    pipeline_systems[index].pipeline, NULL);

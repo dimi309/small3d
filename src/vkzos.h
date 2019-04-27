@@ -108,7 +108,7 @@ int vkz_destroy_depth_image();
  *              will be ignored.
  * @return      1 if successful, 0 otherwise
  */
-int vkz_create_pipeline(char *vertex_shader_path, char *fragment_shader_path,
+int vkz_create_pipeline(const char *vertex_shader_path, const char *fragment_shader_path,
 		        int (*set_input_state)(VkPipelineVertexInputStateCreateInfo *),
 			int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo *),
 			uint32_t *index);

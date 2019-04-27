@@ -45,6 +45,8 @@ namespace small3d
 
     int realScreenWidth = 0, realScreenHeight = 0;
 
+    uint32_t perspectivePipelineIndex = 100;
+
     uint32_t perspectiveProgram = 0;
     uint32_t orthographicProgram = 0;
     uint32_t vao = 0;
@@ -69,7 +71,6 @@ namespace small3d
     std::vector<float> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
 
-    std::vector<char> loadShaderFromFile(const std::string fileLocation);
     void initVulkan();
 
     void positionNextObject(const glm::vec3 offset,
