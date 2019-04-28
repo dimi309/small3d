@@ -114,7 +114,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd portaudio
 mkdir build1
 cd build1
-cmake .. %VSCONFIG% -DPA_USE_WDMKS=OFF -DCMAKE_BUILD_TYPE=Release
+cmake .. %VSCONFIG% -DPA_USE_WDMKS=OFF -DCMAKE_BUILD_TYPE=%BUILDTYPE%
 cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy ..\include\* ..\..\include
@@ -130,7 +130,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd freetype-2.9.1
 mkdir build
 cd build
-cmake .. %VSCONFIG% -DBUILD_SHARED_LIBS=OFF
+cmake .. %VSCONFIG% -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=%BUILDTYPE%
 cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include ..\..\include /s /e
