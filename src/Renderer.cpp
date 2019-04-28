@@ -16,9 +16,12 @@ extern "C" {
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+static VkVertexInputBindingDescription bd[3];
+static VkVertexInputAttributeDescription ad[3];
+
 namespace small3d {
 
-  static void error_callback(int error, const char* description)
+  void error_callback(int error, const char* description)
   {
     LOGERROR(std::string(description));
   }
@@ -51,6 +54,51 @@ namespace small3d {
   struct uboLight {
     float intensity;
   };
+
+  int setInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo) {
+    LOGDEBUG("setInputStateCallback called.");
+    
+    memset(bd, 0, 3 * sizeof(VkVertexInputBindingDescription));
+
+    bd[0].binding = 0;
+    bd[0].stride = 4 * sizeof(float);
+
+    bd[1].binding = 1;
+    bd[1].stride = 3 * sizeof(float);
+
+    bd[2].binding = 2;
+    bd[2].stride = 2 * sizeof(float);
+        
+    memset(ad, 0, 3 * sizeof(VkVertexInputAttributeDescription));
+
+    ad[0].binding = 0;
+    ad[0].location = 0;
+    ad[0].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+    ad[0].offset = 0;
+
+    ad[1].binding = 1;
+    ad[1].location = 1;
+    ad[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+    ad[1].offset = 0;
+
+    ad[2].binding = 2;
+    ad[2].location = 2;
+    ad[2].format = VK_FORMAT_R32G32_SFLOAT;
+    ad[2].offset = 0;
+    
+    inputStateCreateInfo->vertexBindingDescriptionCount = 1;
+    inputStateCreateInfo->vertexAttributeDescriptionCount = 3;
+    inputStateCreateInfo->pVertexBindingDescriptions = bd;
+    inputStateCreateInfo->pVertexAttributeDescriptions = ad;
+
+    return 1;
+  }
+
+  int setPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
+    LOGDEBUG("setPipelineLayoutCallback called.");
+
+    return 1;
+  }
 
   void Renderer::initVulkan() {
 
@@ -110,8 +158,6 @@ namespace small3d {
       (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
       */
   }
-
-
 
   void Renderer::positionNextObject(const glm::vec3 offset,
     const glm::vec3 rotation) {
@@ -212,7 +258,7 @@ namespace small3d {
       "textureShader.spv";
     
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
-      NULL, NULL, &perspectivePipelineIndex);
+      setInputStateCallback, setPipelineLayoutCallback, &perspectivePipelineIndex);
 
     //glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
     //  static_cast<GLsizei>(realScreenHeight));
