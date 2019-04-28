@@ -29,6 +29,11 @@
 
 namespace small3d
 {
+  struct vulkanImage {
+    VkImageView imageView;
+    VkImage image;
+    VkDeviceMemory imageMemory;
+  };
 
   /**
    * @class Renderer
@@ -83,7 +88,7 @@ namespace small3d
     VkDescriptorSetLayout descriptorSetLayout;
     std::vector<VkDescriptorSet> descriptorSets;
 
-    std::unordered_map<std::string, uint32_t> textures;
+    std::unordered_map<std::string, vulkanImage> textures;
 
     FT_Library library = 0;
     std::vector<float> textMemory;
@@ -100,10 +105,11 @@ namespace small3d
     void positionNextObject(const glm::vec3 offset,
 			    const glm::vec3 rotation);
     void positionCamera();
-    uint32_t getTextureHandle(const std::string name) const;
-    uint32_t generateTexture(const std::string name, const float *data,
+    vulkanImage getTextureHandle(const std::string name) const;
+    vulkanImage generateTexture(const std::string name, const float *data,
 			   const unsigned long width,
 			   const unsigned long height);
+    void bindTexture(std::string name, bool perspective);
 
     void init(const int width, const int height, 
       const std::string shadersPath);
@@ -111,7 +117,7 @@ namespace small3d
 
     void setPerspectiveAndLight();
 
-    void bindTexture(std::string name, bool perspective);
+    
 
     Renderer(const std::string windowTitle, const int width, 
       const int height, const float frustumScale, const float zNear, 

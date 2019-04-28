@@ -406,20 +406,64 @@ namespace small3d {
 
   }
 
-  uint32_t Renderer::getTextureHandle(const std::string name) const {
-    GLuint handle = 0;
+  vulkanImage Renderer::getTextureHandle(const std::string name) const {
+    vulkanImage handle;
     auto nameTexturePair = textures.find(name);
     if (nameTexturePair != textures.end()) {
       handle = nameTexturePair->second;
     }
+    else {
+      throw std::runtime_error("Could not find texture " + name);
+    }
     return handle;
   }
 
-  uint32_t Renderer::generateTexture(const std::string name, const float* data,
+  vulkanImage Renderer::generateTexture(const std::string name, const float* data,
     const unsigned long width,
     const unsigned long height) {
 
-    uint32_t textureHandle = 0;
+    vulkanImage textureHandle;
+    memset(&textureHandle, 0, sizeof(textureHandle));
+    VkBuffer stagingBuffer;
+    VkDeviceMemory stagingBufferMemory;
+
+    uint32_t imageByteSize = width * height * 4 * sizeof(float);
+
+    if (!vkz_create_buffer(&stagingBuffer, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+      imageByteSize, &stagingBufferMemory, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+      VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
+      throw std::runtime_error("Failed to create staging buffer for texture.");
+    }
+
+    void* imgData;
+    vkMapMemory(vkz_logical_device, stagingBufferMemory, 0, VK_WHOLE_SIZE, 0, &imgData);
+    memcpy(imgData, data, imageByteSize);
+    vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+
+    if (!vkz_create_image(&textureHandle.image, width, height,
+      VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_TILING_OPTIMAL,
+      VK_IMAGE_USAGE_TRANSFER_DST_BIT |
+      VK_IMAGE_USAGE_SAMPLED_BIT,
+      &textureHandle.imageMemory,
+      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
+      throw std::runtime_error("Failed to create image to be used as a texture.");
+    }
+
+    vkz_transition_image_layout(textureHandle.image, VK_FORMAT_R32G32B32A32_SFLOAT,
+      VK_IMAGE_LAYOUT_UNDEFINED,
+      VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+    vkz_copy_buffer_to_image(stagingBuffer, textureHandle.image,
+      (uint32_t)width, (uint32_t)height);
+
+    vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+
+    if (!vkz_create_image_view(&textureHandle.imageView, textureHandle.image,
+      VK_FORMAT_R32G32B32A32_SFLOAT,
+      VK_IMAGE_ASPECT_COLOR_BIT)) {
+      throw std::runtime_error("Failed to create texture image view!\n\r");
+    };
+
+
     /*glGenTextures(1, &textureHandle);
     glBindTexture(GL_TEXTURE_2D, textureHandle);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
@@ -428,11 +472,31 @@ namespace small3d {
     GLint internalFormat = GL_RGBA32F;
 
     glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, GL_RGBA,
-      GL_FLOAT, data);
+      GL_FLOAT, data);*/
 
-    textures.insert(make_pair(name, textureHandle));*/
+    textures.insert(make_pair(name, textureHandle));
 
     return textureHandle;
+  }
+
+  void Renderer::bindTexture(std::string name, bool perspective) {
+    /*GLuint textureHandle = getTextureHandle(name);
+
+    if (textureHandle == 0) {
+      throw std::runtime_error("Texture " + name +
+        " has not been generated");
+    }*/
+
+    /*if (perspective)
+      glActiveTexture(GL_TEXTURE0);
+    else
+      glActiveTexture(GL_TEXTURE1);
+
+    glBindTexture(GL_TEXTURE_2D, textureHandle);
+    GLint loc = glGetUniformLocation(perspective ? perspectiveProgram : orthographicProgram, "textureImage");
+
+    glUniform1i(loc, perspective ? 0 : 1);*/
+
   }
 
   void Renderer::init(const int width, const int height,
@@ -665,25 +729,6 @@ namespace small3d {
     glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
 
   }
-  void Renderer::bindTexture(std::string name, bool perspective) {
-    /*GLuint textureHandle = getTextureHandle(name);
-
-    if (textureHandle == 0) {
-      throw std::runtime_error("Texture " + name +
-        " has not been generated");
-    }*/
-
-    /*if (perspective)
-      glActiveTexture(GL_TEXTURE0);
-    else
-      glActiveTexture(GL_TEXTURE1);
-
-    glBindTexture(GL_TEXTURE_2D, textureHandle);
-    GLint loc = glGetUniformLocation(perspective ? perspectiveProgram : orthographicProgram, "textureImage");
-
-    glUniform1i(loc, perspective ? 0 : 1);*/
-
-  }
 
   Renderer::Renderer() {
     window = 0;
@@ -902,6 +947,10 @@ namespace small3d {
     auto nameTexturePair = textures.find(name);
 
     if (nameTexturePair != textures.end()) {
+      
+      vkDestroyImageView(vkz_logical_device, nameTexturePair->second.imageView, NULL);
+      vkz_destroy_image(nameTexturePair->second.image, nameTexturePair->second.imageMemory);
+      
       //glDeleteTextures(1, &(nameTexturePair->second));
       textures.erase(name);
     }
