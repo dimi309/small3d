@@ -50,7 +50,7 @@ static BOOL logical_device_created = FALSE;
 
 static BOOL swapchain_created = FALSE;
 static BOOL swapchain_image_views_created = FALSE;
-static BOOL descriptor_pool_created = FALSE;
+//static BOOL descriptor_pool_created = FALSE;
 
 static uint32_t vkz_width;
 static uint32_t vkz_height;
@@ -722,7 +722,7 @@ int create_swapchain_image_views() {
   return 1;
 }
 
-int create_descriptor_pool(uint32_t pool_size, BOOL with_sampler) {
+/*int create_descriptor_pool(uint32_t pool_size, BOOL with_sampler) {
   if (!descriptor_pool_created) {
     
     uint32_t pool_size_count = with_sampler ? 2 : 1;
@@ -759,7 +759,7 @@ int create_descriptor_pool(uint32_t pool_size, BOOL with_sampler) {
     }
   }
   return 1;
-}
+}*/
 
 int vkz_create_swapchain(const uint32_t width, const uint32_t height,
 			 int with_image_sampler) {
@@ -828,8 +828,8 @@ int vkz_create_swapchain(const uint32_t width, const uint32_t height,
 			  &vkz_swapchain_image_count,
 			  vkz_swapchain_images);
  
-  return create_swapchain_image_views() &&
-    create_descriptor_pool(vkz_swapchain_image_count, intrn_with_image_sampler);
+  return create_swapchain_image_views(); //&&
+    //create_descriptor_pool(vkz_swapchain_image_count, intrn_with_image_sampler);
 }
 
 int vkz_destroy_swapchain() {
@@ -1866,9 +1866,9 @@ int vkz_shutdown() {
     vkDeviceWaitIdle(vkz_logical_device);
   }
 
-  if (descriptor_pool_created) {
+  /*if (descriptor_pool_created) {
     vkDestroyDescriptorPool(vkz_logical_device, vkz_descriptor_pool, NULL);
-  }
+  }*/
 
   if (pipeline_systems) {
     free(pipeline_systems);

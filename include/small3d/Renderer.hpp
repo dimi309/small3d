@@ -51,7 +51,7 @@ namespace small3d
     uint32_t orthographicProgram = 0;
     uint32_t vao = 0;
 
-    uint32_t renderOrientation = 0;
+    //uint32_t renderOrientation = 0;
     uint32_t cameraOrientation = 0;
     uint32_t worldDetails = 0;
     uint32_t lightUboId = 0;
@@ -75,7 +75,9 @@ namespace small3d
     std::unordered_map<std::string, FT_Face> fontFaces;
 
     void initVulkan();
-
+    VkDescriptorPool descriptorPool;
+    bool descriptorPoolCreated = false;
+    void createDescriptorPool();
     void allocateDescriptorSets();
 
     void positionNextObject(const glm::vec3 offset,

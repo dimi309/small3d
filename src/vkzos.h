@@ -34,7 +34,7 @@ uint32_t vkz_swapchain_image_count;
 /**
  * @brief Descriptor pool, used for binding descriptors for uniform buffers.
  */
-VkDescriptorPool vkz_descriptor_pool;
+// VkDescriptorPool vkz_descriptor_pool;
 
 /** 
  * @brief  Create a vulkan instance

@@ -137,7 +137,7 @@ namespace small3d {
     if (!vkz_create_depth_image()) {
       throw std::runtime_error("Failed to create depth image.");
     }
-
+    createDescriptorPool();
     allocateDescriptorSets();
 
     /*glewExperimental = GL_TRUE;
@@ -159,6 +159,48 @@ namespace small3d {
       std::string(reinterpret_cast<char*>
       (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
       */
+  }
+  void Renderer::createDescriptorPool() {
+    if (!descriptorPoolCreated) {
+
+      VkDescriptorPoolSize ps[6]; 
+      memset(&ps, 0, 6 * sizeof(VkDescriptorPoolSize));
+
+      ps[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      ps[0].descriptorCount = vkz_swapchain_image_count;
+
+      ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      ps[1].descriptorCount = vkz_swapchain_image_count;
+
+      ps[2].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      ps[2].descriptorCount = vkz_swapchain_image_count;
+
+      ps[3].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+      ps[3].descriptorCount = vkz_swapchain_image_count;
+
+      ps[4].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      ps[4].descriptorCount = vkz_swapchain_image_count;
+
+      ps[5].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      ps[5].descriptorCount = vkz_swapchain_image_count;
+
+      VkDescriptorPoolCreateInfo dpci;
+      memset(&dpci, 0, sizeof(VkDescriptorPoolCreateInfo));
+      dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+      dpci.poolSizeCount = 6;
+      dpci.pPoolSizes = ps;
+      dpci.maxSets = vkz_swapchain_image_count;
+
+      if (vkCreateDescriptorPool(vkz_logical_device, &dpci, NULL,
+        &descriptorPool) != VK_SUCCESS) {
+        LOGDEBUG("Failed to create descriptor pool.");
+      }
+      else {
+        descriptorPoolCreated = true;
+        LOGDEBUG("Created descriptor pool.");
+      }
+    }
+    
   }
 
   void Renderer::allocateDescriptorSets() {
@@ -220,13 +262,13 @@ namespace small3d {
 
     for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
       dslo[i] = descriptorSetLayout;
-      LOGDEBUG("Set descriptor set layout for swapchain image " + intToStr(i));
+      LOGDEBUG("Set descriptor set layout for swapchain image " + intToStr((const int)i));
     }
 
     VkDescriptorSetAllocateInfo dsai;
     memset(&dsai, 0, sizeof(VkDescriptorSetAllocateInfo));
     dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-    dsai.descriptorPool = vkz_descriptor_pool;
+    dsai.descriptorPool = descriptorPool;
     dsai.descriptorSetCount = vkz_swapchain_image_count;
     dsai.pSetLayouts = &dslo[0];
 
@@ -257,13 +299,13 @@ namespace small3d {
       glm::vec3(0.0f, 0.0f, 1.0f)));
     orientation.offset = offset;
 
-    if (renderOrientation == 0) {
-      /*GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram,
+    /*if (renderOrientation == 0) {
+      GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram,
         "uboOrientation");
       glUniformBlockBinding(perspectiveProgram, orientationIndex, 1);
-      glGenBuffers(1, &renderOrientation);*/
+      glGenBuffers(1, &renderOrientation);
 
-    }
+    }*/
 
     /*glBindBuffer(GL_UNIFORM_BUFFER, renderOrientation);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboOrientation), &orientation, GL_DYNAMIC_DRAW);
@@ -622,8 +664,14 @@ namespace small3d {
     if (perspectivePipelineIndex != 100) {
       vkz_destroy_pipeline(perspectivePipelineIndex);
     }
+
     vkDestroyDescriptorSetLayout(vkz_logical_device,
       descriptorSetLayout, NULL);
+
+    if (descriptorPoolCreated) {
+      vkDestroyDescriptorPool(vkz_logical_device, descriptorPool, NULL);
+    }
+
     vkz_destroy_depth_image();
     vkz_destroy_swapchain();
     vkz_shutdown();
