@@ -49,7 +49,6 @@ find_package(OGG REQUIRED)
 find_package(VORBIS REQUIRED)
 find_package(Portaudio REQUIRED)
 find_package(Freetype REQUIRED)
-find_package(GTest REQUIRED)
 
 if(UNIX)
   find_package(BZip2 REQUIRED)
