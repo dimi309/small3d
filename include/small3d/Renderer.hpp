@@ -47,21 +47,32 @@ namespace small3d
 
     uint32_t perspectivePipelineIndex = 100;
 
-    uint32_t perspectiveProgram = 0;
+    /*uint32_t perspectiveProgram = 0;
     uint32_t orthographicProgram = 0;
     uint32_t vao = 0;
+    */
 
     uint32_t currentSwapchainImageIndex = 0;
 
     std::vector<VkBuffer> renderOrientationBuffers;
     std::vector<VkDeviceMemory> renderOrientationBufferMemories;
 
-    uint32_t cameraOrientation = 0;
-    uint32_t worldDetails = 0;
-    uint32_t lightUboId = 0;
+    std::vector<VkBuffer> cameraOrientationBuffers;
+    std::vector<VkDeviceMemory> cameraOrientationBufferMemories;
+
+    std::vector<VkBuffer> worldDetailsBuffers;
+    std::vector<VkDeviceMemory> worldDetailsBufferMemories;
+    
+    std::vector<VkBuffer> lightIntensityBuffers;
+    std::vector<VkDeviceMemory> lightIntensityBufferMemories;
+
+    std::vector<VkBuffer> colourBuffers;
+    std::vector<VkDeviceMemory> colourBufferMemories;
+
+    /*
     uint32_t perspColourUboId = 0;
     uint32_t orthoColourUboId = 0;
-    
+    */
     bool noShaders;
 
     float frustumScale = 0.0f;
@@ -83,6 +94,8 @@ namespace small3d
     bool descriptorPoolCreated = false;
     void createDescriptorPool();
     void allocateDescriptorSets();
+
+    void setColourBuffer(glm::vec4 colour);
 
     void positionNextObject(const glm::vec3 offset,
 			    const glm::vec3 rotation);

@@ -285,6 +285,34 @@ namespace small3d {
     
   }
 
+  void Renderer::setColourBuffer(glm::vec4 colour) {
+    uboColour colourStruct;
+    memset(&colourStruct, 0, sizeof(colourStruct));
+    colourStruct.colour = colour;
+
+    uint32_t colourSize = sizeof(float);
+
+    if (colourBuffers.size() == 0) {
+      colourBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
+      colourBufferMemories = std::vector<VkDeviceMemory>(vkz_swapchain_image_count);
+
+      for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
+        vkz_create_buffer(&colourBuffers[i], VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+          colourSize,
+          &colourBufferMemories[i],
+          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+      }
+    }
+
+    void* colourData;
+    vkMapMemory(vkz_logical_device, colourBufferMemories[currentSwapchainImageIndex],
+      0, colourSize, 0, &colourData);
+    memcpy(colourData, &colourStruct, colourSize);
+    vkUnmapMemory(vkz_logical_device, colourBufferMemories[currentSwapchainImageIndex]);
+
+  }
+
   void Renderer::positionNextObject(const glm::vec3 offset,
     const glm::vec3 rotation) {
 
@@ -299,7 +327,7 @@ namespace small3d {
       glm::vec3(0.0f, 0.0f, 1.0f)));
     orientation.offset = offset;
     
-    uint32_t renderOrientationSize = (3 * 16 + 3) * sizeof(float);
+    uint32_t renderOrientationSize = (3 * 16 + 4) * sizeof(float);
 
     if (renderOrientationBuffers.size() == 0) {
       renderOrientationBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
@@ -312,10 +340,6 @@ namespace small3d {
           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
           VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
       }
-      /*GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram,
-        "uboOrientation");
-      glUniformBlockBinding(perspectiveProgram, orientationIndex, 1);
-      glGenBuffers(1, &renderOrientation);*/
     }
 
     void* orientationData;
@@ -323,7 +347,12 @@ namespace small3d {
       0, renderOrientationSize, 0, &orientationData);
     memcpy(orientationData, &orientation, renderOrientationSize);
     vkUnmapMemory(vkz_logical_device, renderOrientationBufferMemories[currentSwapchainImageIndex]);
-
+    /* 
+    // if orientation == 0 etc...
+    GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram,
+       "uboOrientation");
+     glUniformBlockBinding(perspectiveProgram, orientationIndex, 1);
+     glGenBuffers(1, &renderOrientation);*/
     /*glBindBuffer(GL_UNIFORM_BUFFER, renderOrientation);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboOrientation), &orientation, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, renderOrientation);
@@ -343,11 +372,32 @@ namespace small3d {
     camera.zRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f), cameraRotation.z,
       glm::vec3(0.0f, 0.0f, -1.0f)));
 
-    if (cameraOrientation == 0) {
-      /*GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram, "uboCamera");
-      glUniformBlockBinding(perspectiveProgram, orientationIndex, 2);
-      glGenBuffers(1, &cameraOrientation);*/
+    uint32_t cameraOrientationSize = (3 * 16 + 3) * sizeof(float);
+
+    if (cameraOrientationBuffers.size() == 0) {
+      cameraOrientationBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
+      cameraOrientationBufferMemories = std::vector<VkDeviceMemory>(vkz_swapchain_image_count);
+
+      for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
+        vkz_create_buffer(&cameraOrientationBuffers[i], VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+          cameraOrientationSize,
+          &cameraOrientationBufferMemories[i],
+          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+      }
     }
+
+    void* orientationData;
+    vkMapMemory(vkz_logical_device, cameraOrientationBufferMemories[currentSwapchainImageIndex],
+      0, cameraOrientationSize, 0, &orientationData);
+    memcpy(orientationData, &camera, cameraOrientationSize);
+    vkUnmapMemory(vkz_logical_device, cameraOrientationBufferMemories[currentSwapchainImageIndex]);
+
+    /*if (cameraOrientation == 0) {
+      GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram, "uboCamera");
+      glUniformBlockBinding(perspectiveProgram, orientationIndex, 2);
+      glGenBuffers(1, &cameraOrientation);
+    }*/
 
     /* glBindBuffer(GL_UNIFORM_BUFFER, cameraOrientation);
      glBufferData(GL_UNIFORM_BUFFER, sizeof(uboCamera), &camera, GL_DYNAMIC_DRAW);
@@ -545,11 +595,32 @@ namespace small3d {
     world.perspectiveMatrix = glm::make_mat4(tmpmat4);
     world.lightDirection = lightDirection;
 
-    if (worldDetails == 0) {
-      /*GLuint worldIndex = glGetUniformBlockIndex(perspectiveProgram, "uboWorld");
-      glUniformBlockBinding(perspectiveProgram, worldIndex, 0);
-      glGenBuffers(1, &worldDetails);*/
+    uint32_t worldDetailsSize = (16 + 4) * sizeof(float);
+
+    if (worldDetailsBuffers.size() == 0) {
+      worldDetailsBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
+      worldDetailsBufferMemories = std::vector<VkDeviceMemory>(vkz_swapchain_image_count);
+
+      for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
+        vkz_create_buffer(&worldDetailsBuffers[i], VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+          worldDetailsSize,
+          &worldDetailsBufferMemories[i],
+          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+      }
     }
+
+    void* worldDetailsData;
+    vkMapMemory(vkz_logical_device, worldDetailsBufferMemories[currentSwapchainImageIndex],
+      0, worldDetailsSize, 0, &worldDetailsData);
+    memcpy(worldDetailsData, &world, worldDetailsSize);
+    vkUnmapMemory(vkz_logical_device, worldDetailsBufferMemories[currentSwapchainImageIndex]);
+
+    /*if (worldDetails == 0) {
+      GLuint worldIndex = glGetUniformBlockIndex(perspectiveProgram, "uboWorld");
+      glUniformBlockBinding(perspectiveProgram, worldIndex, 0);
+      glGenBuffers(1, &worldDetails);
+    }*/
 
     /* glBindBuffer(GL_UNIFORM_BUFFER, worldDetails);
      glBufferData(GL_UNIFORM_BUFFER, sizeof(uboWorld), &world, GL_DYNAMIC_DRAW);
@@ -560,12 +631,33 @@ namespace small3d {
     memset(&light, 0, sizeof(uboLight));
     light.intensity = lightIntensity;
 
-    if (lightUboId == 0) {
-      /*GLuint lightUboIndex = glGetUniformBlockIndex(perspectiveProgram,
+    uint32_t lightIntensitySize = sizeof(float);
+
+    if (lightIntensityBuffers.size() == 0) {
+      lightIntensityBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
+      lightIntensityBufferMemories = std::vector<VkDeviceMemory>(vkz_swapchain_image_count);
+
+      for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
+        vkz_create_buffer(&lightIntensityBuffers[i], VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+          lightIntensitySize,
+          &lightIntensityBufferMemories[i],
+          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+      }
+    }
+
+    void* lightIntensityData;
+    vkMapMemory(vkz_logical_device, lightIntensityBufferMemories[currentSwapchainImageIndex],
+      0, lightIntensitySize, 0, &lightIntensityData);
+    memcpy(lightIntensityData, &light, lightIntensitySize);
+    vkUnmapMemory(vkz_logical_device, lightIntensityBufferMemories[currentSwapchainImageIndex]);
+
+    /*if (lightUboId == 0) {
+      GLuint lightUboIndex = glGetUniformBlockIndex(perspectiveProgram,
         "uboLight");
       glUniformBlockBinding(perspectiveProgram, lightUboIndex, 5);
-      glGenBuffers(1, &lightUboId);*/
-    }
+      glGenBuffers(1, &lightUboId);
+    }*/
 
     /*glBindBuffer(GL_UNIFORM_BUFFER, lightUboId);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboLight), &light, GL_DYNAMIC_DRAW);
@@ -595,8 +687,7 @@ namespace small3d {
 
   Renderer::Renderer() {
     window = 0;
-    perspectiveProgram = 0;
-    orthographicProgram = 0;
+    
     noShaders = false;
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
     cameraPosition = glm::vec3(0, 0, 0);
@@ -611,8 +702,7 @@ namespace small3d {
     const std::string shadersPath) {
 
     window = 0;
-    perspectiveProgram = 0;
-    orthographicProgram = 0;
+    
     noShaders = false;
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
     cameraPosition = glm::vec3(0, 0, 0);
@@ -859,29 +949,33 @@ namespace small3d {
     //glEnableVertexAttribArray(0);
     //glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
+    setColourBuffer(colour);
 
-    uboColour colourStruct;
+    /*uboColour colourStruct;
     memset(&colourStruct, 0, sizeof(colourStruct));
     colourStruct.colour = colour;
+    */
 
-    if (perspective) {
+
+    /*if (perspective) {
       if (perspColourUboId == 0) {
-        /*GLuint colourUboIndex = glGetUniformBlockIndex(perspectiveProgram, "uboColour");
+        GLuint colourUboIndex = glGetUniformBlockIndex(perspectiveProgram, "uboColour");
         glUniformBlockBinding(perspectiveProgram, colourUboIndex, 4);
-        glGenBuffers(1, &perspColourUboId);*/
+        glGenBuffers(1, &perspColourUboId);
 
       }
     }
     else {
       if (orthoColourUboId == 0) {
-        /*GLuint colourUboIndex = glGetUniformBlockIndex(orthographicProgram, "uboColour");
+        GLuint colourUboIndex = glGetUniformBlockIndex(orthographicProgram, "uboColour");
         glUniformBlockBinding(orthographicProgram, colourUboIndex, 1);
-        glGenBuffers(1, &orthoColourUboId);*/
+        glGenBuffers(1, &orthoColourUboId);
 
       }
 
     }
-
+    */
+    
     /*glBindBuffer(GL_UNIFORM_BUFFER, perspective ? perspColourUboId : orthoColourUboId);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, perspective ? 4 : 1, perspective ? perspColourUboId : orthoColourUboId);
@@ -993,22 +1087,21 @@ namespace small3d {
     /*glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);*/
 
-    if (perspColourUboId == 0) {
+    /*if (perspColourUboId == 0) {
 
-      /*GLuint colourUboIndex = glGetUniformBlockIndex(perspectiveProgram, "uboColour");
+      GLuint colourUboIndex = glGetUniformBlockIndex(perspectiveProgram, "uboColour");
       glUniformBlockBinding(perspectiveProgram, colourUboIndex, 4);
-      glGenBuffers(1, &perspColourUboId);*/
+      glGenBuffers(1, &perspColourUboId);
 
     }
+    */
 
-    uboColour colourStruct;
-    memset(&colourStruct, 0, sizeof(uboColour));
-
+    
     if (textureName != "") {
 
       // "Disable" colour since there is a texture
 
-      colourStruct.colour = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+      setColourBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
       /*glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
       glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
@@ -1035,7 +1128,7 @@ namespace small3d {
     else {
       // If there is no texture, use the given colour
 
-      colourStruct.colour = colour;
+      setColourBuffer(colour);
 
       /* glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
        glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
