@@ -42,10 +42,9 @@ endif(WIN32)
 add_executable(unittests unit_tests.cpp)
 
 target_include_directories(unittests PUBLIC
-  "${CMAKE_SOURCE_DIR}/include"
-  ${GTEST_INCLUDE_DIRS})
+  "${CMAKE_SOURCE_DIR}/include")
 
-target_link_libraries(unittests PUBLIC ${GTEST_BOTH_LIBRARIES}  small3d)
+target_link_libraries(unittests PUBLIC small3d)
 
 if(MSVC)
   set_target_properties(unittests PROPERTIES LINK_FLAGS_DEBUG
