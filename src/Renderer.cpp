@@ -1095,7 +1095,7 @@ namespace small3d {
 
     /*glUseProgram(perspectiveProgram);*/
 
-    bool alreadyInGPU = model.positionBufferObjectId != 0;
+    bool alreadyInGPU = false; // model.positionBufferObjectId != 0;
 
     if (!alreadyInGPU) {
       /* glGenBuffers(1, &model.indexBufferObjectId);
@@ -1144,7 +1144,6 @@ namespace small3d {
 
     }
     */
-
     
     if (textureName != "") {
 
@@ -1246,24 +1245,20 @@ namespace small3d {
   }
 
   void Renderer::clearBuffers(Model & model) const {
-    if (model.positionBufferObjectId != 0) {
-      /* glDeleteBuffers(1, &model.positionBufferObjectId);*/
+    /*if (model.positionBufferObjectId != 0) {
       model.positionBufferObjectId = 0;
     }
 
     if (model.indexBufferObjectId != 0) {
-      /*glDeleteBuffers(1, &model.indexBufferObjectId);*/
       model.indexBufferObjectId = 0;
     }
     if (model.normalsBufferObjectId != 0) {
-      /*glDeleteBuffers(1, &model.normalsBufferObjectId);*/
       model.normalsBufferObjectId = 0;
     }
 
     if (model.uvBufferObjectId != 0) {
-      /*glDeleteBuffers(1, &model.uvBufferObjectId);*/
       model.uvBufferObjectId = 0;
-    }
+    }*/
   }
 
   void Renderer::clearScreen() const {

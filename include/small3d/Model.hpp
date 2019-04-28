@@ -10,6 +10,7 @@
 
 #include <string>
 #include <vector>
+#include <vulkan/vulkan.h>
 
 namespace small3d {
   /**
@@ -44,29 +45,43 @@ namespace small3d {
 
   public:
 
+    bool alreadyInGPU = false;
+
+    VkBuffer positionBuffer;
+    VkDeviceMemory positionBufferMemory;
+
+    VkBuffer indexBuffer;
+    VkDeviceMemory indexBufferMemory;
+
+    VkBuffer normalsBuffer;
+    VkBuffer normalsBufferMemory;
+
+    VkBuffer uvBuffer;
+    VkBuffer uvBufferMemory;
+
     /**
      * @brief Position buffer object id. It is suggested not to manipulate
      *        this directly.
      */
-    uint32_t positionBufferObjectId = 0;
+    //uint32_t positionBufferObjectId = 0;
 
     /**
      * @brief Index buffer object id. It is suggested not to manipulate
      *        this directly.
      */
-    uint32_t indexBufferObjectId = 0;
+    //uint32_t indexBufferObjectId = 0;
 
     /**
      * @brief Normals buffer object id. It is suggested not to manipulate
      *        this directly.
      */
-    uint32_t normalsBufferObjectId = 0;
+    //uint32_t normalsBufferObjectId = 0;
 
     /**
      * @brief UV buffer object id. It is suggested not to manipulate this
      *        directly.
      */
-    uint32_t uvBufferObjectId = 0;
+    //uint32_t uvBufferObjectId = 0;
     
     /**
      * @brief The vertex data. This is an array, which is to be treated as a 4
