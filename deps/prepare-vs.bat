@@ -10,7 +10,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd glfw-master
 mkdir build
 cd build
-cmake .. %VSCONFIG% -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF
+cmake .. %VSCONFIG% -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF -DCMAKE_BUILD_TYPE=%BUILDTYPE%
 cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include\GLFW ..\..\include\GLFW /i /s
@@ -22,7 +22,7 @@ rmdir /Q /S glfw-master
 7z x glew-2.1.0.zip
 if %errorlevel% neq 0 exit /b %errorlevel%
 cd glew-2.1.0
-cmake %VSCONFIG% build/cmake -DBUILD_UTILS=OFF
+cmake %VSCONFIG% build/cmake -DBUILD_UTILS=OFF -DCMAKE_BUILD_TYPE=%BUILDTYPE%
 cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy include\GL ..\include\GL /i /s
@@ -42,7 +42,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd zlib-1.2.11
 mkdir build
 cd build
-cmake .. %VSCONFIG%
+cmake .. %VSCONFIG% -DCMAKE_BUILD_TYPE=%BUILDTYPE%
 cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy ..\zlib.h ..\..\include
@@ -59,7 +59,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd libpng-1.6.34
 mkdir build
 cd build
-cmake .. %VSCONFIG% -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=..\..\lib/zlib.lib -DZLIB_INCLUDE_DIR=..\..\include
+cmake .. %VSCONFIG% -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=..\..\lib/zlib.lib -DZLIB_INCLUDE_DIR=..\..\include -DCMAKE_BUILD_TYPE=%BUILDTYPE%
 cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy ..\*.h ..\..\include
@@ -77,7 +77,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd ogg-1.3.3
 mkdir build
 cd build
-cmake .. %VSCONFIG% -DBUILD_SHARED_LIBS=OFF
+cmake .. %VSCONFIG% -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=%BUILDTYPE%
 cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include\ogg ..\..\include\ogg /i /s
@@ -97,7 +97,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd vorbis-1.3.6
 mkdir build
 cd build
-cmake .. %VSCONFIG% -DBUILD_SHARED_LIBS=OFF -DOGG_ROOT=%depspath%
+cmake .. %VSCONFIG% -DBUILD_SHARED_LIBS=OFF -DOGG_ROOT=%depspath% -DCMAKE_BUILD_TYPE=%BUILDTYPE%
 cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include\vorbis ..\..\include\vorbis /i /s
@@ -114,7 +114,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd portaudio
 mkdir build1
 cd build1
-cmake .. %VSCONFIG% -DPA_USE_WDMKS=OFF -DCMAKE_BUILD_TYPE=Release
+cmake .. %VSCONFIG% -DPA_USE_WDMKS=OFF -DCMAKE_BUILD_TYPE=%BUILDTYPE%
 cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy ..\include\* ..\..\include
@@ -130,7 +130,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd freetype-2.9.1
 mkdir build
 cd build
-cmake .. %VSCONFIG% -DBUILD_SHARED_LIBS=OFF
+cmake .. %VSCONFIG% -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=%BUILDTYPE%
 cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include ..\..\include /s /e
