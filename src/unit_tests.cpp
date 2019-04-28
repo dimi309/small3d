@@ -55,14 +55,14 @@ int ImageTest() {
       
       const float *colour = &imageData[4 * y * image.getWidth() + 4 * x];       
       
-      /*EXPECT_GE(colour[0], 0.0f);
-      EXPECT_LE(colour[0], 1.0f);
-      EXPECT_GE(colour[1], 0.0f);
-      EXPECT_LE(colour[1], 1.0f);
-      EXPECT_GE(colour[2], 0.0f);
-      EXPECT_LE(colour[2], 1.0f);
-      EXPECT_EQ(1.0f, colour[3]);
-      */
+      if (colour[0] <  0.0f) return 0;
+      if (colour[0] > 1.0f) return 0;
+      if (colour[1] < 0.0f) return 0;
+      if (colour[1] > 1.0f) return 0;
+      if (colour[2] < 0.0f) return 0;
+      if (colour[2] > 1.0f) return 0;
+      if (colour[3] != 1.0f) return 0;
+      
       ++x;
     }
     ++y;
@@ -74,10 +74,10 @@ int ModelTest() {
   
   Model model("resources/models/Cube/Cube.obj");
   
-  /*EXPECT_NE(0, model.vertexData.size());
-  EXPECT_NE(0, model.indexData.size());
-  EXPECT_NE(0, model.normalsData.size());
-  EXPECT_NE(0, model.textureCoordsData.size());*/
+  if (model.vertexData.size() == 0) return 0;
+  if (model.indexData.size() == 0) return 0;
+  if (model.normalsData.size() == 0) return 0;
+  if (model.textureCoordsData.size() == 0) return 0;
   
   cout << "Vertex data component count: "
        << model.vertexData.size() << endl << "Index count: "
@@ -89,10 +89,10 @@ int ModelTest() {
   
   Model modelWithNoTexture("resources/models/Cube/CubeNoTexture.obj");
   
-  /*EXPECT_NE(0, modelWithNoTexture.vertexData.size());
-  EXPECT_NE(0, modelWithNoTexture.indexData.size());
-  EXPECT_NE(0, modelWithNoTexture.normalsData.size());
-  EXPECT_EQ(0, modelWithNoTexture.textureCoordsData.size());*/
+  if (modelWithNoTexture.vertexData.size() == 0) return 0;
+  if (modelWithNoTexture.indexData.size() == 0) return 0;
+  if (modelWithNoTexture.normalsData.size() == 0) return 0;
+  if (modelWithNoTexture.textureCoordsData.size() != 0) return 0;
   
   cout << "Vertex data component count: "
        << modelWithNoTexture.vertexData.size() << endl << "Index count: "
@@ -108,8 +108,8 @@ int BoundingBoxesTest() {
   
   BoundingBoxSet bboxes("resources/models/GoatBB/GoatBB.obj");
   
-  /*  EXPECT_EQ(16, bboxes.vertices.size());
-      EXPECT_EQ(12, bboxes.facesVertexIndexes.size());*/
+  if (bboxes.vertices.size() != 16) return 0;
+  if (bboxes.facesVertexIndexes.size() != 12) return 0;
   
   cout << "Bounding boxes vertices: " << endl;
   for (unsigned long idx = 0; idx < 16; idx++) {
@@ -127,9 +127,11 @@ int BoundingBoxesTest() {
       bboxes.facesVertexIndexes[idx][3] << ", " << endl;
   }
   
-  /*EXPECT_FALSE(bboxes.collidesWith(glm::vec3(0.1f, 0.1f, 0.1f),
-				   glm::vec3(0.0f, 0.1f, 0.1f), 
-				   glm::vec3(0.0f, 0.0f, 0.0f)));*/
+  if (bboxes.collidesWith(glm::vec3(0.1f, 0.1f, 0.1f),
+			  glm::vec3(0.0f, 0.1f, 0.1f), 
+			  glm::vec3(0.0f, 0.0f, 0.0f))) {
+    return 0;
+  }
   return 1;
 }
 
@@ -222,21 +224,49 @@ int TokenTest() {
   
   int tokenCount=getTokens(strTest, '-', tokens);
   
-  /*  EXPECT_EQ(4, tokenCount);
-      EXPECT_EQ("b", tokens[1]);*/
+  if (tokenCount != 4) return 0;
+  if (tokens[1] != "b") return 0;
   return 1;
 }
 
 int main(int argc, char **argv) {
 
-  LoggerTest();
-  ImageTest();
-  ModelTest();
-  BoundingBoxesTest();
-  RendererTest();
-  SoundTest();
-  SoundTest2();
-  SoundTest3();
-  TokenTest();
+  if (!LoggerTest()) {
+    printf("*** Failing LoggerTest.\n\r");
+    return 1;
+  }
+  if (!ImageTest()) {
+    printf("*** Failing ImageTest.\n\r");
+    return 1;
+  }
+  if (!ModelTest()) {
+    printf("*** Failing ModelTest.\n\r");
+    return 1;
+  }
+  if (!BoundingBoxesTest()) {
+    printf("*** Failing BoundingBoxesTest.\n\r");
+    return 1;
+  }
+  if (!RendererTest()) {
+    printf("*** Failing RendererTest.\n\r");
+    return 1;
+  }
+  if (!SoundTest()) {
+    printf("*** Failing SoundTest.\n\r");
+    return 1;
+  }
+  if (!SoundTest2()) {
+    printf("*** Failing SoundTest2.\n\r");
+    return 1;
+  }
+  if (!SoundTest3()) {
+    printf("*** Failing SoundTest3.\n\r");
+    return 1;
+  }
+  if (!TokenTest()) {
+    printf("*** Failing TokenTest.\n\r");
+    return 1;
+  }
+  printf("All tests have executed successfully.\n\r");
   return 0;
 }
