@@ -71,23 +71,6 @@ rmdir /Q /S libpng-1.6.34
 del libpng-1.6.34.tar
 del pax_global_header
 
-7z x googletest-release-1.8.1.tar.gz
-if %errorlevel% neq 0 exit /b %errorlevel%
-7z x googletest-release-1.8.1.tar
-cd googletest-release-1.8.1
-mkdir build
-cd build
-cmake .. %VSCONFIG% -DBUILD_GMOCK=OFF -Dgtest_disable_pthreads=ON
-cmake --build . --config %BUILDTYPE%
-if %errorlevel% neq 0 exit /b %errorlevel%
-xcopy ..\googletest\include\gtest ..\..\include\gtest /i /s
-if %BUILDTYPE%==Debug (copy googletest\%BUILDTYPE%\gtestd.lib ..\..\lib\gtest.lib && copy googletest\%BUILDTYPE%\gtest_maind.lib ..\..\lib\\gtest_main.lib) else (copy googletest\%BUILDTYPE%\gtest.lib ..\..\lib && copy googletest\%BUILDTYPE%\gtest_main.lib ..\..\lib\)
-for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
-cd ..\..
-rmdir /Q /S googletest-release-1.8.1
-del googletest-release-1.8.1.tar
-del pax_global_header
-
 7z x ogg-1.3.3.tar.gz
 if %errorlevel% neq 0 exit /b %errorlevel%
 7z x ogg-1.3.3.tar

@@ -16,6 +16,8 @@ if [ $(uname) == 'Linux' ]; then
     fi
 fi
 
+export CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release 
+
 mkdir include
 mkdir lib
 
@@ -25,7 +27,7 @@ if [ $(uname) != 'Linux' ]; then
     cd glfw-master
     mkdir build
     cd build
-    cmake .. -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF
+    cmake .. -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF $CMAKE_DEFINITIONS
     cmake --build .
     rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp -rf ../include/GLFW ../../include/
@@ -52,7 +54,7 @@ tar xvf zlib-1.2.11.tar.gz
 cd zlib-1.2.11
 mkdir build
 cd build
-cmake ..
+cmake .. $CMAKE_DEFINITIONS
 cmake --build .
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp ../zlib.h ../../include/
@@ -65,7 +67,7 @@ tar xvf libpng-1.6.34.tar.gz
 cd libpng-1.6.34
 mkdir build
 cd build
-cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=$(pwd)/../../lib/libza -DZLIB_INCLUDE_DIR=$(pwd)/../../include
+cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=$(pwd)/../../lib/libza -DZLIB_INCLUDE_DIR=$(pwd)/../../include $CMAKE_DEFINITIONS
 cmake --build .
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp ../*.h ../../include/
@@ -74,24 +76,11 @@ cp libpng.a ../../lib/
 cd ../../
 rm -rf libpng-1.6.34
 
-tar xvf googletest-release-1.8.1.tar.gz
-cd googletest-release-1.8.1
-mkdir build
-cd build
-cmake .. -DBUILD_GMOCK=OFF -Dgtest_disable_pthreads=ON
-cmake --build .
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-cp -rf ../googletest/include/gtest ../../include/
-cp googletest/libgtest.a ../../lib/
-cp googletest/libgtest_main.a ../../lib/
-cd ../..
-rm -rf googletest-release-1.8.1
-
 tar xvf ogg-1.3.3.tar.gz
 cd ogg-1.3.3
 mkdir build
 cd build
-cmake .. -DBUILD_SHARED_LIBS=OFF
+cmake .. -DBUILD_SHARED_LIBS=OFF $CMAKE_DEFINITIONS
 cmake --build .
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp -rf ../include/ogg ../../include/
@@ -104,7 +93,7 @@ tar xvf vorbis-1.3.6.tar.gz
 cd vorbis-1.3.6
 mkdir build
 cd build
-cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../
+cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS
 cmake --build .
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp -rf ../include/vorbis ../../include/
@@ -119,7 +108,7 @@ if [ $(uname) != 'Linux' ]; then
     cd portaudio
     mkdir build1
     cd build1
-    cmake .. -DCMAKE_BUILD_TYPE=Release
+    cmake .. $CMAKE_DEFINITIONS
     cmake --build .
     rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp ../include/* ../../include/
@@ -141,7 +130,7 @@ tar xvf freetype-2.9.1.tar.gz
 cd freetype-2.9.1
 mkdir build
 cd build
-cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../
+cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS
 cmake --build .
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp -rf ../include/* ../../include/

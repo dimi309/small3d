@@ -1,3 +1,4 @@
+set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release 
 mkdir include
 mkdir lib
 7z x glfw-master-20181003.zip
@@ -5,7 +6,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd glfw-master
 mkdir build
 cd build
-cmake .. -G"MinGW Makefiles" -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF
+cmake .. -G"MinGW Makefiles" -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF %CMAKE_DEFINITIONS%
 cmake --build .
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include\GLFW ..\..\include\GLFW /i /s
@@ -16,7 +17,7 @@ rmdir /Q /S glfw-master
 7z x glew-2.1.0.zip
 if %errorlevel% neq 0 exit /b %errorlevel%
 cd glew-2.1.0
-cmake -G"MinGW Makefiles" build/cmake -DBUILD_UTILS=OFF
+cmake -G"MinGW Makefiles" build/cmake -DBUILD_UTILS=OFF %CMAKE_DEFINITIONS%
 cmake --build .
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy include\GL ..\include\GL /i /s
@@ -25,7 +26,7 @@ cd ..
 rmdir /Q /S glew-2.1.0
 
 7z x glm-0.9.9.0.zip
-if %errorlevel% neq 0 exit /b %errorlevel%
+if %errorlevel% neq 0 exit /b %errorlevel% 
 xcopy glm\glm include\glm /i /s
 rmdir /Q /S glm
 
@@ -35,7 +36,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd zlib-1.2.11
 mkdir build
 cd build
-cmake .. -G"MinGW Makefiles"
+cmake .. -G"MinGW Makefiles" %CMAKE_DEFINITIONS%
 cmake --build .
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy ..\zlib.h ..\..\include
@@ -51,7 +52,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd libpng-1.6.34
 mkdir build
 cd build
-cmake .. -G"MinGW Makefiles" -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=..\..\lib/zlib.a -DZLIB_INCLUDE_DIR=..\..\include
+cmake .. -G"MinGW Makefiles" -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=..\..\lib/zlib.a -DZLIB_INCLUDE_DIR=..\..\include %CMAKE_DEFINITIONS%
 cmake --build .
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy ..\*.h ..\..\include
@@ -62,30 +63,13 @@ rmdir /Q /S libpng-1.6.34
 del libpng-1.6.34.tar
 del pax_global_header
 
-7z x googletest-release-1.8.1.tar.gz
-if %errorlevel% neq 0 exit /b %errorlevel%
-7z x googletest-release-1.8.1.tar
-cd googletest-release-1.8.1
-mkdir build
-cd build
-cmake .. -G"MinGW Makefiles" -DBUILD_GMOCK=OFF -Dgtest_disable_pthreads=ON
-cmake --build .
-if %errorlevel% neq 0 exit /b %errorlevel%
-xcopy ..\googletest\include\gtest ..\..\include\gtest /i /s
-copy googletest\libgtest.a ..\..\lib
-copy googletest\libgtest_main.a ..\..\lib\
-cd ..\..
-rmdir /Q /S googletest-release-1.8.1
-del googletest-release-1.8.1.tar
-del pax_global_header
-
 7z x ogg-1.3.3.tar.gz
 if %errorlevel% neq 0 exit /b %errorlevel%
 7z x ogg-1.3.3.tar
 cd ogg-1.3.3
 mkdir build
 cd build
-cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF
+cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF %CMAKE_DEFINITIONS%
 cmake --build .
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include\ogg ..\..\include\ogg /i /s
@@ -104,7 +88,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd vorbis-1.3.6
 mkdir build
 cd build
-cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF -DOGG_ROOT=%depspath%
+cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF -DOGG_ROOT=%depspath% %CMAKE_DEFINITIONS%
 cmake --build .
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include\vorbis ..\..\include\vorbis /i /s
@@ -120,7 +104,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd portaudio
 mkdir build1
 cd build1
-cmake .. -G"MinGW Makefiles" -DPA_USE_WDMKS=OFF -DCMAKE_BUILD_TYPE=Release
+cmake .. -G"MinGW Makefiles" -DPA_USE_WDMKS=OFF %CMAKE_DEFINITIONS%
 cmake --build .
 if %errorlevel% neq 0 exit /b %errorlevel%
 copy ..\include\* ..\..\include
@@ -135,7 +119,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd freetype-2.9.1
 mkdir build
 cd build
-cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF
+cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF %CMAKE_DEFINITIONS%
 cmake --build .
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include ..\..\include /s /e
