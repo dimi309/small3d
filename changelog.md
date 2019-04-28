@@ -3,7 +3,7 @@
 small3d changes per version
 ===========================
 
-v1.694 2019-04-28
+v1.695 2019-04-28
 
 - Stopped using Google Test.
 - Improved dependency preparation scripts.
