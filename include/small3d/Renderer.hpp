@@ -51,7 +51,11 @@ namespace small3d
     uint32_t orthographicProgram = 0;
     uint32_t vao = 0;
 
-    //uint32_t renderOrientation = 0;
+    uint32_t currentSwapchainImageIndex = 0;
+
+    std::vector<VkBuffer> renderOrientationBuffers;
+    std::vector<VkDeviceMemory> renderOrientationBufferMemories;
+
     uint32_t cameraOrientation = 0;
     uint32_t worldDetails = 0;
     uint32_t lightUboId = 0;

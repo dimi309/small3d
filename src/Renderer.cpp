@@ -298,14 +298,31 @@ namespace small3d {
     orientation.zRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.z,
       glm::vec3(0.0f, 0.0f, 1.0f)));
     orientation.offset = offset;
+    
+    uint32_t renderOrientationSize = (3 * 16 + 3) * sizeof(float);
 
-    /*if (renderOrientation == 0) {
-      GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram,
+    if (renderOrientationBuffers.size() == 0) {
+      renderOrientationBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
+      renderOrientationBufferMemories = std::vector<VkDeviceMemory>(vkz_swapchain_image_count);
+      
+      for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
+        vkz_create_buffer(&renderOrientationBuffers[i], VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+          renderOrientationSize,
+          &renderOrientationBufferMemories[i],
+          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+      }
+      /*GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram,
         "uboOrientation");
       glUniformBlockBinding(perspectiveProgram, orientationIndex, 1);
-      glGenBuffers(1, &renderOrientation);
+      glGenBuffers(1, &renderOrientation);*/
+    }
 
-    }*/
+    void* orientationData;
+    vkMapMemory(vkz_logical_device, renderOrientationBufferMemories[currentSwapchainImageIndex],
+      0, renderOrientationSize, 0, &orientationData);
+    memcpy(orientationData, &orientation, renderOrientationSize);
+    vkUnmapMemory(vkz_logical_device, renderOrientationBufferMemories[currentSwapchainImageIndex]);
 
     /*glBindBuffer(GL_UNIFORM_BUFFER, renderOrientation);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboOrientation), &orientation, GL_DYNAMIC_DRAW);
@@ -670,6 +687,13 @@ namespace small3d {
 
     if (descriptorPoolCreated) {
       vkDestroyDescriptorPool(vkz_logical_device, descriptorPool, NULL);
+    }
+
+    if (renderOrientationBuffers.size() > 0) {
+      LOGDEBUG("Destroying render orientation buffers.");
+      for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
+        vkz_destroy_buffer(renderOrientationBuffers[i], renderOrientationBufferMemories[i]);
+      }
     }
 
     vkz_destroy_depth_image();
