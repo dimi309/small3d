@@ -3,6 +3,11 @@
 small3d changes per version
 ===========================
 
+v1.694 2019-04-28
+
+- Stopped using Google Test.
+- Improved dependency preparation scripts.
+
 v1.694 2019-04-19
 
 - Reorganisation and improvement of shader logic.
