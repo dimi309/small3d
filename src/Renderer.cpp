@@ -138,6 +138,8 @@ namespace small3d {
       throw std::runtime_error("Failed to create depth image.");
     }
 
+    allocateDescriptorSets();
+
     /*glewExperimental = GL_TRUE;
 
     GLenum initResult = glewInit();
@@ -157,6 +159,88 @@ namespace small3d {
       std::string(reinterpret_cast<char*>
       (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
       */
+  }
+
+  void Renderer::allocateDescriptorSets() {
+    LOGDEBUG("Allocating descriptor sets.");
+    VkDescriptorSetLayoutBinding dslb[6];
+    memset(dslb, 0, 6 * sizeof(VkDescriptorSetLayoutBinding));
+
+    dslb[0].binding = 0;
+    dslb[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    dslb[0].descriptorCount = 1;
+    dslb[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    dslb[0].pImmutableSamplers = NULL;
+
+    dslb[1].binding = 1;
+    dslb[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    dslb[1].descriptorCount = 1;
+    dslb[1].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    dslb[1].pImmutableSamplers = NULL;
+
+    dslb[2].binding = 2;
+    dslb[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    dslb[2].descriptorCount = 1;
+    dslb[2].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    dslb[2].pImmutableSamplers = NULL;
+
+    dslb[3].binding = 3;
+    dslb[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    dslb[3].descriptorCount = 1;
+    dslb[3].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    dslb[3].pImmutableSamplers = NULL;
+
+    dslb[4].binding = 4;
+    dslb[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    dslb[4].descriptorCount = 1;
+    dslb[4].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    dslb[4].pImmutableSamplers = NULL;
+
+    dslb[5].binding = 5;
+    dslb[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    dslb[5].descriptorCount = 1;
+    dslb[5].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    dslb[5].pImmutableSamplers = NULL;
+
+    VkDescriptorSetLayoutCreateInfo dslci;
+    memset(&dslci, 0, sizeof(VkDescriptorSetLayoutCreateInfo));
+    dslci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    dslci.bindingCount = 6;
+    dslci.pBindings = dslb;
+
+    if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
+      &descriptorSetLayout) != VK_SUCCESS) {
+      throw std::runtime_error("Failed to create descriptor set layout.");
+    }
+    else {
+      LOGDEBUG("Created descriptor set layout.");
+    }
+
+    std::vector<VkDescriptorSetLayout> dslo(vkz_swapchain_image_count); 
+
+    for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
+      dslo[i] = descriptorSetLayout;
+      LOGDEBUG("Set descriptor set layout for swapchain image " + intToStr(i));
+    }
+
+    VkDescriptorSetAllocateInfo dsai;
+    memset(&dsai, 0, sizeof(VkDescriptorSetAllocateInfo));
+    dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    dsai.descriptorPool = vkz_descriptor_pool;
+    dsai.descriptorSetCount = vkz_swapchain_image_count;
+    dsai.pSetLayouts = &dslo[0];
+
+    descriptorSets = std::vector<VkDescriptorSet>(vkz_swapchain_image_count);
+    VkResult allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
+      &descriptorSets[0]);
+    if ( allocResult != VK_SUCCESS) {
+      std::string errortxt = "Failed to allocate descriptor sets.";
+      if (allocResult == VK_ERROR_OUT_OF_POOL_MEMORY) {
+        errortxt += " (out of pool memory)";
+      }
+      LOGDEBUG(errortxt);
+    }
+    
   }
 
   void Renderer::positionNextObject(const glm::vec3 offset,
@@ -538,7 +622,8 @@ namespace small3d {
     if (perspectivePipelineIndex != 100) {
       vkz_destroy_pipeline(perspectivePipelineIndex);
     }
-
+    vkDestroyDescriptorSetLayout(vkz_logical_device,
+      descriptorSetLayout, NULL);
     vkz_destroy_depth_image();
     vkz_destroy_swapchain();
     vkz_shutdown();

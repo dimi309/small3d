@@ -65,6 +65,9 @@ namespace small3d
     float zFar = 0.0f;
     float zOffsetFromCamera = 0.0f;
 
+    VkDescriptorSetLayout descriptorSetLayout;
+    std::vector<VkDescriptorSet> descriptorSets;
+
     std::unordered_map<std::string, uint32_t> textures;
 
     FT_Library library = 0;
@@ -72,6 +75,8 @@ namespace small3d
     std::unordered_map<std::string, FT_Face> fontFaces;
 
     void initVulkan();
+
+    void allocateDescriptorSets();
 
     void positionNextObject(const glm::vec3 offset,
 			    const glm::vec3 rotation);
