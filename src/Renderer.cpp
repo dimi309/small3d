@@ -1201,6 +1201,43 @@ namespace small3d {
         throw std::runtime_error("Failed to create the staging buffer for indices.");
       }
 
+      if (model.textureCoordsDataByteSize != 0) {
+
+        // Send texture coordinates data
+
+        if (!vkz_create_buffer(&model.uvBuffer,
+          VK_BUFFER_USAGE_TRANSFER_DST_BIT |
+          VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+          model.textureCoordsDataByteSize,
+          &model.uvBufferMemory,
+          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
+          throw std::runtime_error("Failed to create uv buffer.");
+        }
+
+        if (vkz_create_buffer(&stagingBuffer,
+          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+          model.textureCoordsDataByteSize,
+          &stagingBufferMemory,
+          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
+          void* uvData;
+          vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
+            VK_WHOLE_SIZE,
+            0, &uvData);
+          memcpy(uvData, &model.textureCoordsData[0], model.textureCoordsDataByteSize);
+          vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+
+          vkz_copy_buffer(stagingBuffer, model.normalsBuffer,
+            model.textureCoordsDataByteSize);
+
+          vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+        }
+        else {
+          throw std::runtime_error("Failed to create the staging buffer for texture coordinates.");
+        }
+
+      }
+
       model.alreadyInGPU = true;
 
       /* glGenBuffers(1, &model.indexBufferObjectId);
@@ -1233,12 +1270,12 @@ namespace small3d {
  */
  // Normals
  /*glBindBuffer(GL_ARRAY_BUFFER, model.normalsBufferObjectId);*/
-    if (!alreadyInGPU) {
-      /* glBufferData(GL_ARRAY_BUFFER,
+    /*if (!alreadyInGPU) {
+       glBufferData(GL_ARRAY_BUFFER,
          model.normalsDataByteSize,
          model.normalsData.data(),
-         GL_STATIC_DRAW);*/
-    }
+         GL_STATIC_DRAW);
+    }*/
     /*glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);*/
 
@@ -1251,32 +1288,32 @@ namespace small3d {
     }
     */
 
-    if (textureName != "") {
+    /*if (textureName != "") {
 
       // "Disable" colour since there is a texture
 
       setColourBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
-      /*glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
+      glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
       glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
       glBindBufferBase(GL_UNIFORM_BUFFER, 4, perspColourUboId);
-      glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
+      glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
       bindTexture(textureName, true);
 
       // UV Coordinates
 
-     /* glBindBuffer(GL_ARRAY_BUFFER, model.uvBufferObjectId);*/
+      glBindBuffer(GL_ARRAY_BUFFER, model.uvBufferObjectId);
 
       if (!alreadyInGPU) {
-        /* glBufferData(GL_ARRAY_BUFFER,
+        glBufferData(GL_ARRAY_BUFFER,
            model.textureCoordsDataByteSize,
            model.textureCoordsData.data(),
-           GL_STATIC_DRAW);*/
+           GL_STATIC_DRAW);
       }
 
-      /*  glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);*/
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
     }
     else {
@@ -1284,11 +1321,12 @@ namespace small3d {
 
       setColourBuffer(colour);
 
-      /* glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
+       glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
        glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
        glBindBufferBase(GL_UNIFORM_BUFFER, 4, perspColourUboId);
-       glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
+       glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
+    */
 
     setPerspectiveAndLight();
 
@@ -1302,9 +1340,9 @@ namespace small3d {
       GL_UNSIGNED_INT, 0);*/
 
       // Clear stuff
-    if (textureName != "") {
-      /*glDisableVertexAttribArray(2);*/
-    }
+    /*if (textureName != "") {
+      glDisableVertexAttribArray(2);
+    }*/
 
     /*glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(0);
@@ -1351,6 +1389,13 @@ namespace small3d {
   }
 
   void Renderer::clearBuffers(Model & model) const {
+    if (model.alreadyInGPU) {
+      vkz_destroy_buffer(model.positionBuffer, model.positionBufferMemory);
+      vkz_destroy_buffer(model.indexBuffer, model.indexBufferMemory);
+      vkz_destroy_buffer(model.normalsBuffer, model.normalsBufferMemory);
+      vkz_destroy_buffer(model.uvBuffer, model.uvBufferMemory);
+      model.alreadyInGPU = false;
+    }
     /*if (model.positionBufferObjectId != 0) {
       model.positionBufferObjectId = 0;
     }

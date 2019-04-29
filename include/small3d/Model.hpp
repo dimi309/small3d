@@ -93,7 +93,7 @@ namespace small3d {
     /**
      * @brief Size of the vertex data, in bytes.
      */
-    int vertexDataByteSize;
+    int vertexDataByteSize = 0;
 
     /**
      * @brief 3 column table. Each element refers to a "row" in the vertex data
@@ -105,7 +105,7 @@ namespace small3d {
     /**
      * @brief Size of the index data, in bytes
      */
-    int indexDataByteSize;
+    int indexDataByteSize = 0;
 
     /**
      * @brief Array, to be treated as a 3 column table. Each "row" contains the
@@ -118,7 +118,7 @@ namespace small3d {
     /**
      * @brief Size of the normals data, in bytes.
      */
-    int normalsDataByteSize;
+    int normalsDataByteSize = 0;
 
     /**
      * @brief Array, to be treated as a 2 column table. Each "row" contains the
@@ -131,7 +131,7 @@ namespace small3d {
     /**
      * @brief Size of the texture coordinates data, in bytes.
      */
-    int textureCoordsDataByteSize;
+    int textureCoordsDataByteSize = 0;
 
     /**
      * @brief Default constructor
