@@ -57,7 +57,7 @@ namespace small3d {
 
   int setInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo) {
     LOGDEBUG("setInputStateCallback called.");
-    
+
     memset(bd, 0, 3 * sizeof(VkVertexInputBindingDescription));
 
     bd[0].binding = 0;
@@ -68,7 +68,7 @@ namespace small3d {
 
     bd[2].binding = 2;
     bd[2].stride = 2 * sizeof(float);
-        
+
     memset(ad, 0, 3 * sizeof(VkVertexInputAttributeDescription));
 
     ad[0].binding = 0;
@@ -85,7 +85,7 @@ namespace small3d {
     ad[2].location = 2;
     ad[2].format = VK_FORMAT_R32G32_SFLOAT;
     ad[2].offset = 0;
-    
+
     inputStateCreateInfo->vertexBindingDescriptionCount = 1;
     inputStateCreateInfo->vertexAttributeDescriptionCount = 3;
     inputStateCreateInfo->pVertexBindingDescriptions = bd;
@@ -163,7 +163,7 @@ namespace small3d {
   void Renderer::createDescriptorPool() {
     if (!descriptorPoolCreated) {
 
-      VkDescriptorPoolSize ps[6]; 
+      VkDescriptorPoolSize ps[6];
       memset(&ps, 0, 6 * sizeof(VkDescriptorPoolSize));
 
       ps[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -200,7 +200,7 @@ namespace small3d {
         LOGDEBUG("Created descriptor pool.");
       }
     }
-    
+
   }
 
   void Renderer::allocateDescriptorSets() {
@@ -258,7 +258,7 @@ namespace small3d {
       LOGDEBUG("Created descriptor set layout.");
     }
 
-    std::vector<VkDescriptorSetLayout> dslo(vkz_swapchain_image_count); 
+    std::vector<VkDescriptorSetLayout> dslo(vkz_swapchain_image_count);
 
     for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
       dslo[i] = descriptorSetLayout;
@@ -275,14 +275,14 @@ namespace small3d {
     descriptorSets = std::vector<VkDescriptorSet>(vkz_swapchain_image_count);
     VkResult allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
       &descriptorSets[0]);
-    if ( allocResult != VK_SUCCESS) {
+    if (allocResult != VK_SUCCESS) {
       std::string errortxt = "Failed to allocate descriptor sets.";
       if (allocResult == VK_ERROR_OUT_OF_POOL_MEMORY) {
         errortxt += " (out of pool memory)";
       }
       LOGDEBUG(errortxt);
     }
-    
+
   }
 
   void Renderer::setColourBuffer(glm::vec4 colour) {
@@ -326,13 +326,13 @@ namespace small3d {
     orientation.zRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.z,
       glm::vec3(0.0f, 0.0f, 1.0f)));
     orientation.offset = offset;
-    
+
     uint32_t renderOrientationSize = (3 * 16 + 4) * sizeof(float);
 
     if (renderOrientationBuffers.size() == 0) {
       renderOrientationBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
       renderOrientationBufferMemories = std::vector<VkDeviceMemory>(vkz_swapchain_image_count);
-      
+
       for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
         vkz_create_buffer(&renderOrientationBuffers[i], VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
           renderOrientationSize,
@@ -347,16 +347,16 @@ namespace small3d {
       0, renderOrientationSize, 0, &orientationData);
     memcpy(orientationData, &orientation, renderOrientationSize);
     vkUnmapMemory(vkz_logical_device, renderOrientationBufferMemories[currentSwapchainImageIndex]);
-    /* 
+    /*
     // if orientation == 0 etc...
     GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram,
        "uboOrientation");
      glUniformBlockBinding(perspectiveProgram, orientationIndex, 1);
      glGenBuffers(1, &renderOrientation);*/
-    /*glBindBuffer(GL_UNIFORM_BUFFER, renderOrientation);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(uboOrientation), &orientation, GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 1, renderOrientation);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
+     /*glBindBuffer(GL_UNIFORM_BUFFER, renderOrientation);
+     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboOrientation), &orientation, GL_DYNAMIC_DRAW);
+     glBindBufferBase(GL_UNIFORM_BUFFER, 1, renderOrientation);
+     glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
 
   }
 
@@ -513,7 +513,7 @@ namespace small3d {
       "perspectiveMatrixLightedShader.spv";
     std::string fragmentShaderPath = shadersPath +
       "textureShader.spv";
-    
+
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
       setInputStateCallback, setPipelineLayoutCallback, &perspectivePipelineIndex);
 
@@ -732,7 +732,7 @@ namespace small3d {
 
   Renderer::Renderer() {
     window = 0;
-    
+
     noShaders = false;
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
     cameraPosition = glm::vec3(0, 0, 0);
@@ -747,7 +747,7 @@ namespace small3d {
     const std::string shadersPath) {
 
     window = 0;
-    
+
     noShaders = false;
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
     cameraPosition = glm::vec3(0, 0, 0);
@@ -947,10 +947,10 @@ namespace small3d {
     auto nameTexturePair = textures.find(name);
 
     if (nameTexturePair != textures.end()) {
-      
+
       vkDestroyImageView(vkz_logical_device, nameTexturePair->second.imageView, NULL);
       vkz_destroy_image(nameTexturePair->second.image, nameTexturePair->second.imageMemory);
-      
+
       //glDeleteTextures(1, &(nameTexturePair->second));
       textures.erase(name);
     }
@@ -1024,7 +1024,7 @@ namespace small3d {
 
     }
     */
-    
+
     /*glBindBuffer(GL_UNIFORM_BUFFER, perspective ? perspColourUboId : orthoColourUboId);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, perspective ? 4 : 1, perspective ? perspColourUboId : orthoColourUboId);
@@ -1093,11 +1093,74 @@ namespace small3d {
     const glm::vec4 colour,
     const std::string textureName) {
 
-    /*glUseProgram(perspectiveProgram);*/
+    /* !!! glUseProgram(perspectiveProgram);*/
 
     bool alreadyInGPU = false; // model.positionBufferObjectId != 0;
 
-    if (!alreadyInGPU) {
+    if (!model.alreadyInGPU) {
+
+      if (!vkz_create_buffer(&model.positionBuffer,
+        VK_BUFFER_USAGE_TRANSFER_DST_BIT |
+        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        model.vertexDataByteSize,
+        &model.positionBufferMemory,
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
+        throw std::runtime_error("Failed to create vertex buffer.");
+      }
+
+      VkBuffer stagingBuffer;
+      VkDeviceMemory stagingBufferMemory;
+
+      // Send vertex data to GPU
+
+      if (vkz_create_buffer(&stagingBuffer,
+        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+        model.vertexDataByteSize,
+        &stagingBufferMemory,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
+        void* stagingData;
+        vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
+          VK_WHOLE_SIZE,
+          0, &stagingData);
+        memcpy(stagingData, &model.vertexData[0], model.vertexDataByteSize);
+        vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+
+        vkz_copy_buffer(stagingBuffer, model.positionBuffer,
+          model.vertexDataByteSize);
+
+        vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+      }
+      else {
+        throw std::runtime_error("Failed to create the staging buffer for vertices.");
+      }
+
+      // Send index data
+
+      if (vkz_create_buffer(&stagingBuffer,
+        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+        model.indexDataByteSize,
+        &stagingBufferMemory,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
+        void* stagingData;
+        vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
+          VK_WHOLE_SIZE,
+          0, &stagingData);
+        memcpy(stagingData, &model.indexData[0], model.indexDataByteSize);
+        vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+
+        vkz_copy_buffer(stagingBuffer, model.indexBuffer,
+          model.indexDataByteSize);
+
+        vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+      }
+      else {
+        throw std::runtime_error("Failed to create the staging buffer for indices.");
+      }
+
+      model.alreadyInGPU = true;
+
       /* glGenBuffers(1, &model.indexBufferObjectId);
        glGenBuffers(1, &model.positionBufferObjectId);
        glGenBuffers(1, &model.normalsBufferObjectId);
@@ -1144,7 +1207,7 @@ namespace small3d {
 
     }
     */
-    
+
     if (textureName != "") {
 
       // "Disable" colour since there is a texture
