@@ -1099,6 +1099,8 @@ namespace small3d {
 
     if (!model.alreadyInGPU) {
 
+      // Send vertex data to GPU
+
       if (!vkz_create_buffer(&model.positionBuffer,
         VK_BUFFER_USAGE_TRANSFER_DST_BIT |
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
@@ -1110,8 +1112,6 @@ namespace small3d {
 
       VkBuffer stagingBuffer;
       VkDeviceMemory stagingBufferMemory;
-
-      // Send vertex data to GPU
 
       if (vkz_create_buffer(&stagingBuffer,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
@@ -1137,6 +1137,15 @@ namespace small3d {
 
       // Send index data
 
+      if (!vkz_create_buffer(&model.indexBuffer,
+        VK_BUFFER_USAGE_TRANSFER_DST_BIT |
+        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        model.indexDataByteSize,
+        &model.indexBufferMemory,
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
+        throw std::runtime_error("Failed to create index buffer.");
+      }
+
       if (vkz_create_buffer(&stagingBuffer,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         model.indexDataByteSize,
@@ -1152,6 +1161,39 @@ namespace small3d {
 
         vkz_copy_buffer(stagingBuffer, model.indexBuffer,
           model.indexDataByteSize);
+
+        vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+      }
+      else {
+        throw std::runtime_error("Failed to create the staging buffer for indices.");
+      }
+
+     // Send normals data
+
+      if (!vkz_create_buffer(&model.normalsBuffer,
+        VK_BUFFER_USAGE_TRANSFER_DST_BIT |
+        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        model.normalsDataByteSize,
+        &model.normalsBufferMemory,
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
+        throw std::runtime_error("Failed to create normals buffer.");
+      }
+
+      if (vkz_create_buffer(&stagingBuffer,
+        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+        model.normalsDataByteSize,
+        &stagingBufferMemory,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
+        void* normalsData;
+        vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
+          VK_WHOLE_SIZE,
+          0, &normalsData);
+        memcpy(normalsData, &model.normalsData[0], model.normalsDataByteSize);
+        vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+
+        vkz_copy_buffer(stagingBuffer, model.normalsBuffer,
+          model.normalsDataByteSize);
 
         vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
       }

@@ -54,10 +54,10 @@ namespace small3d {
     VkDeviceMemory indexBufferMemory;
 
     VkBuffer normalsBuffer;
-    VkBuffer normalsBufferMemory;
+    VkDeviceMemory normalsBufferMemory;
 
     VkBuffer uvBuffer;
-    VkBuffer uvBufferMemory;
+    VkDeviceMemory uvBufferMemory;
 
     /**
      * @brief Position buffer object id. It is suggested not to manipulate
