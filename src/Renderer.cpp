@@ -294,6 +294,14 @@ namespace small3d {
       dbiWorld.offset = 0;
       dbiWorld.range = (16 + 4) * sizeof(float);
 
+      VkDescriptorBufferInfo dbiOrientation;
+      memset(&dbiOrientation, 0, sizeof(VkDescriptorBufferInfo));
+      dbiOrientation.buffer = renderOrientationBuffers[i];
+      dbiOrientation.offset = 0;
+      dbiWorld.range = (3 * 16 + 4) * sizeof(float);
+
+      
+
 
 
     }
