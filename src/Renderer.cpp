@@ -1210,22 +1210,23 @@ namespace small3d {
     }
 
     // Vertices
-   /* glBindBuffer(GL_ARRAY_BUFFER, model.positionBufferObjectId);*/
+    /*glBindBuffer(GL_ARRAY_BUFFER, model.positionBufferObjectId);
     if (!alreadyInGPU) {
-      /* glBufferData(GL_ARRAY_BUFFER,
+       glBufferData(GL_ARRAY_BUFFER,
          model.vertexDataByteSize,
          model.vertexData.data(),
-         GL_STATIC_DRAW);*/
+         GL_STATIC_DRAW);
     }
 
     // Vertex indices
-    /*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model.indexBufferObjectId);*/
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model.indexBufferObjectId);
     if (!alreadyInGPU) {
-      /*glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER,
         model.indexDataByteSize,
         model.indexData.data(),
-        GL_STATIC_DRAW);*/
+        GL_STATIC_DRAW);
     }
+    */
 
     /* glEnableVertexAttribArray(0);
      glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
