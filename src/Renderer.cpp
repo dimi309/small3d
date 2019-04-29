@@ -285,6 +285,20 @@ namespace small3d {
 
   }
 
+  void Renderer::updateDescriptorSets() {
+    for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
+      
+      VkDescriptorBufferInfo dbiWorld;
+      memset(&dbiWorld, 0, sizeof(VkDescriptorBufferInfo));
+      dbiWorld.buffer = worldDetailsBuffers[i];
+      dbiWorld.offset = 0;
+      dbiWorld.range = (16 + 4) * sizeof(float);
+
+
+
+    }
+  }
+
   void Renderer::setColourBuffer(glm::vec4 colour) {
     uboColour colourStruct;
     memset(&colourStruct, 0, sizeof(colourStruct));
@@ -513,6 +527,10 @@ namespace small3d {
       "perspectiveMatrixLightedShader.spv";
     std::string fragmentShaderPath = shadersPath +
       "textureShader.spv";
+
+    if (!vkz_create_sampler(&textureSampler)) {
+      throw std::runtime_error("Failed to create the sampler!");
+    }
 
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
       setInputStateCallback, setPipelineLayoutCallback, &perspectivePipelineIndex);
@@ -816,6 +834,8 @@ namespace small3d {
     if (perspectivePipelineIndex != 100) {
       vkz_destroy_pipeline(perspectivePipelineIndex);
     }
+
+    vkDestroySampler(vkz_logical_device, textureSampler, NULL);
 
     vkDestroyDescriptorSetLayout(vkz_logical_device,
       descriptorSetLayout, NULL);
@@ -1168,7 +1188,7 @@ namespace small3d {
         throw std::runtime_error("Failed to create the staging buffer for indices.");
       }
 
-     // Send normals data
+      // Send normals data
 
       if (!vkz_create_buffer(&model.normalsBuffer,
         VK_BUFFER_USAGE_TRANSFER_DST_BIT |

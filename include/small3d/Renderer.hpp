@@ -74,6 +74,8 @@ namespace small3d
     std::vector<VkBuffer> colourBuffers;
     std::vector<VkDeviceMemory> colourBufferMemories;
 
+    VkSampler textureSampler;
+
     /*
     uint32_t perspColourUboId = 0;
     uint32_t orthoColourUboId = 0;
@@ -99,6 +101,7 @@ namespace small3d
     bool descriptorPoolCreated = false;
     void createDescriptorPool();
     void allocateDescriptorSets();
+    void updateDescriptorSets();
 
     void setColourBuffer(glm::vec4 colour);
 
