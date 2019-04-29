@@ -75,6 +75,8 @@ namespace small3d
     std::vector<VkDeviceMemory> colourBufferMemories;
 
     VkSampler textureSampler;
+    bool textureBound = false;
+    VkImageView boundTextureView;
 
     /*
     uint32_t perspColourUboId = 0;
@@ -337,10 +339,9 @@ namespace small3d
     void clearScreen(const glm::vec4 colour) const;
 
     /**
-     * @brief This is a double buffered system and this command swaps
-     * the buffers.
+     * @brief Swap the buffers.
      */
-    void swapBuffers() const;
+    void swapBuffers();
 
     Renderer(Renderer const&) = delete;
     void operator=(Renderer const&) = delete;

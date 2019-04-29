@@ -300,9 +300,96 @@ namespace small3d {
       dbiOrientation.offset = 0;
       dbiWorld.range = (3 * 16 + 4) * sizeof(float);
 
-      
+      VkDescriptorBufferInfo dbiCamera;
+      memset(&dbiCamera, 0, sizeof(VkDescriptorBufferInfo));
+      dbiCamera.buffer = cameraOrientationBuffers[i];
+      dbiCamera.offset = 0;
+      dbiCamera.range = (3 * 16 + 3) * sizeof(float);
 
+      VkDescriptorImageInfo diiTexture;
+      memset(&diiTexture, 0, sizeof(VkDescriptorImageInfo));
+      if (textureBound) {
+        diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        diiTexture.imageView = boundTextureView;
+        diiTexture.sampler = textureSampler;
+      }
 
+      VkDescriptorBufferInfo dbiColour;
+      memset(&dbiColour, 0, sizeof(VkDescriptorBufferInfo));
+      dbiColour.buffer = colourBuffers[i];
+      dbiColour.offset = 0;
+      dbiColour.range = 4 * sizeof(float);
+
+      VkDescriptorBufferInfo dbiLight;
+      memset(&dbiLight, 0, sizeof(VkDescriptorBufferInfo));
+      dbiLight.buffer = lightIntensityBuffers[i];
+      dbiLight.offset = 0;
+      dbiLight.range = sizeof(float);
+
+      std::vector<VkWriteDescriptorSet> wds(6);
+      memset(&wds[0], 0, 6 * sizeof(VkWriteDescriptorSet));
+
+      wds[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+      wds[0].dstSet = descriptorSets[i];
+      wds[0].dstBinding = 0;
+      wds[0].dstArrayElement = 0;
+      wds[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      wds[0].descriptorCount = 1;
+      wds[0].pBufferInfo = &dbiWorld;
+      wds[0].pImageInfo = NULL;
+      wds[0].pTexelBufferView = NULL;
+
+      wds[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+      wds[1].dstSet = descriptorSets[i];
+      wds[1].dstBinding = 1;
+      wds[1].dstArrayElement = 0;
+      wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      wds[1].descriptorCount = 1;
+      wds[1].pBufferInfo = &dbiOrientation;
+      wds[1].pImageInfo = NULL;
+      wds[1].pTexelBufferView = NULL;
+
+      wds[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+      wds[2].dstSet = descriptorSets[i];
+      wds[2].dstBinding = 2;
+      wds[2].dstArrayElement = 0;
+      wds[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      wds[2].descriptorCount = 1;
+      wds[2].pBufferInfo = &dbiCamera;
+      wds[2].pImageInfo = NULL;
+      wds[2].pTexelBufferView = NULL;
+
+      wds[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+      wds[3].dstSet = descriptorSets[i];
+      wds[3].dstBinding = 3;
+      wds[3].dstArrayElement = 0;
+      wds[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+      wds[3].descriptorCount = 1;
+      wds[3].pBufferInfo = NULL;
+      wds[3].pImageInfo = &diiTexture;
+      wds[3].pTexelBufferView = NULL;
+
+      wds[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+      wds[4].dstSet = descriptorSets[i];
+      wds[4].dstBinding = 4;
+      wds[4].dstArrayElement = 0;
+      wds[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      wds[4].descriptorCount = 1;
+      wds[4].pBufferInfo = &dbiColour;
+      wds[4].pImageInfo = NULL;
+      wds[4].pTexelBufferView = NULL;
+
+      wds[5].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+      wds[5].dstSet = descriptorSets[i];
+      wds[5].dstBinding = 5;
+      wds[5].dstArrayElement = 0;
+      wds[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      wds[5].descriptorCount = 1;
+      wds[5].pBufferInfo = &dbiLight;
+      wds[5].pImageInfo = NULL;
+      wds[5].pTexelBufferView = NULL;
+
+      vkUpdateDescriptorSets(vkz_logical_device, 6, &wds[0], 0, NULL);
 
     }
   }
@@ -502,6 +589,9 @@ namespace small3d {
   }
 
   void Renderer::bindTexture(std::string name, bool perspective) {
+    textureBound = true;
+    boundTextureView = getTextureHandle(name).imageView;
+
     /*GLuint textureHandle = getTextureHandle(name);
 
     if (textureHandle == 0) {
@@ -1081,6 +1171,9 @@ namespace small3d {
       glVertexAttribPointer(perspective ? 2 : 1, 2, GL_FLOAT, GL_FALSE, 0, 0);*/
 
     }
+    else {
+      textureBound = false;
+    }
 
     if (perspective) {
 
@@ -1345,6 +1438,8 @@ namespace small3d {
 
     }
     else {
+    textureBound = false;
+
       // If there is no texture, use the given colour
 
       setColourBuffer(colour);
@@ -1449,7 +1544,8 @@ namespace small3d {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
   }
 
-  void Renderer::swapBuffers() const {
+  void Renderer::swapBuffers() {
+    updateDescriptorSets();
     /* glfwSwapBuffers(window);*/
   }
 
