@@ -5,9 +5,9 @@ mkdir include
 mkdir lib
 mkdir bin
 
-7z x glfw-master-20181003.zip
+7z x glfw-3.3.zip
 if %errorlevel% neq 0 exit /b %errorlevel%
-cd glfw-master
+cd glfw-3.3
 mkdir build
 cd build
 cmake .. %VSCONFIG% -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF
@@ -17,7 +17,7 @@ xcopy ..\include\GLFW ..\..\include\GLFW /i /s
 copy src\%BUILDTYPE%\glfw3.lib ..\..\lib\
 for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 cd ..\..
-rmdir /Q /S glfw-master
+rmdir /Q /S glfw-3.3
 
 7z x glew-2.1.0.zip
 if %errorlevel% neq 0 exit /b %errorlevel%
