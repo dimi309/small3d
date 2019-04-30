@@ -1,9 +1,9 @@
 set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release 
 mkdir include
 mkdir lib
-7z x glfw-master-20181003.zip
+7z x glfw-3.3.zip
 if %errorlevel% neq 0 exit /b %errorlevel%
-cd glfw-master
+cd glfw-3.3
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF %CMAKE_DEFINITIONS%
@@ -12,7 +12,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include\GLFW ..\..\include\GLFW /i /s
 copy src\libglfw3.a ..\..\lib\
 cd ..\..
-rmdir /Q /S glfw-master
+rmdir /Q /S glfw-3.3
 
 7z x glew-2.1.0.zip
 if %errorlevel% neq 0 exit /b %errorlevel%

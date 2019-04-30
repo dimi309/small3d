@@ -23,8 +23,8 @@ mkdir lib
 
 # Not linking to GFLW statically on Linux, because on Ubuntu the needed static libraries are a mess.
 if [ $(uname) != 'Linux' ]; then
-    unzip glfw-master-20181003.zip
-    cd glfw-master
+    unzip glfw-3.3.zip
+    cd glfw-3.3
     mkdir build
     cd build
     cmake .. -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF $CMAKE_DEFINITIONS
@@ -33,7 +33,7 @@ if [ $(uname) != 'Linux' ]; then
     cp -rf ../include/GLFW ../../include/
     cp src/libglfw3.a ../../lib/
     cd ../..
-    rm -rf glfw-master
+    rm -rf glfw-3.3
 fi
 
 unzip glew-2.1.0.zip
