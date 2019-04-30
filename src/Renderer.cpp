@@ -390,6 +390,8 @@ namespace small3d {
       wds[5].pImageInfo = NULL;
       wds[5].pTexelBufferView = NULL;
 
+      // TODO: Resolve this command's crashing, due to the fact that there
+      // is no image associated with the image sampler (see above)
       vkUpdateDescriptorSets(vkz_logical_device, 6, &wds[0], 0, NULL);
 
     }
