@@ -21,6 +21,14 @@ namespace small3d {
       this->loadFromFile(fileLocation);
   }
 
+  void Image::convertToBlank() {
+    width = 10;
+    height = 10;
+    imageDataSize = 4 * width * height;
+    imageData.resize(imageDataSize);
+    memset(&imageData[0], 0, imageDataSize * sizeof(float));
+  }
+
   void Image::loadFromFile(const std::string fileLocation) {
     // function developed based on example at
     // http://zarb.org/~gc/html/libpng.html

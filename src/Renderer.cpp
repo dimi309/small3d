@@ -288,7 +288,7 @@ namespace small3d {
 
   void Renderer::updateDescriptorSets() {
     for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
-      
+
       VkDescriptorBufferInfo dbiWorld;
       memset(&dbiWorld, 0, sizeof(VkDescriptorBufferInfo));
       dbiWorld.buffer = worldDetailsBuffers[i];
@@ -309,11 +309,9 @@ namespace small3d {
 
       VkDescriptorImageInfo diiTexture;
       memset(&diiTexture, 0, sizeof(VkDescriptorImageInfo));
-      if (textureBound) {
-        diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        diiTexture.imageView = boundTextureView;
-        diiTexture.sampler = textureSampler;
-      }
+      diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+      diiTexture.imageView = boundTextureView;
+      diiTexture.sampler = textureSampler;
 
       VkDescriptorBufferInfo dbiColour;
       memset(&dbiColour, 0, sizeof(VkDescriptorBufferInfo));
@@ -390,8 +388,6 @@ namespace small3d {
       wds[5].pImageInfo = NULL;
       wds[5].pTexelBufferView = NULL;
 
-      // TODO: Resolve this command's crashing, due to the fact that there
-      // is no image associated with the image sampler (see above)
       vkUpdateDescriptorSets(vkz_logical_device, 6, &wds[0], 0, NULL);
 
     }
@@ -592,7 +588,6 @@ namespace small3d {
   }
 
   void Renderer::bindTexture(std::string name, bool perspective) {
-    textureBound = true;
     boundTextureView = getTextureHandle(name).imageView;
 
     /*GLuint textureHandle = getTextureHandle(name);
@@ -635,6 +630,11 @@ namespace small3d {
 
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
       setInputStateCallback, setPipelineLayoutCallback, &perspectivePipelineIndex);
+
+    Image blankImage("");
+    blankImage.convertToBlank();
+    generateTexture("blank", blankImage);
+    bindTexture("blank", true);
 
     //glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
     //  static_cast<GLsizei>(realScreenHeight));
@@ -1179,9 +1179,7 @@ namespace small3d {
       glVertexAttribPointer(perspective ? 2 : 1, 2, GL_FLOAT, GL_FALSE, 0, 0);*/
 
     }
-    else {
-      textureBound = false;
-    }
+
 
     if (perspective) {
 
@@ -1417,13 +1415,13 @@ namespace small3d {
     }
     */
 
-    /*if (textureName != "") {
+    if (textureName != "") {
 
       // "Disable" colour since there is a texture
 
       setColourBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
-      glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
+    /*  glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
       glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
       glBindBufferBase(GL_UNIFORM_BUFFER, 4, perspColourUboId);
       glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -1443,21 +1441,22 @@ namespace small3d {
 
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
+        */
     }
     else {
-    textureBound = false;
+
 
       // If there is no texture, use the given colour
 
       setColourBuffer(colour);
-
+      /*
        glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
        glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
        glBindBufferBase(GL_UNIFORM_BUFFER, 4, perspColourUboId);
        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+       */
     }
-    */
+    
 
     setPerspectiveAndLight();
 

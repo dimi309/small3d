@@ -75,7 +75,7 @@ namespace small3d
     std::vector<VkDeviceMemory> colourBufferMemories;
 
     VkSampler textureSampler;
-    bool textureBound = false;
+    
     VkImageView boundTextureView;
 
     /*

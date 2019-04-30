@@ -48,6 +48,11 @@ namespace small3d {
     ~Image() = default;
 
     /**
+     * @brief Convert to a blank 10 x 10 pixel image
+     */
+    void convertToBlank();
+
+    /**
      * @brief Get the image width
      * @return The image width
      */
