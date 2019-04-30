@@ -137,6 +137,7 @@ namespace small3d {
     if (!vkz_create_depth_image()) {
       throw std::runtime_error("Failed to create depth image.");
     }
+
     createDescriptorPool();
     allocateDescriptorSets();
 
@@ -904,6 +905,11 @@ namespace small3d {
     for (auto it = textures.begin();
       it != textures.end(); ++it) {
       LOGDEBUG("Deleting texture " + it->first);
+
+      vkDestroyImageView(vkz_logical_device, it->second.imageView, NULL);
+      vkz_destroy_image(it->second.image, it->second.imageMemory);
+
+      //glDeleteTextures(1, &(nameTexturePair->second));
       //glDeleteTextures(1, &it->second);
     }
 
@@ -1457,6 +1463,8 @@ namespace small3d {
 
     positionCamera();
 
+    updateDescriptorSets();
+
     // Draw
     /*glDrawElements(GL_TRIANGLES,
       static_cast<GLsizei>(model.indexData.size()),
@@ -1545,7 +1553,6 @@ namespace small3d {
   }
 
   void Renderer::swapBuffers() {
-    updateDescriptorSets();
     /* glfwSwapBuffers(window);*/
   }
 
