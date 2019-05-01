@@ -1406,7 +1406,7 @@ namespace small3d {
           memcpy(uvData, &model.textureCoordsData[0], model.textureCoordsDataByteSize);
           vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
 
-          vkz_copy_buffer(stagingBuffer, model.normalsBuffer,
+          vkz_copy_buffer(stagingBuffer, model.uvBuffer,
             model.textureCoordsDataByteSize);
 
           vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
