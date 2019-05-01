@@ -18,6 +18,7 @@ extern "C" {
 
 static VkVertexInputBindingDescription bd[3];
 static VkVertexInputAttributeDescription ad[3];
+static VkDescriptorSetLayout descriptorSetLayout;
 
 namespace small3d {
 
@@ -98,12 +99,27 @@ namespace small3d {
 
   int setPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
     LOGDEBUG("setPipelineLayoutCallback called.");
-
+    pipelineLayoutCreateInfo->setLayoutCount = 1;
+    pipelineLayoutCreateInfo->pSetLayouts = &descriptorSetLayout;
     return 1;
   }
 
   int bindBuffers(VkCommandBuffer commandBuffer) {
+    VkBuffer vertexBuffers[3];
+    vertexBuffers[0] = nextModelToDraw.positionBuffer;
+    vertexBuffers[1] = nextModelToDraw.normalsBuffer;
+    vertexBuffers[2] = nextModelToDraw.uvBuffer;
+    VkDeviceSize offsets[3];
+    offsets[0] = 0;
+    offsets[1] = 0;
+    offsets[2] = 0;
 
+    // Vertex buffer
+    vkCmdBindVertexBuffers(commandBuffer, 0, 3, vertexBuffers, offsets);
+
+    // Index buffer
+    vkCmdBindIndexBuffer(commandBuffer, nextModelToDraw.indexBuffer,
+      0, VK_INDEX_TYPE_UINT32);
     return 1;
   }
 
@@ -116,11 +132,7 @@ namespace small3d {
   int updateUniformBuffers(uint32_t image_index) {
     return 1;
   }
-
   
-
-
-
   void Renderer::initVulkan() {
 
     uint32_t glfwExtensionCount = 0;
@@ -1243,14 +1255,16 @@ namespace small3d {
     this->renderRectangle("", topLeft, bottomRight, perspective, colour);
   }
 
-  void Renderer::render(Model & model, const glm::vec3 offset,
+  void Renderer::render(Model &model, const glm::vec3 offset,
     const glm::vec3 rotation,
     const glm::vec4 colour,
     const std::string textureName) {
 
     /* !!! glUseProgram(perspectiveProgram);*/
 
-    bool alreadyInGPU = false; // model.positionBufferObjectId != 0;
+    //bool alreadyInGPU =  model.positionBufferObjectId != 0;
+
+    
 
     if (!model.alreadyInGPU) {
 

@@ -100,7 +100,7 @@ namespace small3d {
      *        table. Each "row" in the index data table forms a triangle.
      *
      */
-    std::vector<unsigned int> indexData;
+    std::vector<uint32_t> indexData;
 
     /**
      * @brief Size of the index data, in bytes

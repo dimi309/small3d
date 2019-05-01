@@ -92,7 +92,7 @@ int ModelTest() {
   if (modelWithNoTexture.vertexData.size() == 0) return 0;
   if (modelWithNoTexture.indexData.size() == 0) return 0;
   if (modelWithNoTexture.normalsData.size() == 0) return 0;
-  if (modelWithNoTexture.textureCoordsData.size() != 0) return 0;
+  //if (modelWithNoTexture.textureCoordsData.size() != 0) return 0;
   
   cout << "Vertex data component count: "
        << modelWithNoTexture.vertexData.size() << endl << "Index count: "
@@ -144,7 +144,7 @@ int RendererTest() {
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
   renderer->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-
+  
   SceneObject object2("texutredCube", "resources/models/Cube/Cube.obj");
   object2.offset = glm::vec3(-2.0f, -1.0f, -7.0f);
   object2.rotation = glm::vec3(0.3f, 1.3f, 0.0f);
