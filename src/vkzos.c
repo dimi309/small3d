@@ -1098,9 +1098,9 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   VkViewport viewport;
   memset(&viewport, 0, sizeof(viewport));
   viewport.x = 0.0f;
-  viewport.y = 0.0f;
+  viewport.y = (float)vkz_swap_extent.height; // flipping the viewport here ...
   viewport.width = (float)vkz_swap_extent.width;
-  viewport.height = (float)vkz_swap_extent.height;
+  viewport.height = -(float)vkz_swap_extent.height; // ... and here to use OpenGL coordinates
   viewport.minDepth = 0.0f;
   viewport.maxDepth = 1.0f;
 
