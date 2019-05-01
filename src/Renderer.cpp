@@ -94,11 +94,32 @@ namespace small3d {
     return 1;
   }
 
+  Model nextModelToDraw;
+
   int setPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
     LOGDEBUG("setPipelineLayoutCallback called.");
 
     return 1;
   }
+
+  int bindBuffers(VkCommandBuffer commandBuffer) {
+
+    return 1;
+  }
+
+  int recordDrawCommand(VkCommandBuffer commandBuffer,
+    VkPipelineLayout pipelineLayout,
+    uint32_t swapchainImageIndex) {
+    return 1;
+  }
+
+  int updateUniformBuffers(uint32_t image_index) {
+    return 1;
+  }
+
+  
+
+
 
   void Renderer::initVulkan() {
 
@@ -1472,6 +1493,13 @@ namespace small3d {
     positionCamera();
 
     updateDescriptorSets();
+
+    nextModelToDraw = model;
+
+    vkz_create_draw_command_buffers(perspectivePipelineIndex, &bindBuffers, 
+      &recordDrawCommand);
+    vkz_draw(perspectivePipelineIndex, &updateUniformBuffers);
+    vkz_destroy_draw_command_buffers(perspectivePipelineIndex);
 
     // Draw
     /*glDrawElements(GL_TRIANGLES,
