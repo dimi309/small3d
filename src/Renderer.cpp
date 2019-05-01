@@ -137,11 +137,6 @@ namespace small3d {
     return 1;
   }
 
-  int updateUniformBuffers(uint32_t image_index) {
-    // No need to do this.
-    return 1;
-  }
-
   void Renderer::initVulkan() {
 
     uint32_t glfwExtensionCount = 0;
@@ -325,7 +320,6 @@ namespace small3d {
       }
       LOGDEBUG(errortxt);
     }
-
   }
 
   void Renderer::updateDescriptorSets() {
@@ -1521,7 +1515,8 @@ namespace small3d {
 
     vkz_create_draw_command_buffers(perspectivePipelineIndex, &bindBuffers,
       &recordDrawCommand);
-    vkz_draw(perspectivePipelineIndex, &updateUniformBuffers);
+
+    vkz_draw(perspectivePipelineIndex, NULL);
     vkz_destroy_draw_command_buffers(perspectivePipelineIndex);
 
     // Draw
