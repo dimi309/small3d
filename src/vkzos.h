@@ -11,9 +11,9 @@
 
 #include <vulkan/vulkan.h>
 
-/**
- * @brief The Vulkan instance
- */
+ /**
+  * @brief The Vulkan instance
+  */
 VkInstance vkz_instance;
 
 /**
@@ -32,20 +32,15 @@ VkDevice vkz_logical_device;
 uint32_t vkz_swapchain_image_count;
 
 /**
- * @brief Descriptor pool, used for binding descriptors for uniform buffers.
- */
-// VkDescriptorPool vkz_descriptor_pool;
-
-/** 
  * @brief  Create a vulkan instance
  * @param  application_name The name of the application that will be using Vulkan
  * @param  enabled_extension_names Names of extensions used
  * @param  enabled_extension_count Number of extensions used
  * @return 1 if successful, 0 otherwise
  */
-int vkz_create_instance(const char *application_name,
-			const char **enabled_extension_names,
-			unsigned int enabled_extension_count);
+int vkz_create_instance(const char* application_name,
+  const char** enabled_extension_names,
+  unsigned int enabled_extension_count);
 /**
  * @brief  Initialise. Internally this means create physical device, select queue
  *         families and create logical device.
@@ -62,7 +57,7 @@ int vkz_init();
  * @return 1 if successful, 0 otherwise
  */
 int vkz_create_swapchain(const uint32_t width, const uint32_t height,
-			 int with_image_sampler);
+  int with_image_sampler);
 
 /**
  * @brief Destroy the swapchain.
@@ -96,22 +91,22 @@ int vkz_destroy_depth_image();
  *                             NULL should be passed here.
  * @param set_pipeline_layout  Callback function, allowing e.g. the addition of
  *                             information on descriptors that will be used by the
- *                             pipeline before the pipeline is created. If there is 
+ *                             pipeline before the pipeline is created. If there is
  *                             no such information to be added, NULL should be passed
  *                             here.
  * @param index If 100 is passed here, a new "slot" will be used for the pipeline
  *              and returned via the same variable. If not, the pipeline will be
- *              created over a previously deleted pipeline at the index position of 
+ *              created over a previously deleted pipeline at the index position of
  *              the internal array containing pipelines. In that case, the shader
  *              path parameters will be ignored, because the previously used shaders
  *              will be reused. Also in that case the callback functions parameters
  *              will be ignored.
  * @return      1 if successful, 0 otherwise
  */
-int vkz_create_pipeline(const char *vertex_shader_path, const char *fragment_shader_path,
-		        int (*set_input_state)(VkPipelineVertexInputStateCreateInfo *),
-			int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo *),
-			uint32_t *index);
+int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_shader_path,
+  int (*set_input_state)(VkPipelineVertexInputStateCreateInfo*),
+  int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo*),
+  uint32_t* index);
 
 /**
  * @brief  Destroy a pipeline
@@ -179,11 +174,11 @@ int vkz_draw(uint32_t pipeline_index, int (*update_buffers_function)(uint32_t));
  * @param  memory_property_flags Vulkan properties of the reserved memory
  * @return 1 if successful, 0 otherwise
  */
-int vkz_create_buffer(VkBuffer *buffer,
-		      VkBufferUsageFlags buffer_usage_flags,
-		      uint32_t buffer_size,
-		      VkDeviceMemory *memory,
-		      VkMemoryPropertyFlags memory_property_flags);
+int vkz_create_buffer(VkBuffer* buffer,
+  VkBufferUsageFlags buffer_usage_flags,
+  uint32_t buffer_size,
+  VkDeviceMemory* memory,
+  VkMemoryPropertyFlags memory_property_flags);
 
 /**
  * @brief  Destroy a buffer
@@ -203,7 +198,7 @@ int vkz_destroy_buffer(VkBuffer buffer, VkDeviceMemory memory);
  */
 int vkz_copy_buffer(VkBuffer source, VkBuffer destination, VkDeviceSize size);
 
-/** 
+/**
  * @brief Create a Vulkan image
  * @param image Variable in which to store the image
  * @param image_width           The width of the image
@@ -214,13 +209,13 @@ int vkz_copy_buffer(VkBuffer source, VkBuffer destination, VkDeviceSize size);
  * @param memory                The GPU memory reserved for the image
  * @param memory_property_flags Vulkan properties of the reserved memory
  * @return 1 if successful, 0 otherwise
- */  
-int vkz_create_image(VkImage *image,
-		     uint32_t image_width, uint32_t image_height,
-		     VkFormat image_format, VkImageTiling image_tiling,
-		     VkImageUsageFlags image_usage_flags,
-		     VkDeviceMemory *memory,
-		     VkMemoryPropertyFlags memory_property_flags);
+ */
+int vkz_create_image(VkImage* image,
+  uint32_t image_width, uint32_t image_height,
+  VkFormat image_format, VkImageTiling image_tiling,
+  VkImageUsageFlags image_usage_flags,
+  VkDeviceMemory* memory,
+  VkMemoryPropertyFlags memory_property_flags);
 
 /**
  * @brief Destroy a Vulkan image
@@ -240,10 +235,10 @@ int vkz_destroy_image(VkImage image, VkDeviceMemory image_memory);
  * @return 1 if successful, 0 otherwise
  */
 int vkz_transition_image_layout(VkImage image, VkFormat format,
-				VkImageLayout old_layout,
-				VkImageLayout new_layout);
+  VkImageLayout old_layout,
+  VkImageLayout new_layout);
 
-/** 
+/**
  * @brief Copy a buffer to an image
  * @param buffer The buffer
  * @param image  The image
@@ -252,7 +247,7 @@ int vkz_transition_image_layout(VkImage image, VkFormat format,
  * @return 1 if successful, 0 otherwise
  */
 int vkz_copy_buffer_to_image(VkBuffer buffer, VkImage image,
-			     uint32_t width, uint32_t height);
+  uint32_t width, uint32_t height);
 
 /**
  * @brief Create a Vulkan image view
@@ -262,15 +257,15 @@ int vkz_copy_buffer_to_image(VkBuffer buffer, VkImage image,
  * @param aspect_flags The aspect flags (mask) e.g. VK_IMAGE_ASPECT_COLOR_BIT
  * @return 1 if successful, 0 otherwise
  */
-int vkz_create_image_view(VkImageView *image_view, VkImage image,
-			  VkFormat format, VkImageAspectFlags aspect_flags);
+int vkz_create_image_view(VkImageView* image_view, VkImage image,
+  VkFormat format, VkImageAspectFlags aspect_flags);
 
 /**
  * @brief Create a Vulkan sampler
  * @param sampler The sampler to be created
  * @return 1 if successful, 0 otherwise
  */
-int vkz_create_sampler(VkSampler *sampler);
+int vkz_create_sampler(VkSampler* sampler);
 
 /**
  * @brief  Cleanup the memory, destroy any debug callbacks, as well as the

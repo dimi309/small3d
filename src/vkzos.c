@@ -50,7 +50,6 @@ static BOOL logical_device_created = FALSE;
 
 static BOOL swapchain_created = FALSE;
 static BOOL swapchain_image_views_created = FALSE;
-//static BOOL descriptor_pool_created = FALSE;
 
 static uint32_t vkz_width;
 static uint32_t vkz_height;
@@ -724,45 +723,6 @@ int create_swapchain_image_views() {
   return 1;
 }
 
-/*int create_descriptor_pool(uint32_t pool_size, BOOL with_sampler) {
-  if (!descriptor_pool_created) {
-
-    uint32_t pool_size_count = with_sampler ? 2 : 1;
-
-    VkDescriptorPoolSize ps[2]; // Visual Studio needs this to be constant.
-                                // Normally this is not needed on Linux gcc.
-                                // When using a variable, are we in effect
-                                // using a VLA? Also see:
-                                // https://www.phoronix.com/scan.php?page=news_item&px=Linux-Kills-The-VLA
-
-    memset(&ps, 0, pool_size_count * sizeof(VkDescriptorPoolSize));
-    ps[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    ps[0].descriptorCount = pool_size;
-
-    if(with_sampler) {
-      ps[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-      ps[1].descriptorCount = pool_size;
-    }
-
-    VkDescriptorPoolCreateInfo dpci;
-    memset(&dpci, 0, sizeof(VkDescriptorPoolCreateInfo));
-    dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-    dpci.poolSizeCount = pool_size_count;
-    dpci.pPoolSizes = ps;
-    dpci.maxSets = pool_size;
-
-    if (vkCreateDescriptorPool(vkz_logical_device, &dpci, NULL,
-             &vkz_descriptor_pool) != VK_SUCCESS) {
-      return 0;
-    }
-    else {
-      descriptor_pool_created = TRUE;
-
-    }
-  }
-  return 1;
-}*/
-
 int vkz_create_swapchain(const uint32_t width, const uint32_t height,
   int with_image_sampler) {
   select_swap_extent(width, height);
@@ -831,8 +791,7 @@ int vkz_create_swapchain(const uint32_t width, const uint32_t height,
     &vkz_swapchain_image_count,
     vkz_swapchain_images);
 
-  return create_swapchain_image_views(); //&&
-    //create_descriptor_pool(vkz_swapchain_image_count, intrn_with_image_sampler);
+  return create_swapchain_image_views();
 }
 
 int vkz_destroy_swapchain() {
@@ -1429,8 +1388,10 @@ int vkz_destroy_command_buffers(uint32_t pipeline_index) {
 
   vkDeviceWaitIdle(vkz_logical_device);
 
-  vkFreeCommandBuffers(vkz_logical_device, command_pool, vkz_swapchain_image_count, 
+  vkFreeCommandBuffers(vkz_logical_device, command_pool, vkz_swapchain_image_count,
     pipeline_systems[pipeline_index].command_buffers);
+
+  return 1;
 }
 
 int vkz_create_sync_objects(uint32_t pipeline_index) {
@@ -1881,10 +1842,6 @@ int vkz_shutdown() {
   if (logical_device_created) {
     vkDeviceWaitIdle(vkz_logical_device);
   }
-
-  /*if (descriptor_pool_created) {
-    vkDestroyDescriptorPool(vkz_logical_device, vkz_descriptor_pool, NULL);
-  }*/
 
   if (pipeline_systems) {
     free(pipeline_systems);
