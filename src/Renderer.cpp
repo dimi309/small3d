@@ -1138,12 +1138,24 @@ namespace small3d {
     const bool perspective,
     const glm::vec4 colour) {
 
-    float vertices[16] = {
+
+    Model rect;
+
+    rect.vertexData = {
       bottomRight.x, bottomRight.y, bottomRight.z, 1.0f,
       bottomRight.x, topLeft.y, topLeft.z, 1.0f,
       topLeft.x, topLeft.y, topLeft.z, 1.0f,
       topLeft.x, bottomRight.y, bottomRight.z, 1.0f
     };
+
+    rect.vertexDataByteSize = 16 * sizeof(float);
+
+    /*float vertices[16] = {
+      bottomRight.x, bottomRight.y, bottomRight.z, 1.0f,
+      bottomRight.x, topLeft.y, topLeft.z, 1.0f,
+      topLeft.x, topLeft.y, topLeft.z, 1.0f,
+      topLeft.x, bottomRight.y, bottomRight.z, 1.0f
+    };*/
 
     //glUseProgram(perspective ? perspectiveProgram : orthographicProgram);
 
@@ -1157,10 +1169,20 @@ namespace small3d {
     //  &vertices[0],
     //  GL_STATIC_DRAW);
 
-    unsigned int vertexIndexes[6] = {
+    rect.indexData = {
       0, 1, 2,
       2, 3, 0
     };
+
+    rect.indexDataByteSize = 6 * sizeof(uint32_t);
+
+    rect.normalsData = std::vector<float>(12);
+    rect.normalsDataByteSize = 4 * 3 * sizeof(float);
+
+    /*unsigned int vertexIndexes[6] = {
+      0, 1, 2,
+      2, 3, 0
+    };*/
 
     //GLuint indexBufferObject = 0;
 
@@ -1208,16 +1230,25 @@ namespace small3d {
 
     GLuint coordBuffer = 0;*/
 
-    if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
-
-      bindTexture(textureName, perspective);
-
-      float textureCoords[8] = {
+    rect.textureCoordsData = {
         1.0f, 1.0f,
         1.0f, 0.0f,
         0.0f, 0.0f,
         0.0f, 1.0f
-      };
+    };
+
+    rect.textureCoordsDataByteSize = 8 * sizeof(float);
+
+    if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
+
+      bindTexture(textureName, perspective);
+      
+      /*float textureCoords[8] = {
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+        0.0f, 0.0f,
+        0.0f, 1.0f
+      };*/
 
       /*glGenBuffers(1, &coordBuffer);
       glBindBuffer(GL_ARRAY_BUFFER, coordBuffer);
@@ -1228,6 +1259,7 @@ namespace small3d {
       glEnableVertexAttribArray(perspective ? 2 : 1);
       glVertexAttribPointer(perspective ? 2 : 1, 2, GL_FLOAT, GL_FALSE, 0, 0);*/
 
+      render(rect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), colour, textureName);
     }
 
 
@@ -1245,11 +1277,11 @@ namespace small3d {
 
       /*glDeleteBuffers(1, &indexBufferObject);
       glDeleteBuffers(1, &boxBuffer);*/
-    if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
-      /* glDeleteBuffers(1, &coordBuffer);
+    /*if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
+       glDeleteBuffers(1, &coordBuffer);
        glDisableVertexAttribArray(perspective ? 2 : 1);
-       glBindTexture(GL_TEXTURE_2D, 0);*/
-    }
+       glBindTexture(GL_TEXTURE_2D, 0);
+    }*/
 
     /*  glDisableVertexAttribArray(0);
 
