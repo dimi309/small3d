@@ -88,7 +88,7 @@ namespace small3d {
     ad[2].format = VK_FORMAT_R32G32_SFLOAT;
     ad[2].offset = 0;
 
-    inputStateCreateInfo->vertexBindingDescriptionCount = 1;
+    inputStateCreateInfo->vertexBindingDescriptionCount = 3;
     inputStateCreateInfo->vertexAttributeDescriptionCount = 3;
     inputStateCreateInfo->pVertexBindingDescriptions = bd;
     inputStateCreateInfo->pVertexAttributeDescriptions = ad;
@@ -338,7 +338,7 @@ namespace small3d {
       memset(&dbiOrientation, 0, sizeof(VkDescriptorBufferInfo));
       dbiOrientation.buffer = renderOrientationBuffers[i];
       dbiOrientation.offset = 0;
-      dbiWorld.range = (3 * 16 + 4) * sizeof(float);
+      dbiOrientation.range = (3 * 16 + 4) * sizeof(float);
 
       VkDescriptorBufferInfo dbiCamera;
       memset(&dbiCamera, 0, sizeof(VkDescriptorBufferInfo));
@@ -495,8 +495,7 @@ namespace small3d {
       0, renderOrientationSize, 0, &orientationData);
     memcpy(orientationData, &orientation, renderOrientationSize);
     vkUnmapMemory(vkz_logical_device, renderOrientationBufferMemories[currentSwapchainImageIndex]);
-
-    
+        
     /*
     // if orientation == 0 etc...
     GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram,
@@ -1478,9 +1477,9 @@ namespace small3d {
         glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_UNIFORM_BUFFER, 4, perspColourUboId);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
+        */
         bindTexture(textureName, true);
-
+        /*
         // UV Coordinates
 
         glBindBuffer(GL_ARRAY_BUFFER, model.uvBufferObjectId);

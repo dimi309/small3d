@@ -148,6 +148,10 @@ int RendererTest() {
   SceneObject object2("texutredCube", "resources/models/Cube/Cube.obj");
   object2.offset = glm::vec3(-2.0f, -1.0f, -7.0f);
   object2.rotation = glm::vec3(0.3f, 1.3f, 0.0f);
+
+  SceneObject object3("texutredCube", "resources/models/Cube/Cube.obj");
+  object3.offset = glm::vec3(2.0f, -1.0f, -7.0f);
+  object3.rotation = glm::vec3(0.3f, 1.3f, 0.0f);
   
   Image cubeTexture("resources/models/Cube/cubeTexture.png");
   renderer->generateTexture("cubeTexture", cubeTexture);
@@ -159,15 +163,19 @@ int RendererTest() {
   while(glfwGetTime() - startSeconds < 3.0) {
     glfwPollEvents();
     renderer->clearScreen();
-    renderer->renderRectangle(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
-			      glm::vec3(-1.0f, 0.0f, 1.0f),
-			      glm::vec3(-0.5f, -0.5f, 1.0f), false);
+    //renderer->renderRectangle(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+			 //     glm::vec3(-1.0f, 0.0f, 1.0f),
+			 //     glm::vec3(-0.5f, -0.5f, 1.0f), false);
 
-    renderer->renderRectangle("cubeTexture",
+    /*renderer->renderRectangle("cubeTexture",
 			      glm::vec3(0.0f, 0.5f, -2.0f),
-			      glm::vec3(1.0f, -1.0f, -2.0f), true);
+			      glm::vec3(1.0f, -1.0f, -2.0f), true);*/
+    
     
     renderer->render(object2, "cubeTexture");
+
+    //renderer->render(object3, "cubeTexture"); // remove this later
+   
 
     /*renderer->write("small3d :) p q", glm::vec3(0.0f, 1.0f, 0.0f),
 		    glm::vec2(-1.0f, 0.0f), glm::vec2(0.5f, -0.5f));*/
