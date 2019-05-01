@@ -19,6 +19,7 @@ extern "C" {
 static VkVertexInputBindingDescription bd[3];
 static VkVertexInputAttributeDescription ad[3];
 static VkDescriptorSetLayout descriptorSetLayout;
+std::vector<VkDescriptorSet> descriptorSets;
 
 namespace small3d {
 
@@ -126,13 +127,21 @@ namespace small3d {
   int recordDrawCommand(VkCommandBuffer commandBuffer,
     VkPipelineLayout pipelineLayout,
     uint32_t swapchainImageIndex) {
+
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+      pipelineLayout, 0, 1,
+      &descriptorSets[swapchainImageIndex], 0, NULL);
+
+    vkCmdDrawIndexed(commandBuffer, nextModelToDraw.indexData.size(), 1, 0, 0, 0);
+
     return 1;
   }
 
   int updateUniformBuffers(uint32_t image_index) {
+    // No need to do this.
     return 1;
   }
-  
+
   void Renderer::initVulkan() {
 
     uint32_t glfwExtensionCount = 0;
@@ -973,7 +982,7 @@ namespace small3d {
       glDeleteProgram(perspectiveProgram);
     }*/
 
-    
+
 
     if (perspectivePipelineIndex != 100) {
       vkz_destroy_sync_objects(perspectivePipelineIndex);
@@ -1255,7 +1264,7 @@ namespace small3d {
     this->renderRectangle("", topLeft, bottomRight, perspective, colour);
   }
 
-  void Renderer::render(Model &model, const glm::vec3 offset,
+  void Renderer::render(Model & model, const glm::vec3 offset,
     const glm::vec3 rotation,
     const glm::vec4 colour,
     const std::string textureName) {
@@ -1264,7 +1273,7 @@ namespace small3d {
 
     //bool alreadyInGPU =  model.positionBufferObjectId != 0;
 
-    
+
 
     if (!model.alreadyInGPU) {
 
@@ -1463,27 +1472,27 @@ namespace small3d {
 
       setColourBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
-    /*  glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
-      glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
-      glBindBufferBase(GL_UNIFORM_BUFFER, 4, perspColourUboId);
-      glBindBuffer(GL_UNIFORM_BUFFER, 0);
+      /*  glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 4, perspColourUboId);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-      bindTexture(textureName, true);
+        bindTexture(textureName, true);
 
-      // UV Coordinates
+        // UV Coordinates
 
-      glBindBuffer(GL_ARRAY_BUFFER, model.uvBufferObjectId);
+        glBindBuffer(GL_ARRAY_BUFFER, model.uvBufferObjectId);
 
-      if (!alreadyInGPU) {
-        glBufferData(GL_ARRAY_BUFFER,
-           model.textureCoordsDataByteSize,
-           model.textureCoordsData.data(),
-           GL_STATIC_DRAW);
-      }
+        if (!alreadyInGPU) {
+          glBufferData(GL_ARRAY_BUFFER,
+             model.textureCoordsDataByteSize,
+             model.textureCoordsData.data(),
+             GL_STATIC_DRAW);
+        }
 
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-        */
+          glEnableVertexAttribArray(2);
+          glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+          */
     }
     else {
 
@@ -1498,7 +1507,7 @@ namespace small3d {
        glBindBuffer(GL_UNIFORM_BUFFER, 0);
        */
     }
-    
+
 
     setPerspectiveAndLight();
 
@@ -1510,7 +1519,7 @@ namespace small3d {
 
     nextModelToDraw = model;
 
-    vkz_create_draw_command_buffers(perspectivePipelineIndex, &bindBuffers, 
+    vkz_create_draw_command_buffers(perspectivePipelineIndex, &bindBuffers,
       &recordDrawCommand);
     vkz_draw(perspectivePipelineIndex, &updateUniformBuffers);
     vkz_destroy_draw_command_buffers(perspectivePipelineIndex);
@@ -1594,23 +1603,16 @@ namespace small3d {
   }
 
   void Renderer::clearScreen() const {
-    /*glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
     vkz_clear(perspectivePipelineIndex);
   }
 
   void Renderer::clearScreen(const glm::vec4 colour) const {
-    /*glClearColor(colour.r, colour.g, colour.b, colour.a);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
-    //vkz_clear(0, &colour[0]);
     vkz_clear(perspectivePipelineIndex);
-
   }
 
   void Renderer::swapBuffers() {
-    /* glfwSwapBuffers(window);*/
     vkz_present_next_image(perspectivePipelineIndex);
     vkz_acquire_next_image(perspectivePipelineIndex);
-    
   }
 
 }

@@ -89,9 +89,6 @@ namespace small3d
     float zFar = 0.0f;
     float zOffsetFromCamera = 0.0f;
 
-    
-    std::vector<VkDescriptorSet> descriptorSets;
-
     std::unordered_map<std::string, vulkanImage> textures;
 
     FT_Library library = 0;
