@@ -194,7 +194,7 @@ int vkz_present_next_image(uint32_t pipeline_index);
  * @param  pipeline_index The index of the pipeline to be used for drawing.
  * @return 1 if successful, 0 otherwise
  */
-vkz_clear(uint32_t pipeline_index);
+int vkz_clear(uint32_t pipeline_index);
 
 /**
  * @brief  Send draw command (will take effect on the current pipeline image

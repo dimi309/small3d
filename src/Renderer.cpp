@@ -632,6 +632,7 @@ namespace small3d {
       setInputStateCallback, setPipelineLayoutCallback, &perspectivePipelineIndex);
 
     vkz_create_sync_objects(perspectivePipelineIndex);
+    vkz_create_clear_command_buffers(perspectivePipelineIndex);
 
     Image blankImage("");
     blankImage.convertToBlank();
@@ -943,6 +944,7 @@ namespace small3d {
 
     if (perspectivePipelineIndex != 100) {
       vkz_destroy_sync_objects(perspectivePipelineIndex);
+      vkz_destroy_clear_command_buffers(perspectivePipelineIndex);
       vkz_destroy_pipeline(perspectivePipelineIndex);
     }
 
@@ -1551,17 +1553,22 @@ namespace small3d {
 
   void Renderer::clearScreen() const {
     /*glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
+    vkz_clear(perspectivePipelineIndex);
   }
 
   void Renderer::clearScreen(const glm::vec4 colour) const {
     /*glClearColor(colour.r, colour.g, colour.b, colour.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
     //vkz_clear(0, &colour[0]);
+    vkz_clear(perspectivePipelineIndex);
 
   }
 
   void Renderer::swapBuffers() {
     /* glfwSwapBuffers(window);*/
+    vkz_present_next_image(perspectivePipelineIndex);
+    vkz_acquire_next_image(perspectivePipelineIndex);
+    
   }
 
 }
