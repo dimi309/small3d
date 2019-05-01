@@ -122,8 +122,6 @@ namespace small3d
 
     void setPerspectiveAndLight();
 
-    
-
     Renderer(const std::string windowTitle, const int width, 
       const int height, const float frustumScale, const float zNear, 
       const float zFar, const float zOffsetFromCamera, 

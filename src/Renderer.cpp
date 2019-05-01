@@ -631,6 +631,8 @@ namespace small3d {
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
       setInputStateCallback, setPipelineLayoutCallback, &perspectivePipelineIndex);
 
+    vkz_create_sync_objects(perspectivePipelineIndex);
+
     Image blankImage("");
     blankImage.convertToBlank();
     generateTexture("blank", blankImage);
@@ -937,7 +939,10 @@ namespace small3d {
       glDeleteProgram(perspectiveProgram);
     }*/
 
+    
+
     if (perspectivePipelineIndex != 100) {
+      vkz_destroy_sync_objects(perspectivePipelineIndex);
       vkz_destroy_pipeline(perspectivePipelineIndex);
     }
 
@@ -1551,6 +1556,8 @@ namespace small3d {
   void Renderer::clearScreen(const glm::vec4 colour) const {
     /*glClearColor(colour.r, colour.g, colour.b, colour.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
+    //vkz_clear(0, &colour[0]);
+
   }
 
   void Renderer::swapBuffers() {

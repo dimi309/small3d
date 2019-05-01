@@ -114,6 +114,14 @@ int vkz_create_pipeline(const char *vertex_shader_path, const char *fragment_sha
 			uint32_t *index);
 
 /**
+ * @brief  Destroy a pipeline
+ * @param  index The index (position in the internal array containing pipelines)
+ *              of the pipeline to be destroyed.
+ * @return 1 if successful, 0 otherwise
+ */
+int vkz_destroy_pipeline(uint32_t index);
+
+/**
  * @brief Create the (drawing) command buffers for a given pipeline
  * @param pipeline_index       The index of the pipeline
  * @param bind_vertex_buffers  Callback function, allowing for the binding of
@@ -124,17 +132,9 @@ int vkz_create_pipeline(const char *vertex_shader_path, const char *fragment_sha
  *                             created during the construction of the pipeline.
  */
 int vkz_create_command_buffers(uint32_t pipeline_index,
-			       int (*bind_vertex_buffers)(VkCommandBuffer),
-			       int (*record_draw_command)(VkCommandBuffer,
-							  VkPipelineLayout, uint32_t));
-
-/**
- * @brief  Destroy a pipeline
- * @param  index The index (position in the internal array containing pipelines)
- *              of the pipeline to be destroyed.
- * @return 1 if successful, 0 otherwise
- */
-int vkz_destroy_pipeline(uint32_t index);
+  int (*bind_vertex_buffers)(VkCommandBuffer),
+  int (*record_draw_command)(VkCommandBuffer,
+    VkPipelineLayout, uint32_t));
 
 /**
  * @brief Destroy the command buffers created for a given pipeline
@@ -143,6 +143,20 @@ int vkz_destroy_pipeline(uint32_t index);
  * @return 1 if successful, 0 otherwise
  */
 int vkz_destroy_command_buffers(uint32_t pipeline_index);
+
+/**
+ * @brief Create sync objects for a given pipeline
+ *
+ * @param pipeline_index The index of the pipeline
+ */
+int vkz_create_sync_objects(uint32_t pipeline_index);
+
+/**
+ * @brief Destroy sync objects for a given pipeline
+ *
+ * @param pipeline_index The index of the pipeline
+ */
+int vkz_destroy_sync_objects(uint32_t pipeline_index);
 
 /**
  * @brief  Draw (and present) a frame.
