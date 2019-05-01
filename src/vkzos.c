@@ -1328,47 +1328,18 @@ int vkz_create_clear_command_buffers(uint32_t pipeline_index) {
         return 0;
       }
       else {
-        LOGDEBUG0("Began recording command buffer.\n\r");
-        /*VkRenderPassBeginInfo render_pass_bi;
-        memset(&render_pass_bi, 0, sizeof(VkRenderPassBeginInfo));
-        render_pass_bi.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        render_pass_bi.renderPass = pipeline_systems[pipeline_index].render_pass;
-        render_pass_bi.framebuffer =
-          pipeline_systems[pipeline_index].framebuffers[n];
-        render_pass_bi.renderArea.offset.x = 0;
-        render_pass_bi.renderArea.offset.y = 0;
-        render_pass_bi.renderArea.extent = vkz_swap_extent;
-        */
-        /*VkClearValue clear_values[2];
-        memset(clear_values, 0, 2 * sizeof(VkClearValue));
-        clear_values[0].color.float32[0] = 0.0f;
-        clear_values[0].color.float32[1] = 0.0f;
-        clear_values[0].color.float32[2] = 0.0f;
-        clear_values[0].color.float32[3] = 1.0f;
-        clear_values[1].depthStencil.depth = 1.0f;
-        clear_values[1].depthStencil.stencil = 0;*/
-
-        VkClearColorValue clearColour = { 0.0f, 0.0f, 0.0f, 1.0f };
+       
+        VkClearColorValue clearColour = { 0.0f, 0.0f, 0.0f, 0.0f };
 
         VkImageSubresourceRange imageRange;
         memset(&imageRange, 0, sizeof(VkImageSubresourceRange));
-        imageRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT | VK_IMAGE_ASPECT_DEPTH_BIT;
+        imageRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         imageRange.levelCount = 1;
         imageRange.layerCount = 1;
 
-        vkCmdClearColorImage(pipeline_systems[pipeline_index].clear_command_buffers[n], vkz_swapchain_images[next_image_index],
+        vkCmdClearColorImage(pipeline_systems[pipeline_index].clear_command_buffers[n], vkz_swapchain_images[n],
           VK_IMAGE_LAYOUT_GENERAL, &clearColour, 1, &imageRange);
-
-       /* render_pass_bi.clearValueCount = 2;
-        render_pass_bi.pClearValues = clear_values;*/
-
-        /*vkCmdBeginRenderPass(pipeline_systems[pipeline_index].clear_command_buffers[n],
-          &render_pass_bi, VK_SUBPASS_CONTENTS_INLINE);*/
-        /*vkCmdBindPipeline(pipeline_systems[pipeline_index].clear_command_buffers[n],
-          VK_PIPELINE_BIND_POINT_GRAPHICS,
-          pipeline_systems[pipeline_index].pipeline);
-
-        vkCmdEndRenderPass(pipeline_systems[pipeline_index].clear_command_buffers[n]);*/
+                
         if (vkEndCommandBuffer(pipeline_systems[pipeline_index].clear_command_buffers[n]) !=
           VK_SUCCESS) {
           printf("Could not record command buffer!\n\r");
@@ -1662,9 +1633,10 @@ int send(uint32_t pipeline_index,
 }
 
 int vkz_clear(uint32_t pipeline_index) {
+  
   return send(pipeline_index, NULL,
     pipeline_systems[pipeline_index].clear_command_buffers);
-
+  
 }
 
 int vkz_draw(uint32_t pipeline_index,

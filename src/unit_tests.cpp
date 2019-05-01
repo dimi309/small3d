@@ -175,7 +175,7 @@ int RendererTest() {
     
 
     renderer->render(object2, "cubeTexture");
-    //renderer->clearScreen();
+    
     renderer->render(object3, "cubeTexture"); // remove this later
    
 
