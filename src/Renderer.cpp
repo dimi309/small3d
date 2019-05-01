@@ -114,9 +114,11 @@ namespace small3d {
     offsets[0] = 0;
     offsets[1] = 0;
     offsets[2] = 0;
+    
 
     // Vertex buffer
     vkCmdBindVertexBuffers(commandBuffer, 0, 3, vertexBuffers, offsets);
+    
 
     // Index buffer
     vkCmdBindIndexBuffer(commandBuffer, nextModelToDraw.indexBuffer,
