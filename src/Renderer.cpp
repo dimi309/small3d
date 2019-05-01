@@ -1148,6 +1148,7 @@ namespace small3d {
       topLeft.x, bottomRight.y, bottomRight.z, 1.0f
     };
 
+
     rect.vertexDataByteSize = 16 * sizeof(float);
 
     /*float vertices[16] = {
@@ -1259,18 +1260,18 @@ namespace small3d {
       glEnableVertexAttribArray(perspective ? 2 : 1);
       glVertexAttribPointer(perspective ? 2 : 1, 2, GL_FLOAT, GL_FALSE, 0, 0);*/
 
-      render(rect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), colour, textureName);
+      
     }
 
 
-    if (perspective) {
+    /*if (perspective) {
 
       setPerspectiveAndLight();
 
       positionNextObject(glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(0.0f, 0.0f, 0.0f));
       positionCamera();
-    }
+    }*/
 
     /*glDrawElements(GL_TRIANGLES,
       6, GL_UNSIGNED_INT, 0);*/
@@ -1287,7 +1288,8 @@ namespace small3d {
 
       glBindBuffer(GL_ARRAY_BUFFER, 0);
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
-
+    render(rect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), colour, textureName);
+    clearBuffers(rect);
   }
 
   void Renderer::renderRectangle(const glm::vec4 colour,
