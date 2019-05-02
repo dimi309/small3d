@@ -1178,7 +1178,7 @@ namespace small3d {
     rect.indexDataByteSize = 6 * sizeof(uint32_t);
 
     rect.normalsData = std::vector<float>(12);
-    rect.normalsDataByteSize = 4 * 3 * sizeof(float);
+    rect.normalsDataByteSize = 12 * sizeof(float);
 
     /*unsigned int vertexIndexes[6] = {
       0, 1, 2,
