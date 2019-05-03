@@ -438,7 +438,7 @@ namespace small3d {
     memset(&colourStruct, 0, sizeof(colourStruct));
     colourStruct.colour = colour;
 
-    uint32_t colourSize = sizeof(float);
+    uint32_t colourSize = 4 * sizeof(float);
 
     if (colourBuffers.size() == 0) {
       colourBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
