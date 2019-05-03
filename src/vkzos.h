@@ -101,11 +101,15 @@ int vkz_destroy_depth_image();
  *              path parameters will be ignored, because the previously used shaders
  *              will be reused. Also in that case the callback functions parameters
  *              will be ignored.
+ * @param minDepth Minimum depth (used to set up viewport) - use 100.0f for previously
+ *                 given value
+ * @param maxDepth Maximum depth (used to set up viewport) - use 100.0f for previously
+ *                 given value
  * @return      1 if successful, 0 otherwise
  */
 int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_shader_path,
 			int (*set_input_state)(VkPipelineVertexInputStateCreateInfo*),
-			int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo*),
+			int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo*), float minDepth, float maxDepth,
 			uint32_t* index);
 
 /**

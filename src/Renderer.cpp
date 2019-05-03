@@ -114,11 +114,11 @@ namespace small3d {
     offsets[0] = 0;
     offsets[1] = 0;
     offsets[2] = 0;
-    
+
 
     // Vertex buffer
     vkCmdBindVertexBuffers(commandBuffer, 0, 3, vertexBuffers, offsets);
-    
+
 
     // Index buffer
     vkCmdBindIndexBuffer(commandBuffer, nextModelToDraw.indexBuffer,
@@ -325,7 +325,7 @@ namespace small3d {
   }
 
   void Renderer::updateDescriptorSets() {
-    
+
     for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
 
       VkDescriptorBufferInfo dbiWorld;
@@ -433,7 +433,7 @@ namespace small3d {
   }
 
   void Renderer::setColourBuffer(glm::vec4 colour) {
-    
+
     uboColour colourStruct;
     memset(&colourStruct, 0, sizeof(colourStruct));
     colourStruct.colour = colour;
@@ -458,12 +458,12 @@ namespace small3d {
       0, colourSize, 0, &colourData);
     memcpy(colourData, &colourStruct, colourSize);
     vkUnmapMemory(vkz_logical_device, colourBufferMemories[currentSwapchainImageIndex]);
-    
+
   }
 
   void Renderer::positionNextObject(const glm::vec3 offset,
     const glm::vec3 rotation) {
-    
+
     uboOrientation orientation;
     memset(&orientation, 0, sizeof(uboOrientation));
 
@@ -495,7 +495,7 @@ namespace small3d {
       0, renderOrientationSize, 0, &orientationData);
     memcpy(orientationData, &orientation, renderOrientationSize);
     vkUnmapMemory(vkz_logical_device, renderOrientationBufferMemories[currentSwapchainImageIndex]);
-        
+
     /*
     // if orientation == 0 etc...
     GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram,
@@ -510,7 +510,7 @@ namespace small3d {
   }
 
   void Renderer::positionCamera() {
-    
+
     uboCamera camera;
     memset(&camera, 0, sizeof(uboCamera));
     camera.position = cameraPosition;
@@ -534,7 +534,7 @@ namespace small3d {
           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
           VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
       }
-      
+
     }
 
     void* orientationData;
@@ -542,7 +542,7 @@ namespace small3d {
       0, cameraOrientationSize, 0, &orientationData);
     memcpy(orientationData, &camera, cameraOrientationSize);
     vkUnmapMemory(vkz_logical_device, cameraOrientationBufferMemories[currentSwapchainImageIndex]);
-    
+
     /*if (cameraOrientation == 0) {
       GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram, "uboCamera");
       glUniformBlockBinding(perspectiveProgram, orientationIndex, 2);
@@ -671,7 +671,7 @@ namespace small3d {
     }
 
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
-      setInputStateCallback, setPipelineLayoutCallback, &perspectivePipelineIndex);
+      setInputStateCallback, setPipelineLayoutCallback, zOffsetFromCamera+zNear, zFar, &perspectivePipelineIndex);
 
     vkz_create_sync_objects(perspectivePipelineIndex);
     vkz_create_clear_command_buffers(perspectivePipelineIndex);
@@ -811,7 +811,7 @@ namespace small3d {
   }
 
   void Renderer::setPerspectiveAndLight() {
-    
+
     uboWorld world;
     memset(&world, 0, sizeof(uboWorld));
     float tmpmat4[16];
@@ -892,7 +892,7 @@ namespace small3d {
     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboLight), &light, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 5, lightUboId);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
-    
+
   }
 
   Renderer::Renderer() {
@@ -1243,7 +1243,7 @@ namespace small3d {
     if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
 
       bindTexture(textureName, perspective);
-      
+
       /*float textureCoords[8] = {
         1.0f, 1.0f,
         1.0f, 0.0f,
@@ -1260,7 +1260,7 @@ namespace small3d {
       glEnableVertexAttribArray(perspective ? 2 : 1);
       glVertexAttribPointer(perspective ? 2 : 1, 2, GL_FLOAT, GL_FALSE, 0, 0);*/
 
-      
+
     }
 
 
@@ -1278,16 +1278,16 @@ namespace small3d {
 
       /*glDeleteBuffers(1, &indexBufferObject);
       glDeleteBuffers(1, &boxBuffer);*/
-    /*if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
-       glDeleteBuffers(1, &coordBuffer);
-       glDisableVertexAttribArray(perspective ? 2 : 1);
-       glBindTexture(GL_TEXTURE_2D, 0);
-    }*/
+      /*if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
+         glDeleteBuffers(1, &coordBuffer);
+         glDisableVertexAttribArray(perspective ? 2 : 1);
+         glBindTexture(GL_TEXTURE_2D, 0);
+      }*/
 
-    /*  glDisableVertexAttribArray(0);
+      /*  glDisableVertexAttribArray(0);
 
-      glBindBuffer(GL_ARRAY_BUFFER, 0);
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
     render(rect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), colour, textureName);
     clearBuffers(rect);
   }
@@ -1512,22 +1512,22 @@ namespace small3d {
         glBindBufferBase(GL_UNIFORM_BUFFER, 4, perspColourUboId);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
         */
-        bindTexture(textureName, true);
-        /*
-        // UV Coordinates
+      bindTexture(textureName, true);
+      /*
+      // UV Coordinates
 
-        glBindBuffer(GL_ARRAY_BUFFER, model.uvBufferObjectId);
+      glBindBuffer(GL_ARRAY_BUFFER, model.uvBufferObjectId);
 
-        if (!alreadyInGPU) {
-          glBufferData(GL_ARRAY_BUFFER,
-             model.textureCoordsDataByteSize,
-             model.textureCoordsData.data(),
-             GL_STATIC_DRAW);
-        }
+      if (!alreadyInGPU) {
+        glBufferData(GL_ARRAY_BUFFER,
+           model.textureCoordsDataByteSize,
+           model.textureCoordsData.data(),
+           GL_STATIC_DRAW);
+      }
 
-          glEnableVertexAttribArray(2);
-          glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-          */
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        */
     }
     else {
 
@@ -1553,13 +1553,13 @@ namespace small3d {
     updateDescriptorSets();
 
     nextModelToDraw = model;
-    
+
     vkz_create_draw_command_buffers(perspectivePipelineIndex, &bindBuffers,
       &recordDrawCommand);
 
     vkz_draw(perspectivePipelineIndex, NULL);
     vkz_destroy_draw_command_buffers(perspectivePipelineIndex);
-    
+
     // Draw
     /*glDrawElements(GL_TRIANGLES,
       static_cast<GLsizei>(model.indexData.size()),
@@ -1640,12 +1640,12 @@ namespace small3d {
 
   void Renderer::clearScreen() const {
     vkz_clear(perspectivePipelineIndex);
-    
+
   }
 
   void Renderer::clearScreen(const glm::vec4 colour) const {
     vkz_clear(perspectivePipelineIndex);
-    
+
   }
 
   void Renderer::swapBuffers() {

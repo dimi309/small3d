@@ -47,5 +47,8 @@ void main()
   cosAngIncidence = clamp(dot(normalInWorld, lightDirectionWorld), 0, 1);
 
   textureCoords = uvCoords;
-  
+
+  // OpenGL -> Vulkan viewport correction
+  // see: http://matthewwellings.com/blog/the-new-vulkan-coordinate-system/
+  gl_Position.z = (gl_Position.z + gl_Position.w) / 2.0;   
 }

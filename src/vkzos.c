@@ -108,6 +108,8 @@ typedef struct {
   VkFence* gpu_cpu_fences;
   int (*set_input_state_function)(VkPipelineVertexInputStateCreateInfo*);
   int (*set_pipeline_layout_function)(VkPipelineLayoutCreateInfo*);
+  float minViewportDepth;
+  float maxViewportDepth;
 } pipeline_system_struct;
 
 uint32_t pipeline_system_count = 0;
@@ -959,6 +961,7 @@ VkFramebuffer* create_framebuffers(VkRenderPass render_pass) {
 int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_shader_path,
   int (*set_input_state)(VkPipelineVertexInputStateCreateInfo*),
   int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo*),
+  float minDepth, float maxDepth,
   uint32_t * index) {
 
   if (pipeline_systems) {
@@ -1100,8 +1103,14 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   viewport.y = (float)vkz_swap_extent.height; // flipping the viewport here ...
   viewport.width = (float)vkz_swap_extent.width;
   viewport.height = -(float)vkz_swap_extent.height; // ... and here to use OpenGL coordinates
-  viewport.minDepth = 0.0f;
-  viewport.maxDepth = 1.0f;
+
+  if (minDepth != 100.0f && maxDepth != 100.0f) {
+    pipeline_systems[*index].minViewportDepth = minDepth;
+    pipeline_systems[*index].maxViewportDepth = maxDepth;
+  }
+
+  viewport.minDepth = pipeline_systems[*index].minViewportDepth;
+  viewport.maxDepth = pipeline_systems[*index].maxViewportDepth;
 
   VkRect2D scissor;
   memset(&scissor, 0, sizeof(VkRect2D));
@@ -1247,8 +1256,6 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
 
     if (pipeline_systems[*index].framebuffers) {
       LOGDEBUG0("Framebuffers created ok.\n\r");
-
-
     }
   }
 
@@ -1546,7 +1553,7 @@ int vkz_acquire_next_image(uint32_t pipeline_index) {
     vkz_destroy_pipeline(pipeline_index);
     vkz_destroy_swapchain();
     vkz_create_swapchain(vkz_width, vkz_height, -1);
-    vkz_create_pipeline(NULL, NULL, NULL, NULL, &pipeline_index);
+    vkz_create_pipeline(NULL, NULL, NULL, NULL, 100.0f, 100.0f, &pipeline_index);
     return 1;
   }
   else if (r != VK_SUCCESS && r != VK_SUBOPTIMAL_KHR) {
@@ -1578,7 +1585,7 @@ int vkz_present_next_image(uint32_t pipeline_index) {
     vkz_destroy_pipeline(pipeline_index);
     vkz_destroy_swapchain();
     vkz_create_swapchain(vkz_width, vkz_height, -1);
-    vkz_create_pipeline(NULL, NULL, NULL, NULL, &pipeline_index);
+    vkz_create_pipeline(NULL, NULL, NULL, NULL, 100.0f, 100.0f, &pipeline_index);
   }
   else if (r != VK_SUCCESS) {
     printf("Could not present swapchain image!\n\r");
