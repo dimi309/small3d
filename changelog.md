@@ -3,6 +3,14 @@
 small3d changes per version
 ===========================
 
+v-beta (no version assigned yet)
+
+- Migrated to Vulkan
+
+v1.696
+
+- Upgraded glfw to released v3.3.
+
 v1.695 2019-04-28
 
 - Stopped using Google Test.

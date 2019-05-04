@@ -3,20 +3,24 @@
 ## Introduction
 
 This is a free, open source, minimalistic 3D framework for the programmer who 
-would like to make games for PCs using a basic set of libraries (glfw, glew,
+would like to make games for PCs using a basic set of libraries (glfw, 
 glm, png, zlib, ogg, vorbis, portaudio, freetype, bzip) and relying on
 C++ to do the rest. It helps you by providing you with cross-platform rendering
-functionality based on glfw and OpenGL. It can render Wavefront models, animate
+functionality based on glfw and Vulkan. It can render Wavefront models, animate
 them as frames, map textures on them, provide some basic lighting (Gouraud 
 shading) and also render images and text. A very easy to use Sound object is
 also provided that can play OGG files on all supported platforms via a common 
 interface. Basic collision detection has also been implemented.
 
 small3d works on Windows, MacOS and Linux and supports Visual Studio, gcc (even 
-MinGW) and clang for compilation.
+MinGW) and clang for compilation. **But this is still a highly experimental version,
+using Vulkan for the first time and it has only been tested on Windows**. It also
+has some issues, like the fact that depth testing does not work yet. It also produces
+a square artifact at the top left of the screen in the first game that has been
+compiled with it.
 
-All small3d dependencies are distributed together with its source code. They can
-be built by executing a single script (see below).
+All small3d dependencies, appart from the Vulkan SDK, are distributed together with 
+its source code. They can be built by executing a single script (see below).
 
 ## Building
 
@@ -138,9 +142,8 @@ directory:
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 	endif(MSVC)
 
-	find_package(OpenGL REQUIRED)
+	find_package(Vulkan REQUIRED)
 	find_package(GLFW REQUIRED)
-	find_package(GLEW REQUIRED)
 	find_package(PNG REQUIRED)
 	find_package(GLM)
 	find_package(OGG REQUIRED)
@@ -165,7 +168,7 @@ another *CMakeLists.txt* file:
 	target_include_directories(ball PUBLIC
 		${SMALL3D_INCLUDE_DIR}
 		${GLFW_INCLUDE_DIRS}
-		${OPENGL_INCLUDE_DIR}
+		${Vulkan_INCLUDE_DIR}
 		${PNG_INCLUDE_DIRS}
 		${GLM_INCLUDE_DIRS}
 		${OGG_INCLUDE_DIRS}
@@ -176,9 +179,8 @@ another *CMakeLists.txt* file:
 
 	target_link_libraries(ball PUBLIC
 		${SMALL3D_LIBRARY}
-		${GLEW_LIBRARIES}
-		${OPENGL_LIBRARIES}
 		${GLFW_LIBRARIES}
+		${Vulkan_LIBRARIES}
 		${PNG_LIBRARIES}
 		${VORBIS_LIBRARIES}
 		${OGG_LIBRARIES}
