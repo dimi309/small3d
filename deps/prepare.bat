@@ -14,17 +14,6 @@ copy src\libglfw3.a ..\..\lib\
 cd ..\..
 rmdir /Q /S glfw-3.3
 
-7z x glew-2.1.0.zip
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd glew-2.1.0
-cmake -G"MinGW Makefiles" build/cmake -DBUILD_UTILS=OFF %CMAKE_DEFINITIONS%
-cmake --build .
-if %errorlevel% neq 0 exit /b %errorlevel%
-xcopy include\GL ..\include\GL /i /s
-copy lib\libglew32.a ..\lib\
-cd ..
-rmdir /Q /S glew-2.1.0
-
 7z x glm-0.9.9.0.zip
 if %errorlevel% neq 0 exit /b %errorlevel% 
 xcopy glm\glm include\glm /i /s
