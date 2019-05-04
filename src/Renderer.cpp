@@ -621,7 +621,7 @@ namespace small3d {
       memset(&wds[0], 0, 2 * sizeof(VkWriteDescriptorSet));
 
       wds[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      wds[0].dstSet = descriptorSets[i];
+      wds[0].dstSet = orthoDescriptorSets[i];
       wds[0].dstBinding = 0;
       wds[0].dstArrayElement = 0;
       wds[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -631,7 +631,7 @@ namespace small3d {
       wds[0].pTexelBufferView = NULL;
 
       wds[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      wds[1].dstSet = descriptorSets[i];
+      wds[1].dstSet = orthoDescriptorSets[i];
       wds[1].dstBinding = 1;
       wds[1].dstArrayElement = 0;
       wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
