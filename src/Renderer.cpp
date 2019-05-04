@@ -118,10 +118,8 @@ namespace small3d {
     offsets[1] = 0;
     offsets[2] = 0;
 
-
     // Vertex buffer
     vkCmdBindVertexBuffers(commandBuffer, 0, 3, vertexBuffers, offsets);
-
 
     // Index buffer
     vkCmdBindIndexBuffer(commandBuffer, nextModelToDraw.indexBuffer,
@@ -148,7 +146,7 @@ namespace small3d {
     orthobd[0].binding = 0;
     orthobd[0].stride = 4 * sizeof(float);
 
-    orthobd[1].binding = 2;
+    orthobd[1].binding = 1;
     orthobd[1].stride = 2 * sizeof(float);
 
     memset(orthoad, 0, 2 * sizeof(VkVertexInputAttributeDescription));
@@ -178,7 +176,7 @@ namespace small3d {
   }
 
   int bindOrthoBuffers(VkCommandBuffer commandBuffer) {
-    VkBuffer vertexBuffers[3];
+    VkBuffer vertexBuffers[2];
     vertexBuffers[0] = nextModelToDraw.positionBuffer;
     vertexBuffers[1] = nextModelToDraw.uvBuffer;
     VkDeviceSize offsets[2];
