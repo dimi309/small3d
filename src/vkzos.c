@@ -586,8 +586,32 @@ int create_logical_device() {
 }
 
 int vkz_create_depth_image() {
+
+  VkFormat candidate_formats[3];
+  candidate_formats[0] = VK_FORMAT_D32_SFLOAT;
+  candidate_formats[1] = VK_FORMAT_D32_SFLOAT_S8_UINT;
+  candidate_formats[2] = VK_FORMAT_D24_UNORM_S8_UINT;
+
+  VkFormat format;
+  BOOL found = FALSE;
+  for (int i = 0; i < 3; ++i) {
+    format = candidate_formats[i];
+    VkFormatProperties fp;
+    vkGetPhysicalDeviceFormatProperties(vkz_physical_device, format, &fp);
+
+    if (fp.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
+      found = TRUE;
+      break;
+    }
+  }
+
+  if (!found) {
+    printf("Could not find appropriate format for depth image!\n\r");
+    return 0;
+  }
+
   if (!vkz_create_image(&depth_image, vkz_width, vkz_height,
-    VK_FORMAT_D32_SFLOAT,
+    format,
     VK_IMAGE_TILING_OPTIMAL,
     VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
     &depth_image_memory,
@@ -596,11 +620,11 @@ int vkz_create_depth_image() {
   }
 
   if (!vkz_create_image_view(&depth_image_view, depth_image,
-    VK_FORMAT_D32_SFLOAT, VK_IMAGE_ASPECT_DEPTH_BIT)) {
+    format, VK_IMAGE_ASPECT_DEPTH_BIT)) {
     return 0;
   }
 
-  return vkz_transition_image_layout(depth_image, VK_FORMAT_D32_SFLOAT,
+  return vkz_transition_image_layout(depth_image, format,
     VK_IMAGE_LAYOUT_UNDEFINED,
     VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 }
@@ -1215,7 +1239,6 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   depth_stencil_ci.minDepthBounds = 0.0f;
   depth_stencil_ci.maxDepthBounds = 1.0f;
   depth_stencil_ci.stencilTestEnable = VK_FALSE;
-  // front, back?
 
   VkGraphicsPipelineCreateInfo pipeline_ci;
   memset(&pipeline_ci, 0, sizeof(VkGraphicsPipelineCreateInfo));
@@ -1333,7 +1356,7 @@ int vkz_create_clear_command_buffers(uint32_t pipeline_index) {
         return 0;
       }
       else {
-       
+
         VkClearColorValue clearColour = { 0.0f, 0.0f, 0.0f, 0.0f };
 
         VkImageSubresourceRange imageRange;
@@ -1344,7 +1367,7 @@ int vkz_create_clear_command_buffers(uint32_t pipeline_index) {
 
         vkCmdClearColorImage(pipeline_systems[pipeline_index].clear_command_buffers[n], vkz_swapchain_images[n],
           VK_IMAGE_LAYOUT_GENERAL, &clearColour, 1, &imageRange);
-                
+
         if (vkEndCommandBuffer(pipeline_systems[pipeline_index].clear_command_buffers[n]) !=
           VK_SUCCESS) {
           printf("Could not record command buffer!\n\r");
@@ -1409,7 +1432,7 @@ int vkz_create_draw_command_buffers(uint32_t pipeline_index,
         return 0;
       }
       else {
-        
+
         VkRenderPassBeginInfo render_pass_bi;
         memset(&render_pass_bi, 0, sizeof(VkRenderPassBeginInfo));
         render_pass_bi.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -1630,10 +1653,10 @@ int send(uint32_t pipeline_index,
 }
 
 int vkz_clear(uint32_t pipeline_index) {
-  
+
   return send(pipeline_index, NULL,
     pipeline_systems[pipeline_index].clear_command_buffers);
-  
+
 }
 
 int vkz_draw(uint32_t pipeline_index,
@@ -1838,6 +1861,11 @@ int vkz_transition_image_layout(VkImage image, VkFormat format,
   mb.image = image;
   if (new_layout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
     mb.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+
+    if (format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT) {
+      mb.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+    }
+
   }
   else {
     mb.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
