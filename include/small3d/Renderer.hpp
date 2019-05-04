@@ -51,6 +51,7 @@ namespace small3d
     int realScreenWidth = 0, realScreenHeight = 0;
 
     uint32_t perspectivePipelineIndex = 100;
+    uint32_t orthographicPipelineIndex = 100;
 
     /*uint32_t perspectiveProgram = 0;
     uint32_t orthographicProgram = 0;

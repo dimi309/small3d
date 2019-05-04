@@ -139,6 +139,14 @@ namespace small3d {
     return 1;
   }
 
+  int setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo) {
+    return 1;
+  }
+
+  int setOrthoPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
+    return 1;
+  }
+
   void Renderer::initVulkan() {
 
     uint32_t glfwExtensionCount = 0;
@@ -681,6 +689,16 @@ namespace small3d {
     generateTexture("blank", blankImage);
     bindTexture("blank", true);
 
+    std::string orthoVertexShaderPath = shadersPath +
+      "simpleVertexShader.spv";
+    std::string orthoFragmentShaderPath = shadersPath +
+      "simpleFragmentShader.spv";
+
+    //Creates an error - investigate.
+    vkz_create_pipeline(orthoVertexShaderPath.c_str(), orthoFragmentShaderPath.c_str(),
+      setOrthoInputStateCallback, setOrthoPipelineLayoutCallback, 
+      zOffsetFromCamera + zNear, zFar, &orthographicPipelineIndex);
+
     //glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
     //  static_cast<GLsizei>(realScreenHeight));
 
@@ -983,7 +1001,9 @@ namespace small3d {
       glDeleteProgram(perspectiveProgram);
     }*/
 
-
+    if (orthographicPipelineIndex != 100) {
+      vkz_destroy_pipeline(orthographicPipelineIndex);
+    }
 
     if (perspectivePipelineIndex != 100) {
       vkz_destroy_sync_objects(perspectivePipelineIndex);
