@@ -14,9 +14,10 @@ interface. Basic collision detection has also been implemented.
 
 small3d works on Windows, MacOS and Linux and supports Visual Studio, gcc (even 
 MinGW) and clang for compilation. **But this is still a highly experimental version,
-using Vulkan for the first time and it has only been tested on Windows**. It also
-has some issues, like the fact that depth testing does not work yet. It also produces
-a square artifact at the top left of the screen in the first game that has been
+using Vulkan for the first time (many thanks to the [Vulkan Tutorial](https://vulkan
+-tutorial.com/) and it has only been tested on Windows**. It also has some issues, 
+like the fact that depth testing does not work yet. It also produces a square 
+artifact at the top left of the screen in the first game that has been
 compiled with it.
 
 All small3d dependencies, appart from the Vulkan SDK, are distributed together with 
