@@ -24,10 +24,10 @@ its source code. They can be built by executing a single script (see below).
 
 ## Building
 
-Before starting, note that cmake has to be installed on your system and
-accessible on the command line. On Windows, 7zip also has to be in the path and
-you also need to install the MinGW compiler or Visual Studio, again with their
-tools available on the command line.
+Before starting, note that the Vulkan SDK and cmake have to be installed on your 
+system and accessible on the command line. On Windows, 7zip also has to be in 
+the path and you also need to install the MinGW compiler or Visual Studio, 
+again with their tools available on the command line.
 
 Run the *prepare.bat* (Windows MinGW), *prepare-vs.bat* (Windows Visual Studio)
 or *prepare.sh* script from within the *deps* directory, in order to build the
