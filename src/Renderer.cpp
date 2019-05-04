@@ -249,33 +249,15 @@ namespace small3d {
 
     createOrthoDescriptorPool();
     allocateOrthoDescriptorSets();
-
-    /*glewExperimental = GL_TRUE;
-
-    GLenum initResult = glewInit();
-
-    if (initResult != GLEW_OK) {
-      throw std::runtime_error("Error initialising GLEW");
-    }
-    else {
-      std::string glewVersion = reinterpret_cast<char*>
-        (const_cast<GLubyte*>(glewGetString(GLEW_VERSION)));
-      LOGDEBUG("Using GLEW version " + glewVersion);
-    }
-
-    checkForOpenGLErrors("initialising GLEW", false);
-
-    LOGINFO("OpenGL version: " +
-      std::string(reinterpret_cast<char*>
-      (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
-      */
+    
   }
+
   void Renderer::createDescriptorPool() {
     if (!descriptorPoolCreated) {
 
-      VkDescriptorPoolSize ps[8]; // 6 for perspective and
-                                  // 2 for orthographic pipeline
-      memset(&ps, 0, 8 * sizeof(VkDescriptorPoolSize));
+      VkDescriptorPoolSize ps[6];
+
+      memset(&ps, 0, 6 * sizeof(VkDescriptorPoolSize));
 
       ps[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
       ps[0].descriptorCount = vkz_swapchain_image_count;
@@ -295,18 +277,10 @@ namespace small3d {
       ps[5].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
       ps[5].descriptorCount = vkz_swapchain_image_count;
 
-      // Orthographic pipeline descriptors
-
-      ps[6].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-      ps[6].descriptorCount = vkz_swapchain_image_count;
-
-      ps[7].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-      ps[7].descriptorCount = vkz_swapchain_image_count;
-
       VkDescriptorPoolCreateInfo dpci;
       memset(&dpci, 0, sizeof(VkDescriptorPoolCreateInfo));
       dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-      dpci.poolSizeCount = 8;
+      dpci.poolSizeCount = 6;
       dpci.pPoolSizes = ps;
       dpci.maxSets = vkz_swapchain_image_count;
 
@@ -319,7 +293,6 @@ namespace small3d {
         LOGDEBUG("Created descriptor pool.");
       }
     }
-
   }
 
   void Renderer::createOrthoDescriptorPool() {
@@ -538,7 +511,6 @@ namespace small3d {
       wds[5].pTexelBufferView = NULL;
 
       vkUpdateDescriptorSets(vkz_logical_device, 6, &wds[0], 0, NULL);
-
     }
   }
 
@@ -558,7 +530,6 @@ namespace small3d {
     dslb[1].descriptorCount = 1;
     dslb[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
     dslb[1].pImmutableSamplers = NULL;
-
 
     VkDescriptorSetLayoutCreateInfo dslci;
     memset(&dslci, 0, sizeof(VkDescriptorSetLayoutCreateInfo));
@@ -706,17 +677,6 @@ namespace small3d {
     memcpy(orientationData, &orientation, renderOrientationSize);
     vkUnmapMemory(vkz_logical_device, renderOrientationBufferMemories[currentSwapchainImageIndex]);
 
-    /*
-    // if orientation == 0 etc...
-    GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram,
-       "uboOrientation");
-     glUniformBlockBinding(perspectiveProgram, orientationIndex, 1);
-     glGenBuffers(1, &renderOrientation);*/
-     /*glBindBuffer(GL_UNIFORM_BUFFER, renderOrientation);
-     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboOrientation), &orientation, GL_DYNAMIC_DRAW);
-     glBindBufferBase(GL_UNIFORM_BUFFER, 1, renderOrientation);
-     glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
-
   }
 
   void Renderer::positionCamera() {
@@ -752,17 +712,6 @@ namespace small3d {
       0, cameraOrientationSize, 0, &orientationData);
     memcpy(orientationData, &camera, cameraOrientationSize);
     vkUnmapMemory(vkz_logical_device, cameraOrientationBufferMemories[currentSwapchainImageIndex]);
-
-    /*if (cameraOrientation == 0) {
-      GLuint orientationIndex = glGetUniformBlockIndex(perspectiveProgram, "uboCamera");
-      glUniformBlockBinding(perspectiveProgram, orientationIndex, 2);
-      glGenBuffers(1, &cameraOrientation);
-    }*/
-
-    /* glBindBuffer(GL_UNIFORM_BUFFER, cameraOrientation);
-     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboCamera), &camera, GL_DYNAMIC_DRAW);
-     glBindBufferBase(GL_UNIFORM_BUFFER, 2, cameraOrientation);
-     glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
 
   }
 
@@ -823,17 +772,6 @@ namespace small3d {
       throw std::runtime_error("Failed to create texture image view!\n\r");
     };
 
-
-    /*glGenTextures(1, &textureHandle);
-    glBindTexture(GL_TEXTURE_2D, textureHandle);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-
-    GLint internalFormat = GL_RGBA32F;
-
-    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, GL_RGBA,
-      GL_FLOAT, data);*/
-
     textures.insert(make_pair(name, textureHandle));
 
     return textureHandle;
@@ -841,23 +779,6 @@ namespace small3d {
 
   void Renderer::bindTexture(std::string name, bool perspective) {
     boundTextureView = getTextureHandle(name).imageView;
-
-    /*GLuint textureHandle = getTextureHandle(name);
-
-    if (textureHandle == 0) {
-      throw std::runtime_error("Texture " + name +
-        " has not been generated");
-    }*/
-
-    /*if (perspective)
-      glActiveTexture(GL_TEXTURE0);
-    else
-      glActiveTexture(GL_TEXTURE1);
-
-    glBindTexture(GL_TEXTURE_2D, textureHandle);
-    GLint loc = glGetUniformLocation(perspective ? perspectiveProgram : orthographicProgram, "textureImage");
-
-    glUniform1i(loc, perspective ? 0 : 1);*/
 
   }
 
@@ -902,85 +823,7 @@ namespace small3d {
 
     vkz_create_sync_objects(orthographicPipelineIndex);
     vkz_create_clear_command_buffers(orthographicPipelineIndex);
-
-    //glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
-    //  static_cast<GLsizei>(realScreenHeight));
-
-    //glEnable(GL_DEPTH_TEST);
-    //glDepthMask(GL_TRUE);
-    //glDepthFunc(GL_LEQUAL);
-    //glDepthRange(zNear + zOffsetFromCamera, zFar);
-
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    //GLuint vertexShader = compileShader(shadersPath +
-    //  "perspectiveMatrixLightedShader.vert",
-    //  GL_VERTEX_SHADER);
-    //GLuint fragmentShader = compileShader(shadersPath + "textureShader.frag",
-    //  GL_FRAGMENT_SHADER);
-
-    //perspectiveProgram = glCreateProgram();
-    //glAttachShader(perspectiveProgram, vertexShader);
-    //glAttachShader(perspectiveProgram, fragmentShader);
-
-    //glLinkProgram(perspectiveProgram);
-
-    //GLint status;
-    //glGetProgramiv(perspectiveProgram, GL_LINK_STATUS, &status);
-    //if (status == GL_FALSE) {
-    //  throw std::runtime_error("Failed to link program:\n" +
-    //    this->getProgramInfoLog(perspectiveProgram));
-    //}
-    //else {
-    //  LOGDEBUG("Linked main rendering program successfully");
-
-    //  glUseProgram(perspectiveProgram);
-
-    //  setPerspectiveAndLight();
-
-    //  glUseProgram(0);
-    //}
-    //glDetachShader(perspectiveProgram, vertexShader);
-    //glDetachShader(perspectiveProgram, fragmentShader);
-    //glDeleteShader(vertexShader);
-    //glDeleteShader(fragmentShader);
-
-    //glEnable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
-    //glFrontFace(GL_CCW);
-
-    //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    //glClearDepth(1.0f);
-
-    //// Program (with shaders) for orthographic rendering for text
-
-    //GLuint simpleVertexShader = compileShader(shadersPath +
-    //  "simpleShader.vert",
-    //  GL_VERTEX_SHADER);
-    //GLuint simpleFragmentShader = compileShader(shadersPath +
-    //  "simpleShader.frag",
-    //  GL_FRAGMENT_SHADER);
-
-    //orthographicProgram = glCreateProgram();
-    //glAttachShader(orthographicProgram, simpleVertexShader);
-    //glAttachShader(orthographicProgram, simpleFragmentShader);
-
-    //glLinkProgram(orthographicProgram);
-
-    //glGetProgramiv(orthographicProgram, GL_LINK_STATUS, &status);
-    //if (status == GL_FALSE) {
-    //  throw std::runtime_error("Failed to link program:\n" +
-    //    this->getProgramInfoLog(orthographicProgram));
-    //}
-    //else {
-    //  LOGDEBUG("Linked orthographic rendering program successfully");
-    //}
-    //glDetachShader(orthographicProgram, simpleVertexShader);
-    //glDetachShader(orthographicProgram, simpleFragmentShader);
-    //glDeleteShader(simpleVertexShader);
-    //glDeleteShader(simpleFragmentShader);
-    //glUseProgram(0);
+    
   }
 
   void Renderer::initWindow(int& width, int& height) {
@@ -991,11 +834,7 @@ namespace small3d {
       throw std::runtime_error("Unable to initialise GLFW");
     }
 
-    /*glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);*/
-
+   
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
@@ -1027,8 +866,6 @@ namespace small3d {
     if (!window) {
       throw std::runtime_error("Unable to create GLFW window");
     }
-
-    //glfwMakeContextCurrent(window);
 
   }
 
@@ -1067,17 +904,6 @@ namespace small3d {
     memcpy(worldDetailsData, &world, worldDetailsSize);
     vkUnmapMemory(vkz_logical_device, worldDetailsBufferMemories[currentSwapchainImageIndex]);
 
-    /*if (worldDetails == 0) {
-      GLuint worldIndex = glGetUniformBlockIndex(perspectiveProgram, "uboWorld");
-      glUniformBlockBinding(perspectiveProgram, worldIndex, 0);
-      glGenBuffers(1, &worldDetails);
-    }*/
-
-    /* glBindBuffer(GL_UNIFORM_BUFFER, worldDetails);
-     glBufferData(GL_UNIFORM_BUFFER, sizeof(uboWorld), &world, GL_DYNAMIC_DRAW);
-     glBindBufferBase(GL_UNIFORM_BUFFER, 0, worldDetails);
-     glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
-
     uboLight light;
     memset(&light, 0, sizeof(uboLight));
     light.intensity = lightIntensity;
@@ -1103,24 +929,11 @@ namespace small3d {
     memcpy(lightIntensityData, &light, lightIntensitySize);
     vkUnmapMemory(vkz_logical_device, lightIntensityBufferMemories[currentSwapchainImageIndex]);
 
-    /*if (lightUboId == 0) {
-      GLuint lightUboIndex = glGetUniformBlockIndex(perspectiveProgram,
-        "uboLight");
-      glUniformBlockBinding(perspectiveProgram, lightUboIndex, 5);
-      glGenBuffers(1, &lightUboId);
-    }*/
-
-    /*glBindBuffer(GL_UNIFORM_BUFFER, lightUboId);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(uboLight), &light, GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 5, lightUboId);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
-
   }
 
   Renderer::Renderer() {
     window = 0;
 
-    noShaders = false;
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
     cameraPosition = glm::vec3(0, 0, 0);
     cameraRotation = glm::vec3(0, 0, 0);
@@ -1135,7 +948,6 @@ namespace small3d {
 
     window = 0;
 
-    noShaders = false;
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
     cameraPosition = glm::vec3(0, 0, 0);
     cameraRotation = glm::vec3(0, 0, 0);
@@ -1152,10 +964,7 @@ namespace small3d {
     if (ftError != 0) {
       throw std::runtime_error("Unable to initialise font system");
     }
-
-    // Generate VAO
-    /*glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);*/
+   
   }
 
   Renderer& Renderer::getInstance(const std::string windowTitle,
@@ -1178,9 +987,7 @@ namespace small3d {
 
       vkDestroyImageView(vkz_logical_device, it->second.imageView, NULL);
       vkz_destroy_image(it->second.image, it->second.imageMemory);
-
-      //glDeleteTextures(1, &(nameTexturePair->second));
-      //glDeleteTextures(1, &it->second);
+     
     }
 
     for (auto idFacePair : fontFaces) {
@@ -1188,22 +995,6 @@ namespace small3d {
     }
 
     FT_Done_FreeType(library);
-
-    /*if (!noShaders) {
-      glUseProgram(0);
-
-      glDeleteVertexArrays(1, &vao);
-      glBindVertexArray(0);
-
-    }
-
-    if (orthographicProgram != 0) {
-      glDeleteProgram(orthographicProgram);
-    }
-
-    if (perspectiveProgram != 0) {
-      glDeleteProgram(perspectiveProgram);
-    }*/
 
     if (orthographicPipelineIndex != 100) {
       vkz_destroy_sync_objects(orthographicPipelineIndex);
@@ -1384,25 +1175,6 @@ namespace small3d {
 
     rect.vertexDataByteSize = 16 * sizeof(float);
 
-    /*float vertices[16] = {
-      bottomRight.x, bottomRight.y, bottomRight.z, 1.0f,
-      bottomRight.x, topLeft.y, topLeft.z, 1.0f,
-      topLeft.x, topLeft.y, topLeft.z, 1.0f,
-      topLeft.x, bottomRight.y, bottomRight.z, 1.0f
-    };*/
-
-    //glUseProgram(perspective ? perspectiveProgram : orthographicProgram);
-
-    //GLuint boxBuffer = 0;
-    //glGenBuffers(1, &boxBuffer);
-
-    //// Vertices
-    //glBindBuffer(GL_ARRAY_BUFFER, boxBuffer);
-    //glBufferData(GL_ARRAY_BUFFER,
-    //  sizeof(float) * 16,
-    //  &vertices[0],
-    //  GL_STATIC_DRAW);
-
     rect.indexData = {
       0, 1, 2,
       2, 3, 0
@@ -1413,56 +1185,7 @@ namespace small3d {
     rect.normalsData = std::vector<float>(12);
     rect.normalsDataByteSize = 12 * sizeof(float);
 
-    /*unsigned int vertexIndexes[6] = {
-      0, 1, 2,
-      2, 3, 0
-    };*/
-
-    //GLuint indexBufferObject = 0;
-
-    //glGenBuffers(1, &indexBufferObject);
-
-    //// Vertex indices
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 6,
-    //  vertexIndexes, GL_STATIC_DRAW);
-
-    //glEnableVertexAttribArray(0);
-    //glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
     setColourBuffer(colour);
-
-    /*uboColour colourStruct;
-    memset(&colourStruct, 0, sizeof(colourStruct));
-    colourStruct.colour = colour;
-    */
-
-
-    /*if (perspective) {
-      if (perspColourUboId == 0) {
-        GLuint colourUboIndex = glGetUniformBlockIndex(perspectiveProgram, "uboColour");
-        glUniformBlockBinding(perspectiveProgram, colourUboIndex, 4);
-        glGenBuffers(1, &perspColourUboId);
-
-      }
-    }
-    else {
-      if (orthoColourUboId == 0) {
-        GLuint colourUboIndex = glGetUniformBlockIndex(orthographicProgram, "uboColour");
-        glUniformBlockBinding(orthographicProgram, colourUboIndex, 1);
-        glGenBuffers(1, &orthoColourUboId);
-
-      }
-
-    }
-    */
-
-    /*glBindBuffer(GL_UNIFORM_BUFFER, perspective ? perspColourUboId : orthoColourUboId);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, perspective ? 4 : 1, perspective ? perspColourUboId : orthoColourUboId);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-    GLuint coordBuffer = 0;*/
 
     rect.textureCoordsData = {
         1.0f, 1.0f,
@@ -1477,50 +1200,8 @@ namespace small3d {
 
       bindTexture(textureName, perspective);
 
-      /*float textureCoords[8] = {
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f
-      };*/
-
-      /*glGenBuffers(1, &coordBuffer);
-      glBindBuffer(GL_ARRAY_BUFFER, coordBuffer);
-      glBufferData(GL_ARRAY_BUFFER,
-        sizeof(float) * 8,
-        textureCoords,
-        GL_STATIC_DRAW);
-      glEnableVertexAttribArray(perspective ? 2 : 1);
-      glVertexAttribPointer(perspective ? 2 : 1, 2, GL_FLOAT, GL_FALSE, 0, 0);*/
-
-
     }
-
-
-    /*if (perspective) {
-
-      setPerspectiveAndLight();
-
-      positionNextObject(glm::vec3(0.0f, 0.0f, 0.0f),
-        glm::vec3(0.0f, 0.0f, 0.0f));
-      positionCamera();
-    }*/
-
-    /*glDrawElements(GL_TRIANGLES,
-      6, GL_UNSIGNED_INT, 0);*/
-
-      /*glDeleteBuffers(1, &indexBufferObject);
-      glDeleteBuffers(1, &boxBuffer);*/
-      /*if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
-         glDeleteBuffers(1, &coordBuffer);
-         glDisableVertexAttribArray(perspective ? 2 : 1);
-         glBindTexture(GL_TEXTURE_2D, 0);
-      }*/
-
-      /*  glDisableVertexAttribArray(0);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
+      
     render(rect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 
       colour, textureName, perspective);
     clearBuffers(rect);
@@ -1539,12 +1220,7 @@ namespace small3d {
     const std::string textureName,
     const bool perspective) {
 
-    /* !!! glUseProgram(perspectiveProgram);*/
-
-    //bool alreadyInGPU =  model.positionBufferObjectId != 0;
-
-
-
+    
     if (!model.alreadyInGPU) {
 
       // Send vertex data to GPU
@@ -1687,95 +1363,21 @@ namespace small3d {
       }
 
       model.alreadyInGPU = true;
-
-      /* glGenBuffers(1, &model.indexBufferObjectId);
-       glGenBuffers(1, &model.positionBufferObjectId);
-       glGenBuffers(1, &model.normalsBufferObjectId);
-       glGenBuffers(1, &model.uvBufferObjectId);*/
     }
-
-    // Vertices
-    /*glBindBuffer(GL_ARRAY_BUFFER, model.positionBufferObjectId);
-    if (!alreadyInGPU) {
-       glBufferData(GL_ARRAY_BUFFER,
-         model.vertexDataByteSize,
-         model.vertexData.data(),
-         GL_STATIC_DRAW);
-    }
-
-    // Vertex indices
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model.indexBufferObjectId);
-    if (!alreadyInGPU) {
-      glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-        model.indexDataByteSize,
-        model.indexData.data(),
-        GL_STATIC_DRAW);
-    }
-    */
-
-    /* glEnableVertexAttribArray(0);
-     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
- */
- // Normals
- /*glBindBuffer(GL_ARRAY_BUFFER, model.normalsBufferObjectId);*/
-    /*if (!alreadyInGPU) {
-       glBufferData(GL_ARRAY_BUFFER,
-         model.normalsDataByteSize,
-         model.normalsData.data(),
-         GL_STATIC_DRAW);
-    }*/
-    /*glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);*/
-
-    /*if (perspColourUboId == 0) {
-
-      GLuint colourUboIndex = glGetUniformBlockIndex(perspectiveProgram, "uboColour");
-      glUniformBlockBinding(perspectiveProgram, colourUboIndex, 4);
-      glGenBuffers(1, &perspColourUboId);
-
-    }
-    */
 
     if (textureName != "") {
 
       // "Disable" colour since there is a texture
 
       setColourBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
-
-      /*  glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 4, perspColourUboId);
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
-        */
+      
       bindTexture(textureName, true);
-      /*
-      // UV Coordinates
-
-      glBindBuffer(GL_ARRAY_BUFFER, model.uvBufferObjectId);
-
-      if (!alreadyInGPU) {
-        glBufferData(GL_ARRAY_BUFFER,
-           model.textureCoordsDataByteSize,
-           model.textureCoordsData.data(),
-           GL_STATIC_DRAW);
-      }
-
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-        */
+      
     }
     else {
-
-
       // If there is no texture, use the given colour
-
       setColourBuffer(colour);
-      /*
-       glBindBuffer(GL_UNIFORM_BUFFER, perspColourUboId);
-       glBufferData(GL_UNIFORM_BUFFER, sizeof(uboColour), &colourStruct, GL_DYNAMIC_DRAW);
-       glBindBufferBase(GL_UNIFORM_BUFFER, 4, perspColourUboId);
-       glBindBuffer(GL_UNIFORM_BUFFER, 0);
-       */
+  
     }
 
     nextModelToDraw = model;
@@ -1801,24 +1403,6 @@ namespace small3d {
       vkz_draw(orthographicPipelineIndex, NULL);
       vkz_destroy_draw_command_buffers(orthographicPipelineIndex);
     }
-
-    // Draw
-    /*glDrawElements(GL_TRIANGLES,
-      static_cast<GLsizei>(model.indexData.size()),
-      GL_UNSIGNED_INT, 0);*/
-
-      // Clear stuff
-    /*if (textureName != "") {
-      glDisableVertexAttribArray(2);
-    }*/
-
-    /*glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    glUseProgram(0);*/
 
   }
 
@@ -1864,20 +1448,7 @@ namespace small3d {
       vkz_destroy_buffer(model.uvBuffer, model.uvBufferMemory);
       model.alreadyInGPU = false;
     }
-    /*if (model.positionBufferObjectId != 0) {
-      model.positionBufferObjectId = 0;
-    }
-
-    if (model.indexBufferObjectId != 0) {
-      model.indexBufferObjectId = 0;
-    }
-    if (model.normalsBufferObjectId != 0) {
-      model.normalsBufferObjectId = 0;
-    }
-
-    if (model.uvBufferObjectId != 0) {
-      model.uvBufferObjectId = 0;
-    }*/
+    
   }
 
   void Renderer::clearScreen() const {

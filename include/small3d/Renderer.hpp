@@ -9,8 +9,6 @@
 
 #pragma once
 
-//#define GLEW_NO_GLU
-//#include <GL/glew.h>
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -53,11 +51,6 @@ namespace small3d
     uint32_t perspectivePipelineIndex = 100;
     uint32_t orthographicPipelineIndex = 100;
 
-    /*uint32_t perspectiveProgram = 0;
-    uint32_t orthographicProgram = 0;
-    uint32_t vao = 0;
-    */
-
     uint32_t currentSwapchainImageIndex = 0;
 
     std::vector<VkBuffer> renderOrientationBuffers;
@@ -78,12 +71,6 @@ namespace small3d
     VkSampler textureSampler;
     
     VkImageView boundTextureView;
-
-    /*
-    uint32_t perspColourUboId = 0;
-    uint32_t orthoColourUboId = 0;
-    */
-    bool noShaders;
 
     float frustumScale = 0.0f;
     float zNear = 0.0f;
