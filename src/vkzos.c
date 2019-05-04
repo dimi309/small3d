@@ -1318,8 +1318,6 @@ int vkz_create_clear_command_buffers(uint32_t pipeline_index) {
     return 0;
   }
   else {
-    LOGDEBUG0("Command buffers allocated.\n\r");
-
     for (uint32_t n = 0; n < vkz_swapchain_image_count; n++) {
       VkCommandBufferBeginInfo command_buffer_bi;
       memset(&command_buffer_bi, 0, sizeof(VkCommandBufferBeginInfo));
@@ -1351,9 +1349,6 @@ int vkz_create_clear_command_buffers(uint32_t pipeline_index) {
           VK_SUCCESS) {
           printf("Could not record command buffer!\n\r");
           return 0;
-        }
-        else {
-          LOGDEBUG0("Recorded command buffer.\n\r");
         }
       }
     }
@@ -1399,8 +1394,6 @@ int vkz_create_draw_command_buffers(uint32_t pipeline_index,
     return 0;
   }
   else {
-    LOGDEBUG0("Command buffers allocated.\n\r");
-
     for (uint32_t n = 0; n < vkz_swapchain_image_count; n++) {
       VkCommandBufferBeginInfo command_buffer_bi;
       memset(&command_buffer_bi, 0, sizeof(VkCommandBufferBeginInfo));
@@ -1457,9 +1450,6 @@ int vkz_create_draw_command_buffers(uint32_t pipeline_index,
           VK_SUCCESS) {
           printf("Could not record command buffer!\n\r");
           return 0;
-        }
-        else {
-          LOGDEBUG0("Recorded command buffer.\n\r");
         }
       }
     }
