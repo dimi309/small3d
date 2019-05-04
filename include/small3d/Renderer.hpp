@@ -97,11 +97,20 @@ namespace small3d
     std::unordered_map<std::string, FT_Face> fontFaces;
 
     void initVulkan();
+    
     VkDescriptorPool descriptorPool;
     bool descriptorPoolCreated = false;
     void createDescriptorPool();
+
+    VkDescriptorPool orthoDescriptorPool;
+    bool orthoDescriptorPoolCreated = false;
+    void createOrthoDescriptorPool();
+
     void allocateDescriptorSets();
     void updateDescriptorSets();
+
+    void allocateOrthoDescriptorSets();
+    void updateOrthoDescriptorSets();
 
     void setColourBuffer(glm::vec4 colour);
 
@@ -269,9 +278,10 @@ namespace small3d
      *                    (optional). The texture has to have been generated
      *                    already. If this is set, the colour parameter will
      *                    be ignored.
+     * @param perspective True = perspective drawing, otherwise orthographic
      */
     void render(Model &model, const glm::vec3 offset, const glm::vec3 rotation, 
-		const glm::vec4 colour, const std::string textureName="");
+		const glm::vec4 colour, const std::string textureName="", const bool perspective = true);
 
     /**
      * @brief Render a Model.

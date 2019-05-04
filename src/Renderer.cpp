@@ -21,6 +21,11 @@ static VkVertexInputAttributeDescription ad[3];
 static VkDescriptorSetLayout descriptorSetLayout;
 std::vector<VkDescriptorSet> descriptorSets;
 
+static VkVertexInputBindingDescription orthobd[2];
+static VkVertexInputAttributeDescription orthoad[2];
+static VkDescriptorSetLayout orthoDescriptorSetLayout;
+std::vector<VkDescriptorSet> orthoDescriptorSets;
+
 namespace small3d {
 
   void error_callback(int error, const char* description)
@@ -58,7 +63,6 @@ namespace small3d {
   };
 
   int setInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo) {
-    LOGDEBUG("setInputStateCallback called.");
 
     memset(bd, 0, 3 * sizeof(VkVertexInputBindingDescription));
 
@@ -99,7 +103,6 @@ namespace small3d {
   Model nextModelToDraw;
 
   int setPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
-    LOGDEBUG("setPipelineLayoutCallback called.");
     pipelineLayoutCreateInfo->setLayoutCount = 1;
     pipelineLayoutCreateInfo->pSetLayouts = &descriptorSetLayout;
     return 1;
@@ -134,17 +137,75 @@ namespace small3d {
       pipelineLayout, 0, 1,
       &descriptorSets[swapchainImageIndex], 0, NULL);
 
-    vkCmdDrawIndexed(commandBuffer, nextModelToDraw.indexData.size(), 1, 0, 0, 0);
+    vkCmdDrawIndexed(commandBuffer, (uint32_t) nextModelToDraw.indexData.size(), 1, 0, 0, 0);
 
     return 1;
   }
 
   int setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo) {
+    memset(orthobd, 0, 2 * sizeof(VkVertexInputBindingDescription));
+
+    orthobd[0].binding = 0;
+    orthobd[0].stride = 4 * sizeof(float);
+
+    orthobd[1].binding = 2;
+    orthobd[1].stride = 2 * sizeof(float);
+
+    memset(orthoad, 0, 2 * sizeof(VkVertexInputAttributeDescription));
+
+    orthoad[0].binding = 0;
+    orthoad[0].location = 0;
+    orthoad[0].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+    orthoad[0].offset = 0;
+
+    orthoad[1].binding = 1;
+    orthoad[1].location = 1;
+    orthoad[1].format = VK_FORMAT_R32G32_SFLOAT;
+    orthoad[1].offset = 0;
+
+    inputStateCreateInfo->vertexBindingDescriptionCount = 2;
+    inputStateCreateInfo->vertexAttributeDescriptionCount = 2;
+    inputStateCreateInfo->pVertexBindingDescriptions = orthobd;
+    inputStateCreateInfo->pVertexAttributeDescriptions = orthoad;
+
     return 1;
   }
 
   int setOrthoPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
+    pipelineLayoutCreateInfo->setLayoutCount = 1;
+    pipelineLayoutCreateInfo->pSetLayouts = &orthoDescriptorSetLayout;
     return 1;
+  }
+
+  int bindOrthoBuffers(VkCommandBuffer commandBuffer) {
+    VkBuffer vertexBuffers[3];
+    vertexBuffers[0] = nextModelToDraw.positionBuffer;
+    vertexBuffers[1] = nextModelToDraw.uvBuffer;
+    VkDeviceSize offsets[2];
+    offsets[0] = 0;
+    offsets[1] = 0;
+
+    // Vertex buffer
+    vkCmdBindVertexBuffers(commandBuffer, 0, 2, vertexBuffers, offsets);
+
+    // Index buffer
+    vkCmdBindIndexBuffer(commandBuffer, nextModelToDraw.indexBuffer,
+      0, VK_INDEX_TYPE_UINT32);
+    return 1;
+  }
+
+  int recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
+    VkPipelineLayout pipelineLayout,
+    uint32_t swapchainImageIndex) {
+
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+      pipelineLayout, 0, 1,
+      &orthoDescriptorSets[swapchainImageIndex], 0, NULL);
+
+    vkCmdDrawIndexed(commandBuffer, (uint32_t) nextModelToDraw.indexData.size(), 1, 0, 0, 0);
+
+    return 1;
+
   }
 
   void Renderer::initVulkan() {
@@ -188,6 +249,9 @@ namespace small3d {
     createDescriptorPool();
     allocateDescriptorSets();
 
+    createOrthoDescriptorPool();
+    allocateOrthoDescriptorSets();
+
     /*glewExperimental = GL_TRUE;
 
     GLenum initResult = glewInit();
@@ -211,8 +275,9 @@ namespace small3d {
   void Renderer::createDescriptorPool() {
     if (!descriptorPoolCreated) {
 
-      VkDescriptorPoolSize ps[6];
-      memset(&ps, 0, 6 * sizeof(VkDescriptorPoolSize));
+      VkDescriptorPoolSize ps[8]; // 6 for perspective and
+                                  // 2 for orthographic pipeline
+      memset(&ps, 0, 8 * sizeof(VkDescriptorPoolSize));
 
       ps[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
       ps[0].descriptorCount = vkz_swapchain_image_count;
@@ -232,10 +297,18 @@ namespace small3d {
       ps[5].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
       ps[5].descriptorCount = vkz_swapchain_image_count;
 
+      // Orthographic pipeline descriptors
+
+      ps[6].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+      ps[6].descriptorCount = vkz_swapchain_image_count;
+
+      ps[7].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      ps[7].descriptorCount = vkz_swapchain_image_count;
+
       VkDescriptorPoolCreateInfo dpci;
       memset(&dpci, 0, sizeof(VkDescriptorPoolCreateInfo));
       dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-      dpci.poolSizeCount = 6;
+      dpci.poolSizeCount = 8;
       dpci.pPoolSizes = ps;
       dpci.maxSets = vkz_swapchain_image_count;
 
@@ -251,8 +324,39 @@ namespace small3d {
 
   }
 
+  void Renderer::createOrthoDescriptorPool() {
+    if (!orthoDescriptorPoolCreated) {
+
+      VkDescriptorPoolSize ps[2];
+      memset(&ps, 0, 2 * sizeof(VkDescriptorPoolSize));
+
+      ps[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+      ps[0].descriptorCount = vkz_swapchain_image_count;
+
+      ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      ps[1].descriptorCount = vkz_swapchain_image_count;
+
+      VkDescriptorPoolCreateInfo dpci;
+      memset(&dpci, 0, sizeof(VkDescriptorPoolCreateInfo));
+      dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+      dpci.poolSizeCount = 2;
+      dpci.pPoolSizes = ps;
+      dpci.maxSets = vkz_swapchain_image_count;
+
+      if (vkCreateDescriptorPool(vkz_logical_device, &dpci, NULL,
+        &orthoDescriptorPool) != VK_SUCCESS) {
+        LOGDEBUG("Failed to create orthographic shaders descriptor pool.");
+      }
+      else {
+        orthoDescriptorPoolCreated = true;
+        LOGDEBUG("Created orthographic shaders descriptor pool.");
+      }
+    }
+
+  }
+
   void Renderer::allocateDescriptorSets() {
-    LOGDEBUG("Allocating descriptor sets.");
+
     VkDescriptorSetLayoutBinding dslb[6];
     memset(dslb, 0, 6 * sizeof(VkDescriptorSetLayoutBinding));
 
@@ -328,7 +432,7 @@ namespace small3d {
       if (allocResult == VK_ERROR_OUT_OF_POOL_MEMORY) {
         errortxt += " (out of pool memory)";
       }
-      LOGDEBUG(errortxt);
+      throw std::runtime_error(errortxt);
     }
   }
 
@@ -437,6 +541,106 @@ namespace small3d {
 
       vkUpdateDescriptorSets(vkz_logical_device, 6, &wds[0], 0, NULL);
 
+    }
+  }
+
+  void Renderer::allocateOrthoDescriptorSets() {
+
+    VkDescriptorSetLayoutBinding dslb[2];
+    memset(dslb, 0, 2 * sizeof(VkDescriptorSetLayoutBinding));
+
+    dslb[0].binding = 0;
+    dslb[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    dslb[0].descriptorCount = 1;
+    dslb[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    dslb[0].pImmutableSamplers = NULL;
+
+    dslb[1].binding = 1;
+    dslb[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    dslb[1].descriptorCount = 1;
+    dslb[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    dslb[1].pImmutableSamplers = NULL;
+
+
+    VkDescriptorSetLayoutCreateInfo dslci;
+    memset(&dslci, 0, sizeof(VkDescriptorSetLayoutCreateInfo));
+    dslci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    dslci.bindingCount = 2;
+    dslci.pBindings = dslb;
+
+    if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
+      &orthoDescriptorSetLayout) != VK_SUCCESS) {
+      throw std::runtime_error("Failed to create orthographic descriptor set layout.");
+    }
+    else {
+      LOGDEBUG("Created oprthographic descriptor set layout.");
+    }
+
+    std::vector<VkDescriptorSetLayout> dslo(vkz_swapchain_image_count);
+
+    for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
+      dslo[i] = orthoDescriptorSetLayout;
+      LOGDEBUG("Set orthographic descriptor set layout for swapchain image " + intToStr((const int)i));
+    }
+
+    VkDescriptorSetAllocateInfo dsai;
+    memset(&dsai, 0, sizeof(VkDescriptorSetAllocateInfo));
+    dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    dsai.descriptorPool = orthoDescriptorPool;
+    dsai.descriptorSetCount = vkz_swapchain_image_count;
+    dsai.pSetLayouts = &dslo[0];
+
+    orthoDescriptorSets = std::vector<VkDescriptorSet>(vkz_swapchain_image_count);
+    VkResult allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
+      &orthoDescriptorSets[0]);
+    if (allocResult != VK_SUCCESS) {
+      std::string errortxt = "Failed to allocate orthographic pool descriptor sets.";
+      if (allocResult == VK_ERROR_OUT_OF_POOL_MEMORY) {
+        errortxt += " (out of pool memory)";
+      }
+      throw std::runtime_error(errortxt);
+    }
+  }
+
+  void Renderer::updateOrthoDescriptorSets() {
+    for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
+
+      VkDescriptorImageInfo diiTexture;
+      memset(&diiTexture, 0, sizeof(VkDescriptorImageInfo));
+      diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+      diiTexture.imageView = boundTextureView;
+      diiTexture.sampler = textureSampler;
+
+      VkDescriptorBufferInfo dbiColour;
+      memset(&dbiColour, 0, sizeof(VkDescriptorBufferInfo));
+      dbiColour.buffer = colourBuffers[i];
+      dbiColour.offset = 0;
+      dbiColour.range = 4 * sizeof(float);
+
+      std::vector<VkWriteDescriptorSet> wds(2);
+      memset(&wds[0], 0, 2 * sizeof(VkWriteDescriptorSet));
+
+      wds[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+      wds[0].dstSet = descriptorSets[i];
+      wds[0].dstBinding = 0;
+      wds[0].dstArrayElement = 0;
+      wds[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+      wds[0].descriptorCount = 1;
+      wds[0].pBufferInfo = NULL;
+      wds[0].pImageInfo = &diiTexture;
+      wds[0].pTexelBufferView = NULL;
+
+      wds[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+      wds[1].dstSet = descriptorSets[i];
+      wds[1].dstBinding = 1;
+      wds[1].dstArrayElement = 0;
+      wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      wds[1].descriptorCount = 1;
+      wds[1].pBufferInfo = &dbiColour;
+      wds[1].pImageInfo = NULL;
+      wds[1].pTexelBufferView = NULL;
+
+      vkUpdateDescriptorSets(vkz_logical_device, 2, &wds[0], 0, NULL);
     }
   }
 
@@ -679,7 +883,7 @@ namespace small3d {
     }
 
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
-      setInputStateCallback, setPipelineLayoutCallback, zOffsetFromCamera+zNear, zFar, &perspectivePipelineIndex);
+      setInputStateCallback, setPipelineLayoutCallback, zOffsetFromCamera + zNear, zFar, &perspectivePipelineIndex);
 
     vkz_create_sync_objects(perspectivePipelineIndex);
     vkz_create_clear_command_buffers(perspectivePipelineIndex);
@@ -694,10 +898,12 @@ namespace small3d {
     std::string orthoFragmentShaderPath = shadersPath +
       "simpleFragmentShader.spv";
 
-    //Creates an error - investigate.
     vkz_create_pipeline(orthoVertexShaderPath.c_str(), orthoFragmentShaderPath.c_str(),
-      setOrthoInputStateCallback, setOrthoPipelineLayoutCallback, 
+      setOrthoInputStateCallback, setOrthoPipelineLayoutCallback,
       zOffsetFromCamera + zNear, zFar, &orthographicPipelineIndex);
+
+    vkz_create_sync_objects(orthographicPipelineIndex);
+    vkz_create_clear_command_buffers(orthographicPipelineIndex);
 
     //glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
     //  static_cast<GLsizei>(realScreenHeight));
@@ -1002,6 +1208,8 @@ namespace small3d {
     }*/
 
     if (orthographicPipelineIndex != 100) {
+      vkz_destroy_sync_objects(orthographicPipelineIndex);
+      vkz_destroy_clear_command_buffers(orthographicPipelineIndex);
       vkz_destroy_pipeline(orthographicPipelineIndex);
     }
 
@@ -1016,8 +1224,15 @@ namespace small3d {
     vkDestroyDescriptorSetLayout(vkz_logical_device,
       descriptorSetLayout, NULL);
 
+    vkDestroyDescriptorSetLayout(vkz_logical_device,
+      orthoDescriptorSetLayout, NULL);
+
     if (descriptorPoolCreated) {
       vkDestroyDescriptorPool(vkz_logical_device, descriptorPool, NULL);
+    }
+
+    if (orthoDescriptorPoolCreated) {
+      vkDestroyDescriptorPool(vkz_logical_device, orthoDescriptorPool, NULL);
     }
 
     if (renderOrientationBuffers.size() > 0) {
@@ -1308,7 +1523,8 @@ namespace small3d {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
-    render(rect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), colour, textureName);
+    render(rect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 
+      colour, textureName, perspective);
     clearBuffers(rect);
   }
 
@@ -1322,7 +1538,8 @@ namespace small3d {
   void Renderer::render(Model & model, const glm::vec3 offset,
     const glm::vec3 rotation,
     const glm::vec4 colour,
-    const std::string textureName) {
+    const std::string textureName,
+    const bool perspective) {
 
     /* !!! glUseProgram(perspectiveProgram);*/
 
@@ -1563,22 +1780,29 @@ namespace small3d {
        */
     }
 
-
-    setPerspectiveAndLight();
-
-    positionNextObject(offset, rotation);
-
-    positionCamera();
-
-    updateDescriptorSets();
-
     nextModelToDraw = model;
 
-    vkz_create_draw_command_buffers(perspectivePipelineIndex, &bindBuffers,
-      &recordDrawCommand);
+    setPerspectiveAndLight();
+    positionNextObject(offset, rotation);
+    positionCamera();
 
-    vkz_draw(perspectivePipelineIndex, NULL);
-    vkz_destroy_draw_command_buffers(perspectivePipelineIndex);
+    if (perspective) {
+      updateDescriptorSets();
+
+      vkz_create_draw_command_buffers(perspectivePipelineIndex, &bindBuffers,
+        &recordDrawCommand);
+      vkz_draw(perspectivePipelineIndex, NULL);
+      vkz_destroy_draw_command_buffers(perspectivePipelineIndex);
+
+    } 
+    else {
+      updateOrthoDescriptorSets();
+
+      vkz_create_draw_command_buffers(orthographicPipelineIndex, &bindOrthoBuffers,
+        &recordOrthoDrawCommand);
+      vkz_draw(orthographicPipelineIndex, NULL);
+      vkz_destroy_draw_command_buffers(orthographicPipelineIndex);
+    }
 
     // Draw
     /*glDrawElements(GL_TRIANGLES,
