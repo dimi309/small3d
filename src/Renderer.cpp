@@ -802,7 +802,7 @@ namespace small3d {
     }
 
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
-      setInputStateCallback, setPipelineLayoutCallback, zOffsetFromCamera + zNear, zFar, &perspectivePipelineIndex);
+      setInputStateCallback, setPipelineLayoutCallback, 0.0f, 1.0f, &perspectivePipelineIndex);
 
     vkz_create_sync_objects(perspectivePipelineIndex);
     vkz_create_clear_command_buffers(perspectivePipelineIndex);
@@ -819,10 +819,14 @@ namespace small3d {
 
     vkz_create_pipeline(orthoVertexShaderPath.c_str(), orthoFragmentShaderPath.c_str(),
       setOrthoInputStateCallback, setOrthoPipelineLayoutCallback,
-      zOffsetFromCamera + zNear, zFar, &orthographicPipelineIndex);
+      0.0f, 1.0f, &orthographicPipelineIndex);
 
     vkz_create_sync_objects(orthographicPipelineIndex);
     vkz_create_clear_command_buffers(orthographicPipelineIndex);
+
+    // Acquire the first image (prerequisite for the swap member
+    // function).
+    vkz_acquire_next_image(perspectivePipelineIndex);
     
   }
 
@@ -1263,7 +1267,7 @@ namespace small3d {
 
       if (!vkz_create_buffer(&model.indexBuffer,
         VK_BUFFER_USAGE_TRANSFER_DST_BIT |
-        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
         model.indexDataByteSize,
         &model.indexBufferMemory,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
