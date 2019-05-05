@@ -804,8 +804,7 @@ namespace small3d {
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
       setInputStateCallback, setPipelineLayoutCallback, 0.0f, 1.0f, &perspectivePipelineIndex);
 
-    vkz_create_sync_objects(perspectivePipelineIndex);
-    vkz_create_clear_command_buffers(perspectivePipelineIndex);
+    //vkz_create_clear_command_buffers(perspectivePipelineIndex);
 
     Image blankImage("");
     blankImage.convertToBlank();
@@ -821,8 +820,8 @@ namespace small3d {
       setOrthoInputStateCallback, setOrthoPipelineLayoutCallback,
       0.0f, 1.0f, &orthographicPipelineIndex);
 
-    vkz_create_sync_objects(orthographicPipelineIndex);
-    vkz_create_clear_command_buffers(orthographicPipelineIndex);
+    vkz_create_sync_objects();
+    //vkz_create_clear_command_buffers(orthographicPipelineIndex);
 
     // Acquire the first image (prerequisite for the swap member
     // function).
@@ -1000,14 +999,14 @@ namespace small3d {
 
     FT_Done_FreeType(library);
 
+    vkz_destroy_sync_objects();
+
     if (orthographicPipelineIndex != 100) {
-      vkz_destroy_sync_objects(orthographicPipelineIndex);
       vkz_destroy_clear_command_buffers(orthographicPipelineIndex);
       vkz_destroy_pipeline(orthographicPipelineIndex);
     }
 
     if (perspectivePipelineIndex != 100) {
-      vkz_destroy_sync_objects(perspectivePipelineIndex);
       vkz_destroy_clear_command_buffers(perspectivePipelineIndex);
       vkz_destroy_pipeline(perspectivePipelineIndex);
     }

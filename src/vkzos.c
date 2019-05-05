@@ -102,10 +102,6 @@ typedef struct {
   VkPipeline pipeline;
   VkCommandBuffer* clear_command_buffers;
   VkCommandBuffer* draw_command_buffers;
-  VkSemaphore* image_semaphores;
-  VkSemaphore* render_semaphores;
-  uint32_t current_semaphore_index;
-  VkFence* gpu_cpu_fences;
   int (*set_input_state_function)(VkPipelineVertexInputStateCreateInfo*);
   int (*set_pipeline_layout_function)(VkPipelineLayoutCreateInfo*);
   float minViewportDepth;
@@ -114,6 +110,11 @@ typedef struct {
 
 uint32_t pipeline_system_count = 0;
 pipeline_system_struct* pipeline_systems = NULL;
+
+static VkSemaphore* image_semaphores;
+static VkSemaphore* render_semaphores;
+static uint32_t current_semaphore_index;
+static VkFence* gpu_cpu_fences;
 
 int vkz_create_instance(const char* application_name,
   const char** enabled_extension_names,
@@ -1492,16 +1493,16 @@ int vkz_destroy_draw_command_buffers(uint32_t pipeline_index) {
   return 1;
 }
 
-int vkz_create_sync_objects(uint32_t pipeline_index) {
-  pipeline_systems[pipeline_index].current_semaphore_index = 0;
+int vkz_create_sync_objects() {
+  current_semaphore_index = 0;
 
-  pipeline_systems[pipeline_index].image_semaphores =
+  image_semaphores =
     malloc(MAX_IMAGES_PROCESSED * sizeof(VkSemaphore));
 
-  pipeline_systems[pipeline_index].render_semaphores =
+  render_semaphores =
     malloc(MAX_IMAGES_PROCESSED * sizeof(VkSemaphore));
 
-  pipeline_systems[pipeline_index].gpu_cpu_fences =
+  gpu_cpu_fences =
     malloc(MAX_IMAGES_PROCESSED * sizeof(VkFence));
 
   VkSemaphoreCreateInfo semaphore_ci;
@@ -1515,13 +1516,13 @@ int vkz_create_sync_objects(uint32_t pipeline_index) {
 
   for (uint32_t n = 0; n < MAX_IMAGES_PROCESSED; n++) {
     if (vkCreateSemaphore(vkz_logical_device, &semaphore_ci, NULL,
-      &pipeline_systems[pipeline_index].image_semaphores[n]) !=
+      &image_semaphores[n]) !=
       VK_SUCCESS ||
       vkCreateSemaphore(vkz_logical_device, &semaphore_ci, NULL,
-        &pipeline_systems[pipeline_index].render_semaphores[n]) !=
+        &render_semaphores[n]) !=
       VK_SUCCESS ||
       vkCreateFence(vkz_logical_device, &fence_ci, NULL,
-        &pipeline_systems[pipeline_index].gpu_cpu_fences[n]) !=
+        &gpu_cpu_fences[n]) !=
       VK_SUCCESS) {
       printf("Could not create sync objects!\n\r");
       return 0;
@@ -1533,23 +1534,23 @@ int vkz_create_sync_objects(uint32_t pipeline_index) {
   return 1;
 }
 
-int vkz_destroy_sync_objects(uint32_t pipeline_index) {
+int vkz_destroy_sync_objects() {
 
   vkDeviceWaitIdle(vkz_logical_device);
 
   for (uint32_t n = 0; n < MAX_IMAGES_PROCESSED; n++) {
     vkDestroySemaphore(vkz_logical_device,
-      pipeline_systems[pipeline_index].image_semaphores[n], NULL);
+      image_semaphores[n], NULL);
 
     vkDestroySemaphore(vkz_logical_device,
-      pipeline_systems[pipeline_index].render_semaphores[n], NULL);
+      render_semaphores[n], NULL);
     vkDestroyFence(vkz_logical_device,
-      pipeline_systems[pipeline_index].gpu_cpu_fences[n], NULL);
+      gpu_cpu_fences[n], NULL);
   }
 
-  free(pipeline_systems[pipeline_index].image_semaphores);
-  free(pipeline_systems[pipeline_index].render_semaphores);
-  free(pipeline_systems[pipeline_index].gpu_cpu_fences);
+  free(image_semaphores);
+  free(render_semaphores);
+  free(gpu_cpu_fences);
 
   return 1;
 }
@@ -1558,7 +1559,7 @@ int vkz_acquire_next_image(uint32_t pipeline_index) {
   VkResult r =
     vkAcquireNextImageKHR(vkz_logical_device, vkz_swapchain,
       UINT64_MAX,
-      pipeline_systems[pipeline_index].image_semaphores[pipeline_systems[pipeline_index].current_semaphore_index],
+      image_semaphores[current_semaphore_index],
       VK_NULL_HANDLE, &next_image_index);
 
   if (r == VK_ERROR_OUT_OF_DATE_KHR) {
@@ -1578,7 +1579,7 @@ int vkz_acquire_next_image(uint32_t pipeline_index) {
 
 int vkz_present_next_image(uint32_t pipeline_index) {
   VkSemaphore signal_semaphores[] =
-  { pipeline_systems[pipeline_index].render_semaphores[pipeline_systems[pipeline_index].current_semaphore_index] };
+  { render_semaphores[current_semaphore_index] };
 
   VkPresentInfoKHR pinf;
   memset(&pinf, 0, sizeof(VkPresentInfoKHR));
@@ -1604,8 +1605,8 @@ int vkz_present_next_image(uint32_t pipeline_index) {
     printf("Could not present swapchain image!\n\r");
   }
 
-  pipeline_systems[pipeline_index].current_semaphore_index =
-    (pipeline_systems[pipeline_index].current_semaphore_index + 1) %
+  current_semaphore_index =
+    (current_semaphore_index + 1) %
     MAX_IMAGES_PROCESSED;
   return 1;
 }
@@ -1615,11 +1616,11 @@ int send(uint32_t pipeline_index,
   VkCommandBuffer * command_buffers) {
 
   vkWaitForFences(vkz_logical_device, 1,
-    &pipeline_systems[pipeline_index].gpu_cpu_fences[pipeline_systems[pipeline_index].current_semaphore_index],
+    &gpu_cpu_fences[current_semaphore_index],
     VK_TRUE, UINT64_MAX);
 
   vkResetFences(vkz_logical_device, 1,
-    &pipeline_systems[pipeline_index].gpu_cpu_fences[pipeline_systems[pipeline_index].current_semaphore_index]);
+    &gpu_cpu_fences[current_semaphore_index]);
 
   if (update_buffers_function) {
     update_buffers_function(next_image_index);
@@ -1629,7 +1630,7 @@ int send(uint32_t pipeline_index,
   memset(&si, 0, sizeof(VkSubmitInfo));
   si.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
   VkSemaphore wait_semaphores[] =
-  { pipeline_systems[pipeline_index].image_semaphores[pipeline_systems[pipeline_index].current_semaphore_index] };
+  { image_semaphores[current_semaphore_index] };
   VkPipelineStageFlags wait_stages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
   si.waitSemaphoreCount = 1;
   si.pWaitSemaphores = wait_semaphores;
@@ -1639,12 +1640,12 @@ int send(uint32_t pipeline_index,
   si.pCommandBuffers = &command_buffers[next_image_index];
 
   VkSemaphore signal_semaphores[] =
-  { pipeline_systems[pipeline_index].render_semaphores[pipeline_systems[pipeline_index].current_semaphore_index] };
+  { render_semaphores[current_semaphore_index] };
   si.signalSemaphoreCount = 1;
   si.pSignalSemaphores = signal_semaphores;
 
   if (vkQueueSubmit(vkz_graphics_queue, 1, &si,
-    pipeline_systems[pipeline_index].gpu_cpu_fences[pipeline_systems[pipeline_index].current_semaphore_index]) !=
+    gpu_cpu_fences[current_semaphore_index]) !=
     VK_SUCCESS) {
     printf("Could not submit draw command buffer!\n\r");
   }
@@ -1654,9 +1655,10 @@ int send(uint32_t pipeline_index,
 
 int vkz_clear(uint32_t pipeline_index) {
 
-  return send(pipeline_index, NULL,
+  /*return send(pipeline_index, NULL,
     pipeline_systems[pipeline_index].clear_command_buffers);
-
+    */
+  return 1;
 }
 
 int vkz_draw(uint32_t pipeline_index,
@@ -1664,7 +1666,7 @@ int vkz_draw(uint32_t pipeline_index,
   return send(pipeline_index, update_buffers_function,
     pipeline_systems[pipeline_index].draw_command_buffers);
 
-
+  
 }
 
 

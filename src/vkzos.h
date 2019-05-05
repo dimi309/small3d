@@ -161,16 +161,14 @@ int vkz_destroy_draw_command_buffers(uint32_t pipeline_index);
 /**
  * @brief Create sync objects for a given pipeline
  *
- * @param pipeline_index The index of the pipeline
- */
-int vkz_create_sync_objects(uint32_t pipeline_index);
+  */
+int vkz_create_sync_objects();
 
 /**
  * @brief Destroy sync objects for a given pipeline
  *
- * @param pipeline_index The index of the pipeline
  */
-int vkz_destroy_sync_objects(uint32_t pipeline_index);
+int vkz_destroy_sync_objects();
 
 /**
  * @brief Acquire next swapchain image
