@@ -777,7 +777,7 @@ namespace small3d {
     return textureHandle;
   }
 
-  void Renderer::bindTexture(std::string name, bool perspective) {
+  void Renderer::bindTexture(std::string name) {
     boundTextureView = getTextureHandle(name).imageView;
 
   }
@@ -809,7 +809,7 @@ namespace small3d {
     Image blankImage("");
     blankImage.convertToBlank();
     generateTexture("blank", blankImage);
-    bindTexture("blank", true);
+    bindTexture("blank");
 
     std::string orthoVertexShaderPath = shadersPath +
       "simpleVertexShader.spv";
@@ -1201,7 +1201,7 @@ namespace small3d {
 
     if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
 
-      bindTexture(textureName, perspective);
+      bindTexture(textureName);
 
     }
       
@@ -1374,7 +1374,7 @@ namespace small3d {
 
       setColourBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
       
-      bindTexture(textureName, true);
+      bindTexture(textureName);
       
     }
     else {

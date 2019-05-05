@@ -109,8 +109,6 @@ typedef struct {
 uint32_t pipeline_system_count = 0;
 pipeline_system_struct* pipeline_systems = NULL;
 
-static VkSemaphore image_semaphore;
-static VkSemaphore render_semaphore;
 static VkFence gpu_cpu_fence;
 
 int vkz_create_instance(const char* application_name,
@@ -1122,9 +1120,9 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   VkViewport viewport;
   memset(&viewport, 0, sizeof(viewport));
   viewport.x = 0.0f;
-  viewport.y = (float)vkz_swap_extent.height; // flipping the viewport here ...
+  viewport.y = 0.0f; // (float)vkz_swap_extent.height; // flipping the viewport here ...
   viewport.width = (float)vkz_swap_extent.width;
-  viewport.height = -(float)vkz_swap_extent.height; // ... and here to use OpenGL coordinates
+  viewport.height = (float)vkz_swap_extent.height; // ... and here to use OpenGL coordinates
 
   if (minDepth != 100.0f && maxDepth != 100.0f) {
     pipeline_systems[*index].minViewportDepth = minDepth;
@@ -1159,7 +1157,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   rasterization_state_ci.polygonMode = VK_POLYGON_MODE_FILL;
   rasterization_state_ci.lineWidth = 1.0f;
   rasterization_state_ci.cullMode = VK_CULL_MODE_BACK_BIT;
-  rasterization_state_ci.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+  rasterization_state_ci.frontFace = VK_FRONT_FACE_CLOCKWISE;
   rasterization_state_ci.depthBiasEnable = VK_FALSE;
   rasterization_state_ci.depthBiasConstantFactor = 0.0f;
   rasterization_state_ci.depthBiasClamp = 0.0f;
@@ -1381,11 +1379,11 @@ int vkz_destroy_clear_command_buffers(uint32_t pipeline_index) {
 
   vkDeviceWaitIdle(vkz_logical_device);
 
-  vkFreeCommandBuffers(vkz_logical_device, command_pool, vkz_swapchain_image_count,
+ /* vkFreeCommandBuffers(vkz_logical_device, command_pool, vkz_swapchain_image_count,
     pipeline_systems[pipeline_index].clear_command_buffers);
 
   free(pipeline_systems[pipeline_index].clear_command_buffers);
-
+*/
   return 1;
 }
 
@@ -1503,13 +1501,7 @@ int vkz_create_sync_objects() {
   fence_ci.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
 
-  if (vkCreateSemaphore(vkz_logical_device, &semaphore_ci, NULL,
-    &image_semaphore) !=
-    VK_SUCCESS ||
-    vkCreateSemaphore(vkz_logical_device, &semaphore_ci, NULL,
-      &render_semaphore) !=
-    VK_SUCCESS ||
-    vkCreateFence(vkz_logical_device, &fence_ci, NULL,
+  if (vkCreateFence(vkz_logical_device, &fence_ci, NULL,
       &gpu_cpu_fence) !=
     VK_SUCCESS) {
     printf("Could not create sync objects!\n\r");
@@ -1525,12 +1517,7 @@ int vkz_create_sync_objects() {
 int vkz_destroy_sync_objects() {
 
   vkDeviceWaitIdle(vkz_logical_device);
-
-  vkDestroySemaphore(vkz_logical_device,
-    image_semaphore, NULL);
-
-  vkDestroySemaphore(vkz_logical_device,
-    render_semaphore, NULL);
+  
   vkDestroyFence(vkz_logical_device,
     gpu_cpu_fence, NULL);
 
@@ -1538,11 +1525,16 @@ int vkz_destroy_sync_objects() {
 }
 
 int vkz_acquire_next_image(uint32_t pipeline_index) {
+  vkWaitForFences(vkz_logical_device, 1,
+    &gpu_cpu_fence,
+    VK_TRUE, UINT64_MAX);
+  vkResetFences(vkz_logical_device, 1,
+    &gpu_cpu_fence);
   VkResult r =
     vkAcquireNextImageKHR(vkz_logical_device, vkz_swapchain,
       UINT64_MAX,
-      image_semaphore,
-      VK_NULL_HANDLE, &next_image_index);
+      VK_NULL_HANDLE,
+      gpu_cpu_fence, &next_image_index);
 
   if (r == VK_ERROR_OUT_OF_DATE_KHR) {
     LOGDEBUG0("Recreating pipeline and swapchain.\n\r");
@@ -1560,14 +1552,12 @@ int vkz_acquire_next_image(uint32_t pipeline_index) {
 }
 
 int vkz_present_next_image(uint32_t pipeline_index) {
-  VkSemaphore signal_semaphores[] =
-  { render_semaphore };
+  
 
   VkPresentInfoKHR pinf;
   memset(&pinf, 0, sizeof(VkPresentInfoKHR));
   pinf.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-  pinf.waitSemaphoreCount = 1;
-  pinf.pWaitSemaphores = signal_semaphores;
+  pinf.waitSemaphoreCount = 0;
 
   VkSwapchainKHR swap_chains[] = { vkz_swapchain };
   pinf.swapchainCount = 1;
@@ -1608,20 +1598,16 @@ int send(uint32_t pipeline_index,
   VkSubmitInfo si;
   memset(&si, 0, sizeof(VkSubmitInfo));
   si.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-  VkSemaphore wait_semaphores[] =
-  { image_semaphore };
-  VkPipelineStageFlags wait_stages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-  si.waitSemaphoreCount = 1;
-  si.pWaitSemaphores = wait_semaphores;
-  si.pWaitDstStageMask = wait_stages;
-
+  
+  
+  si.waitSemaphoreCount = 0;
+  
+  
   si.commandBufferCount = 1;
   si.pCommandBuffers = &command_buffers[next_image_index];
 
-  VkSemaphore signal_semaphores[] =
-  { render_semaphore };
-  si.signalSemaphoreCount = 1;
-  si.pSignalSemaphores = signal_semaphores;
+  
+  si.signalSemaphoreCount = 0;
 
   if (vkQueueSubmit(vkz_graphics_queue, 1, &si,
     gpu_cpu_fence) !=
