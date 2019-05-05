@@ -110,6 +110,7 @@ uint32_t pipeline_system_count = 0;
 pipeline_system_struct* pipeline_systems = NULL;
 
 static VkFence gpu_cpu_fence;
+static VkSemaphore render_complete_semaphore;
 
 int vkz_create_instance(const char* application_name,
   const char** enabled_extension_names,
@@ -1379,11 +1380,11 @@ int vkz_destroy_clear_command_buffers(uint32_t pipeline_index) {
 
   vkDeviceWaitIdle(vkz_logical_device);
 
- /* vkFreeCommandBuffers(vkz_logical_device, command_pool, vkz_swapchain_image_count,
-    pipeline_systems[pipeline_index].clear_command_buffers);
+  /* vkFreeCommandBuffers(vkz_logical_device, command_pool, vkz_swapchain_image_count,
+     pipeline_systems[pipeline_index].clear_command_buffers);
 
-  free(pipeline_systems[pipeline_index].clear_command_buffers);
-*/
+   free(pipeline_systems[pipeline_index].clear_command_buffers);
+ */
   return 1;
 }
 
@@ -1494,6 +1495,11 @@ int vkz_create_sync_objects() {
   VkSemaphoreCreateInfo semaphore_ci;
   memset(&semaphore_ci, 0, sizeof(VkSemaphoreCreateInfo));
   semaphore_ci.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+  if (vkCreateSemaphore(vkz_logical_device, &semaphore_ci,
+    NULL, &render_complete_semaphore) != VK_SUCCESS) {
+    printf("Could not create sync objects!\n\r");
+    return 0;
+  }
 
   VkFenceCreateInfo fence_ci;
   memset(&fence_ci, 0, sizeof(VkFenceCreateInfo));
@@ -1502,7 +1508,7 @@ int vkz_create_sync_objects() {
 
 
   if (vkCreateFence(vkz_logical_device, &fence_ci, NULL,
-      &gpu_cpu_fence) !=
+    &gpu_cpu_fence) !=
     VK_SUCCESS) {
     printf("Could not create sync objects!\n\r");
     return 0;
@@ -1517,7 +1523,14 @@ int vkz_create_sync_objects() {
 int vkz_destroy_sync_objects() {
 
   vkDeviceWaitIdle(vkz_logical_device);
-  
+
+  vkDestroySemaphore(vkz_logical_device, 
+    render_complete_semaphore, NULL);
+
+  vkWaitForFences(vkz_logical_device, 1,
+    &gpu_cpu_fence,
+    VK_TRUE, UINT64_MAX);
+
   vkDestroyFence(vkz_logical_device,
     gpu_cpu_fence, NULL);
 
@@ -1552,8 +1565,8 @@ int vkz_acquire_next_image(uint32_t pipeline_index) {
 }
 
 int vkz_present_next_image(uint32_t pipeline_index) {
-  
 
+  
   VkPresentInfoKHR pinf;
   memset(&pinf, 0, sizeof(VkPresentInfoKHR));
   pinf.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -1595,19 +1608,18 @@ int send(uint32_t pipeline_index,
     update_buffers_function(next_image_index);
   }
 
+  VkSemaphore wait_semaphores[] = { render_complete_semaphore };
   VkSubmitInfo si;
   memset(&si, 0, sizeof(VkSubmitInfo));
   si.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-  
-  
-  si.waitSemaphoreCount = 0;
-  
-  
+ /* si.pWaitSemaphores = wait_semaphores;
+  si.waitSemaphoreCount = 1;
+  si.pWaitDstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;*/
+  //si.pSignalSemaphores = wait_semaphores;
+  //si.signalSemaphoreCount = 1;
+
   si.commandBufferCount = 1;
   si.pCommandBuffers = &command_buffers[next_image_index];
-
-  
-  si.signalSemaphoreCount = 0;
 
   if (vkQueueSubmit(vkz_graphics_queue, 1, &si,
     gpu_cpu_fence) !=

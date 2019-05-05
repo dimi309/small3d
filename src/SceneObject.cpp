@@ -33,17 +33,17 @@ namespace small3d {
         ss << std::setfill('0') << std::setw(6) << idx + 1;
         std::string frameNum = ss.str();
         Model model1(modelPath + "_" + frameNum + ".obj");
-        model.push_back(model1);
+        models.push_back(model1);
       }
     }
     else {
       Model model1(modelPath);
-      model.push_back(model1);
+      models.push_back(model1);
     }
   }
 
   Model& SceneObject::getModel() {
-    return model[currentFrame];
+    return models[currentFrame];
   }
 
   const std::string SceneObject::getName() const {

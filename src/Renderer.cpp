@@ -135,7 +135,7 @@ namespace small3d {
       pipelineLayout, 0, 1,
       &descriptorSets[swapchainImageIndex], 0, NULL);
 
-    vkCmdDrawIndexed(commandBuffer, (uint32_t) nextModelToDraw.indexData.size(), 1, 0, 0, 0);
+    vkCmdDrawIndexed(commandBuffer, (uint32_t)nextModelToDraw.indexData.size(), 1, 0, 0, 0);
 
     return 1;
   }
@@ -200,7 +200,7 @@ namespace small3d {
       pipelineLayout, 0, 1,
       &orthoDescriptorSets[swapchainImageIndex], 0, NULL);
 
-    vkCmdDrawIndexed(commandBuffer, (uint32_t) nextModelToDraw.indexData.size(), 1, 0, 0, 0);
+    vkCmdDrawIndexed(commandBuffer, (uint32_t)nextModelToDraw.indexData.size(), 1, 0, 0, 0);
 
     return 1;
 
@@ -249,7 +249,7 @@ namespace small3d {
 
     createOrthoDescriptorPool();
     allocateOrthoDescriptorSets();
-    
+
   }
 
   void Renderer::createDescriptorPool() {
@@ -761,6 +761,7 @@ namespace small3d {
     vkz_transition_image_layout(textureHandle.image, VK_FORMAT_R32G32B32A32_SFLOAT,
       VK_IMAGE_LAYOUT_UNDEFINED,
       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
     vkz_copy_buffer_to_image(stagingBuffer, textureHandle.image,
       (uint32_t)width, (uint32_t)height);
 
@@ -826,7 +827,7 @@ namespace small3d {
     // Acquire the first image (prerequisite for the swap member
     // function).
     vkz_acquire_next_image(perspectivePipelineIndex);
-    
+
   }
 
   void Renderer::initWindow(int& width, int& height) {
@@ -837,7 +838,7 @@ namespace small3d {
       throw std::runtime_error("Unable to initialise GLFW");
     }
 
-   
+
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
@@ -967,7 +968,7 @@ namespace small3d {
     if (ftError != 0) {
       throw std::runtime_error("Unable to initialise font system");
     }
-   
+
   }
 
   Renderer& Renderer::getInstance(const std::string windowTitle,
@@ -983,6 +984,7 @@ namespace small3d {
   }
 
   Renderer::~Renderer() {
+    
     LOGDEBUG("Renderer destructor running");
     for (auto it = textures.begin();
       it != textures.end(); ++it) {
@@ -990,7 +992,7 @@ namespace small3d {
 
       vkDestroyImageView(vkz_logical_device, it->second.imageView, NULL);
       vkz_destroy_image(it->second.image, it->second.imageMemory);
-     
+
     }
 
     for (auto idFacePair : fontFaces) {
@@ -998,6 +1000,8 @@ namespace small3d {
     }
 
     FT_Done_FreeType(library);
+
+
 
     vkz_destroy_sync_objects();
 
@@ -1010,8 +1014,6 @@ namespace small3d {
       vkz_destroy_clear_command_buffers(perspectivePipelineIndex);
       vkz_destroy_pipeline(perspectivePipelineIndex);
     }
-
-    vkDestroySampler(vkz_logical_device, textureSampler, NULL);
 
     vkDestroyDescriptorSetLayout(vkz_logical_device,
       descriptorSetLayout, NULL);
@@ -1027,12 +1029,15 @@ namespace small3d {
       vkDestroyDescriptorPool(vkz_logical_device, orthoDescriptorPool, NULL);
     }
 
-    if (renderOrientationBuffers.size() > 0) {
-      LOGDEBUG("Destroying render orientation buffers.");
-      for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
-        vkz_destroy_buffer(renderOrientationBuffers[i], renderOrientationBufferMemories[i]);
-      }
+    for (uint32_t i = 0; i < vkz_swapchain_image_count; ++i) {
+      vkz_destroy_buffer(renderOrientationBuffers[i], renderOrientationBufferMemories[i]);
+      vkz_destroy_buffer(cameraOrientationBuffers[i], cameraOrientationBufferMemories[i]);
+      vkz_destroy_buffer(worldDetailsBuffers[i], worldDetailsBufferMemories[i]);
+      vkz_destroy_buffer(lightIntensityBuffers[i], lightIntensityBufferMemories[i]);
+      vkz_destroy_buffer(colourBuffers[i], colourBufferMemories[i]);
     }
+
+    vkDestroySampler(vkz_logical_device, textureSampler, NULL);
 
     vkz_destroy_depth_image();
     vkz_destroy_swapchain();
@@ -1204,8 +1209,8 @@ namespace small3d {
       bindTexture(textureName);
 
     }
-      
-    render(rect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 
+
+    render(rect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
       colour, textureName, perspective);
     clearBuffers(rect);
   }
@@ -1223,7 +1228,7 @@ namespace small3d {
     const std::string textureName,
     const bool perspective) {
 
-    
+
     if (!model.alreadyInGPU) {
 
       // Send vertex data to GPU
@@ -1373,14 +1378,14 @@ namespace small3d {
       // "Disable" colour since there is a texture
 
       setColourBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
-      
+
       bindTexture(textureName);
-      
+
     }
     else {
       // If there is no texture, use the given colour
       setColourBuffer(colour);
-  
+
     }
 
     nextModelToDraw = model;
@@ -1397,7 +1402,7 @@ namespace small3d {
       vkz_draw(perspectivePipelineIndex, NULL);
       vkz_destroy_draw_command_buffers(perspectivePipelineIndex);
 
-    } 
+    }
     else {
       updateOrthoDescriptorSets();
 
@@ -1451,7 +1456,13 @@ namespace small3d {
       vkz_destroy_buffer(model.uvBuffer, model.uvBufferMemory);
       model.alreadyInGPU = false;
     }
-    
+
+  }
+
+  void Renderer::clearBuffers(SceneObject & sceneObject) const {
+    for (auto model : sceneObject.models) {
+      clearBuffers(model);
+    }
   }
 
   void Renderer::clearScreen() const {
@@ -1466,8 +1477,6 @@ namespace small3d {
 
   void Renderer::swapBuffers() {
     vkz_present_next_image(perspectivePipelineIndex);
-    // Without this, there's flickering
-    vkDeviceWaitIdle(vkz_logical_device);
     vkz_acquire_next_image(perspectivePipelineIndex);
   }
 
