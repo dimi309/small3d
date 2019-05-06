@@ -159,13 +159,13 @@ int RendererTest() {
   while(glfwGetTime() - startSeconds < 3.0) {
     glfwPollEvents();
     renderer->clearScreen();
-    renderer->renderRectangle(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+    /*renderer->renderRectangle(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
 			      glm::vec3(-1.0f, 0.0f,  1.0f),
-			      glm::vec3(-0.5f, -0.5f, 1.0f), false);
+			      glm::vec3(-0.5f, -0.5f, 1.0f), false);*/
 
-    renderer->renderRectangle("cubeTexture",
+    /*renderer->renderRectangle("cubeTexture",
 			      glm::vec3(0.0f, 0.5f, -2.0f),
-			      glm::vec3(1.0f, -1.0f, -2.0f), true);
+			      glm::vec3(1.0f, -1.0f, -2.0f), true);*/
     
     renderer->render(object2, "cubeTexture");
 
