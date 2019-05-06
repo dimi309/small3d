@@ -755,10 +755,9 @@ int vkz_create_swapchain(const uint32_t width, const uint32_t height,
     intrn_with_image_sampler = with_image_sampler;
   }
 
-  uint32_t ic = vkz_swapchain_support_details.capabilities.minImageCount + 1;
-  if (vkz_swapchain_support_details.capabilities.maxImageCount > 0 &&
-    ic > vkz_swapchain_support_details.capabilities.maxImageCount) {
-    ic = vkz_swapchain_support_details.capabilities.maxImageCount;
+  uint32_t ic = vkz_swapchain_support_details.capabilities.minImageCount;
+  if (vkz_swapchain_support_details.capabilities.maxImageCount >= 2) {
+    ic = 2;
   }
 
   LOGDEBUG1("Swapchain image count: %d\n\r", ic);
@@ -869,8 +868,8 @@ VkRenderPass create_render_pass() {
     sizeof(VkAttachmentDescription));
   color_buffer_attachment_description.format = vkz_surface_format.format;
   color_buffer_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
-  color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-  color_buffer_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+  color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+  color_buffer_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
   color_buffer_attachment_description.stencilLoadOp =
     VK_ATTACHMENT_LOAD_OP_DONT_CARE;
   color_buffer_attachment_description.stencilStoreOp =
@@ -888,7 +887,7 @@ VkRenderPass create_render_pass() {
   memset(&depth_attachment_description, 0, sizeof(VkAttachmentDescription));
   depth_attachment_description.format = VK_FORMAT_D32_SFLOAT;
   depth_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
-  depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE; // VK_ATTACHMENT_LOAD_OP_CLEAR;
+  depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
   depth_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
   depth_attachment_description.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
   depth_attachment_description.stencilStoreOp =
@@ -1549,11 +1548,18 @@ int vkz_destroy_sync_objects() {
 
 int vkz_acquire_next_image(uint32_t pipeline_index) {
 
+  vkWaitForFences(vkz_logical_device, 1,
+    &gpu_cpu_fence,
+    VK_TRUE, UINT64_MAX);
+
+  vkResetFences(vkz_logical_device, 1,
+    &gpu_cpu_fence);
+
   VkResult r =
     vkAcquireNextImageKHR(vkz_logical_device, vkz_swapchain,
       UINT64_MAX,
       image_available_semaphore,
-      VK_NULL_HANDLE, &next_image_index);
+      gpu_cpu_fence, &next_image_index);
 
   if (r == VK_ERROR_OUT_OF_DATE_KHR) {
     LOGDEBUG0("Recreating pipeline and swapchain.\n\r");
@@ -1585,7 +1591,6 @@ int vkz_present_next_image(uint32_t pipeline_index) {
   pinf.pImageIndices = &next_image_index;
   pinf.pResults = NULL;
 
-
   VkResult r = vkQueuePresentKHR(vkz_present_queue, &pinf);
   if (r == VK_ERROR_OUT_OF_DATE_KHR || r == VK_SUBOPTIMAL_KHR) {
     LOGDEBUG0("Recreating pipeline and swapchain.\n\r");
@@ -1605,20 +1610,21 @@ int send(uint32_t pipeline_index,
   int (*update_buffers_function)(uint32_t),
   VkCommandBuffer * command_buffers) {
 
-  /*vkWaitForFences(vkz_logical_device, 1,
+  vkWaitForFences(vkz_logical_device, 1,
     &gpu_cpu_fence,
     VK_TRUE, UINT64_MAX);
 
   vkResetFences(vkz_logical_device, 1,
-    &gpu_cpu_fence);*/
+    &gpu_cpu_fence);
 
   if (update_buffers_function) {
     update_buffers_function(next_image_index);
   }
 
   VkSemaphore wait_semaphores[] = { image_available_semaphore };
-  VkPipelineStageFlags wait_stages[] = {
+  VkPipelineStageFlags wait_stages[] = { 
     VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+
   VkSubmitInfo si;
   memset(&si, 0, sizeof(VkSubmitInfo));
   si.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -1634,7 +1640,7 @@ int send(uint32_t pipeline_index,
   si.pCommandBuffers = &command_buffers[next_image_index];
 
   if (vkQueueSubmit(vkz_graphics_queue, 1, &si,
-    NULL) !=
+    gpu_cpu_fence) !=
     VK_SUCCESS) {
     printf("Could not submit draw command buffer!\n\r");
   }

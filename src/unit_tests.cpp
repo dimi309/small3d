@@ -143,7 +143,7 @@ int RendererTest() {
   
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
-  renderer->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  //renderer->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
   SceneObject object2("texutredCube", "resources/models/Cube/Cube.obj");
   object2.offset = glm::vec3(-2.0f, -1.0f, -7.0f);
