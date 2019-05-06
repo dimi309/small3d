@@ -1572,17 +1572,19 @@ int vkz_acquire_next_image(uint32_t pipeline_index) {
 
 int vkz_present_next_image(uint32_t pipeline_index) {
 
-
   VkPresentInfoKHR pinf;
   memset(&pinf, 0, sizeof(VkPresentInfoKHR));
   pinf.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-  pinf.waitSemaphoreCount = 0;
+  pinf.waitSemaphoreCount = 1;
+  VkSemaphore wait_semaphores[] = { render_complete_semaphore };
+  pinf.pWaitSemaphores = wait_semaphores;
 
   VkSwapchainKHR swap_chains[] = { vkz_swapchain };
   pinf.swapchainCount = 1;
   pinf.pSwapchains = swap_chains;
   pinf.pImageIndices = &next_image_index;
   pinf.pResults = NULL;
+
 
   VkResult r = vkQueuePresentKHR(vkz_present_queue, &pinf);
   if (r == VK_ERROR_OUT_OF_DATE_KHR || r == VK_SUBOPTIMAL_KHR) {
@@ -1623,6 +1625,10 @@ int send(uint32_t pipeline_index,
   si.pWaitSemaphores = wait_semaphores;
   si.waitSemaphoreCount = 1;
   si.pWaitDstStageMask = wait_stages;
+
+  VkSemaphore signal_semaphores[] = { render_complete_semaphore };
+  si.pSignalSemaphores = signal_semaphores;
+  si.signalSemaphoreCount = 1;
 
   si.commandBufferCount = 1;
   si.pCommandBuffers = &command_buffers[next_image_index];
