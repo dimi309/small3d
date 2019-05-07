@@ -1286,6 +1286,14 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
     free(fragmentShader);
   }
 
+  pipeline_systems[*index].draw_command_buffers =
+    malloc(vkz_swapchain_image_count *
+      sizeof(VkCommandBuffer));
+
+  pipeline_systems[*index].clear_command_buffers =
+    malloc(vkz_swapchain_image_count *
+      sizeof(VkCommandBuffer));
+
   return 1;
 }
 
@@ -1314,14 +1322,13 @@ int vkz_destroy_pipeline(uint32_t index) {
     pipeline_systems[index].vertex_shader_module, NULL);
   vkDestroyShaderModule(vkz_logical_device,
     pipeline_systems[index].fragment_shader_module, NULL);
+
+  free((VkCommandBuffer*)pipeline_systems[index].clear_command_buffers);
+  free((VkCommandBuffer*)pipeline_systems[index].draw_command_buffers);
   return 1;
 }
 
 int vkz_create_clear_command_buffers(uint32_t pipeline_index) {
-
-  pipeline_systems[pipeline_index].clear_command_buffers =
-    malloc(vkz_swapchain_image_count *
-      sizeof(VkCommandBuffer));
 
   VkCommandBufferAllocateInfo command_buffer_ai;
   memset(&command_buffer_ai, 0, sizeof(VkCommandBufferAllocateInfo));
@@ -1338,7 +1345,6 @@ int vkz_create_clear_command_buffers(uint32_t pipeline_index) {
     return 0;
   }
   else {
-    for (uint32_t n = 0; n < vkz_swapchain_image_count; n++) {
       VkCommandBufferBeginInfo command_buffer_bi;
       memset(&command_buffer_bi, 0, sizeof(VkCommandBufferBeginInfo));
       command_buffer_bi.sType =
@@ -1347,7 +1353,7 @@ int vkz_create_clear_command_buffers(uint32_t pipeline_index) {
         VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
       command_buffer_bi.pInheritanceInfo = NULL;
 
-      if (vkBeginCommandBuffer(pipeline_systems[pipeline_index].clear_command_buffers[n],
+      if (vkBeginCommandBuffer(pipeline_systems[pipeline_index].clear_command_buffers[next_image_index],
         &command_buffer_bi) != VK_SUCCESS) {
         printf("Could not begin recording command buffer!\n\r");
         return 0;
@@ -1362,16 +1368,16 @@ int vkz_create_clear_command_buffers(uint32_t pipeline_index) {
         imageRange.levelCount = 1;
         imageRange.layerCount = 1;
 
-        vkCmdClearColorImage(pipeline_systems[pipeline_index].clear_command_buffers[n], vkz_swapchain_images[n],
+        vkCmdClearColorImage(pipeline_systems[pipeline_index].clear_command_buffers[next_image_index], vkz_swapchain_images[next_image_index],
           VK_IMAGE_LAYOUT_GENERAL, &clearColour, 1, &imageRange);
 
-        if (vkEndCommandBuffer(pipeline_systems[pipeline_index].clear_command_buffers[n]) !=
+        if (vkEndCommandBuffer(pipeline_systems[pipeline_index].clear_command_buffers[next_image_index]) !=
           VK_SUCCESS) {
           printf("Could not record command buffer!\n\r");
           return 0;
         }
       }
-    }
+    
   }
   return 1;
 }
@@ -1383,7 +1389,7 @@ int vkz_destroy_clear_command_buffers(uint32_t pipeline_index) {
   /* vkFreeCommandBuffers(vkz_logical_device, command_pool, vkz_swapchain_image_count,
      pipeline_systems[pipeline_index].clear_command_buffers);
 
-   free(pipeline_systems[pipeline_index].clear_command_buffers);
+   
  */
   return 1;
 }
@@ -1394,10 +1400,6 @@ int vkz_create_draw_command_buffers(uint32_t pipeline_index,
   int (*record_draw_command)(VkCommandBuffer,
     VkPipelineLayout,
     uint32_t)) {
-
-  pipeline_systems[pipeline_index].draw_command_buffers =
-    malloc(vkz_swapchain_image_count *
-      sizeof(VkCommandBuffer));
 
   VkCommandBufferAllocateInfo command_buffer_ai;
   memset(&command_buffer_ai, 0, sizeof(VkCommandBufferAllocateInfo));
@@ -1414,65 +1416,64 @@ int vkz_create_draw_command_buffers(uint32_t pipeline_index,
     return 0;
   }
   else {
-    for (uint32_t n = 0; n < vkz_swapchain_image_count; n++) {
-      VkCommandBufferBeginInfo command_buffer_bi;
-      memset(&command_buffer_bi, 0, sizeof(VkCommandBufferBeginInfo));
-      command_buffer_bi.sType =
-        VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-      command_buffer_bi.flags =
-        VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-      command_buffer_bi.pInheritanceInfo = NULL;
+    VkCommandBufferBeginInfo command_buffer_bi;
+    memset(&command_buffer_bi, 0, sizeof(VkCommandBufferBeginInfo));
+    command_buffer_bi.sType =
+      VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    command_buffer_bi.flags =
+      VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+    command_buffer_bi.pInheritanceInfo = NULL;
 
-      if (vkBeginCommandBuffer(pipeline_systems[pipeline_index].draw_command_buffers[n],
-        &command_buffer_bi) != VK_SUCCESS) {
-        printf("Could not begin recording command buffer!\n\r");
+    if (vkBeginCommandBuffer(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index],
+      &command_buffer_bi) != VK_SUCCESS) {
+      printf("Could not begin recording command buffer!\n\r");
+      return 0;
+    }
+    else {
+
+      VkRenderPassBeginInfo render_pass_bi;
+      memset(&render_pass_bi, 0, sizeof(VkRenderPassBeginInfo));
+      render_pass_bi.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+      render_pass_bi.renderPass = pipeline_systems[pipeline_index].render_pass;
+      render_pass_bi.framebuffer =
+        pipeline_systems[pipeline_index].framebuffers[next_image_index];
+      render_pass_bi.renderArea.offset.x = 0;
+      render_pass_bi.renderArea.offset.y = 0;
+      render_pass_bi.renderArea.extent = vkz_swap_extent;
+
+      VkClearValue clear_values[2];
+      memset(clear_values, 0, 2 * sizeof(VkClearValue));
+      clear_values[0].color.float32[0] = 0.0f;
+      clear_values[0].color.float32[1] = 0.0f;
+      clear_values[0].color.float32[2] = 0.0f;
+      clear_values[0].color.float32[3] = 1.0f;
+      clear_values[1].depthStencil.depth = 1.0f;
+      clear_values[1].depthStencil.stencil = 0;
+
+      render_pass_bi.clearValueCount = 2;
+      render_pass_bi.pClearValues = clear_values;
+
+      vkCmdBeginRenderPass(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index],
+        &render_pass_bi, VK_SUBPASS_CONTENTS_INLINE);
+      vkCmdBindPipeline(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index],
+        VK_PIPELINE_BIND_POINT_GRAPHICS,
+        pipeline_systems[pipeline_index].pipeline);
+      if (bind_vertex_buffers) {
+        bind_vertex_buffers(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index]);
+      }
+
+      if (record_draw_command) {
+        record_draw_command(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index], pipeline_systems[pipeline_index].pipeline_layout, next_image_index);
+      }
+
+      vkCmdEndRenderPass(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index]);
+      if (vkEndCommandBuffer(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index]) !=
+        VK_SUCCESS) {
+        printf("Could not record command buffer!\n\r");
         return 0;
       }
-      else {
-
-        VkRenderPassBeginInfo render_pass_bi;
-        memset(&render_pass_bi, 0, sizeof(VkRenderPassBeginInfo));
-        render_pass_bi.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        render_pass_bi.renderPass = pipeline_systems[pipeline_index].render_pass;
-        render_pass_bi.framebuffer =
-          pipeline_systems[pipeline_index].framebuffers[n];
-        render_pass_bi.renderArea.offset.x = 0;
-        render_pass_bi.renderArea.offset.y = 0;
-        render_pass_bi.renderArea.extent = vkz_swap_extent;
-
-        VkClearValue clear_values[2];
-        memset(clear_values, 0, 2 * sizeof(VkClearValue));
-        clear_values[0].color.float32[0] = 0.0f;
-        clear_values[0].color.float32[1] = 0.0f;
-        clear_values[0].color.float32[2] = 0.0f;
-        clear_values[0].color.float32[3] = 1.0f;
-        clear_values[1].depthStencil.depth = 1.0f;
-        clear_values[1].depthStencil.stencil = 0;
-
-        render_pass_bi.clearValueCount = 2;
-        render_pass_bi.pClearValues = clear_values;
-
-        vkCmdBeginRenderPass(pipeline_systems[pipeline_index].draw_command_buffers[n],
-          &render_pass_bi, VK_SUBPASS_CONTENTS_INLINE);
-        vkCmdBindPipeline(pipeline_systems[pipeline_index].draw_command_buffers[n],
-          VK_PIPELINE_BIND_POINT_GRAPHICS,
-          pipeline_systems[pipeline_index].pipeline);
-        if (bind_vertex_buffers) {
-          bind_vertex_buffers(pipeline_systems[pipeline_index].draw_command_buffers[n]);
-        }
-
-        if (record_draw_command) {
-          record_draw_command(pipeline_systems[pipeline_index].draw_command_buffers[n], pipeline_systems[pipeline_index].pipeline_layout, n);
-        }
-
-        vkCmdEndRenderPass(pipeline_systems[pipeline_index].draw_command_buffers[n]);
-        if (vkEndCommandBuffer(pipeline_systems[pipeline_index].draw_command_buffers[n]) !=
-          VK_SUCCESS) {
-          printf("Could not record command buffer!\n\r");
-          return 0;
-        }
-      }
     }
+
   }
   return 1;
 }
@@ -1484,7 +1485,7 @@ int vkz_destroy_draw_command_buffers(uint32_t pipeline_index) {
   vkFreeCommandBuffers(vkz_logical_device, command_pool, vkz_swapchain_image_count,
     pipeline_systems[pipeline_index].draw_command_buffers);
 
-  free(pipeline_systems[pipeline_index].draw_command_buffers);
+  
 
   return 1;
 }
@@ -1581,7 +1582,7 @@ int vkz_present_next_image(uint32_t pipeline_index) {
   VkPresentInfoKHR pinf;
   memset(&pinf, 0, sizeof(VkPresentInfoKHR));
   pinf.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-  
+
   /*VkSemaphore wait_semaphores[] = { render_complete_semaphore };
   pinf.pWaitSemaphores = wait_semaphores;
   pinf.waitSemaphoreCount = 1;*/
@@ -1625,7 +1626,7 @@ int send(uint32_t pipeline_index,
   VkSubmitInfo si;
   memset(&si, 0, sizeof(VkSubmitInfo));
   si.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-  
+
   /*VkSemaphore wait_semaphores[] = { image_available_semaphore };
   VkPipelineStageFlags wait_stages[] = {
     VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
