@@ -1547,7 +1547,7 @@ int vkz_destroy_sync_objects() {
   return 1;
 }
 
-int vkz_acquire_next_image(uint32_t pipeline_index) {
+int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t *image_index) {
 
   vkWaitForFences(vkz_logical_device, 1,
     &gpu_cpu_fence,
@@ -1574,6 +1574,9 @@ int vkz_acquire_next_image(uint32_t pipeline_index) {
     printf("Could not acquire swapchain image!\n\r");
     return 0;
   }
+
+  *image_index = next_image_index;
+
   return 1;
 }
 

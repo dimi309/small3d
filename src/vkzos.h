@@ -176,8 +176,9 @@ int vkz_destroy_sync_objects();
  * @param pipeline_index The index of the pipeline
  *                       TODO: Independentise synchronisation from
  *                             pipelines perhaps...
+ * @param image_index    The index of the acquired swapchain image
  */
-int vkz_acquire_next_image(uint32_t pipeline_index);
+int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index);
 
 /**
  * @brief Present next swapchain image (the one acquired by

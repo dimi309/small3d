@@ -826,7 +826,7 @@ namespace small3d {
 
     // Acquire the first image (prerequisite for the swap member
     // function).
-    vkz_acquire_next_image(perspectivePipelineIndex);
+    vkz_acquire_next_image(perspectivePipelineIndex, &currentSwapchainImageIndex);
 
   }
 
@@ -1477,7 +1477,7 @@ namespace small3d {
 
   void Renderer::swapBuffers() {
     vkz_present_next_image(perspectivePipelineIndex);
-    vkz_acquire_next_image(perspectivePipelineIndex);
+    vkz_acquire_next_image(perspectivePipelineIndex, &currentSwapchainImageIndex);
   }
 
 }
