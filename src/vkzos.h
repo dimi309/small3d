@@ -135,7 +135,8 @@ int vkz_create_clear_command_buffers(uint32_t pipeline_index);
 int vkz_destroy_clear_command_buffers(uint32_t pipeline_index);
 
 /**
- * @brief Create the drawing command buffers for a given pipeline
+ * @brief Create the drawing command buffer for a given pipeline corresponding 
+ *        to the next (acquired) image in the swapchain
  * @param pipeline_index       The index of the pipeline
  * @param bind_vertex_buffers  Callback function, allowing for the binding of
  *                             vertex buffers to the command buffers that are
@@ -145,7 +146,7 @@ int vkz_destroy_clear_command_buffers(uint32_t pipeline_index);
  *                             created during the construction of the pipeline.
  * @return 1 if successful, 0 otherwise
  */
-int vkz_create_draw_command_buffers(uint32_t pipeline_index,
+int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
   int (*bind_vertex_buffers)(VkCommandBuffer),
   int (*record_draw_command)(VkCommandBuffer,
     VkPipelineLayout, uint32_t));
@@ -157,6 +158,15 @@ int vkz_create_draw_command_buffers(uint32_t pipeline_index,
  * @return 1 if successful, 0 otherwise
  */
 int vkz_destroy_draw_command_buffers(uint32_t pipeline_index);
+
+/**
+ * @brief Destroy ONLY the drawing command buffer corresponding 
+ *        to the next (acquired) image in the swapchain
+ * @param pipeline_index The index of the pipeline
+ *
+ * @return 1 if successful, 0 otherwise
+ */
+int vkz_destroy_next_draw_command_buffer(uint32_t pipeline_index);
 
 /**
  * @brief Create sync objects for a given pipeline

@@ -868,7 +868,7 @@ VkRenderPass create_render_pass() {
     sizeof(VkAttachmentDescription));
   color_buffer_attachment_description.format = vkz_surface_format.format;
   color_buffer_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
-  color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+  color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE; //VK_ATTACHMENT_LOAD_OP_CLEAR;
   color_buffer_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
   color_buffer_attachment_description.stencilLoadOp =
     VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -887,7 +887,7 @@ VkRenderPass create_render_pass() {
   memset(&depth_attachment_description, 0, sizeof(VkAttachmentDescription));
   depth_attachment_description.format = VK_FORMAT_D32_SFLOAT;
   depth_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
-  depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+  depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE; //VK_ATTACHMENT_LOAD_OP_CLEAR;
   depth_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
   depth_attachment_description.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
   depth_attachment_description.stencilStoreOp =
@@ -1121,9 +1121,9 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   VkViewport viewport;
   memset(&viewport, 0, sizeof(viewport));
   viewport.x = 0.0f;
-  viewport.y = 0.0f; // (float)vkz_swap_extent.height; // flipping the viewport here ...
+  viewport.y = (float)vkz_swap_extent.height; // flipping the viewport here ...
   viewport.width = (float)vkz_swap_extent.width;
-  viewport.height = (float)vkz_swap_extent.height; // ... and here to use OpenGL coordinates
+  viewport.height = -(float)vkz_swap_extent.height; // ... and here to use OpenGL coordinates
 
   if (minDepth != 100.0f && maxDepth != 100.0f) {
     pipeline_systems[*index].minViewportDepth = minDepth;
@@ -1158,7 +1158,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   rasterization_state_ci.polygonMode = VK_POLYGON_MODE_FILL;
   rasterization_state_ci.lineWidth = 1.0f;
   rasterization_state_ci.cullMode = VK_CULL_MODE_BACK_BIT;
-  rasterization_state_ci.frontFace = VK_FRONT_FACE_CLOCKWISE;
+  rasterization_state_ci.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
   rasterization_state_ci.depthBiasEnable = VK_FALSE;
   rasterization_state_ci.depthBiasConstantFactor = 0.0f;
   rasterization_state_ci.depthBiasClamp = 0.0f;
@@ -1290,9 +1290,15 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
     malloc(vkz_swapchain_image_count *
       sizeof(VkCommandBuffer));
 
+  memset(pipeline_systems[*index].draw_command_buffers, 0, 
+    vkz_swapchain_image_count * sizeof(VkCommandBuffer));
+
   pipeline_systems[*index].clear_command_buffers =
     malloc(vkz_swapchain_image_count *
       sizeof(VkCommandBuffer));
+
+  memset(pipeline_systems[*index].clear_command_buffers, 0,
+    vkz_swapchain_image_count * sizeof(VkCommandBuffer));
 
   return 1;
 }
@@ -1345,6 +1351,7 @@ int vkz_create_clear_command_buffers(uint32_t pipeline_index) {
     return 0;
   }
   else {
+    for (uint32_t i = 0; i < vkz_swapchain_image_count; ++i) {
       VkCommandBufferBeginInfo command_buffer_bi;
       memset(&command_buffer_bi, 0, sizeof(VkCommandBufferBeginInfo));
       command_buffer_bi.sType =
@@ -1353,7 +1360,7 @@ int vkz_create_clear_command_buffers(uint32_t pipeline_index) {
         VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
       command_buffer_bi.pInheritanceInfo = NULL;
 
-      if (vkBeginCommandBuffer(pipeline_systems[pipeline_index].clear_command_buffers[next_image_index],
+      if (vkBeginCommandBuffer(pipeline_systems[pipeline_index].clear_command_buffers[i],
         &command_buffer_bi) != VK_SUCCESS) {
         printf("Could not begin recording command buffer!\n\r");
         return 0;
@@ -1368,16 +1375,16 @@ int vkz_create_clear_command_buffers(uint32_t pipeline_index) {
         imageRange.levelCount = 1;
         imageRange.layerCount = 1;
 
-        vkCmdClearColorImage(pipeline_systems[pipeline_index].clear_command_buffers[next_image_index], vkz_swapchain_images[next_image_index],
-          VK_IMAGE_LAYOUT_GENERAL, &clearColour, 1, &imageRange);
+        vkCmdClearColorImage(pipeline_systems[pipeline_index].clear_command_buffers[i], vkz_swapchain_images[i],
+          VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, &clearColour, 1, &imageRange);
 
-        if (vkEndCommandBuffer(pipeline_systems[pipeline_index].clear_command_buffers[next_image_index]) !=
+        if (vkEndCommandBuffer(pipeline_systems[pipeline_index].clear_command_buffers[i]) !=
           VK_SUCCESS) {
           printf("Could not record command buffer!\n\r");
           return 0;
         }
       }
-    
+    }
   }
   return 1;
 }
@@ -1386,16 +1393,14 @@ int vkz_destroy_clear_command_buffers(uint32_t pipeline_index) {
 
   vkDeviceWaitIdle(vkz_logical_device);
 
-  /* vkFreeCommandBuffers(vkz_logical_device, command_pool, vkz_swapchain_image_count,
+  vkFreeCommandBuffers(vkz_logical_device, command_pool, vkz_swapchain_image_count,
      pipeline_systems[pipeline_index].clear_command_buffers);
 
-   
- */
   return 1;
 }
 
 
-int vkz_create_draw_command_buffers(uint32_t pipeline_index,
+int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
   int (*bind_vertex_buffers)(VkCommandBuffer),
   int (*record_draw_command)(VkCommandBuffer,
     VkPipelineLayout,
@@ -1485,7 +1490,15 @@ int vkz_destroy_draw_command_buffers(uint32_t pipeline_index) {
   vkFreeCommandBuffers(vkz_logical_device, command_pool, vkz_swapchain_image_count,
     pipeline_systems[pipeline_index].draw_command_buffers);
 
-  
+  return 1;
+}
+
+int vkz_destroy_next_draw_command_buffer(uint32_t pipeline_index) {
+
+  vkDeviceWaitIdle(vkz_logical_device);
+
+  vkFreeCommandBuffers(vkz_logical_device, command_pool, 1,
+    &pipeline_systems[pipeline_index].draw_command_buffers[next_image_index]);
 
   return 1;
 }
@@ -1547,7 +1560,7 @@ int vkz_destroy_sync_objects() {
   return 1;
 }
 
-int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t *image_index) {
+int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t * image_index) {
 
   vkWaitForFences(vkz_logical_device, 1,
     &gpu_cpu_fence,
@@ -1656,9 +1669,9 @@ int send(uint32_t pipeline_index,
 
 int vkz_clear(uint32_t pipeline_index) {
 
-  /*return send(pipeline_index, NULL,
+  return send(pipeline_index, NULL,
     pipeline_systems[pipeline_index].clear_command_buffers);
-    */
+    
   return 1;
 }
 

@@ -409,109 +409,106 @@ namespace small3d {
 
   void Renderer::updateDescriptorSets() {
 
-    for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
+    VkDescriptorBufferInfo dbiWorld;
+    memset(&dbiWorld, 0, sizeof(VkDescriptorBufferInfo));
+    dbiWorld.buffer = worldDetailsBuffers[currentSwapchainImageIndex];
+    dbiWorld.offset = 0;
+    dbiWorld.range = (16 + 4) * sizeof(float);
 
-      VkDescriptorBufferInfo dbiWorld;
-      memset(&dbiWorld, 0, sizeof(VkDescriptorBufferInfo));
-      dbiWorld.buffer = worldDetailsBuffers[i];
-      dbiWorld.offset = 0;
-      dbiWorld.range = (16 + 4) * sizeof(float);
+    VkDescriptorBufferInfo dbiOrientation;
+    memset(&dbiOrientation, 0, sizeof(VkDescriptorBufferInfo));
+    dbiOrientation.buffer = renderOrientationBuffers[currentSwapchainImageIndex];
+    dbiOrientation.offset = 0;
+    dbiOrientation.range = (3 * 16 + 4) * sizeof(float);
 
-      VkDescriptorBufferInfo dbiOrientation;
-      memset(&dbiOrientation, 0, sizeof(VkDescriptorBufferInfo));
-      dbiOrientation.buffer = renderOrientationBuffers[i];
-      dbiOrientation.offset = 0;
-      dbiOrientation.range = (3 * 16 + 4) * sizeof(float);
+    VkDescriptorBufferInfo dbiCamera;
+    memset(&dbiCamera, 0, sizeof(VkDescriptorBufferInfo));
+    dbiCamera.buffer = cameraOrientationBuffers[currentSwapchainImageIndex];
+    dbiCamera.offset = 0;
+    dbiCamera.range = (3 * 16 + 3) * sizeof(float);
 
-      VkDescriptorBufferInfo dbiCamera;
-      memset(&dbiCamera, 0, sizeof(VkDescriptorBufferInfo));
-      dbiCamera.buffer = cameraOrientationBuffers[i];
-      dbiCamera.offset = 0;
-      dbiCamera.range = (3 * 16 + 3) * sizeof(float);
+    VkDescriptorImageInfo diiTexture;
+    memset(&diiTexture, 0, sizeof(VkDescriptorImageInfo));
+    diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    diiTexture.imageView = boundTextureView;
+    diiTexture.sampler = textureSampler;
 
-      VkDescriptorImageInfo diiTexture;
-      memset(&diiTexture, 0, sizeof(VkDescriptorImageInfo));
-      diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-      diiTexture.imageView = boundTextureView;
-      diiTexture.sampler = textureSampler;
+    VkDescriptorBufferInfo dbiColour;
+    memset(&dbiColour, 0, sizeof(VkDescriptorBufferInfo));
+    dbiColour.buffer = colourBuffers[currentSwapchainImageIndex];
+    dbiColour.offset = 0;
+    dbiColour.range = 4 * sizeof(float);
 
-      VkDescriptorBufferInfo dbiColour;
-      memset(&dbiColour, 0, sizeof(VkDescriptorBufferInfo));
-      dbiColour.buffer = colourBuffers[i];
-      dbiColour.offset = 0;
-      dbiColour.range = 4 * sizeof(float);
+    VkDescriptorBufferInfo dbiLight;
+    memset(&dbiLight, 0, sizeof(VkDescriptorBufferInfo));
+    dbiLight.buffer = lightIntensityBuffers[currentSwapchainImageIndex];
+    dbiLight.offset = 0;
+    dbiLight.range = sizeof(float);
 
-      VkDescriptorBufferInfo dbiLight;
-      memset(&dbiLight, 0, sizeof(VkDescriptorBufferInfo));
-      dbiLight.buffer = lightIntensityBuffers[i];
-      dbiLight.offset = 0;
-      dbiLight.range = sizeof(float);
+    std::vector<VkWriteDescriptorSet> wds(6);
+    memset(&wds[0], 0, 6 * sizeof(VkWriteDescriptorSet));
 
-      std::vector<VkWriteDescriptorSet> wds(6);
-      memset(&wds[0], 0, 6 * sizeof(VkWriteDescriptorSet));
+    wds[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    wds[0].dstSet = descriptorSets[currentSwapchainImageIndex];
+    wds[0].dstBinding = 0;
+    wds[0].dstArrayElement = 0;
+    wds[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    wds[0].descriptorCount = 1;
+    wds[0].pBufferInfo = &dbiWorld;
+    wds[0].pImageInfo = NULL;
+    wds[0].pTexelBufferView = NULL;
 
-      wds[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      wds[0].dstSet = descriptorSets[i];
-      wds[0].dstBinding = 0;
-      wds[0].dstArrayElement = 0;
-      wds[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-      wds[0].descriptorCount = 1;
-      wds[0].pBufferInfo = &dbiWorld;
-      wds[0].pImageInfo = NULL;
-      wds[0].pTexelBufferView = NULL;
+    wds[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    wds[1].dstSet = descriptorSets[currentSwapchainImageIndex];
+    wds[1].dstBinding = 1;
+    wds[1].dstArrayElement = 0;
+    wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    wds[1].descriptorCount = 1;
+    wds[1].pBufferInfo = &dbiOrientation;
+    wds[1].pImageInfo = NULL;
+    wds[1].pTexelBufferView = NULL;
 
-      wds[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      wds[1].dstSet = descriptorSets[i];
-      wds[1].dstBinding = 1;
-      wds[1].dstArrayElement = 0;
-      wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-      wds[1].descriptorCount = 1;
-      wds[1].pBufferInfo = &dbiOrientation;
-      wds[1].pImageInfo = NULL;
-      wds[1].pTexelBufferView = NULL;
+    wds[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    wds[2].dstSet = descriptorSets[currentSwapchainImageIndex];
+    wds[2].dstBinding = 2;
+    wds[2].dstArrayElement = 0;
+    wds[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    wds[2].descriptorCount = 1;
+    wds[2].pBufferInfo = &dbiCamera;
+    wds[2].pImageInfo = NULL;
+    wds[2].pTexelBufferView = NULL;
 
-      wds[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      wds[2].dstSet = descriptorSets[i];
-      wds[2].dstBinding = 2;
-      wds[2].dstArrayElement = 0;
-      wds[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-      wds[2].descriptorCount = 1;
-      wds[2].pBufferInfo = &dbiCamera;
-      wds[2].pImageInfo = NULL;
-      wds[2].pTexelBufferView = NULL;
+    wds[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    wds[3].dstSet = descriptorSets[currentSwapchainImageIndex];
+    wds[3].dstBinding = 3;
+    wds[3].dstArrayElement = 0;
+    wds[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    wds[3].descriptorCount = 1;
+    wds[3].pBufferInfo = NULL;
+    wds[3].pImageInfo = &diiTexture;
+    wds[3].pTexelBufferView = NULL;
 
-      wds[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      wds[3].dstSet = descriptorSets[i];
-      wds[3].dstBinding = 3;
-      wds[3].dstArrayElement = 0;
-      wds[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-      wds[3].descriptorCount = 1;
-      wds[3].pBufferInfo = NULL;
-      wds[3].pImageInfo = &diiTexture;
-      wds[3].pTexelBufferView = NULL;
+    wds[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    wds[4].dstSet = descriptorSets[currentSwapchainImageIndex];
+    wds[4].dstBinding = 4;
+    wds[4].dstArrayElement = 0;
+    wds[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    wds[4].descriptorCount = 1;
+    wds[4].pBufferInfo = &dbiColour;
+    wds[4].pImageInfo = NULL;
+    wds[4].pTexelBufferView = NULL;
 
-      wds[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      wds[4].dstSet = descriptorSets[i];
-      wds[4].dstBinding = 4;
-      wds[4].dstArrayElement = 0;
-      wds[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-      wds[4].descriptorCount = 1;
-      wds[4].pBufferInfo = &dbiColour;
-      wds[4].pImageInfo = NULL;
-      wds[4].pTexelBufferView = NULL;
+    wds[5].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    wds[5].dstSet = descriptorSets[currentSwapchainImageIndex];
+    wds[5].dstBinding = 5;
+    wds[5].dstArrayElement = 0;
+    wds[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    wds[5].descriptorCount = 1;
+    wds[5].pBufferInfo = &dbiLight;
+    wds[5].pImageInfo = NULL;
+    wds[5].pTexelBufferView = NULL;
 
-      wds[5].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      wds[5].dstSet = descriptorSets[i];
-      wds[5].dstBinding = 5;
-      wds[5].dstArrayElement = 0;
-      wds[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-      wds[5].descriptorCount = 1;
-      wds[5].pBufferInfo = &dbiLight;
-      wds[5].pImageInfo = NULL;
-      wds[5].pTexelBufferView = NULL;
-
-      vkUpdateDescriptorSets(vkz_logical_device, 6, &wds[0], 0, NULL);
-    }
+    vkUpdateDescriptorSets(vkz_logical_device, 6, &wds[0], 0, NULL);
   }
 
   void Renderer::allocateOrthoDescriptorSets() {
@@ -572,45 +569,44 @@ namespace small3d {
   }
 
   void Renderer::updateOrthoDescriptorSets() {
-    for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
 
-      VkDescriptorImageInfo diiTexture;
-      memset(&diiTexture, 0, sizeof(VkDescriptorImageInfo));
-      diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-      diiTexture.imageView = boundTextureView;
-      diiTexture.sampler = textureSampler;
+    VkDescriptorImageInfo diiTexture;
+    memset(&diiTexture, 0, sizeof(VkDescriptorImageInfo));
+    diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    diiTexture.imageView = boundTextureView;
+    diiTexture.sampler = textureSampler;
 
-      VkDescriptorBufferInfo dbiColour;
-      memset(&dbiColour, 0, sizeof(VkDescriptorBufferInfo));
-      dbiColour.buffer = colourBuffers[i];
-      dbiColour.offset = 0;
-      dbiColour.range = 4 * sizeof(float);
+    VkDescriptorBufferInfo dbiColour;
+    memset(&dbiColour, 0, sizeof(VkDescriptorBufferInfo));
+    dbiColour.buffer = colourBuffers[currentSwapchainImageIndex];
+    dbiColour.offset = 0;
+    dbiColour.range = 4 * sizeof(float);
 
-      std::vector<VkWriteDescriptorSet> wds(2);
-      memset(&wds[0], 0, 2 * sizeof(VkWriteDescriptorSet));
+    std::vector<VkWriteDescriptorSet> wds(2);
+    memset(&wds[0], 0, 2 * sizeof(VkWriteDescriptorSet));
 
-      wds[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      wds[0].dstSet = orthoDescriptorSets[i];
-      wds[0].dstBinding = 0;
-      wds[0].dstArrayElement = 0;
-      wds[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-      wds[0].descriptorCount = 1;
-      wds[0].pBufferInfo = NULL;
-      wds[0].pImageInfo = &diiTexture;
-      wds[0].pTexelBufferView = NULL;
+    wds[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    wds[0].dstSet = orthoDescriptorSets[currentSwapchainImageIndex];
+    wds[0].dstBinding = 0;
+    wds[0].dstArrayElement = 0;
+    wds[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    wds[0].descriptorCount = 1;
+    wds[0].pBufferInfo = NULL;
+    wds[0].pImageInfo = &diiTexture;
+    wds[0].pTexelBufferView = NULL;
 
-      wds[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      wds[1].dstSet = orthoDescriptorSets[i];
-      wds[1].dstBinding = 1;
-      wds[1].dstArrayElement = 0;
-      wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-      wds[1].descriptorCount = 1;
-      wds[1].pBufferInfo = &dbiColour;
-      wds[1].pImageInfo = NULL;
-      wds[1].pTexelBufferView = NULL;
+    wds[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    wds[1].dstSet = orthoDescriptorSets[currentSwapchainImageIndex];
+    wds[1].dstBinding = 1;
+    wds[1].dstArrayElement = 0;
+    wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    wds[1].descriptorCount = 1;
+    wds[1].pBufferInfo = &dbiColour;
+    wds[1].pImageInfo = NULL;
+    wds[1].pTexelBufferView = NULL;
 
-      vkUpdateDescriptorSets(vkz_logical_device, 2, &wds[0], 0, NULL);
-    }
+    vkUpdateDescriptorSets(vkz_logical_device, 2, &wds[0], 0, NULL);
+
   }
 
   void Renderer::setColourBuffer(glm::vec4 colour) {
@@ -805,7 +801,7 @@ namespace small3d {
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
       setInputStateCallback, setPipelineLayoutCallback, 0.0f, 1.0f, &perspectivePipelineIndex);
 
-    //vkz_create_clear_command_buffers(perspectivePipelineIndex);
+    vkz_create_clear_command_buffers(perspectivePipelineIndex);
 
     Image blankImage("");
     blankImage.convertToBlank();
@@ -984,7 +980,7 @@ namespace small3d {
   }
 
   Renderer::~Renderer() {
-    
+
     LOGDEBUG("Renderer destructor running");
     for (auto it = textures.begin();
       it != textures.end(); ++it) {
@@ -1001,17 +997,17 @@ namespace small3d {
 
     FT_Done_FreeType(library);
 
-
-
     vkz_destroy_sync_objects();
 
     if (orthographicPipelineIndex != 100) {
       vkz_destroy_clear_command_buffers(orthographicPipelineIndex);
+      //vkz_destroy_draw_command_buffers(orthographicPipelineIndex);
       vkz_destroy_pipeline(orthographicPipelineIndex);
     }
 
     if (perspectivePipelineIndex != 100) {
       vkz_destroy_clear_command_buffers(perspectivePipelineIndex);
+      //vkz_destroy_draw_command_buffers(perspectivePipelineIndex);
       vkz_destroy_pipeline(perspectivePipelineIndex);
     }
 
@@ -1212,6 +1208,7 @@ namespace small3d {
 
     render(rect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
       colour, textureName, perspective);
+    vkDeviceWaitIdle(vkz_logical_device);
     clearBuffers(rect);
   }
 
@@ -1395,21 +1392,19 @@ namespace small3d {
     positionCamera();
 
     if (perspective) {
+      vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
       updateDescriptorSets();
-
-      vkz_create_draw_command_buffers(perspectivePipelineIndex, &bindBuffers,
+      vkz_create_next_draw_command_buffer(perspectivePipelineIndex, &bindBuffers,
         &recordDrawCommand);
       vkz_draw(perspectivePipelineIndex, NULL);
-      vkz_destroy_draw_command_buffers(perspectivePipelineIndex);
-
     }
     else {
+      vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
       updateOrthoDescriptorSets();
-
-      vkz_create_draw_command_buffers(orthographicPipelineIndex, &bindOrthoBuffers,
+      vkz_create_next_draw_command_buffer(orthographicPipelineIndex, &bindOrthoBuffers,
         &recordOrthoDrawCommand);
       vkz_draw(orthographicPipelineIndex, NULL);
-      vkz_destroy_draw_command_buffers(orthographicPipelineIndex);
+
     }
 
   }
@@ -1440,12 +1435,19 @@ namespace small3d {
 
     std::string textureName = intToStr(fontSize) + "text_" + text;
 
-    this->generateTexture(textureName, text, colour, fontSize, fontPath);
+    vulkanImage handle;
+    auto nameTexturePair = textures.find(textureName);
+
+    if (nameTexturePair != textures.end()) {
+      handle = nameTexturePair->second;
+    }
+    else {
+      generateTexture(textureName, text, colour, fontSize, fontPath);
+    }
 
     renderRectangle(textureName, glm::vec3(topLeft.x, topLeft.y, -0.5f),
       glm::vec3(bottomRight.x, bottomRight.y, -0.5f));
-
-    deleteTexture(textureName);
+    //deleteTexture(textureName);
   }
 
   void Renderer::clearBuffers(Model & model) const {
