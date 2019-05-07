@@ -155,9 +155,10 @@ int RendererTest() {
   glfwShowWindow(renderer->getWindow());
 
   double startSeconds = glfwGetTime();
-
-  while(glfwGetTime() - startSeconds < 3.0) {
+  
+  while(glfwGetTime() - startSeconds < 103.0) {
     glfwPollEvents();
+    
     //renderer->clearScreen();
     /*renderer->renderRectangle(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
 			      glm::vec3(-1.0f, 0.0f,  1.0f),

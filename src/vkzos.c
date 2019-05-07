@@ -1558,7 +1558,7 @@ int vkz_acquire_next_image(uint32_t pipeline_index) {
   VkResult r =
     vkAcquireNextImageKHR(vkz_logical_device, vkz_swapchain,
       UINT64_MAX,
-      image_available_semaphore,
+      NULL, //image_available_semaphore,
       gpu_cpu_fence, &next_image_index);
 
   if (r == VK_ERROR_OUT_OF_DATE_KHR) {
@@ -1581,9 +1581,10 @@ int vkz_present_next_image(uint32_t pipeline_index) {
   VkPresentInfoKHR pinf;
   memset(&pinf, 0, sizeof(VkPresentInfoKHR));
   pinf.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-  pinf.waitSemaphoreCount = 1;
-  VkSemaphore wait_semaphores[] = { render_complete_semaphore };
+  
+  /*VkSemaphore wait_semaphores[] = { render_complete_semaphore };
   pinf.pWaitSemaphores = wait_semaphores;
+  pinf.waitSemaphoreCount = 1;*/
 
   VkSwapchainKHR swap_chains[] = { vkz_swapchain };
   pinf.swapchainCount = 1;
@@ -1621,20 +1622,21 @@ int send(uint32_t pipeline_index,
     update_buffers_function(next_image_index);
   }
 
-  VkSemaphore wait_semaphores[] = { image_available_semaphore };
-  VkPipelineStageFlags wait_stages[] = { 
-    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-
   VkSubmitInfo si;
   memset(&si, 0, sizeof(VkSubmitInfo));
   si.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+  
+  /*VkSemaphore wait_semaphores[] = { image_available_semaphore };
+  VkPipelineStageFlags wait_stages[] = {
+    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+  si.pWaitDstStageMask = wait_stages;
   si.pWaitSemaphores = wait_semaphores;
   si.waitSemaphoreCount = 1;
-  si.pWaitDstStageMask = wait_stages;
+  */
 
-  VkSemaphore signal_semaphores[] = { render_complete_semaphore };
+  /*VkSemaphore signal_semaphores[] = { render_complete_semaphore };
   si.pSignalSemaphores = signal_semaphores;
-  si.signalSemaphoreCount = 1;
+  si.signalSemaphoreCount = 1;*/
 
   si.commandBufferCount = 1;
   si.pCommandBuffers = &command_buffers[next_image_index];
