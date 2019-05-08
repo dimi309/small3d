@@ -868,12 +868,12 @@ VkRenderPass create_render_pass() {
     sizeof(VkAttachmentDescription));
   color_buffer_attachment_description.format = vkz_surface_format.format;
   color_buffer_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
-  color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE; //VK_ATTACHMENT_LOAD_OP_CLEAR;
-  color_buffer_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+  color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD; //VK_ATTACHMENT_LOAD_OP_CLEAR;
+  color_buffer_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
   color_buffer_attachment_description.stencilLoadOp =
-    VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    VK_ATTACHMENT_LOAD_OP_LOAD;
   color_buffer_attachment_description.stencilStoreOp =
-    VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    VK_ATTACHMENT_STORE_OP_STORE;
   color_buffer_attachment_description.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
   color_buffer_attachment_description.finalLayout =
     VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
@@ -887,11 +887,11 @@ VkRenderPass create_render_pass() {
   memset(&depth_attachment_description, 0, sizeof(VkAttachmentDescription));
   depth_attachment_description.format = VK_FORMAT_D32_SFLOAT;
   depth_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
-  depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE; //VK_ATTACHMENT_LOAD_OP_CLEAR;
-  depth_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-  depth_attachment_description.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+  depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD; //VK_ATTACHMENT_LOAD_OP_CLEAR;
+  depth_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+  depth_attachment_description.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
   depth_attachment_description.stencilStoreOp =
-    VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    VK_ATTACHMENT_STORE_OP_STORE;
   depth_attachment_description.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
   depth_attachment_description.finalLayout =
     VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
@@ -1446,7 +1446,7 @@ int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
       render_pass_bi.renderArea.offset.y = 0;
       render_pass_bi.renderArea.extent = vkz_swap_extent;
 
-      VkClearValue clear_values[2];
+      /*VkClearValue clear_values[2];
       memset(clear_values, 0, 2 * sizeof(VkClearValue));
       clear_values[0].color.float32[0] = 0.0f;
       clear_values[0].color.float32[1] = 0.0f;
@@ -1454,9 +1454,9 @@ int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
       clear_values[0].color.float32[3] = 1.0f;
       clear_values[1].depthStencil.depth = 1.0f;
       clear_values[1].depthStencil.stencil = 0;
-
-      render_pass_bi.clearValueCount = 2;
-      render_pass_bi.pClearValues = clear_values;
+*/
+      render_pass_bi.clearValueCount = 0;
+      //render_pass_bi.pClearValues = clear_values;
 
       vkCmdBeginRenderPass(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index],
         &render_pass_bi, VK_SUBPASS_CONTENTS_INLINE);
@@ -1679,6 +1679,9 @@ int vkz_clear(uint32_t pipeline_index) {
 
 int vkz_draw(uint32_t pipeline_index,
   int (*update_buffers_function)(uint32_t)) {
+  
+  vkDeviceWaitIdle(vkz_logical_device);
+
   return send(pipeline_index, update_buffers_function,
     pipeline_systems[pipeline_index].draw_command_buffers);
 

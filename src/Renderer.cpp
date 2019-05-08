@@ -1237,8 +1237,22 @@ namespace small3d {
     const std::string textureName,
     const bool perspective) {
 
+#if defined(DEBUG) || defined(_DEBUG) || !defined (NDEBUG)
+    if (model.indexData.size() == 0 ||
+      model.indexDataByteSize == 0 ||
+      model.vertexData.size() == 0 ||
+      model.vertexDataByteSize == 0 ||
+      model.normalsData.size() == 0 ||
+      model.normalsDataByteSize == 0 ||
+      model.textureCoordsData.size() == 0 ||
+      model.textureCoordsDataByteSize == 0) {
+      throw std::runtime_error("Model to be rendered has some empty values!");
+    }
+#endif
 
     if (!model.alreadyInGPU) {
+
+      
 
       // Send vertex data to GPU
 
