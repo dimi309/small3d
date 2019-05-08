@@ -760,6 +760,10 @@ namespace small3d {
 
     vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
 
+    vkz_transition_image_layout(textureHandle.image, VK_FORMAT_R32G32B32A32_SFLOAT,
+      VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
     if (!vkz_create_image_view(&textureHandle.imageView, textureHandle.image,
       VK_FORMAT_R32G32B32A32_SFLOAT,
       VK_IMAGE_ASPECT_COLOR_BIT)) {
@@ -812,9 +816,6 @@ namespace small3d {
     for (int i = 0; i < boundTextureViews.size(); ++i) {
       boundTextureViews[i] = getTextureHandle("blank").imageView;
     }
-    //bindTexture("blank");
-
-   
 
     std::string orthoVertexShaderPath = shadersPath +
       "simpleVertexShader.spv";
@@ -1008,7 +1009,7 @@ namespace small3d {
     vkz_destroy_sync_objects();
 
     if (orthographicPipelineIndex != 100) {
-      vkz_destroy_clear_command_buffers(orthographicPipelineIndex);
+      //vkz_destroy_clear_command_buffers(orthographicPipelineIndex);
       //vkz_destroy_draw_command_buffers(orthographicPipelineIndex);
       vkz_destroy_pipeline(orthographicPipelineIndex);
     }

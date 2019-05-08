@@ -754,10 +754,10 @@ int create_render_pass() {
     sizeof(VkAttachmentDescription));
   color_buffer_attachment_description.format = vkz_surface_format.format;
   color_buffer_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
-  color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD; //VK_ATTACHMENT_LOAD_OP_CLEAR;
+  color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE; //VK_ATTACHMENT_LOAD_OP_CLEAR;
   color_buffer_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
   color_buffer_attachment_description.stencilLoadOp =
-    VK_ATTACHMENT_LOAD_OP_LOAD;
+    VK_ATTACHMENT_LOAD_OP_DONT_CARE;
   color_buffer_attachment_description.stencilStoreOp =
     VK_ATTACHMENT_STORE_OP_STORE;
   color_buffer_attachment_description.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
@@ -773,9 +773,10 @@ int create_render_pass() {
   memset(&depth_attachment_description, 0, sizeof(VkAttachmentDescription));
   depth_attachment_description.format = VK_FORMAT_D32_SFLOAT;
   depth_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
-  depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD; //VK_ATTACHMENT_LOAD_OP_CLEAR;
+  depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE; //VK_ATTACHMENT_LOAD_OP_CLEAR;
   depth_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-  depth_attachment_description.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+  depth_attachment_description.stencilLoadOp = 
+    VK_ATTACHMENT_LOAD_OP_DONT_CARE;
   depth_attachment_description.stencilStoreOp =
     VK_ATTACHMENT_STORE_OP_STORE;
   depth_attachment_description.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
@@ -1131,9 +1132,9 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   VkViewport viewport;
   memset(&viewport, 0, sizeof(viewport));
   viewport.x = 0.0f;
-  viewport.y = (float)vkz_swap_extent.height; // flipping the viewport here ...
+  viewport.y = 0.0f; (float)vkz_swap_extent.height; // flipping the viewport here ...
   viewport.width = (float)vkz_swap_extent.width;
-  viewport.height = -(float)vkz_swap_extent.height; // ... and here to use OpenGL coordinates
+  viewport.height = (float)vkz_swap_extent.height; // ... and here to use OpenGL coordinates
 
   if (minDepth != 100.0f && maxDepth != 100.0f) {
     pipeline_systems[*index].minViewportDepth = minDepth;
@@ -1168,7 +1169,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   rasterization_state_ci.polygonMode = VK_POLYGON_MODE_FILL;
   rasterization_state_ci.lineWidth = 1.0f;
   rasterization_state_ci.cullMode = VK_CULL_MODE_BACK_BIT;
-  rasterization_state_ci.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+  rasterization_state_ci.frontFace = VK_FRONT_FACE_CLOCKWISE;
   rasterization_state_ci.depthBiasEnable = VK_FALSE;
   rasterization_state_ci.depthBiasConstantFactor = 0.0f;
   rasterization_state_ci.depthBiasClamp = 0.0f;
@@ -1368,6 +1369,10 @@ int vkz_create_clear_command_buffers(uint32_t pipeline_index) {
         imageRange.levelCount = 1;
         imageRange.layerCount = 1;
 
+        /*validation layer:  [ VUID-vkCmdClearColorImage-image-00002 ] Object: 0x5 (Type = 10) | 
+        vkCmdClearColorImage called with image created without VK_IMAGE_USAGE_TRANSFER_DST_BIT.. 
+        The Vulkan spec states: image must have been created with VK_IMAGE_USAGE_TRANSFER_DST_BIT
+        usage flag (https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VUID-vkCmdClearColorImage-image-00002)*/
         vkCmdClearColorImage(pipeline_systems[pipeline_index].clear_command_buffers[i], vkz_swapchain_images[i],
           VK_IMAGE_LAYOUT_GENERAL, &clearColour, 1, &imageRange);
 
