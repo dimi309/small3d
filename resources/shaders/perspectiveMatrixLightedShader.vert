@@ -8,6 +8,7 @@ layout(location = 2) in vec2 uvCoords;
 layout(binding = 0) uniform uboWorld {
   mat4 perspectiveMatrix;
   vec3 lightDirection;
+  float padding;
 } world;
 
 layout(binding = 1) uniform uboOrientation {
@@ -15,6 +16,7 @@ layout(binding = 1) uniform uboOrientation {
   mat4 yRotationMatrix;
   mat4 zRotationMatrix;
   vec3 offset;
+  float padding;
 } ori;
 
 layout(binding = 2) uniform uboCamera {
@@ -22,6 +24,7 @@ layout(binding = 2) uniform uboCamera {
   mat4 yRotationMatrix;
   mat4 zRotationMatrix;
   vec3 cposition;
+  float padding;
 } cam;
 
 layout(location = 0) smooth out float cosAngIncidence;

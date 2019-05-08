@@ -54,6 +54,7 @@ namespace small3d {
     glm::mat4x4 yRotationMatrix;
     glm::mat4x4 zRotationMatrix;
     glm::vec3 position;
+    float padding;
   };
 
   struct uboColour {
@@ -421,7 +422,7 @@ namespace small3d {
     memset(&dbiCamera, 0, sizeof(VkDescriptorBufferInfo));
     dbiCamera.buffer = cameraOrientationBuffers[currentSwapchainImageIndex];
     dbiCamera.offset = 0;
-    dbiCamera.range = (3 * 16 + 3) * sizeof(float);
+    dbiCamera.range = (3 * 16 + 4) * sizeof(float);
 
     VkDescriptorImageInfo diiTexture;
     memset(&diiTexture, 0, sizeof(VkDescriptorImageInfo));
@@ -683,7 +684,7 @@ namespace small3d {
     camera.zRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f), cameraRotation.z,
       glm::vec3(0.0f, 0.0f, -1.0f)));
 
-    uint32_t cameraOrientationSize = (3 * 16 + 3) * sizeof(float);
+    uint32_t cameraOrientationSize = (3 * 16 + 4) * sizeof(float);
 
     if (cameraOrientationBuffers.size() == 0) {
       cameraOrientationBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
@@ -1247,8 +1248,6 @@ namespace small3d {
 #endif
 
     if (!model.alreadyInGPU) {
-
-      
 
       // Send vertex data to GPU
 
