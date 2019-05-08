@@ -430,8 +430,8 @@ namespace small3d {
     VkDescriptorImageInfo diiTexture;
     memset(&diiTexture, 0, sizeof(VkDescriptorImageInfo));
     diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    diiTexture.imageView = boundTextureView;
-    diiTexture.sampler = textureSampler;
+    diiTexture.imageView = boundTextureViews[currentSwapchainImageIndex];
+    diiTexture.sampler = textureSamplers[currentSwapchainImageIndex];
 
     VkDescriptorBufferInfo dbiColour;
     memset(&dbiColour, 0, sizeof(VkDescriptorBufferInfo));
@@ -573,9 +573,9 @@ namespace small3d {
     VkDescriptorImageInfo diiTexture;
     memset(&diiTexture, 0, sizeof(VkDescriptorImageInfo));
     diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    diiTexture.imageView = boundTextureView;
-    diiTexture.sampler = textureSampler;
-
+    diiTexture.imageView = boundTextureViews[currentSwapchainImageIndex];
+    diiTexture.sampler = textureSamplers[currentSwapchainImageIndex];
+    
     VkDescriptorBufferInfo dbiColour;
     memset(&dbiColour, 0, sizeof(VkDescriptorBufferInfo));
     dbiColour.buffer = colourBuffers[currentSwapchainImageIndex];
@@ -775,7 +775,7 @@ namespace small3d {
   }
 
   void Renderer::bindTexture(std::string name) {
-    boundTextureView = getTextureHandle(name).imageView;
+    boundTextureViews[currentSwapchainImageIndex] = getTextureHandle(name).imageView;
 
   }
 
@@ -794,8 +794,12 @@ namespace small3d {
     std::string fragmentShaderPath = shadersPath +
       "textureShader.spv";
 
-    if (!vkz_create_sampler(&textureSampler)) {
-      throw std::runtime_error("Failed to create the sampler!");
+    textureSamplers.resize(vkz_swapchain_image_count);
+
+    for (int i = 0; i < textureSamplers.size(); ++i) {
+      if (!vkz_create_sampler(&textureSamplers[i])) {
+        throw std::runtime_error("Failed to create the sampler!");
+      }
     }
 
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
@@ -803,10 +807,17 @@ namespace small3d {
 
     vkz_create_clear_command_buffers(perspectivePipelineIndex);
 
+    boundTextureViews.resize(vkz_swapchain_image_count);
+
     Image blankImage("");
     blankImage.convertToBlank();
     generateTexture("blank", blankImage);
-    bindTexture("blank");
+    for (int i = 0; i < boundTextureViews.size(); ++i) {
+      boundTextureViews[i] = getTextureHandle("blank").imageView;
+    }
+    //bindTexture("blank");
+
+   
 
     std::string orthoVertexShaderPath = shadersPath +
       "simpleVertexShader.spv";
@@ -1033,8 +1044,9 @@ namespace small3d {
       vkz_destroy_buffer(colourBuffers[i], colourBufferMemories[i]);
     }
 
-    vkDestroySampler(vkz_logical_device, textureSampler, NULL);
-
+    for (int i = 0; i < textureSamplers.size(); ++i) {
+      vkDestroySampler(vkz_logical_device, textureSamplers[i], NULL);
+    }
     vkz_destroy_depth_image();
     vkz_destroy_swapchain();
     vkz_shutdown();
@@ -1370,6 +1382,8 @@ namespace small3d {
       model.alreadyInGPU = true;
     }
 
+    nextModelToDraw = model;
+
     if (textureName != "") {
 
       // "Disable" colour since there is a texture
@@ -1382,10 +1396,7 @@ namespace small3d {
     else {
       // If there is no texture, use the given colour
       setColourBuffer(colour);
-
     }
-
-    nextModelToDraw = model;
 
     setPerspectiveAndLight();
     positionNextObject(offset, rotation);
@@ -1404,7 +1415,6 @@ namespace small3d {
       vkz_create_next_draw_command_buffer(orthographicPipelineIndex, &bindOrthoBuffers,
         &recordOrthoDrawCommand);
       vkz_draw(orthographicPipelineIndex, NULL);
-
     }
 
   }
@@ -1468,6 +1478,7 @@ namespace small3d {
   }
 
   void Renderer::clearScreen() const {
+    
     vkz_clear(perspectivePipelineIndex);
 
   }
@@ -1480,6 +1491,7 @@ namespace small3d {
   void Renderer::swapBuffers() {
     vkz_present_next_image(perspectivePipelineIndex);
     vkz_acquire_next_image(perspectivePipelineIndex, &currentSwapchainImageIndex);
+
   }
 
 }

@@ -68,9 +68,9 @@ namespace small3d
     std::vector<VkBuffer> colourBuffers;
     std::vector<VkDeviceMemory> colourBufferMemories;
 
-    VkSampler textureSampler;
+    std::vector<VkSampler> textureSamplers;
     
-    VkImageView boundTextureView;
+    std::vector<VkImageView> boundTextureViews;
 
     float frustumScale = 0.0f;
     float zNear = 0.0f;

@@ -1329,8 +1329,8 @@ int vkz_destroy_pipeline(uint32_t index) {
   vkDestroyShaderModule(vkz_logical_device,
     pipeline_systems[index].fragment_shader_module, NULL);
 
-  free((VkCommandBuffer*)pipeline_systems[index].clear_command_buffers);
-  free((VkCommandBuffer*)pipeline_systems[index].draw_command_buffers);
+  free(pipeline_systems[index].clear_command_buffers);
+  free(pipeline_systems[index].draw_command_buffers);
   return 1;
 }
 
@@ -1376,7 +1376,7 @@ int vkz_create_clear_command_buffers(uint32_t pipeline_index) {
         imageRange.layerCount = 1;
 
         vkCmdClearColorImage(pipeline_systems[pipeline_index].clear_command_buffers[i], vkz_swapchain_images[i],
-          VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, &clearColour, 1, &imageRange);
+          VK_IMAGE_LAYOUT_GENERAL, &clearColour, 1, &imageRange);
 
         if (vkEndCommandBuffer(pipeline_systems[pipeline_index].clear_command_buffers[i]) !=
           VK_SUCCESS) {
@@ -1412,12 +1412,12 @@ int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
     VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
   command_buffer_ai.commandPool = command_pool;
   command_buffer_ai.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-  command_buffer_ai.commandBufferCount = vkz_swapchain_image_count;
+  command_buffer_ai.commandBufferCount = 1;
 
   if (vkAllocateCommandBuffers(vkz_logical_device, &command_buffer_ai,
-    pipeline_systems[pipeline_index].draw_command_buffers) !=
+    &pipeline_systems[pipeline_index].draw_command_buffers[next_image_index]) !=
     VK_SUCCESS) {
-    printf("Could not allocate command buffers.\n\r");
+    printf("Could not allocate command buffer.\n\r");
     return 0;
   }
   else {
@@ -1468,7 +1468,8 @@ int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
       }
 
       if (record_draw_command) {
-        record_draw_command(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index], pipeline_systems[pipeline_index].pipeline_layout, next_image_index);
+        record_draw_command(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index], 
+          pipeline_systems[pipeline_index].pipeline_layout, next_image_index);
       }
 
       vkCmdEndRenderPass(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index]);
@@ -1668,7 +1669,8 @@ int send(uint32_t pipeline_index,
 }
 
 int vkz_clear(uint32_t pipeline_index) {
-
+  vkz_transition_image_layout(vkz_swapchain_images[next_image_index],
+    VK_FORMAT_R32G32B32A32_SFLOAT, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_LAYOUT_GENERAL);
   return send(pipeline_index, NULL,
     pipeline_systems[pipeline_index].clear_command_buffers);
     
@@ -1912,6 +1914,13 @@ int vkz_transition_image_layout(VkImage image, VkFormat format,
       VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
     source_stage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
     destination_stage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+  }
+  else if (old_layout == VK_IMAGE_LAYOUT_PRESENT_SRC_KHR &&
+    new_layout == VK_IMAGE_LAYOUT_GENERAL)
+  {
+    source_stage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+    destination_stage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+    
   }
   else {
     printf("Unsupported layout transition!\n\r");
