@@ -79,6 +79,9 @@ static VkSwapchainKHR vkz_swapchain;
 static VkImage* vkz_swapchain_images = NULL;
 static VkImageView* vkz_swapchain_image_views = NULL;
 
+static VkFramebuffer* framebuffers;
+static VkRenderPass render_pass;
+
 static VkCommandPool command_pool;
 
 static VkImage depth_image;
@@ -95,8 +98,6 @@ typedef struct {
   VkShaderModule vertex_shader_module;
   VkShaderModule fragment_shader_module;
   VkPipelineLayout pipeline_layout;
-  VkRenderPass render_pass;
-  VkFramebuffer* framebuffers;
   VkPipeline pipeline;
   VkCommandBuffer* clear_command_buffers;
   VkCommandBuffer* draw_command_buffers;
@@ -747,122 +748,7 @@ int create_swapchain_image_views() {
   return 1;
 }
 
-int vkz_create_swapchain(const uint32_t width, const uint32_t height,
-  int with_image_sampler) {
-  select_swap_extent(width, height);
-
-  if (with_image_sampler != -1) {
-    intrn_with_image_sampler = with_image_sampler;
-  }
-
-  uint32_t ic = vkz_swapchain_support_details.capabilities.minImageCount;
-  if (vkz_swapchain_support_details.capabilities.maxImageCount >= 2) {
-    ic = 2;
-  }
-
-  LOGDEBUG1("Swapchain image count: %d\n\r", ic);
-
-  VkSwapchainCreateInfoKHR ci;
-  memset(&ci, 0, sizeof(VkSwapchainCreateInfoKHR));
-
-  ci.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-  ci.surface = vkz_surface;
-  ci.minImageCount = ic;
-  ci.imageFormat = vkz_surface_format.format;
-  ci.imageColorSpace = vkz_surface_format.colorSpace;
-  ci.imageExtent = vkz_swap_extent;
-  ci.imageArrayLayers = 1;
-  ci.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-
-  if (vkz_graphics_family_index != vkz_present_family_index) {
-    ci.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-    ci.queueFamilyIndexCount = 2;
-
-    uint32_t ids[2];
-    ids[0] = vkz_graphics_family_index;
-    ids[1] = vkz_present_family_index;
-    ci.pQueueFamilyIndices = ids;
-
-  }
-  else {
-    ci.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    ci.queueFamilyIndexCount = 0;
-    ci.pQueueFamilyIndices = NULL;
-  }
-
-  ci.preTransform = vkz_swapchain_support_details.capabilities.currentTransform;
-
-  ci.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-  ci.presentMode = vkz_present_mode;
-  ci.clipped = VK_TRUE;
-  ci.oldSwapchain = VK_NULL_HANDLE;
-
-  if (vkCreateSwapchainKHR(vkz_logical_device, &ci, NULL, &vkz_swapchain) !=
-    VK_SUCCESS) {
-    return 0;
-  }
-  else {
-    swapchain_created = TRUE;
-  }
-
-  vkGetSwapchainImagesKHR(vkz_logical_device, vkz_swapchain,
-    &vkz_swapchain_image_count, NULL);
-  LOGDEBUG1("Number of swapchain images retrieved via API: %d\n\r",
-    vkz_swapchain_image_count);
-  vkz_swapchain_images = malloc(vkz_swapchain_image_count * sizeof(VkImage));
-  vkGetSwapchainImagesKHR(vkz_logical_device, vkz_swapchain,
-    &vkz_swapchain_image_count,
-    vkz_swapchain_images);
-
-  return create_swapchain_image_views();
-}
-
-int vkz_destroy_swapchain() {
-  if (vkz_swapchain_image_views) {
-    if (swapchain_image_views_created) {
-      for (uint32_t n = 0; n < vkz_swapchain_image_count; n++) {
-        vkDestroyImageView(vkz_logical_device, vkz_swapchain_image_views[n],
-          NULL);
-      }
-    }
-    free(vkz_swapchain_image_views);
-    swapchain_image_views_created = FALSE;
-  }
-
-  if (vkz_swapchain_images) {
-    free(vkz_swapchain_images);
-  }
-
-  if (swapchain_created) {
-    vkDestroySwapchainKHR(vkz_logical_device, vkz_swapchain, NULL);
-    swapchain_created = FALSE;
-  }
-
-  return 1;
-
-}
-
-long alloc_load_shader_spv(char* path, uint32_t * *spv) {
-  long fs = 0;
-  FILE* f = fopen(path, "rb");
-  if (f) {
-    fseek(f, 0, SEEK_END);
-    fs = ftell(f);
-    fseek(f, 0, SEEK_SET);
-    unsigned char* spvint = NULL;
-    spvint = malloc(fs);
-    fread(spvint, 1, fs, f);
-    fclose(f);
-    *spv = (uint32_t*)spvint;
-  }
-  else {
-    printf("Could not open file %s!\n\r", path);
-    return 0;
-  }
-  return fs;
-}
-
-VkRenderPass create_render_pass() {
+int create_render_pass() {
   VkAttachmentDescription color_buffer_attachment_description;
   memset(&color_buffer_attachment_description, 0,
     sizeof(VkAttachmentDescription));
@@ -933,21 +819,19 @@ VkRenderPass create_render_pass() {
   render_pass_ci.dependencyCount = 1;
   render_pass_ci.pDependencies = &sd;
 
-  VkRenderPass render_pass;
-
   if (vkCreateRenderPass(vkz_logical_device, &render_pass_ci, NULL,
     &render_pass) != VK_SUCCESS) {
     printf("Render pass creation failed!\n\r");
+    return 0;
   }
   else {
     LOGDEBUG0("Render pass created.\n\r");
   }
-
-  return render_pass;
+  return 1;
 }
 
-VkFramebuffer* create_framebuffers(VkRenderPass render_pass) {
-  VkFramebuffer* framebuffers = malloc(vkz_swapchain_image_count *
+int create_framebuffers(VkRenderPass render_pass) {
+  framebuffers = malloc(vkz_swapchain_image_count *
     sizeof(VkFramebuffer));
 
   for (uint32_t n = 0; n < vkz_swapchain_image_count; n++) {
@@ -969,14 +853,140 @@ VkFramebuffer* create_framebuffers(VkRenderPass render_pass) {
     if (vkCreateFramebuffer(vkz_logical_device, &framebuffer_ci, NULL,
       &framebuffers[n]) != VK_SUCCESS) {
       printf("Could not create framebuffers!\n\r");
+
       free(framebuffers);
       framebuffers = NULL;
-      break;
+      return 0;
     }
 
   }
 
-  return framebuffers;
+  return 1;
+}
+
+int vkz_create_swapchain(const uint32_t width, const uint32_t height,
+  int with_image_sampler) {
+  select_swap_extent(width, height);
+
+  if (with_image_sampler != -1) {
+    intrn_with_image_sampler = with_image_sampler;
+  }
+
+  uint32_t ic = vkz_swapchain_support_details.capabilities.minImageCount;
+  if (vkz_swapchain_support_details.capabilities.maxImageCount >= 2) {
+    ic = 2;
+  }
+
+  LOGDEBUG1("Swapchain image count: %d\n\r", ic);
+
+  VkSwapchainCreateInfoKHR ci;
+  memset(&ci, 0, sizeof(VkSwapchainCreateInfoKHR));
+
+  ci.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+  ci.surface = vkz_surface;
+  ci.minImageCount = ic;
+  ci.imageFormat = vkz_surface_format.format;
+  ci.imageColorSpace = vkz_surface_format.colorSpace;
+  ci.imageExtent = vkz_swap_extent;
+  ci.imageArrayLayers = 1;
+  ci.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+  if (vkz_graphics_family_index != vkz_present_family_index) {
+    ci.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+    ci.queueFamilyIndexCount = 2;
+
+    uint32_t ids[2];
+    ids[0] = vkz_graphics_family_index;
+    ids[1] = vkz_present_family_index;
+    ci.pQueueFamilyIndices = ids;
+
+  }
+  else {
+    ci.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    ci.queueFamilyIndexCount = 0;
+    ci.pQueueFamilyIndices = NULL;
+  }
+
+  ci.preTransform = vkz_swapchain_support_details.capabilities.currentTransform;
+
+  ci.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+  ci.presentMode = vkz_present_mode;
+  ci.clipped = VK_TRUE;
+  ci.oldSwapchain = VK_NULL_HANDLE;
+
+  if (vkCreateSwapchainKHR(vkz_logical_device, &ci, NULL, &vkz_swapchain) !=
+    VK_SUCCESS) {
+    return 0;
+  }
+  else {
+    swapchain_created = TRUE;
+  }
+
+  vkGetSwapchainImagesKHR(vkz_logical_device, vkz_swapchain,
+    &vkz_swapchain_image_count, NULL);
+  LOGDEBUG1("Number of swapchain images retrieved via API: %d\n\r",
+    vkz_swapchain_image_count);
+  vkz_swapchain_images = malloc(vkz_swapchain_image_count * sizeof(VkImage));
+  vkGetSwapchainImagesKHR(vkz_logical_device, vkz_swapchain,
+    &vkz_swapchain_image_count,
+    vkz_swapchain_images);
+
+  return create_swapchain_image_views() && create_render_pass() && 
+    vkz_create_depth_image() && create_framebuffers(render_pass);
+}
+
+int vkz_destroy_swapchain() {
+  if (vkz_swapchain_image_views) {
+    if (swapchain_image_views_created) {
+      for (uint32_t n = 0; n < vkz_swapchain_image_count; n++) {
+        vkDestroyImageView(vkz_logical_device, vkz_swapchain_image_views[n],
+          NULL);
+      }
+    }
+    free(vkz_swapchain_image_views);
+    swapchain_image_views_created = FALSE;
+
+    for (uint32_t n = 0; n < vkz_swapchain_image_count; n++) {
+      vkDestroyFramebuffer(vkz_logical_device,
+        framebuffers[n], NULL);
+    }
+    free(framebuffers);
+
+    vkDestroyRenderPass(vkz_logical_device,
+      render_pass, NULL);
+  }
+
+  if (vkz_swapchain_images) {
+    free(vkz_swapchain_images);
+  }
+
+  if (swapchain_created) {
+    vkDestroySwapchainKHR(vkz_logical_device, vkz_swapchain, NULL);
+    swapchain_created = FALSE;
+  }
+
+  return 1;
+
+}
+
+long alloc_load_shader_spv(char* path, uint32_t * *spv) {
+  long fs = 0;
+  FILE* f = fopen(path, "rb");
+  if (f) {
+    fseek(f, 0, SEEK_END);
+    fs = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    unsigned char* spvint = NULL;
+    spvint = malloc(fs);
+    fread(spvint, 1, fs, f);
+    fclose(f);
+    *spv = (uint32_t*)spvint;
+  }
+  else {
+    printf("Could not open file %s!\n\r", path);
+    return 0;
+  }
+  return fs;
 }
 
 int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_shader_path,
@@ -1252,9 +1262,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   pipeline_ci.pDynamicState = NULL;
   pipeline_ci.layout = pipeline_systems[*index].pipeline_layout;
 
-  pipeline_systems[*index].render_pass = create_render_pass();
-
-  pipeline_ci.renderPass = pipeline_systems[*index].render_pass;
+  pipeline_ci.renderPass = render_pass;
   pipeline_ci.subpass = 0;
 
   pipeline_ci.basePipelineHandle = VK_NULL_HANDLE;
@@ -1270,13 +1278,6 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   }
   else {
     LOGDEBUG0("Pipeline created ok.\n\r");
-
-    pipeline_systems[*index].framebuffers =
-      create_framebuffers(pipeline_systems[*index].render_pass);
-
-    if (pipeline_systems[*index].framebuffers) {
-      LOGDEBUG0("Framebuffers created ok.\n\r");
-    }
   }
 
   if (vertexShader) {
@@ -1314,14 +1315,6 @@ int vkz_destroy_pipeline(uint32_t index) {
   vkDestroyPipeline(vkz_logical_device,
     pipeline_systems[index].pipeline, NULL);
 
-  for (uint32_t n = 0; n < vkz_swapchain_image_count; n++) {
-    vkDestroyFramebuffer(vkz_logical_device,
-      pipeline_systems[index].framebuffers[n], NULL);
-  }
-  free(pipeline_systems[index].framebuffers);
-
-  vkDestroyRenderPass(vkz_logical_device,
-    pipeline_systems[index].render_pass, NULL);
   vkDestroyPipelineLayout(vkz_logical_device,
     pipeline_systems[index].pipeline_layout, NULL);
   vkDestroyShaderModule(vkz_logical_device,
@@ -1439,9 +1432,8 @@ int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
       VkRenderPassBeginInfo render_pass_bi;
       memset(&render_pass_bi, 0, sizeof(VkRenderPassBeginInfo));
       render_pass_bi.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-      render_pass_bi.renderPass = pipeline_systems[pipeline_index].render_pass;
-      render_pass_bi.framebuffer =
-        pipeline_systems[pipeline_index].framebuffers[next_image_index];
+      render_pass_bi.renderPass = render_pass;
+      render_pass_bi.framebuffer = framebuffers[next_image_index];
       render_pass_bi.renderArea.offset.x = 0;
       render_pass_bi.renderArea.offset.y = 0;
       render_pass_bi.renderArea.extent = vkz_swap_extent;
@@ -1460,9 +1452,11 @@ int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
 
       vkCmdBeginRenderPass(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index],
         &render_pass_bi, VK_SUBPASS_CONTENTS_INLINE);
+      
       vkCmdBindPipeline(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index],
         VK_PIPELINE_BIND_POINT_GRAPHICS,
         pipeline_systems[pipeline_index].pipeline);
+      
       if (bind_vertex_buffers) {
         bind_vertex_buffers(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index]);
       }
@@ -1473,6 +1467,7 @@ int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
       }
 
       vkCmdEndRenderPass(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index]);
+
       if (vkEndCommandBuffer(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index]) !=
         VK_SUCCESS) {
         printf("Could not record command buffer!\n\r");

@@ -240,10 +240,6 @@ namespace small3d {
       throw std::runtime_error("Failed to create swapchain.");
     }
 
-    if (!vkz_create_depth_image()) {
-      throw std::runtime_error("Failed to create depth image.");
-    }
-
     createDescriptorPool();
     allocateDescriptorSets();
 
