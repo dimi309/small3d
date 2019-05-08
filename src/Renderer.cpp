@@ -827,7 +827,6 @@ namespace small3d {
       0.0f, 1.0f, &orthographicPipelineIndex);
 
     vkz_create_sync_objects();
-    //vkz_create_clear_command_buffers(orthographicPipelineIndex);
 
     // Acquire the first image (prerequisite for the swap member
     // function).

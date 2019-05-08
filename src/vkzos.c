@@ -1669,6 +1669,10 @@ int send(uint32_t pipeline_index,
 }
 
 int vkz_clear(uint32_t pipeline_index) {
+  /*validation layer : [UNASSIGNED - CoreValidation - DrawState - InvalidImageLayout] Object : 
+  0x202555e1cc8 (Type = 6) | Submitted command buffer expects image 0x5 (subresource : aspectMask 0x1 array layer 0, 
+  mip level 0) to be in layout VK_IMAGE_LAYOUT_PRESENT_SRC_KHR--instead, image 0x5's current layout is VK_IMAGE_LAYOUT_UNDEFINED.*/
+  // (once)
   vkz_transition_image_layout(vkz_swapchain_images[next_image_index],
     VK_FORMAT_R32G32B32A32_SFLOAT, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_LAYOUT_GENERAL);
   return send(pipeline_index, NULL,
