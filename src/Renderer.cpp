@@ -16,15 +16,17 @@ extern "C" {
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+static small3d::Model nextModelToDraw;
+
 static VkVertexInputBindingDescription bd[3];
 static VkVertexInputAttributeDescription ad[3];
 static VkDescriptorSetLayout descriptorSetLayout;
-std::vector<VkDescriptorSet> descriptorSets;
+static std::vector<VkDescriptorSet> descriptorSets;
 
 static VkVertexInputBindingDescription orthobd[2];
 static VkVertexInputAttributeDescription orthoad[2];
 static VkDescriptorSetLayout orthoDescriptorSetLayout;
-std::vector<VkDescriptorSet> orthoDescriptorSets;
+static std::vector<VkDescriptorSet> orthoDescriptorSets;
 
 namespace small3d {
 
@@ -99,8 +101,6 @@ namespace small3d {
 
     return 1;
   }
-
-  Model nextModelToDraw;
 
   int setPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
     pipelineLayoutCreateInfo->setLayoutCount = 1;

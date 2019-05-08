@@ -165,15 +165,24 @@ int RendererTest() {
       glm::vec3(-1.0f, 0.0f, 1.0f),
       glm::vec3(-0.5f, -0.5f, 1.0f), false);
 
+    
+
+    /*renderer->renderRectangle(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
+      glm::vec3(-0.7f, 0.0f, -1.0f),
+      glm::vec3(0.2f, -0.5f, -1.0f), true);
+
+    renderer->renderRectangle(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+      glm::vec3(-0.5f, 0.0f, -1.0f),
+      glm::vec3(0.0f, -0.5f, -1.0f), true);*/
+    
+    //renderer->render(object2, "cubeTexture");
+    renderer->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
     renderer->renderRectangle("cubeTexture",
       glm::vec3(0.0f, 0.5f, -2.0f),
       glm::vec3(1.0f, -1.0f, -2.0f), true);
-    renderer->render(object2, "cubeTexture");
-    renderer->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-
-    renderer->write("small3d :) p q", glm::vec3(0.0f, 1.0f, 0.0f),
-      glm::vec2(-1.0f, 0.0f), glm::vec2(0.5f, -0.5f));
+    /*renderer->write("small3d :) p q", glm::vec3(0.0f, 1.0f, 0.0f),
+      glm::vec2(-1.0f, 0.0f), glm::vec2(0.5f, -0.5f));*/
     renderer->swapBuffers();
     
   }
