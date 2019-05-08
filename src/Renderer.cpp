@@ -1412,18 +1412,18 @@ namespace small3d {
     positionCamera();
 
     if (perspective) {
-      vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
       updateDescriptorSets();
       vkz_create_next_draw_command_buffer(perspectivePipelineIndex, &bindBuffers,
         &recordDrawCommand);
       vkz_draw(perspectivePipelineIndex, NULL);
+      vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
     }
     else {
-      vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
       updateOrthoDescriptorSets();
       vkz_create_next_draw_command_buffer(orthographicPipelineIndex, &bindOrthoBuffers,
         &recordOrthoDrawCommand);
       vkz_draw(orthographicPipelineIndex, NULL);
+      vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
     }
 
   }

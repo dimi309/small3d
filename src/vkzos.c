@@ -1132,9 +1132,9 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   VkViewport viewport;
   memset(&viewport, 0, sizeof(viewport));
   viewport.x = 0.0f;
-  viewport.y = 0.0f; (float)vkz_swap_extent.height; // flipping the viewport here ...
+  viewport.y = (float)vkz_swap_extent.height; // flipping the viewport here ...
   viewport.width = (float)vkz_swap_extent.width;
-  viewport.height = (float)vkz_swap_extent.height; // ... and here to use OpenGL coordinates
+  viewport.height = -(float)vkz_swap_extent.height; // ... and here to use OpenGL coordinates
 
   if (minDepth != 100.0f && maxDepth != 100.0f) {
     pipeline_systems[*index].minViewportDepth = minDepth;
@@ -1169,7 +1169,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   rasterization_state_ci.polygonMode = VK_POLYGON_MODE_FILL;
   rasterization_state_ci.lineWidth = 1.0f;
   rasterization_state_ci.cullMode = VK_CULL_MODE_BACK_BIT;
-  rasterization_state_ci.frontFace = VK_FRONT_FACE_CLOCKWISE;
+  rasterization_state_ci.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
   rasterization_state_ci.depthBiasEnable = VK_FALSE;
   rasterization_state_ci.depthBiasConstantFactor = 0.0f;
   rasterization_state_ci.depthBiasClamp = 0.0f;
