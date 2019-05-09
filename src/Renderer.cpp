@@ -804,7 +804,7 @@ namespace small3d {
     }
 
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
-      setInputStateCallback, setPipelineLayoutCallback, 0.0f, 1.0f, &perspectivePipelineIndex);
+      setInputStateCallback, setPipelineLayoutCallback, zNear + zOffsetFromCamera, zFar, &perspectivePipelineIndex);
 
     vkz_create_clear_command_buffers(perspectivePipelineIndex);
 
