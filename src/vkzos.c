@@ -754,7 +754,7 @@ int create_render_pass() {
     sizeof(VkAttachmentDescription));
   color_buffer_attachment_description.format = vkz_surface_format.format;
   color_buffer_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
-  color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE; //VK_ATTACHMENT_LOAD_OP_CLEAR;
+  color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
   color_buffer_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
   color_buffer_attachment_description.stencilLoadOp =
     VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -773,7 +773,7 @@ int create_render_pass() {
   memset(&depth_attachment_description, 0, sizeof(VkAttachmentDescription));
   depth_attachment_description.format = VK_FORMAT_D32_SFLOAT;
   depth_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
-  depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE; //VK_ATTACHMENT_LOAD_OP_CLEAR;
+  depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
   depth_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
   depth_attachment_description.stencilLoadOp = 
     VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -1361,7 +1361,7 @@ int vkz_create_clear_command_buffers(uint32_t pipeline_index) {
       }
       else {
 
-        VkClearColorValue clearColour = { 0.0f, 0.0f, 0.0f, 0.0f };
+        VkClearColorValue clearColour = { 0.0f, 0.0f, 0.0f, 1.0f };
 
         VkImageSubresourceRange imageRange;
         memset(&imageRange, 0, sizeof(VkImageSubresourceRange));
