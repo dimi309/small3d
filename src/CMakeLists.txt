@@ -61,5 +61,5 @@ if(APPLE)
 AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
 -framework IOKit -framework CoreVideo")
 elseif(UNIX)
-  target_link_libraries(tests PUBLIC "m")
+  target_link_libraries(unittests PUBLIC "m")
 endif(APPLE)
