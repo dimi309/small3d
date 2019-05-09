@@ -1443,7 +1443,7 @@ int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
       render_pass_bi.renderArea.offset.y = 0;
       render_pass_bi.renderArea.extent = vkz_swap_extent;
 
-      /*VkClearValue clear_values[2];
+      VkClearValue clear_values[2];
       memset(clear_values, 0, 2 * sizeof(VkClearValue));
       clear_values[0].color.float32[0] = 0.0f;
       clear_values[0].color.float32[1] = 0.0f;
@@ -1451,9 +1451,9 @@ int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
       clear_values[0].color.float32[3] = 1.0f;
       clear_values[1].depthStencil.depth = 1.0f;
       clear_values[1].depthStencil.stencil = 0;
-*/
+
       render_pass_bi.clearValueCount = 0;
-      //render_pass_bi.pClearValues = clear_values;
+      render_pass_bi.pClearValues = clear_values;
 
       vkCmdBeginRenderPass(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index],
         &render_pass_bi, VK_SUBPASS_CONTENTS_INLINE);
@@ -1483,6 +1483,85 @@ int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
   }
   return 1;
 }
+
+int vkz_begin_next_draw_command_buffer(uint32_t pipeline_index, VkCommandBuffer *command_buffer) {
+
+  VkCommandBufferAllocateInfo command_buffer_ai;
+  memset(&command_buffer_ai, 0, sizeof(VkCommandBufferAllocateInfo));
+  command_buffer_ai.sType =
+    VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+  command_buffer_ai.commandPool = command_pool;
+  command_buffer_ai.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+  command_buffer_ai.commandBufferCount = 1;
+
+  if (vkAllocateCommandBuffers(vkz_logical_device, &command_buffer_ai,
+    &pipeline_systems[pipeline_index].draw_command_buffers[next_image_index]) !=
+    VK_SUCCESS) {
+    printf("Could not allocate command buffer.\n\r");
+    return 0;
+  }
+  else {
+    VkCommandBufferBeginInfo command_buffer_bi;
+    memset(&command_buffer_bi, 0, sizeof(VkCommandBufferBeginInfo));
+    command_buffer_bi.sType =
+      VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    command_buffer_bi.flags =
+      VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+    command_buffer_bi.pInheritanceInfo = NULL;
+
+    if (vkBeginCommandBuffer(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index],
+      &command_buffer_bi) != VK_SUCCESS) {
+      printf("Could not begin recording command buffer!\n\r");
+      return 0;
+    }
+    else {
+
+      VkRenderPassBeginInfo render_pass_bi;
+      memset(&render_pass_bi, 0, sizeof(VkRenderPassBeginInfo));
+      render_pass_bi.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+      render_pass_bi.renderPass = render_pass;
+      render_pass_bi.framebuffer = framebuffers[next_image_index];
+      render_pass_bi.renderArea.offset.x = 0;
+      render_pass_bi.renderArea.offset.y = 0;
+      render_pass_bi.renderArea.extent = vkz_swap_extent;
+
+      VkClearValue clear_values[2];
+      memset(clear_values, 0, 2 * sizeof(VkClearValue));
+      clear_values[0].color.float32[0] = 0.0f;
+      clear_values[0].color.float32[1] = 0.0f;
+      clear_values[0].color.float32[2] = 0.0f;
+      clear_values[0].color.float32[3] = 1.0f;
+      clear_values[1].depthStencil.depth = 1.0f;
+      clear_values[1].depthStencil.stencil = 0;
+
+      render_pass_bi.clearValueCount = 0;
+      render_pass_bi.pClearValues = clear_values;
+
+      vkCmdBeginRenderPass(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index],
+        &render_pass_bi, VK_SUBPASS_CONTENTS_INLINE);
+
+      vkCmdBindPipeline(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index],
+        VK_PIPELINE_BIND_POINT_GRAPHICS,
+        pipeline_systems[pipeline_index].pipeline);
+      command_buffer = &pipeline_systems[pipeline_index].draw_command_buffers[next_image_index];
+      return 1;
+    }
+  }
+  return 0;
+}
+
+int vkz_end_next_draw_command_buffer(uint32_t pipeline_index) {
+  vkCmdEndRenderPass(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index]);
+
+  if (vkEndCommandBuffer(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index]) !=
+    VK_SUCCESS) {
+    printf("Could not record command buffer!\n\r");
+    return 0;
+  }
+
+  return 1;
+}
+
 
 int vkz_destroy_draw_command_buffers(uint32_t pipeline_index) {
 

@@ -98,14 +98,14 @@ namespace small3d
 
     static int setInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo);
     static int setPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo);
-    static int bindBuffers(VkCommandBuffer commandBuffer);
-    static int recordDrawCommand(VkCommandBuffer commandBuffer,
+    static int bindBuffersCallback(VkCommandBuffer commandBuffer);
+    static int recordDrawCommandCallback(VkCommandBuffer commandBuffer,
       VkPipelineLayout pipelineLayout,
       uint32_t swapchainImageIndex);
     static int setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo);
     static int setOrthoPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo);
-    static int bindOrthoBuffers(VkCommandBuffer commandBuffer);
-    static int recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
+    static int bindOrthoBuffersCallback(VkCommandBuffer commandBuffer);
+    static int recordOrthoDrawCommandCallback(VkCommandBuffer commandBuffer,
       VkPipelineLayout pipelineLayout,
       uint32_t swapchainImageIndex);
 

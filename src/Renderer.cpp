@@ -109,7 +109,7 @@ namespace small3d {
     return 1;
   }
 
-  int Renderer::bindBuffers(VkCommandBuffer commandBuffer) {
+  int Renderer::bindBuffersCallback(VkCommandBuffer commandBuffer) {
     VkBuffer vertexBuffers[3];
     vertexBuffers[0] = nextModelToDraw.positionBuffer;
     vertexBuffers[1] = nextModelToDraw.normalsBuffer;
@@ -128,7 +128,7 @@ namespace small3d {
     return 1;
   }
 
-  int Renderer::recordDrawCommand(VkCommandBuffer commandBuffer,
+  int Renderer::recordDrawCommandCallback(VkCommandBuffer commandBuffer,
     VkPipelineLayout pipelineLayout,
     uint32_t swapchainImageIndex) {
 
@@ -176,7 +176,7 @@ namespace small3d {
     return 1;
   }
 
-  int Renderer::bindOrthoBuffers(VkCommandBuffer commandBuffer) {
+  int Renderer::bindOrthoBuffersCallback(VkCommandBuffer commandBuffer) {
     VkBuffer vertexBuffers[2];
     vertexBuffers[0] = nextModelToDraw.positionBuffer;
     vertexBuffers[1] = nextModelToDraw.uvBuffer;
@@ -193,7 +193,7 @@ namespace small3d {
     return 1;
   }
 
-  int Renderer::recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
+  int Renderer::recordOrthoDrawCommandCallback(VkCommandBuffer commandBuffer,
     VkPipelineLayout pipelineLayout,
     uint32_t swapchainImageIndex) {
 
@@ -1413,15 +1413,15 @@ namespace small3d {
 
     if (perspective) {
       updateDescriptorSets();
-      vkz_create_next_draw_command_buffer(perspectivePipelineIndex, &bindBuffers,
-        &recordDrawCommand);
+      vkz_create_next_draw_command_buffer(perspectivePipelineIndex, &bindBuffersCallback,
+        &recordDrawCommandCallback);
       vkz_draw(perspectivePipelineIndex, NULL);
       vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
     }
     else {
       updateOrthoDescriptorSets();
-      vkz_create_next_draw_command_buffer(orthographicPipelineIndex, &bindOrthoBuffers,
-        &recordOrthoDrawCommand);
+      vkz_create_next_draw_command_buffer(orthographicPipelineIndex, &bindOrthoBuffersCallback,
+        &recordOrthoDrawCommandCallback);
       vkz_draw(orthographicPipelineIndex, NULL);
       vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
     }

@@ -152,6 +152,28 @@ int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
     VkPipelineLayout, uint32_t));
 
 /**
+ * @brief Begin creating the drawing command buffer for a given pipeline 
+ *        corresponding to the next (acquired) image in the swapchain. The
+ *        command buffer is passed back to the caller, allowing for a higher 
+ *        level of customisation than vkz_create_next_draw_command_buffer()
+ *        does. Once prepared, the command buffer can be finalised by calling
+ *        vkz_end_next_draw_command_buffer().
+ *
+ * @param pipeline_index The index of the pipeline
+ * @param command_buffer Pointer to the command buffer.
+ * @return 1 if successful, 0 otherwise
+ */
+int vkz_begin_next_draw_command_buffer(uint32_t pipeline_index,
+  VkCommandBuffer* command_buffer);
+/**
+ * @brief Finalise the drawing command buffer for a given pipeline.
+ *        See also vkz_begin_next_draw_command_buffer()
+ * @param pipeline_index The index of the pipeline
+ * @return 1 if successful, 0 otherwise
+ */
+int vkz_end_next_draw_command_buffer(uint32_t pipeline_index);
+
+/**
  * @brief Destroy the drawing command buffers created for a given pipeline
  * @param pipeline_index The index of the pipeline
  *
