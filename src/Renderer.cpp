@@ -16,18 +16,6 @@ extern "C" {
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-static small3d::Model nextModelToDraw;
-
-static VkVertexInputBindingDescription bd[3];
-static VkVertexInputAttributeDescription ad[3];
-static VkDescriptorSetLayout descriptorSetLayout;
-static std::vector<VkDescriptorSet> descriptorSets;
-
-static VkVertexInputBindingDescription orthobd[2];
-static VkVertexInputAttributeDescription orthoad[2];
-static VkDescriptorSetLayout orthoDescriptorSetLayout;
-static std::vector<VkDescriptorSet> orthoDescriptorSets;
-
 namespace small3d {
 
   void error_callback(int error, const char* description)
@@ -65,7 +53,19 @@ namespace small3d {
     float intensity;
   };
 
-  int setInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo) {
+  Model Renderer::nextModelToDraw;
+
+  VkVertexInputBindingDescription Renderer::bd[3];
+  VkVertexInputAttributeDescription Renderer::ad[3];
+  VkDescriptorSetLayout Renderer::descriptorSetLayout;
+  std::vector<VkDescriptorSet> Renderer::descriptorSets;
+
+  VkVertexInputBindingDescription Renderer::orthobd[2];
+  VkVertexInputAttributeDescription Renderer::orthoad[2];
+  VkDescriptorSetLayout Renderer::orthoDescriptorSetLayout;
+  std::vector<VkDescriptorSet> Renderer::orthoDescriptorSets;
+
+  int Renderer::setInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo) {
 
     memset(bd, 0, 3 * sizeof(VkVertexInputBindingDescription));
 
@@ -103,13 +103,13 @@ namespace small3d {
     return 1;
   }
 
-  int setPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
+  int Renderer::setPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
     pipelineLayoutCreateInfo->setLayoutCount = 1;
     pipelineLayoutCreateInfo->pSetLayouts = &descriptorSetLayout;
     return 1;
   }
 
-  int bindBuffers(VkCommandBuffer commandBuffer) {
+  int Renderer::bindBuffers(VkCommandBuffer commandBuffer) {
     VkBuffer vertexBuffers[3];
     vertexBuffers[0] = nextModelToDraw.positionBuffer;
     vertexBuffers[1] = nextModelToDraw.normalsBuffer;
@@ -128,7 +128,7 @@ namespace small3d {
     return 1;
   }
 
-  int recordDrawCommand(VkCommandBuffer commandBuffer,
+  int Renderer::recordDrawCommand(VkCommandBuffer commandBuffer,
     VkPipelineLayout pipelineLayout,
     uint32_t swapchainImageIndex) {
 
@@ -141,7 +141,7 @@ namespace small3d {
     return 1;
   }
 
-  int setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo) {
+  int Renderer::setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo) {
     memset(orthobd, 0, 2 * sizeof(VkVertexInputBindingDescription));
 
     orthobd[0].binding = 0;
@@ -170,13 +170,13 @@ namespace small3d {
     return 1;
   }
 
-  int setOrthoPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
+  int Renderer::setOrthoPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
     pipelineLayoutCreateInfo->setLayoutCount = 1;
     pipelineLayoutCreateInfo->pSetLayouts = &orthoDescriptorSetLayout;
     return 1;
   }
 
-  int bindOrthoBuffers(VkCommandBuffer commandBuffer) {
+  int Renderer::bindOrthoBuffers(VkCommandBuffer commandBuffer) {
     VkBuffer vertexBuffers[2];
     vertexBuffers[0] = nextModelToDraw.positionBuffer;
     vertexBuffers[1] = nextModelToDraw.uvBuffer;
@@ -193,7 +193,7 @@ namespace small3d {
     return 1;
   }
 
-  int recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
+  int Renderer::recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
     VkPipelineLayout pipelineLayout,
     uint32_t swapchainImageIndex) {
 

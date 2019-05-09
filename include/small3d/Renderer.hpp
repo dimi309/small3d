@@ -83,6 +83,33 @@ namespace small3d
     std::vector<float> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
 
+    static Model nextModelToDraw;
+
+    static VkVertexInputBindingDescription bd[3];
+    static VkVertexInputAttributeDescription ad[3];
+    static VkDescriptorSetLayout descriptorSetLayout;
+    static std::vector<VkDescriptorSet> descriptorSets;
+
+    static VkVertexInputBindingDescription orthobd[2];
+    static VkVertexInputAttributeDescription orthoad[2];
+    static VkDescriptorSetLayout orthoDescriptorSetLayout;
+    static std::vector<VkDescriptorSet> orthoDescriptorSets;
+
+
+    static int setInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo);
+    static int setPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo);
+    static int bindBuffers(VkCommandBuffer commandBuffer);
+    static int recordDrawCommand(VkCommandBuffer commandBuffer,
+      VkPipelineLayout pipelineLayout,
+      uint32_t swapchainImageIndex);
+    static int setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo);
+    static int setOrthoPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo);
+    static int bindOrthoBuffers(VkCommandBuffer commandBuffer);
+    static int recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
+      VkPipelineLayout pipelineLayout,
+      uint32_t swapchainImageIndex);
+
+
     void initVulkan();
     
     VkDescriptorPool descriptorPool;
