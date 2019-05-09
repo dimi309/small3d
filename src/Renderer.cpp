@@ -397,9 +397,6 @@ namespace small3d {
       &descriptorSets[0]);
     if (allocResult != VK_SUCCESS) {
       std::string errortxt = "Failed to allocate descriptor sets.";
-      if (allocResult == VK_ERROR_OUT_OF_POOL_MEMORY) {
-        errortxt += " (out of pool memory)";
-      }
       throw std::runtime_error(errortxt);
     }
   }
@@ -558,9 +555,6 @@ namespace small3d {
       &orthoDescriptorSets[0]);
     if (allocResult != VK_SUCCESS) {
       std::string errortxt = "Failed to allocate orthographic pool descriptor sets.";
-      if (allocResult == VK_ERROR_OUT_OF_POOL_MEMORY) {
-        errortxt += " (out of pool memory)";
-      }
       throw std::runtime_error(errortxt);
     }
   }

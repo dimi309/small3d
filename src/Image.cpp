@@ -8,6 +8,7 @@
 
 #include "Image.hpp"
 #include <stdexcept>
+#include <cstring>
 
 namespace small3d {
 
