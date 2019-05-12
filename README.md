@@ -13,12 +13,12 @@ also provided that can play OGG files on all supported platforms via a common
 interface. Basic collision detection has also been implemented.
 
 small3d works on Windows, MacOS and Linux and supports Visual Studio, gcc (even 
-MinGW) and clang for compilation. **But this is still a highly experimental version,
+MinGW) and clang for compilation. *But this is still an experimental version,
 using Vulkan for the first time (many thanks to the [Vulkan Tutorial](https://vulkan
--tutorial.com/) and it has only been tested on Windows**. It also has some issues, 
-like the fact that depth testing does not work yet. It also produces a square 
-artifact at the top left of the screen in the first game that has been
-compiled with it.
+-tutorial.com/)), and has a few issues like the absence of proper depth testing or
+the excessive use of render passes. The priorities during its development was to put
+something together pretty fast that would work the exact same way as the OpenGL
+version of small3d, as a proof of concept.* 
 
 All small3d dependencies, appart from the Vulkan SDK, are distributed together with 
 its source code. They can be built by executing a single script (see below).
