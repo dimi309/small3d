@@ -101,11 +101,15 @@ int vkz_destroy_depth_image();
  *              path parameters will be ignored, because the previously used shaders
  *              will be reused. Also in that case the callback functions parameters
  *              will be ignored.
+ * @param opengl_coords Invert y and culling for OpenGL compatibility if 1,
+                        leave things as they are otherwise. 100 to keep the same value
+                        for previously created pipeline that is being recreated.
  * @return      1 if successful, 0 otherwise
  */
 int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_shader_path,
   int (*set_input_state)(VkPipelineVertexInputStateCreateInfo*),
-  int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo*), uint32_t* index);
+  int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo*), int opengl_coords,
+  uint32_t* index);
 
 /**
  * @brief  Destroy a pipeline

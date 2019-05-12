@@ -103,6 +103,7 @@ typedef struct {
   VkCommandBuffer* draw_command_buffers;
   int (*set_input_state_function)(VkPipelineVertexInputStateCreateInfo*);
   int (*set_pipeline_layout_function)(VkPipelineLayoutCreateInfo*);
+  int opengl;
 } pipeline_system_struct;
 
 uint32_t pipeline_system_count = 0;
@@ -745,7 +746,7 @@ int create_render_pass() {
     sizeof(VkAttachmentDescription));
   color_buffer_attachment_description.format = vkz_surface_format.format;
   color_buffer_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
-  color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+  color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
   color_buffer_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
   color_buffer_attachment_description.stencilLoadOp =
     VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -983,7 +984,7 @@ long alloc_load_shader_spv(char* path, uint32_t * *spv) {
 
 int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_shader_path,
   int (*set_input_state)(VkPipelineVertexInputStateCreateInfo*),
-  int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo*),
+  int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo*), BOOL opengl_coords,
   uint32_t * index) {
 
   if (pipeline_systems) {
@@ -1005,6 +1006,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
         pipeline_systems[*index].set_input_state_function = set_input_state;
         pipeline_systems[*index].set_pipeline_layout_function =
           set_pipeline_layout;
+        pipeline_systems[*index].opengl = opengl_coords;
       }
       else {
         // Reuse existing slot
@@ -1014,11 +1016,13 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
           pipeline_systems[*index].set_input_state_function;
         int (*spl)(VkPipelineLayoutCreateInfo*) =
           pipeline_systems[*index].set_pipeline_layout_function;
+        int oglc = pipeline_systems[*index].opengl;
         memset(&pipeline_systems[*index], 0, sizeof(pipeline_system_struct));
         pipeline_systems[*index].vertex_shader_path = vsp;
         pipeline_systems[*index].fragment_shader_path = fsp;
         pipeline_systems[*index].set_input_state_function = sis;
         pipeline_systems[*index].set_pipeline_layout_function = spl;
+        pipeline_systems[*index].opengl = opengl_coords == 100 ? oglc : opengl_coords;
       }
     }
     else {
@@ -1041,6 +1045,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
     pipeline_systems[*index].fragment_shader_path = (char*)fragment_shader_path;
     pipeline_systems[*index].set_input_state_function = set_input_state;
     pipeline_systems[*index].set_pipeline_layout_function = set_pipeline_layout;
+    pipeline_systems[*index].opengl = opengl_coords;
   }
 
   VkShaderModuleCreateInfo ci;
@@ -1122,9 +1127,11 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   VkViewport viewport;
   memset(&viewport, 0, sizeof(viewport));
   viewport.x = 0.0f;
-  viewport.y = 0.0f; //(float)vkz_swap_extent.height; // flipping the viewport here ...
+  viewport.y = pipeline_systems[*index].opengl ? 
+    (float)vkz_swap_extent.height : 0.0f;
   viewport.width = (float)vkz_swap_extent.width;
-  viewport.height = (float)vkz_swap_extent.height; // ... and here to use OpenGL coordinates
+  viewport.height = (pipeline_systems[*index].opengl ? -1.0f : 1.0f) *
+    (float)vkz_swap_extent.height; 
 
   viewport.minDepth = 0.0f;
   viewport.maxDepth = 1.0f;
@@ -1154,7 +1161,8 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   rasterization_state_ci.polygonMode = VK_POLYGON_MODE_FILL;
   rasterization_state_ci.lineWidth = 1.0f;
   rasterization_state_ci.cullMode = VK_CULL_MODE_BACK_BIT;
-  rasterization_state_ci.frontFace = VK_FRONT_FACE_CLOCKWISE;
+  rasterization_state_ci.frontFace = pipeline_systems[*index].opengl ?
+    VK_FRONT_FACE_COUNTER_CLOCKWISE : VK_FRONT_FACE_CLOCKWISE;
   rasterization_state_ci.depthBiasEnable = VK_FALSE;
   rasterization_state_ci.depthBiasConstantFactor = 0.0f;
   rasterization_state_ci.depthBiasClamp = 0.0f;
@@ -1641,7 +1649,7 @@ int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t * image_index) {
     vkz_destroy_pipeline(pipeline_index);
     vkz_destroy_swapchain();
     vkz_create_swapchain(vkz_width, vkz_height, -1);
-    vkz_create_pipeline(NULL, NULL, NULL, NULL, &pipeline_index);
+    vkz_create_pipeline(NULL, NULL, NULL, NULL, 100, &pipeline_index);
     return 1;
   }
   else if (r != VK_SUCCESS && r != VK_SUBOPTIMAL_KHR) {
@@ -1676,7 +1684,7 @@ int vkz_present_next_image(uint32_t pipeline_index) {
     vkz_destroy_pipeline(pipeline_index);
     vkz_destroy_swapchain();
     vkz_create_swapchain(vkz_width, vkz_height, -1);
-    vkz_create_pipeline(NULL, NULL, NULL, NULL, &pipeline_index);
+    vkz_create_pipeline(NULL, NULL, NULL, NULL, 100, &pipeline_index);
   }
   else if (r != VK_SUCCESS) {
     printf("Could not present swapchain image!\n\r");

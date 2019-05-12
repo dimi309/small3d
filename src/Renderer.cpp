@@ -798,7 +798,7 @@ namespace small3d {
     }
 
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
-      setInputStateCallback, setPipelineLayoutCallback, &perspectivePipelineIndex);
+      setInputStateCallback, setPipelineLayoutCallback, 1, &perspectivePipelineIndex);
 
     vkz_create_clear_command_buffers(perspectivePipelineIndex);
 
@@ -817,7 +817,7 @@ namespace small3d {
       "simpleFragmentShader.spv";
 
     vkz_create_pipeline(orthoVertexShaderPath.c_str(), orthoFragmentShaderPath.c_str(),
-      setOrthoInputStateCallback, setOrthoPipelineLayoutCallback,
+      setOrthoInputStateCallback, setOrthoPipelineLayoutCallback, 1,
       &orthographicPipelineIndex);
 
     vkz_create_sync_objects();
