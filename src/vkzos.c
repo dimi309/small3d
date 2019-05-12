@@ -103,8 +103,6 @@ typedef struct {
   VkCommandBuffer* draw_command_buffers;
   int (*set_input_state_function)(VkPipelineVertexInputStateCreateInfo*);
   int (*set_pipeline_layout_function)(VkPipelineLayoutCreateInfo*);
-  float minViewportDepth;
-  float maxViewportDepth;
 } pipeline_system_struct;
 
 uint32_t pipeline_system_count = 0;
@@ -544,15 +542,13 @@ int create_logical_device() {
     vkz_present_family_index ? 1 : 2;
   dci.pEnabledFeatures = &pdf;
   dci.enabledExtensionCount = 1;
-  const char** device_extensions = malloc(sizeof * device_extensions * 20);
-  device_extensions[0] = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+  const char* device_extensions[] = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
   dci.ppEnabledExtensionNames = (const char* const*)device_extensions;
 
 #ifndef NDEBUG
-  const char** vl = malloc(sizeof * vl * 40);
+  const char* vl[] = { "VK_LAYER_LUNARG_standard_validation" };
 
   if (validation_layer_ok) {
-    vl[0] = "VK_LAYER_LUNARG_standard_validation";
     dci.enabledLayerCount = 1;
     dci.ppEnabledLayerNames = vl;
   }
@@ -566,11 +562,6 @@ int create_logical_device() {
   logical_device_created =
     vkCreateDevice(vkz_physical_device, &dci, NULL, &vkz_logical_device) ==
     VK_SUCCESS;
-  free((char**)device_extensions);
-
-#if defined(DEBUG) || defined(_DEBUG) || !defined (NDEBUG)
-  free((char**)vl);
-#endif
 
   if (logical_device_created) {
     vkGetDeviceQueue(vkz_logical_device, vkz_graphics_family_index, 0,
@@ -775,7 +766,7 @@ int create_render_pass() {
   depth_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
   depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
   depth_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-  depth_attachment_description.stencilLoadOp = 
+  depth_attachment_description.stencilLoadOp =
     VK_ATTACHMENT_LOAD_OP_DONT_CARE;
   depth_attachment_description.stencilStoreOp =
     VK_ATTACHMENT_STORE_OP_STORE;
@@ -890,7 +881,7 @@ int vkz_create_swapchain(const uint32_t width, const uint32_t height,
   ci.imageColorSpace = vkz_surface_format.colorSpace;
   ci.imageExtent = vkz_swap_extent;
   ci.imageArrayLayers = 1;
-  ci.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+  ci.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 
   if (vkz_graphics_family_index != vkz_present_family_index) {
     ci.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
@@ -932,7 +923,7 @@ int vkz_create_swapchain(const uint32_t width, const uint32_t height,
     &vkz_swapchain_image_count,
     vkz_swapchain_images);
 
-  return create_swapchain_image_views() && create_render_pass() && 
+  return create_swapchain_image_views() && create_render_pass() &&
     vkz_create_depth_image() && create_framebuffers(render_pass);
 }
 
@@ -993,7 +984,6 @@ long alloc_load_shader_spv(char* path, uint32_t * *spv) {
 int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_shader_path,
   int (*set_input_state)(VkPipelineVertexInputStateCreateInfo*),
   int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo*),
-  float minDepth, float maxDepth,
   uint32_t * index) {
 
   if (pipeline_systems) {
@@ -1132,17 +1122,12 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   VkViewport viewport;
   memset(&viewport, 0, sizeof(viewport));
   viewport.x = 0.0f;
-  viewport.y = (float)vkz_swap_extent.height; // flipping the viewport here ...
+  viewport.y = 0.0f; //(float)vkz_swap_extent.height; // flipping the viewport here ...
   viewport.width = (float)vkz_swap_extent.width;
-  viewport.height = -(float)vkz_swap_extent.height; // ... and here to use OpenGL coordinates
+  viewport.height = (float)vkz_swap_extent.height; // ... and here to use OpenGL coordinates
 
-  if (minDepth != 100.0f && maxDepth != 100.0f) {
-    pipeline_systems[*index].minViewportDepth = minDepth;
-    pipeline_systems[*index].maxViewportDepth = maxDepth;
-  }
-
-  viewport.minDepth = pipeline_systems[*index].minViewportDepth;
-  viewport.maxDepth = pipeline_systems[*index].maxViewportDepth;
+  viewport.minDepth = 0.0f;
+  viewport.maxDepth = 1.0f;
 
   VkRect2D scissor;
   memset(&scissor, 0, sizeof(VkRect2D));
@@ -1169,7 +1154,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   rasterization_state_ci.polygonMode = VK_POLYGON_MODE_FILL;
   rasterization_state_ci.lineWidth = 1.0f;
   rasterization_state_ci.cullMode = VK_CULL_MODE_BACK_BIT;
-  rasterization_state_ci.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+  rasterization_state_ci.frontFace = VK_FRONT_FACE_CLOCKWISE;
   rasterization_state_ci.depthBiasEnable = VK_FALSE;
   rasterization_state_ci.depthBiasConstantFactor = 0.0f;
   rasterization_state_ci.depthBiasClamp = 0.0f;
@@ -1292,7 +1277,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
     malloc(vkz_swapchain_image_count *
       sizeof(VkCommandBuffer));
 
-  memset(pipeline_systems[*index].draw_command_buffers, 0, 
+  memset(pipeline_systems[*index].draw_command_buffers, 0,
     vkz_swapchain_image_count * sizeof(VkCommandBuffer));
 
   pipeline_systems[*index].clear_command_buffers =
@@ -1369,10 +1354,6 @@ int vkz_create_clear_command_buffers(uint32_t pipeline_index) {
         imageRange.levelCount = 1;
         imageRange.layerCount = 1;
 
-        /*validation layer:  [ VUID-vkCmdClearColorImage-image-00002 ] Object: 0x5 (Type = 10) | 
-        vkCmdClearColorImage called with image created without VK_IMAGE_USAGE_TRANSFER_DST_BIT.. 
-        The Vulkan spec states: image must have been created with VK_IMAGE_USAGE_TRANSFER_DST_BIT
-        usage flag (https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VUID-vkCmdClearColorImage-image-00002)*/
         vkCmdClearColorImage(pipeline_systems[pipeline_index].clear_command_buffers[i], vkz_swapchain_images[i],
           VK_IMAGE_LAYOUT_GENERAL, &clearColour, 1, &imageRange);
 
@@ -1392,7 +1373,7 @@ int vkz_destroy_clear_command_buffers(uint32_t pipeline_index) {
   vkDeviceWaitIdle(vkz_logical_device);
 
   vkFreeCommandBuffers(vkz_logical_device, command_pool, vkz_swapchain_image_count,
-     pipeline_systems[pipeline_index].clear_command_buffers);
+    pipeline_systems[pipeline_index].clear_command_buffers);
 
   return 1;
 }
@@ -1457,17 +1438,17 @@ int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
 
       vkCmdBeginRenderPass(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index],
         &render_pass_bi, VK_SUBPASS_CONTENTS_INLINE);
-      
+
       vkCmdBindPipeline(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index],
         VK_PIPELINE_BIND_POINT_GRAPHICS,
         pipeline_systems[pipeline_index].pipeline);
-      
+
       if (bind_vertex_buffers) {
         bind_vertex_buffers(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index]);
       }
 
       if (record_draw_command) {
-        record_draw_command(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index], 
+        record_draw_command(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index],
           pipeline_systems[pipeline_index].pipeline_layout, next_image_index);
       }
 
@@ -1484,7 +1465,7 @@ int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
   return 1;
 }
 
-int vkz_begin_next_draw_command_buffer(uint32_t pipeline_index, VkCommandBuffer *command_buffer) {
+int vkz_begin_next_draw_command_buffer(uint32_t pipeline_index, VkCommandBuffer * command_buffer) {
 
   VkCommandBufferAllocateInfo command_buffer_ai;
   memset(&command_buffer_ai, 0, sizeof(VkCommandBufferAllocateInfo));
@@ -1660,7 +1641,7 @@ int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t * image_index) {
     vkz_destroy_pipeline(pipeline_index);
     vkz_destroy_swapchain();
     vkz_create_swapchain(vkz_width, vkz_height, -1);
-    vkz_create_pipeline(NULL, NULL, NULL, NULL, 100.0f, 100.0f, &pipeline_index);
+    vkz_create_pipeline(NULL, NULL, NULL, NULL, &pipeline_index);
     return 1;
   }
   else if (r != VK_SUCCESS && r != VK_SUBOPTIMAL_KHR) {
@@ -1695,7 +1676,7 @@ int vkz_present_next_image(uint32_t pipeline_index) {
     vkz_destroy_pipeline(pipeline_index);
     vkz_destroy_swapchain();
     vkz_create_swapchain(vkz_width, vkz_height, -1);
-    vkz_create_pipeline(NULL, NULL, NULL, NULL, 100.0f, 100.0f, &pipeline_index);
+    vkz_create_pipeline(NULL, NULL, NULL, NULL, &pipeline_index);
   }
   else if (r != VK_SUCCESS) {
     printf("Could not present swapchain image!\n\r");
@@ -1748,21 +1729,21 @@ int send(uint32_t pipeline_index,
 }
 
 int vkz_clear(uint32_t pipeline_index) {
-  /*validation layer : [UNASSIGNED - CoreValidation - DrawState - InvalidImageLayout] Object : 
-  0x202555e1cc8 (Type = 6) | Submitted command buffer expects image 0x5 (subresource : aspectMask 0x1 array layer 0, 
+  /*validation layer : [UNASSIGNED - CoreValidation - DrawState - InvalidImageLayout] Object :
+  0x202555e1cc8 (Type = 6) | Submitted command buffer expects image 0x5 (subresource : aspectMask 0x1 array layer 0,
   mip level 0) to be in layout VK_IMAGE_LAYOUT_PRESENT_SRC_KHR--instead, image 0x5's current layout is VK_IMAGE_LAYOUT_UNDEFINED.*/
   // (once)
   vkz_transition_image_layout(vkz_swapchain_images[next_image_index],
     VK_FORMAT_R32G32B32A32_SFLOAT, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_LAYOUT_GENERAL);
   return send(pipeline_index, NULL,
     pipeline_systems[pipeline_index].clear_command_buffers);
-    
+
   return 1;
 }
 
 int vkz_draw(uint32_t pipeline_index,
   int (*update_buffers_function)(uint32_t)) {
-  
+
   vkDeviceWaitIdle(vkz_logical_device);
 
   return send(pipeline_index, update_buffers_function,
@@ -2006,7 +1987,7 @@ int vkz_transition_image_layout(VkImage image, VkFormat format,
   {
     source_stage = VK_PIPELINE_STAGE_TRANSFER_BIT;
     destination_stage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-    
+
   }
   else {
     printf("Unsupported layout transition!\n\r");

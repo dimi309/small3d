@@ -173,7 +173,8 @@ int RendererTest() {
 		    glm::vec2(-1.0f, 0.0f), glm::vec2(0.5f, -0.5f));
     renderer->swapBuffers();
   }
-  
+  renderer->clearBuffers(object);
+  renderer->clearBuffers(object2);
   renderer->deleteTexture("cubeTexture");
   glfwDestroyWindow(renderer->getWindow());
   return 1;
@@ -251,7 +252,7 @@ int main(int argc, char **argv) {
     printf("*** Failing RendererTest.\n\r");
     return 1;
   }
-  if (!SoundTest()) {
+  /*if (!SoundTest()) {
     printf("*** Failing SoundTest.\n\r");
     return 1;
   }
@@ -266,7 +267,7 @@ int main(int argc, char **argv) {
   if (!TokenTest()) {
     printf("*** Failing TokenTest.\n\r");
     return 1;
-  }
+  }*/
   printf("All tests have executed successfully.\n\r");
   return 0;
 }
