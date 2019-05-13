@@ -1641,7 +1641,7 @@ int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t * image_index) {
   VkResult r =
     vkAcquireNextImageKHR(vkz_logical_device, vkz_swapchain,
       UINT64_MAX,
-      NULL, //image_available_semaphore,
+      VK_NULL_HANDLE, //image_available_semaphore,
       gpu_cpu_fence, &next_image_index);
 
   if (r == VK_ERROR_OUT_OF_DATE_KHR) {
