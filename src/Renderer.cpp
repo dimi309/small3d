@@ -1506,12 +1506,20 @@ namespace small3d {
     vkz_present_next_image(perspectivePipelineIndex);
     vkz_acquire_next_image(perspectivePipelineIndex, &currentSwapchainImageIndex);
     
-    //Can only be run once
+    // No problem only running these once
     setPerspectiveAndLight();
     positionCamera();
-    setColourBuffer(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
-    bindTexture("blank");
+    
+    // These would have to be updated per GPU draw command, but right now
+    // they just update memory buffers through CPU commands.
     positionNextObject(glm::vec3(0.0f), glm::vec3(0.0f));
+    setColourBuffer(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+    
+    // The same for this, but it selects an image view to be bound with the 
+    // sampler to the texture2D point of the fragment shaders.
+    bindTexture("blank");
+    
+    // And here all of the above are bound
     updateDescriptorSets();
     updateOrthoDescriptorSets();
 
