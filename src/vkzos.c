@@ -97,7 +97,6 @@ typedef struct {
   char* fragment_shader_path;
   VkShaderModule vertex_shader_module;
   VkShaderModule fragment_shader_module;
-  VkPipelineLayout pipeline_layout;
   VkPipeline pipeline;
   VkCommandBuffer* clear_command_buffers;
   VkCommandBuffer* draw_command_buffers;
@@ -765,10 +764,10 @@ int create_render_pass() {
   memset(&depth_attachment_description, 0, sizeof(VkAttachmentDescription));
   depth_attachment_description.format = VK_FORMAT_D32_SFLOAT;
   depth_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
-  depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-  depth_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+  depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+  depth_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
   depth_attachment_description.stencilLoadOp =
-    VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    VK_ATTACHMENT_LOAD_OP_LOAD;
   depth_attachment_description.stencilStoreOp =
     VK_ATTACHMENT_STORE_OP_STORE;
   depth_attachment_description.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
@@ -999,6 +998,18 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
         *index = pipeline_system_count;
         free(pipeline_systems);
         pipeline_systems = temp;
+        
+        // Create a pipeline layout with the same index
+        
+        VkPipelineLayout* ptemp =
+          malloc((pipeline_system_count + 1) * sizeof(VkPipelineLayout));
+        for (uint32_t n = 0; n < pipeline_system_count; n++) {
+          ptemp[n] = vkz_pipeline_layout[n];
+        }
+        free(vkz_pipeline_layout);
+        vkz_pipeline_layout = ptemp;
+
+        
         pipeline_system_count++;
         memset(&pipeline_systems[*index], 0, sizeof(pipeline_system_struct));
         pipeline_systems[*index].vertex_shader_path = (char*)vertex_shader_path;
@@ -1031,7 +1042,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
     }
   }
   else {
-    // Pipeline has nevver been created
+    // Pipeline has never been created
     if (*index != 100) {
       printf("Pipeline has never been created! Cannot reuse index %d!\n\r",
         *index);
@@ -1040,6 +1051,8 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
     pipeline_system_count = 1;
     pipeline_systems = malloc(sizeof(pipeline_system_struct));
     memset(pipeline_systems, 0, sizeof(pipeline_system_struct));
+    vkz_pipeline_layout = malloc(sizeof(VkPipelineLayout));
+    memset(vkz_pipeline_layout, 0, sizeof(VkPipelineLayout));
     *index = 0;
     pipeline_systems[*index].vertex_shader_path = (char*)vertex_shader_path;
     pipeline_systems[*index].fragment_shader_path = (char*)fragment_shader_path;
@@ -1224,7 +1237,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   }
 
   if (vkCreatePipelineLayout(vkz_logical_device, &pipeline_layout_ci, NULL,
-    &pipeline_systems[*index].pipeline_layout)
+    &vkz_pipeline_layout[*index])
     != VK_SUCCESS) {
     printf("Failed to create pipeline layout!\n\r");
   }
@@ -1254,7 +1267,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   pipeline_ci.pDepthStencilState = NULL;
   pipeline_ci.pColorBlendState = &color_blend_state_ci;
   pipeline_ci.pDynamicState = NULL;
-  pipeline_ci.layout = pipeline_systems[*index].pipeline_layout;
+  pipeline_ci.layout = vkz_pipeline_layout[*index];
 
   pipeline_ci.renderPass = render_pass;
   pipeline_ci.subpass = 0;
@@ -1310,7 +1323,7 @@ int vkz_destroy_pipeline(uint32_t index) {
     pipeline_systems[index].pipeline, NULL);
 
   vkDestroyPipelineLayout(vkz_logical_device,
-    pipeline_systems[index].pipeline_layout, NULL);
+    vkz_pipeline_layout[index], NULL);
   vkDestroyShaderModule(vkz_logical_device,
     pipeline_systems[index].vertex_shader_module, NULL);
   vkDestroyShaderModule(vkz_logical_device,
@@ -1438,6 +1451,7 @@ int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
       clear_values[0].color.float32[1] = 0.0f;
       clear_values[0].color.float32[2] = 0.0f;
       clear_values[0].color.float32[3] = 1.0f;
+      
       clear_values[1].depthStencil.depth = 1.0f;
       clear_values[1].depthStencil.stencil = 0;
 
@@ -1457,7 +1471,7 @@ int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
 
       if (record_draw_command) {
         record_draw_command(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index],
-          pipeline_systems[pipeline_index].pipeline_layout, next_image_index);
+          vkz_pipeline_layout[pipeline_index], next_image_index);
       }
 
       vkCmdEndRenderPass(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index]);
@@ -1532,7 +1546,7 @@ int vkz_begin_next_draw_command_buffer(uint32_t pipeline_index, VkCommandBuffer 
       vkCmdBindPipeline(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index],
         VK_PIPELINE_BIND_POINT_GRAPHICS,
         pipeline_systems[pipeline_index].pipeline);
-      command_buffer = &pipeline_systems[pipeline_index].draw_command_buffers[next_image_index];
+      *command_buffer = pipeline_systems[pipeline_index].draw_command_buffers[next_image_index];
       return 1;
     }
   }
@@ -2067,6 +2081,10 @@ int vkz_shutdown() {
 
   if (pipeline_systems) {
     free(pipeline_systems);
+  }
+
+  if (vkz_pipeline_layout) {
+    free(vkz_pipeline_layout);
   }
 
   if (vkz_swapchain_support_details.formats)

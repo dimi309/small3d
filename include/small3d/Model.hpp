@@ -12,6 +12,9 @@
 #include <vector>
 #include <vulkan/vulkan.h>
 
+#define GLM_FORCE_RADIANS
+#include <glm/glm.hpp>
+
 namespace small3d {
   /**
    * @struct	Model
@@ -132,6 +135,12 @@ namespace small3d {
      * @brief Size of the texture coordinates data, in bytes.
      */
     int textureCoordsDataByteSize = 0;
+
+    std::string textureName;
+    glm::vec4 colour;
+    bool perspective;
+    glm::vec3 offset;
+    glm::vec3 rotation;
 
     /**
      * @brief Default constructor

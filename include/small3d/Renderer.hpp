@@ -83,7 +83,7 @@ namespace small3d
     std::vector<float> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
 
-    static Model nextModelToDraw;
+    static std::vector<Model> nextModelsToDraw;
 
     static VkVertexInputBindingDescription bd[3];
     static VkVertexInputAttributeDescription ad[3];
@@ -98,15 +98,15 @@ namespace small3d
 
     static int setInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo);
     static int setPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo);
-    static int bindBuffersCallback(VkCommandBuffer commandBuffer);
+    static int bindBuffersCallback(VkCommandBuffer commandBuffer, const Model& model);
     static int recordDrawCommandCallback(VkCommandBuffer commandBuffer,
-      VkPipelineLayout pipelineLayout,
+      VkPipelineLayout pipelineLayout, const Model& model,
       uint32_t swapchainImageIndex);
     static int setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo);
     static int setOrthoPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo);
-    static int bindOrthoBuffersCallback(VkCommandBuffer commandBuffer);
+    static int bindOrthoBuffersCallback(VkCommandBuffer commandBuffer, const Model& model);
     static int recordOrthoDrawCommandCallback(VkCommandBuffer commandBuffer,
-      VkPipelineLayout pipelineLayout,
+      VkPipelineLayout pipelineLayout, const Model& model,
       uint32_t swapchainImageIndex);
 
 
@@ -119,6 +119,12 @@ namespace small3d
     VkDescriptorPool orthoDescriptorPool;
     bool orthoDescriptorPoolCreated = false;
     void createOrthoDescriptorPool();
+
+    VkCommandBuffer nextCommandBuffer;
+    VkCommandBuffer nextOrthoCommandBuffer;
+
+    std::vector<Model> tempModels;
+    std::vector<Model> garbageModels;
 
     void allocateDescriptorSets();
     void updateDescriptorSets();

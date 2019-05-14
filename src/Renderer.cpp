@@ -53,7 +53,7 @@ namespace small3d {
     float intensity;
   };
 
-  Model Renderer::nextModelToDraw;
+  std::vector<Model> Renderer::nextModelsToDraw;
 
   VkVertexInputBindingDescription Renderer::bd[3];
   VkVertexInputAttributeDescription Renderer::ad[3];
@@ -109,11 +109,11 @@ namespace small3d {
     return 1;
   }
 
-  int Renderer::bindBuffersCallback(VkCommandBuffer commandBuffer) {
+  int Renderer::bindBuffersCallback(VkCommandBuffer commandBuffer, const Model& model) {
     VkBuffer vertexBuffers[3];
-    vertexBuffers[0] = nextModelToDraw.positionBuffer;
-    vertexBuffers[1] = nextModelToDraw.normalsBuffer;
-    vertexBuffers[2] = nextModelToDraw.uvBuffer;
+    vertexBuffers[0] = model.positionBuffer;
+    vertexBuffers[1] = model.normalsBuffer;
+    vertexBuffers[2] = model.uvBuffer;
     VkDeviceSize offsets[3];
     offsets[0] = 0;
     offsets[1] = 0;
@@ -123,20 +123,20 @@ namespace small3d {
     vkCmdBindVertexBuffers(commandBuffer, 0, 3, vertexBuffers, offsets);
 
     // Index buffer
-    vkCmdBindIndexBuffer(commandBuffer, nextModelToDraw.indexBuffer,
+    vkCmdBindIndexBuffer(commandBuffer, model.indexBuffer,
       0, VK_INDEX_TYPE_UINT32);
     return 1;
   }
 
   int Renderer::recordDrawCommandCallback(VkCommandBuffer commandBuffer,
-    VkPipelineLayout pipelineLayout,
+    VkPipelineLayout pipelineLayout, const Model& model,
     uint32_t swapchainImageIndex) {
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
       pipelineLayout, 0, 1,
       &descriptorSets[swapchainImageIndex], 0, NULL);
 
-    vkCmdDrawIndexed(commandBuffer, (uint32_t)nextModelToDraw.indexData.size(), 1, 0, 0, 0);
+    vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(), 1, 0, 0, 0);
 
     return 1;
   }
@@ -176,10 +176,10 @@ namespace small3d {
     return 1;
   }
 
-  int Renderer::bindOrthoBuffersCallback(VkCommandBuffer commandBuffer) {
+  int Renderer::bindOrthoBuffersCallback(VkCommandBuffer commandBuffer, const Model& model) {
     VkBuffer vertexBuffers[2];
-    vertexBuffers[0] = nextModelToDraw.positionBuffer;
-    vertexBuffers[1] = nextModelToDraw.uvBuffer;
+    vertexBuffers[0] = model.positionBuffer;
+    vertexBuffers[1] = model.uvBuffer;
     VkDeviceSize offsets[2];
     offsets[0] = 0;
     offsets[1] = 0;
@@ -188,20 +188,20 @@ namespace small3d {
     vkCmdBindVertexBuffers(commandBuffer, 0, 2, vertexBuffers, offsets);
 
     // Index buffer
-    vkCmdBindIndexBuffer(commandBuffer, nextModelToDraw.indexBuffer,
+    vkCmdBindIndexBuffer(commandBuffer, model.indexBuffer,
       0, VK_INDEX_TYPE_UINT32);
     return 1;
   }
 
   int Renderer::recordOrthoDrawCommandCallback(VkCommandBuffer commandBuffer,
-    VkPipelineLayout pipelineLayout,
+    VkPipelineLayout pipelineLayout, const Model& model,
     uint32_t swapchainImageIndex) {
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
       pipelineLayout, 0, 1,
       &orthoDescriptorSets[swapchainImageIndex], 0, NULL);
 
-    vkCmdDrawIndexed(commandBuffer, (uint32_t)nextModelToDraw.indexData.size(), 1, 0, 0, 0);
+    vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(), 1, 0, 0, 0);
 
     return 1;
 
@@ -566,7 +566,7 @@ namespace small3d {
     diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     diiTexture.imageView = boundTextureViews[currentSwapchainImageIndex];
     diiTexture.sampler = textureSamplers[currentSwapchainImageIndex];
-    
+
     VkDescriptorBufferInfo dbiColour;
     memset(&dbiColour, 0, sizeof(VkDescriptorBufferInfo));
     dbiColour.buffer = colourBuffers[currentSwapchainImageIndex];
@@ -826,6 +826,10 @@ namespace small3d {
     // function).
     vkz_acquire_next_image(perspectivePipelineIndex, &currentSwapchainImageIndex);
 
+    // Begin next command buffers (perspective and orthographic pipelines)
+    vkz_begin_next_draw_command_buffer(perspectivePipelineIndex, &nextCommandBuffer);
+    vkz_begin_next_draw_command_buffer(orthographicPipelineIndex, &nextOrthoCommandBuffer);
+   
   }
 
   void Renderer::initWindow(int& width, int& height) {
@@ -984,6 +988,23 @@ namespace small3d {
   Renderer::~Renderer() {
 
     LOGDEBUG("Renderer destructor running");
+
+    vkz_end_next_draw_command_buffer(perspectivePipelineIndex);
+    vkz_end_next_draw_command_buffer(orthographicPipelineIndex);
+
+    vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
+    vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
+
+    for (auto model : garbageModels) {
+      clearBuffers(model);
+    }
+    garbageModels.clear();
+
+    for (auto model : tempModels) {
+      clearBuffers(model);
+    }
+    tempModels.clear();
+
     for (auto it = textures.begin();
       it != textures.end(); ++it) {
       LOGDEBUG("Deleting texture " + it->first);
@@ -1002,14 +1023,11 @@ namespace small3d {
     vkz_destroy_sync_objects();
 
     if (orthographicPipelineIndex != 100) {
-      //vkz_destroy_clear_command_buffers(orthographicPipelineIndex);
-      //vkz_destroy_draw_command_buffers(orthographicPipelineIndex);
+      vkz_destroy_clear_command_buffers(perspectivePipelineIndex);
       vkz_destroy_pipeline(orthographicPipelineIndex);
     }
 
     if (perspectivePipelineIndex != 100) {
-      vkz_destroy_clear_command_buffers(perspectivePipelineIndex);
-      //vkz_destroy_draw_command_buffers(perspectivePipelineIndex);
       vkz_destroy_pipeline(perspectivePipelineIndex);
     }
 
@@ -1192,8 +1210,8 @@ namespace small3d {
     rect.normalsData = std::vector<float>(12);
     rect.normalsDataByteSize = 12 * sizeof(float);
 
-    setColourBuffer(colour);
-
+    rect.colour = colour;
+    
     rect.textureCoordsData = {
         1.0f, 1.0f,
         1.0f, 0.0f,
@@ -1204,15 +1222,13 @@ namespace small3d {
     rect.textureCoordsDataByteSize = 8 * sizeof(float);
 
     if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
-
-      bindTexture(textureName);
-
+      rect.textureName = textureName;
     }
 
     render(rect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
       colour, textureName, perspective);
-    vkDeviceWaitIdle(vkz_logical_device);
-    clearBuffers(rect);
+    //vkDeviceWaitIdle(vkz_logical_device);
+    tempModels.push_back(rect);
   }
 
   void Renderer::renderRectangle(const glm::vec4 colour,
@@ -1385,40 +1401,26 @@ namespace small3d {
       model.alreadyInGPU = true;
     }
 
-    nextModelToDraw = model;
+
 
     if (textureName != "") {
-
       // "Disable" colour since there is a texture
-
-      setColourBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
-
-      bindTexture(textureName);
-
+      model.colour = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+      model.textureName = textureName;
     }
     else {
       // If there is no texture, use the given colour
-      setColourBuffer(colour);
+      model.colour = colour;
+      model.textureName = "blank";
     }
 
-    setPerspectiveAndLight();
+    model.perspective = perspective;
+    model.offset = offset;
+    model.rotation = rotation;
+
+    nextModelsToDraw.push_back(model);
+
     positionNextObject(offset, rotation);
-    positionCamera();
-
-    if (perspective) {
-      updateDescriptorSets();
-      vkz_create_next_draw_command_buffer(perspectivePipelineIndex, &bindBuffersCallback,
-        &recordDrawCommandCallback);
-      vkz_draw(perspectivePipelineIndex, NULL);
-      vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
-    }
-    else {
-      updateOrthoDescriptorSets();
-      vkz_create_next_draw_command_buffer(orthographicPipelineIndex, &bindOrthoBuffersCallback,
-        &recordOrthoDrawCommandCallback);
-      vkz_draw(orthographicPipelineIndex, NULL);
-      vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
-    }
 
   }
 
@@ -1481,20 +1483,67 @@ namespace small3d {
   }
 
   void Renderer::clearScreen() const {
-    
+
     vkz_clear(perspectivePipelineIndex);
 
   }
 
   void Renderer::clearScreen(const glm::vec4 colour) const {
+    
     vkz_clear(perspectivePipelineIndex);
-
   }
 
   void Renderer::swapBuffers() {
+    vkz_end_next_draw_command_buffer(perspectivePipelineIndex);
+    vkz_end_next_draw_command_buffer(orthographicPipelineIndex);
+
+    vkz_draw(perspectivePipelineIndex, NULL);
+    vkz_draw(orthographicPipelineIndex, NULL);
+
+    vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
+    vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
+
     vkz_present_next_image(perspectivePipelineIndex);
     vkz_acquire_next_image(perspectivePipelineIndex, &currentSwapchainImageIndex);
+    
+    //Can only be run once
+    setPerspectiveAndLight();
+    positionCamera();
+    setColourBuffer(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+    bindTexture("blank");
+    positionNextObject(glm::vec3(0.0f), glm::vec3(0.0f));
+    updateDescriptorSets();
+    updateOrthoDescriptorSets();
 
+    vkz_begin_next_draw_command_buffer(perspectivePipelineIndex, &nextCommandBuffer);
+    vkz_begin_next_draw_command_buffer(orthographicPipelineIndex, &nextOrthoCommandBuffer);
+    
+    for (auto model : nextModelsToDraw) {
+      if (model.perspective) {
+
+        bindBuffersCallback(nextCommandBuffer, model);
+        recordDrawCommandCallback(nextCommandBuffer, vkz_pipeline_layout[perspectivePipelineIndex],
+          model, currentSwapchainImageIndex);
+      }
+      else {
+
+        bindOrthoBuffersCallback(nextOrthoCommandBuffer, model);
+        recordOrthoDrawCommandCallback(nextOrthoCommandBuffer, vkz_pipeline_layout[orthographicPipelineIndex],
+          model, currentSwapchainImageIndex);
+      }
+    }
+    nextModelsToDraw.clear();
+
+    for (auto model : garbageModels) {
+      clearBuffers(model);
+    }
+    garbageModels.clear();
+
+    for (auto model : tempModels) {
+      garbageModels.push_back(model);
+    }
+    tempModels.clear();
   }
+
 
 }

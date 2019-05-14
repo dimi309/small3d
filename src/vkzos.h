@@ -27,6 +27,11 @@ VkSurfaceKHR vkz_surface;
 VkDevice vkz_logical_device;
 
 /**
+ * @brief The pipeline layouts, one for each pipeline created.
+ */
+VkPipelineLayout *vkz_pipeline_layout;
+
+/**
  * @brief Number of images in the swapchain, set by vkz_create_swapchain().
  */
 uint32_t vkz_swapchain_image_count;
