@@ -247,6 +247,8 @@ namespace small3d {
     createOrthoDescriptorPool();
     allocateOrthoDescriptorSets();
 
+    
+
   }
 
   void Renderer::createDescriptorPool() {

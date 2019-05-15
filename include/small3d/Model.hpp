@@ -48,6 +48,8 @@ namespace small3d {
 
   public:
 
+    // Vulkan-specific variables. Avoid manipulating these directly.
+
     bool alreadyInGPU = false;
 
     VkBuffer positionBuffer;
@@ -62,30 +64,10 @@ namespace small3d {
     VkBuffer uvBuffer;
     VkDeviceMemory uvBufferMemory;
 
-    /**
-     * @brief Position buffer object id. It is suggested not to manipulate
-     *        this directly.
-     */
-    //uint32_t positionBufferObjectId = 0;
+    VkDescriptorSet descriptorSet;
 
-    /**
-     * @brief Index buffer object id. It is suggested not to manipulate
-     *        this directly.
-     */
-    //uint32_t indexBufferObjectId = 0;
-
-    /**
-     * @brief Normals buffer object id. It is suggested not to manipulate
-     *        this directly.
-     */
-    //uint32_t normalsBufferObjectId = 0;
-
-    /**
-     * @brief UV buffer object id. It is suggested not to manipulate this
-     *        directly.
-     */
-    //uint32_t uvBufferObjectId = 0;
-    
+    // End of Vulkan-specific variables.
+        
     /**
      * @brief The vertex data. This is an array, which is to be treated as a 4
      *        column table, holding the x, y, z values in each column. The
@@ -136,10 +118,32 @@ namespace small3d {
      */
     int textureCoordsDataByteSize = 0;
 
+    /**
+    * @brief Name of the texture the model will be rendered with. The texture has to
+    *        have been previously generated with Renderer.generateTexture().
+    */
     std::string textureName;
+
+    /**
+    * @brief The colour of the model (set to glm::vec4(0.0f, 0.0f, 0.0f, 0.0f) to 
+    *        use a texture instead.
+    */
     glm::vec4 colour;
+
+    /**
+     * @brief True if the model is to be rendered with perspective, False for orthographic
+     *        rendering
+     */
     bool perspective;
+
+    /**
+     * @brief Position of the model on the 3D scene
+     */
     glm::vec3 offset;
+
+    /**
+     * @brief x, y and z rotation of the model
+     */
     glm::vec3 rotation;
 
     /**
