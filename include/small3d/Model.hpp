@@ -66,6 +66,8 @@ namespace small3d {
 
     VkDescriptorSet descriptorSet;
 
+    uint32_t orientationMemIndex;
+
     // End of Vulkan-specific variables.
         
     /**

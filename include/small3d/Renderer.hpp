@@ -33,6 +33,14 @@ namespace small3d
     VkDeviceMemory imageMemory;
   };
 
+  struct UboOrientation {
+    glm::mat4x4 xRotationMatrix;
+    glm::mat4x4 yRotationMatrix;
+    glm::mat4x4 zRotationMatrix;
+    glm::vec3 offset;
+    float padding;
+  };
+
   /**
    * @class Renderer
    * @brief Renderer class, which can render using either OpenGL v3.3 or v2.1
@@ -53,8 +61,8 @@ namespace small3d
 
     uint32_t currentSwapchainImageIndex = 0;
 
-    std::vector<VkBuffer> renderOrientationBuffers;
-    std::vector<VkDeviceMemory> renderOrientationBufferMemories;
+    std::vector<VkBuffer> renderOrientationBuffersDynamic;
+    std::vector<VkDeviceMemory> renderOrientationBuffersDynamicMemory;
 
     std::vector<VkBuffer> cameraOrientationBuffers;
     std::vector<VkDeviceMemory> cameraOrientationBufferMemories;
@@ -95,20 +103,24 @@ namespace small3d
     static VkDescriptorSetLayout orthoDescriptorSetLayout;
     static std::vector<VkDescriptorSet> orthoDescriptorSets;
 
+    size_t dynamicOrientationAlignment;
+
+    UboOrientation* uboOrientationDynamic;
+    uint32_t orientationMemIndex;
+    size_t uboOrientationDynamicSize;
 
     static int setInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo);
-    static int setPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo);
-    static int bindBuffersCallback(VkCommandBuffer commandBuffer, const Model& model);
-    static int recordDrawCommandCallback(VkCommandBuffer commandBuffer,
+    static int setPipelineLayout(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo);
+    static int bindBuffers(VkCommandBuffer commandBuffer, const Model& model);
+    void recordDrawCommand(VkCommandBuffer commandBuffer,
       VkPipelineLayout pipelineLayout, const Model& model,
       uint32_t swapchainImageIndex);
-    static int setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo);
-    static int setOrthoPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo);
-    static int bindOrthoBuffersCallback(VkCommandBuffer commandBuffer, const Model& model);
-    static int recordOrthoDrawCommandCallback(VkCommandBuffer commandBuffer,
+    static int setOrthoInputState(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo);
+    static int setOrthoPipelineLayout(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo);
+    static int bindOrthoBuffers(VkCommandBuffer commandBuffer, const Model& model);
+    static int recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
       VkPipelineLayout pipelineLayout, const Model& model,
       uint32_t swapchainImageIndex);
-
 
     void initVulkan();
     
@@ -135,7 +147,7 @@ namespace small3d
     void setColourBuffer(glm::vec4 colour);
 
     void positionNextObject(const glm::vec3 offset,
-			    const glm::vec3 rotation);
+			    const glm::vec3 rotation, uint32_t memIndex);
     void positionCamera();
     vulkanImage getTextureHandle(const std::string name) const;
     vulkanImage generateTexture(const std::string name, const float *data,

@@ -55,7 +55,8 @@ static uint32_t vkz_width;
 static uint32_t vkz_height;
 extern VkInstance vkz_instance;
 extern VkSurfaceKHR vkz_surface;
-static VkPhysicalDevice vkz_physical_device = VK_NULL_HANDLE;
+extern VkPhysicalDevice vkz_physical_device;
+extern VkDevice vkz_logical_device;
 static int vkz_graphics_family_index = -1;
 static int vkz_present_family_index = -1;
 static VkQueue vkz_graphics_queue;
@@ -1791,6 +1792,7 @@ int find_memory_type(uint32_t type_filter, VkMemoryPropertyFlags prop_flags,
   }
   return found;
 }
+
 
 int vkz_create_buffer(VkBuffer * buffer,
   VkBufferUsageFlags buffer_usage_flags,

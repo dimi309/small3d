@@ -22,6 +22,12 @@ VkInstance vkz_instance;
 VkSurfaceKHR vkz_surface;
 
 /**
+ * @brief The physical device that is selected vkz_init().
+ */
+
+VkPhysicalDevice vkz_physical_device;
+
+/**
  * @brief The logical device that is created by vkz_init().
  */
 VkDevice vkz_logical_device;

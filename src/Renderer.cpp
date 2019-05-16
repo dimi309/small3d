@@ -16,9 +16,11 @@ extern "C" {
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#define MAX_NUM_OBJECTS 20
+
 namespace small3d {
 
-  void error_callback(int error, const char* description)
+  void errorCallback(int error, const char* description)
   {
     LOGERROR(std::string(description));
   }
@@ -29,13 +31,7 @@ namespace small3d {
     float padding;
   };
 
-  struct uboOrientation {
-    glm::mat4x4 xRotationMatrix;
-    glm::mat4x4 yRotationMatrix;
-    glm::mat4x4 zRotationMatrix;
-    glm::vec3 offset;
-    float padding;
-  };
+
 
   struct uboCamera {
     glm::mat4x4 xRotationMatrix;
@@ -103,13 +99,13 @@ namespace small3d {
     return 1;
   }
 
-  int Renderer::setPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
+  int Renderer::setPipelineLayout(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
     pipelineLayoutCreateInfo->setLayoutCount = 1;
     pipelineLayoutCreateInfo->pSetLayouts = &descriptorSetLayout;
     return 1;
   }
 
-  int Renderer::bindBuffersCallback(VkCommandBuffer commandBuffer, const Model& model) {
+  int Renderer::bindBuffers(VkCommandBuffer commandBuffer, const Model& model) {
     VkBuffer vertexBuffers[3];
     vertexBuffers[0] = model.positionBuffer;
     vertexBuffers[1] = model.normalsBuffer;
@@ -128,20 +124,23 @@ namespace small3d {
     return 1;
   }
 
-  int Renderer::recordDrawCommandCallback(VkCommandBuffer commandBuffer,
+  void Renderer::recordDrawCommand(VkCommandBuffer commandBuffer,
     VkPipelineLayout pipelineLayout, const Model& model,
     uint32_t swapchainImageIndex) {
 
+    uint32_t dynamicOrientationOffset = model.orientationMemIndex * 
+      static_cast<uint32_t>(dynamicOrientationAlignment);
+
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
       pipelineLayout, 0, 1,
-      &descriptorSets[swapchainImageIndex], 0, NULL);
+      &descriptorSets[swapchainImageIndex], 1, &dynamicOrientationOffset);
 
     vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(), 1, 0, 0, 0);
 
-    return 1;
+    
   }
 
-  int Renderer::setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo) {
+  int Renderer::setOrthoInputState(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo) {
     memset(orthobd, 0, 2 * sizeof(VkVertexInputBindingDescription));
 
     orthobd[0].binding = 0;
@@ -170,13 +169,13 @@ namespace small3d {
     return 1;
   }
 
-  int Renderer::setOrthoPipelineLayoutCallback(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
+  int Renderer::setOrthoPipelineLayout(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
     pipelineLayoutCreateInfo->setLayoutCount = 1;
     pipelineLayoutCreateInfo->pSetLayouts = &orthoDescriptorSetLayout;
     return 1;
   }
 
-  int Renderer::bindOrthoBuffersCallback(VkCommandBuffer commandBuffer, const Model& model) {
+  int Renderer::bindOrthoBuffers(VkCommandBuffer commandBuffer, const Model& model) {
     VkBuffer vertexBuffers[2];
     vertexBuffers[0] = model.positionBuffer;
     vertexBuffers[1] = model.uvBuffer;
@@ -193,7 +192,7 @@ namespace small3d {
     return 1;
   }
 
-  int Renderer::recordOrthoDrawCommandCallback(VkCommandBuffer commandBuffer,
+  int Renderer::recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
     VkPipelineLayout pipelineLayout, const Model& model,
     uint32_t swapchainImageIndex) {
 
@@ -247,8 +246,6 @@ namespace small3d {
     createOrthoDescriptorPool();
     allocateOrthoDescriptorSets();
 
-    
-
   }
 
   void Renderer::createDescriptorPool() {
@@ -261,7 +258,7 @@ namespace small3d {
       ps[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
       ps[0].descriptorCount = vkz_swapchain_image_count;
 
-      ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
       ps[1].descriptorCount = vkz_swapchain_image_count;
 
       ps[2].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -322,7 +319,6 @@ namespace small3d {
         LOGDEBUG("Created orthographic shaders descriptor pool.");
       }
     }
-
   }
 
   void Renderer::allocateDescriptorSets() {
@@ -330,36 +326,43 @@ namespace small3d {
     VkDescriptorSetLayoutBinding dslb[6];
     memset(dslb, 0, 6 * sizeof(VkDescriptorSetLayoutBinding));
 
+    // perspectiveMatrixLightedShader - uboWorld
     dslb[0].binding = 0;
     dslb[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     dslb[0].descriptorCount = 1;
     dslb[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     dslb[0].pImmutableSamplers = NULL;
 
+    // perspectiveMatrixLightedShader - uboOrientation
+
     dslb[1].binding = 1;
-    dslb[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    dslb[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     dslb[1].descriptorCount = 1;
     dslb[1].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     dslb[1].pImmutableSamplers = NULL;
 
+    // perspectiveMatrixLightedShader - uboCamera
     dslb[2].binding = 2;
     dslb[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     dslb[2].descriptorCount = 1;
     dslb[2].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     dslb[2].pImmutableSamplers = NULL;
 
+    // textureShader - textureImage
     dslb[3].binding = 3;
     dslb[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     dslb[3].descriptorCount = 1;
     dslb[3].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
     dslb[3].pImmutableSamplers = NULL;
 
+    // textureShader - uboColour
     dslb[4].binding = 4;
     dslb[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     dslb[4].descriptorCount = 1;
     dslb[4].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
     dslb[4].pImmutableSamplers = NULL;
 
+    // textureShader - uboLight
     dslb[5].binding = 5;
     dslb[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     dslb[5].descriptorCount = 1;
@@ -413,9 +416,9 @@ namespace small3d {
 
     VkDescriptorBufferInfo dbiOrientation;
     memset(&dbiOrientation, 0, sizeof(VkDescriptorBufferInfo));
-    dbiOrientation.buffer = renderOrientationBuffers[currentSwapchainImageIndex];
+    dbiOrientation.buffer = renderOrientationBuffersDynamic[currentSwapchainImageIndex];
     dbiOrientation.offset = 0;
-    dbiOrientation.range = (3 * 16 + 4) * sizeof(float);
+    dbiOrientation.range = sizeof(UboOrientation);
 
     VkDescriptorBufferInfo dbiCamera;
     memset(&dbiCamera, 0, sizeof(VkDescriptorBufferInfo));
@@ -458,7 +461,7 @@ namespace small3d {
     wds[1].dstSet = descriptorSets[currentSwapchainImageIndex];
     wds[1].dstBinding = 1;
     wds[1].dstArrayElement = 0;
-    wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     wds[1].descriptorCount = 1;
     wds[1].pBufferInfo = &dbiOrientation;
     wds[1].pImageInfo = NULL;
@@ -512,12 +515,14 @@ namespace small3d {
     VkDescriptorSetLayoutBinding dslb[2];
     memset(dslb, 0, 2 * sizeof(VkDescriptorSetLayoutBinding));
 
+    // simpleFragmentShader - textureImage
     dslb[0].binding = 0;
     dslb[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     dslb[0].descriptorCount = 1;
     dslb[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
     dslb[0].pImmutableSamplers = NULL;
 
+    // simpleFragmentShader - uboColour
     dslb[1].binding = 1;
     dslb[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     dslb[1].descriptorCount = 1;
@@ -632,39 +637,22 @@ namespace small3d {
   }
 
   void Renderer::positionNextObject(const glm::vec3 offset,
-    const glm::vec3 rotation) {
+    const glm::vec3 rotation, uint32_t memIndex) {
 
-    uboOrientation orientation;
-    memset(&orientation, 0, sizeof(uboOrientation));
-
-    orientation.xRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.x,
-      glm::vec3(1.0f, 0.0f, 0.0f)));
-    orientation.yRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.y,
-      glm::vec3(0.0f, 1.0f, 0.0f)));
-    orientation.zRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.z,
-      glm::vec3(0.0f, 0.0f, 1.0f)));
-    orientation.offset = offset;
-
-    uint32_t renderOrientationSize = (3 * 16 + 4) * sizeof(float);
-
-    if (renderOrientationBuffers.size() == 0) {
-      renderOrientationBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
-      renderOrientationBufferMemories = std::vector<VkDeviceMemory>(vkz_swapchain_image_count);
-
-      for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
-        vkz_create_buffer(&renderOrientationBuffers[i], VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-          renderOrientationSize,
-          &renderOrientationBufferMemories[i],
-          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-      }
+    if (memIndex > MAX_NUM_OBJECTS) {
+      std::string maxObjects = intToStr(MAX_NUM_OBJECTS);
+      throw std::runtime_error("Cannot position more than " + maxObjects + " on the scene.");
     }
 
-    void* orientationData;
-    vkMapMemory(vkz_logical_device, renderOrientationBufferMemories[currentSwapchainImageIndex],
-      0, renderOrientationSize, 0, &orientationData);
-    memcpy(orientationData, &orientation, renderOrientationSize);
-    vkUnmapMemory(vkz_logical_device, renderOrientationBufferMemories[currentSwapchainImageIndex]);
+    memset(&uboOrientationDynamic[memIndex], 0, sizeof(UboOrientation));
+
+    uboOrientationDynamic[memIndex].xRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.x,
+      glm::vec3(1.0f, 0.0f, 0.0f)));
+    uboOrientationDynamic[memIndex].yRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.y,
+      glm::vec3(0.0f, 1.0f, 0.0f)));
+    uboOrientationDynamic[memIndex].zRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.z,
+      glm::vec3(0.0f, 0.0f, 1.0f)));
+    uboOrientationDynamic[memIndex].offset = offset;
 
   }
 
@@ -800,7 +788,7 @@ namespace small3d {
     }
 
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
-      setInputStateCallback, setPipelineLayoutCallback, 1, &perspectivePipelineIndex);
+      setInputStateCallback, setPipelineLayout, 1, &perspectivePipelineIndex);
 
     vkz_create_clear_command_buffers(perspectivePipelineIndex);
 
@@ -819,10 +807,39 @@ namespace small3d {
       "simpleFragmentShader.spv";
 
     vkz_create_pipeline(orthoVertexShaderPath.c_str(), orthoFragmentShaderPath.c_str(),
-      setOrthoInputStateCallback, setOrthoPipelineLayoutCallback, 1,
+      setOrthoInputState, setOrthoPipelineLayout, 1,
       &orthographicPipelineIndex);
 
     vkz_create_sync_objects();
+
+    // Allocate memory & vulkan dynamic buffer for object positioning
+    VkPhysicalDeviceProperties pdp = {};
+    vkGetPhysicalDeviceProperties(vkz_physical_device, &pdp);
+    VkDeviceSize minAlignment = pdp.limits.minUniformBufferOffsetAlignment;
+
+    dynamicOrientationAlignment = sizeof(UboOrientation);
+    if (minAlignment > 0) {
+      dynamicOrientationAlignment = (dynamicOrientationAlignment + minAlignment - 1) & ~(minAlignment - 1);
+    }
+
+    uboOrientationDynamicSize = MAX_NUM_OBJECTS * dynamicOrientationAlignment;
+    //uboOrientationDynamic = (UboOrientation*) 
+    //_aligned_malloc(uboOrientationDynamicSize, dynamicOrientationAlignment);
+    uboOrientationDynamic = (UboOrientation*) malloc(uboOrientationDynamicSize);
+    memset(uboOrientationDynamic, 0, uboOrientationDynamicSize);
+
+    renderOrientationBuffersDynamic.resize(vkz_swapchain_image_count);
+    renderOrientationBuffersDynamicMemory.resize(vkz_swapchain_image_count);
+
+    for(size_t i = 0; i < vkz_swapchain_image_count; ++i) {
+    vkz_create_buffer(&renderOrientationBuffersDynamic[i], VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+      (uint32_t)uboOrientationDynamicSize,
+      &renderOrientationBuffersDynamicMemory[i],
+      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+      VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+    }
+    // end of memory allocation for object positioning
+
 
     // Acquire the first image (prerequisite for the swap member
     // function).
@@ -831,12 +848,12 @@ namespace small3d {
     // Begin next command buffers (perspective and orthographic pipelines)
     vkz_begin_next_draw_command_buffer(perspectivePipelineIndex, &nextCommandBuffer);
     vkz_begin_next_draw_command_buffer(orthographicPipelineIndex, &nextOrthoCommandBuffer);
-   
+
   }
 
   void Renderer::initWindow(int& width, int& height) {
 
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback(errorCallback);
 
     if (!glfwInit()) {
       throw std::runtime_error("Unable to initialise GLFW");
@@ -1047,8 +1064,13 @@ namespace small3d {
       vkDestroyDescriptorPool(vkz_logical_device, orthoDescriptorPool, NULL);
     }
 
+    // Release orientation buffers (PC RAM)
+    if (uboOrientationDynamic) {
+      free(uboOrientationDynamic);
+    }
+
     for (uint32_t i = 0; i < vkz_swapchain_image_count; ++i) {
-      vkz_destroy_buffer(renderOrientationBuffers[i], renderOrientationBufferMemories[i]);
+      vkz_destroy_buffer(renderOrientationBuffersDynamic[i], renderOrientationBuffersDynamicMemory[i]);
       vkz_destroy_buffer(cameraOrientationBuffers[i], cameraOrientationBufferMemories[i]);
       vkz_destroy_buffer(worldDetailsBuffers[i], worldDetailsBufferMemories[i]);
       vkz_destroy_buffer(lightIntensityBuffers[i], lightIntensityBufferMemories[i]);
@@ -1213,7 +1235,7 @@ namespace small3d {
     rect.normalsDataByteSize = 12 * sizeof(float);
 
     rect.colour = colour;
-    
+
     rect.textureCoordsData = {
         1.0f, 1.0f,
         1.0f, 0.0f,
@@ -1403,8 +1425,6 @@ namespace small3d {
       model.alreadyInGPU = true;
     }
 
-
-
     if (textureName != "") {
       // "Disable" colour since there is a texture
       model.colour = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -1420,9 +1440,11 @@ namespace small3d {
     model.offset = offset;
     model.rotation = rotation;
 
-    nextModelsToDraw.push_back(model);
+    positionNextObject(offset, rotation, orientationMemIndex);
+    model.orientationMemIndex = orientationMemIndex;
+    ++orientationMemIndex;
 
-    positionNextObject(offset, rotation);
+    nextModelsToDraw.push_back(model);
 
   }
 
@@ -1491,7 +1513,7 @@ namespace small3d {
   }
 
   void Renderer::clearScreen(const glm::vec4 colour) const {
-    
+
     vkz_clear(perspectivePipelineIndex);
   }
 
@@ -1507,38 +1529,39 @@ namespace small3d {
 
     vkz_present_next_image(perspectivePipelineIndex);
     vkz_acquire_next_image(perspectivePipelineIndex, &currentSwapchainImageIndex);
-    
+
+    orientationMemIndex = 0;
+
     // No problem only running these once
     setPerspectiveAndLight();
     positionCamera();
-    
-    // These would have to be updated per GPU draw command, but right now
-    // they just update memory buffers through CPU commands.
-    positionNextObject(glm::vec3(0.0f), glm::vec3(0.0f));
+
+    // This would have to be updated per GPU draw command, but right now
+    // it just updates a memory buffer through CPU commands.
     setColourBuffer(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
-    
+
     // The same for this, but it selects an image view to be bound with the 
     // sampler to the texture2D point of the fragment shaders.
     bindTexture("blank");
-    
+
     // And here all of the above are bound
     updateDescriptorSets();
     updateOrthoDescriptorSets();
 
     vkz_begin_next_draw_command_buffer(perspectivePipelineIndex, &nextCommandBuffer);
     vkz_begin_next_draw_command_buffer(orthographicPipelineIndex, &nextOrthoCommandBuffer);
-    
+
     for (auto model : nextModelsToDraw) {
       if (model.perspective) {
 
-        bindBuffersCallback(nextCommandBuffer, model);
-        recordDrawCommandCallback(nextCommandBuffer, vkz_pipeline_layout[perspectivePipelineIndex],
+        bindBuffers(nextCommandBuffer, model);
+        recordDrawCommand(nextCommandBuffer, vkz_pipeline_layout[perspectivePipelineIndex],
           model, currentSwapchainImageIndex);
       }
       else {
 
-        bindOrthoBuffersCallback(nextOrthoCommandBuffer, model);
-        recordOrthoDrawCommandCallback(nextOrthoCommandBuffer, vkz_pipeline_layout[orthographicPipelineIndex],
+        bindOrthoBuffers(nextOrthoCommandBuffer, model);
+        recordOrthoDrawCommand(nextOrthoCommandBuffer, vkz_pipeline_layout[orthographicPipelineIndex],
           model, currentSwapchainImageIndex);
       }
     }
