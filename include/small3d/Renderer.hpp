@@ -38,7 +38,7 @@ namespace small3d
     glm::mat4x4 yRotationMatrix;
     glm::mat4x4 zRotationMatrix;
     glm::vec3 offset;
-    float padding;
+    float padding[13];
   };
 
   /**

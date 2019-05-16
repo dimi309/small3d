@@ -823,10 +823,10 @@ namespace small3d {
     }
 
     uboOrientationDynamicSize = MAX_NUM_OBJECTS * dynamicOrientationAlignment;
-    //uboOrientationDynamic = (UboOrientation*) 
-    //_aligned_malloc(uboOrientationDynamicSize, dynamicOrientationAlignment);
-    uboOrientationDynamic = (UboOrientation*)malloc(uboOrientationDynamicSize);
-    memset(uboOrientationDynamic, 0, uboOrientationDynamicSize);
+    uboOrientationDynamic = (UboOrientation*) 
+    _aligned_malloc(uboOrientationDynamicSize, dynamicOrientationAlignment);
+    //uboOrientationDynamic = (UboOrientation*)malloc(uboOrientationDynamicSize);
+    //memset(uboOrientationDynamic, 0, uboOrientationDynamicSize);
 
     renderOrientationBuffersDynamic.resize(vkz_swapchain_image_count);
     renderOrientationBuffersDynamicMemory.resize(vkz_swapchain_image_count);
@@ -1066,7 +1066,7 @@ namespace small3d {
 
     // Release orientation buffers (PC RAM)
     if (uboOrientationDynamic) {
-      free(uboOrientationDynamic);
+      _aligned_free(uboOrientationDynamic);
     }
 
     for (uint32_t i = 0; i < vkz_swapchain_image_count; ++i) {
@@ -1550,7 +1550,7 @@ namespace small3d {
     void* orientationData;
     vkMapMemory(vkz_logical_device, renderOrientationBuffersDynamicMemory[currentSwapchainImageIndex],
       0, uboOrientationDynamicSize, 0, &orientationData);
-    memcpy(orientationData, &uboOrientationDynamic, uboOrientationDynamicSize);
+    memcpy(orientationData, uboOrientationDynamic, uboOrientationDynamicSize);
     vkUnmapMemory(vkz_logical_device, renderOrientationBuffersDynamicMemory[currentSwapchainImageIndex]);
 
     // And here all of the above are bound
