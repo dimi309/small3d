@@ -128,7 +128,7 @@ namespace small3d {
     VkPipelineLayout pipelineLayout, const Model& model,
     uint32_t swapchainImageIndex) {
 
-    uint32_t dynamicOrientationOffset = model.orientationMemIndex * 
+    uint32_t dynamicOrientationOffset = model.orientationMemIndex *
       static_cast<uint32_t>(dynamicOrientationAlignment);
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
@@ -137,7 +137,7 @@ namespace small3d {
 
     vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(), 1, 0, 0, 0);
 
-    
+
   }
 
   int Renderer::setOrthoInputState(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo) {
@@ -825,18 +825,18 @@ namespace small3d {
     uboOrientationDynamicSize = MAX_NUM_OBJECTS * dynamicOrientationAlignment;
     //uboOrientationDynamic = (UboOrientation*) 
     //_aligned_malloc(uboOrientationDynamicSize, dynamicOrientationAlignment);
-    uboOrientationDynamic = (UboOrientation*) malloc(uboOrientationDynamicSize);
+    uboOrientationDynamic = (UboOrientation*)malloc(uboOrientationDynamicSize);
     memset(uboOrientationDynamic, 0, uboOrientationDynamicSize);
 
     renderOrientationBuffersDynamic.resize(vkz_swapchain_image_count);
     renderOrientationBuffersDynamicMemory.resize(vkz_swapchain_image_count);
 
-    for(size_t i = 0; i < vkz_swapchain_image_count; ++i) {
-    vkz_create_buffer(&renderOrientationBuffersDynamic[i], VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-      (uint32_t)uboOrientationDynamicSize,
-      &renderOrientationBuffersDynamicMemory[i],
-      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-      VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+    for (size_t i = 0; i < vkz_swapchain_image_count; ++i) {
+      vkz_create_buffer(&renderOrientationBuffersDynamic[i], VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+        (uint32_t)uboOrientationDynamicSize,
+        &renderOrientationBuffersDynamicMemory[i],
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
     }
     // end of memory allocation for object positioning
 
@@ -1440,9 +1440,11 @@ namespace small3d {
     model.offset = offset;
     model.rotation = rotation;
 
-    positionNextObject(offset, rotation, orientationMemIndex);
-    model.orientationMemIndex = orientationMemIndex;
-    ++orientationMemIndex;
+    if (perspective) {
+      positionNextObject(offset, rotation, orientationMemIndex);
+      model.orientationMemIndex = orientationMemIndex;
+      ++orientationMemIndex;
+    }
 
     nextModelsToDraw.push_back(model);
 
@@ -1543,6 +1545,13 @@ namespace small3d {
     // The same for this, but it selects an image view to be bound with the 
     // sampler to the texture2D point of the fragment shaders.
     bindTexture("blank");
+
+    // Updating object positioning - this should probably go to a function somewhere...
+    void* orientationData;
+    vkMapMemory(vkz_logical_device, renderOrientationBuffersDynamicMemory[currentSwapchainImageIndex],
+      0, uboOrientationDynamicSize, 0, &orientationData);
+    memcpy(orientationData, &uboOrientationDynamic, uboOrientationDynamicSize);
+    vkUnmapMemory(vkz_logical_device, renderOrientationBuffersDynamicMemory[currentSwapchainImageIndex]);
 
     // And here all of the above are bound
     updateDescriptorSets();

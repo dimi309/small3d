@@ -156,7 +156,7 @@ int RendererTest() {
 
   double startSeconds = glfwGetTime();
 
-  while(glfwGetTime() - startSeconds < 300.0) {
+  while(glfwGetTime() - startSeconds < 3.0) {
     glfwPollEvents();
     renderer->clearScreen();
     renderer->renderRectangle(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
