@@ -77,7 +77,7 @@ namespace small3d
     std::vector<VkBuffer> colourBuffers;
     std::vector<VkDeviceMemory> colourBufferMemories;
 
-    std::vector<VkSampler> textureSamplers;
+    VkSampler textureSampler;
     
     std::vector<VkImageView> boundTextureViews;
 
@@ -156,7 +156,6 @@ namespace small3d
     vulkanImage generateTexture(const std::string name, const float *data,
 			   const unsigned long width,
 			   const unsigned long height);
-    void bindTexture(std::string name);
 
     void init(const int width, const int height, 
       const std::string shadersPath);

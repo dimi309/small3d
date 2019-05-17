@@ -101,7 +101,7 @@ namespace small3d {
   }
 
   int Renderer::setPipelineLayout(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
-    VkDescriptorSetLayout dsl[2] = {descriptorSetLayout, textureDescriptorSetLayout};
+    const VkDescriptorSetLayout dsl[2] = { descriptorSetLayout, textureDescriptorSetLayout };
     pipelineLayoutCreateInfo->setLayoutCount = 2;
     pipelineLayoutCreateInfo->pSetLayouts = dsl;
     return 1;
@@ -386,7 +386,7 @@ namespace small3d {
     dsai.pSetLayouts = &descriptorSetLayout;
 
     descriptorSet = {};
-    
+
     VkResult allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
       &descriptorSet);
     if (allocResult != VK_SUCCESS) {
@@ -409,7 +409,7 @@ namespace small3d {
     dslci.pBindings = dslb;
 
     if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
-      &descriptorSetLayout) != VK_SUCCESS) {
+      &textureDescriptorSetLayout) != VK_SUCCESS) {
       throw std::runtime_error("Failed to create texture "
         "descriptor set layout.");
     }
@@ -562,7 +562,7 @@ namespace small3d {
     memset(&diiTexture, 0, sizeof(VkDescriptorImageInfo));
     diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     diiTexture.imageView = boundTextureViews[currentSwapchainImageIndex];
-    diiTexture.sampler = textureSamplers[currentSwapchainImageIndex];
+    diiTexture.sampler = textureSampler;
 
     VkDescriptorBufferInfo dbiColour;
     memset(&dbiColour, 0, sizeof(VkDescriptorBufferInfo));
@@ -744,14 +744,49 @@ namespace small3d {
       throw std::runtime_error("Failed to create texture image view!\n\r");
     };
 
+    // Allocate texture descriptor set
+
+    VkDescriptorSetAllocateInfo dsai;
+    memset(&dsai, 0, sizeof(VkDescriptorSetAllocateInfo));
+    dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    dsai.descriptorPool = descriptorPool;
+    dsai.descriptorSetCount = 1;
+    dsai.pSetLayouts = &textureDescriptorSetLayout;
+
+    textureHandle.descriptorSet = {};
+
+    VkResult allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
+      &textureHandle.descriptorSet);
+    if (allocResult != VK_SUCCESS) {
+      std::string errortxt = "Failed to allocate texture descriptor set.";
+      throw std::runtime_error(errortxt);
+    }
+
+    // Write texture descriptor set
+
+    VkDescriptorImageInfo diiTexture;
+    memset(&diiTexture, 0, sizeof(VkDescriptorImageInfo));
+    diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    diiTexture.imageView = textureHandle.imageView;
+    diiTexture.sampler = textureSampler;
+
+    VkWriteDescriptorSet wds = {};
+
+    wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    wds.dstSet = descriptorSet;
+    wds.dstBinding = 3;
+    wds.dstArrayElement = 0;
+    wds.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    wds.descriptorCount = 1;
+    wds.pBufferInfo = NULL;
+    wds.pImageInfo = &diiTexture;
+    wds.pTexelBufferView = NULL;
+
+    vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
+          
     textures.insert(make_pair(name, textureHandle));
 
     return textureHandle;
-  }
-
-  void Renderer::bindTexture(std::string name) {
-    boundTextureViews[currentSwapchainImageIndex] = getTextureHandle(name).imageView;
-
   }
 
   void Renderer::init(const int width, const int height,
@@ -769,12 +804,10 @@ namespace small3d {
     std::string fragmentShaderPath = shadersPath +
       "textureShader.spv";
 
-    textureSamplers.resize(vkz_swapchain_image_count);
 
-    for (int i = 0; i < textureSamplers.size(); ++i) {
-      if (!vkz_create_sampler(&textureSamplers[i])) {
-        throw std::runtime_error("Failed to create the sampler!");
-      }
+
+    if (!vkz_create_sampler(&textureSampler)) {
+      throw std::runtime_error("Failed to create the sampler!");
     }
 
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
@@ -813,8 +846,8 @@ namespace small3d {
     }
 
     uboOrientationDynamicSize = MAX_NUM_OBJECTS * dynamicOrientationAlignment;
-    uboOrientationDynamic = (UboOrientation*) 
-    _aligned_malloc(uboOrientationDynamicSize, dynamicOrientationAlignment);
+    uboOrientationDynamic = (UboOrientation*)
+      _aligned_malloc(uboOrientationDynamicSize, dynamicOrientationAlignment);
     //uboOrientationDynamic = (UboOrientation*)malloc(uboOrientationDynamicSize);
     //memset(uboOrientationDynamic, 0, uboOrientationDynamicSize);
 
@@ -1070,9 +1103,7 @@ namespace small3d {
       vkz_destroy_buffer(colourBuffers[i], colourBufferMemories[i]);
     }
 
-    for (int i = 0; i < textureSamplers.size(); ++i) {
-      vkDestroySampler(vkz_logical_device, textureSamplers[i], NULL);
-    }
+    vkDestroySampler(vkz_logical_device, textureSampler, NULL);
     vkz_destroy_depth_image();
     vkz_destroy_swapchain();
     vkz_shutdown();
@@ -1193,7 +1224,6 @@ namespace small3d {
       vkDestroyImageView(vkz_logical_device, nameTexturePair->second.imageView, NULL);
       vkz_destroy_image(nameTexturePair->second.image, nameTexturePair->second.imageMemory);
 
-      //glDeleteTextures(1, &(nameTexturePair->second));
       textures.erase(name);
     }
   }
@@ -1534,10 +1564,6 @@ namespace small3d {
     // This would have to be updated per GPU draw command, but right now
     // it just updates a memory buffer through CPU commands.
     setColourBuffer(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
-
-    // The same for this, but it selects an image view to be bound with the 
-    // sampler to the texture2D point of the fragment shaders.
-    bindTexture("blank");
 
     // Updating object positioning - this should probably go to a function somewhere...
     void* orientationData;
