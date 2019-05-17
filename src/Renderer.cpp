@@ -107,6 +107,7 @@ namespace small3d {
     perspectiveLayouts[1] = textureDescriptorSetLayout;
     pipelineLayoutCreateInfo->setLayoutCount = 2;
     pipelineLayoutCreateInfo->pSetLayouts = perspectiveLayouts;
+    
     return 1;
   }
 
@@ -136,9 +137,11 @@ namespace small3d {
     uint32_t dynamicOrientationOffset = model.orientationMemIndex *
       static_cast<uint32_t>(dynamicOrientationAlignment);
 
+    const VkDescriptorSet descriptorSets[2] = { descriptorSet, getTextureHandle(model.textureName).descriptorSet };
+
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-      pipelineLayout, 0, 1,
-      &descriptorSet, 1, &dynamicOrientationOffset);
+      pipelineLayout, 0, 2,
+      descriptorSets, 1, &dynamicOrientationOffset);
 
     vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(), 1, 0, 0, 0);
 
@@ -269,8 +272,9 @@ namespace small3d {
       ps[2].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
       ps[2].descriptorCount = vkz_swapchain_image_count;
 
+      // TODO: Review descriptor pool size
       ps[3].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-      ps[3].descriptorCount = vkz_swapchain_image_count;
+      ps[3].descriptorCount = vkz_swapchain_image_count * 2 * MAX_NUM_OBJECTS;
 
       ps[4].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
       ps[4].descriptorCount = vkz_swapchain_image_count;
@@ -283,7 +287,7 @@ namespace small3d {
       dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
       dpci.poolSizeCount = 6;
       dpci.pPoolSizes = ps;
-      dpci.maxSets = vkz_swapchain_image_count;
+      dpci.maxSets = vkz_swapchain_image_count * 2 * MAX_NUM_OBJECTS;
 
       if (vkCreateDescriptorPool(vkz_logical_device, &dpci, NULL,
         &descriptorPool) != VK_SUCCESS) {
@@ -410,6 +414,7 @@ namespace small3d {
     dslci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
     dslci.bindingCount = 1;
     dslci.pBindings = dslb;
+    
 
     if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
       &textureDescriptorSetLayout) != VK_SUCCESS) {
