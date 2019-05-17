@@ -54,12 +54,12 @@ namespace small3d {
   VkVertexInputBindingDescription Renderer::bd[3];
   VkVertexInputAttributeDescription Renderer::ad[3];
   VkDescriptorSetLayout Renderer::descriptorSetLayout;
-  std::vector<VkDescriptorSet> Renderer::descriptorSets;
+  VkDescriptorSet Renderer::descriptorSet;
 
   VkVertexInputBindingDescription Renderer::orthobd[2];
   VkVertexInputAttributeDescription Renderer::orthoad[2];
   VkDescriptorSetLayout Renderer::orthoDescriptorSetLayout;
-  std::vector<VkDescriptorSet> Renderer::orthoDescriptorSets;
+  VkDescriptorSet Renderer::orthoDescriptorSet;
 
   int Renderer::setInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo) {
 
@@ -133,7 +133,7 @@ namespace small3d {
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
       pipelineLayout, 0, 1,
-      &descriptorSets[swapchainImageIndex], 1, &dynamicOrientationOffset);
+      &descriptorSet, 1, &dynamicOrientationOffset);
 
     vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(), 1, 0, 0, 0);
 
@@ -198,7 +198,7 @@ namespace small3d {
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
       pipelineLayout, 0, 1,
-      &orthoDescriptorSets[swapchainImageIndex], 0, NULL);
+      &orthoDescriptorSet, 0, NULL);
 
     vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(), 1, 0, 0, 0);
 
@@ -394,12 +394,13 @@ namespace small3d {
     memset(&dsai, 0, sizeof(VkDescriptorSetAllocateInfo));
     dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
     dsai.descriptorPool = descriptorPool;
-    dsai.descriptorSetCount = vkz_swapchain_image_count;
-    dsai.pSetLayouts = &dslo[0];
+    dsai.descriptorSetCount = 1;
+    dsai.pSetLayouts = &descriptorSetLayout;
 
-    descriptorSets = std::vector<VkDescriptorSet>(vkz_swapchain_image_count);
+    descriptorSet = {};
+    
     VkResult allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
-      &descriptorSets[0]);
+      &descriptorSet);
     if (allocResult != VK_SUCCESS) {
       std::string errortxt = "Failed to allocate descriptor sets.";
       throw std::runtime_error(errortxt);
@@ -448,7 +449,7 @@ namespace small3d {
     memset(&wds[0], 0, 6 * sizeof(VkWriteDescriptorSet));
 
     wds[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[0].dstSet = descriptorSets[currentSwapchainImageIndex];
+    wds[0].dstSet = descriptorSet;
     wds[0].dstBinding = 0;
     wds[0].dstArrayElement = 0;
     wds[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -458,7 +459,7 @@ namespace small3d {
     wds[0].pTexelBufferView = NULL;
 
     wds[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[1].dstSet = descriptorSets[currentSwapchainImageIndex];
+    wds[1].dstSet = descriptorSet;
     wds[1].dstBinding = 1;
     wds[1].dstArrayElement = 0;
     wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
@@ -468,7 +469,7 @@ namespace small3d {
     wds[1].pTexelBufferView = NULL;
 
     wds[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[2].dstSet = descriptorSets[currentSwapchainImageIndex];
+    wds[2].dstSet = descriptorSet;
     wds[2].dstBinding = 2;
     wds[2].dstArrayElement = 0;
     wds[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -478,7 +479,7 @@ namespace small3d {
     wds[2].pTexelBufferView = NULL;
 
     wds[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[3].dstSet = descriptorSets[currentSwapchainImageIndex];
+    wds[3].dstSet = descriptorSet;
     wds[3].dstBinding = 3;
     wds[3].dstArrayElement = 0;
     wds[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -488,7 +489,7 @@ namespace small3d {
     wds[3].pTexelBufferView = NULL;
 
     wds[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[4].dstSet = descriptorSets[currentSwapchainImageIndex];
+    wds[4].dstSet = descriptorSet;
     wds[4].dstBinding = 4;
     wds[4].dstArrayElement = 0;
     wds[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -498,7 +499,7 @@ namespace small3d {
     wds[4].pTexelBufferView = NULL;
 
     wds[5].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[5].dstSet = descriptorSets[currentSwapchainImageIndex];
+    wds[5].dstSet = descriptorSet;
     wds[5].dstBinding = 5;
     wds[5].dstArrayElement = 0;
     wds[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -543,23 +544,16 @@ namespace small3d {
       LOGDEBUG("Created oprthographic descriptor set layout.");
     }
 
-    std::vector<VkDescriptorSetLayout> dslo(vkz_swapchain_image_count);
-
-    for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
-      dslo[i] = orthoDescriptorSetLayout;
-      LOGDEBUG("Set orthographic descriptor set layout for swapchain image " + intToStr((const int)i));
-    }
-
     VkDescriptorSetAllocateInfo dsai;
     memset(&dsai, 0, sizeof(VkDescriptorSetAllocateInfo));
     dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
     dsai.descriptorPool = orthoDescriptorPool;
-    dsai.descriptorSetCount = vkz_swapchain_image_count;
-    dsai.pSetLayouts = &dslo[0];
+    dsai.descriptorSetCount = 1;
+    dsai.pSetLayouts = &orthoDescriptorSetLayout;
 
-    orthoDescriptorSets = std::vector<VkDescriptorSet>(vkz_swapchain_image_count);
+    orthoDescriptorSet = {};
     VkResult allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
-      &orthoDescriptorSets[0]);
+      &orthoDescriptorSet);
     if (allocResult != VK_SUCCESS) {
       std::string errortxt = "Failed to allocate orthographic pool descriptor sets.";
       throw std::runtime_error(errortxt);
@@ -584,7 +578,7 @@ namespace small3d {
     memset(&wds[0], 0, 2 * sizeof(VkWriteDescriptorSet));
 
     wds[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[0].dstSet = orthoDescriptorSets[currentSwapchainImageIndex];
+    wds[0].dstSet = orthoDescriptorSet;
     wds[0].dstBinding = 0;
     wds[0].dstArrayElement = 0;
     wds[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -594,7 +588,7 @@ namespace small3d {
     wds[0].pTexelBufferView = NULL;
 
     wds[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[1].dstSet = orthoDescriptorSets[currentSwapchainImageIndex];
+    wds[1].dstSet = orthoDescriptorSet;
     wds[1].dstBinding = 1;
     wds[1].dstArrayElement = 0;
     wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;

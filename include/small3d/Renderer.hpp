@@ -96,12 +96,12 @@ namespace small3d
     static VkVertexInputBindingDescription bd[3];
     static VkVertexInputAttributeDescription ad[3];
     static VkDescriptorSetLayout descriptorSetLayout;
-    static std::vector<VkDescriptorSet> descriptorSets;
+    static VkDescriptorSet descriptorSet;
 
     static VkVertexInputBindingDescription orthobd[2];
     static VkVertexInputAttributeDescription orthoad[2];
     static VkDescriptorSetLayout orthoDescriptorSetLayout;
-    static std::vector<VkDescriptorSet> orthoDescriptorSets;
+    static VkDescriptorSet orthoDescriptorSet;
 
     size_t dynamicOrientationAlignment;
 
