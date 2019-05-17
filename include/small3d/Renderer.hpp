@@ -31,6 +31,7 @@ namespace small3d
     VkImageView imageView;
     VkImage image;
     VkDeviceMemory imageMemory;
+    VkDescriptorSet descriptorSet;
   };
 
   struct UboOrientation {
@@ -97,6 +98,8 @@ namespace small3d
     static VkVertexInputAttributeDescription ad[3];
     static VkDescriptorSetLayout descriptorSetLayout;
     static VkDescriptorSet descriptorSet;
+    static VkDescriptorSetLayout textureDescriptorSetLayout;
+    
 
     static VkVertexInputBindingDescription orthobd[2];
     static VkVertexInputAttributeDescription orthoad[2];

@@ -55,6 +55,7 @@ namespace small3d {
   VkVertexInputAttributeDescription Renderer::ad[3];
   VkDescriptorSetLayout Renderer::descriptorSetLayout;
   VkDescriptorSet Renderer::descriptorSet;
+  VkDescriptorSetLayout Renderer::textureDescriptorSetLayout;
 
   VkVertexInputBindingDescription Renderer::orthobd[2];
   VkVertexInputAttributeDescription Renderer::orthoad[2];
@@ -100,8 +101,9 @@ namespace small3d {
   }
 
   int Renderer::setPipelineLayout(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
-    pipelineLayoutCreateInfo->setLayoutCount = 1;
-    pipelineLayoutCreateInfo->pSetLayouts = &descriptorSetLayout;
+    VkDescriptorSetLayout dsl[2] = {descriptorSetLayout, textureDescriptorSetLayout};
+    pipelineLayoutCreateInfo->setLayoutCount = 2;
+    pipelineLayoutCreateInfo->pSetLayouts = dsl;
     return 1;
   }
 
@@ -324,7 +326,7 @@ namespace small3d {
   void Renderer::allocateDescriptorSets() {
 
     VkDescriptorSetLayoutBinding dslb[6];
-    memset(dslb, 0, 6 * sizeof(VkDescriptorSetLayoutBinding));
+    memset(dslb, 0, 5 * sizeof(VkDescriptorSetLayoutBinding));
 
     // perspectiveMatrixLightedShader - uboWorld
     dslb[0].binding = 0;
@@ -348,31 +350,24 @@ namespace small3d {
     dslb[2].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     dslb[2].pImmutableSamplers = NULL;
 
-    // textureShader - textureImage
-    dslb[3].binding = 3;
-    dslb[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    // textureShader - uboColour
+    dslb[3].binding = 4;
+    dslb[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     dslb[3].descriptorCount = 1;
     dslb[3].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
     dslb[3].pImmutableSamplers = NULL;
 
-    // textureShader - uboColour
-    dslb[4].binding = 4;
+    // textureShader - uboLight
+    dslb[4].binding = 5;
     dslb[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     dslb[4].descriptorCount = 1;
     dslb[4].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
     dslb[4].pImmutableSamplers = NULL;
 
-    // textureShader - uboLight
-    dslb[5].binding = 5;
-    dslb[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    dslb[5].descriptorCount = 1;
-    dslb[5].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    dslb[5].pImmutableSamplers = NULL;
-
     VkDescriptorSetLayoutCreateInfo dslci;
     memset(&dslci, 0, sizeof(VkDescriptorSetLayoutCreateInfo));
     dslci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    dslci.bindingCount = 6;
+    dslci.bindingCount = 5;
     dslci.pBindings = dslb;
 
     if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
@@ -381,13 +376,6 @@ namespace small3d {
     }
     else {
       LOGDEBUG("Created descriptor set layout.");
-    }
-
-    std::vector<VkDescriptorSetLayout> dslo(vkz_swapchain_image_count);
-
-    for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
-      dslo[i] = descriptorSetLayout;
-      LOGDEBUG("Set descriptor set layout for swapchain image " + intToStr((const int)i));
     }
 
     VkDescriptorSetAllocateInfo dsai;
@@ -405,6 +393,30 @@ namespace small3d {
       std::string errortxt = "Failed to allocate descriptor sets.";
       throw std::runtime_error(errortxt);
     }
+
+    memset(dslb, 0, 5 * sizeof(VkDescriptorSetLayoutBinding));
+
+    // textureShader - textureImage
+    dslb[0].binding = 3;
+    dslb[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    dslb[0].descriptorCount = 1;
+    dslb[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    dslb[0].pImmutableSamplers = NULL;
+
+    memset(&dslci, 0, sizeof(VkDescriptorSetLayoutCreateInfo));
+    dslci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    dslci.bindingCount = 1;
+    dslci.pBindings = dslb;
+
+    if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
+      &descriptorSetLayout) != VK_SUCCESS) {
+      throw std::runtime_error("Failed to create texture "
+        "descriptor set layout.");
+    }
+    else {
+      LOGDEBUG("Created texture descriptor set layout.");
+    }
+
   }
 
   void Renderer::updateDescriptorSets() {
@@ -426,12 +438,6 @@ namespace small3d {
     dbiCamera.buffer = cameraOrientationBuffers[currentSwapchainImageIndex];
     dbiCamera.offset = 0;
     dbiCamera.range = (3 * 16 + 4) * sizeof(float);
-
-    VkDescriptorImageInfo diiTexture;
-    memset(&diiTexture, 0, sizeof(VkDescriptorImageInfo));
-    diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    diiTexture.imageView = boundTextureViews[currentSwapchainImageIndex];
-    diiTexture.sampler = textureSamplers[currentSwapchainImageIndex];
 
     VkDescriptorBufferInfo dbiColour;
     memset(&dbiColour, 0, sizeof(VkDescriptorBufferInfo));
@@ -480,35 +486,25 @@ namespace small3d {
 
     wds[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     wds[3].dstSet = descriptorSet;
-    wds[3].dstBinding = 3;
+    wds[3].dstBinding = 4;
     wds[3].dstArrayElement = 0;
-    wds[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    wds[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     wds[3].descriptorCount = 1;
-    wds[3].pBufferInfo = NULL;
-    wds[3].pImageInfo = &diiTexture;
+    wds[3].pBufferInfo = &dbiColour;
+    wds[3].pImageInfo = NULL;
     wds[3].pTexelBufferView = NULL;
 
     wds[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     wds[4].dstSet = descriptorSet;
-    wds[4].dstBinding = 4;
+    wds[4].dstBinding = 5;
     wds[4].dstArrayElement = 0;
     wds[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     wds[4].descriptorCount = 1;
-    wds[4].pBufferInfo = &dbiColour;
+    wds[4].pBufferInfo = &dbiLight;
     wds[4].pImageInfo = NULL;
     wds[4].pTexelBufferView = NULL;
 
-    wds[5].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[5].dstSet = descriptorSet;
-    wds[5].dstBinding = 5;
-    wds[5].dstArrayElement = 0;
-    wds[5].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    wds[5].descriptorCount = 1;
-    wds[5].pBufferInfo = &dbiLight;
-    wds[5].pImageInfo = NULL;
-    wds[5].pTexelBufferView = NULL;
-
-    vkUpdateDescriptorSets(vkz_logical_device, 6, &wds[0], 0, NULL);
+    vkUpdateDescriptorSets(vkz_logical_device, 5, &wds[0], 0, NULL);
   }
 
   void Renderer::allocateOrthoDescriptorSets() {
@@ -1046,6 +1042,9 @@ namespace small3d {
 
     vkDestroyDescriptorSetLayout(vkz_logical_device,
       descriptorSetLayout, NULL);
+
+    vkDestroyDescriptorSetLayout(vkz_logical_device,
+      textureDescriptorSetLayout, NULL);
 
     vkDestroyDescriptorSetLayout(vkz_logical_device,
       orthoDescriptorSetLayout, NULL);
