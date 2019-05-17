@@ -3,7 +3,7 @@
 
 layout(location = 0) in vec2 textureCoords;
 
-layout(set = 1, binding = 0) uniform sampler2D textureImage;
+layout(binding = 0) uniform sampler2D textureImage;
 
 layout(binding = 1) uniform uboColour {
   vec4 colour;

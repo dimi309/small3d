@@ -4,7 +4,7 @@
 layout(location = 0) smooth in float cosAngIncidence;
 layout(location = 1) in vec2 textureCoords;
 
-layout(binding = 3) uniform sampler2D textureImage;
+layout(set = 1, binding = 3) uniform sampler2D textureImage;
 
 layout(binding = 4) uniform uboColour {
   vec4 colour;

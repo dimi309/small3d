@@ -1571,7 +1571,7 @@ namespace small3d {
 
     // This would have to be updated per GPU draw command, but right now
     // it just updates a memory buffer through CPU commands.
-    setColourBuffer(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+    setColourBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
     // Updating object positioning - this should probably go to a function somewhere...
     void* orientationData;
