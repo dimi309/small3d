@@ -99,7 +99,7 @@ namespace small3d
     static VkDescriptorSetLayout descriptorSetLayout;
     static VkDescriptorSet descriptorSet;
     static VkDescriptorSetLayout textureDescriptorSetLayout;
-    
+    static VkDescriptorSetLayout perspectiveLayouts[2];
 
     static VkVertexInputBindingDescription orthobd[2];
     static VkVertexInputAttributeDescription orthoad[2];

@@ -56,6 +56,8 @@ namespace small3d {
   VkDescriptorSetLayout Renderer::descriptorSetLayout;
   VkDescriptorSet Renderer::descriptorSet;
   VkDescriptorSetLayout Renderer::textureDescriptorSetLayout;
+  VkDescriptorSetLayout Renderer::perspectiveLayouts[2];
+
 
   VkVertexInputBindingDescription Renderer::orthobd[2];
   VkVertexInputAttributeDescription Renderer::orthoad[2];
@@ -101,9 +103,10 @@ namespace small3d {
   }
 
   int Renderer::setPipelineLayout(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
-    const VkDescriptorSetLayout dsl[2] = { descriptorSetLayout, textureDescriptorSetLayout };
+    perspectiveLayouts[0] = descriptorSetLayout;
+    perspectiveLayouts[1] = textureDescriptorSetLayout;
     pipelineLayoutCreateInfo->setLayoutCount = 2;
-    pipelineLayoutCreateInfo->pSetLayouts = dsl;
+    pipelineLayoutCreateInfo->pSetLayouts = perspectiveLayouts;
     return 1;
   }
 
@@ -773,7 +776,7 @@ namespace small3d {
     VkWriteDescriptorSet wds = {};
 
     wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds.dstSet = descriptorSet;
+    wds.dstSet = textureHandle.descriptorSet;
     wds.dstBinding = 3;
     wds.dstArrayElement = 0;
     wds.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
