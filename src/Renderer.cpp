@@ -62,7 +62,7 @@ namespace small3d {
   int Renderer::setInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo) {
 
     memset(bd, 0, 3 * sizeof(VkVertexInputBindingDescription));
-    
+
     bd[0].binding = 0;
     bd[0].stride = 4 * sizeof(float);
 
@@ -913,7 +913,7 @@ namespace small3d {
     }
     // end of memory allocation for object positioning
 
-   
+
 
   }
 
@@ -1028,7 +1028,7 @@ namespace small3d {
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
     cameraPosition = glm::vec3(0, 0, 0);
     cameraRotation = glm::vec3(0, 0, 0);
-    
+
 
   }
 
@@ -1249,7 +1249,7 @@ namespace small3d {
       }
       totalAdvance += 4 * static_cast<unsigned long>(slot->advance.x / 64);
     }
-    generateTexture(name, &textMemory[0], static_cast<unsigned long>(width), 
+    generateTexture(name, &textMemory[0], static_cast<unsigned long>(width),
       static_cast<unsigned long>(height));
   }
 
@@ -1309,7 +1309,7 @@ namespace small3d {
 
     render(rect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
       colour, textureName, perspective);
-    //vkDeviceWaitIdle(vkz_logical_device);
+    
     garbageModels.push_back(rect);
   }
 
@@ -1589,54 +1589,67 @@ namespace small3d {
     setPerspectiveAndLight();
     positionCamera();
 
-    // Updating object positioning - this should probably go in a function somewhere...
+    // Updating object positioning 
     void* orientationData;
     vkMapMemory(vkz_logical_device, renderOrientationBuffersDynamicMemory[currentSwapchainImageIndex],
       0, uboOrientationDynamicSize, 0, &orientationData);
     memcpy(orientationData, uboOrientationDynamic, uboOrientationDynamicSize);
     vkUnmapMemory(vkz_logical_device, renderOrientationBuffersDynamicMemory[currentSwapchainImageIndex]);
 
-    // Updating colour - again, this should probably go in a function
+    // Updating colour
     void* colourData;
     vkMapMemory(vkz_logical_device, colourBuffersDynamicMemory[currentSwapchainImageIndex],
       0, uboColourDynamicSize, 0, &colourData);
     memcpy(colourData, uboColourDynamic, uboColourDynamicSize);
     vkUnmapMemory(vkz_logical_device, colourBuffersDynamicMemory[currentSwapchainImageIndex]);
 
-    // And here all of the above are bound
+    // All of the above is bound here.
     updateDescriptorSets();
     updateOrthoDescriptorSets();
 
     vkz_begin_next_draw_command_buffer(perspectivePipelineIndex, &nextCommandBuffer);
     vkz_begin_next_draw_command_buffer(orthographicPipelineIndex, &nextOrthoCommandBuffer);
 
+    bool prevOrtho = false;
+    
     for (auto model : nextModelsToDraw) {
       if (model.perspective) {
+        
+        if (prevOrtho) {
+          vkz_end_next_draw_command_buffer(orthographicPipelineIndex);
+          vkz_draw(orthographicPipelineIndex, NULL);
+          vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
+          vkz_begin_next_draw_command_buffer(orthographicPipelineIndex, &nextOrthoCommandBuffer);
+        }
 
         bindBuffers(nextCommandBuffer, model);
         recordDrawCommand(nextCommandBuffer, vkz_pipeline_layout[perspectivePipelineIndex],
           model, currentSwapchainImageIndex);
+
+        prevOrtho = false;
       }
       else {
-
         bindOrthoBuffers(nextOrthoCommandBuffer, model);
         recordOrthoDrawCommand(nextOrthoCommandBuffer, vkz_pipeline_layout[orthographicPipelineIndex],
           model, currentSwapchainImageIndex);
+        prevOrtho = true;
       }
+      
     }
 
     vkz_end_next_draw_command_buffer(perspectivePipelineIndex);
     vkz_end_next_draw_command_buffer(orthographicPipelineIndex);
 
-    // Order is important (for also using ortho as a background)
-    vkz_draw(orthographicPipelineIndex, NULL);
+    // Order is important 
+
     vkz_draw(perspectivePipelineIndex, NULL);
+    vkz_draw(orthographicPipelineIndex, NULL);
 
     vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
     vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
 
     vkz_present_next_image(perspectivePipelineIndex);
-        
+
     nextModelsToDraw.clear();
 
     for (auto model : garbageModels) {
