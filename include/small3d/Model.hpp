@@ -66,9 +66,9 @@ namespace small3d {
 
     VkDescriptorSet descriptorSet;
 
-    uint32_t orientationMemIndex;
+    uint32_t orientationMemIndex = 0;
 
-    uint32_t colourMemIndex;
+    uint32_t colourMemIndex = 0;
 
     // End of Vulkan-specific variables.
         
@@ -126,24 +126,15 @@ namespace small3d {
     * @brief Name of the texture the model will be rendered with. The texture has to
     *        have been previously generated with Renderer.generateTexture().
     */
-    std::string textureName;
+    std::string textureName = "";
 
     /**
      * @brief True if the model is to be rendered with perspective, False for orthographic
      *        rendering
      */
-    bool perspective;
+    bool perspective = false;
 
-    /**
-     * @brief Position of the model on the 3D scene
-     */
-    glm::vec3 offset;
-
-    /**
-     * @brief x, y and z rotation of the model
-     */
-    glm::vec3 rotation;
-
+    
     /**
      * @brief Default constructor
      *

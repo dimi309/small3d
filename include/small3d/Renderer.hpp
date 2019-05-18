@@ -86,6 +86,8 @@ namespace small3d
     
     std::vector<VkImageView> boundTextureViews;
 
+    std::allocator<char> alloc;
+
     float frustumScale = 0.0f;
     float zNear = 0.0f;
     float zFar = 0.0f;
