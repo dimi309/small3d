@@ -252,7 +252,7 @@ int main(int argc, char **argv) {
     printf("*** Failing RendererTest.\n\r");
     return 1;
   }
-  /*if (!SoundTest()) {
+  if (!SoundTest()) {
     printf("*** Failing SoundTest.\n\r");
     return 1;
   }
@@ -267,7 +267,7 @@ int main(int argc, char **argv) {
   if (!TokenTest()) {
     printf("*** Failing TokenTest.\n\r");
     return 1;
-  }*/
+  }
   printf("All tests have executed successfully.\n\r");
   return 0;
 }
