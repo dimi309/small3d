@@ -746,12 +746,12 @@ int create_render_pass() {
     sizeof(VkAttachmentDescription));
   color_buffer_attachment_description.format = vkz_surface_format.format;
   color_buffer_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
-  color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+  color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
   color_buffer_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
   color_buffer_attachment_description.stencilLoadOp =
     VK_ATTACHMENT_LOAD_OP_DONT_CARE;
   color_buffer_attachment_description.stencilStoreOp =
-    VK_ATTACHMENT_STORE_OP_STORE;
+    VK_ATTACHMENT_STORE_OP_DONT_CARE;
   color_buffer_attachment_description.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
   color_buffer_attachment_description.finalLayout =
     VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
@@ -765,12 +765,12 @@ int create_render_pass() {
   memset(&depth_attachment_description, 0, sizeof(VkAttachmentDescription));
   depth_attachment_description.format = VK_FORMAT_D32_SFLOAT;
   depth_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
-  depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
-  depth_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+  depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+  depth_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
   depth_attachment_description.stencilLoadOp =
-    VK_ATTACHMENT_LOAD_OP_LOAD;
+    VK_ATTACHMENT_LOAD_OP_CLEAR;
   depth_attachment_description.stencilStoreOp =
-    VK_ATTACHMENT_STORE_OP_STORE;
+    VK_ATTACHMENT_STORE_OP_DONT_CARE;
   depth_attachment_description.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
   depth_attachment_description.finalLayout =
     VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
