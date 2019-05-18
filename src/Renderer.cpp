@@ -1598,9 +1598,10 @@ namespace small3d {
     vkz_end_next_draw_command_buffer(perspectivePipelineIndex);
     vkz_end_next_draw_command_buffer(orthographicPipelineIndex);
 
-    vkz_draw(perspectivePipelineIndex, NULL);
+    // Order is important (for also using ortho as a background)
     vkz_draw(orthographicPipelineIndex, NULL);
-
+    vkz_draw(perspectivePipelineIndex, NULL);
+    
     vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
     vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
 
