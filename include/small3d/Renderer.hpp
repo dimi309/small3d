@@ -119,12 +119,12 @@ namespace small3d
 
     size_t dynamicOrientationAlignment;
     UboOrientation* uboOrientationDynamic;
-    uint32_t orientationMemIndex;
+    uint32_t orientationMemIndex = 0;
     size_t uboOrientationDynamicSize;
 
     size_t dynamicColourAlignment;
     UboColour* uboColourDynamic;
-    uint32_t colourMemIndex;
+    uint32_t colourMemIndex = 0;
     size_t uboColourDynamicSize;
 
     static int setInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo);
