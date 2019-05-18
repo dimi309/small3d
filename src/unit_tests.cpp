@@ -175,7 +175,7 @@ int RendererTest() {
   }
   renderer->clearBuffers(object);
   renderer->clearBuffers(object2);
-  //renderer->deleteTexture("cubeTexture");
+  renderer->deleteTexture("cubeTexture");
   glfwDestroyWindow(renderer->getWindow());
   return 1;
 }

@@ -913,13 +913,7 @@ namespace small3d {
     }
     // end of memory allocation for object positioning
 
-    // Acquire the first image (prerequisite for the swap member
-    // function).
-    vkz_acquire_next_image(perspectivePipelineIndex, &currentSwapchainImageIndex);
-
-    // Begin next command buffers (perspective and orthographic pipelines)
-    vkz_begin_next_draw_command_buffer(perspectivePipelineIndex, &nextCommandBuffer);
-    vkz_begin_next_draw_command_buffer(orthographicPipelineIndex, &nextOrthoCommandBuffer);
+   
 
   }
 
@@ -1080,12 +1074,6 @@ namespace small3d {
   Renderer::~Renderer() {
 
     LOGDEBUG("Renderer destructor running");
-
-    vkz_end_next_draw_command_buffer(perspectivePipelineIndex);
-    vkz_end_next_draw_command_buffer(orthographicPipelineIndex);
-
-    vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
-    vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
 
     for (auto model : garbageModels) {
       clearBuffers(model);
@@ -1597,17 +1585,7 @@ namespace small3d {
   }
 
   void Renderer::swapBuffers() {
-    vkz_end_next_draw_command_buffer(perspectivePipelineIndex);
-    vkz_end_next_draw_command_buffer(orthographicPipelineIndex);
 
-    // Order is important (for also using ortho as a background)
-    vkz_draw(orthographicPipelineIndex, NULL);
-    vkz_draw(perspectivePipelineIndex, NULL);
-    
-    vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
-    vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
-
-    vkz_present_next_image(perspectivePipelineIndex);
     vkz_acquire_next_image(perspectivePipelineIndex, &currentSwapchainImageIndex);
 
     orientationMemIndex = 0;
@@ -1651,6 +1629,19 @@ namespace small3d {
           model, currentSwapchainImageIndex);
       }
     }
+
+    vkz_end_next_draw_command_buffer(perspectivePipelineIndex);
+    vkz_end_next_draw_command_buffer(orthographicPipelineIndex);
+
+    // Order is important (for also using ortho as a background)
+    vkz_draw(orthographicPipelineIndex, NULL);
+    vkz_draw(perspectivePipelineIndex, NULL);
+
+    vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
+    vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
+
+    vkz_present_next_image(perspectivePipelineIndex);
+        
     nextModelsToDraw.clear();
 
     for (auto model : garbageModels) {
