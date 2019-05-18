@@ -42,6 +42,10 @@ namespace small3d
     float padding[13];
   };
 
+  struct UboColour {
+    glm::vec4 colour;
+  };
+
   /**
    * @class Renderer
    * @brief Renderer class, which can render using either OpenGL v3.3 or v2.1
@@ -74,8 +78,8 @@ namespace small3d
     std::vector<VkBuffer> lightIntensityBuffers;
     std::vector<VkDeviceMemory> lightIntensityBufferMemories;
 
-    std::vector<VkBuffer> colourBuffers;
-    std::vector<VkDeviceMemory> colourBufferMemories;
+    std::vector<VkBuffer> colourBuffersDynamic;
+    std::vector<VkDeviceMemory> colourBuffersDynamicMemory;
 
     VkSampler textureSampler;
     
@@ -107,10 +111,14 @@ namespace small3d
     static VkDescriptorSet orthoDescriptorSet;
 
     size_t dynamicOrientationAlignment;
-
     UboOrientation* uboOrientationDynamic;
     uint32_t orientationMemIndex;
     size_t uboOrientationDynamicSize;
+
+    size_t dynamicColourAlignment;
+    UboColour* uboColourDynamic;
+    uint32_t colourMemIndex;
+    size_t uboColourDynamicSize;
 
     static int setInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo);
     static int setPipelineLayout(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo);
@@ -121,7 +129,7 @@ namespace small3d
     static int setOrthoInputState(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo);
     static int setOrthoPipelineLayout(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo);
     static int bindOrthoBuffers(VkCommandBuffer commandBuffer, const Model& model);
-    static int recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
+    void recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
       VkPipelineLayout pipelineLayout, const Model& model,
       uint32_t swapchainImageIndex);
 
@@ -147,7 +155,7 @@ namespace small3d
     void allocateOrthoDescriptorSets();
     void updateOrthoDescriptorSets();
 
-    void setColourBuffer(glm::vec4 colour);
+    void setColourBuffer(glm::vec4 colour, uint32_t memIndex);
 
     void positionNextObject(const glm::vec3 offset,
 			    const glm::vec3 rotation, uint32_t memIndex);

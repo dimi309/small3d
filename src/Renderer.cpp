@@ -31,18 +31,12 @@ namespace small3d {
     float padding;
   };
 
-
-
   struct uboCamera {
     glm::mat4x4 xRotationMatrix;
     glm::mat4x4 yRotationMatrix;
     glm::mat4x4 zRotationMatrix;
     glm::vec3 position;
     float padding;
-  };
-
-  struct uboColour {
-    glm::vec4 colour;
   };
 
   struct uboLight {
@@ -57,7 +51,6 @@ namespace small3d {
   VkDescriptorSet Renderer::descriptorSet;
   VkDescriptorSetLayout Renderer::textureDescriptorSetLayout;
   VkDescriptorSetLayout Renderer::perspectiveLayouts[2];
-
 
   VkVertexInputBindingDescription Renderer::orthobd[2];
   VkVertexInputAttributeDescription Renderer::orthoad[2];
@@ -137,11 +130,16 @@ namespace small3d {
     uint32_t dynamicOrientationOffset = model.orientationMemIndex *
       static_cast<uint32_t>(dynamicOrientationAlignment);
 
+    uint32_t dynamicColourOffset = model.colourMemIndex *
+      static_cast<uint32_t>(dynamicColourAlignment);
+
+    const uint32_t dynamicOffsets[2] = { dynamicOrientationOffset, dynamicColourOffset };
+
     const VkDescriptorSet descriptorSets[2] = { descriptorSet, getTextureHandle(model.textureName).descriptorSet };
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
       pipelineLayout, 0, 2,
-      descriptorSets, 1, &dynamicOrientationOffset);
+      descriptorSets, 2, dynamicOffsets);
 
     vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(), 1, 0, 0, 0);
 
@@ -200,17 +198,18 @@ namespace small3d {
     return 1;
   }
 
-  int Renderer::recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
+  void Renderer::recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
     VkPipelineLayout pipelineLayout, const Model& model,
     uint32_t swapchainImageIndex) {
 
+    uint32_t dynamicColourOffset = model.colourMemIndex *
+      static_cast<uint32_t>(dynamicColourAlignment);
+
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
       pipelineLayout, 0, 1,
-      &orthoDescriptorSet, 0, NULL);
+      &orthoDescriptorSet, 1, &dynamicColourOffset);
 
     vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(), 1, 0, 0, 0);
-
-    return 1;
 
   }
 
@@ -359,7 +358,7 @@ namespace small3d {
 
     // textureShader - uboColour
     dslb[3].binding = 4;
-    dslb[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    dslb[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     dslb[3].descriptorCount = 1;
     dslb[3].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
     dslb[3].pImmutableSamplers = NULL;
@@ -449,7 +448,7 @@ namespace small3d {
 
     VkDescriptorBufferInfo dbiColour;
     memset(&dbiColour, 0, sizeof(VkDescriptorBufferInfo));
-    dbiColour.buffer = colourBuffers[currentSwapchainImageIndex];
+    dbiColour.buffer = colourBuffersDynamic[currentSwapchainImageIndex];
     dbiColour.offset = 0;
     dbiColour.range = 4 * sizeof(float);
 
@@ -496,7 +495,7 @@ namespace small3d {
     wds[3].dstSet = descriptorSet;
     wds[3].dstBinding = 4;
     wds[3].dstArrayElement = 0;
-    wds[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    wds[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     wds[3].descriptorCount = 1;
     wds[3].pBufferInfo = &dbiColour;
     wds[3].pImageInfo = NULL;
@@ -529,7 +528,7 @@ namespace small3d {
 
     // simpleFragmentShader - uboColour
     dslb[1].binding = 1;
-    dslb[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    dslb[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     dslb[1].descriptorCount = 1;
     dslb[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
     dslb[1].pImmutableSamplers = NULL;
@@ -574,7 +573,7 @@ namespace small3d {
 
     VkDescriptorBufferInfo dbiColour;
     memset(&dbiColour, 0, sizeof(VkDescriptorBufferInfo));
-    dbiColour.buffer = colourBuffers[currentSwapchainImageIndex];
+    dbiColour.buffer = colourBuffersDynamic[currentSwapchainImageIndex];
     dbiColour.offset = 0;
     dbiColour.range = 4 * sizeof(float);
 
@@ -595,7 +594,7 @@ namespace small3d {
     wds[1].dstSet = orthoDescriptorSet;
     wds[1].dstBinding = 1;
     wds[1].dstArrayElement = 0;
-    wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     wds[1].descriptorCount = 1;
     wds[1].pBufferInfo = &dbiColour;
     wds[1].pImageInfo = NULL;
@@ -605,32 +604,17 @@ namespace small3d {
 
   }
 
-  void Renderer::setColourBuffer(glm::vec4 colour) {
+  void Renderer::setColourBuffer(glm::vec4 colour, uint32_t memIndex) {
 
-    uboColour colourStruct;
-    memset(&colourStruct, 0, sizeof(colourStruct));
-    colourStruct.colour = colour;
-
-    uint32_t colourSize = 4 * sizeof(float);
-
-    if (colourBuffers.size() == 0) {
-      colourBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
-      colourBufferMemories = std::vector<VkDeviceMemory>(vkz_swapchain_image_count);
-
-      for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
-        vkz_create_buffer(&colourBuffers[i], VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-          colourSize,
-          &colourBufferMemories[i],
-          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-      }
+    if (memIndex > MAX_NUM_OBJECTS) {
+      std::string maxIndex = intToStr(MAX_NUM_OBJECTS - 1);
+      throw std::runtime_error("Object colour buffer max index (" + 
+        maxIndex + ") exceeded.");
     }
 
-    void* colourData;
-    vkMapMemory(vkz_logical_device, colourBufferMemories[currentSwapchainImageIndex],
-      0, colourSize, 0, &colourData);
-    memcpy(colourData, &colourStruct, colourSize);
-    vkUnmapMemory(vkz_logical_device, colourBufferMemories[currentSwapchainImageIndex]);
+    memset(&uboColourDynamic[memIndex], 0, sizeof(UboColour));
+
+    uboColourDynamic[memIndex].colour = colour;
 
   }
 
@@ -854,10 +838,10 @@ namespace small3d {
     }
 
     uboOrientationDynamicSize = MAX_NUM_OBJECTS * dynamicOrientationAlignment;
-    uboOrientationDynamic = (UboOrientation*)
-      _aligned_malloc(uboOrientationDynamicSize, dynamicOrientationAlignment);
-    //uboOrientationDynamic = (UboOrientation*)malloc(uboOrientationDynamicSize);
-    //memset(uboOrientationDynamic, 0, uboOrientationDynamicSize);
+    //uboOrientationDynamic = (UboOrientation*)
+    //  _aligned_malloc(uboOrientationDynamicSize, dynamicOrientationAlignment);
+    uboOrientationDynamic = (UboOrientation*)malloc(uboOrientationDynamicSize);
+    memset(uboOrientationDynamic, 0, uboOrientationDynamicSize);
 
     renderOrientationBuffersDynamic.resize(vkz_swapchain_image_count);
     renderOrientationBuffersDynamicMemory.resize(vkz_swapchain_image_count);
@@ -866,6 +850,28 @@ namespace small3d {
       vkz_create_buffer(&renderOrientationBuffersDynamic[i], VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
         (uint32_t)uboOrientationDynamicSize,
         &renderOrientationBuffersDynamicMemory[i],
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+    }
+
+    // Allocate memory & vulkan dynamic buffer for colour
+    dynamicColourAlignment = sizeof(UboColour);
+    if (minAlignment > 0) {
+      dynamicColourAlignment = (dynamicColourAlignment + minAlignment - 1) & ~(minAlignment - 1);
+    }
+    
+    uboColourDynamicSize = MAX_NUM_OBJECTS * dynamicColourAlignment;
+    uboColourDynamic = (UboColour*)malloc(uboColourDynamicSize);
+    memset(uboColourDynamic, 0, uboColourDynamicSize);
+
+    colourBuffersDynamic.resize(vkz_swapchain_image_count);
+    colourBuffersDynamicMemory.resize(vkz_swapchain_image_count);
+
+
+    for (size_t i = 0; i < vkz_swapchain_image_count; ++i) {
+      vkz_create_buffer(&colourBuffersDynamic[i], VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+        (uint32_t)uboColourDynamicSize,
+        &colourBuffersDynamicMemory[i],
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
     }
@@ -1100,7 +1106,7 @@ namespace small3d {
 
     // Release orientation buffers (PC RAM)
     if (uboOrientationDynamic) {
-      _aligned_free(uboOrientationDynamic);
+      free(uboOrientationDynamic);
     }
 
     for (uint32_t i = 0; i < vkz_swapchain_image_count; ++i) {
@@ -1108,7 +1114,7 @@ namespace small3d {
       vkz_destroy_buffer(cameraOrientationBuffers[i], cameraOrientationBufferMemories[i]);
       vkz_destroy_buffer(worldDetailsBuffers[i], worldDetailsBufferMemories[i]);
       vkz_destroy_buffer(lightIntensityBuffers[i], lightIntensityBufferMemories[i]);
-      vkz_destroy_buffer(colourBuffers[i], colourBufferMemories[i]);
+      vkz_destroy_buffer(colourBuffersDynamic[i], colourBuffersDynamicMemory[i]);
     }
 
     vkDestroySampler(vkz_logical_device, textureSampler, NULL);
@@ -1264,8 +1270,6 @@ namespace small3d {
 
     rect.normalsData = std::vector<float>(12);
     rect.normalsDataByteSize = 12 * sizeof(float);
-
-    rect.colour = colour;
 
     rect.textureCoordsData = {
         1.0f, 1.0f,
@@ -1458,14 +1462,16 @@ namespace small3d {
 
     if (textureName != "") {
       // "Disable" colour since there is a texture
-      model.colour = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+      setColourBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), colourMemIndex);
       model.textureName = textureName;
     }
     else {
       // If there is no texture, use the given colour
-      model.colour = colour;
+      setColourBuffer(colour, colourMemIndex);
       model.textureName = "blank";
     }
+    model.colourMemIndex = colourMemIndex;
+    ++colourMemIndex;
 
     model.perspective = perspective;
     model.offset = offset;
@@ -1564,21 +1570,24 @@ namespace small3d {
     vkz_acquire_next_image(perspectivePipelineIndex, &currentSwapchainImageIndex);
 
     orientationMemIndex = 0;
+    colourMemIndex = 0;
 
-    // No problem only running these once
     setPerspectiveAndLight();
     positionCamera();
 
-    // This would have to be updated per GPU draw command, but right now
-    // it just updates a memory buffer through CPU commands.
-    setColourBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
-
-    // Updating object positioning - this should probably go to a function somewhere...
+    // Updating object positioning - this should probably go in a function somewhere...
     void* orientationData;
     vkMapMemory(vkz_logical_device, renderOrientationBuffersDynamicMemory[currentSwapchainImageIndex],
       0, uboOrientationDynamicSize, 0, &orientationData);
     memcpy(orientationData, uboOrientationDynamic, uboOrientationDynamicSize);
     vkUnmapMemory(vkz_logical_device, renderOrientationBuffersDynamicMemory[currentSwapchainImageIndex]);
+
+    // Updating colour - again, this should probably go in a function
+    void* colourData;
+    vkMapMemory(vkz_logical_device, colourBuffersDynamicMemory[currentSwapchainImageIndex],
+      0, uboColourDynamicSize, 0, &colourData);
+    memcpy(colourData, uboColourDynamic, uboColourDynamicSize);
+    vkUnmapMemory(vkz_logical_device, colourBuffersDynamicMemory[currentSwapchainImageIndex]);
 
     // And here all of the above are bound
     updateDescriptorSets();

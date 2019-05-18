@@ -68,6 +68,8 @@ namespace small3d {
 
     uint32_t orientationMemIndex;
 
+    uint32_t colourMemIndex;
+
     // End of Vulkan-specific variables.
         
     /**
@@ -125,12 +127,6 @@ namespace small3d {
     *        have been previously generated with Renderer.generateTexture().
     */
     std::string textureName;
-
-    /**
-    * @brief The colour of the model (set to glm::vec4(0.0f, 0.0f, 0.0f, 0.0f) to 
-    *        use a texture instead.
-    */
-    glm::vec4 colour;
 
     /**
      * @brief True if the model is to be rendered with perspective, False for orthographic
