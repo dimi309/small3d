@@ -4,6 +4,10 @@ project(small3d)
 
 file(COPY "deps/include" DESTINATION ".")
 file(COPY "deps/lib" DESTINATION ".")
+
+file(GLOB SHADERS_SOURCE "resources/shaders/*")
+file(COPY ${SHADERS_SOURCE} DESTINATION "./shaders")
+
 if(MSVC)
   file(COPY "deps/bin" DESTINATION ".")
 endif(MSVC)
