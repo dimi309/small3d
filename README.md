@@ -48,7 +48,7 @@ The unit tests can be run via the *unittests* binary from *build/bin*.
 
 For building your own project, you need the header files from 
 the *build/include* directory, the libraries from the *build/lib* directory and
-the shaders from *small3d/resources/shaders*. If you are using cmake, the
+the shaders from *build/shaders*. If you are using cmake, the
 modules in *small3d/cmake* can be useful. Check the CMakeLists.txt and
 src/CMakeLists.txt files for other configuration details (link flags, etc) that 
 may also be required or useful.
@@ -341,7 +341,7 @@ That's it!
 
 Let's try it out. Create a *ball/deps* directory and from the built small3d
 framework (see Building section above) copy the *build/include* and *build/lib*
-directories to this *deps* directory. Also, copy the *small3d/resources/shaders*
+directories to this *deps* directory. Also, copy the *build/shaders*
 directory to the *resources* directory and the *cmake* directory from the root
 of the small3d framework repository to the root *ball* directory. Then, back
 from the root *ball* directory execute:
