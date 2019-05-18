@@ -6,19 +6,17 @@ This is a free, open source, minimalistic 3D framework for the programmer who
 would like to make games for PCs using a basic set of libraries (glfw, 
 glm, png, zlib, ogg, vorbis, portaudio, freetype, bzip) and relying on
 C++ to do the rest. It helps you by providing you with cross-platform rendering
-functionality based on glfw and Vulkan. It can render Wavefront models, animate
-them as frames, map textures on them, provide some basic lighting (Gouraud 
-shading) and also render images and text. A very easy to use Sound object is
-also provided that can play OGG files on all supported platforms via a common 
-interface. Basic collision detection has also been implemented.
+functionality based on glfw and Vulkan (many thanks to the [Vulkan Tutorial](https://vulkan
+-tutorial.com/)). You can also find OpenGL editions of the framework online.
+Since Vulkan is relatively new, those editions may be more reliable.
+small3d can render Wavefront models, animate them as frames, map textures on them, 
+provide some basic lighting (Gouraud shading) and also render images and text. 
+A very easy to use Sound object is also provided that can play OGG files on all
+supported platforms via a common interface. Basic collision detection has
+also been implemented.
 
 small3d works on Windows, MacOS and Linux and supports Visual Studio, gcc (even 
-MinGW) and clang for compilation. *But this is still an experimental version,
-using Vulkan for the first time (many thanks to the [Vulkan Tutorial](https://vulkan
--tutorial.com/)), and has a few issues like the absence of proper depth testing or
-the excessive use of render passes. The priorities during its development was to put
-something together pretty fast that would work the exact same way as the OpenGL
-version of small3d, as a proof of concept.* 
+MinGW) and clang for compilation.
 
 All small3d dependencies, appart from the Vulkan SDK, are distributed together with 
 its source code. They can be built by executing a single script (see below).
@@ -53,7 +51,7 @@ The unit tests can be run via the *unittests* binary from *build/bin*.
 
 For building your own project, you need the header files from 
 the *build/include* directory, the libraries from the *build/lib* directory and
-the shaders from *small3d/resources/shaders*. If you are using cmake, the
+the shaders from *build/shaders*. If you are using cmake, the
 modules in *small3d/cmake* can be useful. Check the CMakeLists.txt and
 src/CMakeLists.txt files for other configuration details (link flags, etc) that 
 may also be required or useful.
@@ -344,7 +342,7 @@ That's it!
 
 Let's try it out. Create a *ball/deps* directory and from the built small3d
 framework (see Building section above) copy the *build/include* and *build/lib*
-directories to this *deps* directory. Also, copy the *small3d/resources/shaders*
+directories to this *deps* directory. Also, copy the *small3d/build/shaders*
 directory to the *resources* directory and the *cmake* directory from the root
 of the small3d framework repository to the root *ball* directory. Then, back
 from the root *ball* directory execute:
