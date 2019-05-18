@@ -56,6 +56,8 @@ namespace small3d {
   VkVertexInputAttributeDescription Renderer::orthoad[2];
   VkDescriptorSetLayout Renderer::orthoDescriptorSetLayout;
   VkDescriptorSet Renderer::orthoDescriptorSet;
+  VkDescriptorSetLayout Renderer::textureOrthoDescriptorSetLayout;
+  VkDescriptorSetLayout Renderer::orthographicLayouts[2];
 
   int Renderer::setInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo) {
 
@@ -176,8 +178,10 @@ namespace small3d {
   }
 
   int Renderer::setOrthoPipelineLayout(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
-    pipelineLayoutCreateInfo->setLayoutCount = 1;
-    pipelineLayoutCreateInfo->pSetLayouts = &orthoDescriptorSetLayout;
+    orthographicLayouts[0] = orthoDescriptorSetLayout;
+    orthographicLayouts[1] = textureOrthoDescriptorSetLayout;
+    pipelineLayoutCreateInfo->setLayoutCount = 2;
+    pipelineLayoutCreateInfo->pSetLayouts = orthographicLayouts;
     return 1;
   }
 
@@ -205,9 +209,12 @@ namespace small3d {
     uint32_t dynamicColourOffset = model.colourMemIndex *
       static_cast<uint32_t>(dynamicColourAlignment);
 
+    const VkDescriptorSet descriptorSets[2] = { orthoDescriptorSet, 
+      getTextureHandle(model.textureName).orthoDescriptorSet };
+
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-      pipelineLayout, 0, 1,
-      &orthoDescriptorSet, 1, &dynamicColourOffset);
+      pipelineLayout, 0, 2,
+      descriptorSets, 1, &dynamicColourOffset);
 
     vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(), 1, 0, 0, 0);
 
@@ -273,7 +280,7 @@ namespace small3d {
 
       // TODO: Review descriptor pool size
       ps[3].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-      ps[3].descriptorCount = vkz_swapchain_image_count * 2 * MAX_NUM_OBJECTS;
+      ps[3].descriptorCount = vkz_swapchain_image_count * 4 * MAX_NUM_OBJECTS;
 
       ps[4].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
       ps[4].descriptorCount = vkz_swapchain_image_count;
@@ -286,7 +293,7 @@ namespace small3d {
       dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
       dpci.poolSizeCount = 6;
       dpci.pPoolSizes = ps;
-      dpci.maxSets = vkz_swapchain_image_count * 2 * MAX_NUM_OBJECTS;
+      dpci.maxSets = vkz_swapchain_image_count * 4 * MAX_NUM_OBJECTS;
 
       if (vkCreateDescriptorPool(vkz_logical_device, &dpci, NULL,
         &descriptorPool) != VK_SUCCESS) {
@@ -570,7 +577,7 @@ namespace small3d {
     dslci.pBindings = &dslb;
 
     if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
-      &orthoDescriptorSetLayout) != VK_SUCCESS) {
+      &textureOrthoDescriptorSetLayout) != VK_SUCCESS) {
       throw std::runtime_error("Failed to create orthographic descriptor set layout.");
     }
     else {
@@ -580,42 +587,26 @@ namespace small3d {
 
   void Renderer::updateOrthoDescriptorSets() {
 
-    VkDescriptorImageInfo diiTexture;
-    memset(&diiTexture, 0, sizeof(VkDescriptorImageInfo));
-    diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    diiTexture.imageView = boundTextureViews[currentSwapchainImageIndex];
-    diiTexture.sampler = textureSampler;
-
     VkDescriptorBufferInfo dbiColour;
     memset(&dbiColour, 0, sizeof(VkDescriptorBufferInfo));
     dbiColour.buffer = colourBuffersDynamic[currentSwapchainImageIndex];
     dbiColour.offset = 0;
     dbiColour.range = 4 * sizeof(float);
 
-    std::vector<VkWriteDescriptorSet> wds(2);
-    memset(&wds[0], 0, 2 * sizeof(VkWriteDescriptorSet));
+    VkWriteDescriptorSet wds;
+    memset(&wds, 0, sizeof(VkWriteDescriptorSet));
 
-    wds[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[0].dstSet = orthoDescriptorSet;
-    wds[0].dstBinding = 0;
-    wds[0].dstArrayElement = 0;
-    wds[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    wds[0].descriptorCount = 1;
-    wds[0].pBufferInfo = NULL;
-    wds[0].pImageInfo = &diiTexture;
-    wds[0].pTexelBufferView = NULL;
+    wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    wds.dstSet = orthoDescriptorSet;
+    wds.dstBinding = 1;
+    wds.dstArrayElement = 0;
+    wds.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+    wds.descriptorCount = 1;
+    wds.pBufferInfo = &dbiColour;
+    wds.pImageInfo = NULL;
+    wds.pTexelBufferView = NULL;
 
-    wds[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[1].dstSet = orthoDescriptorSet;
-    wds[1].dstBinding = 1;
-    wds[1].dstArrayElement = 0;
-    wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    wds[1].descriptorCount = 1;
-    wds[1].pBufferInfo = &dbiColour;
-    wds[1].pImageInfo = NULL;
-    wds[1].pTexelBufferView = NULL;
-
-    vkUpdateDescriptorSets(vkz_logical_device, 2, &wds[0], 0, NULL);
+    vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
 
   }
 
@@ -751,7 +742,7 @@ namespace small3d {
       throw std::runtime_error("Failed to create texture image view!\n\r");
     };
 
-    // Allocate texture descriptor set
+    // Allocate perspective texture descriptor set
 
     VkDescriptorSetAllocateInfo dsai;
     memset(&dsai, 0, sizeof(VkDescriptorSetAllocateInfo));
@@ -782,6 +773,44 @@ namespace small3d {
     wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     wds.dstSet = textureHandle.descriptorSet;
     wds.dstBinding = 3;
+    wds.dstArrayElement = 0;
+    wds.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    wds.descriptorCount = 1;
+    wds.pBufferInfo = NULL;
+    wds.pImageInfo = &diiTexture;
+    wds.pTexelBufferView = NULL;
+
+    vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
+
+    // Allocate orthographic texture descriptor set
+
+    memset(&dsai, 0, sizeof(VkDescriptorSetAllocateInfo));
+    dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    dsai.descriptorPool = descriptorPool;
+    dsai.descriptorSetCount = 1;
+    dsai.pSetLayouts = &textureOrthoDescriptorSetLayout;
+
+    textureHandle.orthoDescriptorSet = {};
+
+    allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
+      &textureHandle.orthoDescriptorSet);
+    if (allocResult != VK_SUCCESS) {
+      std::string errortxt = "Failed to allocate orthographic texture descriptor set.";
+      throw std::runtime_error(errortxt);
+    }
+
+    // Write orthographic texture descriptor set
+    
+    memset(&diiTexture, 0, sizeof(VkDescriptorImageInfo));
+    diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    diiTexture.imageView = textureHandle.imageView;
+    diiTexture.sampler = textureSampler;
+
+    wds = {};
+
+    wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    wds.dstSet = textureHandle.orthoDescriptorSet;
+    wds.dstBinding = 0;
     wds.dstArrayElement = 0;
     wds.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     wds.descriptorCount = 1;

@@ -32,6 +32,7 @@ namespace small3d
     VkImage image;
     VkDeviceMemory imageMemory;
     VkDescriptorSet descriptorSet;
+    VkDescriptorSet orthoDescriptorSet;
   };
 
   struct UboOrientation {
