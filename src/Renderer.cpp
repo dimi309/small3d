@@ -840,7 +840,7 @@ namespace small3d {
     }
 
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
-      setInputStateCallback, setPipelineLayout, 0, &perspectivePipelineIndex);
+      setInputStateCallback, setPipelineLayout, &perspectivePipelineIndex);
 
     boundTextureViews.resize(vkz_swapchain_image_count);
 
@@ -857,8 +857,7 @@ namespace small3d {
       "simpleFragmentShader.spv";
 
     vkz_create_pipeline(orthoVertexShaderPath.c_str(), orthoFragmentShaderPath.c_str(),
-      setOrthoInputState, setOrthoPipelineLayout, 0,
-      &orthographicPipelineIndex);
+      setOrthoInputState, setOrthoPipelineLayout, &orthographicPipelineIndex);
 
     vkz_create_sync_objects();
 
@@ -912,8 +911,6 @@ namespace small3d {
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
     }
     // end of memory allocation for object positioning
-
-
 
   }
 

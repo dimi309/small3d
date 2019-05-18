@@ -103,15 +103,12 @@ typedef struct {
   VkCommandBuffer* draw_command_buffers;
   int (*set_input_state_function)(VkPipelineVertexInputStateCreateInfo*);
   int (*set_pipeline_layout_function)(VkPipelineLayoutCreateInfo*);
-  int opengl;
 } pipeline_system_struct;
 
 uint32_t pipeline_system_count = 0;
 pipeline_system_struct* pipeline_systems = NULL;
 
 static VkFence gpu_cpu_fence;
-static VkSemaphore render_complete_semaphore;
-static VkSemaphore image_available_semaphore;
 
 int vkz_create_instance(const char* application_name,
   const char** enabled_extension_names,
@@ -984,8 +981,7 @@ long alloc_load_shader_spv(char* path, uint32_t * *spv) {
 
 int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_shader_path,
   int (*set_input_state)(VkPipelineVertexInputStateCreateInfo*),
-  int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo*), BOOL opengl_coords,
-  uint32_t * index) {
+  int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo*), uint32_t * index) {
 
   if (pipeline_systems) {
     if (pipeline_system_count) {
@@ -999,9 +995,9 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
         *index = pipeline_system_count;
         free(pipeline_systems);
         pipeline_systems = temp;
-        
+
         // Create a pipeline layout with the same index
-        
+
         VkPipelineLayout* ptemp =
           malloc((pipeline_system_count + 1) * sizeof(VkPipelineLayout));
         for (uint32_t n = 0; n < pipeline_system_count; n++) {
@@ -1010,7 +1006,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
         free(vkz_pipeline_layout);
         vkz_pipeline_layout = ptemp;
 
-        
+
         pipeline_system_count++;
         memset(&pipeline_systems[*index], 0, sizeof(pipeline_system_struct));
         pipeline_systems[*index].vertex_shader_path = (char*)vertex_shader_path;
@@ -1018,7 +1014,6 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
         pipeline_systems[*index].set_input_state_function = set_input_state;
         pipeline_systems[*index].set_pipeline_layout_function =
           set_pipeline_layout;
-        pipeline_systems[*index].opengl = opengl_coords;
       }
       else {
         // Reuse existing slot
@@ -1028,13 +1023,11 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
           pipeline_systems[*index].set_input_state_function;
         int (*spl)(VkPipelineLayoutCreateInfo*) =
           pipeline_systems[*index].set_pipeline_layout_function;
-        int oglc = pipeline_systems[*index].opengl;
         memset(&pipeline_systems[*index], 0, sizeof(pipeline_system_struct));
         pipeline_systems[*index].vertex_shader_path = vsp;
         pipeline_systems[*index].fragment_shader_path = fsp;
         pipeline_systems[*index].set_input_state_function = sis;
         pipeline_systems[*index].set_pipeline_layout_function = spl;
-        pipeline_systems[*index].opengl = opengl_coords == 100 ? oglc : opengl_coords;
       }
     }
     else {
@@ -1059,7 +1052,6 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
     pipeline_systems[*index].fragment_shader_path = (char*)fragment_shader_path;
     pipeline_systems[*index].set_input_state_function = set_input_state;
     pipeline_systems[*index].set_pipeline_layout_function = set_pipeline_layout;
-    pipeline_systems[*index].opengl = opengl_coords;
   }
 
   VkShaderModuleCreateInfo ci;
@@ -1141,11 +1133,9 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   VkViewport viewport;
   memset(&viewport, 0, sizeof(viewport));
   viewport.x = 0.0f;
-  viewport.y = pipeline_systems[*index].opengl ? 
-    (float)vkz_swap_extent.height : 0.0f;
+  viewport.y = 0.0f;
   viewport.width = (float)vkz_swap_extent.width;
-  viewport.height = (pipeline_systems[*index].opengl ? -1.0f : 1.0f) *
-    (float)vkz_swap_extent.height; 
+  viewport.height = (float)vkz_swap_extent.height;
 
   viewport.minDepth = 0.0f;
   viewport.maxDepth = 1.0f;
@@ -1336,7 +1326,7 @@ int vkz_destroy_pipeline(uint32_t index) {
 
 int vkz_add_clear_command(uint32_t pipeline_index) {
   VkClearColorValue clearColour = { 0.0f, 0.0f, 0.0f, 1.0f };
- 
+
   VkClearAttachment clear_attachments[2];
   memset(clear_attachments, 0, 2 * sizeof(VkClearAttachment));
 
@@ -1446,7 +1436,9 @@ int vkz_end_next_draw_command_buffer(uint32_t pipeline_index) {
 
 int vkz_destroy_next_draw_command_buffer(uint32_t pipeline_index) {
 
-  vkDeviceWaitIdle(vkz_logical_device);
+  vkWaitForFences(vkz_logical_device, 1,
+    &gpu_cpu_fence,
+    VK_TRUE, UINT64_MAX);
 
   vkFreeCommandBuffers(vkz_logical_device, command_pool, 1,
     &pipeline_systems[pipeline_index].draw_command_buffers[next_image_index]);
@@ -1456,21 +1448,6 @@ int vkz_destroy_next_draw_command_buffer(uint32_t pipeline_index) {
 
 int vkz_create_sync_objects() {
 
-  VkSemaphoreCreateInfo semaphore_ci;
-  memset(&semaphore_ci, 0, sizeof(VkSemaphoreCreateInfo));
-  semaphore_ci.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-
-  if (vkCreateSemaphore(vkz_logical_device, &semaphore_ci,
-    NULL, &render_complete_semaphore) != VK_SUCCESS) {
-    printf("Could not create render complete semaphore!\n\r");
-    return 0;
-  }
-
-  if (vkCreateSemaphore(vkz_logical_device, &semaphore_ci,
-    NULL, &image_available_semaphore) != VK_SUCCESS) {
-    printf("Could not create imabe available semaphore!\n\r");
-    return 0;
-  }
 
   VkFenceCreateInfo fence_ci;
   memset(&fence_ci, 0, sizeof(VkFenceCreateInfo));
@@ -1492,14 +1469,6 @@ int vkz_create_sync_objects() {
 }
 
 int vkz_destroy_sync_objects() {
-
-  vkDeviceWaitIdle(vkz_logical_device);
-
-  vkDestroySemaphore(vkz_logical_device,
-    render_complete_semaphore, NULL);
-
-  vkDestroySemaphore(vkz_logical_device,
-    image_available_semaphore, NULL);
 
   vkWaitForFences(vkz_logical_device, 1,
     &gpu_cpu_fence,
@@ -1523,7 +1492,7 @@ int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t * image_index) {
   VkResult r =
     vkAcquireNextImageKHR(vkz_logical_device, vkz_swapchain,
       UINT64_MAX,
-      VK_NULL_HANDLE, //image_available_semaphore,
+      VK_NULL_HANDLE,
       gpu_cpu_fence, &next_image_index);
 
   if (r == VK_ERROR_OUT_OF_DATE_KHR) {
@@ -1531,7 +1500,7 @@ int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t * image_index) {
     vkz_destroy_pipeline(pipeline_index);
     vkz_destroy_swapchain();
     vkz_create_swapchain(vkz_width, vkz_height, -1);
-    vkz_create_pipeline(NULL, NULL, NULL, NULL, 100, &pipeline_index);
+    vkz_create_pipeline(NULL, NULL, NULL, NULL, &pipeline_index);
     return 1;
   }
   else if (r != VK_SUCCESS && r != VK_SUBOPTIMAL_KHR) {
@@ -1550,10 +1519,6 @@ int vkz_present_next_image(uint32_t pipeline_index) {
   memset(&pinf, 0, sizeof(VkPresentInfoKHR));
   pinf.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 
-  /*VkSemaphore wait_semaphores[] = { render_complete_semaphore };
-  pinf.pWaitSemaphores = wait_semaphores;
-  pinf.waitSemaphoreCount = 1;*/
-
   VkSwapchainKHR swap_chains[] = { vkz_swapchain };
   pinf.swapchainCount = 1;
   pinf.pSwapchains = swap_chains;
@@ -1566,7 +1531,7 @@ int vkz_present_next_image(uint32_t pipeline_index) {
     vkz_destroy_pipeline(pipeline_index);
     vkz_destroy_swapchain();
     vkz_create_swapchain(vkz_width, vkz_height, -1);
-    vkz_create_pipeline(NULL, NULL, NULL, NULL, 100, &pipeline_index);
+    vkz_create_pipeline(NULL, NULL, NULL, NULL, &pipeline_index);
   }
   else if (r != VK_SUCCESS) {
     printf("Could not present swapchain image!\n\r");
@@ -1594,18 +1559,6 @@ int send(uint32_t pipeline_index,
   memset(&si, 0, sizeof(VkSubmitInfo));
   si.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-  /*VkSemaphore wait_semaphores[] = { image_available_semaphore };
-  VkPipelineStageFlags wait_stages[] = {
-    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-  si.pWaitDstStageMask = wait_stages;
-  si.pWaitSemaphores = wait_semaphores;
-  si.waitSemaphoreCount = 1;
-  */
-
-  /*VkSemaphore signal_semaphores[] = { render_complete_semaphore };
-  si.pSignalSemaphores = signal_semaphores;
-  si.signalSemaphoreCount = 1;*/
-
   si.commandBufferCount = 1;
   si.pCommandBuffers = &command_buffers[next_image_index];
 
@@ -1619,10 +1572,7 @@ int send(uint32_t pipeline_index,
 }
 
 int vkz_clear(uint32_t pipeline_index) {
-  /*validation layer : [UNASSIGNED - CoreValidation - DrawState - InvalidImageLayout] Object :
-  0x202555e1cc8 (Type = 6) | Submitted command buffer expects image 0x5 (subresource : aspectMask 0x1 array layer 0,
-  mip level 0) to be in layout VK_IMAGE_LAYOUT_PRESENT_SRC_KHR--instead, image 0x5's current layout is VK_IMAGE_LAYOUT_UNDEFINED.*/
-  // (once)
+
   vkz_transition_image_layout(vkz_swapchain_images[next_image_index],
     VK_FORMAT_R32G32B32A32_SFLOAT, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_LAYOUT_GENERAL);
   return send(pipeline_index, NULL,
@@ -1634,12 +1584,8 @@ int vkz_clear(uint32_t pipeline_index) {
 int vkz_draw(uint32_t pipeline_index,
   int (*update_buffers_function)(uint32_t)) {
 
-  vkDeviceWaitIdle(vkz_logical_device);
-
   return send(pipeline_index, update_buffers_function,
     pipeline_systems[pipeline_index].draw_command_buffers);
-
-
 }
 
 
