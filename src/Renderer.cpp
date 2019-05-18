@@ -1575,8 +1575,7 @@ namespace small3d {
   void Renderer::clearScreen(const glm::vec4 colour) {
 
     vkz_clear(perspectivePipelineIndex);
-    this->renderRectangle(colour, glm::vec3(-1.0f, 1.0f, 1.0f),
-      glm::vec3(1.0f, -1.0f, 1.0f));
+
   }
 
   void Renderer::swapBuffers() {
@@ -1610,29 +1609,16 @@ namespace small3d {
     vkz_begin_next_draw_command_buffer(perspectivePipelineIndex, &nextCommandBuffer);
     vkz_begin_next_draw_command_buffer(orthographicPipelineIndex, &nextOrthoCommandBuffer);
 
-    bool prevOrtho = false;
-    
     for (auto model : nextModelsToDraw) {
       if (model.perspective) {
-        
-        if (prevOrtho) {
-          vkz_end_next_draw_command_buffer(orthographicPipelineIndex);
-          vkz_draw(orthographicPipelineIndex, NULL);
-          vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
-          vkz_begin_next_draw_command_buffer(orthographicPipelineIndex, &nextOrthoCommandBuffer);
-        }
-
         bindBuffers(nextCommandBuffer, model);
         recordDrawCommand(nextCommandBuffer, vkz_pipeline_layout[perspectivePipelineIndex],
           model, currentSwapchainImageIndex);
-
-        prevOrtho = false;
       }
       else {
         bindOrthoBuffers(nextOrthoCommandBuffer, model);
         recordOrthoDrawCommand(nextOrthoCommandBuffer, vkz_pipeline_layout[orthographicPipelineIndex],
           model, currentSwapchainImageIndex);
-        prevOrtho = true;
       }
       
     }
@@ -1645,9 +1631,9 @@ namespace small3d {
     vkz_draw(perspectivePipelineIndex, NULL);
     vkz_draw(orthographicPipelineIndex, NULL);
 
-    vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
     vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
-
+    vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
+    
     vkz_present_next_image(perspectivePipelineIndex);
 
     nextModelsToDraw.clear();
