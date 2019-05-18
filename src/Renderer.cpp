@@ -315,7 +315,7 @@ namespace small3d {
       ps[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
       ps[0].descriptorCount = vkz_swapchain_image_count * 2 * MAX_NUM_OBJECTS;
 
-      ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
       ps[1].descriptorCount = vkz_swapchain_image_count * 2 * MAX_NUM_OBJECTS;
 
       VkDescriptorPoolCreateInfo dpci;
@@ -574,7 +574,7 @@ namespace small3d {
 
     if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
       &textureOrthoDescriptorSetLayout) != VK_SUCCESS) {
-      throw std::runtime_error("Failed to create orthographic descriptor set layout.");
+      throw std::runtime_error("Failed to create orthographic texture descriptor set layout.");
     }
     else {
       LOGDEBUG("Created orthographic texture descriptor set layout.");
