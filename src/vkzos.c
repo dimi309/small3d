@@ -1175,8 +1175,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   rasterization_state_ci.polygonMode = VK_POLYGON_MODE_FILL;
   rasterization_state_ci.lineWidth = 1.0f;
   rasterization_state_ci.cullMode = VK_CULL_MODE_BACK_BIT;
-  rasterization_state_ci.frontFace = pipeline_systems[*index].opengl ?
-    VK_FRONT_FACE_COUNTER_CLOCKWISE : VK_FRONT_FACE_CLOCKWISE;
+  rasterization_state_ci.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
   rasterization_state_ci.depthBiasEnable = VK_FALSE;
   rasterization_state_ci.depthBiasConstantFactor = 0.0f;
   rasterization_state_ci.depthBiasClamp = 0.0f;
