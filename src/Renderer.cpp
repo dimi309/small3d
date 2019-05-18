@@ -1080,11 +1080,6 @@ namespace small3d {
     }
     garbageModels.clear();
 
-    for (auto model : tempModels) {
-      clearBuffers(model);
-    }
-    tempModels.clear();
-
     for (auto it = textures.begin();
       it != textures.end(); ++it) {
       LOGDEBUG("Deleting texture " + it->first);
@@ -1315,7 +1310,7 @@ namespace small3d {
     render(rect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
       colour, textureName, perspective);
     //vkDeviceWaitIdle(vkz_logical_device);
-    tempModels.push_back(rect);
+    garbageModels.push_back(rect);
   }
 
   void Renderer::renderRectangle(const glm::vec4 colour,
@@ -1649,10 +1644,6 @@ namespace small3d {
     }
     garbageModels.clear();
 
-    for (auto model : tempModels) {
-      garbageModels.push_back(model);
-    }
-    tempModels.clear();
   }
 
 

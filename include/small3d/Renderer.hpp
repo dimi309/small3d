@@ -154,7 +154,6 @@ namespace small3d
     VkCommandBuffer nextCommandBuffer;
     VkCommandBuffer nextOrthoCommandBuffer;
 
-    std::vector<Model> tempModels;
     std::vector<Model> garbageModels;
 
     void allocateDescriptorSets();
