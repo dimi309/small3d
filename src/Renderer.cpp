@@ -1589,9 +1589,11 @@ namespace small3d {
 
   }
 
-  void Renderer::clearScreen(const glm::vec4 colour) const {
+  void Renderer::clearScreen(const glm::vec4 colour) {
 
     vkz_clear(perspectivePipelineIndex);
+    this->renderRectangle(colour, glm::vec3(-1.0f, 1.0f, 1.0f),
+      glm::vec3(1.0f, -1.0f, 1.0f));
   }
 
   void Renderer::swapBuffers() {

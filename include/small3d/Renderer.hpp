@@ -399,7 +399,7 @@ namespace small3d
      * @brief Clears the screen.
      * @param colour The colour with which the screen is to be cleared
      */
-    void clearScreen(const glm::vec4 colour) const;
+    void clearScreen(const glm::vec4 colour);
 
     /**
      * @brief Swap the buffers.
