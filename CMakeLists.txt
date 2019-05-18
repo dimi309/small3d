@@ -4,9 +4,14 @@ project(small3d)
 
 file(COPY "deps/include" DESTINATION ".")
 file(COPY "deps/lib" DESTINATION ".")
+
+file(GLOB SHADERS_SPIRV "resources/shaders/*.spv")
+file(COPY ${SHADERS_SPIRV} DESTINATION "./shaders")
+
 if(MSVC)
   file(COPY "deps/bin" DESTINATION ".")
 endif(MSVC)
+
 file(COPY "include" DESTINATION ".")
 file(COPY "resources" DESTINATION "./bin")
 
