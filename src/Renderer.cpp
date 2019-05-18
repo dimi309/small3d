@@ -516,35 +516,28 @@ namespace small3d {
 
   void Renderer::allocateOrthoDescriptorSets() {
 
-    VkDescriptorSetLayoutBinding dslb[2];
-    memset(dslb, 0, 2 * sizeof(VkDescriptorSetLayoutBinding));
-
-    // simpleFragmentShader - textureImage
-    dslb[0].binding = 0;
-    dslb[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    dslb[0].descriptorCount = 1;
-    dslb[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    dslb[0].pImmutableSamplers = NULL;
+    VkDescriptorSetLayoutBinding dslb;
+    memset(&dslb, 0, sizeof(VkDescriptorSetLayoutBinding));
 
     // simpleFragmentShader - uboColour
-    dslb[1].binding = 1;
-    dslb[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    dslb[1].descriptorCount = 1;
-    dslb[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    dslb[1].pImmutableSamplers = NULL;
+    dslb.binding = 1;
+    dslb.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+    dslb.descriptorCount = 1;
+    dslb.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    dslb.pImmutableSamplers = NULL;
 
     VkDescriptorSetLayoutCreateInfo dslci;
     memset(&dslci, 0, sizeof(VkDescriptorSetLayoutCreateInfo));
     dslci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    dslci.bindingCount = 2;
-    dslci.pBindings = dslb;
+    dslci.bindingCount = 1;
+    dslci.pBindings = &dslb;
 
     if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
       &orthoDescriptorSetLayout) != VK_SUCCESS) {
       throw std::runtime_error("Failed to create orthographic descriptor set layout.");
     }
     else {
-      LOGDEBUG("Created oprthographic descriptor set layout.");
+      LOGDEBUG("Created orthographic descriptor set layout.");
     }
 
     VkDescriptorSetAllocateInfo dsai;
@@ -560,6 +553,28 @@ namespace small3d {
     if (allocResult != VK_SUCCESS) {
       std::string errortxt = "Failed to allocate orthographic pool descriptor sets.";
       throw std::runtime_error(errortxt);
+    }
+
+    // simpleFragmentShader - textureImage
+    memset(&dslb, 0, sizeof(VkDescriptorSetLayoutBinding));
+
+    dslb.binding = 0;
+    dslb.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    dslb.descriptorCount = 1;
+    dslb.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    dslb.pImmutableSamplers = NULL;
+
+    memset(&dslci, 0, sizeof(VkDescriptorSetLayoutCreateInfo));
+    dslci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    dslci.bindingCount = 1;
+    dslci.pBindings = &dslb;
+
+    if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
+      &orthoDescriptorSetLayout) != VK_SUCCESS) {
+      throw std::runtime_error("Failed to create orthographic descriptor set layout.");
+    }
+    else {
+      LOGDEBUG("Created orthographic texture descriptor set layout.");
     }
   }
 
@@ -1095,6 +1110,9 @@ namespace small3d {
 
     vkDestroyDescriptorSetLayout(vkz_logical_device,
       orthoDescriptorSetLayout, NULL);
+
+    vkDestroyDescriptorSetLayout(vkz_logical_device,
+      textureOrthoDescriptorSetLayout, NULL);
 
     if (descriptorPoolCreated) {
       vkDestroyDescriptorPool(vkz_logical_device, descriptorPool, NULL);

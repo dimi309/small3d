@@ -100,6 +100,7 @@ namespace small3d
 
     static VkVertexInputBindingDescription bd[3];
     static VkVertexInputAttributeDescription ad[3];
+
     static VkDescriptorSetLayout descriptorSetLayout;
     static VkDescriptorSet descriptorSet;
     static VkDescriptorSetLayout textureDescriptorSetLayout;
@@ -107,8 +108,11 @@ namespace small3d
 
     static VkVertexInputBindingDescription orthobd[2];
     static VkVertexInputAttributeDescription orthoad[2];
+
     static VkDescriptorSetLayout orthoDescriptorSetLayout;
     static VkDescriptorSet orthoDescriptorSet;
+    static VkDescriptorSetLayout textureOrthoDescriptorSetLayout;
+    static VkDescriptorSetLayout orthographicLayouts[2];
 
     size_t dynamicOrientationAlignment;
     UboOrientation* uboOrientationDynamic;
