@@ -2,6 +2,7 @@
 *\~
 *swp
 *blend[0-9]
+*\.bak
 
 #MacOS
 Thumbs.db
