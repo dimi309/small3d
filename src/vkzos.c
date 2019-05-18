@@ -717,7 +717,6 @@ int vkz_create_image_view(VkImageView * image_view, VkImage image,
   return 1;
 }
 
-
 int create_swapchain_image_views() {
 
   vkz_swapchain_image_views = malloc(vkz_swapchain_image_count *
@@ -1432,8 +1431,6 @@ int vkz_end_next_draw_command_buffer(uint32_t pipeline_index) {
   return 1;
 }
 
-
-
 int vkz_destroy_next_draw_command_buffer(uint32_t pipeline_index) {
 
   vkWaitForFences(vkz_logical_device, 1,
@@ -1447,7 +1444,6 @@ int vkz_destroy_next_draw_command_buffer(uint32_t pipeline_index) {
 }
 
 int vkz_create_sync_objects() {
-
 
   VkFenceCreateInfo fence_ci;
   memset(&fence_ci, 0, sizeof(VkFenceCreateInfo));
@@ -1931,7 +1927,6 @@ int vkz_shutdown() {
 
   if (instance_created) {
     LOGDEBUG0("Destroying surface.\n\r");
-    // Not sure it won't be a problem if the surface has not been created
     vkDestroySurfaceKHR(vkz_instance, vkz_surface, NULL);
     LOGDEBUG0("Destroying instance.\n\r");
     vkDestroyInstance(vkz_instance, NULL);

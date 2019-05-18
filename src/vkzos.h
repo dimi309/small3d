@@ -167,8 +167,7 @@ int vkz_destroy_next_draw_command_buffer(uint32_t pipeline_index);
 
 /**
  * @brief Create sync objects for a given pipeline
- *
-  */
+ */
 int vkz_create_sync_objects();
 
 /**
