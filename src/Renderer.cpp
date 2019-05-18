@@ -129,6 +129,8 @@ namespace small3d {
     VkPipelineLayout pipelineLayout, const Model& model,
     uint32_t swapchainImageIndex) {
 
+    
+
     uint32_t dynamicOrientationOffset = model.orientationMemIndex *
       static_cast<uint32_t>(dynamicOrientationAlignment);
 
@@ -840,8 +842,6 @@ namespace small3d {
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
       setInputStateCallback, setPipelineLayout, 1, &perspectivePipelineIndex);
 
-    vkz_create_clear_command_buffers(perspectivePipelineIndex);
-
     boundTextureViews.resize(vkz_swapchain_image_count);
 
     Image blankImage("");
@@ -1098,7 +1098,6 @@ namespace small3d {
     vkz_destroy_sync_objects();
 
     if (orthographicPipelineIndex != 100) {
-      vkz_destroy_clear_command_buffers(perspectivePipelineIndex);
       vkz_destroy_pipeline(orthographicPipelineIndex);
     }
 
@@ -1546,7 +1545,6 @@ namespace small3d {
 
     renderRectangle(textureName, glm::vec3(topLeft.x, topLeft.y, -0.5f),
       glm::vec3(bottomRight.x, bottomRight.y, -0.5f));
-    //deleteTexture(textureName);
   }
 
   void Renderer::clearBuffers(Model & model) const {
@@ -1568,13 +1566,13 @@ namespace small3d {
 
   void Renderer::clearScreen() const {
 
-    vkz_clear(perspectivePipelineIndex);
+    // Do nothing. Clearing is performed by the first rendering
+    // command anyway. This stub is left here for legacy
+    // compatibility reasons.
 
   }
 
   void Renderer::clearScreen(const glm::vec4 colour) {
-
-    vkz_clear(perspectivePipelineIndex);
     this->renderRectangle(colour, glm::vec3(-1.0f, 1.0f, 1.0f),
       glm::vec3(1.0f, -1.0f, 1.0f));
   }
@@ -1611,7 +1609,7 @@ namespace small3d {
     vkz_begin_next_draw_command_buffer(orthographicPipelineIndex, &nextOrthoCommandBuffer);
 
     bool prevOrtho = false;
-    
+    bool doneFirst = false;
     for (auto model : nextModelsToDraw) {
       if (model.perspective) {
         
@@ -1621,7 +1619,10 @@ namespace small3d {
           vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
           vkz_begin_next_draw_command_buffer(orthographicPipelineIndex, &nextOrthoCommandBuffer);
         }
-
+        if (!doneFirst) {
+          vkz_add_clear_command(perspectivePipelineIndex);
+          doneFirst = true;
+        }
         bindBuffers(nextCommandBuffer, model);
         recordDrawCommand(nextCommandBuffer, vkz_pipeline_layout[perspectivePipelineIndex],
           model, currentSwapchainImageIndex);
@@ -1629,12 +1630,16 @@ namespace small3d {
         prevOrtho = false;
       }
       else {
+        if (!doneFirst) {
+          vkz_add_clear_command(orthographicPipelineIndex);
+          doneFirst = true;
+        }
         bindOrthoBuffers(nextOrthoCommandBuffer, model);
         recordOrthoDrawCommand(nextOrthoCommandBuffer, vkz_pipeline_layout[orthographicPipelineIndex],
           model, currentSwapchainImageIndex);
         prevOrtho = true;
       }
-      
+      doneFirst = true;
     }
 
     vkz_end_next_draw_command_buffer(perspectivePipelineIndex);

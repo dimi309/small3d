@@ -131,35 +131,12 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
 int vkz_destroy_pipeline(uint32_t index);
 
 /**
- * @brief Create the clearing command buffers for a given pipeline
- * @param pipeline_index       The index of the pipeline
- * @return 1 if successful, 0 otherwise
- */
-int vkz_create_clear_command_buffers(uint32_t pipeline_index);
-/**
- * @brief Destroy the clearing command buffers created for a given pipeline
+ * @brief Add a clear command to the draw command buffer of the given pipeline that
+ *        is about to be sent to the GPU
  * @param pipeline_index The index of the pipeline
- *
  * @return 1 if successful, 0 otherwise
  */
-int vkz_destroy_clear_command_buffers(uint32_t pipeline_index);
-
-/**
- * @brief Create the drawing command buffer for a given pipeline corresponding 
- *        to the next (acquired) image in the swapchain
- * @param pipeline_index       The index of the pipeline
- * @param bind_vertex_buffers  Callback function, allowing for the binding of
- *                             vertex buffers to the command buffers that are
- *                             created during the construction of the pipeline.
- * @param record_draw_command  Callback function, allowing the specification of
- *                             the draw command in the command buffers
- *                             created during the construction of the pipeline.
- * @return 1 if successful, 0 otherwise
- */
-int vkz_create_next_draw_command_buffer(uint32_t pipeline_index,
-  int (*bind_vertex_buffers)(VkCommandBuffer),
-  int (*record_draw_command)(VkCommandBuffer,
-    VkPipelineLayout, uint32_t));
+int vkz_add_clear_command(uint32_t pipeline_index);
 
 /**
  * @brief Begin creating the drawing command buffer for a given pipeline 
@@ -182,14 +159,6 @@ int vkz_begin_next_draw_command_buffer(uint32_t pipeline_index,
  * @return 1 if successful, 0 otherwise
  */
 int vkz_end_next_draw_command_buffer(uint32_t pipeline_index);
-
-/**
- * @brief Destroy the drawing command buffers created for a given pipeline
- * @param pipeline_index The index of the pipeline
- *
- * @return 1 if successful, 0 otherwise
- */
-int vkz_destroy_draw_command_buffers(uint32_t pipeline_index);
 
 /**
  * @brief Destroy ONLY the drawing command buffer corresponding 
