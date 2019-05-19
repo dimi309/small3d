@@ -721,6 +721,8 @@ int create_swapchain_image_views() {
 
   vkz_swapchain_image_views = malloc(vkz_swapchain_image_count *
     sizeof(VkImageView));
+  memset(vkz_swapchain_image_views, 0, vkz_swapchain_image_count *
+    sizeof(VkImageView));
 
   for (uint32_t n = 0; n < vkz_swapchain_image_count; n++) {
     if (!vkz_create_image_view(&vkz_swapchain_image_views[n],
@@ -987,7 +989,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
       if (*index == 100) {
         // Create pipeline in new slot
         pipeline_system_struct* temp =
-          malloc((pipeline_system_count + 1) * sizeof(pipeline_system_struct));
+          malloc((pipeline_system_count + (size_t)1) * sizeof(pipeline_system_struct));
         for (uint32_t n = 0; n < pipeline_system_count; n++) {
           temp[n] = pipeline_systems[n];
         }
@@ -998,7 +1000,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
         // Create a pipeline layout with the same index
 
         VkPipelineLayout* ptemp =
-          malloc((pipeline_system_count + 1) * sizeof(VkPipelineLayout));
+          malloc((pipeline_system_count + (size_t)1) * sizeof(VkPipelineLayout));
         for (uint32_t n = 0; n < pipeline_system_count; n++) {
           ptemp[n] = vkz_pipeline_layout[n];
         }
@@ -1443,6 +1445,100 @@ int vkz_destroy_next_draw_command_buffer(uint32_t pipeline_index) {
   return 1;
 }
 
+int vkz_begin_draw_command_buffer(VkCommandBuffer* command_buffer) {
+
+  VkCommandBufferAllocateInfo command_buffer_ai;
+  memset(&command_buffer_ai, 0, sizeof(VkCommandBufferAllocateInfo));
+  command_buffer_ai.sType =
+    VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+  command_buffer_ai.commandPool = command_pool;
+  command_buffer_ai.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+  command_buffer_ai.commandBufferCount = 1;
+
+  if (vkAllocateCommandBuffers(vkz_logical_device, &command_buffer_ai,
+    command_buffer) != VK_SUCCESS) {
+    printf("Could not allocate command buffer.\n\r");
+    return 0;
+  }
+  else {
+    VkCommandBufferBeginInfo command_buffer_bi;
+    memset(&command_buffer_bi, 0, sizeof(VkCommandBufferBeginInfo));
+    command_buffer_bi.sType =
+      VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    command_buffer_bi.flags =
+      VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+    command_buffer_bi.pInheritanceInfo = NULL;
+
+    if (vkBeginCommandBuffer(*command_buffer, &command_buffer_bi) != VK_SUCCESS) {
+      printf("Could not begin recording command buffer!\n\r");
+      return 0;
+    }
+    else {
+
+      VkRenderPassBeginInfo render_pass_bi;
+      memset(&render_pass_bi, 0, sizeof(VkRenderPassBeginInfo));
+      render_pass_bi.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+      render_pass_bi.renderPass = render_pass;
+      render_pass_bi.framebuffer = framebuffers[next_image_index];
+      render_pass_bi.renderArea.offset.x = 0;
+      render_pass_bi.renderArea.offset.y = 0;
+      render_pass_bi.renderArea.extent = vkz_swap_extent;
+
+      VkClearValue clear_values[2];
+      memset(clear_values, 0, 2 * sizeof(VkClearValue));
+      clear_values[0].color.float32[0] = 0.0f;
+      clear_values[0].color.float32[1] = 0.0f;
+      clear_values[0].color.float32[2] = 0.0f;
+      clear_values[0].color.float32[3] = 1.0f;
+      clear_values[1].depthStencil.depth = 1.0f;
+      clear_values[1].depthStencil.stencil = 0;
+
+      render_pass_bi.clearValueCount = 2;
+      render_pass_bi.pClearValues = clear_values;
+
+      vkCmdBeginRenderPass(*command_buffer, &render_pass_bi, 
+        VK_SUBPASS_CONTENTS_INLINE);
+
+      return 1;
+      
+    }
+  }
+  return 0;
+}
+
+int vkz_bind_pipeline_to_command_buffer(uint32_t pipeline_index,
+  VkCommandBuffer* command_buffer) {
+
+  vkCmdBindPipeline(*command_buffer,
+    VK_PIPELINE_BIND_POINT_GRAPHICS,
+    pipeline_systems[pipeline_index].pipeline);
+  return 1;
+  
+}
+
+int vkz_end_draw_command_buffer(VkCommandBuffer* command_buffer) {
+  vkCmdEndRenderPass(*command_buffer);
+
+  if (vkEndCommandBuffer(*command_buffer) != VK_SUCCESS) {
+    printf("Could not end command buffer!\n\r");
+    return 0;
+  }
+
+  return 1;
+}
+
+int vkz_destroy_draw_command_buffer(VkCommandBuffer* command_buffer) {
+
+  vkWaitForFences(vkz_logical_device, 1,
+    &gpu_cpu_fence,
+    VK_TRUE, UINT64_MAX);
+
+  vkFreeCommandBuffers(vkz_logical_device, command_pool, 1, command_buffer);
+
+  return 1;
+}
+
+
 int vkz_create_sync_objects() {
 
   VkFenceCreateInfo fence_ci;
@@ -1536,9 +1632,7 @@ int vkz_present_next_image(uint32_t pipeline_index) {
   return 1;
 }
 
-int send(uint32_t pipeline_index,
-  int (*update_buffers_function)(uint32_t),
-  VkCommandBuffer * command_buffers) {
+int send(VkCommandBuffer * command_buffer) {
 
   vkWaitForFences(vkz_logical_device, 1,
     &gpu_cpu_fence,
@@ -1547,16 +1641,12 @@ int send(uint32_t pipeline_index,
   vkResetFences(vkz_logical_device, 1,
     &gpu_cpu_fence);
 
-  if (update_buffers_function) {
-    update_buffers_function(next_image_index);
-  }
-
   VkSubmitInfo si;
   memset(&si, 0, sizeof(VkSubmitInfo));
   si.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
   si.commandBufferCount = 1;
-  si.pCommandBuffers = &command_buffers[next_image_index];
+  si.pCommandBuffers = command_buffer;
 
   if (vkQueueSubmit(vkz_graphics_queue, 1, &si,
     gpu_cpu_fence) !=
@@ -1567,21 +1657,15 @@ int send(uint32_t pipeline_index,
   return 1;
 }
 
-int vkz_clear(uint32_t pipeline_index) {
+int vkz_draw(uint32_t pipeline_index) {
 
-  vkz_transition_image_layout(vkz_swapchain_images[next_image_index],
-    VK_FORMAT_R32G32B32A32_SFLOAT, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_LAYOUT_GENERAL);
-  return send(pipeline_index, NULL,
-    pipeline_systems[pipeline_index].clear_command_buffers);
-
-  return 1;
+  return send(pipeline_systems[pipeline_index].draw_command_buffers);
 }
 
-int vkz_draw(uint32_t pipeline_index,
-  int (*update_buffers_function)(uint32_t)) {
+int vkz_draw_cmd(VkCommandBuffer *command_buffer) {
 
-  return send(pipeline_index, update_buffers_function,
-    pipeline_systems[pipeline_index].draw_command_buffers);
+  return send(command_buffer);
+
 }
 
 

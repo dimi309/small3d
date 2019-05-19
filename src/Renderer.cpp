@@ -1602,54 +1602,46 @@ namespace small3d {
     updateDescriptorSets();
     updateOrthoDescriptorSets();
 
-    vkz_begin_next_draw_command_buffer(perspectivePipelineIndex, &nextCommandBuffer);
-    vkz_begin_next_draw_command_buffer(orthographicPipelineIndex, &nextOrthoCommandBuffer);
+    //vkz_begin_next_draw_command_buffer(perspectivePipelineIndex, &nextCommandBuffer);
+    //vkz_begin_next_draw_command_buffer(orthographicPipelineIndex, &nextOrthoCommandBuffer);
 
-    bool prevOrtho = false;
-    bool doneFirst = false;
+    vkz_begin_draw_command_buffer(&nextCommandBuffer);
+
+    //bool prevOrtho = false;
+    //bool doneFirst = false;
     for (auto model : nextModelsToDraw) {
       if (model.perspective) {
         
-        if (prevOrtho) {
-          vkz_end_next_draw_command_buffer(orthographicPipelineIndex);
-          vkz_draw(orthographicPipelineIndex, NULL);
-          vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
-          vkz_begin_next_draw_command_buffer(orthographicPipelineIndex, &nextOrthoCommandBuffer);
-        }
-        if (!doneFirst) {
-          vkz_add_clear_command(perspectivePipelineIndex);
-          doneFirst = true;
-        }
+        vkz_bind_pipeline_to_command_buffer(perspectivePipelineIndex, &nextCommandBuffer);
         bindBuffers(nextCommandBuffer, model);
         recordDrawCommand(nextCommandBuffer, vkz_pipeline_layout[perspectivePipelineIndex],
           model, currentSwapchainImageIndex);
-
-        prevOrtho = false;
       }
       else {
-        if (!doneFirst) {
-          vkz_add_clear_command(orthographicPipelineIndex);
-          doneFirst = true;
-        }
-        bindOrthoBuffers(nextOrthoCommandBuffer, model);
-        recordOrthoDrawCommand(nextOrthoCommandBuffer, vkz_pipeline_layout[orthographicPipelineIndex],
+        vkz_bind_pipeline_to_command_buffer(orthographicPipelineIndex, &nextCommandBuffer);
+        bindOrthoBuffers(nextCommandBuffer, model);
+        recordOrthoDrawCommand(nextCommandBuffer, vkz_pipeline_layout[orthographicPipelineIndex],
           model, currentSwapchainImageIndex);
-        prevOrtho = true;
+        
       }
-      doneFirst = true;
+      
     }
+    vkz_end_draw_command_buffer(&nextCommandBuffer);
 
-    vkz_end_next_draw_command_buffer(perspectivePipelineIndex);
-    vkz_end_next_draw_command_buffer(orthographicPipelineIndex);
+    //vkz_end_next_draw_command_buffer(perspectivePipelineIndex);
+    //vkz_end_next_draw_command_buffer(orthographicPipelineIndex);
 
     // Order is important 
 
-    vkz_draw(perspectivePipelineIndex, NULL);
-    vkz_draw(orthographicPipelineIndex, NULL);
+    //vkz_draw(perspectivePipelineIndex);
+    //vkz_draw(orthographicPipelineIndex);
+    vkz_draw_cmd(&nextCommandBuffer);
 
-    vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
-    vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
+    //vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
+    //vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
+    vkz_destroy_draw_command_buffer(&nextCommandBuffer);
 
+    //TODO: Get rid of specific pipeline for presenting
     vkz_present_next_image(perspectivePipelineIndex);
 
     nextModelsToDraw.clear();
