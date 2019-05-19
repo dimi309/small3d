@@ -88,8 +88,8 @@ int vkz_create_depth_image();
 int vkz_destroy_depth_image();
 
 /**
- * @brief Create a pipeline. This will also create all associated Vulkan
- *        objects like shader stages, render passes, etc.
+ * @brief Create a pipeline. This will also create associated Vulkan
+ *        objects.
  *
  * @param vertex_shader_path   The path to the SPV file for the vertex shader
  *                             that will be used in the pipeline.

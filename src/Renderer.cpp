@@ -1602,7 +1602,6 @@ namespace small3d {
     updateDescriptorSets();
     updateOrthoDescriptorSets();
 
-    // TODO: const VkCommandBuffer* ?
     vkz_begin_draw_command_buffer(&nextCommandBuffer);
     vkz_add_clear_command(&nextCommandBuffer);
 
