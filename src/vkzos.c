@@ -1325,7 +1325,7 @@ int vkz_destroy_pipeline(uint32_t index) {
   return 1;
 }
 
-int vkz_add_clear_command(uint32_t pipeline_index) {
+int vkz_add_clear_command(VkCommandBuffer command_buffer) {
   VkClearColorValue clearColour = { 0.0f, 0.0f, 0.0f, 1.0f };
 
   VkClearAttachment clear_attachments[2];
@@ -1349,8 +1349,8 @@ int vkz_add_clear_command(uint32_t pipeline_index) {
   clear_rect.rect.extent.width = vkz_width;
   clear_rect.rect.extent.height = vkz_height;
 
-  vkCmdClearAttachments(pipeline_systems[pipeline_index].draw_command_buffers[next_image_index],
-    2, clear_attachments, 1, &clear_rect);
+  vkCmdClearAttachments(command_buffer, 2, clear_attachments, 
+    1, &clear_rect);
 
   return 1;
 }

@@ -1604,11 +1604,12 @@ namespace small3d {
 
     //vkz_begin_next_draw_command_buffer(perspectivePipelineIndex, &nextCommandBuffer);
     //vkz_begin_next_draw_command_buffer(orthographicPipelineIndex, &nextOrthoCommandBuffer);
-
+    // TODO: const VkCommandBuffer* ?
     vkz_begin_draw_command_buffer(&nextCommandBuffer);
-
+    vkz_add_clear_command(nextCommandBuffer);
     //bool prevOrtho = false;
     //bool doneFirst = false;
+
     for (auto model : nextModelsToDraw) {
       if (model.perspective) {
         
