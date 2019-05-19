@@ -7,8 +7,8 @@ would like to make games for PCs using a basic set of libraries (glfw,
 glm, png, zlib, ogg, vorbis, portaudio, freetype, bzip) and relying on
 C++ to do the rest. It helps you by providing you with cross-platform rendering
 functionality based on glfw and Vulkan (many thanks to the [Vulkan Tutorial](https://vulkan
--tutorial.com/)). You can also find OpenGL editions of the framework online.
-Since Vulkan is relatively new, those editions may be more reliable.
+-tutorial.com/)). You can also find the OpenGL edition of the framework online.
+
 small3d can render Wavefront models, animate them as frames, map textures on them, 
 provide some basic lighting (Gouraud shading) and also render images and text. 
 A very easy to use Sound object is also provided that can play OGG files on all
@@ -16,7 +16,9 @@ supported platforms via a common interface. Basic collision detection has
 also been implemented.
 
 small3d works on Windows, MacOS and Linux and supports Visual Studio, gcc (even 
-MinGW) and clang for compilation.
+MinGW) and clang for compilation. On MacOS, this Vulkan edition has been known
+to produce some unforeseen behaviour and performance problems when going full
+screen. The OpenGL edition works much better on the MacOS platform.
 
 All small3d dependencies, appart from the Vulkan SDK, are distributed together with 
 its source code. They can be built by executing a single script (see below).
