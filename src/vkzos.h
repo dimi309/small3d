@@ -35,7 +35,7 @@ VkDevice vkz_logical_device;
 /**
  * @brief The pipeline layouts, one for each pipeline created.
  */
-VkPipelineLayout *vkz_pipeline_layout;
+VkPipelineLayout* vkz_pipeline_layout;
 
 /**
  * @brief Number of images in the swapchain, set by vkz_create_swapchain().
@@ -131,38 +131,7 @@ int vkz_destroy_pipeline(uint32_t index);
  * @param command_buffer The command buffer
  * @return 1 if successful, 0 otherwise
  */
-int vkz_add_clear_command(VkCommandBuffer command_buffer);
-
-/**
- * @brief Begin creating the drawing command buffer for a given pipeline 
- *        corresponding to the next (acquired) image in the swapchain. The
- *        command buffer is passed back to the caller, allowing for a higher 
- *        level of customisation than vkz_create_next_draw_command_buffer()
- *        does. Once prepared, the command buffer can be finalised by calling
- *        vkz_end_next_draw_command_buffer().
- *
- * @param pipeline_index The index of the pipeline
- * @param command_buffer Pointer to the command buffer.
- * @return 1 if successful, 0 otherwise
- */
-int vkz_begin_next_draw_command_buffer(uint32_t pipeline_index,
-  VkCommandBuffer* command_buffer);
-/**
- * @brief Finalise the drawing command buffer for a given pipeline.
- *        See also vkz_begin_next_draw_command_buffer()
- * @param pipeline_index The index of the pipeline
- * @return 1 if successful, 0 otherwise
- */
-int vkz_end_next_draw_command_buffer(uint32_t pipeline_index);
-
-/**
- * @brief Destroy ONLY the drawing command buffer corresponding 
- *        to the next (acquired) image in the swapchain
- * @param pipeline_index The index of the pipeline
- *
- * @return 1 if successful, 0 otherwise
- */
-int vkz_destroy_next_draw_command_buffer(uint32_t pipeline_index);
+int vkz_add_clear_command(const VkCommandBuffer* command_buffer);
 
 /**
  * @brief Begin creating a drawing command buffer for a given pipeline
@@ -181,7 +150,7 @@ int vkz_begin_draw_command_buffer(VkCommandBuffer* command_buffer);
  * @return 1 if successful, 0 otherwise
  */
 int vkz_bind_pipeline_to_command_buffer(uint32_t pipeline_index,
-  VkCommandBuffer* command_buffer);
+  const VkCommandBuffer* command_buffer);
 
 /**
  * @brief Finish recording a command buffer.
@@ -224,20 +193,9 @@ int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index);
  * @brief Present next swapchain image (the one acquired by
  *        vkz_acquire_next_image())
  *
- * @param pipeline_index The index of the pipeline
- *                       TODO: Independentise synchronisation from
- *                             pipelines perhaps...
+ *
  */
-int vkz_present_next_image(uint32_t pipeline_index);
-
-
-/**
- * @brief  Send draw command (will take effect on the current pipeline image
- *         acquired by vkz_acquire_next_image())
- * @param  pipeline_index The index of the pipeline to be used for drawing.
- * @return 1 if successful, 0 otherwise
- */
-int vkz_draw(uint32_t pipeline_index);
+int vkz_present_next_image();
 
 /**
  * @brief  Send draw commands (will take effect on the current pipeline image
@@ -245,7 +203,7 @@ int vkz_draw(uint32_t pipeline_index);
  * @param  command_buffer Pointer to the command buffer containing the commands.
  * @return 1 if successful, 0 otherwise
  */
-int vkz_draw_cmd(VkCommandBuffer* command_buffer);
+int vkz_draw(VkCommandBuffer* command_buffer);
 
 /**
  * @brief  Create a buffer

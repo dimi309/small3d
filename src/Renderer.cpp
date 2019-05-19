@@ -1602,13 +1602,9 @@ namespace small3d {
     updateDescriptorSets();
     updateOrthoDescriptorSets();
 
-    //vkz_begin_next_draw_command_buffer(perspectivePipelineIndex, &nextCommandBuffer);
-    //vkz_begin_next_draw_command_buffer(orthographicPipelineIndex, &nextOrthoCommandBuffer);
     // TODO: const VkCommandBuffer* ?
     vkz_begin_draw_command_buffer(&nextCommandBuffer);
-    vkz_add_clear_command(nextCommandBuffer);
-    //bool prevOrtho = false;
-    //bool doneFirst = false;
+    vkz_add_clear_command(&nextCommandBuffer);
 
     for (auto model : nextModelsToDraw) {
       if (model.perspective) {
@@ -1625,25 +1621,15 @@ namespace small3d {
           model, currentSwapchainImageIndex);
         
       }
-      
     }
+
     vkz_end_draw_command_buffer(&nextCommandBuffer);
 
-    //vkz_end_next_draw_command_buffer(perspectivePipelineIndex);
-    //vkz_end_next_draw_command_buffer(orthographicPipelineIndex);
+    vkz_draw(&nextCommandBuffer);
 
-    // Order is important 
-
-    //vkz_draw(perspectivePipelineIndex);
-    //vkz_draw(orthographicPipelineIndex);
-    vkz_draw_cmd(&nextCommandBuffer);
-
-    //vkz_destroy_next_draw_command_buffer(perspectivePipelineIndex);
-    //vkz_destroy_next_draw_command_buffer(orthographicPipelineIndex);
     vkz_destroy_draw_command_buffer(&nextCommandBuffer);
 
-    //TODO: Get rid of specific pipeline for presenting
-    vkz_present_next_image(perspectivePipelineIndex);
+    vkz_present_next_image();
 
     nextModelsToDraw.clear();
 
@@ -1653,6 +1639,5 @@ namespace small3d {
     garbageModels.clear();
 
   }
-
 
 }
