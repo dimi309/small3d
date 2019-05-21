@@ -27,7 +27,11 @@
 
 namespace small3d
 {
-  struct vulkanImage {
+  /**
+   * @brief Structure used to keep track of information related to images
+   *        created on the GPU. Used internally
+   */
+  struct VulkanImage {
     VkImageView imageView;
     VkImage image;
     VkDeviceMemory imageMemory;
@@ -35,6 +39,10 @@ namespace small3d
     VkDescriptorSet orthoDescriptorSet;
   };
 
+  /**
+   * @brief Structure used to keep track of the orientation uniform buffers
+   *        created on the GPU. Used internally
+   */
   struct UboOrientation {
     glm::mat4x4 xRotationMatrix;
     glm::mat4x4 yRotationMatrix;
@@ -43,6 +51,10 @@ namespace small3d
     float padding[13];
   };
 
+  /**
+   * @brief Structure used to keep track of the colour uniform buffers
+   *        created on the GPU. Used internally
+   */
   struct UboColour {
     glm::vec4 colour;
     float padding[4];
@@ -50,7 +62,7 @@ namespace small3d
 
   /**
    * @class Renderer
-   * @brief Renderer class
+   * @brief The renderer. It works as a singleton.
    */
   class Renderer
   {
@@ -94,7 +106,7 @@ namespace small3d
     float zFar = 0.0f;
     float zOffsetFromCamera = 0.0f;
 
-    std::unordered_map<std::string, vulkanImage> textures;
+    std::unordered_map<std::string, VulkanImage> textures;
 
     FT_Library library = 0;
     std::vector<float> textMemory;
@@ -128,15 +140,23 @@ namespace small3d
     uint32_t colourMemIndex = 0;
     size_t uboColourDynamicSize;
 
-    static int setInputStateCallback(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo);
-    static int setPipelineLayout(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo);
-    static int bindBuffers(VkCommandBuffer commandBuffer, const Model& model);
+    static int setInputStateCallback(VkPipelineVertexInputStateCreateInfo*
+				     inputStateCreateInfo);
+    static int setPipelineLayout(VkPipelineLayoutCreateInfo*
+				 pipelineLayoutCreateInfo);
+
+    int bindBuffers(VkCommandBuffer commandBuffer, const Model& model);
     void recordDrawCommand(VkCommandBuffer commandBuffer,
       VkPipelineLayout pipelineLayout, const Model& model,
       uint32_t swapchainImageIndex);
-    static int setOrthoInputState(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo);
-    static int setOrthoPipelineLayout(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo);
-    static int bindOrthoBuffers(VkCommandBuffer commandBuffer, const Model& model);
+
+    static int setOrthoInputState(VkPipelineVertexInputStateCreateInfo*
+				  inputStateCreateInfo);
+    static int setOrthoPipelineLayout(VkPipelineLayoutCreateInfo*
+				      pipelineLayoutCreateInfo);
+
+    int bindOrthoBuffers(VkCommandBuffer commandBuffer,
+			 const Model& model);
     void recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
       VkPipelineLayout pipelineLayout, const Model& model,
       uint32_t swapchainImageIndex);
@@ -165,10 +185,12 @@ namespace small3d
     void setColourBuffer(glm::vec4 colour, uint32_t memIndex);
 
     void positionNextObject(const glm::vec3 offset,
-			    const glm::vec3 rotation, uint32_t memIndex);
+			    const glm::vec3 rotation,
+			    uint32_t memIndex);
     void positionCamera();
-    vulkanImage getTextureHandle(const std::string name) const;
-    vulkanImage generateTexture(const std::string name, const float *data,
+    VulkanImage getTextureHandle(const std::string name) const;
+    VulkanImage generateTexture(const std::string name,
+				const float *data,
 			   const unsigned long width,
 			   const unsigned long height);
 
@@ -330,7 +352,8 @@ namespace small3d
      * @param perspective True = perspective drawing, otherwise orthographic
      */
     void render(Model &model, const glm::vec3 offset, const glm::vec3 rotation, 
-		const glm::vec4 colour, const std::string textureName="", const bool perspective = true);
+		const glm::vec4 colour, const std::string textureName="",
+		const bool perspective = true);
 
     /**
      * @brief Render a Model.

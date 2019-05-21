@@ -25,13 +25,22 @@ namespace small3d {
     LOGERROR(std::string(description));
   }
 
-  struct uboWorld {
+  /**
+   * @brief Structure used to keep track of the uniform buffer that contains
+   *        the direction of the light and the matrix used to add perspective to
+   *        the scene. Used internally
+   */
+  struct UboWorld {
     glm::mat4 perspectiveMatrix;
     glm::vec3 lightDirection;
     float padding;
   };
 
-  struct uboCamera {
+  /**
+   * @brief Structure used to keep track of the camera orientation uniform buffer
+   *        created on the GPU. Used internally
+   */
+  struct UboCamera {
     glm::mat4x4 xRotationMatrix;
     glm::mat4x4 yRotationMatrix;
     glm::mat4x4 zRotationMatrix;
@@ -39,7 +48,11 @@ namespace small3d {
     float padding;
   };
 
-  struct uboLight {
+  /**
+   * @brief Structure used to keep track of the light intensity uniform buffer
+   *        created on the GPU. Used internally
+   */
+  struct UboLight {
     float intensity;
   };
 
@@ -641,7 +654,7 @@ namespace small3d {
 
   void Renderer::positionCamera() {
 
-    uboCamera camera = {};
+    UboCamera camera = {};
 
     camera.position = cameraPosition;
     camera.xRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f), cameraRotation.x,
@@ -675,8 +688,8 @@ namespace small3d {
 
   }
 
-  vulkanImage Renderer::getTextureHandle(const std::string name) const {
-    vulkanImage handle;
+  VulkanImage Renderer::getTextureHandle(const std::string name) const {
+    VulkanImage handle;
     auto nameTexturePair = textures.find(name);
     if (nameTexturePair != textures.end()) {
       handle = nameTexturePair->second;
@@ -687,11 +700,11 @@ namespace small3d {
     return handle;
   }
 
-  vulkanImage Renderer::generateTexture(const std::string name, const float* data,
+  VulkanImage Renderer::generateTexture(const std::string name, const float* data,
     const unsigned long width,
     const unsigned long height) {
 
-    vulkanImage textureHandle = {};
+    VulkanImage textureHandle = {};
 
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
@@ -959,7 +972,7 @@ namespace small3d {
 
   void Renderer::setPerspectiveAndLight() {
 
-    uboWorld world = {};
+    UboWorld world = {};
 
     float tmpmat4[16];
     memset(&tmpmat4, 0, 16 * sizeof(float));
@@ -992,7 +1005,7 @@ namespace small3d {
     memcpy(worldDetailsData, &world, worldDetailsSize);
     vkUnmapMemory(vkz_logical_device, worldDetailsBufferMemories[currentSwapchainImageIndex]);
 
-    uboLight light = {};
+    UboLight light = {};
 
     light.intensity = lightIntensity;
 
@@ -1530,7 +1543,7 @@ namespace small3d {
 
     std::string textureName = intToStr(fontSize) + "text_" + text;
 
-    vulkanImage handle;
+    VulkanImage handle;
     auto nameTexturePair = textures.find(textureName);
 
     if (nameTexturePair != textures.end()) {
