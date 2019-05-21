@@ -117,7 +117,7 @@ int vkz_create_instance(const char* application_name,
   ai.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
   ai.pApplicationName = application_name;
   ai.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-  ai.pEngineName = "vulkanizateur";
+  ai.pEngineName = "vkzos";
   ai.engineVersion = VK_MAKE_VERSION(1, 0, 0);
   ai.apiVersion = VK_API_VERSION_1_0;
 
@@ -322,7 +322,6 @@ int select_present_mode() {
       break;
     }
   }
-
 
   // IMPORTANT NOTE: In the absence of immediate khr, with an AMD Raderon R5
   // (possibly m330) which didn't support mailbox and thus made the code
@@ -742,10 +741,10 @@ int create_render_pass() {
     sizeof(VkAttachmentDescription));
   color_buffer_attachment_description.format = vkz_surface_format.format;
   color_buffer_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
-  color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-  color_buffer_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+  color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+  color_buffer_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
   color_buffer_attachment_description.stencilLoadOp =
-    VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    VK_ATTACHMENT_LOAD_OP_CLEAR;
   color_buffer_attachment_description.stencilStoreOp =
     VK_ATTACHMENT_STORE_OP_DONT_CARE;
   color_buffer_attachment_description.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
@@ -1004,7 +1003,6 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
         }
         free(vkz_pipeline_layout);
         vkz_pipeline_layout = ptemp;
-
 
         pipeline_system_count++;
         memset(&pipeline_systems[*index], 0, sizeof(pipeline_system_struct));
@@ -1736,7 +1734,6 @@ int vkz_transition_image_layout(VkImage image, VkFormat format,
   begin_single_time_commands(&cb);
 
   VkPipelineStageFlags source_stage, destination_stage;
-
 
   VkImageMemoryBarrier mb;
   memset(&mb, 0, sizeof(VkImageMemoryBarrier));
