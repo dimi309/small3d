@@ -935,11 +935,8 @@ namespace small3d {
       throw std::runtime_error("Unable to initialise GLFW");
     }
 
-
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-
-    bool fullScreen = false;
 
     GLFWmonitor* monitor = nullptr; // If NOT null, a full-screen window will
     // be created.
@@ -950,14 +947,18 @@ namespace small3d {
     }
     else if (width == 0) {
 
-      fullScreen = true;
-
       monitor = glfwGetPrimaryMonitor();
 
       const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+      // Full screen on a mac is very slow, hence this hack
+#ifdef __APPLE__
+      width = mode->width * 0.8;
+      height = mode->height * 0.8;
+      monitor = nullptr; // back to windowed mode
+#else
       width = mode->width;
       height = mode->height;
-
+#endif
       LOGINFO("Detected screen width " + intToStr(width) + " and height " +
         intToStr(height));
     }
