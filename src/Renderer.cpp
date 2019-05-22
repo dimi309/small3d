@@ -1519,6 +1519,7 @@ namespace small3d {
       model.textureName = "blank";
 #endif
     }
+
     model.colourMemIndex = colourMemIndex;
     ++colourMemIndex;
 

@@ -1306,7 +1306,7 @@ int vkz_destroy_pipeline(uint32_t index) {
 }
 
 int vkz_add_clear_command(const VkCommandBuffer * command_buffer) {
-  VkClearColorValue clearColour = { {0.0f, 0.0f, 0.0f, 1.0f} };
+  VkClearColorValue clearColour = {0.0f, 0.0f, 0.0f, 1.0f};
 
   VkClearAttachment clear_attachments[2];
   memset(clear_attachments, 0, 2 * sizeof(VkClearAttachment));
