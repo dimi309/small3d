@@ -858,7 +858,7 @@ namespace small3d {
     boundTextureViews.resize(vkz_swapchain_image_count);
 
     Image blankImage("");
-    blankImage.convertToBlank();
+    blankImage.toColour(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
     generateTexture("blank", blankImage);
     for (int i = 0; i < boundTextureViews.size(); ++i) {
       boundTextureViews[i] = getTextureHandle("blank").imageView;

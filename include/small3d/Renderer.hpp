@@ -172,7 +172,6 @@ namespace small3d
     void createOrthoDescriptorPool();
 
     VkCommandBuffer nextCommandBuffer;
-    VkCommandBuffer nextOrthoCommandBuffer;
 
     std::vector<Model> garbageModels;
 

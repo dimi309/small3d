@@ -22,12 +22,15 @@ namespace small3d {
       this->loadFromFile(fileLocation);
   }
 
-  void Image::convertToBlank() {
+  void Image::toColour(glm::vec4 colour) {
     width = 10;
     height = 10;
-    imageDataSize = 4 * width * height;
-    imageData.resize(imageDataSize);
-    memset(&imageData[0], 0, imageDataSize * sizeof(float));
+    imageDataSize = 400 * sizeof(float);
+    imageData.resize(400);
+    
+    for(uint32_t i =0; i < 100; ++i) {
+      std::memcpy(&imageData[i * 4], &colour.data, 4 * sizeof(float));
+    }
   }
 
   void Image::loadFromFile(const std::string fileLocation) {
