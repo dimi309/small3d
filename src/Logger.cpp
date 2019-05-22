@@ -15,10 +15,15 @@ std::shared_ptr<small3d::Logger> logger;
 
 namespace small3d {
 
-  std::string intToStr(const int number)
-  {
+  std::string intToStr(const int number) {
     char buffer[100];
     sprintf(buffer, "%d", number);
+    return std::string(buffer);
+  }
+  
+  std::string floatToStr(const float number) {
+    char buffer[100];
+    sprintf(buffer, "%f", number);
     return std::string(buffer);
   }
 
