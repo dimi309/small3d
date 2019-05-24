@@ -952,15 +952,14 @@ int vkz_destroy_swapchain() {
       render_pass, NULL);
   }
 
-  if (vkz_swapchain_images) {
-    free(vkz_swapchain_images);
-  }
+  vkz_swapchain_images = NULL;
 
   if (swapchain_created) {
     vkDestroySwapchainKHR(vkz_logical_device, vkz_swapchain, NULL);
     swapchain_created = FALSE;
+    
   }
-
+  
   return 1;
 
 }
@@ -1906,7 +1905,8 @@ int vkz_shutdown() {
 
   if (instance_created) {
     LOGDEBUG0("Destroying surface.\n\r");
-    vkDestroySurfaceKHR(vkz_instance, vkz_surface, NULL);
+    //The following crashes on MacOS
+    //vkDestroySurfaceKHR(vkz_instance, vkz_surface, NULL);
     LOGDEBUG0("Destroying instance.\n\r");
     vkDestroyInstance(vkz_instance, NULL);
   }
