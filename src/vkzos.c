@@ -289,15 +289,15 @@ int select_surface_format() {
         found = TRUE;
         break;
       }
-      if (!found) {
-        LOGDEBUG0("Preferred surface format not supported. Using first existing"
-          " one.\n\r");
-        vkz_surface_format.format =
-          vkz_swapchain_support_details.formats[0].format;
-        vkz_surface_format.colorSpace =
-          vkz_swapchain_support_details.formats[0].colorSpace;
-        return 1;
-      }
+    }
+    if (!found) {
+      LOGDEBUG0("Preferred surface format not supported. Using first existing"
+                " one.\n\r");
+      vkz_surface_format.format =
+      vkz_swapchain_support_details.formats[0].format;
+      vkz_surface_format.colorSpace =
+      vkz_swapchain_support_details.formats[0].colorSpace;
+      return 1;
     }
   }
 
@@ -373,7 +373,12 @@ int select_physical_device() {
 
       LOGDEBUG1("Checking physical device %s...\n\r", dp.deviceName);
 
-      BOOL geometry_shader_support = df.geometryShader;
+      BOOL geometry_shader_support;
+#ifdef __APPLE__
+      geometry_shader_support = TRUE;
+#else
+      geometry_shader_support = df.geometryShader;
+#endif
       char* geometry_shader_support_message = "The device supports "
         "geometry shaders.\n\r";
       // Geometry shader support is not detected on MacOS using MoltenVK.
@@ -381,7 +386,7 @@ int select_physical_device() {
       // code working the exact same way on all platforms for the time
       // being. It could cause a problem later though.
 #ifdef __APPLE__
-      geometry_shader_support = TRUE;
+      
       geometry_shader_support_message = "Running on Apple, so assuming that "
         "the device supports geometry shaders.\n\r";
 #endif
@@ -404,19 +409,25 @@ int select_physical_device() {
             deviceExtensions);
         }
 
-        BOOL swapchainSupported;
+        BOOL swapchainSupported = FALSE;
+        BOOL supportDetailsOk = FALSE;
         for (uint32_t n1 = 0; n1 < deviceExtensionCount; n1++) {
           swapchainSupported = strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME,
             deviceExtensions[n1].extensionName) == 0;
           if (swapchainSupported && retrieve_swapchain_support_details(pds[n])) {
             LOGDEBUG0("The device supports the swapchain extension and"
               " support details are ok.\n\r");
-
+            supportDetailsOk = TRUE;
             break;
           }
+          
         }
-
-        if (swapchainSupported) {
+        
+        if (!supportDetailsOk) {
+          LOGDEBUG0("Swapcain not supported or failed to retrieve support detais!");
+          return 0;
+        }
+        else {
 
           vkz_physical_device = pds[n];
 
@@ -425,9 +436,6 @@ int select_physical_device() {
           success = select_surface_format() && select_present_mode();
 
           break;
-        }
-        else {
-          printf("The device does not support the swapchain extension.\n\r");
         }
 
       }
@@ -1306,7 +1314,12 @@ int vkz_destroy_pipeline(uint32_t index) {
 }
 
 int vkz_add_clear_command(const VkCommandBuffer * command_buffer) {
-  VkClearColorValue clearColour = {0.0f, 0.0f, 0.0f, 1.0f};
+  VkClearColorValue clearColour;
+  memset(&clearColour, 0, sizeof(VkClearColorValue));
+  clearColour.float32[0] = 0.0f;
+  clearColour.float32[1] = 0.0f;
+  clearColour.float32[2] = 0.0f;
+  clearColour.float32[3] = 0.0f;
 
   VkClearAttachment clear_attachments[2];
   memset(clear_attachments, 0, 2 * sizeof(VkClearAttachment));
