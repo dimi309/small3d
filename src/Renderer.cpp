@@ -1154,15 +1154,15 @@ namespace small3d {
 
     vkDestroySampler(vkz_logical_device, textureSampler, NULL);
     vkz_destroy_depth_image();
-    vkz_destroy_swapchain();
+    // The following causes an EXC_BAD_ACCESS error on MacOS
+    // vkz_destroy_swapchain();
     vkz_shutdown();
 
-    //glfwDestroyWindow(window);
-
+    // The following causes an EXC_BAD_ACCESS error on MacOS
+    // glfwDestroyWindow(window);
+    
     // On linux this causes a segmentation fault
-#ifndef __linux__
-    //glfwTerminate();
-#endif
+    // glfwTerminate();
   }
 
   GLFWwindow* Renderer::getWindow() const {
