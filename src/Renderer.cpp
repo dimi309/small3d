@@ -1035,12 +1035,9 @@ namespace small3d {
 
   Renderer::Renderer() {
     window = 0;
-
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
     cameraPosition = glm::vec3(0, 0, 0);
     cameraRotation = glm::vec3(0, 0, 0);
-
-
   }
 
   Renderer::Renderer(const std::string windowTitle, const int width,
@@ -1083,14 +1080,16 @@ namespace small3d {
   }
 
   Renderer::~Renderer() {
-
+    
     LOGDEBUG("Renderer destructor running");
 
+    vkDeviceWaitIdle(vkz_logical_device);
+    
     for (auto model : garbageModels) {
       clearBuffers(model);
     }
     garbageModels.clear();
-
+    
     for (auto it = textures.begin();
       it != textures.end(); ++it) {
       LOGDEBUG("Deleting texture " + it->first);
@@ -1105,9 +1104,9 @@ namespace small3d {
     }
 
     FT_Done_FreeType(library);
-
+    
     vkz_destroy_sync_objects();
-
+    
     if (orthographicPipelineIndex != 100) {
       vkz_destroy_pipeline(orthographicPipelineIndex);
     }
@@ -1115,7 +1114,7 @@ namespace small3d {
     if (perspectivePipelineIndex != 100) {
       vkz_destroy_pipeline(perspectivePipelineIndex);
     }
-
+    
     vkDestroyDescriptorSetLayout(vkz_logical_device,
       descriptorSetLayout, NULL);
 
@@ -1153,12 +1152,26 @@ namespace small3d {
     }
 
     vkDestroySampler(vkz_logical_device, textureSampler, NULL);
-    vkz_destroy_depth_image();
-    // The following causes an EXC_BAD_ACCESS error on MacOS
-    // vkz_destroy_swapchain();
+  
+    vkz_destroy_swapchain();
+    
     vkz_shutdown();
+    
+    LOGDEBUG("Destroying surface.\n\r");
+    
+    // The following used to raise EXC_BAD_INSTRUCTION on MacOS.
+    // Adding vkDeviceWaitIdle to vkz_destroy_swapchain and
+    // in the beginning of this destructor, in addition to
+    // resolving other issues seems to have helped avoid this
+    // exception as well.
+    
+    vkDestroyInstance(vkz_instance, NULL);
 
-    // The following causes an EXC_BAD_ACCESS error on MacOS
+    // The following causes an EXC_BAD_ACCESS,
+    // or a "Thread 1: signal SIABRT" exception on MacOS. In
+    // the latter case the following message is produced:
+    // objc[986]: Attempt to use unknown class 0x1008b4810.
+    
     // glfwDestroyWindow(window);
     
     // On linux this causes a segmentation fault

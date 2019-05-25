@@ -932,6 +932,26 @@ int vkz_create_swapchain(const uint32_t width, const uint32_t height,
 }
 
 int vkz_destroy_swapchain() {
+  
+  // This function sometimes produced the error
+  // "Thread 1: EXC_BAD_ACCESS (code=1, address=0x150)"
+  // during the execution of the command vkDestroySwapchainKHR
+  // on MacOS. Adding the vkDeviceWaitIdle command seems to have
+  // fixed it.
+  
+  vkDeviceWaitIdle(vkz_logical_device);
+  
+  for (uint32_t n = 0; n < vkz_swapchain_image_count; n++) {
+    vkDestroyFramebuffer(vkz_logical_device,
+                         framebuffers[n], NULL);
+  }
+  free(framebuffers);
+  
+  vkz_destroy_depth_image();
+  
+  vkDestroyRenderPass(vkz_logical_device,
+                      render_pass, NULL);
+  
   if (vkz_swapchain_image_views) {
     if (swapchain_image_views_created) {
       for (uint32_t n = 0; n < vkz_swapchain_image_count; n++) {
@@ -941,15 +961,6 @@ int vkz_destroy_swapchain() {
     }
     free(vkz_swapchain_image_views);
     swapchain_image_views_created = FALSE;
-
-    for (uint32_t n = 0; n < vkz_swapchain_image_count; n++) {
-      vkDestroyFramebuffer(vkz_logical_device,
-        framebuffers[n], NULL);
-    }
-    free(framebuffers);
-
-    vkDestroyRenderPass(vkz_logical_device,
-      render_pass, NULL);
   }
 
   vkz_swapchain_images = NULL;
@@ -1903,12 +1914,5 @@ int vkz_shutdown() {
     }
   }
 
-  if (instance_created) {
-    LOGDEBUG0("Destroying surface.\n\r");
-    //The following crashes on MacOS
-    //vkDestroySurfaceKHR(vkz_instance, vkz_surface, NULL);
-    LOGDEBUG0("Destroying instance.\n\r");
-    vkDestroyInstance(vkz_instance, NULL);
-  }
   return 1;
 }
