@@ -51,7 +51,7 @@ uint32_t vkz_swapchain_image_count;
  */
 int vkz_create_instance(const char* application_name,
   const char** enabled_extension_names,
-  unsigned int enabled_extension_count);
+  size_t enabled_extension_count);
 /**
  * @brief  Initialise. Internally this means create physical device, select queue
  *         families and create logical device.

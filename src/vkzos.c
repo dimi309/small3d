@@ -110,7 +110,7 @@ static VkFence gpu_cpu_fence;
 
 int vkz_create_instance(const char* application_name,
   const char** enabled_extension_names,
-  unsigned int enabled_extension_count) {
+  size_t enabled_extension_count) {
 
   VkApplicationInfo ai;
   memset(&ai, 0, sizeof(VkApplicationInfo));
@@ -128,33 +128,32 @@ int vkz_create_instance(const char* application_name,
 
 #ifndef NDEBUG
 
-  const char** vl = malloc(sizeof(char*));
-  vl[0] = "VK_LAYER_LUNARG_standard_validation";
+  const char* vl = "VK_LAYER_LUNARG_standard_validation";
   uint32_t lc = 0;
   VkLayerProperties* lp = 0;
   BOOL vlExists = FALSE;
 
   vkEnumerateInstanceLayerProperties(&lc, NULL);
-  if (lc > 0) {
-    lp = malloc(sizeof(VkLayerProperties) * lc);
+  lp = malloc(sizeof(VkLayerProperties) * lc);
+  if (lp) {
+    memset(lp, 0, sizeof(VkLayerProperties) * lc);
     vkEnumerateInstanceLayerProperties(&lc, lp);
-
-    for (uint32_t n = 0; n < lc; n++) {
-      if (strcmp(vl[0], lp[n].layerName) == 0)
+    for (uint32_t n = 0; n < lc; ++n) {
+      if (strcmp(lp[n].layerName, &vl[0]) == 0)
         vlExists = TRUE;
     }
   }
 
   if (vlExists) {
     ci.enabledLayerCount = 1;
-    ci.ppEnabledLayerNames = vl;
-    LOGDEBUG1("Layer %s exists! Will enable...\n", vl[0]);
+    ci.ppEnabledLayerNames = &vl;
+    LOGDEBUG1("Layer %s exists! Will enable...\n", &vl[0]);
     validation_layer_ok = TRUE;
 
   }
   else {
     ci.enabledLayerCount = 0;
-    LOGDEBUG1("Layer %s not supported!", vl[0]);
+    LOGDEBUG1("Layer %s not supported!", &vl[0]);
   }
 
   const char** allExtensionNames = malloc(sizeof(char*) *
@@ -168,12 +167,12 @@ int vkz_create_instance(const char* application_name,
 
     allExtensionNames[enabled_extension_count] =
       VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
-    uint32_t allExtensionCount = enabled_extension_count + 1;
+    uint32_t allExtensionCount = (uint32_t) enabled_extension_count + 1;
     ci.enabledExtensionCount = allExtensionCount;
     ci.ppEnabledExtensionNames = allExtensionNames;
   }
   else {
-    ci.enabledExtensionCount = enabled_extension_count;
+    ci.enabledExtensionCount = (uint32_t)enabled_extension_count;
     ci.ppEnabledExtensionNames = enabled_extension_names;
   }
 
@@ -218,7 +217,6 @@ int vkz_create_instance(const char* application_name,
   }
 
 #ifndef NDEBUG
-  free((char**)vl);
   free((char**)allExtensionNames);
 
   if (lc > 0)
@@ -292,11 +290,11 @@ int select_surface_format() {
     }
     if (!found) {
       LOGDEBUG0("Preferred surface format not supported. Using first existing"
-                " one.\n\r");
+        " one.\n\r");
       vkz_surface_format.format =
-      vkz_swapchain_support_details.formats[0].format;
+        vkz_swapchain_support_details.formats[0].format;
       vkz_surface_format.colorSpace =
-      vkz_swapchain_support_details.formats[0].colorSpace;
+        vkz_swapchain_support_details.formats[0].colorSpace;
       return 1;
     }
   }
@@ -386,7 +384,7 @@ int select_physical_device() {
       // code working the exact same way on all platforms for the time
       // being. It could cause a problem later though.
 #ifdef __APPLE__
-      
+
       geometry_shader_support_message = "Running on Apple, so assuming that "
         "the device supports geometry shaders.\n\r";
 #endif
@@ -420,9 +418,9 @@ int select_physical_device() {
             supportDetailsOk = TRUE;
             break;
           }
-          
+
         }
-        
+
         if (!supportDetailsOk) {
           LOGDEBUG0("Swapcain not supported or failed to retrieve support detais!");
           return 0;
@@ -695,7 +693,7 @@ int select_swap_extent(const uint32_t width, const uint32_t height) {
   return 1;
 }
 
-int vkz_create_image_view(VkImageView * image_view, VkImage image,
+int vkz_create_image_view(VkImageView* image_view, VkImage image,
   VkFormat format, VkImageAspectFlags aspect_flags) {
   VkImageViewCreateInfo ci;
   memset(&ci, 0, sizeof(VkImageViewCreateInfo));
@@ -932,26 +930,26 @@ int vkz_create_swapchain(const uint32_t width, const uint32_t height,
 }
 
 int vkz_destroy_swapchain() {
-  
+
   // This function sometimes produced the error
   // "Thread 1: EXC_BAD_ACCESS (code=1, address=0x150)"
   // during the execution of the command vkDestroySwapchainKHR
   // on MacOS. Adding the vkDeviceWaitIdle command seems to have
   // fixed it.
-  
+
   vkDeviceWaitIdle(vkz_logical_device);
-  
+
   for (uint32_t n = 0; n < vkz_swapchain_image_count; n++) {
     vkDestroyFramebuffer(vkz_logical_device,
-                         framebuffers[n], NULL);
+      framebuffers[n], NULL);
   }
   free(framebuffers);
-  
+
   vkz_destroy_depth_image();
-  
+
   vkDestroyRenderPass(vkz_logical_device,
-                      render_pass, NULL);
-  
+    render_pass, NULL);
+
   if (vkz_swapchain_image_views) {
     if (swapchain_image_views_created) {
       for (uint32_t n = 0; n < vkz_swapchain_image_count; n++) {
@@ -968,14 +966,14 @@ int vkz_destroy_swapchain() {
   if (swapchain_created) {
     vkDestroySwapchainKHR(vkz_logical_device, vkz_swapchain, NULL);
     swapchain_created = FALSE;
-    
+
   }
-  
+
   return 1;
 
 }
 
-long alloc_load_shader_spv(char* path, uint32_t * *spv) {
+long alloc_load_shader_spv(char* path, uint32_t** spv) {
   long fs = 0;
   FILE* f = fopen(path, "rb");
   if (f) {
@@ -997,7 +995,7 @@ long alloc_load_shader_spv(char* path, uint32_t * *spv) {
 
 int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_shader_path,
   int (*set_input_state)(VkPipelineVertexInputStateCreateInfo*),
-  int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo*), uint32_t * index) {
+  int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo*), uint32_t* index) {
 
   if (pipeline_systems) {
     if (pipeline_system_count) {
@@ -1323,7 +1321,7 @@ int vkz_destroy_pipeline(uint32_t index) {
   return 1;
 }
 
-int vkz_add_clear_command(const VkCommandBuffer * command_buffer) {
+int vkz_add_clear_command(const VkCommandBuffer* command_buffer) {
   VkClearColorValue clearColour;
   memset(&clearColour, 0, sizeof(VkClearColorValue));
   clearColour.float32[0] = 0.0f;
@@ -1358,7 +1356,7 @@ int vkz_add_clear_command(const VkCommandBuffer * command_buffer) {
   return 1;
 }
 
-int vkz_begin_draw_command_buffer(VkCommandBuffer * command_buffer) {
+int vkz_begin_draw_command_buffer(VkCommandBuffer* command_buffer) {
 
   VkCommandBufferAllocateInfo command_buffer_ai;
   memset(&command_buffer_ai, 0, sizeof(VkCommandBufferAllocateInfo));
@@ -1420,7 +1418,7 @@ int vkz_begin_draw_command_buffer(VkCommandBuffer * command_buffer) {
 }
 
 int vkz_bind_pipeline_to_command_buffer(uint32_t pipeline_index,
-  const VkCommandBuffer * command_buffer) {
+  const VkCommandBuffer* command_buffer) {
 
   vkCmdBindPipeline(*command_buffer,
     VK_PIPELINE_BIND_POINT_GRAPHICS,
@@ -1429,7 +1427,7 @@ int vkz_bind_pipeline_to_command_buffer(uint32_t pipeline_index,
 
 }
 
-int vkz_end_draw_command_buffer(VkCommandBuffer * command_buffer) {
+int vkz_end_draw_command_buffer(VkCommandBuffer* command_buffer) {
   vkCmdEndRenderPass(*command_buffer);
 
   if (vkEndCommandBuffer(*command_buffer) != VK_SUCCESS) {
@@ -1440,7 +1438,7 @@ int vkz_end_draw_command_buffer(VkCommandBuffer * command_buffer) {
   return 1;
 }
 
-int vkz_destroy_draw_command_buffer(VkCommandBuffer * command_buffer) {
+int vkz_destroy_draw_command_buffer(VkCommandBuffer* command_buffer) {
 
   vkWaitForFences(vkz_logical_device, 1,
     &gpu_cpu_fence,
@@ -1485,7 +1483,7 @@ int vkz_destroy_sync_objects() {
   return 1;
 }
 
-int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t * image_index) {
+int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index) {
 
   vkWaitForFences(vkz_logical_device, 1,
     &gpu_cpu_fence,
@@ -1551,7 +1549,7 @@ int vkz_present_next_image() {
   return 1;
 }
 
-int vkz_draw(VkCommandBuffer * command_buffer) {
+int vkz_draw(VkCommandBuffer* command_buffer) {
 
   vkWaitForFences(vkz_logical_device, 1,
     &gpu_cpu_fence,
@@ -1577,7 +1575,7 @@ int vkz_draw(VkCommandBuffer * command_buffer) {
 }
 
 int find_memory_type(uint32_t type_filter, VkMemoryPropertyFlags prop_flags,
-  uint32_t * mem_type) {
+  uint32_t* mem_type) {
   BOOL found = FALSE;
   VkPhysicalDeviceMemoryProperties mp;
   memset(&mp, 0, sizeof(VkPhysicalDeviceMemoryProperties));
@@ -1593,10 +1591,10 @@ int find_memory_type(uint32_t type_filter, VkMemoryPropertyFlags prop_flags,
   return found;
 }
 
-int vkz_create_buffer(VkBuffer * buffer,
+int vkz_create_buffer(VkBuffer* buffer,
   VkBufferUsageFlags buffer_usage_flags,
   uint32_t buffer_size,
-  VkDeviceMemory * memory,
+  VkDeviceMemory* memory,
   VkMemoryPropertyFlags memory_property_flags) {
   VkBufferCreateInfo ci;
   memset(&ci, 0, sizeof(VkBufferCreateInfo));
@@ -1641,7 +1639,7 @@ int vkz_destroy_buffer(VkBuffer buffer, VkDeviceMemory memory) {
   return 1;
 }
 
-int begin_single_time_commands(VkCommandBuffer * command_buffer) {
+int begin_single_time_commands(VkCommandBuffer* command_buffer) {
   VkCommandBufferAllocateInfo ai;
   memset(&ai, 0, sizeof(VkCommandBufferAllocateInfo));
   ai.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -1694,11 +1692,11 @@ int vkz_copy_buffer(VkBuffer source, VkBuffer destination, VkDeviceSize size) {
   return end_single_time_commands(cb);
 }
 
-int vkz_create_image(VkImage * image,
+int vkz_create_image(VkImage* image,
   uint32_t image_width, uint32_t image_height,
   VkFormat image_format, VkImageTiling image_tiling,
   VkImageUsageFlags image_usage_flags,
-  VkDeviceMemory * memory,
+  VkDeviceMemory* memory,
   VkMemoryPropertyFlags memory_property_flags) {
   VkImageCreateInfo ci;
   memset(&ci, 0, sizeof(VkImageCreateInfo));
@@ -1850,7 +1848,7 @@ int vkz_copy_buffer_to_image(VkBuffer buffer, VkImage image,
   return 1;
 }
 
-int vkz_create_sampler(VkSampler * sampler) {
+int vkz_create_sampler(VkSampler* sampler) {
   VkSamplerCreateInfo sci;
   memset(&sci, 0, sizeof(VkSamplerCreateInfo));
   sci.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;

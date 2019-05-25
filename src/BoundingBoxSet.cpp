@@ -83,10 +83,10 @@ namespace small3d {
       // Correct indices. OpenGL indices are 0 based. Wavefront indices start
       // from 1 and the numbering continues for multiple objects.
 
-      for (int idx = 0; idx < numBoxes; ++idx) {
-        for (int idx2 = 0; idx2 < 6; ++idx2) {
-          for (int idx3 = 0; idx3 < 4; ++idx3) {
-            facesVertexIndexes[6 * idx + idx2][idx3] -= 1 + 8 * idx;
+      for (size_t idx = 0; idx < numBoxes; ++idx) {
+        for (size_t idx2 = 0; idx2 < 6; ++idx2) {
+          for (size_t idx3 = 0; idx3 < 4; ++idx3) {
+            facesVertexIndexes[6 * idx + idx2][idx3] -=  1 + 8 * (uint32_t) idx;
           }
         }
       }
@@ -118,7 +118,7 @@ namespace small3d {
 
     pointInBoxSpace = rotationMatrix * pointInBoxSpace;
 
-    for (int idx = 0; idx < numBoxes; ++idx) {
+    for (size_t idx = 0; idx < numBoxes; ++idx) {
       float minZ, maxZ, minX, maxX, minY, maxY;
 
       glm::vec4 coords(vertices[static_cast<unsigned int>(idx * 8)][0],
@@ -135,7 +135,7 @@ namespace small3d {
       minZ = rotatedCoords.z;
       maxZ = rotatedCoords.z;
 
-      for (int checkidx = idx * 8; checkidx < (idx + 1) * 8; ++checkidx) {
+      for (size_t checkidx = idx * 8; checkidx < (idx + 1) * 8; ++checkidx) {
         coords = glm::vec4(vertices[static_cast<unsigned int>(checkidx)][0],
           vertices[static_cast<unsigned int>(checkidx)][1],
           vertices[static_cast<unsigned int>(checkidx)][2], 1);
