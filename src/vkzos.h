@@ -61,7 +61,7 @@ int vkz_init();
 
 /**
  * @brief Create the swapchain that will be used. This will also create
- the associated image views.
+ * the associated image views.
  * @param width The width of the images used in the swapchain, in pixels.
  * @param height The height of the images used in the swapchain, in pixels.
  * @param with_image_sampler 1 If an image sampler will be used, 0 otherwise.
