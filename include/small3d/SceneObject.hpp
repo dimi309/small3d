@@ -35,7 +35,6 @@ namespace small3d
   class SceneObject
   {
   private:
-    std::vector<Model> model;
     bool animating;
     int frameDelay;
     int currentFrame;
@@ -44,6 +43,11 @@ namespace small3d
     std::string name;
 
   public:
+    /**
+     * @brief The models making up the object's animation. Do not manipulate
+     *        directly.
+     */
+    std::vector<Model> models;
 
     /**
      * @brief Constructor
