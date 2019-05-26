@@ -951,6 +951,12 @@ namespace small3d {
     }
   }
 
+  void Renderer::clearBuffers(SceneObject & sceneObject) const {
+    for (auto model : sceneObject.models) {
+      clearBuffers(model);
+    }
+  }
+
   void Renderer::clearScreen() const {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
