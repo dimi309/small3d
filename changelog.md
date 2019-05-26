@@ -3,9 +3,11 @@
 small3d changes per version
 ===========================
 
-v1.696
+v1.696 2019-05-26
 
 - Upgraded glfw to released v3.3.
+- Added a clearBuffers function to Renderer that clears the buffers of an entire
+  SceneObject, containing multiple Models.
 
 v1.695 2019-04-28
 
