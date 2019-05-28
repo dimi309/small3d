@@ -3,6 +3,10 @@
 small3d changes per version
 ===========================
 
+v1.697 2019-05-28
+
+- README improvements
+
 v1.696 2019-05-26
 
 - Upgraded glfw to released v3.3.
