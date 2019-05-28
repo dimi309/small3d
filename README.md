@@ -114,6 +114,7 @@ directory:
 	project(ball)
 
 	file(COPY "resources" DESTINATION "${PROJECT_BINARY_DIR}/bin")
+	file(COPY "deps/shaders" DESTINATION "${PROJECT_BINARY_DIR}/bin/resources")
 
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
 
@@ -340,11 +341,10 @@ And we close the loop :)
 That's it!
 
 Let's try it out. Create a *ball/deps* directory and from the built small3d
-framework (see Building section above) copy the *build/include* and *build/lib*
-directories to this *deps* directory. Also, copy the *build/shaders*
-directory to the *resources* directory and the *cmake* directory from the root
-of the small3d framework repository to the root *ball* directory. Then, back
-from the root *ball* directory execute:
+framework (see Building section above) copy the *build/include*, *build/lib*
+and *build/shaders* directories to this *deps* directory. Also, copy the 
+*cmake* directory from the root of the small3d framework repository to the 
+root *ball* directory. Then, back from the root *ball* directory execute:
 
 	mkdir build
 	cd build
