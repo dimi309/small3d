@@ -61,7 +61,7 @@ namespace small3d
      *                  Wavefront files. When loading multiple models for 
      *                  animation do not enter a full filename. Skip the
      *                  suffix and the extension. For example an animation
-     *                  sequence made up of files named frog_000001.obj,       
+     *                  sequence made up of files named frog_000001.obj,
      *                  frog_000002.obj etc. should be loaded using the 
      *                  parameter "directory/frog" here.
      *
