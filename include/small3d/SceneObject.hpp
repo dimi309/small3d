@@ -74,10 +74,14 @@ namespace small3d
      *                           bounding box set. If no such path is given, the
      *                           object cannot be checked for collision
      *                           detection.
+     * @param startFrameIndex The index number in the filename of the first file
+     *                        of the animation sequence. The default value is 1.
+     *                        If not loading an animation sequence, this parameter
+     *                        is ignored.
      */
     SceneObject(const std::string name, const std::string modelPath,
 		const int numFrames = 1,
-		const std::string boundingBoxSetPath = "");
+		const std::string boundingBoxSetPath = "", const int startFrameIndex = 1);
 
     /**
      * @brief Destructor
