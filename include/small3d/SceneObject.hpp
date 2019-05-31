@@ -50,8 +50,6 @@ namespace small3d
      */
     std::vector<Model> models;
 
-    std::vector<Model> models;
-
     /**
      * @brief Constructor
      *
