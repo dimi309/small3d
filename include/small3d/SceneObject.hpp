@@ -44,6 +44,11 @@ namespace small3d
     std::string name;
 
   public:
+    /**
+     * @brief The models making up the object's animation. Do not manipulate
+     *        directly.
+     */
+    std::vector<Model> models;
 
     std::vector<Model> models;
 

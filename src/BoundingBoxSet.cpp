@@ -87,6 +87,7 @@ namespace small3d {
         for (size_t idx2 = 0; idx2 < 6; ++idx2) {
           for (size_t idx3 = 0; idx3 < 4; ++idx3) {
             facesVertexIndexes[6 * idx + idx2][idx3] -=  1 + 8 * (uint32_t) idx;
+
           }
         }
       }
@@ -119,6 +120,7 @@ namespace small3d {
     pointInBoxSpace = rotationMatrix * pointInBoxSpace;
 
     for (size_t idx = 0; idx < numBoxes; ++idx) {
+
       float minZ, maxZ, minX, maxX, minY, maxY;
 
       glm::vec4 coords(vertices[static_cast<unsigned int>(idx * 8)][0],
@@ -135,7 +137,9 @@ namespace small3d {
       minZ = rotatedCoords.z;
       maxZ = rotatedCoords.z;
 
+
       for (size_t checkidx = idx * 8; checkidx < (idx + 1) * 8; ++checkidx) {
+
         coords = glm::vec4(vertices[static_cast<unsigned int>(checkidx)][0],
           vertices[static_cast<unsigned int>(checkidx)][1],
           vertices[static_cast<unsigned int>(checkidx)][2], 1);

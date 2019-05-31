@@ -1605,6 +1605,12 @@ namespace small3d {
     }
   }
 
+  void Renderer::clearBuffers(SceneObject & sceneObject) const {
+    for (auto model : sceneObject.models) {
+      clearBuffers(model);
+    }
+  }
+
   void Renderer::clearScreen() const {
 
     // Do nothing. Clearing is performed by the first rendering

@@ -116,4 +116,3 @@ copy libfreetype.a ..\..\lib
 cd ..\..
 rmdir /Q /S freetype-2.9.1
 del freetype-2.9.1.tar
-

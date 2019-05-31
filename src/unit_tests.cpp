@@ -56,13 +56,13 @@ int ImageTest() {
       const float* colour = &imageData[4 * y * image.getWidth() + 4 * x];
 
       if (colour[0] < 0.0f) return 0;
+
       if (colour[0] > 1.0f) return 0;
       if (colour[1] < 0.0f) return 0;
       if (colour[1] > 1.0f) return 0;
       if (colour[2] < 0.0f) return 0;
       if (colour[2] > 1.0f) return 0;
       if (colour[3] != 1.0f) return 0;
-
       ++x;
     }
     ++y;
@@ -101,6 +101,7 @@ int ModelTest() {
     << modelWithNoTexture.normalsData.size() << endl
     << "Texture coordinates count: "
     << modelWithNoTexture.textureCoordsData.size() << endl;
+
   return 1;
 }
 
@@ -130,6 +131,7 @@ int BoundingBoxesTest() {
   if (bboxes.collidesWith(glm::vec3(0.1f, 0.1f, 0.1f),
     glm::vec3(0.0f, 0.1f, 0.1f),
     glm::vec3(0.0f, 0.0f, 0.0f))) {
+
     return 0;
   }
   return 1;
@@ -191,7 +193,9 @@ int SoundTest() {
   snd.play();
   // Make sure the sound is stopped by the stop function and not the destructor.
   startSeconds = glfwGetTime();
+
   while (glfwGetTime() - startSeconds < 2.0);
+
   return 1;
 }
 
@@ -207,7 +211,9 @@ int SoundTest2() {
   while (glfwGetTime() - startSeconds < 0.3);
   snd3.play();
   startSeconds = glfwGetTime();
+
   while (glfwGetTime() - startSeconds < 1.0);
+
   return 1;
 }
 
@@ -215,13 +221,16 @@ int SoundTest3() {
   Sound snd("resources/sounds/bah.ogg");
   snd.play(true);
   double startSeconds = glfwGetTime();
+
   while (glfwGetTime() - startSeconds < 6.0);
+
   return 1;
 }
 
 int TokenTest() {
   string strTest = "a-b-c-d";
   std::vector<std::string> tokens;
+
 
   int tokenCount = getTokens(strTest, '-', tokens);
 
