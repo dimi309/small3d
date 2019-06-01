@@ -239,9 +239,11 @@ namespace small3d
      *                    (optional). The texture has to have been generated
      *                    already. If this is set, the colour parameter will
      *                    be ignored.
+     * @param perspective Perspective drawing if true, otherwise orthographic
      */
     void render(Model &model, const glm::vec3 offset, const glm::vec3 rotation, 
-		const glm::vec4 colour, const std::string textureName="");
+		const glm::vec4 colour, const std::string textureName="",
+		const bool perspective = true);
 
     /**
      * @brief Render a Model.
