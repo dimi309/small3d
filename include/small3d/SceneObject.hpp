@@ -35,6 +35,7 @@ namespace small3d
   class SceneObject
   {
   private:
+    
     bool animating;
     int frameDelay;
     int currentFrame;
@@ -63,7 +64,7 @@ namespace small3d
      *                  Wavefront files. When loading multiple models for 
      *                  animation do not enter a full filename. Skip the
      *                  suffix and the extension. For example an animation
-     *                  sequence made up of files named frog_000001.obj,       
+     *                  sequence made up of files named frog_000001.obj,
      *                  frog_000002.obj etc. should be loaded using the 
      *                  parameter "directory/frog" here.
      *
@@ -76,10 +77,14 @@ namespace small3d
      *                           bounding box set. If no such path is given, the
      *                           object cannot be checked for collision
      *                           detection.
+     * @param startFrameIndex The index number in the filename of the first file
+     *                        of the animation sequence. The default value is 1.
+     *                        If not loading an animation sequence, this parameter
+     *                        is ignored.
      */
     SceneObject(const std::string name, const std::string modelPath,
 		const int numFrames = 1,
-		const std::string boundingBoxSetPath = "");
+		const std::string boundingBoxSetPath = "", const int startFrameIndex = 1);
 
     /**
      * @brief Destructor

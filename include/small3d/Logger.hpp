@@ -9,7 +9,6 @@
 
 #pragma once
 
-
 /**
  *  Log an error
  */
@@ -38,6 +37,11 @@ namespace small3d {
    * Convert an integer to a string.
    */
   std::string intToStr(const int number);
+  
+  /**
+   * Convert a float to a string.
+   */
+  std::string floatToStr(const float number);
 
   /**
    * @brief Possible logging levels.
