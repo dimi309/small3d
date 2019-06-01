@@ -8,6 +8,7 @@
 
 #include "Image.hpp"
 #include <stdexcept>
+#include <cstring>
 
 namespace small3d {
 
@@ -19,6 +20,17 @@ namespace small3d {
 
     if (fileLocation != "")
       this->loadFromFile(fileLocation);
+  }
+
+  void Image::toColour(glm::vec4 colour) {
+    width = 10;
+    height = 10;
+    imageDataSize = 400 * sizeof(float);
+    imageData.resize(400);
+    
+    for(uint32_t i =0; i < 100; ++i) {
+      std::memcpy(&imageData[i * 4], &colour.data, 4 * sizeof(float));
+    }
   }
 
   void Image::loadFromFile(const std::string fileLocation) {
