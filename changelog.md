@@ -3,6 +3,10 @@
 small3d changes per version
 ===========================
 
+v1.698 2019-06-01
+
+- Synced some code improvements back from Vulkan edition.
+
 v1.697 2019-05-28
 
 - README improvements
