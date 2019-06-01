@@ -92,7 +92,6 @@ int ModelTest() {
   if (modelWithNoTexture.vertexData.size() == 0) return 0;
   if (modelWithNoTexture.indexData.size() == 0) return 0;
   if (modelWithNoTexture.normalsData.size() == 0) return 0;
-  //if (modelWithNoTexture.textureCoordsData.size() != 0) return 0;
 
   cout << "Vertex data component count: "
     << modelWithNoTexture.vertexData.size() << endl << "Index count: "
