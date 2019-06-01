@@ -712,17 +712,18 @@ namespace small3d {
     if (perspective) {
       glBindBuffer(GL_ARRAY_BUFFER, model.normalsBufferObjectId);
       if (!alreadyInGPU) {
-	glBufferData(GL_ARRAY_BUFFER,
-		   model.normalsDataByteSize,
-		   model.normalsData.data(),
-		   GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER,
+                     model.normalsDataByteSize,
+                     model.normalsData.data(),
+                     GL_STATIC_DRAW);
       }
       glEnableVertexAttribArray(1);
       glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
     }
 
     // Find the colour uniform
-    GLint colourUniform = glGetUniformLocation(perspectiveProgram, "colour");
+    GLint colourUniform = glGetUniformLocation(perspective ? perspectiveProgram :
+                                               orthographicProgram, "colour");
 
     if (textureName != "") {
 
@@ -753,11 +754,14 @@ namespace small3d {
     }
 
     if (perspective) {
-      setPerspectiveAndLight();
-    }
-    positionNextObject(offset, rotation);
 
-    positionCamera();
+      setPerspectiveAndLight();
+
+      positionNextObject(offset, rotation);
+
+      positionCamera();
+
+    }
 
     // Draw
     glDrawElements(GL_TRIANGLES,
