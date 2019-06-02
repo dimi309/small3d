@@ -142,7 +142,7 @@ namespace small3d
 
     static int setInputStateCallback(VkPipelineVertexInputStateCreateInfo*
 				     inputStateCreateInfo);
-    static int setPipelineLayout(VkPipelineLayoutCreateInfo*
+    static int setPipelineLayoutCallback(VkPipelineLayoutCreateInfo*
 				 pipelineLayoutCreateInfo);
 
     int bindBuffers(VkCommandBuffer commandBuffer, const Model& model);
@@ -150,9 +150,9 @@ namespace small3d
       VkPipelineLayout pipelineLayout, const Model& model,
       uint32_t swapchainImageIndex);
 
-    static int setOrthoInputState(VkPipelineVertexInputStateCreateInfo*
+    static int setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo*
 				  inputStateCreateInfo);
-    static int setOrthoPipelineLayout(VkPipelineLayoutCreateInfo*
+    static int setOrthoPipelineLayoutCallback(VkPipelineLayoutCreateInfo*
 				      pipelineLayoutCreateInfo);
 
     int bindOrthoBuffers(VkCommandBuffer commandBuffer,

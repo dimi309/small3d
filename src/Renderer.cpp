@@ -110,7 +110,8 @@ namespace small3d {
     return 1;
   }
 
-  int Renderer::setPipelineLayout(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
+  int Renderer::setPipelineLayoutCallback(VkPipelineLayoutCreateInfo*
+					  pipelineLayoutCreateInfo) {
     perspectiveLayouts[0] = descriptorSetLayout;
     perspectiveLayouts[1] = textureDescriptorSetLayout;
     pipelineLayoutCreateInfo->setLayoutCount = 2;
@@ -163,7 +164,8 @@ namespace small3d {
 
   }
 
-  int Renderer::setOrthoInputState(VkPipelineVertexInputStateCreateInfo* inputStateCreateInfo) {
+  int Renderer::setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo*
+					   inputStateCreateInfo) {
     memset(orthobd, 0, 2 * sizeof(VkVertexInputBindingDescription));
 
     orthobd[0].binding = 0;
@@ -192,7 +194,8 @@ namespace small3d {
     return 1;
   }
 
-  int Renderer::setOrthoPipelineLayout(VkPipelineLayoutCreateInfo* pipelineLayoutCreateInfo) {
+  int Renderer::setOrthoPipelineLayoutCallback(VkPipelineLayoutCreateInfo*
+					       pipelineLayoutCreateInfo) {
     orthographicLayouts[0] = orthoDescriptorSetLayout;
     orthographicLayouts[1] = textureOrthoDescriptorSetLayout;
     pipelineLayoutCreateInfo->setLayoutCount = 2;
@@ -853,7 +856,8 @@ namespace small3d {
     }
 
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
-      setInputStateCallback, setPipelineLayout, &perspectivePipelineIndex);
+      setInputStateCallback, setPipelineLayoutCallback,
+			&perspectivePipelineIndex);
 
     boundTextureViews.resize(vkz_swapchain_image_count);
 
@@ -870,7 +874,7 @@ namespace small3d {
       "simpleFragmentShader.spv";
 
     vkz_create_pipeline(orthoVertexShaderPath.c_str(), orthoFragmentShaderPath.c_str(),
-      setOrthoInputState, setOrthoPipelineLayout, &orthographicPipelineIndex);
+      setOrthoInputStateCallback, setOrthoPipelineLayoutCallback, &orthographicPipelineIndex);
 
     vkz_create_sync_objects();
 
