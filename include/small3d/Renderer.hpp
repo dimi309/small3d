@@ -383,7 +383,8 @@ namespace small3d
     /**
      * @brief Render some text on the screen.
      * @param text The text to be rendered
-     * @param colour      The colour in which the text will be rendered (r, g, b)
+     * @param colour      The colour in which the text will be rendered 
+     *                    (r, g, b)
      * @param topLeft     Where to place the top left corner of the text
      *                    rectangle
      * @param bottomRight Where to place the bottom right corner of the text
