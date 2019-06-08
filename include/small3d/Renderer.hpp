@@ -420,12 +420,20 @@ namespace small3d
     void clearBuffers(SceneObject& sceneObject) const;
 
     /**
-     * @brief Clears the screen.
+     * @brief Clears the screen. DEPRECATED: this function no longer
+     *        does anything, as the screen is automatically cleared
+     *        for every render pass in the Vulkan edition of small3d.
+     *        It has not been deleted so as not to break legacy code
+     *        that uses the framework.
      */
     void clearScreen() const;
 
     /**
-     * @brief Clears the screen.
+     * @brief Clears the screen. DEPRECATED: this function no longer
+     *        does anything, as the screen is automatically cleared
+     *        for every render pass in the Vulkan edition of small3d.
+     *        It has not been deleted so as not to break legacy code
+     *        that uses the framework.
      * @param colour The colour with which the screen is to be cleared
      */
     void clearScreen(const glm::vec4 colour);
