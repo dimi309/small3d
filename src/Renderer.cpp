@@ -16,8 +16,6 @@ extern "C" {
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#define MAX_NUM_OBJECTS 20
-
 namespace small3d {
 
   void errorCallback(int error, const char* description)
@@ -304,7 +302,7 @@ namespace small3d {
 
       // TODO: Review descriptor pool size
       ps[3].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-      ps[3].descriptorCount = vkz_swapchain_image_count * 2 * MAX_NUM_OBJECTS;
+      ps[3].descriptorCount = vkz_swapchain_image_count * 2 * maxObjectsPerPass;
 
       ps[4].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
       ps[4].descriptorCount = vkz_swapchain_image_count;
@@ -317,7 +315,7 @@ namespace small3d {
       dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
       dpci.poolSizeCount = 6;
       dpci.pPoolSizes = ps;
-      dpci.maxSets = vkz_swapchain_image_count * 2 * MAX_NUM_OBJECTS;
+      dpci.maxSets = vkz_swapchain_image_count * 2 * maxObjectsPerPass;
 
       if (vkCreateDescriptorPool(vkz_logical_device, &dpci, NULL,
         &descriptorPool) != VK_SUCCESS) {
@@ -337,10 +335,10 @@ namespace small3d {
       memset(ps, 0, 2 * sizeof(VkDescriptorPoolSize));
 
       ps[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-      ps[0].descriptorCount = vkz_swapchain_image_count * 2 * MAX_NUM_OBJECTS;
+      ps[0].descriptorCount = vkz_swapchain_image_count * 2 * maxObjectsPerPass;
 
       ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-      ps[1].descriptorCount = vkz_swapchain_image_count * 2 * MAX_NUM_OBJECTS;
+      ps[1].descriptorCount = vkz_swapchain_image_count * 2 * maxObjectsPerPass;
 
       VkDescriptorPoolCreateInfo dpci;
       memset(&dpci, 0, sizeof(VkDescriptorPoolCreateInfo));
@@ -633,8 +631,8 @@ namespace small3d {
 
   void Renderer::setColourBuffer(glm::vec4 colour, uint32_t memIndex) {
 
-    if (memIndex > MAX_NUM_OBJECTS) {
-      std::string maxIndex = intToStr(MAX_NUM_OBJECTS - 1);
+    if (memIndex > maxObjectsPerPass) {
+      std::string maxIndex = intToStr(maxObjectsPerPass - 1);
       throw std::runtime_error("Object colour buffer max index (" +
         maxIndex + ") exceeded.");
     }
@@ -648,8 +646,8 @@ namespace small3d {
   void Renderer::positionNextObject(const glm::vec3 offset,
     const glm::vec3 rotation, uint32_t memIndex) {
 
-    if (memIndex > MAX_NUM_OBJECTS) {
-      std::string maxObjects = intToStr(MAX_NUM_OBJECTS);
+    if (memIndex > maxObjectsPerPass) {
+      std::string maxObjects = intToStr(maxObjectsPerPass);
       throw std::runtime_error("Cannot position more than " + maxObjects +
 			       " on the scene.");
     }
@@ -919,7 +917,7 @@ namespace small3d {
 				     minAlignment - 1) & ~(minAlignment - 1);
     }
 
-    uboOrientationDynamicSize = MAX_NUM_OBJECTS * dynamicOrientationAlignment;
+    uboOrientationDynamicSize = maxObjectsPerPass * dynamicOrientationAlignment;
     char* mem = alloc.allocate(uboOrientationDynamicSize);
     std::fill(mem, &mem[uboOrientationDynamicSize], 0);
     uboOrientationDynamic = (UboOrientation*)mem;
@@ -943,7 +941,7 @@ namespace small3d {
 	~(minAlignment - 1);
     }
 
-    uboColourDynamicSize = MAX_NUM_OBJECTS * dynamicColourAlignment;
+    uboColourDynamicSize = maxObjectsPerPass * dynamicColourAlignment;
     mem = alloc.allocate(uboColourDynamicSize);
     std::fill(mem, &mem[uboColourDynamicSize], 0);
     uboColourDynamic = (UboColour*)mem;
@@ -1090,13 +1088,15 @@ namespace small3d {
     const int height, const float frustumScale,
     const float zNear, const float zFar,
     const float zOffsetFromCamera,
-    const std::string shadersPath) {
+    const std::string shadersPath,
+    const uint32_t maxObjectsPerPass) {
 
     window = 0;
 
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
     cameraPosition = glm::vec3(0, 0, 0);
     cameraRotation = glm::vec3(0, 0, 0);
+    this->maxObjectsPerPass = maxObjectsPerPass;
     this->zNear = zNear;
     this->zFar = zFar;
     this->frustumScale = frustumScale;
@@ -1118,10 +1118,11 @@ namespace small3d {
     const float frustumScale,
     const float zNear, const float zFar,
     const float zOffsetFromCamera,
-    const std::string shadersPath) {
+    const std::string shadersPath,
+    const uint32_t maxObjectsPerPass) {
 
     static Renderer instance(windowTitle, width, height, frustumScale, zNear,
-      zFar, zOffsetFromCamera, shadersPath);
+      zFar, zOffsetFromCamera, shadersPath, maxObjectsPerPass);
     return instance;
   }
 

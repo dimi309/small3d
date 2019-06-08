@@ -75,6 +75,8 @@ namespace small3d
 
     int realScreenWidth = 0, realScreenHeight = 0;
 
+    uint32_t maxObjectsPerPass;
+
     uint32_t perspectivePipelineIndex = 100;
     uint32_t orthographicPipelineIndex = 100;
 
@@ -202,7 +204,7 @@ namespace small3d
     Renderer(const std::string windowTitle, const int width, 
       const int height, const float frustumScale, const float zNear, 
       const float zFar, const float zOffsetFromCamera, 
-      const std::string shadersPath);
+      const std::string shadersPath, const uint32_t maxObjectsPerPass);
     
     Renderer();
     
@@ -252,6 +254,10 @@ namespace small3d
      *                          provided. The shader code can be changed,
      *                          provided that their inputs and outputs are
      *                          maintained the same.
+     * @param maxObjectsPerPass Maximum number of Models and / or SceneObjects
+     *                          that will be rendered on the screen during a render
+     *                          pass at the same time. This is used to pre-allocate
+     *                          the needed memory buffers.
      * @return                  The Renderer object. It can only be assigned to 
      *                          a pointer by its address (Renderer *r =
      *                          &Renderer::getInstance(...), since declaring
@@ -260,14 +266,15 @@ namespace small3d
      *                          been deleted.
      */
     static Renderer& getInstance(const std::string windowTitle = "",
-				 const int width = 0, 
-				 const int height = 0,
-				 const float frustumScale = 1.0f,
-				 const float zNear = 1.0f,
-				 const float zFar = 24.0f,
-				 const float zOffsetFromCamera = -1.0f,
-				 const std::string shadersPath =
-				 "resources/shaders/");
+      const int width = 0,
+      const int height = 0,
+      const float frustumScale = 1.0f,
+      const float zNear = 1.0f,
+      const float zFar = 24.0f,
+      const float zOffsetFromCamera = -1.0f,
+      const std::string shadersPath =
+      "resources/shaders/",
+      const uint32_t maxObjectsPerPass = 20);
 
     /**
      * @brief Destructor
