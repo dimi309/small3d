@@ -1,4 +1,4 @@
-set CMAKE_DEFINITIONS=-DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=android-26
+set CMAKE_DEFINITIONS=-DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=android-26 
 mkdir include
 mkdir lib
 
@@ -49,7 +49,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 cd vorbis-1.3.6
 mkdir build
 cd build
-cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF -DOGG_ROOT=%depspath% %CMAKE_DEFINITIONS%
+cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF -DOGG_INCLUDE_DIRS=%depspath%/include -DOGG_LIBRARIES=%depspath%/lib/libogg.a %CMAKE_DEFINITIONS%
 cmake --build .
 if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy ..\include\vorbis ..\..\include\vorbis /i /s
@@ -58,21 +58,6 @@ cd ..\..\
 rmdir /Q /S vorbis-1.3.6
 del vorbis-1.3.6.tar
 del pax_global_header
-
-7z x pa_stable_v190600_20161030.tgz
-if %errorlevel% neq 0 exit /b %errorlevel%
-7z x pa_stable_v190600_20161030.tar
-cd portaudio
-mkdir build1
-cd build1
-cmake .. -G"MinGW Makefiles" -DPA_USE_WDMKS=OFF %CMAKE_DEFINITIONS%
-cmake --build .
-if %errorlevel% neq 0 exit /b %errorlevel%
-copy ..\include\* ..\..\include
-copy libportaudio_static.a ..\..\lib
-cd ..\..\
-rmdir /Q /S portaudio
-del pa_stable_v190600_20161030.tar
 
 7z x freetype-2.9.1.tar.gz
 if %errorlevel% neq 0 exit /b %errorlevel%
