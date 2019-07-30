@@ -14,33 +14,33 @@
  /**
   * @brief The Vulkan instance
   */
-VkInstance vkz_instance;
+ extern VkInstance vkz_instance;
 
 /**
  * @brief The surface on which graphics will be presented.
  */
-VkSurfaceKHR vkz_surface;
+extern VkSurfaceKHR vkz_surface;
 
 /**
  * @brief The physical device that is selected vkz_init().
  */
 
-VkPhysicalDevice vkz_physical_device;
+extern VkPhysicalDevice vkz_physical_device;
 
 /**
  * @brief The logical device that is created by vkz_init().
  */
-VkDevice vkz_logical_device;
+extern VkDevice vkz_logical_device;
 
 /**
  * @brief The pipeline layouts, one for each pipeline created.
  */
-VkPipelineLayout* vkz_pipeline_layout;
+extern VkPipelineLayout* vkz_pipeline_layout;
 
 /**
  * @brief Number of images in the swapchain, set by vkz_create_swapchain().
  */
-uint32_t vkz_swapchain_image_count;
+extern uint32_t vkz_swapchain_image_count;
 
 /**
  * @brief  Create a vulkan instance

@@ -53,10 +53,10 @@ static BOOL swapchain_image_views_created = FALSE;
 
 static uint32_t vkz_width;
 static uint32_t vkz_height;
-extern VkInstance vkz_instance;
-extern VkSurfaceKHR vkz_surface;
-extern VkPhysicalDevice vkz_physical_device;
-extern VkDevice vkz_logical_device;
+VkInstance vkz_instance;
+VkSurfaceKHR vkz_surface;
+VkPhysicalDevice vkz_physical_device;
+VkDevice vkz_logical_device;
 static int vkz_graphics_family_index = -1;
 static int vkz_present_family_index = -1;
 static VkQueue vkz_graphics_queue;
@@ -70,6 +70,8 @@ typedef struct {
   VkPresentModeKHR* presentModes;
 
 } swapchain_support_struct;
+
+uint32_t vkz_swapchain_image_count;
 
 static swapchain_support_struct vkz_swapchain_support_details;
 
@@ -92,6 +94,8 @@ static VkImageView depth_image_view;
 static int intrn_with_image_sampler = 0;
 
 static uint32_t next_image_index;
+
+VkPipelineLayout* vkz_pipeline_layout;
 
 typedef struct {
   char* vertex_shader_path;
@@ -525,7 +529,7 @@ int create_logical_device() {
   qci[0].pQueuePriorities = &queuePriority;
 
   if (vkz_graphics_family_index != vkz_present_family_index) {
-    memset(&qci[1], 0, sizeof(VkDeviceQueueCreateInfo));
+    memset(&qci[1], 0, sizeof(VkDeviceQueueCreateInfo));
     qci[1].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
     qci[1].queueFamilyIndex = vkz_graphics_family_index;
     qci[1].queueCount = 1;
