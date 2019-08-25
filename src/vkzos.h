@@ -11,6 +11,15 @@
 
 #include <vulkan/vulkan.h>
 
+#ifdef __ANDROID__
+#include <android_native_app_glue.h>
+#include <android/asset_manager.h>
+#include <vulkan/vulkan_android.h>
+extern struct android_app *vkz_android_app;
+
+#endif
+
+
  /**
   * @brief The Vulkan instance
   */

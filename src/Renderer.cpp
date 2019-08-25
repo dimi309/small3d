@@ -15,6 +15,7 @@ extern "C" {
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <cstring>
 
 namespace small3d {
 
@@ -243,7 +244,30 @@ namespace small3d {
   }
 
   void Renderer::initVulkan() {
+#ifdef __ANDROID__
 
+    const char *exts[2];
+
+    exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
+    exts[1] = VK_KHR_ANDROID_SURFACE_EXTENSION_NAME;
+
+    uint32_t num = 2;
+
+    if (!vkz_create_instance(windowTitle.c_str(), exts, num)) {
+      throw std::runtime_error("Failed to create Vulkan instance.");
+    }
+
+    VkAndroidSurfaceCreateInfoKHR sci;
+    sci.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
+    sci.pNext = nullptr;
+    sci.flags = 0;
+    sci.window = vkz_android_app->window;
+    if (vkCreateAndroidSurfaceKHR(vkz_instance, &sci, nullptr, &vkz_surface) !=
+      VK_SUCCESS) {
+      throw std::runtime_error("Could not create surface.");
+    }
+
+#else
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
 
@@ -267,6 +291,7 @@ namespace small3d {
       VK_SUCCESS) {
       throw std::runtime_error("Could not create surface.");
     }
+#endif
 
     if (!vkz_init()) {
       throw std::runtime_error("Could not initialise Vulkan.");
@@ -870,6 +895,9 @@ namespace small3d {
 
     this->initWindow(realScreenWidth, realScreenHeight);
 
+    LOGDEBUG("Android detected width " + intToStr(realScreenWidth) +
+    " height " + intToStr(realScreenHeight));
+
     this->initVulkan();
 
     std::string vertexShaderPath = shadersPath +
@@ -964,7 +992,12 @@ namespace small3d {
   }
 
   void Renderer::initWindow(int& width, int& height) {
+#ifdef __ANDROID__
+    assert(vkz_android_app->window != nullptr);
+    width = ANativeWindow_getWidth(vkz_android_app->window);
+    height = ANativeWindow_getHeight(vkz_android_app->window);
 
+#else
     glfwSetErrorCallback(errorCallback);
 
     if (!glfwInit()) {
@@ -1004,7 +1037,7 @@ namespace small3d {
     if (!window) {
       throw std::runtime_error("Unable to create GLFW window");
     }
-
+#endif
   }
 
   void Renderer::setPerspectiveAndLight() {
@@ -1078,7 +1111,9 @@ namespace small3d {
   }
 
   Renderer::Renderer() {
+#ifndef __ANDROID__
     window = 0;
+#endif
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
     cameraPosition = glm::vec3(0, 0, 0);
     cameraRotation = glm::vec3(0, 0, 0);
@@ -1091,7 +1126,9 @@ namespace small3d {
     const std::string shadersPath,
     const uint32_t maxObjectsPerPass) {
 
+#ifndef __ANDROID__
     window = 0;
+#endif
 
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
     cameraPosition = glm::vec3(0, 0, 0);
@@ -1232,9 +1269,11 @@ namespace small3d {
     // glfwTerminate();
   }
 
+#ifndef __ANDROID__
   GLFWwindow* Renderer::getWindow() const {
     return window;
   }
+#endif
 
   void Renderer::generateTexture(const std::string name, const Image image) {
     this->generateTexture(name, image.getData(), image.getWidth(),
@@ -1254,7 +1293,21 @@ namespace small3d {
     if (idFacePair == fontFaces.end()) {
       std::string faceFullPath = fontPath;
       LOGDEBUG("Loading font from " + faceFullPath);
+#ifdef __ANDROID__
+      AAsset *asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+                                         faceFullPath.c_str(),
+                                         AASSET_MODE_STREAMING);
+      if (!asset) throw std::runtime_error("Opening asset " + faceFullPath +
+                                           " has failed!");
+      off_t offset, length;
+      length = AAsset_getLength(asset);
+      const void* buffer = AAsset_getBuffer(asset);
+      error = FT_New_Memory_Face(library, (const FT_Byte*) buffer,
+        length, 0, &face);
+      AAsset_close(asset);
+#else
       error = FT_New_Face(library, faceFullPath.c_str(), 0, &face);
+#endif
       if (error != 0) {
         throw std::runtime_error("Failed to load font from " + faceFullPath);
       }

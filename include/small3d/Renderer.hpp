@@ -9,8 +9,10 @@
 
 #pragma once
 
+#ifndef __ANDROID__
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#endif
 
 #include "Logger.hpp"
 #include "Image.hpp"
@@ -69,7 +71,9 @@ namespace small3d
 
   private:
 
+#ifndef __ANDROID__
     GLFWwindow* window;
+#endif
 
     std::string windowTitle = "";
 
@@ -281,10 +285,12 @@ namespace small3d
      */
     ~Renderer();
 
+#ifndef __ANDROID__
     /**
      * @brief Get the GLFW window object, associated with the Renderer.
      */
     GLFWwindow* getWindow() const;
+#endif
 
     /**
      * @brief Generate a texture on the GPU from the given image

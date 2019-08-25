@@ -11,6 +11,10 @@
 #include <ctime>
 #include <iostream>
 
+#ifdef __ANDROID__
+#include <android/log.h>
+#endif
+
 std::shared_ptr<small3d::Logger> logger;
 
 namespace small3d {
@@ -27,58 +31,76 @@ namespace small3d {
     return std::string(buffer);
   }
 
-  Logger::Logger(std::ostream &stream) {
-    logStream = &stream;
+  Logger::Logger() {
+    this->append(loggerinfo, "Logger created");
   }
 
   Logger::~Logger() {
     this->append(loggerinfo, "Logger getting destroyed");
-    logStream = NULL;
-
   }
 
   void Logger::append(const LogLevel level, const std::string message) const {
-    if (!logger) return;
-    std::ostringstream dateTimeOstringstream;
+      if (!logger) return;
 
-    time_t now;
 
-    time(&now);
+#ifdef __ANDROID__
 
-    tm *t = localtime(&now);
+      android_LogPriority lp;
 
-    char buf[20];
+      switch (level) {
+        case loggerinfo:
+          lp = ANDROID_LOG_INFO;
+              break;
+        case loggerdebug:
+          lp = ANDROID_LOG_DEBUG;
+              break;
+        case loggererror:
+          lp = ANDROID_LOG_ERROR;
+              break;
+        default:
+          lp = ANDROID_LOG_UNKNOWN;
+              break;
+      }
 
-    strftime(buf, 20,"%Y-%m-%d %H:%M:%S", t);
+      __android_log_write(lp, "small3d logger", message.c_str());
+#else
+      std::ostringstream dateTimeOstringstream;
 
-    dateTimeOstringstream << buf;
+      time_t now;
 
-    std::string indicator;
-    switch (level) {
-    case loggerinfo:
-      indicator = "INFO";
-      break;
-    case loggerdebug:
-      indicator = "DEBUG";
-      break;
-    case loggererror:
-      indicator = "ERROR";
-      break;
-    default:
-      indicator = "";
-      break;
+      time(&now);
+
+      tm *t = localtime(&now);
+
+      char buf[20];
+
+      strftime(buf, 20,"%Y-%m-%d %H:%M:%S", t);
+
+      dateTimeOstringstream << buf;
+
+      std::string indicator;
+      switch (level) {
+      case loggerinfo:
+        indicator = "INFO";
+        break;
+      case loggerdebug:
+        indicator = "DEBUG";
+        break;
+      case loggererror:
+        indicator = "ERROR";
+        break;
+      default:
+        indicator = "";
+        break;
+      }
+      std::cout << dateTimeOstringstream.str().c_str() << " - " << indicator
+             << ": " << message.c_str() << std::endl;
+#endif
+
     }
 
-    *logStream << dateTimeOstringstream.str().c_str() << " - " << indicator
-	       << ": " << message.c_str() << std::endl;
-  }
-
   void initLogger() {
-    if (!logger) logger = std::shared_ptr<Logger>(new Logger(std::cout));
-  }
-
-  void initLogger(std::ostream &stream) {
-    if (!logger) logger = std::shared_ptr<Logger>(new Logger(stream));
+    if (!logger) logger = std::shared_ptr<Logger>(new Logger());
   }
 
   void deleteLogger() {

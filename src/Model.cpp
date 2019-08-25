@@ -13,6 +13,19 @@
 #include "GetTokens.hpp"
 #include "Model.hpp"
 
+#ifdef __ANDROID__
+#include "vkzos.h"
+#include <streambuf>
+#include <istream>
+
+struct membuf : std::streambuf
+{
+    membuf(char* begin, char* end) {
+        this->setg(begin, begin, end);
+    }
+};
+#endif
+
 namespace small3d {
 
   void Model::loadVertexData() {
@@ -46,7 +59,7 @@ namespace small3d {
       for (int indexIdx = 0; indexIdx != 3; ++indexIdx) {
         this->indexData.push_back(face->at((unsigned long)indexIdx)
           - 1); // -1 because Wavefront indexes
-        // are not 0 based
+                // are not 0 based
 
       }
     }
@@ -56,7 +69,6 @@ namespace small3d {
 
     // Create an array of normal components which corresponds
     // by index to the array of vertex components
-
 
     if (this->vertexData.size() == 0) {
       throw std::runtime_error("There are no vertices or vertex data has not "
@@ -95,7 +107,7 @@ namespace small3d {
   void Model::loadTextureCoordsData() {
 
     // Create an array of texture coordinates components which corresponds
-     // by index to the array of vertex components
+    // by index to the array of vertex components
     // Doing this even if there are no texture coordinates in the file because
     // Vulkan is a bit rigid about missing data in the shaders and it crashes if 
     // a bound buffer is empty.
@@ -156,10 +168,10 @@ namespace small3d {
           if (vertexUVPair->second !=
             textureCoordsIndices.at(idx)[vertexIndex]) {
             // duplicate corresponding vertex data entry and point the vertex
-      // index to the new tuple
+            // index to the new tuple
             std::vector<float> v;
             // -1 because at this stage the indexes are still as exported from
-      // Blender, meaning 1-based and not 0-based
+            // Blender, meaning 1-based and not 0-based
             v.push_back(vertices[facesVertexIndices[idx][vertexIndex] - 1][0]);
             v.push_back(vertices[facesVertexIndices[idx][vertexIndex] - 1][1]);
             v.push_back(vertices[facesVertexIndices[idx][vertexIndex] - 1][2]);
@@ -173,9 +185,9 @@ namespace small3d {
                 textureCoordsIndices[idx][vertexIndex]));
           }
           // So we don't add a pair if the exact same pair already exists. We
-    // do if it does not (see below) or if the vertex index number exists
-    // in a pair with a different texture coordinates index number (see
-    // above)
+          // do if it does not (see below) or if the vertex index number exists
+          // in a pair with a different texture coordinates index number (see
+          // above)
         }
         else {
           vertexUVPairs->
@@ -184,7 +196,6 @@ namespace small3d {
         }
       }
     }
-
   }
 
 
@@ -201,12 +212,28 @@ namespace small3d {
   }
 
   Model::Model(const std::string fileLocation) {
-    std::ifstream file(fileLocation.c_str());
     std::string line;
+
+#ifdef __ANDROID__
+    AAsset *asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+                                         fileLocation.c_str(),
+                                         AASSET_MODE_STREAMING);
+    if (!asset) throw std::runtime_error("Opening asset " + fileLocation +
+      " has failed!");
+    off_t offset, length;
+    length = AAsset_getLength(asset);
+    const void* buffer = AAsset_getBuffer(asset);
+    membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * length);
+    std::istream in(&sbuf);
+    if (in) {
+      clear();
+      while (std::getline(in, line)) {
+#else
+    std::ifstream file(fileLocation.c_str());
     if (file.is_open()) {
       clear();
-
       while (getline(file, line)) {
+#endif
         if (line[0] == 'v' || line[0] == 'f') {
           std::vector<std::string> tokens;
 
@@ -330,22 +357,22 @@ namespace small3d {
 
         }
       }
+#ifdef __ANDROID__
+      AAsset_close(asset);
+#else
       file.close();
-
+#endif
       if (textureCoords.size() > 0) {
         this->correctDataVectors();
       }
-
       // Generate the data and delete the initial buffers
       this->loadVertexData();
       this->loadIndexData();
       this->loadNormalsData();
       this->loadTextureCoordsData();
       this->clear();
-
     }
     else
       throw std::runtime_error("Could not open file " + fileLocation);
   }
-
 }

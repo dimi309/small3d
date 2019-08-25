@@ -10,6 +10,10 @@
 #include <stdexcept>
 #include <cstring>
 
+#ifdef __ANDROID__
+#include "vkzos.h"
+#endif
+
 namespace small3d {
 
   Image::Image(const std::string fileLocation) : imageData() {
@@ -33,14 +37,35 @@ namespace small3d {
     }
   }
 
+#ifdef __ANDROID__
+    static AAsset *asset;
+    void png_asset_read(png_structp png_ptr, png_bytep data, png_size_t length) {
+        AAsset_read(asset, data, length);
+    }
+#endif
+
   void Image::loadFromFile(const std::string fileLocation) {
     // function developed based on example at
     // http://zarb.org/~gc/html/libpng.html
-    FILE *fp = fopen(fileLocation.c_str(), "rb");
 
-    if (!fp) {
-      throw std::runtime_error("Could not open file " + fileLocation);
+#ifdef __ANDROID__
+
+    LOGDEBUG("About to open image asset " + fileLocation);
+    // todo: Is the asset mode the reason we cannot read the png even if
+    // openfiledescriptor seems to return a positive value?
+    asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+                                       fileLocation.c_str(), AASSET_MODE_STREAMING);
+
+    if (!asset) {
+      throw std::runtime_error("Opening asset " + fileLocation + " has failed!");
     }
+    LOGDEBUG("Image asset opened, continuing...");
+#else
+      FILE *fp = fopen(fileLocation.c_str(), "rb");
+      if (!fp) {
+      throw std::runtime_error("Could not open file " + fileLocation);
+      }
+#endif
 
     png_infop pngInformation = nullptr;
     png_structp pngStructure = nullptr;
@@ -48,8 +73,11 @@ namespace small3d {
     png_bytep *rowPointers = nullptr;
 
     unsigned char header[8]; // Using maximum size that can be checked
-
+#ifdef __ANDROID__
+      AAsset_read(asset, header, 8);
+#else
     fread(header, 1, 8, fp);
+#endif
 
     if (png_sig_cmp(header, 0, 8)) {
       throw std::runtime_error(
@@ -61,7 +89,7 @@ namespace small3d {
       nullptr, nullptr, nullptr);
 
     if (!pngStructure) {
-      fclose(fp);
+
       throw std::runtime_error("Could not create PNG read structure.");
     }
 
@@ -69,7 +97,7 @@ namespace small3d {
 
     if (!pngInformation) {
       png_destroy_read_struct(&pngStructure, nullptr, nullptr);
-      fclose(fp);
+
       throw std::runtime_error("Could not create PNG information structure.");
     }
 
@@ -77,11 +105,15 @@ namespace small3d {
       png_destroy_read_struct(&pngStructure, &pngInformation, nullptr);
       pngStructure = nullptr;
       pngInformation = nullptr;
-      fclose(fp);
+
       throw std::runtime_error("PNG read: Error calling setjmp. (1)");
     }
 
+#ifdef __ANDROID__
+      png_set_read_fn(pngStructure, NULL, png_asset_read);
+#else
     png_init_io(pngStructure, fp);
+#endif
     png_set_sig_bytes(pngStructure, 8);
 
     png_read_info(pngStructure, pngInformation);
@@ -98,7 +130,6 @@ namespace small3d {
       png_destroy_read_struct(&pngStructure, &pngInformation, nullptr);
       pngStructure = nullptr;
       pngInformation = nullptr;
-      fclose(fp);
       throw std::runtime_error("PNG read: Error calling setjmp. (2)");
     }
 
@@ -145,9 +176,11 @@ namespace small3d {
 
       }
     }
-
+#ifdef __ANDROID__
+    AAsset_close(asset);
+#else
     fclose(fp);
-
+#endif
     for (unsigned long y = 0; y < height; y++) {
       delete[] rowPointers[y];
     }

@@ -16,10 +16,21 @@ typedef int BOOL;
 #define TRUE 1
 #define FALSE 0
 
+#ifdef __ANDROID__
+#include <android/log.h>
+struct android_app *vkz_android_app;
+#endif
+
 #ifndef NDEBUG
+#ifdef __ANDROID__
+#define LOGDEBUG0(x) __android_log_write(ANDROID_LOG_DEBUG, "vkzos", x)
+#define LOGDEBUG1(x, y) __android_log_print(ANDROID_LOG_DEBUG, "vkzos", x, y)
+#define LOGDEBUG2(x, y, z) __android_log_print(ANDROID_LOG_DEBUG, "vkzos", x, y, z)
+#else
 #define LOGDEBUG0(x) printf(x)
 #define LOGDEBUG1(x, y) printf(x, y)
 #define LOGDEBUG2(x, y, z) printf(x, y, z)
+#endif
 #else
 #define LOGDEBUG0(x)
 #define LOGDEBUG1(x, y) 
@@ -53,6 +64,10 @@ static BOOL swapchain_image_views_created = FALSE;
 
 static uint32_t vkz_width;
 static uint32_t vkz_height;
+
+static const char* validation_layers[5];
+static uint32_t validation_layer_count = 0;
+
 VkInstance vkz_instance;
 VkSurfaceKHR vkz_surface;
 VkPhysicalDevice vkz_physical_device;
@@ -115,6 +130,10 @@ static VkFence gpu_cpu_fence;
 int vkz_create_instance(const char* application_name,
   const char** enabled_extension_names,
   size_t enabled_extension_count) {
+  LOGDEBUG0("vkz_create_instance requested extensions:");
+  for (int i = 0; i < enabled_extension_count; ++i) {
+    LOGDEBUG0(enabled_extension_names[i]);
+  }
 
   VkApplicationInfo ai;
   memset(&ai, 0, sizeof(VkApplicationInfo));
@@ -131,39 +150,55 @@ int vkz_create_instance(const char* application_name,
   ci.pApplicationInfo = &ai;
 
 #ifndef NDEBUG
+  uint32_t numValidationLayers;
+#ifdef __ANDROID__
+  numValidationLayers = 5;
+  const char* vl[5];
+  vl[0] = "VK_LAYER_GOOGLE_threading";
+  vl[1] = "VK_LAYER_LUNARG_parameter_validation";
+  vl[2] = "VK_LAYER_LUNARG_object_tracker";
+  vl[3] = "VK_LAYER_LUNARG_core_validation";
+  vl[4] = "VK_LAYER_GOOGLE_unique_objects";
 
-  const char* vl = "VK_LAYER_LUNARG_standard_validation";
+#else
+  numValidationLayers = 1;
+  const char* vl[1];
+  vl[0] = "VK_LAYER_LUNARG_standard_validation";
+#endif
+
   uint32_t lc = 0;
   VkLayerProperties* lp = 0;
-  BOOL vlExists = FALSE;
 
   vkEnumerateInstanceLayerProperties(&lc, NULL);
   lp = malloc(sizeof(VkLayerProperties) * lc);
   if (lp) {
     memset(lp, 0, sizeof(VkLayerProperties) * lc);
     vkEnumerateInstanceLayerProperties(&lc, lp);
-    for (uint32_t n = 0; n < lc; ++n) {
-      if (strcmp(lp[n].layerName, &vl[0]) == 0)
-        vlExists = TRUE;
+    for (uint32_t i = 0; i < numValidationLayers; i++) {
+      for (uint32_t n = 0; n < lc; ++n) {
+        if (strcmp(lp[n].layerName, vl[i]) == 0) {
+          LOGDEBUG1("Layer %s exists! Will enable...\n", vl[i]);
+          validation_layers[validation_layer_count] = vl[i];
+          ++validation_layer_count;
+        }
+      }
     }
   }
 
-  if (vlExists) {
-    ci.enabledLayerCount = 1;
-    ci.ppEnabledLayerNames = &vl;
-    LOGDEBUG1("Layer %s exists! Will enable...\n", &vl[0]);
-    validation_layer_ok = TRUE;
+  if (validation_layer_count > 0) {
+    ci.enabledLayerCount = validation_layer_count;
+    ci.ppEnabledLayerNames = validation_layers;
 
   }
-  else {
-    ci.enabledLayerCount = 0;
-    LOGDEBUG1("Layer %s not supported!", &vl[0]);
-  }
+
+  ci.enabledExtensionCount = (uint32_t)enabled_extension_count;
+  ci.ppEnabledExtensionNames = enabled_extension_names;
+
 
   const char** allExtensionNames = malloc(sizeof(char*) *
     (enabled_extension_count + 1));
 
-  if (vlExists) {
+  if (validation_layer_count > 0) {
 
     for (uint32_t n = 0; n < enabled_extension_count; n++) {
       allExtensionNames[n] = enabled_extension_names[n];
@@ -175,10 +210,7 @@ int vkz_create_instance(const char* application_name,
     ci.enabledExtensionCount = allExtensionCount;
     ci.ppEnabledExtensionNames = allExtensionNames;
   }
-  else {
-    ci.enabledExtensionCount = (uint32_t)enabled_extension_count;
-    ci.ppEnabledExtensionNames = enabled_extension_names;
-  }
+
 
 #else
   ci.enabledExtensionCount = enabled_extension_count;
@@ -186,15 +218,16 @@ int vkz_create_instance(const char* application_name,
 #endif
 
   int success = 1;
-
-  if (vkCreateInstance(&ci, NULL, &vkz_instance) != VK_SUCCESS) {
+  VkResult result = vkCreateInstance(&ci, NULL, &vkz_instance);
+  if ( result != VK_SUCCESS) {
     success = 0;
+    LOGDEBUG1("Failed to create Vulkan instance. Error: %d", result);
   }
   else {
-    LOGDEBUG0("Created Vulkan instance.\n\r");
+    LOGDEBUG0("Created Vulkan instance.");
     instance_created = TRUE;
-#ifndef NDEBUG
-    if (vlExists) {
+#if !defined(NDEBUG)
+    if (validation_layer_count > 0) {
       VkDebugReportCallbackCreateInfoEXT dcci;
       dcci.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
       dcci.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT |
@@ -221,6 +254,7 @@ int vkz_create_instance(const char* application_name,
   }
 
 #ifndef NDEBUG
+
   free((char**)allExtensionNames);
 
   if (lc > 0)
@@ -244,7 +278,8 @@ int retrieve_swapchain_support_details(VkPhysicalDevice device) {
     NULL);
   if (vkz_swapchain_support_details.formatCount > 0) {
     vkz_swapchain_support_details.formats =
-      malloc(vkz_swapchain_support_details.formatCount * sizeof(VkSurfaceFormatKHR));
+      malloc(vkz_swapchain_support_details.formatCount *
+      sizeof(VkSurfaceFormatKHR));
     vkGetPhysicalDeviceSurfaceFormatsKHR(device, vkz_surface,
       &vkz_swapchain_support_details.formatCount,
       vkz_swapchain_support_details.formats);
@@ -273,17 +308,20 @@ int retrieve_swapchain_support_details(VkPhysicalDevice device) {
     return 0;
   }
 
-
   return 1;
 }
 
 int select_surface_format() {
-
+  LOGDEBUG1("Selecting surface format. formatCount: %d",
+            vkz_swapchain_support_details.formatCount);
   if (!(vkz_swapchain_support_details.formatCount == 1 &&
     vkz_swapchain_support_details.formats[0].format ==
     VK_FORMAT_UNDEFINED)) {
     BOOL found = FALSE;
     for (uint32_t n = 0; n < vkz_swapchain_support_details.formatCount; n++) {
+      LOGDEBUG2("Found format %d with colorSpace %d",
+                vkz_swapchain_support_details.formats[n].format,
+                vkz_swapchain_support_details.formats[n].colorSpace);
       if (vkz_swapchain_support_details.formats[n].format ==
         VK_FORMAT_B8G8R8A8_UNORM &&
         vkz_swapchain_support_details.formats[n].colorSpace ==
@@ -293,8 +331,10 @@ int select_surface_format() {
       }
     }
     if (!found) {
-      LOGDEBUG0("Preferred surface format not supported. Using first existing"
-        " one.\n\r");
+      LOGDEBUG2("Preferred surface format not supported. Using first existing"
+        " one. (Format %d colorSpace %d)",
+        vkz_swapchain_support_details.formats[0].format,
+        vkz_swapchain_support_details.formats[0].colorSpace);
       vkz_surface_format.format =
         vkz_swapchain_support_details.formats[0].format;
       vkz_surface_format.colorSpace =
@@ -529,7 +569,7 @@ int create_logical_device() {
   qci[0].pQueuePriorities = &queuePriority;
 
   if (vkz_graphics_family_index != vkz_present_family_index) {
-    memset(&qci[1], 0, sizeof(VkDeviceQueueCreateInfo));
+    memset(&qci[1], 0, sizeof(VkDeviceQueueCreateInfo));
     qci[1].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
     qci[1].queueFamilyIndex = vkz_graphics_family_index;
     qci[1].queueCount = 1;
@@ -551,11 +591,10 @@ int create_logical_device() {
   dci.ppEnabledExtensionNames = (const char* const*)device_extensions;
 
 #ifndef NDEBUG
-  const char* vl[] = { "VK_LAYER_LUNARG_standard_validation" };
 
   if (validation_layer_ok) {
-    dci.enabledLayerCount = 1;
-    dci.ppEnabledLayerNames = vl;
+    dci.enabledLayerCount = validation_layer_count;
+    dci.ppEnabledLayerNames = validation_layers;
   }
   else {
     dci.enabledLayerCount = 0;
@@ -768,7 +807,12 @@ int create_render_pass() {
 
   VkAttachmentDescription depth_attachment_description;
   memset(&depth_attachment_description, 0, sizeof(VkAttachmentDescription));
+#ifdef __ANDROID__
+  depth_attachment_description.format = VK_FORMAT_D24_UNORM_S8_UINT;
+#else
   depth_attachment_description.format = VK_FORMAT_D32_SFLOAT;
+#endif
+
   depth_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
   depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
   depth_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
@@ -856,9 +900,7 @@ int create_framebuffers(VkRenderPass render_pass) {
       framebuffers = NULL;
       return 0;
     }
-
   }
-
   return 1;
 }
 
@@ -906,8 +948,12 @@ int vkz_create_swapchain(const uint32_t width, const uint32_t height,
   }
 
   ci.preTransform = vkz_swapchain_support_details.capabilities.currentTransform;
-
+#ifdef __ANDROID__
+  ci.compositeAlpha = VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR;
+#else
   ci.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+#endif
+
   ci.presentMode = vkz_present_mode;
   ci.clipped = VK_TRUE;
   ci.oldSwapchain = VK_NULL_HANDLE;
@@ -972,14 +1018,26 @@ int vkz_destroy_swapchain() {
     swapchain_created = FALSE;
 
   }
-
   return 1;
-
 }
 
 long alloc_load_shader_spv(char* path, uint32_t** spv) {
   long fs = 0;
-  FILE* f = fopen(path, "rb");
+  LOGDEBUG1("About to load shader from %s", path);
+#ifdef __ANDROID__
+  AAsset *asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+          path, AASSET_MODE_STREAMING);
+  if(!asset) {
+    LOGDEBUG1("Could not open file %s!\n\r", path);
+    return 0;
+  }
+  fs = AAsset_getLength(asset);
+  const void *buffer = AAsset_getBuffer(asset);
+  AAsset_close(asset);
+  *spv = (uint32_t*)buffer;
+#else
+  FILE* f = 0;
+  f = fopen(path, "rb");
   if (f) {
     fseek(f, 0, SEEK_END);
     fs = ftell(f);
@@ -989,11 +1047,13 @@ long alloc_load_shader_spv(char* path, uint32_t** spv) {
     fread(spvint, 1, fs, f);
     fclose(f);
     *spv = (uint32_t*)spvint;
-  }
+    }
   else {
     printf("Could not open file %s!\n\r", path);
     return 0;
   }
+#endif
+
   return fs;
 }
 

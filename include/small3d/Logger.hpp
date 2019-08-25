@@ -57,17 +57,14 @@ namespace small3d {
    */
 
   class Logger {
-  private:
-    std::ostream *logStream;
   public:
 
     /**
      * @brief Constructor with stream for output.
      *
-     * @param [in,out]	stream	The stream to which events will be logged.
      */
 
-    Logger(std::ostream &stream);
+    Logger();
 
     /**
      * @brief Destructor.
@@ -89,15 +86,6 @@ namespace small3d {
    * @brief Initialise the logger.
    */
   void initLogger();
-
-  
-  /**
-   * @brief Initialise the logger.
-   *
-   * @param stream The stream to output logging entries to.
-   *
-   */
-  void initLogger(std::ostream &stream);
 
   /**
    * @brief Destroy the logger.

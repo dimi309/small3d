@@ -12,6 +12,12 @@
 #include "GetTokens.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
+#ifdef __ANDROID__
+#include "vkzos.h"
+#include <streambuf>
+#include <istream>
+#endif
+
 namespace small3d {
 
   /**
@@ -28,15 +34,46 @@ namespace small3d {
 
   }
 
-  void BoundingBoxSet::loadFromFile(std::string fileLocation) {
+#ifdef __ANDROID__
+    struct membuf : std::streambuf
+    {
+        membuf(char* begin, char* end) {
+            this->setg(begin, begin, end);
+        }
+    };
+
+#endif
+
+
+    void BoundingBoxSet::loadFromFile(std::string fileLocation) {
     if (vertices.size() != 0) {
       throw std::runtime_error("Illegal attempt to reload bounding boxes. "
         "Please use another object.");
     }
+      std::string line;
+#ifdef __ANDROID__
+    AAsset *asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+                                       fileLocation.c_str(),
+                                       AASSET_MODE_STREAMING);
+    if(!asset) {
+      throw std::runtime_error(
+        "Opening asset " + fileLocation + " has failed!");
+    }
+    off_t length;
+    length = AAsset_getLength(asset);
+    const void* buffer = AAsset_getBuffer(asset);
+    membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * length);
+    std::istream in(&sbuf);
+    if (in) {
+      while (std::getline(in, line)) {
+      LOGDEBUG("Got line: " + line);
+#else
     std::ifstream file(fileLocation.c_str());
-    std::string line;
+
     if (file.is_open()) {
       while (getline(file, line)) {
+#endif
+
         if (line[0] == 'v' || line[0] == 'f') {
           std::vector<std::string> tokens;
 
@@ -77,7 +114,11 @@ namespace small3d {
           }
         }
       }
+#ifdef __ANDROID__
+      AAsset_close(asset);
+#else
       file.close();
+#endif
       numBoxes = (int)(facesVertexIndexes.size() / 6);
 
       // Correct indices. OpenGL indices are 0 based. Wavefront indices start
