@@ -117,6 +117,9 @@ namespace small3d
     FT_Library library = 0;
     std::vector<float> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
+#ifdef __ANDROID__
+    std::vector<AAsset*> fontAssets;
+#endif
 
     static std::vector<Model> nextModelsToDraw;
 

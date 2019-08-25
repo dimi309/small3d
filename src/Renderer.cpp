@@ -1187,6 +1187,12 @@ namespace small3d {
       FT_Done_Face(idFacePair.second);
     }
 
+#ifdef __ANDROID__
+    for (auto asset : fontAssets) {
+      AAsset_close(asset);
+    }
+#endif
+
     FT_Done_FreeType(library);
     
     vkz_destroy_sync_objects();
@@ -1299,12 +1305,13 @@ namespace small3d {
                                          AASSET_MODE_STREAMING);
       if (!asset) throw std::runtime_error("Opening asset " + faceFullPath +
                                            " has failed!");
-      off_t offset, length;
+      off_t length;
       length = AAsset_getLength(asset);
+      LOGDEBUG("Font face length " + intToStr(length));
       const void* buffer = AAsset_getBuffer(asset);
       error = FT_New_Memory_Face(library, (const FT_Byte*) buffer,
         length, 0, &face);
-      AAsset_close(asset);
+      fontAssets.push_back(asset);
 #else
       error = FT_New_Face(library, faceFullPath.c_str(), 0, &face);
 #endif
@@ -1383,6 +1390,8 @@ namespace small3d {
       }
       totalAdvance += 4 * static_cast<unsigned long>(slot->advance.x / 64);
     }
+    LOGDEBUG("Generating text texture with width " + intToStr(width) +
+      " height " + intToStr(height) + ".");
     generateTexture(name, &textMemory[0], static_cast<unsigned long>(width),
       static_cast<unsigned long>(height));
   }

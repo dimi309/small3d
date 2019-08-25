@@ -416,21 +416,22 @@ int select_physical_device() {
       LOGDEBUG1("Checking physical device %s...\n\r", dp.deviceName);
 
       BOOL geometry_shader_support;
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__ANDROID__)
       geometry_shader_support = TRUE;
 #else
       geometry_shader_support = df.geometryShader;
 #endif
       char* geometry_shader_support_message = "The device supports "
         "geometry shaders.\n\r";
-      // Geometry shader support is not detected on MacOS using MoltenVK.
+      // Geometry shader support is not detected on MacOS using MoltenVK,
+      // neither on some Android phones.
       // The following may not be the best thing to do, but it keeps the
       // code working the exact same way on all platforms for the time
       // being. It could cause a problem later though.
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__ANDROID__)
 
-      geometry_shader_support_message = "Running on Apple, so assuming that "
-        "the device supports geometry shaders.\n\r";
+      geometry_shader_support_message = "Running on Apple or Android, so "
+        "assuming that the device supports geometry shaders.\n\r";
 #endif
 
       if (geometry_shader_support) {
@@ -482,7 +483,7 @@ int select_physical_device() {
 
       }
       else {
-        printf("The device does not support the geometry shader.\n\r");
+        LOGDEBUG0("The device does not support the geometry shader.\n\r");
       }
     }
   }
