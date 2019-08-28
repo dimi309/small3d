@@ -1307,7 +1307,6 @@ namespace small3d {
                                            " has failed!");
       off_t length;
       length = AAsset_getLength(asset);
-      LOGDEBUG("Font face length " + intToStr(length));
       const void* buffer = AAsset_getBuffer(asset);
       error = FT_New_Memory_Face(library, (const FT_Byte*) buffer,
         length, 0, &face);

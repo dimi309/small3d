@@ -103,6 +103,7 @@ static VkRenderPass render_pass;
 static VkCommandPool command_pool;
 
 static VkImage depth_image;
+static VkFormat depth_image_format;
 static VkDeviceMemory depth_image_memory;
 static VkImageView depth_image_view;
 
@@ -240,7 +241,7 @@ int vkz_create_instance(const char* application_name,
 
       if (dcCreate) {
         if (dcCreate(vkz_instance, &dcci, NULL, &callback) != VK_SUCCESS) {
-          printf("Failed to create debug report callback!\n\r");
+          LOGDEBUG0("Failed to create debug report callback!");
           success = 0;
         }
         else {
@@ -248,7 +249,7 @@ int vkz_create_instance(const char* application_name,
           debug_callback_created = TRUE;
         }
       }
-      else printf("Could not get debug report creation function address!\n\r");
+      else LOGDEBUG0("Could not get debug report creation function address!");
     }
 #endif
   }
@@ -286,7 +287,7 @@ int retrieve_swapchain_support_details(VkPhysicalDevice device) {
 
   }
   else {
-    printf("No surface formats found for physical device!");
+    LOGDEBUG0("No surface formats found for physical device!");
     return 0;
   }
 
@@ -304,7 +305,7 @@ int retrieve_swapchain_support_details(VkPhysicalDevice device) {
   else {
     if (vkz_swapchain_support_details.formats)
       free(vkz_swapchain_support_details.formats);
-    printf("No present modes found for physical device!");
+    LOGDEBUG0("No present modes found for physical device!");
     return 0;
   }
 
@@ -331,7 +332,7 @@ int select_surface_format() {
       }
     }
     if (!found) {
-      LOGDEBUG2("Preferred surface format not supported. Using first existing"
+      LOGDEBUG2("Preferred surface format not supported. Using an existing"
         " one. (Format %d colorSpace %d)",
         vkz_swapchain_support_details.formats[0].format,
         vkz_swapchain_support_details.formats[0].colorSpace);
@@ -415,81 +416,62 @@ int select_physical_device() {
 
       LOGDEBUG1("Checking physical device %s...\n\r", dp.deviceName);
 
-      BOOL geometry_shader_support;
-#if defined(__APPLE__) || defined(__ANDROID__)
-      geometry_shader_support = TRUE;
-#else
-      geometry_shader_support = df.geometryShader;
-#endif
-      char* geometry_shader_support_message = "The device supports "
-        "geometry shaders.\n\r";
-      // Geometry shader support is not detected on MacOS using MoltenVK,
-      // neither on some Android phones.
-      // The following may not be the best thing to do, but it keeps the
-      // code working the exact same way on all platforms for the time
-      // being. It could cause a problem later though.
-#if defined(__APPLE__) || defined(__ANDROID__)
+      if (df.geometryShader) {
 
-      geometry_shader_support_message = "Running on Apple or Android, so "
-        "assuming that the device supports geometry shaders.\n\r";
-#endif
+        LOGDEBUG1("%s", "Geometry shader support present.");
+      }
+      else {
+        LOGDEBUG0("Geometry shader support NOT present.");
+      }
 
-      if (geometry_shader_support) {
+      vkEnumerateDeviceExtensionProperties(pds[n], NULL, &deviceExtensionCount,
+                                           NULL);
 
-        LOGDEBUG1("%s", geometry_shader_support_message);
-
-        vkEnumerateDeviceExtensionProperties(pds[n], NULL, &deviceExtensionCount,
-          NULL);
-
-        if (deviceExtensionCount) {
-          if (deviceExtensions) {
-            free(deviceExtensions);
-          }
-          deviceExtensions = malloc(sizeof(VkExtensionProperties) *
-            deviceExtensionCount);
-          vkEnumerateDeviceExtensionProperties(pds[n], NULL,
-            &deviceExtensionCount,
-            deviceExtensions);
+      if (deviceExtensionCount) {
+        if (deviceExtensions) {
+          free(deviceExtensions);
         }
+        deviceExtensions = malloc(sizeof(VkExtensionProperties) *
+                                  deviceExtensionCount);
+        vkEnumerateDeviceExtensionProperties(pds[n], NULL,
+                                             &deviceExtensionCount,
+                                             deviceExtensions);
+      }
 
-        BOOL swapchainSupported = FALSE;
-        BOOL supportDetailsOk = FALSE;
-        for (uint32_t n1 = 0; n1 < deviceExtensionCount; n1++) {
-          swapchainSupported = strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-            deviceExtensions[n1].extensionName) == 0;
-          if (swapchainSupported && retrieve_swapchain_support_details(pds[n])) {
-            LOGDEBUG0("The device supports the swapchain extension and"
-              " support details are ok.\n\r");
-            supportDetailsOk = TRUE;
-            break;
-          }
-
-        }
-
-        if (!supportDetailsOk) {
-          LOGDEBUG0("Swapcain not supported or failed to retrieve support detais!");
-          return 0;
-        }
-        else {
-
-          vkz_physical_device = pds[n];
-
-          LOGDEBUG1("Found good physical device: %s\n\r", dp.deviceName);
-
-          success = select_surface_format() && select_present_mode();
-
+      BOOL swapchainSupported = FALSE;
+      BOOL supportDetailsOk = FALSE;
+      for (uint32_t n1 = 0; n1 < deviceExtensionCount; n1++) {
+        swapchainSupported = strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+                                    deviceExtensions[n1].extensionName) == 0;
+        if (swapchainSupported && retrieve_swapchain_support_details(pds[n])) {
+          LOGDEBUG0("The device supports the swapchain extension and"
+                    " support details are ok.\n\r");
+          supportDetailsOk = TRUE;
           break;
         }
 
       }
-      else {
-        LOGDEBUG0("The device does not support the geometry shader.\n\r");
+
+      if (!supportDetailsOk) {
+        LOGDEBUG0(
+          "Swapcain not supported or failed to retrieve support detais!");
+        return 0;
+      } else {
+
+        vkz_physical_device = pds[n];
+
+        LOGDEBUG1("Found good physical device: %s\n\r", dp.deviceName);
+
+        success = select_surface_format() && select_present_mode();
+
+        break;
       }
+
     }
   }
 
   if (!success)
-    printf("Physical device selection failed!\n\r");
+    LOGDEBUG0("Physical device selection failed!");
 
   if (pds) free(pds);
   if (deviceExtensions) free(deviceExtensions);
@@ -544,7 +526,7 @@ int select_queue_families() {
   }
 
   if (!found_present) {
-    printf("Could not find present queue family!\n\r");
+    LOGDEBUG0("Could not find present queue family!");
   }
 
   free(queueFamilyProperties);
@@ -627,12 +609,11 @@ int vkz_create_depth_image() {
   candidate_formats[1] = VK_FORMAT_D32_SFLOAT_S8_UINT;
   candidate_formats[2] = VK_FORMAT_D24_UNORM_S8_UINT;
 
-  VkFormat format;
   BOOL found = FALSE;
   for (int i = 0; i < 3; ++i) {
-    format = candidate_formats[i];
+    depth_image_format = candidate_formats[i];
     VkFormatProperties fp;
-    vkGetPhysicalDeviceFormatProperties(vkz_physical_device, format, &fp);
+    vkGetPhysicalDeviceFormatProperties(vkz_physical_device, depth_image_format, &fp);
 
     if (fp.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
       found = TRUE;
@@ -641,12 +622,12 @@ int vkz_create_depth_image() {
   }
 
   if (!found) {
-    printf("Could not find appropriate format for depth image!\n\r");
+    LOGDEBUG0("Could not find appropriate format for depth image!");
     return 0;
   }
 
   if (!vkz_create_image(&depth_image, vkz_width, vkz_height,
-    format,
+    depth_image_format,
     VK_IMAGE_TILING_OPTIMAL,
     VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
     &depth_image_memory,
@@ -655,11 +636,11 @@ int vkz_create_depth_image() {
   }
 
   if (!vkz_create_image_view(&depth_image_view, depth_image,
-    format, VK_IMAGE_ASPECT_DEPTH_BIT)) {
+    depth_image_format, VK_IMAGE_ASPECT_DEPTH_BIT)) {
     return 0;
   }
 
-  return vkz_transition_image_layout(depth_image, format,
+  return vkz_transition_image_layout(depth_image, depth_image_format,
     VK_IMAGE_LAYOUT_UNDEFINED,
     VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 }
@@ -685,7 +666,7 @@ int vkz_init() {
 
   if (vkCreateCommandPool(vkz_logical_device, &command_pool_ci, NULL,
     &command_pool) != VK_SUCCESS) {
-    printf("Could not create command pool!\n\r");
+    LOGDEBUG0("Could not create command pool!");
     return 0;
   }
 
@@ -757,7 +738,7 @@ int vkz_create_image_view(VkImageView* image_view, VkImage image,
 
   if (vkCreateImageView(vkz_logical_device, &ci, NULL,
     image_view) != VK_SUCCESS) {
-    printf("Failed to create image view!\n\r");
+    LOGDEBUG0("Failed to create image view!");
     return 0;
   }
 
@@ -808,11 +789,8 @@ int create_render_pass() {
 
   VkAttachmentDescription depth_attachment_description;
   memset(&depth_attachment_description, 0, sizeof(VkAttachmentDescription));
-#ifdef __ANDROID__
-  depth_attachment_description.format = VK_FORMAT_D24_UNORM_S8_UINT;
-#else
-  depth_attachment_description.format = VK_FORMAT_D32_SFLOAT;
-#endif
+
+  depth_attachment_description.format = depth_image_format;
 
   depth_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
   depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -864,7 +842,7 @@ int create_render_pass() {
 
   if (vkCreateRenderPass(vkz_logical_device, &render_pass_ci, NULL,
     &render_pass) != VK_SUCCESS) {
-    printf("Render pass creation failed!\n\r");
+    LOGDEBUG0("Render pass creation failed!");
     return 0;
   }
   else {
@@ -895,7 +873,7 @@ int create_framebuffers(VkRenderPass render_pass) {
 
     if (vkCreateFramebuffer(vkz_logical_device, &framebuffer_ci, NULL,
       &framebuffers[n]) != VK_SUCCESS) {
-      printf("Could not create framebuffers!\n\r");
+      LOGDEBUG0("Could not create framebuffers!");
 
       free(framebuffers);
       framebuffers = NULL;
@@ -949,14 +927,26 @@ int vkz_create_swapchain(const uint32_t width, const uint32_t height,
   }
 
   ci.preTransform = vkz_swapchain_support_details.capabilities.currentTransform;
-#ifdef __ANDROID__
-  ci.compositeAlpha = VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR;
-#else
-  ci.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-#endif
+
+  const VkCompositeAlphaFlagBitsKHR af[4] = {
+    VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+    VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR,
+    VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR,
+    VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR,
+  };
+
+  for (uint32_t i = 0; i < sizeof(af); i++) {
+    if (vkz_swapchain_support_details.capabilities.supportedCompositeAlpha &
+    af[i]) {
+      ci.compositeAlpha = af[i];
+      break;
+    }
+  }
 
   ci.presentMode = vkz_present_mode;
+
   ci.clipped = VK_TRUE;
+
   ci.oldSwapchain = VK_NULL_HANDLE;
 
   if (vkCreateSwapchainKHR(vkz_logical_device, &ci, NULL, &vkz_swapchain) !=
@@ -969,15 +959,15 @@ int vkz_create_swapchain(const uint32_t width, const uint32_t height,
 
   vkGetSwapchainImagesKHR(vkz_logical_device, vkz_swapchain,
     &vkz_swapchain_image_count, NULL);
-  LOGDEBUG1("Number of swapchain images retrieved via API: %d\n\r",
+  LOGDEBUG1("Number of swapchain images retrieved via API: %d",
     vkz_swapchain_image_count);
   vkz_swapchain_images = malloc(vkz_swapchain_image_count * sizeof(VkImage));
   vkGetSwapchainImagesKHR(vkz_logical_device, vkz_swapchain,
     &vkz_swapchain_image_count,
     vkz_swapchain_images);
 
-  return create_swapchain_image_views() && create_render_pass() &&
-    vkz_create_depth_image() && create_framebuffers(render_pass);
+  return create_swapchain_image_views() && vkz_create_depth_image() &&
+    create_render_pass() && create_framebuffers(render_pass);
 }
 
 int vkz_destroy_swapchain() {
@@ -1050,7 +1040,7 @@ long alloc_load_shader_spv(char* path, uint32_t** spv) {
     *spv = (uint32_t*)spvint;
     }
   else {
-    printf("Could not open file %s!\n\r", path);
+    LOGDEBUG1("Could not open file %s!", path);
     return 0;
   }
 #endif
@@ -1109,14 +1099,14 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
       }
     }
     else {
-      printf("Inconsistent pipeline system state!\n\r");
+      LOGDEBUG0("Inconsistent pipeline system state!");
       return 0;
     }
   }
   else {
     // Pipeline has never been created
     if (*index != 100) {
-      printf("Pipeline has never been created! Cannot reuse index %d!\n\r",
+      LOGDEBUG1("Pipeline has never been created! Cannot reuse index %d!",
         *index);
       return 0;
     }
@@ -1299,15 +1289,15 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
 
   if (pipeline_systems[*index].set_pipeline_layout_function) {
     if (!pipeline_systems[*index].set_pipeline_layout_function(&pipeline_layout_ci)) {
-      printf("Failed to set the pipeline_layout via provided set_pipeline_layout "
-        "function!\n\r");
+      LOGDEBUG0("Failed to set the pipeline_layout via provided set_pipeline_layout "
+        "function!");
     }
   }
 
   if (vkCreatePipelineLayout(vkz_logical_device, &pipeline_layout_ci, NULL,
     &vkz_pipeline_layout[*index])
     != VK_SUCCESS) {
-    printf("Failed to create pipeline layout!\n\r");
+    LOGDEBUG0("Failed to create pipeline layout!");
   }
 
   VkPipelineDepthStencilStateCreateInfo depth_stencil_ci;
@@ -1349,7 +1339,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
     &pipeline_ci, NULL,
     &pipeline_systems[*index].pipeline) !=
     VK_SUCCESS) {
-    printf("Could not create graphics pipeline!");
+    LOGDEBUG0("Could not create graphics pipeline!");
   }
   else {
     LOGDEBUG0("Pipeline created ok.\n\r");
@@ -1433,7 +1423,7 @@ int vkz_begin_draw_command_buffer(VkCommandBuffer* command_buffer) {
 
   if (vkAllocateCommandBuffers(vkz_logical_device, &command_buffer_ai,
     command_buffer) != VK_SUCCESS) {
-    printf("Could not allocate command buffer.\n\r");
+    LOGDEBUG0("Could not allocate command buffer.");
     return 0;
   }
   else {
@@ -1446,7 +1436,7 @@ int vkz_begin_draw_command_buffer(VkCommandBuffer* command_buffer) {
     command_buffer_bi.pInheritanceInfo = NULL;
 
     if (vkBeginCommandBuffer(*command_buffer, &command_buffer_bi) != VK_SUCCESS) {
-      printf("Could not begin recording command buffer!\n\r");
+      LOGDEBUG0("Could not begin recording command buffer!");
       return 0;
     }
     else {
@@ -1496,7 +1486,7 @@ int vkz_end_draw_command_buffer(VkCommandBuffer* command_buffer) {
   vkCmdEndRenderPass(*command_buffer);
 
   if (vkEndCommandBuffer(*command_buffer) != VK_SUCCESS) {
-    printf("Could not end command buffer!\n\r");
+    LOGDEBUG0("Could not end command buffer!");
     return 0;
   }
 
@@ -1526,7 +1516,7 @@ int vkz_create_sync_objects() {
   if (vkCreateFence(vkz_logical_device, &fence_ci, NULL,
     &gpu_cpu_fence) !=
     VK_SUCCESS) {
-    printf("Could not create cpu gpu fence!\n\r");
+    LOGDEBUG0("Could not create cpu gpu fence!");
     return 0;
   }
   else {
@@ -1572,7 +1562,7 @@ int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index) {
     return 1;
   }
   else if (r != VK_SUCCESS && r != VK_SUBOPTIMAL_KHR) {
-    printf("Could not acquire swapchain image!\n\r");
+    LOGDEBUG0("Could not acquire swapchain image!");
     return 0;
   }
 
@@ -1595,7 +1585,7 @@ int vkz_present_next_image() {
 
   VkResult r = vkQueuePresentKHR(vkz_present_queue, &pinf);
   if (r == VK_ERROR_OUT_OF_DATE_KHR || r == VK_SUBOPTIMAL_KHR) {
-    LOGDEBUG0("Recreating pipeline and swapchain.\n\r");
+    LOGDEBUG0("Recreating pipeline and swapchain.");
 
     for (uint32_t i = 0; i < pipeline_system_count; ++i) {
       vkz_destroy_pipeline(i);
@@ -1608,7 +1598,8 @@ int vkz_present_next_image() {
     }
   }
   else if (r != VK_SUCCESS) {
-    printf("Could not present swapchain image!\n\r");
+    LOGDEBUG0("Could not present swapchain image!");
+    return 0;
   }
 
   return 1;
@@ -1633,7 +1624,7 @@ int vkz_draw(VkCommandBuffer* command_buffer) {
   if (vkQueueSubmit(vkz_graphics_queue, 1, &si,
     gpu_cpu_fence) !=
     VK_SUCCESS) {
-    printf("Could not submit draw command buffer!\n\r");
+    LOGDEBUG0("Could not submit draw command buffer!");
   }
 
   return 1;
@@ -1875,7 +1866,7 @@ int vkz_transition_image_layout(VkImage image, VkFormat format,
 
   }
   else {
-    printf("Unsupported layout transition!\n\r");
+    LOGDEBUG0("Unsupported layout transition!");
     return 0;
   }
 
@@ -1973,7 +1964,7 @@ int vkz_shutdown() {
       dcDestroy(vkz_instance, callback, NULL);
     }
     else {
-      printf("Could not get pointer to debug report callback destructor!");
+      LOGDEBUG0("Could not get pointer to debug report callback destructor!");
     }
   }
 
