@@ -1554,6 +1554,13 @@ int vkz_destroy_sync_objects() {
 
 int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index) {
 
+  vkWaitForFences(vkz_logical_device, 1,
+                  &gpu_cpu_fence,
+                  VK_TRUE, UINT64_MAX);
+
+  vkResetFences(vkz_logical_device, 1,
+                &gpu_cpu_fence);
+
   VkResult r =
     vkAcquireNextImageKHR(vkz_logical_device, vkz_swapchain,
       UINT64_MAX,
