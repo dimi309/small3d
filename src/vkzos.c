@@ -27,9 +27,9 @@ struct android_app *vkz_android_app;
 #define LOGDEBUG1(x, y) __android_log_print(ANDROID_LOG_DEBUG, "vkzos", x, y)
 #define LOGDEBUG2(x, y, z) __android_log_print(ANDROID_LOG_DEBUG, "vkzos", x, y, z)
 #else
-#define LOGDEBUG0(x) printf(x)
-#define LOGDEBUG1(x, y) printf(x, y)
-#define LOGDEBUG2(x, y, z) printf(x, y, z)
+#define LOGDEBUG0(x) printf(x); printf("\n\r")
+#define LOGDEBUG1(x, y) printf(x, y); printf("\n\r")
+#define LOGDEBUG2(x, y, z) printf(x, y, z); printf("\n\r")
 #endif
 #else
 #define LOGDEBUG0(x)
@@ -47,7 +47,7 @@ debugCallback(VkDebugReportFlagsEXT flags,
   const char* msg,
   void* userData) {
 
-  LOGDEBUG1("validation layer: %s\n\r", msg);
+  LOGDEBUG1("validation layer: %s", msg);
 
   return VK_FALSE;
 }
@@ -127,6 +127,7 @@ uint32_t pipeline_system_count = 0;
 pipeline_system_struct* pipeline_systems = NULL;
 
 static VkFence gpu_cpu_fence;
+static VkSemaphore draw_semaphore;
 
 int vkz_create_instance(const char* application_name,
   const char** enabled_extension_names,
@@ -245,7 +246,7 @@ int vkz_create_instance(const char* application_name,
           success = 0;
         }
         else {
-          LOGDEBUG0("Created debug report callback.\n\r");
+          LOGDEBUG0("Created debug report callback.");
           debug_callback_created = TRUE;
         }
       }
@@ -344,7 +345,7 @@ int select_surface_format() {
     }
   }
 
-  LOGDEBUG0("Preferred surface format supported.\n\r");
+  LOGDEBUG0("Preferred surface format supported.");
   vkz_surface_format.format = VK_FORMAT_B8G8R8A8_UNORM;
   vkz_surface_format.colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 
@@ -360,7 +361,7 @@ int select_present_mode() {
     if (vkz_swapchain_support_details.presentModes[n] ==
       VK_PRESENT_MODE_MAILBOX_KHR) {
       vkz_present_mode = VK_PRESENT_MODE_MAILBOX_KHR;
-      LOGDEBUG0("Mailbox present mode supported.\n\r");
+      LOGDEBUG0("Mailbox present mode supported.");
       found = TRUE;
       break;
     }
@@ -378,7 +379,7 @@ int select_present_mode() {
       if (vkz_swapchain_support_details.presentModes[n] ==
         VK_PRESENT_MODE_IMMEDIATE_KHR) {
         vkz_present_mode = VK_PRESENT_MODE_IMMEDIATE_KHR;
-        LOGDEBUG0("Immediate present mode supported.\n\r");
+        LOGDEBUG0("Immediate present mode supported.");
         found = TRUE;
         break;
       }
@@ -387,7 +388,7 @@ int select_present_mode() {
 
   if (!found) {
     LOGDEBUG0("Mailbox and immediate present modes not supported,"
-      " so using FIFO.\n\r");
+      " so using FIFO.");
   }
 
   return 1;
@@ -405,7 +406,7 @@ int select_physical_device() {
     pds = malloc(sizeof(VkPhysicalDevice) * numDevices);
     vkEnumeratePhysicalDevices(vkz_instance, &numDevices, pds);
 
-    LOGDEBUG1("Number of devices: %d - checking features...\n\r", numDevices);
+    LOGDEBUG1("Number of devices: %d - checking features...", numDevices);
 
     for (uint32_t n = 0; n < numDevices; n++) {
 
@@ -414,7 +415,7 @@ int select_physical_device() {
       vkGetPhysicalDeviceProperties(pds[n], &dp);
       vkGetPhysicalDeviceFeatures(pds[n], &df);
 
-      LOGDEBUG1("Checking physical device %s...\n\r", dp.deviceName);
+      LOGDEBUG1("Checking physical device %s...", dp.deviceName);
 
       if (df.geometryShader) {
 
@@ -445,7 +446,7 @@ int select_physical_device() {
                                     deviceExtensions[n1].extensionName) == 0;
         if (swapchainSupported && retrieve_swapchain_support_details(pds[n])) {
           LOGDEBUG0("The device supports the swapchain extension and"
-                    " support details are ok.\n\r");
+                    " support details are ok.");
           supportDetailsOk = TRUE;
           break;
         }
@@ -460,7 +461,7 @@ int select_physical_device() {
 
         vkz_physical_device = pds[n];
 
-        LOGDEBUG1("Found good physical device: %s\n\r", dp.deviceName);
+        LOGDEBUG1("Found good physical device: %s", dp.deviceName);
 
         success = select_surface_format() && select_present_mode();
 
@@ -497,14 +498,14 @@ int select_queue_families() {
       queueFamilyProperties[n].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
       vkz_graphics_family_index = n;
       found_graphics = TRUE;
-      LOGDEBUG1("Found graphics queue family index: %d\n\r",
+      LOGDEBUG1("Found graphics queue family index: %d",
         vkz_graphics_family_index);
       break;
     }
   }
 
   if (!found_graphics) {
-    LOGDEBUG0("Could not find graphics queue family!\n\r");
+    LOGDEBUG0("Could not find graphics queue family!");
   }
 
   BOOL found_present = FALSE;
@@ -518,7 +519,7 @@ int select_queue_families() {
       if (presentSupport) {
         vkz_present_family_index = n;
         found_present = TRUE;
-        LOGDEBUG1("Found present queue family index: %d\n\r",
+        LOGDEBUG1("Found present queue family index: %d",
           vkz_present_family_index);
         break;
       }
@@ -670,7 +671,7 @@ int vkz_init() {
     return 0;
   }
 
-  LOGDEBUG0("Command pool created.\n\r");
+  LOGDEBUG0("Command pool created.");
 
   return 1;
 }
@@ -713,7 +714,7 @@ int select_swap_extent(const uint32_t width, const uint32_t height) {
 
   }
 
-  LOGDEBUG2("Swap extent selected width: %d height: %d\n\r",
+  LOGDEBUG2("Swap extent selected width: %d height: %d",
     vkz_swap_extent.width, vkz_swap_extent.height);
   return 1;
 }
@@ -846,7 +847,7 @@ int create_render_pass() {
     return 0;
   }
   else {
-    LOGDEBUG0("Render pass created.\n\r");
+    LOGDEBUG0("Render pass created.");
   }
   return 1;
 }
@@ -896,7 +897,7 @@ int vkz_create_swapchain(const uint32_t width, const uint32_t height,
     ic = 2;
   }
 
-  LOGDEBUG1("Swapchain image count: %d\n\r", ic);
+  LOGDEBUG1("Swapchain image count: %d", ic);
 
   VkSwapchainCreateInfoKHR ci;
   memset(&ci, 0, sizeof(VkSwapchainCreateInfoKHR));
@@ -1019,7 +1020,7 @@ long alloc_load_shader_spv(char* path, uint32_t** spv) {
   AAsset *asset = AAssetManager_open(vkz_android_app->activity->assetManager,
           path, AASSET_MODE_STREAMING);
   if(!asset) {
-    LOGDEBUG1("Could not open file %s!\n\r", path);
+    LOGDEBUG1("Could not open file %s!", path);
     return 0;
   }
   fs = AAsset_getLength(asset);
@@ -1342,7 +1343,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
     LOGDEBUG0("Could not create graphics pipeline!");
   }
   else {
-    LOGDEBUG0("Pipeline created ok.\n\r");
+    LOGDEBUG0("Pipeline created ok.");
   }
 
   if (vertexShader) {
@@ -1361,7 +1362,7 @@ int vkz_destroy_pipeline(uint32_t index) {
     return 0;
   }
 
-  LOGDEBUG0("Destroying pipeline.\n\r");
+  LOGDEBUG0("Destroying pipeline.");
 
   vkDestroyPipeline(vkz_logical_device,
     pipeline_systems[index].pipeline, NULL);
@@ -1519,9 +1520,21 @@ int vkz_create_sync_objects() {
     LOGDEBUG0("Could not create cpu gpu fence!");
     return 0;
   }
-  else {
-    LOGDEBUG0("Created sync objects.\n\r");
+
+  VkSemaphoreCreateInfo sci;
+  memset(&sci, 0, sizeof(VkSemaphoreCreateInfo));
+  
+  sci.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+  sci.pNext = NULL;
+  sci.flags = 0;
+
+  if (vkCreateSemaphore(vkz_logical_device, &sci, NULL,
+			&draw_semaphore) != VK_SUCCESS) {
+    LOGDEBUG0("Could not create draw semaphore!");
+    return 0;
   }
+
+  LOGDEBUG0("Created sync objects.");
 
   return 1;
 }
@@ -1535,17 +1548,11 @@ int vkz_destroy_sync_objects() {
   vkDestroyFence(vkz_logical_device,
     gpu_cpu_fence, NULL);
 
+
   return 1;
 }
 
 int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index) {
-
-  vkWaitForFences(vkz_logical_device, 1,
-    &gpu_cpu_fence,
-    VK_TRUE, UINT64_MAX);
-
-  vkResetFences(vkz_logical_device, 1,
-    &gpu_cpu_fence);
 
   VkResult r =
     vkAcquireNextImageKHR(vkz_logical_device, vkz_swapchain,
@@ -1554,7 +1561,7 @@ int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index) {
       gpu_cpu_fence, &next_image_index);
 
   if (r == VK_ERROR_OUT_OF_DATE_KHR) {
-    LOGDEBUG0("Recreating pipeline and swapchain.\n\r");
+    LOGDEBUG0("Recreating pipeline and swapchain.");
     vkz_destroy_pipeline(pipeline_index);
     vkz_destroy_swapchain();
     vkz_create_swapchain(vkz_width, vkz_height, -1);
@@ -1582,6 +1589,8 @@ int vkz_present_next_image() {
   pinf.pSwapchains = swap_chains;
   pinf.pImageIndices = &next_image_index;
   pinf.pResults = NULL;
+  pinf.pWaitSemaphores = &draw_semaphore;
+  pinf.waitSemaphoreCount = 1;
 
   VkResult r = vkQueuePresentKHR(vkz_present_queue, &pinf);
   if (r == VK_ERROR_OUT_OF_DATE_KHR || r == VK_SUBOPTIMAL_KHR) {
@@ -1620,7 +1629,9 @@ int vkz_draw(VkCommandBuffer* command_buffer) {
 
   si.commandBufferCount = 1;
   si.pCommandBuffers = command_buffer;
-
+  si.pSignalSemaphores = &draw_semaphore;
+  si.signalSemaphoreCount = 1;
+  
   if (vkQueueSubmit(vkz_graphics_queue, 1, &si,
     gpu_cpu_fence) !=
     VK_SUCCESS) {
@@ -1948,15 +1959,15 @@ int vkz_shutdown() {
     free(vkz_swapchain_support_details.presentModes);
 
   if (logical_device_created) {
-    LOGDEBUG0("Destroying command pool.\n\r");
+    LOGDEBUG0("Destroying command pool.");
     vkDestroyCommandPool(vkz_logical_device,
       command_pool, NULL);
-    LOGDEBUG0("Destroying logical device.\n\r");
+    LOGDEBUG0("Destroying logical device.");
     vkDestroyDevice(vkz_logical_device, NULL);
   }
 
   if (debug_callback_created) {
-    LOGDEBUG0("Destroying debug callback.\n\r");
+    LOGDEBUG0("Destroying debug callback.");
     PFN_vkDestroyDebugReportCallbackEXT dcDestroy =
       (PFN_vkDestroyDebugReportCallbackEXT)
       vkGetInstanceProcAddr(vkz_instance, "vkDestroyDebugReportCallbackEXT");
