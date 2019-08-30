@@ -1735,9 +1735,9 @@ namespace small3d {
 
   void Renderer::clearScreen() const {
 
-    // Do nothing. Clearing is performed by the first rendering
-    // command anyway. This stub is left here for legacy
-    // compatibility reasons.
+    // Do nothing. Clearing is performed before rendering
+    // anyway. This stub is left here for legacy compatibility
+    // reasons.
 
   }
 
@@ -1798,7 +1798,7 @@ namespace small3d {
         recordOrthoDrawCommand(nextCommandBuffer,
 			       vkz_pipeline_layout[orthographicPipelineIndex],
           model, currentSwapchainImageIndex);
-        
+
       }
     }
 

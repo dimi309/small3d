@@ -1621,8 +1621,7 @@ int vkz_draw(VkCommandBuffer* command_buffer) {
   si.signalSemaphoreCount = 1;
   
   if (vkQueueSubmit(vkz_graphics_queue, 1, &si,
-    gpu_cpu_fence) !=
-    VK_SUCCESS) {
+    gpu_cpu_fence) != VK_SUCCESS) {
     LOGDEBUG0("Could not submit draw command buffer!");
   }
 
