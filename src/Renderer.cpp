@@ -1780,7 +1780,6 @@ namespace small3d {
     updateOrthoDescriptorSets();
 
     vkz_begin_draw_command_buffer(&nextCommandBuffer);
-    vkz_add_clear_command(&nextCommandBuffer);
 
     for (auto model : nextModelsToDraw) {
       if (model.perspective) {

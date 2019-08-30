@@ -1377,41 +1377,6 @@ int vkz_destroy_pipeline(uint32_t index) {
   return 1;
 }
 
-int vkz_add_clear_command(const VkCommandBuffer* command_buffer) {
-  VkClearColorValue clearColour;
-  memset(&clearColour, 0, sizeof(VkClearColorValue));
-  clearColour.float32[0] = 0.0f;
-  clearColour.float32[1] = 0.0f;
-  clearColour.float32[2] = 0.0f;
-  clearColour.float32[3] = 0.0f;
-
-  VkClearAttachment clear_attachments[2];
-  memset(clear_attachments, 0, 2 * sizeof(VkClearAttachment));
-
-  clear_attachments[0].aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-  clear_attachments[0].clearValue.color = clearColour;
-  clear_attachments[0].colorAttachment = 0;
-
-  clear_attachments[1].aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-  clear_attachments[1].clearValue.depthStencil.depth = 1.0f;
-  clear_attachments[1].clearValue.depthStencil.stencil = 0;
-
-  VkClearRect clear_rect;
-  memset(&clear_rect, 0, sizeof(VkClearRect));
-
-  clear_rect.layerCount = 1;
-  clear_rect.rect.offset.x = 0;
-  clear_rect.rect.offset.y = 0;
-
-  clear_rect.rect.extent.width = vkz_width;
-  clear_rect.rect.extent.height = vkz_height;
-
-  vkCmdClearAttachments(*command_buffer, 2, clear_attachments,
-    1, &clear_rect);
-
-  return 1;
-}
-
 int vkz_begin_draw_command_buffer(VkCommandBuffer* command_buffer) {
 
   VkCommandBufferAllocateInfo command_buffer_ai;
@@ -1496,9 +1461,13 @@ int vkz_end_draw_command_buffer(VkCommandBuffer* command_buffer) {
 
 int vkz_destroy_draw_command_buffer(VkCommandBuffer* command_buffer) {
 
-  vkWaitForFences(vkz_logical_device, 1,
-    &gpu_cpu_fence,
-    VK_TRUE, UINT64_MAX);
+  VkResult rwait;
+  do {
+    rwait = vkWaitForFences(vkz_logical_device, 1,
+                            &gpu_cpu_fence,
+                            VK_TRUE, UINT64_MAX);
+  }
+  while (rwait == VK_TIMEOUT);
 
   vkFreeCommandBuffers(vkz_logical_device, command_pool, 1, command_buffer);
 
@@ -1541,9 +1510,13 @@ int vkz_create_sync_objects() {
 
 int vkz_destroy_sync_objects() {
 
-  vkWaitForFences(vkz_logical_device, 1,
-    &gpu_cpu_fence,
-    VK_TRUE, UINT64_MAX);
+  VkResult rwait;
+  do {
+    rwait = vkWaitForFences(vkz_logical_device, 1,
+                            &gpu_cpu_fence,
+                            VK_TRUE, UINT64_MAX);
+  }
+  while (rwait == VK_TIMEOUT);
 
   vkDestroyFence(vkz_logical_device,
     gpu_cpu_fence, NULL);
@@ -1554,9 +1527,13 @@ int vkz_destroy_sync_objects() {
 
 int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index) {
 
-  vkWaitForFences(vkz_logical_device, 1,
-                  &gpu_cpu_fence,
-                  VK_TRUE, UINT64_MAX);
+  VkResult rwait;
+  do {
+    rwait = vkWaitForFences(vkz_logical_device, 1,
+                        &gpu_cpu_fence,
+                        VK_TRUE, UINT64_MAX);
+  }
+  while (rwait == VK_TIMEOUT);
 
   vkResetFences(vkz_logical_device, 1,
                 &gpu_cpu_fence);
@@ -1623,9 +1600,13 @@ int vkz_present_next_image() {
 
 int vkz_draw(VkCommandBuffer* command_buffer) {
 
-  vkWaitForFences(vkz_logical_device, 1,
-    &gpu_cpu_fence,
-    VK_TRUE, UINT64_MAX);
+  VkResult rwait;
+  do {
+    rwait = vkWaitForFences(vkz_logical_device, 1,
+                            &gpu_cpu_fence,
+                            VK_TRUE, UINT64_MAX);
+  }
+  while (rwait == VK_TIMEOUT);
 
   vkResetFences(vkz_logical_device, 1,
     &gpu_cpu_fence);
@@ -1841,10 +1822,10 @@ int vkz_transition_image_layout(VkImage image, VkFormat format,
   if (new_layout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
     mb.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 
-    if (format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT) {
+    if (format == VK_FORMAT_D32_SFLOAT_S8_UINT ||
+    format == VK_FORMAT_D24_UNORM_S8_UINT) {
       mb.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
     }
-
   }
   else {
     mb.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;

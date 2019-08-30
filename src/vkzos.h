@@ -136,13 +136,6 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
 int vkz_destroy_pipeline(uint32_t index);
 
 /**
- * @brief Add a clear command to a command buffer
- * @param command_buffer The command buffer
- * @return 1 if successful, 0 otherwise
- */
-int vkz_add_clear_command(const VkCommandBuffer* command_buffer);
-
-/**
  * @brief Begin creating a drawing command buffer for a given pipeline
  *        not bound to a specific pipeline.
  *
