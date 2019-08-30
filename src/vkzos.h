@@ -9,16 +9,14 @@
 #ifndef VKZOS_H
 #define VKZOS_H
 
-#include <vulkan/vulkan.h>
-
 #ifdef __ANDROID__
 #include <android_native_app_glue.h>
 #include <android/asset_manager.h>
-#include <vulkan/vulkan_android.h>
+#define VK_USE_PLATFORM_ANDROID_KHR
 extern struct android_app *vkz_android_app;
-
 #endif
 
+#include <vulkan/vulkan.h>
 
  /**
   * @brief The Vulkan instance
