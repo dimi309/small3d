@@ -776,7 +776,7 @@ int create_render_pass() {
   color_buffer_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
   color_buffer_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
   color_buffer_attachment_description.stencilLoadOp =
-    VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    VK_ATTACHMENT_LOAD_OP_DONT_CARE;
   color_buffer_attachment_description.stencilStoreOp =
     VK_ATTACHMENT_STORE_OP_DONT_CARE;
   color_buffer_attachment_description.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
