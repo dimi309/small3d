@@ -13,7 +13,11 @@
 #include <stdexcept>
 #include <cstring>
 #include <vorbis/vorbisfile.h>
+#ifndef __ANDROID__
 #include <GLFW/glfw3.h>
+#else
+#include "vkzos.h"
+#endif
 
 #define WORD_SIZE 2
 #define PORTAUDIO_SAMPLE_FORMAT paInt16
@@ -21,11 +25,91 @@
 
 #define SOUND_ID(name, handle) name + "/" + handle
 
+#ifdef __ANDROID__
+
+typedef struct _dsvorbis {
+  const u_char *data;
+  size_t size;
+  size_t pos;
+} dsvorbis;
+
+size_t s3d_read_func(void *ptr, size_t size, size_t nmemb, void *datasource) {
+
+  dsvorbis *ds = reinterpret_cast<dsvorbis*>(datasource);
+
+  if (ds->pos + size * nmemb < ds->size) {
+    memcpy(ptr, &ds->data[ds->pos], size * nmemb);
+    ds->pos += size * nmemb;
+    return nmemb;
+  }
+  else if (ds->pos < ds->size) {
+    size_t elementsRead = (ds->size - ds->pos) / size;
+    memcpy(ptr, &ds->data[ds->pos], elementsRead * size);
+    ds->pos += elementsRead * size;
+    return elementsRead;
+  }
+  else {
+    return 0;
+  }
+}
+
+int s3d_seek_func(void *datasource, ogg_int64_t offset, int whence) {
+
+  dsvorbis *ds = reinterpret_cast<dsvorbis*>(datasource);
+
+  switch(whence) {
+    case SEEK_SET:
+      if (offset <= ds->size && offset >= 0) {
+        ds->pos = offset;
+      }
+      else {
+        return 1;
+      }
+      break;
+    case SEEK_CUR:
+      if (ds->pos + offset >= 0 && ds->pos + offset <= ds->size) {
+        ds->pos += offset;
+      }
+      else {
+        return 1;
+      }
+      break;
+    case SEEK_END:
+      if (ds->size + offset >= 0 && ds->size + offset <= ds->size) {
+        ds->pos = ds->size + offset;
+      }
+      else {
+        return 1;
+      }
+      break;
+    default:
+      return 1;
+  }
+  return 0;
+}
+
+long s3d_tell_func(void *datasource) {
+  dsvorbis *ds = reinterpret_cast<dsvorbis*>(datasource);
+  return ds->pos;
+}
+
+static ov_callbacks OV_SMALL3D_ANDROID_MEMORY_NOCLOSE = {
+  (size_t (*)(void *, size_t, size_t, void *))  s3d_read_func,
+  (int (*)(void *, ogg_int64_t, int))           s3d_seek_func,
+  (int (*)(void *))                             NULL,
+  (long (*)(void *))                            s3d_tell_func
+
+};
+
+#endif
+
 namespace small3d {
 
   bool Sound::noOutputDevice;
-  PaDeviceIndex Sound::defaultOutput;
   unsigned int Sound::numInstances = 0;
+
+#ifndef __ANDROID__
+  PaDeviceIndex Sound::defaultOutput;
 
   int Sound::audioCallback(const void *inputBuffer, void *outputBuffer,
                            unsigned long framesPerBuffer,
@@ -72,9 +156,11 @@ namespace small3d {
     
     return result;
   }
+#endif
 
   Sound::Sound() {
     this->stream = nullptr;
+#ifndef __ANDROID__
     if (numInstances == 0) {
       LOGDEBUG("No Sound instances exist. Initialising PortAudio");
 
@@ -94,6 +180,15 @@ namespace small3d {
         noOutputDevice = true;
       }
     }
+#else
+    if (AAudio_createStreamBuilder(&streamBuilder) != AAUDIO_OK) {
+      LOGERROR("Failed to create stream builder.");
+      noOutputDevice = true;
+    } else {
+      AAudioStreamBuilder_setDeviceId(streamBuilder, AAUDIO_UNSPECIFIED);
+    }
+
+#endif
     ++numInstances;
   }
   
@@ -103,10 +198,14 @@ namespace small3d {
 
   Sound::~Sound() {
     if (stream != nullptr) {
+#ifndef __ANDROID__
       Pa_AbortStream(stream);
       Pa_CloseStream(stream);
+#else
+      AAudioStream_close(stream);
+      AAudioStreamBuilder_delete(streamBuilder);
+#endif
     }
-    
     --numInstances;
     if(numInstances == 0) {
       // This was causing a segmentation fault on MacOS when a Sound object was
@@ -121,17 +220,56 @@ namespace small3d {
     if (!noOutputDevice) {
       
       OggVorbis_File vorbisFile;
-      
+
+#ifdef __ANDROID__
+      AAsset *asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+                                         soundFilePath.c_str(),
+                                         AASSET_MODE_STREAMING);
+      if(!asset) {
+        throw std::runtime_error(
+          "Opening asset " + soundFilePath + " has failed!");
+      }
+      else {
+        LOGDEBUG("Asset " + soundFilePath + " opened successfully.");
+      }
+
+      dsvorbis filedata = {};
+      filedata.size = AAsset_getLength(asset);
+      filedata.pos = 0;
+      filedata.data = (const u_char*)AAsset_getBuffer(asset);
+
+      LOGINFO("Asset length " + intToStr(filedata.size));
+
+#else
       FILE *fp = fopen((soundFilePath).c_str(), "rb");
-      
-      if (!fp) {
+      if ( fp <= 0) {
         throw std::runtime_error("Could not open file " + soundFilePath);
       }
-      
-      if (ov_open_callbacks(fp, &vorbisFile, NULL, 0, OV_CALLBACKS_NOCLOSE) < 0) {
-        throw std::runtime_error("Could not load sound from file " + soundFilePath);
+
+#endif
+
+      ov_callbacks ov;
+#ifdef __ANDROID__
+      if (ov_open_callbacks(&filedata, &vorbisFile, NULL, 0,
+                            OV_SMALL3D_ANDROID_MEMORY_NOCLOSE) < 0) {
+        throw std::runtime_error("Could not load sound from file " +
+                                 soundFilePath);
       }
-      
+      else {
+        LOGDEBUG("Opened OV callbacks for " + soundFilePath + ".");
+      }
+#else
+      if (ov_open_callbacks((void *)fp, &vorbisFile, NULL, 0,
+        OV_CALLBACKS_NOCLOSE) < 0) {
+        throw std::runtime_error("Could not load sound from file " +
+        soundFilePath);
+      }
+      else {
+        LOGDEBUG("Opened OV callbacks for " + soundFilePath + ".");
+      }
+
+#endif
+
       vorbis_info *vi = ov_info(&vorbisFile, -1);
       
       this->soundData.channels = vi->channels;
@@ -139,7 +277,7 @@ namespace small3d {
       this->soundData.samples = static_cast<long>(ov_pcm_total(&vorbisFile, -1));
       this->soundData.size = soundData.channels * soundData.samples * WORD_SIZE;
       this->soundData.duration = static_cast<double>(soundData.samples) /
-	static_cast<double>(soundData.rate);
+        static_cast<double>(soundData.rate);
       
       char pcmout[4096];
       int current_section;
@@ -164,8 +302,11 @@ namespace small3d {
       } while (ret != 0);
       
       ov_clear(&vorbisFile);
-      
+#ifndef __ANDROID__
       fclose(fp);
+#else
+      AAsset_close(asset);
+#endif
       
       char soundInfo[100];
       sprintf(soundInfo, "Loaded sound - channels %d - rate %d - samples %ld "
@@ -180,7 +321,7 @@ namespace small3d {
   }
 
   void Sound::openStream() {
-
+#ifndef __ANDROID__
     PaStreamParameters outputParams;
       
     memset(&outputParams, 0, sizeof(PaStreamParameters));
@@ -202,12 +343,22 @@ namespace small3d {
       throw std::runtime_error("Failed to open PortAudio stream: " +
 			       std::string(Pa_GetErrorText(error)));
     }
+#else
+    AAudioStreamBuilder_setSampleRate(streamBuilder, soundData.rate);
+    AAudioStreamBuilder_setChannelCount(streamBuilder, soundData.channels);
+    AAudioStreamBuilder_setFormat(streamBuilder, AAUDIO_FORMAT_PCM_I16);
+    AAudioStreamBuilder_setSamplesPerFrame(streamBuilder, 1);
+    AAudioStreamBuilder_setBufferCapacityInFrames(streamBuilder,
+      soundData.samples);
+    AAudioStreamBuilder_openStream(streamBuilder, &stream);
+#endif
   }
   
 
   void Sound::play(const bool repeat) {
     if (!noOutputDevice && this->soundData.size > 0) {
-      
+#ifndef __ANDROID__
+
       PaError error;
 
       if (Pa_IsStreamStopped(stream) == 0) {
@@ -228,13 +379,21 @@ namespace small3d {
 				 std::string(Pa_GetErrorText(error)));
       }
         
-    }
-      
+#else
+      AAudioStream_requestStart(stream);
+      AAudioStream_write(stream, soundData.data.data(), soundData.samples, 0);
+#endif
   }
+
+}
 
   void Sound::stop() {
     if (this->stream != nullptr) {
+#ifndef __ANDROID__
       Pa_AbortStream(stream);
+#else
+      AAudioStream_requestStop(stream);
+#endif
       this->soundData.currentFrame = 0;
       this->soundData.startTime = 0;
     }
@@ -256,25 +415,27 @@ namespace small3d {
 
   Sound& Sound::operator=(const Sound& other) {
     if (this->stream != nullptr) {
+#ifndef __ANDROID__
       Pa_AbortStream(this->stream);
       Pa_CloseStream(this->stream);
+#endif
     }
     this->soundData = other.soundData;
     this->stream = nullptr;
     this->openStream();
     return *this;
-    
   }
 
   Sound& Sound::operator=(const Sound&& other) {
     if (this->stream != nullptr) {
+#ifndef __ANDROID__
       Pa_AbortStream(this->stream);
       Pa_CloseStream(this->stream);
+#endif
     }
     this->soundData = other.soundData;
     this->stream = nullptr;
     this->openStream();
     return *this;
   }
-
 }

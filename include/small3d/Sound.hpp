@@ -10,9 +10,16 @@
 #pragma once
 
 #include <unordered_map>
+#ifndef __ANDROID__
 #include <portaudio.h>
+#else
+#include <aaudio/AAudio.h>
+#endif
 #include <vector>
 #include <string>
+
+// TODO: This streams audio to android, but repeat and concurrent sounds don't
+//       work. Stopping a sound does not look that great either.
 
 namespace small3d {
 
@@ -37,17 +44,25 @@ namespace small3d {
     };
 
     SoundData soundData;
+#ifndef __ANDROID__
     PaStream *stream;
+#else
+    AAudioStreamBuilder *streamBuilder;
+    AAudioStream *stream;
+#endif
 
     static bool noOutputDevice;
-    static PaDeviceIndex defaultOutput;
-    static unsigned int numInstances;
 
+    static unsigned int numInstances;
+#ifndef __ANDROID__
+    static PaDeviceIndex defaultOutput;
     static int audioCallback(const void *inputBuffer, void *outputBuffer,
 			     unsigned long framesPerBuffer,
 			     const PaStreamCallbackTimeInfo *timeInfo,
 			     PaStreamCallbackFlags statusFlags,
 			     void *userData);
+#endif
+
     void load(const std::string soundFilePath);
     void openStream();
 
