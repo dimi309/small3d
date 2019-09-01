@@ -18,8 +18,9 @@
 #include <vector>
 #include <string>
 
-// TODO: This streams audio to android, but repeat and concurrent sounds don't
-//       work. Stopping a sound does not look that great either.
+// TODO: In addition to playing audio on PCs, this streams audio to android
+//       but repeating a sound and concurrent sounds don't work. Stopping a
+//       sound does not look that great either.
 
 namespace small3d {
 
