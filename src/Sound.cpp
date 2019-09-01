@@ -240,16 +240,6 @@ namespace small3d {
 
       LOGINFO("Asset length " + intToStr(filedata.size));
 
-#else
-      FILE *fp = fopen((soundFilePath).c_str(), "rb");
-      if ( fp <= 0) {
-        throw std::runtime_error("Could not open file " + soundFilePath);
-      }
-
-#endif
-
-      ov_callbacks ov;
-#ifdef __ANDROID__
       if (ov_open_callbacks(&filedata, &vorbisFile, NULL, 0,
                             OV_SMALL3D_ANDROID_MEMORY_NOCLOSE) < 0) {
         throw std::runtime_error("Could not load sound from file " +
@@ -258,7 +248,13 @@ namespace small3d {
       else {
         LOGDEBUG("Opened OV callbacks for " + soundFilePath + ".");
       }
+
 #else
+      FILE *fp = fopen((soundFilePath).c_str(), "rb");
+      if ( fp <= 0) {
+        throw std::runtime_error("Could not open file " + soundFilePath);
+      }
+
       if (ov_open_callbacks((void *)fp, &vorbisFile, NULL, 0,
         OV_CALLBACKS_NOCLOSE) < 0) {
         throw std::runtime_error("Could not load sound from file " +
@@ -274,7 +270,8 @@ namespace small3d {
       
       this->soundData.channels = vi->channels;
       this->soundData.rate = (int) vi->rate;
-      this->soundData.samples = static_cast<long>(ov_pcm_total(&vorbisFile, -1));
+      this->soundData.samples =
+	static_cast<long>(ov_pcm_total(&vorbisFile, -1));
       this->soundData.size = soundData.channels * soundData.samples * WORD_SIZE;
       this->soundData.duration = static_cast<double>(soundData.samples) /
         static_cast<double>(soundData.rate);
