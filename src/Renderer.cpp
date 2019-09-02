@@ -1389,8 +1389,6 @@ namespace small3d {
       }
       totalAdvance += 4 * static_cast<unsigned long>(slot->advance.x / 64);
     }
-    LOGDEBUG("Generating text texture with width " + intToStr(width) +
-      " height " + intToStr(height) + ".");
     generateTexture(name, &textMemory[0], static_cast<unsigned long>(width),
       static_cast<unsigned long>(height));
   }
