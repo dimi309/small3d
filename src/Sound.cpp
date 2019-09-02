@@ -17,18 +17,23 @@
 #include <GLFW/glfw3.h>
 #else
 #include "vkzos.h"
+#include <sys/time.h>
 #endif
-
 #define WORD_SIZE 2
 #define PORTAUDIO_SAMPLE_FORMAT paInt16
+#ifndef __ANDROID__
 #define SAMPLE_DATATYPE short
+#else
+#define SAMPLE_DATATYPE uint8_t
+#define SAMPLES_PER_FRAME 2
+#endif
 
 #define SOUND_ID(name, handle) name + "/" + handle
 
 #ifdef __ANDROID__
 
 typedef struct _dsvorbis {
-  const u_char *data;
+  const SAMPLE_DATATYPE *data;
   size_t size;
   size_t pos;
 } dsvorbis;
@@ -156,6 +161,36 @@ namespace small3d {
     
     return result;
   }
+
+#else
+
+   aaudio_data_callback_result_t Sound::audioCallback (
+    AAudioStream *stream,
+    void *userData,
+    void *audioData,
+    int32_t numFrames) {
+
+     SoundData *soundData = static_cast<SoundData *>(userData);
+
+     SAMPLE_DATATYPE *out = static_cast<SAMPLE_DATATYPE *>(audioData);
+
+     if (soundData->currentFrame * SAMPLES_PER_FRAME >= soundData->samples) {
+       if (soundData->repeat) {
+         soundData->currentFrame = 0;
+       } else {
+         return AAUDIO_CALLBACK_RESULT_STOP;
+       }
+     }
+
+     memcpy(out, &soundData->data.data()[WORD_SIZE * soundData->currentFrame *
+                                         SAMPLES_PER_FRAME * soundData->channels],
+            WORD_SIZE * numFrames * SAMPLES_PER_FRAME * soundData->channels);
+
+     soundData->currentFrame += numFrames;
+
+     return AAUDIO_CALLBACK_RESULT_CONTINUE;
+  }
+
 #endif
 
   Sound::Sound() {
@@ -221,35 +256,8 @@ namespace small3d {
       
       OggVorbis_File vorbisFile;
 
-#ifdef __ANDROID__
-      AAsset *asset = AAssetManager_open(vkz_android_app->activity->assetManager,
-                                         soundFilePath.c_str(),
-                                         AASSET_MODE_STREAMING);
-      if(!asset) {
-        throw std::runtime_error(
-          "Opening asset " + soundFilePath + " has failed!");
-      }
-      else {
-        LOGDEBUG("Asset " + soundFilePath + " opened successfully.");
-      }
+#ifndef __ANDROID__
 
-      dsvorbis filedata = {};
-      filedata.size = AAsset_getLength(asset);
-      filedata.pos = 0;
-      filedata.data = (const u_char*)AAsset_getBuffer(asset);
-
-      LOGINFO("Asset length " + intToStr(filedata.size));
-
-      if (ov_open_callbacks(&filedata, &vorbisFile, NULL, 0,
-                            OV_SMALL3D_ANDROID_MEMORY_NOCLOSE) < 0) {
-        throw std::runtime_error("Could not load sound from file " +
-                                 soundFilePath);
-      }
-      else {
-        LOGDEBUG("Opened OV callbacks for " + soundFilePath + ".");
-      }
-
-#else
       FILE *fp = fopen((soundFilePath).c_str(), "rb");
       if ( fp <= 0) {
         throw std::runtime_error("Could not open file " + soundFilePath);
@@ -264,6 +272,34 @@ namespace small3d {
         LOGDEBUG("Opened OV callbacks for " + soundFilePath + ".");
       }
 
+#else
+      AAsset *asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+                                         soundFilePath.c_str(),
+                                         AASSET_MODE_STREAMING);
+      if(!asset) {
+        throw std::runtime_error(
+          "Opening asset " + soundFilePath + " has failed!");
+      }
+      else {
+        LOGDEBUG("Asset " + soundFilePath + " opened successfully.");
+      }
+
+      dsvorbis filedata = {};
+      filedata.size = AAsset_getLength(asset);
+      filedata.pos = 0;
+      filedata.data = (const SAMPLE_DATATYPE*)AAsset_getBuffer(asset);
+
+      LOGINFO("Asset length " + intToStr(filedata.size));
+
+      if (ov_open_callbacks(&filedata, &vorbisFile, NULL, 0,
+                            OV_SMALL3D_ANDROID_MEMORY_NOCLOSE) < 0) {
+        throw std::runtime_error("Could not load sound from file " +
+                                 soundFilePath);
+      }
+      else {
+        LOGDEBUG("Opened OV callbacks for " + soundFilePath + ".");
+      }
+
 #endif
 
       vorbis_info *vi = ov_info(&vorbisFile, -1);
@@ -271,7 +307,7 @@ namespace small3d {
       this->soundData.channels = vi->channels;
       this->soundData.rate = (int) vi->rate;
       this->soundData.samples =
-	static_cast<long>(ov_pcm_total(&vorbisFile, -1));
+        static_cast<long>(ov_pcm_total(&vorbisFile, -1));
       this->soundData.size = soundData.channels * soundData.samples * WORD_SIZE;
       this->soundData.duration = static_cast<double>(soundData.samples) /
         static_cast<double>(soundData.rate);
@@ -304,7 +340,6 @@ namespace small3d {
 #else
       AAsset_close(asset);
 #endif
-      
       char soundInfo[100];
       sprintf(soundInfo, "Loaded sound - channels %d - rate %d - samples %ld "
 	      "- size in bytes %ld", this->soundData.channels,
@@ -341,16 +376,17 @@ namespace small3d {
 			       std::string(Pa_GetErrorText(error)));
     }
 #else
-    AAudioStreamBuilder_setSampleRate(streamBuilder, soundData.rate);
+    AAudioStreamBuilder_setSampleRate(streamBuilder, soundData.rate / SAMPLES_PER_FRAME);
     AAudioStreamBuilder_setChannelCount(streamBuilder, soundData.channels);
     AAudioStreamBuilder_setFormat(streamBuilder, AAUDIO_FORMAT_PCM_I16);
-    AAudioStreamBuilder_setSamplesPerFrame(streamBuilder, 1);
+    AAudioStreamBuilder_setSharingMode(streamBuilder, AAUDIO_SHARING_MODE_SHARED);
+    AAudioStreamBuilder_setSamplesPerFrame(streamBuilder, SAMPLES_PER_FRAME);
     AAudioStreamBuilder_setBufferCapacityInFrames(streamBuilder,
-      soundData.samples);
+      soundData.samples / SAMPLES_PER_FRAME);
+    AAudioStreamBuilder_setDataCallback(streamBuilder, Sound::audioCallback, &soundData);
     AAudioStreamBuilder_openStream(streamBuilder, &stream);
 #endif
   }
-  
 
   void Sound::play(const bool repeat) {
     if (!noOutputDevice && this->soundData.size > 0) {
@@ -359,26 +395,33 @@ namespace small3d {
       PaError error;
 
       if (Pa_IsStreamStopped(stream) == 0) {
-	error = Pa_AbortStream(stream);
-	if (error != paNoError) {
-	  throw std::runtime_error("Failed to abort stream on play: " +
+        error = Pa_AbortStream(stream);
+        if (error != paNoError) {
+          throw std::runtime_error("Failed to abort stream on play: " +
 				   std::string(Pa_GetErrorText(error)));
-	}
+        }
       }
+
+#else
+      aaudio_stream_state_t s = AAudioStream_getState(stream);
+      if (s != AAUDIO_STREAM_STATE_STOPPED && s != AAUDIO_STREAM_STATE_STOPPING) {
+        AAudioStream_requestStop(stream);
+      }
+
+#endif
 
       this->soundData.currentFrame = 0;
       this->soundData.startTime = 0;
       this->soundData.repeat = repeat;
-        
+
+#ifndef __ANDROID__
       error = Pa_StartStream(stream);
       if (error != paNoError) {
-	throw std::runtime_error("Failed to start stream: " +
+        throw std::runtime_error("Failed to start stream: " +
 				 std::string(Pa_GetErrorText(error)));
       }
-        
 #else
       AAudioStream_requestStart(stream);
-      AAudioStream_write(stream, soundData.data.data(), soundData.samples, 0);
 #endif
   }
 

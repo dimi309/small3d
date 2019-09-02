@@ -62,6 +62,13 @@ namespace small3d {
 			     const PaStreamCallbackTimeInfo *timeInfo,
 			     PaStreamCallbackFlags statusFlags,
 			     void *userData);
+
+#else
+    static aaudio_data_callback_result_t audioCallback (
+      AAudioStream *stream,
+      void *userData,
+      void *audioData,
+      int32_t numFrames);
 #endif
 
     void load(const std::string soundFilePath);

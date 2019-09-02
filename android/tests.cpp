@@ -173,7 +173,7 @@ int SoundTest() {
   Sound snd("resources/sounds/bah.ogg");
   snd.play();
   double startSeconds = currentTimeInSeconds();
-  while (currentTimeInSeconds() - startSeconds < 0.1);
+  while (currentTimeInSeconds() - startSeconds < 0.5);
   snd.stop();
   startSeconds = currentTimeInSeconds();
   while (currentTimeInSeconds() - startSeconds < 0.5);
