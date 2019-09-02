@@ -25,7 +25,7 @@
 #define SAMPLE_DATATYPE short
 #else
 #define SAMPLE_DATATYPE uint8_t
-#define SAMPLES_PER_FRAME 2
+#define SAMPLES_PER_FRAME 1
 #endif
 
 #define SOUND_ID(name, handle) name + "/" + handle
