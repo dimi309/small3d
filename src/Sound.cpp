@@ -259,7 +259,7 @@ namespace small3d {
 #ifndef __ANDROID__
 
       FILE *fp = fopen((soundFilePath).c_str(), "rb");
-      if ( fp <= 0) {
+      if (!fp) {
         throw std::runtime_error("Could not open file " + soundFilePath);
       }
 
