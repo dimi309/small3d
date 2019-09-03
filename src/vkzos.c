@@ -134,7 +134,7 @@ int vkz_create_instance(const char* application_name,
   size_t enabled_extension_count) {
   LOGDEBUG0("vkz_create_instance requested extensions:");
   for (int i = 0; i < enabled_extension_count; ++i) {
-    LOGDEBUG0(enabled_extension_names[i]);
+    LOGDEBUG1("%s", enabled_extension_names[i]);
   }
 
   VkApplicationInfo ai;
@@ -1521,6 +1521,8 @@ int vkz_destroy_sync_objects() {
   vkDestroyFence(vkz_logical_device,
     gpu_cpu_fence, NULL);
 
+  vkDestroySemaphore(vkz_logical_device,
+		     draw_semaphore, NULL);
 
   return 1;
 }
