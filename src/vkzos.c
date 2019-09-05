@@ -26,15 +26,35 @@ struct android_app *vkz_android_app;
 #define LOGDEBUG0(x) __android_log_write(ANDROID_LOG_DEBUG, "vkzos", x)
 #define LOGDEBUG1(x, y) __android_log_print(ANDROID_LOG_DEBUG, "vkzos", x, y)
 #define LOGDEBUG2(x, y, z) __android_log_print(ANDROID_LOG_DEBUG, "vkzos", x, y, z)
+
+
+uint32_t numValidationLayers = 5;
+const char* vl[5] = {
+  "VK_LAYER_GOOGLE_threading",
+  "VK_LAYER_LUNARG_parameter_validation",
+  "VK_LAYER_LUNARG_object_tracker",
+  "VK_LAYER_LUNARG_core_validation",
+  "VK_LAYER_GOOGLE_unique_objects"
+};
+
 #else
+
 #define LOGDEBUG0(x) printf(x); printf("\n\r")
 #define LOGDEBUG1(x, y) printf(x, y); printf("\n\r")
 #define LOGDEBUG2(x, y, z) printf(x, y, z); printf("\n\r")
+
+uint32_t numValidationLayers = 1;
+const char* vl[1] = {"VK_LAYER_LUNARG_standard_validation"};
+
 #endif
+
 #else
 #define LOGDEBUG0(x)
 #define LOGDEBUG1(x, y) 
-#define LOGDEBUG2(x, y, z) 
+#define LOGDEBUG2(x, y, z)
+
+uint32_t numValidationLayers = 0;
+
 #endif
 
 static VKAPI_ATTR VkBool32 VKAPI_CALL
@@ -156,21 +176,6 @@ int vkz_create_instance(const char* application_name,
   ci.pApplicationInfo = &ai;
 
 #ifndef NDEBUG
-  uint32_t numValidationLayers;
-#ifdef __ANDROID__
-  numValidationLayers = 5;
-  const char* vl[5] = {
-  "VK_LAYER_GOOGLE_threading",
-  "VK_LAYER_LUNARG_parameter_validation",
-  "VK_LAYER_LUNARG_object_tracker",
-  "VK_LAYER_LUNARG_core_validation",
-  "VK_LAYER_GOOGLE_unique_objects"
-  };
-#else
-  numValidationLayers = 1;
-  const char* vl[1] = {"VK_LAYER_LUNARG_standard_validation"};
-#endif
-
   uint32_t lc = 0;
   VkLayerProperties* lp = NULL;
 
@@ -211,7 +216,6 @@ int vkz_create_instance(const char* application_name,
     ci.enabledExtensionCount = allExtensionCount;
     ci.ppEnabledExtensionNames = allExtensionNames;
   }
-
 
 #else
   ci.enabledExtensionCount = enabled_extension_count;
