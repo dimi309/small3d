@@ -134,7 +134,7 @@ int vkz_create_instance(const char* application_name,
   const char** enabled_extension_names,
   size_t enabled_extension_count) {
 
-  if (instance_created) return 1;
+
 
   LOGDEBUG0("vkz_create_instance requested extensions:");
   for (int i = 0; i < enabled_extension_count; ++i) {
@@ -263,7 +263,7 @@ int vkz_create_instance(const char* application_name,
     lp = NULL;
   }
 #endif
-  instance_created = TRUE;
+
   return success;
 }
 
@@ -1967,21 +1967,23 @@ int vkz_shutdown() {
     vkDestroyDevice(vkz_logical_device, NULL);
   }
 
-//  if (debug_callback_created) {
-//    LOGDEBUG0("Destroying debug callback.");
-//    PFN_vkDestroyDebugReportCallbackEXT dcDestroy =
-//      (PFN_vkDestroyDebugReportCallbackEXT)
-//      vkGetInstanceProcAddr(vkz_instance, "vkDestroyDebugReportCallbackEXT");
-//    if (dcDestroy != NULL) {
-//      dcDestroy(vkz_instance, callback, NULL);
-//    }
-//    else {
-//      LOGDEBUG0("Could not get pointer to debug report callback destructor!");
-//    }
-//  }
+  if (debug_callback_created) {
+    LOGDEBUG0("Destroying debug callback.");
+    PFN_vkDestroyDebugReportCallbackEXT dcDestroy =
+      (PFN_vkDestroyDebugReportCallbackEXT)
+      vkGetInstanceProcAddr(vkz_instance, "vkDestroyDebugReportCallbackEXT");
+    if (dcDestroy != NULL) {
+      dcDestroy(vkz_instance, callback, NULL);
+    }
+    else {
+      LOGDEBUG0("Could not get pointer to debug report callback destructor!");
+    }
+  }
 
-//  LOGDEBUG0("Destroying instance...");
-//  vkDestroyInstance(vkz_instance, NULL);
-
+  if (instance_created) {
+    LOGDEBUG0("Destroying instance...");
+    vkDestroyInstance(vkz_instance, NULL);
+    instance_created = FALSE;
+  }
   return 1;
 }
