@@ -54,6 +54,7 @@ debugCallback(VkDebugReportFlagsEXT flags,
 
 static VkDebugReportCallbackEXT callback;
 
+static BOOL isntance_created = FALSE;
 static BOOL debug_callback_created = FALSE;
 static BOOL validation_layer_ok = FALSE;
 static BOOL instance_created = FALSE;
@@ -132,6 +133,9 @@ static VkSemaphore draw_semaphore;
 int vkz_create_instance(const char* application_name,
   const char** enabled_extension_names,
   size_t enabled_extension_count) {
+
+  if (instance_created) return 1;
+
   LOGDEBUG0("vkz_create_instance requested extensions:");
   for (int i = 0; i < enabled_extension_count; ++i) {
     LOGDEBUG1("%s", enabled_extension_names[i]);
@@ -155,21 +159,20 @@ int vkz_create_instance(const char* application_name,
   uint32_t numValidationLayers;
 #ifdef __ANDROID__
   numValidationLayers = 5;
-  const char* vl[5];
-  vl[0] = "VK_LAYER_GOOGLE_threading";
-  vl[1] = "VK_LAYER_LUNARG_parameter_validation";
-  vl[2] = "VK_LAYER_LUNARG_object_tracker";
-  vl[3] = "VK_LAYER_LUNARG_core_validation";
-  vl[4] = "VK_LAYER_GOOGLE_unique_objects";
-
+  const char* vl[5] = {
+  "VK_LAYER_GOOGLE_threading",
+  "VK_LAYER_LUNARG_parameter_validation",
+  "VK_LAYER_LUNARG_object_tracker",
+  "VK_LAYER_LUNARG_core_validation",
+  "VK_LAYER_GOOGLE_unique_objects"
+  };
 #else
   numValidationLayers = 1;
-  const char* vl[1];
-  vl[0] = "VK_LAYER_LUNARG_standard_validation";
+  const char* vl[1] = {"VK_LAYER_LUNARG_standard_validation"};
 #endif
 
   uint32_t lc = 0;
-  VkLayerProperties* lp = 0;
+  VkLayerProperties* lp = NULL;
 
   vkEnumerateInstanceLayerProperties(&lc, NULL);
   lp = malloc(sizeof(VkLayerProperties) * lc);
@@ -187,20 +190,16 @@ int vkz_create_instance(const char* application_name,
     }
   }
 
-  if (validation_layer_count > 0) {
-    ci.enabledLayerCount = validation_layer_count;
-    ci.ppEnabledLayerNames = validation_layers;
-
-  }
-
   ci.enabledExtensionCount = (uint32_t)enabled_extension_count;
   ci.ppEnabledExtensionNames = enabled_extension_names;
-
 
   const char** allExtensionNames = malloc(sizeof(char*) *
     (enabled_extension_count + 1));
 
   if (validation_layer_count > 0) {
+
+    ci.enabledLayerCount = validation_layer_count;
+    ci.ppEnabledLayerNames = validation_layers;
 
     for (uint32_t n = 0; n < enabled_extension_count; n++) {
       allExtensionNames[n] = enabled_extension_names[n];
@@ -259,9 +258,12 @@ int vkz_create_instance(const char* application_name,
 
   free((char**)allExtensionNames);
 
-  if (lc > 0)
+  if (lp) {
     free(lp);
+    lp = NULL;
+  }
 #endif
+  instance_created = TRUE;
   return success;
 }
 
@@ -587,6 +589,8 @@ int create_logical_device() {
   dci.enabledLayerCount = 0;
 #endif
 
+  LOGDEBUG0("Creating logical device...");
+
   logical_device_created =
     vkCreateDevice(vkz_physical_device, &dci, NULL, &vkz_logical_device) ==
     VK_SUCCESS;
@@ -596,6 +600,7 @@ int create_logical_device() {
       &vkz_graphics_queue);
     vkGetDeviceQueue(vkz_logical_device, vkz_graphics_family_index, 0,
       &vkz_present_queue);
+    LOGDEBUG0("Logical device created.");
   }
 
   free(qci);
@@ -1955,18 +1960,21 @@ int vkz_shutdown() {
     vkDestroyDevice(vkz_logical_device, NULL);
   }
 
-  if (debug_callback_created) {
-    LOGDEBUG0("Destroying debug callback.");
-    PFN_vkDestroyDebugReportCallbackEXT dcDestroy =
-      (PFN_vkDestroyDebugReportCallbackEXT)
-      vkGetInstanceProcAddr(vkz_instance, "vkDestroyDebugReportCallbackEXT");
-    if (dcDestroy != NULL) {
-      dcDestroy(vkz_instance, callback, NULL);
-    }
-    else {
-      LOGDEBUG0("Could not get pointer to debug report callback destructor!");
-    }
-  }
+//  if (debug_callback_created) {
+//    LOGDEBUG0("Destroying debug callback.");
+//    PFN_vkDestroyDebugReportCallbackEXT dcDestroy =
+//      (PFN_vkDestroyDebugReportCallbackEXT)
+//      vkGetInstanceProcAddr(vkz_instance, "vkDestroyDebugReportCallbackEXT");
+//    if (dcDestroy != NULL) {
+//      dcDestroy(vkz_instance, callback, NULL);
+//    }
+//    else {
+//      LOGDEBUG0("Could not get pointer to debug report callback destructor!");
+//    }
+//  }
+
+//  LOGDEBUG0("Destroying instance...");
+//  vkDestroyInstance(vkz_instance, NULL);
 
   return 1;
 }

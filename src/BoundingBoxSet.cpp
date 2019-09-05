@@ -25,7 +25,6 @@ namespace small3d {
    */
 
   BoundingBoxSet::BoundingBoxSet(const std::string fileLocation) {
-    initLogger();
     vertices.clear();
     facesVertexIndexes.clear();
     numBoxes = 0;

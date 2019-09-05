@@ -143,8 +143,6 @@ namespace small3d {
     VkPipelineLayout pipelineLayout, const Model& model,
     uint32_t swapchainImageIndex) {
 
-    
-
     uint32_t dynamicOrientationOffset = model.orientationMemIndex *
       static_cast<uint32_t>(dynamicOrientationAlignment);
 
@@ -253,6 +251,8 @@ namespace small3d {
 
     uint32_t num = 2;
 
+    LOGDEBUG("Creating Vulkan instance...");
+
     if (!vkz_create_instance(windowTitle.c_str(), exts, num)) {
       throw std::runtime_error("Failed to create Vulkan instance.");
     }
@@ -262,6 +262,7 @@ namespace small3d {
     sci.pNext = nullptr;
     sci.flags = 0;
     sci.window = vkz_android_app->window;
+    LOGDEBUG("Creating surface...");
     if (vkCreateAndroidSurfaceKHR(vkz_instance, &sci, nullptr, &vkz_surface) !=
       VK_SUCCESS) {
       throw std::runtime_error("Could not create surface.");
@@ -293,13 +294,19 @@ namespace small3d {
     }
 #endif
 
+    LOGDEBUG("Completing Vulkan initialisation...");
+
     if (!vkz_init()) {
       throw std::runtime_error("Could not initialise Vulkan.");
     }
 
+    LOGDEBUG("Creating swapchain...");
+
     if (!vkz_create_swapchain(realScreenWidth, realScreenHeight, 1)) {
       throw std::runtime_error("Failed to create swapchain.");
     }
+
+    LOGDEBUG("Creating descriptor pool...");
 
     createDescriptorPool();
     allocateDescriptorSets();
@@ -893,6 +900,8 @@ namespace small3d {
     realScreenWidth = width;
     realScreenHeight = height;
 
+    this->shadersPath = shadersPath;
+
     this->initWindow(realScreenWidth, realScreenHeight);
 
     LOGDEBUG("Android detected width " + intToStr(realScreenWidth) +
@@ -1147,20 +1156,6 @@ namespace small3d {
     if (ftError != 0) {
       throw std::runtime_error("Unable to initialise font system");
     }
-
-  }
-
-  Renderer& Renderer::getInstance(const std::string windowTitle,
-    const int width, const int height,
-    const float frustumScale,
-    const float zNear, const float zFar,
-    const float zOffsetFromCamera,
-    const std::string shadersPath,
-    const uint32_t maxObjectsPerPass) {
-
-    static Renderer instance(windowTitle, width, height, frustumScale, zNear,
-      zFar, zOffsetFromCamera, shadersPath, maxObjectsPerPass);
-    return instance;
   }
 
   Renderer::~Renderer() {
@@ -1198,10 +1193,12 @@ namespace small3d {
     vkz_destroy_sync_objects();
     
     if (orthographicPipelineIndex != 100) {
+      LOGDEBUG("Destroying orthographic pipeline.");
       vkz_destroy_pipeline(orthographicPipelineIndex);
     }
 
     if (perspectivePipelineIndex != 100) {
+      LOGDEBUG("Destroying perspective pipeline.");
       vkz_destroy_pipeline(perspectivePipelineIndex);
     }
     
@@ -1252,17 +1249,13 @@ namespace small3d {
   
     vkz_destroy_swapchain();
     
-    vkz_shutdown();
+
     
     LOGDEBUG("Destroying surface.\n\r");
     
-    // The following used to raise EXC_BAD_INSTRUCTION on MacOS.
-    // Adding vkDeviceWaitIdle to vkz_destroy_swapchain and
-    // in the beginning of this destructor, in addition to
-    // resolving other issues seems to have helped avoid this
-    // exception as well.
-    
-    vkDestroyInstance(vkz_instance, NULL);
+    vkDestroySurfaceKHR(vkz_instance, vkz_surface, NULL);
+
+    vkz_shutdown();
 
     // The following causes an EXC_BAD_ACCESS,
     // or a "Thread 1: signal SIABRT" exception on MacOS. In

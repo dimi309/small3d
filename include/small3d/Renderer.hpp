@@ -79,6 +79,8 @@ namespace small3d
 
     int realScreenWidth = 0, realScreenHeight = 0;
 
+    std::string shadersPath =  "";
+
     uint32_t maxObjectsPerPass;
 
     uint32_t perspectivePipelineIndex = 100;
@@ -207,11 +209,6 @@ namespace small3d
     void initWindow(int &width, int &height);
 
     void setPerspectiveAndLight();
-
-    Renderer(const std::string windowTitle, const int width, 
-      const int height, const float frustumScale, const float zNear, 
-      const float zFar, const float zOffsetFromCamera, 
-      const std::string shadersPath, const uint32_t maxObjectsPerPass);
     
     Renderer();
     
@@ -237,7 +234,7 @@ namespace small3d
     float lightIntensity = 1.0f;
 
     /**
-     * @brief Get the instance of the Renderer (the Renderer is a singleton).
+     * @brief Constructor
      * @param windowTitle       The title of the game's window
      * @param width             The width of the window. If width and height are
      *                          not set or set to 0, the game will run in full
@@ -272,16 +269,16 @@ namespace small3d
      *                          would invoke the default constructor, which has
      *                          been deleted.
      */
-    static Renderer& getInstance(const std::string windowTitle = "",
-      const int width = 0,
-      const int height = 0,
-      const float frustumScale = 1.0f,
-      const float zNear = 1.0f,
-      const float zFar = 24.0f,
-      const float zOffsetFromCamera = -1.0f,
-      const std::string shadersPath =
-      "resources/shaders/",
-      const uint32_t maxObjectsPerPass = 20);
+    Renderer(const std::string windowTitle = "",
+             const int width = 0,
+             const int height = 0,
+             const float frustumScale = 1.0f,
+             const float zNear = 1.0f,
+             const float zFar = 24.0f,
+             const float zOffsetFromCamera = -1.0f,
+             const std::string shadersPath =
+             "resources/shaders/",
+             const uint32_t maxObjectsPerPass = 20);
 
     /**
      * @brief Destructor
