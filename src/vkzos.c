@@ -181,6 +181,7 @@ int vkz_create_instance(const char* application_name,
 
   vkEnumerateInstanceLayerProperties(&lc, NULL);
   lp = malloc(sizeof(VkLayerProperties) * lc);
+  validation_layer_count = 0;
   if (lp) {
     memset(lp, 0, sizeof(VkLayerProperties) * lc);
     vkEnumerateInstanceLayerProperties(&lc, lp);
@@ -198,8 +199,8 @@ int vkz_create_instance(const char* application_name,
   ci.enabledExtensionCount = (uint32_t)enabled_extension_count;
   ci.ppEnabledExtensionNames = enabled_extension_names;
 
-  const char** allExtensionNames = malloc(sizeof(char*) *
-    (enabled_extension_count + 1));
+  LOGDEBUG1("Extensions count: %d", enabled_extension_count + 1);
+  const char* allExtensionNames[enabled_extension_count + 1];
 
   if (validation_layer_count > 0) {
 
@@ -260,8 +261,6 @@ int vkz_create_instance(const char* application_name,
 
 #ifndef NDEBUG
 
-  free((char**)allExtensionNames);
-
   if (lp) {
     free(lp);
     lp = NULL;
@@ -310,8 +309,7 @@ int retrieve_swapchain_support_details(VkPhysicalDevice device) {
       vkz_swapchain_support_details.presentModes);
   }
   else {
-    if (vkz_swapchain_support_details.formats)
-      free(vkz_swapchain_support_details.formats);
+
     LOGDEBUG0("No present modes found for physical device!");
     return 0;
   }
@@ -1359,12 +1357,16 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
     LOGDEBUG0("Pipeline created ok.");
   }
 
+  // Freeing these when loaded as Android assets makes
+  // the app crash.
+#ifndef __ANDROID__
   if (vertexShader) {
     free(vertexShader);
   }
   if (fragmentShader) {
     free(fragmentShader);
   }
+#endif
 
   return 1;
 }
