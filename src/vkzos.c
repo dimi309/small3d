@@ -599,10 +599,10 @@ int create_logical_device() {
     LOGDEBUG0("Logical device created.");
     vkGetDeviceQueue(vkz_logical_device, vkz_graphics_family_index, 0,
       &vkz_graphics_queue);
-    LOGDEBUG1("Graphics queue: %d", vkz_graphics_queue);
+    LOGDEBUG0("Graphics queue retrieved.");
     vkGetDeviceQueue(vkz_logical_device, vkz_present_family_index, 0,
       &vkz_present_queue);
-    LOGDEBUG1("Present queue: %d", vkz_present_queue);
+    LOGDEBUG0("Present queue retrieved.");
   } else {
     LOGDEBUG0("Failed to create logical device!");
   }
