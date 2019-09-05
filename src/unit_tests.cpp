@@ -174,13 +174,27 @@ int RendererTest() {
 
   LOGINFO("Let's make another renderer and render again.");
   renderer = new Renderer("test", 640, 480);
-
+  startSeconds = glfwGetTime();
   while (glfwGetTime() - startSeconds < 2.0) {
     glfwPollEvents();
     renderer->clearScreen();
     renderer->renderRectangle(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
       glm::vec3(-1.0f, 0.0f, 1.0f),
       glm::vec3(-0.5f, -0.5f, 1.0f), false);
+    renderer->swapBuffers();
+  }
+  glfwDestroyWindow(renderer->getWindow());
+  delete renderer;
+
+  LOGINFO("Once more...");
+  renderer = new Renderer("test", 640, 480);
+  startSeconds = glfwGetTime();
+  while (glfwGetTime() - startSeconds < 2.0) {
+    glfwPollEvents();
+    renderer->clearScreen();
+    renderer->write("small3d :) p q", glm::vec3(0.0f, 1.0f, 0.0f),
+      glm::vec2(-1.0f, 0.0f), glm::vec2(0.5f, -0.5f));
+    renderer->swapBuffers();
   }
   glfwDestroyWindow(renderer->getWindow());
   delete renderer;

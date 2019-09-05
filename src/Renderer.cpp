@@ -717,10 +717,8 @@ namespace small3d {
     uint32_t cameraOrientationSize = (3 * 16 + 4) * sizeof(float);
 
     if (cameraOrientationBuffers.size() == 0) {
-      cameraOrientationBuffers =
-	std::vector<VkBuffer>(vkz_swapchain_image_count);
-      cameraOrientationBufferMemories =
-	std::vector<VkDeviceMemory>(vkz_swapchain_image_count);
+      cameraOrientationBuffers.resize(vkz_swapchain_image_count);
+      cameraOrientationBufferMemories.resize(vkz_swapchain_image_count);
 
       for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
         vkz_create_buffer(&cameraOrientationBuffers[i],
@@ -1233,16 +1231,27 @@ namespace small3d {
     }
 
     for (uint32_t i = 0; i < vkz_swapchain_image_count; ++i) {
-      vkz_destroy_buffer(renderOrientationBuffersDynamic[i],
-			 renderOrientationBuffersDynamicMemory[i]);
-      vkz_destroy_buffer(cameraOrientationBuffers[i],
-			 cameraOrientationBufferMemories[i]);
-      vkz_destroy_buffer(worldDetailsBuffers[i],
-			 worldDetailsBufferMemories[i]);
-      vkz_destroy_buffer(lightIntensityBuffers[i],
-			 lightIntensityBufferMemories[i]);
-      vkz_destroy_buffer(colourBuffersDynamic[i],
-			 colourBuffersDynamicMemory[i]);
+      
+      if (i < renderOrientationBuffersDynamic.size()) {
+        vkz_destroy_buffer(renderOrientationBuffersDynamic[i],
+          renderOrientationBuffersDynamicMemory[i]);
+      }
+      if (i < cameraOrientationBuffers.size()) {
+        vkz_destroy_buffer(cameraOrientationBuffers[i],
+          cameraOrientationBufferMemories[i]);
+      }
+      if (i < worldDetailsBuffers.size()) {
+        vkz_destroy_buffer(worldDetailsBuffers[i],
+          worldDetailsBufferMemories[i]);
+      }
+      if (i < lightIntensityBuffers.size()) {
+        vkz_destroy_buffer(lightIntensityBuffers[i],
+          lightIntensityBufferMemories[i]);
+      }
+      if (i < colourBuffersDynamic.size()) {
+        vkz_destroy_buffer(colourBuffersDynamic[i],
+          colourBuffersDynamicMemory[i]);
+      }
     }
 
     vkDestroySampler(vkz_logical_device, textureSampler, NULL);

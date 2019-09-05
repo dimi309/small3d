@@ -1940,7 +1940,10 @@ int vkz_shutdown() {
 
   if (pipeline_systems) {
     free(pipeline_systems);
+    pipeline_systems = NULL;
   }
+
+  pipeline_system_count = 0;
 
   if (vkz_pipeline_layout) {
     free(vkz_pipeline_layout);
