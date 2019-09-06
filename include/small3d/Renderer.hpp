@@ -449,7 +449,7 @@ namespace small3d
     /**
      * @brief Clear an object (multiple models) from the GPU buffers 
      * (the object itself remains intact).
-     * @param model The model
+     * @param sceneObject The object
      */
     void clearBuffers(SceneObject& sceneObject) const;
 
