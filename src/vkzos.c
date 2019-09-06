@@ -200,7 +200,10 @@ int vkz_create_instance(const char* application_name,
   ci.ppEnabledExtensionNames = enabled_extension_names;
 
   LOGDEBUG1("Extensions count: %d", enabled_extension_count + 1);
-  const char* allExtensionNames[enabled_extension_count + 1];
+
+  // This would normally be enabled_extension_count + 1 but Visual
+  // Studio doesn't like such qualifiers
+  const char* allExtensionNames[5];
 
   if (validation_layer_count > 0) {
 

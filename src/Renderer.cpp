@@ -1156,6 +1156,20 @@ namespace small3d {
     }
   }
 
+  Renderer& Renderer::getInstance(const std::string windowTitle,
+				  const int width, const int height,
+				  const float frustumScale,
+				  const float zNear, const float zFar,
+				  const float zOffsetFromCamera,
+				  const std::string shadersPath,
+				  const uint32_t maxObjectsPerPass) {
+
+    static Renderer instance(windowTitle, width, height, frustumScale, zNear,
+			     zFar, zOffsetFromCamera, shadersPath,
+			     maxObjectsPerPass);
+    return instance;
+  }
+
   Renderer::~Renderer() {
     
     LOGDEBUG("Renderer destructor running");
