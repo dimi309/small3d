@@ -199,8 +199,6 @@ int vkz_create_instance(const char* application_name,
   ci.enabledExtensionCount = (uint32_t)enabled_extension_count;
   ci.ppEnabledExtensionNames = enabled_extension_names;
 
-  LOGDEBUG1("Extensions count: %d", enabled_extension_count + 1);
-
   // This would normally be enabled_extension_count + 1 but Visual
   // Studio doesn't like such qualifiers
   const char* allExtensionNames[5];

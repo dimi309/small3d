@@ -215,13 +215,26 @@ namespace small3d
     // so it is not provided only as a singleton for that platform.
 #ifdef __ANDROID__
   public:
-#endif
-    
+		Renderer(const std::string windowTitle = "",
+						 const int width = 0,
+						 const int height = 0,
+						 const float frustumScale = 1.0f,
+						 const float zNear = 1.0f,
+						 const float zFar = 24.0f,
+						 const float zOffsetFromCamera = -1.0f,
+						 const std::string shadersPath =
+						 "resources/shaders/",
+						 const uint32_t maxObjectsPerPass = 20);
+
+#else
     Renderer(const std::string windowTitle, const int width,
 	     const int height, const float frustumScale, const float zNear,
 	     const float zFar, const float zOffsetFromCamera,
 	     const std::string shadersPath, const uint32_t maxObjectsPerPass);
     
+
+#endif
+
     Renderer();
 
 #ifndef __ANDROID__

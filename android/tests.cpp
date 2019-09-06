@@ -25,6 +25,12 @@ extern "C" {
 }
 using namespace small3d;
 using namespace std;
+
+Renderer *renderer;
+SceneObject *object, *object2;
+
+static bool rendererActive = false;
+
 extern "C" {
 
 int BoundingBoxesTest() {
@@ -126,48 +132,58 @@ int ImageTest() {
   return 1;
 }
 
-int RendererTest() {
+int initRenderer() {
 
-  Renderer *renderer = &Renderer::getInstance("test");
+  renderer = new Renderer("test");
 
   renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
 
-  SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
-  object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
-  renderer->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  object = new SceneObject("cube", "resources/models/Cube/CubeNoTexture.obj");
+  object2 = new SceneObject("texutredCube", "resources/models/Cube/Cube.obj");
 
-  SceneObject object2("texutredCube", "resources/models/Cube/Cube.obj");
-  object2.offset = glm::vec3(-2.0f, -1.0f, -7.0f);
-  object2.rotation = glm::vec3(0.3f, 1.3f, 0.0f);
+  object->offset = glm::vec3(0.0f, -1.0f, -8.0f);
+  //renderer->render(*object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+  object2->offset = glm::vec3(-2.0f, -1.0f, -7.0f);
+  object2->rotation = glm::vec3(0.3f, 1.3f, 0.0f);
 
   Image cubeTexture("resources/models/Cube/cubeTexture.png");
   renderer->generateTexture("cubeTexture", cubeTexture);
 
   double startSeconds = currentTimeInSeconds();
 
-   while (currentTimeInSeconds() - startSeconds < 3.0) {
-    renderer->renderRectangle(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
-                              glm::vec3(-1.0f, 0.0f, 1.0f),
-                              glm::vec3(-0.5f, -0.5f, 1.0f), false);
-
-    renderer->renderRectangle("cubeTexture",
-                              glm::vec3(0.0f, 0.5f, -2.0f),
-                              glm::vec3(1.0f, -1.0f, -2.0f), true);
-
-    renderer->render(object2, "cubeTexture");
-
-    renderer->write("small3d :) p q", glm::vec3(0.0f, 1.0f, 0.0f),
-                    glm::vec2(-1.0f, 0.0f), glm::vec2(0.5f, -0.5f));
-    renderer->swapBuffers();
-
-  }
-
-  renderer->clearBuffers(object);
-  renderer->clearBuffers(object2);
-  renderer->deleteTexture("cubeTexture");
-
   return 1;
 }
+
+void drawFrame() {
+
+  renderer->renderRectangle(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+                            glm::vec3(-1.0f, 0.0f, 1.0f),
+                            glm::vec3(-0.5f, -0.5f, 1.0f), false);
+
+  renderer->renderRectangle("cubeTexture",
+                            glm::vec3(0.0f, 0.5f, -2.0f),
+                            glm::vec3(1.0f, -1.0f, -2.0f), true);
+
+  renderer->render(*object2, "cubeTexture");
+
+  renderer->write("small3d :) p q", glm::vec3(0.0f, 1.0f, 0.0f),
+                  glm::vec2(-1.0f, 0.0f), glm::vec2(0.5f, -0.5f));
+  renderer->swapBuffers();
+
+
+}
+
+void shutdownRenderer() {
+
+  renderer->clearBuffers(*object);
+  renderer->clearBuffers(*object2);
+  delete object;
+  delete object2;
+  renderer->deleteTexture("cubeTexture");
+  delete renderer;
+
+};
 
 int SoundTest() {
   Sound snd("resources/sounds/bah.ogg");
@@ -218,7 +234,6 @@ int TokenTest() {
   string strTest = "a-b-c-d";
   std::vector<std::string> tokens;
 
-
   int tokenCount = getTokens(strTest, '-', tokens);
 
   if (tokenCount != 4) return 0;
@@ -231,24 +246,43 @@ void handle_cmd(android_app *pApp, int32_t cmd) {
     case APP_CMD_INIT_WINDOW:
       AConfiguration_setOrientation(pApp->config,
         ACONFIGURATION_ORIENTATION_PORT);
-      initLogger();
-      BoundingBoxesTest();
-      ModelTest();
-      ImageTest();
-      RendererTest();
-      SoundTest();
-      SoundTest2();
-      SoundTest3();
-      TokenTest();
 
       break;
+
+
 
     case APP_CMD_TERM_WINDOW:
 
       break;
+
+    case APP_CMD_GAINED_FOCUS:
+      if (!rendererActive) {
+        initRenderer();
+        rendererActive = true;
+        drawFrame();
+        BoundingBoxesTest();
+        ModelTest();
+        ImageTest();
+        SoundTest();
+        SoundTest2();
+        SoundTest3();
+        TokenTest();
+      }
+      break;
+
+    case APP_CMD_LOST_FOCUS:
+      rendererActive = false;
+      shutdownRenderer();
+      break;
+
     default:
       LOGERROR("event not handled: " + intToStr(cmd));
   }
+}
+
+int32_t handle_input(android_app* app, AInputEvent* event) {
+  LOGDEBUG("Input event");
+  return 1;
 }
 
 void android_main(struct android_app *state) {
@@ -256,6 +290,9 @@ void android_main(struct android_app *state) {
   vkz_android_app = state;
 
   state->onAppCmd = handle_cmd;
+  state->onInputEvent = handle_input;
+
+  initLogger();
 
   int events;
   android_poll_source *pSource;
@@ -266,7 +303,12 @@ void android_main(struct android_app *state) {
       }
     }
 
+    if (rendererActive) {
+      drawFrame();
+    }
+
   } while (!state->destroyRequested);
+
 
   LOGINFO("Done.");
 }
