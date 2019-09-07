@@ -18,9 +18,8 @@
 #include <vector>
 #include <string>
 
-// TODO: In addition to playing audio on PCs, this streams audio to android
-//       but repeating a sound and concurrent sounds don't work. Stopping a
-//       sound does not look that great either.
+// TODO: Using this Sound class on Android causes some kind of Fatal signal 11 (SIGSEGV), code 1,
+//       fault addr crash.
 
 namespace small3d {
 

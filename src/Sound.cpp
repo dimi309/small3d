@@ -232,9 +232,10 @@ namespace small3d {
   }
 
   Sound::~Sound() {
+
     if (stream != nullptr) {
+      stop();
 #ifndef __ANDROID__
-      Pa_AbortStream(stream);
       Pa_CloseStream(stream);
 #else
       AAudioStream_close(stream);
@@ -432,7 +433,13 @@ namespace small3d {
 #ifndef __ANDROID__
       Pa_AbortStream(stream);
 #else
-      AAudioStream_requestStop(stream);
+      if (AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTED ||
+          AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTING ||
+          AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSED ||
+          AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSING) {
+        AAudioStream_requestStop(stream);
+      }
+      AAudioStream_requestFlush(stream);
 #endif
       this->soundData.currentFrame = 0;
       this->soundData.startTime = 0;

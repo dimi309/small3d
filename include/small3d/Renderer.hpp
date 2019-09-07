@@ -12,6 +12,8 @@
 #ifndef __ANDROID__
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#else
+#include <android/asset_manager.h>
 #endif
 
 #include "Logger.hpp"
@@ -449,7 +451,7 @@ namespace small3d
     /**
      * @brief Clear an object (multiple models) from the GPU buffers 
      * (the object itself remains intact).
-     * @param sceneObject The object
+     * @param model The model
      */
     void clearBuffers(SceneObject& sceneObject) const;
 
