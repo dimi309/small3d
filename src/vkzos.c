@@ -939,8 +939,11 @@ int vkz_create_swapchain(const uint32_t width, const uint32_t height,
     ci.pQueueFamilyIndices = NULL;
   }
 
+#ifdef __ANDROID__
+  ci.preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+#else
   ci.preTransform = vkz_swapchain_support_details.capabilities.currentTransform;
-
+#endif
   const VkCompositeAlphaFlagBitsKHR af[4] = {
     VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
     VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR,

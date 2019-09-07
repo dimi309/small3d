@@ -71,6 +71,8 @@ namespace small3d {
   VkDescriptorSetLayout Renderer::textureOrthoDescriptorSetLayout;
   VkDescriptorSetLayout Renderer::orthographicLayouts[2];
 
+
+
   int Renderer::setInputStateCallback(VkPipelineVertexInputStateCreateInfo*
 				      inputStateCreateInfo) {
 
@@ -1154,6 +1156,15 @@ namespace small3d {
     if (ftError != 0) {
       throw std::runtime_error("Unable to initialise font system");
     }
+  }
+
+  int Renderer::getScreenWidth() {
+    return realScreenWidth;
+  }
+
+
+  int Renderer::getScreenHeight(){
+    return realScreenHeight;
   }
 
   Renderer& Renderer::getInstance(const std::string windowTitle,

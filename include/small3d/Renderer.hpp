@@ -259,6 +259,18 @@ namespace small3d
     glm::vec3 cameraRotation;
 
     /**
+     * @brief Get the real screen width
+     * @return The screen width
+     */
+    int getScreenWidth();
+
+		/**
+     * @brief Get the real screen height
+     * @return The screen height
+     */
+    int getScreenHeight();
+
+    /**
      * @brief The light intensity (set to -1.0f if no lighting is to be used).
      */
     float lightIntensity = 1.0f;
