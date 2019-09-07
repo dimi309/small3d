@@ -1664,10 +1664,10 @@ namespace small3d {
     }
     else {
       
-#ifdef __APPLE__
-      // On MacOS, setting the model colour corrupts the game's
-      // frames (some objects don't appear). This workaround converts
-      // colours to textures.
+#if defined(__APPLE__) || defined(__ANDROID__)
+      // On MacOS, and some Android devices, setting the model colour
+      // corrupts the game's frames (some objects don't appear). This
+      // workaround converts colours to textures.
       std::string texName = "col" + floatToStr(colour.r) +
 	floatToStr(colour.g) +
         floatToStr(colour.b) + floatToStr(colour.a);

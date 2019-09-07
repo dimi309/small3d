@@ -18,9 +18,6 @@
 #include <vector>
 #include <string>
 
-// TODO: Using this Sound class on Android causes some kind of Fatal signal 11 (SIGSEGV), code 1,
-//       fault addr crash.
-
 namespace small3d {
 
   /**

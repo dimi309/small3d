@@ -439,7 +439,7 @@ namespace small3d {
           AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSING) {
         AAudioStream_requestStop(stream);
       }
-      AAudioStream_requestFlush(stream);
+
 #endif
       this->soundData.currentFrame = 0;
       this->soundData.startTime = 0;
