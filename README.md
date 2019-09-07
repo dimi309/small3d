@@ -17,11 +17,18 @@ A very easy to use Sound object is also provided that can play OGG files on all
 supported platforms via a common interface. Basic collision detection has
 also been implemented.
 
-small3d works on Windows, MacOS and Linux and supports Visual Studio, gcc (even 
-MinGW) and clang for compilation.
+small3d works on Windows, MacOS, Linux and Android and supports Visual Studio, 
+gcc (even MinGW) and clang for compilation. 
 
 All small3d dependencies, appart from the Vulkan SDK, are distributed together with 
 its source code. They can be built by executing a single script (see below).
+
+The instructions and example below are about building and using small3d on a PC 
+(Windows, Linux or MacOS). No instructions are provided for Android at this point,
+but please have a look at the *android* directory for the cmake configuration
+and main test program that have been used while adapting the framework
+to that platform, as well as the *deps/prepare-android.bat* file which can
+be used on Windows to build the relevant dependencies. 
 
 ## Building
 
