@@ -213,8 +213,14 @@ namespace small3d
 
     void setPerspectiveAndLight();
 
-    // Android it is useful to be able to destroy and recreate the renderer
-    // so it is not provided only as a singleton for that platform.
+    // On Android, it is useful to be able to destroy and recreate the
+    // renderer, so it is not provided only as a singleton for that platform.
+    // By the way, do NOT create a renderer using getInstance and then
+    // try to delete it in code. That will make an app crash. Either
+    // create it with getInstance and assume it is a singleton which
+    // will be destroyed automatically when the program terminates,
+    // or instantiate it with "new" if you would like to delete it
+    // later.
 #ifdef __ANDROID__
   public:
 		Renderer(const std::string windowTitle = "",
