@@ -64,8 +64,6 @@ namespace small3d {
     VkBuffer uvBuffer;
     VkDeviceMemory uvBufferMemory;
 
-    VkDescriptorSet descriptorSet;
-
     uint32_t orientationMemIndex = 0;
 
     uint32_t colourMemIndex = 0;

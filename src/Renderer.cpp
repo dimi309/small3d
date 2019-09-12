@@ -1282,9 +1282,7 @@ namespace small3d {
     vkDestroySampler(vkz_logical_device, textureSampler, NULL);
   
     vkz_destroy_swapchain();
-    
 
-    
     LOGDEBUG("Destroying surface.\n\r");
     
     vkDestroySurfaceKHR(vkz_instance, vkz_surface, NULL);
@@ -1749,11 +1747,10 @@ namespace small3d {
       vkz_destroy_buffer(model.uvBuffer, model.uvBufferMemory);
       model.alreadyInGPU = false;
     }
-
   }
 
   void Renderer::clearBuffers(SceneObject & sceneObject) const {
-    for (auto model : sceneObject.models) {
+    for (Model &model : sceneObject.models) {
       clearBuffers(model);
     }
   }
