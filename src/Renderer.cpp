@@ -904,7 +904,7 @@ namespace small3d {
 
     this->initWindow(realScreenWidth, realScreenHeight);
 
-    LOGDEBUG("Android detected width " + intToStr(realScreenWidth) +
+    LOGDEBUG("Detected back width " + intToStr(realScreenWidth) +
     " height " + intToStr(realScreenHeight));
 
     this->initVulkan();

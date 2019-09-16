@@ -27,7 +27,6 @@ struct android_app *vkz_android_app;
 #define LOGDEBUG1(x, y) __android_log_print(ANDROID_LOG_DEBUG, "vkzos", x, y)
 #define LOGDEBUG2(x, y, z) __android_log_print(ANDROID_LOG_DEBUG, "vkzos", x, y, z)
 
-
 uint32_t numValidationLayers = 5;
 const char* vl[5] = {
   "VK_LAYER_GOOGLE_threading",
@@ -74,7 +73,6 @@ debugCallback(VkDebugReportFlagsEXT flags,
 
 static VkDebugReportCallbackEXT callback;
 
-static BOOL isntance_created = FALSE;
 static BOOL debug_callback_created = FALSE;
 static BOOL validation_layer_ok = FALSE;
 static BOOL instance_created = FALSE;
@@ -153,8 +151,6 @@ static VkSemaphore draw_semaphore;
 int vkz_create_instance(const char* application_name,
   const char** enabled_extension_names,
   size_t enabled_extension_count) {
-
-
 
   LOGDEBUG0("vkz_create_instance requested extensions:");
   for (int i = 0; i < enabled_extension_count; ++i) {
