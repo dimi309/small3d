@@ -64,6 +64,15 @@ namespace small3d {
     VkBuffer uvBuffer;
     VkDeviceMemory uvBufferMemory;
 
+    // descriptorSet is not used, but without this declaration some games
+    // produce the following error on Debian stretch, when compiled
+    // with gcc 6:
+    //
+    // terminate called after throwing an instance of 'std::logic_error'
+    // what():  basic_string::_M_construct null not valid
+
+    VkDescriptorSet descriptorSet;
+
     uint32_t orientationMemIndex = 0;
 
     uint32_t colourMemIndex = 0;
