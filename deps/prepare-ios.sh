@@ -1,4 +1,4 @@
-export CMAKE_DEFINITIONS="-GXcode -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=../../../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64" 
+export CMAKE_DEFINITIONS="-GXcode -DCMAKE_TOOLCHAIN_FILE=../../../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64" 
 
 mkdir include
 mkdir lib
@@ -16,10 +16,22 @@ cmake --build .
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp ../zlib.h ../../include/
 cp zconf.h ../../include/
-cp libz.a ../../lib/
+cp Debug-iphoneos/libz.a ../../lib/
 cd ../../
 rm -rf zlib-1.2.11
 
+tar xvf libpng-1.6.34.tar.gz
+cd libpng-1.6.34
+mkdir build
+cd build
+cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=$(pwd)/../../lib/libza -DZLIB_INCLUDE_DIR=$(pwd)/../../include -DZ_SOLO=TRUE $CMAKE_DEFINITIONS
+cmake --build .
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+cp ../*.h ../../include/
+cp pnglibconf.h ../../include/
+cp Release-iphoneos/libpng.a ../../lib/
+cd ../../
+rm -rf libpng-1.6.34
 
 tar xvf ogg-1.3.3.tar.gz
 cd ogg-1.3.3
