@@ -1,5 +1,4 @@
-export CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
--DCMAKE_TOOLCHAIN_FILE=../../../../ios.toolchain.cmake -DPLATFORM=OS64COMBINED 
+export CMAKE_DEFINITIONS="-GXcode -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=../../../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64COMBINED" 
 
 mkdir include
 mkdir lib
@@ -13,7 +12,7 @@ cd zlib-1.2.11
 mkdir build
 cd build
 cmake .. $CMAKE_DEFINITIONS
-cmake --build .
+cmake --build . --config Release
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp ../zlib.h ../../include/
 cp zconf.h ../../include/
@@ -26,7 +25,7 @@ cd libpng-1.6.34
 mkdir build
 cd build
 cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=$(pwd)/../../lib/libza -DZLIB_INCLUDE_DIR=$(pwd)/../../include $CMAKE_DEFINITIONS
-cmake --build .
+cmake --build . --config Release
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp ../*.h ../../include/
 cp pnglibconf.h ../../include/
@@ -39,7 +38,7 @@ cd ogg-1.3.3
 mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF $CMAKE_DEFINITIONS
-cmake --build .
+cmake --build . --config Release
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp -rf ../include/ogg ../../include/
 cp include/ogg/config_types.h ../../include/ogg/
@@ -52,7 +51,7 @@ cd vorbis-1.3.6
 mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS
-cmake --build .
+cmake --build . --config Release
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp -rf ../include/vorbis ../../include/
 cp lib/*.a ../../lib/
@@ -73,7 +72,7 @@ cd freetype-2.9.1
 mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS
-cmake --build .
+cmake --build . --config Release
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp -rf ../include/* ../../include/
 cp libfreetype.a ../../lib/
