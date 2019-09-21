@@ -35,10 +35,10 @@ cd ..\..\
 rmdir /Q /S zlib-1.2.11
 del zlib-1.2.11.tar
 
-7z x libpng-1.6.34.tar.gz
+7z x libpng-1.6.37.tar.gz
 if %errorlevel% neq 0 exit /b %errorlevel%
-7z x libpng-1.6.34.tar
-cd libpng-1.6.34
+7z x libpng-1.6.37.tar
+cd libpng-1.6.37
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=..\..\lib/zlib.a -DZLIB_INCLUDE_DIR=..\..\include %CMAKE_DEFINITIONS%
@@ -48,8 +48,8 @@ copy ..\*.h ..\..\include
 copy pnglibconf.h ..\..\include
 copy libpng.a ..\..\lib
 cd ..\..\
-rmdir /Q /S libpng-1.6.34
-del libpng-1.6.34.tar
+rmdir /Q /S libpng-1.6.37
+del libpng-1.6.37.tar
 del pax_global_header
 
 7z x ogg-1.3.3.tar.gz

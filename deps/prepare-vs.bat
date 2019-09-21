@@ -41,10 +41,10 @@ cd ..\..\
 rmdir /Q /S zlib-1.2.11
 del zlib-1.2.11.tar
 
-7z x libpng-1.6.34.tar.gz
+7z x libpng-1.6.37.tar.gz
 if %errorlevel% neq 0 exit /b %errorlevel%
-7z x libpng-1.6.34.tar
-cd libpng-1.6.34
+7z x libpng-1.6.37.tar
+cd libpng-1.6.37
 mkdir build
 cd build
 cmake .. %VSCONFIG% -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=..\..\lib/zlib.lib -DZLIB_INCLUDE_DIR=..\..\include
@@ -55,8 +55,8 @@ copy pnglibconf.h ..\..\include
 if %BUILDTYPE%==Debug (copy %BUILDTYPE%\libpng16_staticd.lib ..\..\lib\png.lib) else (copy %BUILDTYPE%\libpng16_static.lib ..\..\lib\png.lib)
 for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 cd ..\..\
-rmdir /Q /S libpng-1.6.34
-del libpng-1.6.34.tar
+rmdir /Q /S libpng-1.6.37
+del libpng-1.6.37.tar
 del pax_global_header
 
 7z x ogg-1.3.3.tar.gz
