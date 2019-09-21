@@ -7,29 +7,16 @@ unzip glm-0.9.9.0.zip
 cp -rf glm/glm include/
 rm -rf glm
 
-#tar xvf zlib-1.2.11-noexample.tar.gz
-#cd zlib-1.2.11
-#mkdir build
-#cd build
-#cmake .. $CMAKE_DEFINITIONS
-#cmake --build .
-#rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-#cp ../zlib.h ../../include/
-#cp zconf.h ../../include/
-#cp Debug-iphoneos/libz.a ../../lib/
-#cd ../../
-#rm -rf zlib-1.2.11
-
 tar xvf libpng-1.6.37.tar.gz
 cd libpng-1.6.37
 mkdir build
 cd build
-cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF $CMAKE_DEFINITIONS
+cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DPNG_ARM_NEON=off $CMAKE_DEFINITIONS
 cmake --build .
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp ../*.h ../../include/
 cp pnglibconf.h ../../include/
-cp Release-iphoneos/libpng.a ../../lib/
+cp Debug-iphoneos/libpng.a ../../lib/
 cd ../../
 rm -rf libpng-1.6.37
 
