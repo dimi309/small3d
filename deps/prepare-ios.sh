@@ -20,8 +20,8 @@ cp Debug-iphoneos/libz.a ../../lib/
 cd ../../
 rm -rf zlib-1.2.11
 
-tar xvf libpng-1.6.34.tar.gz
-cd libpng-1.6.34
+tar xvf libpng-1.6.37.tar.gz
+cd libpng-1.6.37
 mkdir build
 cd build
 cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=$(pwd)/../../lib/libza -DZLIB_INCLUDE_DIR=$(pwd)/../../include -DZ_SOLO=TRUE $CMAKE_DEFINITIONS
@@ -31,7 +31,7 @@ cp ../*.h ../../include/
 cp pnglibconf.h ../../include/
 cp Release-iphoneos/libpng.a ../../lib/
 cd ../../
-rm -rf libpng-1.6.34
+rm -rf libpng-1.6.37
 
 tar xvf ogg-1.3.3.tar.gz
 cd ogg-1.3.3
