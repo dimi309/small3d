@@ -1,4 +1,4 @@
-export CMAKE_DEFINITIONS="-GXcode -DCMAKE_TOOLCHAIN_FILE=../../../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64" 
+export CMAKE_DEFINITIONS="-GXcode -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64" 
 
 mkdir include
 mkdir lib
