@@ -22,9 +22,9 @@ cd zlib-1.2.11
 ./configure
 make
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-cp zlib.h ../deps/include/
-cp zconf.h ../deps/include/
-cp libz.a ../deps/lib/
+cp zlib.h ../include/
+cp zconf.h ../include/
+cp libz.a ../lib/
 cd ../
 rm -rf zlib-1.2.11
 
