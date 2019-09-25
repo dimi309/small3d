@@ -17,11 +17,11 @@ export CXXFLAGS="$CXXFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include"
 export LDFLAGS="$LDFLAGS -arch $ARCH -isysroot $SDKROOT -L$PREFIX/lib"
 export PKG_CONFIG_PATH="$PKG_CONFIG_PATH":"$SDKROOT/usr/lib/pkgconfig":"$PREFIX/lib/pkgconfig"
 
-tar xvf bzip2-1.0.8.tar.gz
+tar xvf bzip2-1.0.8-use-env.tar.gz
 cd bzip2-1.0.8
 make bzip2
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-#cp bzlib.h ../include/
-#cp libbz2.a ../lib/
-#cd ..
-#rm -rf bzip2-1.0.8
+cp bzlib.h ../include/
+cp libbz2.a ../lib/
+cd ..
+rm -rf bzip2-1.0.8

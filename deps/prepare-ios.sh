@@ -45,6 +45,8 @@ cp lib/Release-iphoneos/*.a ../../lib/
 cd ../../
 rm -rf vorbis-1.3.6
 
+./prepare-bzip2-ios.sh
+
 tar xvf freetype-2.9.1.tar.gz
 cd freetype-2.9.1
 mkdir build
