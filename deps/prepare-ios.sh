@@ -45,15 +45,6 @@ cp lib/Release-iphoneos/*.a ../../lib/
 cd ../../
 rm -rf vorbis-1.3.6
 
-tar xvf bzip2-1.0.6.tar.gz
-cd bzip2-1.0.6
-make
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-cp bzlib.h ../include/
-cp libbz2.a ../lib/
-cd ..
-rm -rf bzip2-1.0.6
-
 tar xvf freetype-2.9.1.tar.gz
 cd freetype-2.9.1
 mkdir build
