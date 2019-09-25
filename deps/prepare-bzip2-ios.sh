@@ -21,7 +21,7 @@ tar xvf bzip2-1.0.8.tar.gz
 cd bzip2-1.0.8
 make bzip2
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-cp bzlib.h ../include/
-cp libbz2.a ../lib/
-cd ..
+#cp bzlib.h ../include/
+#cp libbz2.a ../lib/
+#cd ..
 #rm -rf bzip2-1.0.8
