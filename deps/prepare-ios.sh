@@ -1,4 +1,6 @@
-export CMAKE_DEFINITIONS="-GXcode -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64" 
+export CMAKE_DEFINITIONS="-GXcode -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS -DARCHS=armv7"
+
+# -DPLATFORM=OS64 and no -DARCHS for arm64
 
 mkdir include
 mkdir lib

@@ -1,5 +1,5 @@
-export ARCH=arm64
-export CHOST=aarch64-apple-darwin*
+export ARCH=armv7
+export CHOST=arm-apple-darwin*
 export SDK=iphoneos
 
 export SDKVERSION=9 #$(xcrun --sdk $SDK --show-sdk-version) # current version
