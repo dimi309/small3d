@@ -10,6 +10,8 @@ unzip glm-0.9.9.0.zip
 cp -rf glm/glm include/
 rm -rf glm
 
+./prepare-zlib-ios.sh
+
 tar xvf libpng-1.6.37.tar.gz
 cd libpng-1.6.37
 mkdir build
