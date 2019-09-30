@@ -13,7 +13,7 @@
 #include <stdexcept>
 #include <cstring>
 #include <vorbis/vorbisfile.h>
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
 #include <GLFW/glfw3.h>
 #else
 #include "vkzos.h"
@@ -113,7 +113,7 @@ namespace small3d {
   bool Sound::noOutputDevice;
   unsigned int Sound::numInstances = 0;
 
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
   PaDeviceIndex Sound::defaultOutput;
 
   int Sound::audioCallback(const void *inputBuffer, void *outputBuffer,
@@ -163,7 +163,7 @@ namespace small3d {
   }
 
 #else
-
+#ifdef __ANDROID__
    aaudio_data_callback_result_t Sound::audioCallback (
     AAudioStream *stream,
     void *userData,
@@ -190,12 +190,14 @@ namespace small3d {
 
      return AAUDIO_CALLBACK_RESULT_CONTINUE;
   }
-
+#endif
 #endif
 
   Sound::Sound() {
+#if !(defined(__APPLE__) && defined(__MACH__))
     this->stream = nullptr;
-#ifndef __ANDROID__
+#endif
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
     if (numInstances == 0) {
       LOGDEBUG("No Sound instances exist. Initialising PortAudio");
 
@@ -216,13 +218,14 @@ namespace small3d {
       }
     }
 #else
+#ifdef __ANDROID__
     if (AAudio_createStreamBuilder(&streamBuilder) != AAUDIO_OK) {
       LOGERROR("Failed to create stream builder.");
       noOutputDevice = true;
     } else {
       AAudioStreamBuilder_setDeviceId(streamBuilder, AAUDIO_UNSPECIFIED);
     }
-
+#endif
 #endif
     ++numInstances;
   }
@@ -232,14 +235,19 @@ namespace small3d {
   }
 
   Sound::~Sound() {
-
+#if !(defined(__APPLE__) && defined(__MACH__))
     if (stream != nullptr) {
+#else
+      if (true) {
+#endif
       stop();
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
       Pa_CloseStream(stream);
 #else
+#ifdef __ANDROID__
       AAudioStream_close(stream);
       AAudioStreamBuilder_delete(streamBuilder);
+#endif
 #endif
     }
     --numInstances;
@@ -354,7 +362,7 @@ namespace small3d {
   }
 
   void Sound::openStream() {
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
     PaStreamParameters outputParams;
       
     memset(&outputParams, 0, sizeof(PaStreamParameters));
@@ -377,6 +385,7 @@ namespace small3d {
 			       std::string(Pa_GetErrorText(error)));
     }
 #else
+#ifdef __ANDROID__
     AAudioStreamBuilder_setSampleRate(streamBuilder, soundData.rate / SAMPLES_PER_FRAME);
     AAudioStreamBuilder_setChannelCount(streamBuilder, soundData.channels);
     AAudioStreamBuilder_setFormat(streamBuilder, AAUDIO_FORMAT_PCM_I16);
@@ -387,11 +396,12 @@ namespace small3d {
     AAudioStreamBuilder_setDataCallback(streamBuilder, Sound::audioCallback, &soundData);
     AAudioStreamBuilder_openStream(streamBuilder, &stream);
 #endif
+#endif
   }
 
   void Sound::play(const bool repeat) {
     if (!noOutputDevice && this->soundData.size > 0) {
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
 
       PaError error;
 
@@ -404,42 +414,51 @@ namespace small3d {
       }
 
 #else
+#ifdef __ANDROID__
       aaudio_stream_state_t s = AAudioStream_getState(stream);
       if (s != AAUDIO_STREAM_STATE_STOPPED && s != AAUDIO_STREAM_STATE_STOPPING) {
         AAudioStream_requestStop(stream);
       }
-
+#endif
 #endif
 
       this->soundData.currentFrame = 0;
       this->soundData.startTime = 0;
       this->soundData.repeat = repeat;
 
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
       error = Pa_StartStream(stream);
       if (error != paNoError) {
         throw std::runtime_error("Failed to start stream: " +
 				 std::string(Pa_GetErrorText(error)));
       }
 #else
+#ifdef __ANDROID
       AAudioStream_requestStart(stream);
+#endif
 #endif
   }
 
 }
 
   void Sound::stop() {
+    #if !(defined(__APPLE__) && defined(__MACH__))
     if (this->stream != nullptr) {
-#ifndef __ANDROID__
+#else
+      if(true) {
+        
+#endif
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
       Pa_AbortStream(stream);
 #else
+#ifdef __ANDROID__
       if (AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTED ||
           AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTING ||
           AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSED ||
           AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSING) {
         AAudioStream_requestStop(stream);
       }
-
+#endif
 #endif
       this->soundData.currentFrame = 0;
       this->soundData.startTime = 0;
@@ -448,41 +467,55 @@ namespace small3d {
 
   Sound::Sound(const Sound& other) : Sound() {
     this->soundData = other.soundData;
+#if !(defined(__APPLE__) && defined(__MACH__))
     this->stream = nullptr;
+#endif
     this->openStream();
     ++numInstances;
   }
 
   Sound::Sound(const Sound&& other) : Sound() {
     this->soundData = other.soundData;
+    #if !(defined(__APPLE__) && defined(__MACH__))
     this->stream = nullptr;
+#endif
     this->openStream();
     ++numInstances;
   }
 
   Sound& Sound::operator=(const Sound& other) {
+#if  !(defined(__APPLE__) && defined(__MACH__))
     if (this->stream != nullptr) {
-#ifndef __ANDROID__
+
       Pa_AbortStream(this->stream);
       Pa_CloseStream(this->stream);
-#endif
+
     }
+    #endif
     this->soundData = other.soundData;
+    #if !(defined(__APPLE__) && defined(__MACH__))
     this->stream = nullptr;
+#endif
     this->openStream();
     return *this;
   }
 
   Sound& Sound::operator=(const Sound&& other) {
+    #if !(defined(__APPLE__) && defined(__MACH__))
     if (this->stream != nullptr) {
-#ifndef __ANDROID__
+#else
+      if (true) {
+#endif
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
       Pa_AbortStream(this->stream);
       Pa_CloseStream(this->stream);
 #endif
     }
     this->soundData = other.soundData;
+      #if !(defined(__APPLE__) && defined(__MACH__))
     this->stream = nullptr;
-    this->openStream();
+#endif
+      this->openStream();
     return *this;
   }
 }

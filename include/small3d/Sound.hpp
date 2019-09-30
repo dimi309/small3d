@@ -10,10 +10,12 @@
 #pragma once
 
 #include <unordered_map>
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
 #include <portaudio.h>
 #else
+#ifdef __ANDROID__
 #include <aaudio/AAudio.h>
+#endif
 #endif
 #include <vector>
 #include <string>
@@ -41,17 +43,19 @@ namespace small3d {
     };
 
     SoundData soundData;
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
     PaStream *stream;
 #else
+#ifdef __ANDROID__
     AAudioStreamBuilder *streamBuilder;
     AAudioStream *stream;
+#endif
 #endif
 
     static bool noOutputDevice;
 
     static unsigned int numInstances;
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
     static PaDeviceIndex defaultOutput;
     static int audioCallback(const void *inputBuffer, void *outputBuffer,
 			     unsigned long framesPerBuffer,
@@ -60,11 +64,13 @@ namespace small3d {
 			     void *userData);
 
 #else
+#ifdef __ANDROID__
     static aaudio_data_callback_result_t audioCallback (
       AAudioStream *stream,
       void *userData,
       void *audioData,
       int32_t numFrames);
+#endif
 #endif
 
     void load(const std::string soundFilePath);
@@ -89,7 +95,7 @@ namespace small3d {
 
     /**
      * @brief Play the sound.
-     * @brief repeat Repeat the sound after it ends?
+     * @param repeat Repeat the sound after it ends?
      */
     void play(const bool repeat=false);
 

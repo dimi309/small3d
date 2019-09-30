@@ -244,8 +244,8 @@ namespace small3d {
   }
 
   void Renderer::initVulkan() {
+#if defined(__ANDROID__) || (defined(__APPLE__) && defined(__MACH__))
 #ifdef __ANDROID__
-
     const char *exts[2];
 
     exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
@@ -269,7 +269,7 @@ namespace small3d {
       VK_SUCCESS) {
       throw std::runtime_error("Could not create surface.");
     }
-
+#endif
 #else
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
@@ -765,7 +765,7 @@ namespace small3d {
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
 
-    uint32_t imageByteSize = width * height * 4 * sizeof(float);
+    uint32_t imageByteSize = static_cast<uint32_t>(width * height * 4 * sizeof(float));
 
     if (!vkz_create_buffer(&stagingBuffer, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
       imageByteSize, &stagingBufferMemory, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
@@ -779,7 +779,8 @@ namespace small3d {
     memcpy(imgData, data, imageByteSize);
     vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
 
-    if (!vkz_create_image(&textureHandle.image, width, height,
+    if (!vkz_create_image(&textureHandle.image, static_cast<uint32_t>(width),
+                          static_cast<uint32_t>(height),
       VK_FORMAT_R32G32B32A32_SFLOAT, VK_IMAGE_TILING_OPTIMAL,
       VK_IMAGE_USAGE_TRANSFER_DST_BIT |
       VK_IMAGE_USAGE_SAMPLED_BIT,
@@ -1001,11 +1002,12 @@ namespace small3d {
   }
 
   void Renderer::initWindow(int& width, int& height) {
+#if defined(__ANDROID__) || (defined(__APPLE__) && defined(__MACH__))
 #ifdef __ANDROID__
     assert(vkz_android_app->window != nullptr);
     width = ANativeWindow_getWidth(vkz_android_app->window);
     height = ANativeWindow_getHeight(vkz_android_app->window);
-
+#endif
 #else
     glfwSetErrorCallback(errorCallback);
 
@@ -1120,7 +1122,7 @@ namespace small3d {
   }
 
   Renderer::Renderer() {
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
     window = 0;
 #endif
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
@@ -1135,7 +1137,7 @@ namespace small3d {
     const std::string shadersPath,
     const uint32_t maxObjectsPerPass) {
 
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
     window = 0;
 #endif
 
@@ -1300,7 +1302,7 @@ namespace small3d {
     // glfwTerminate();
   }
 
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
   GLFWwindow* Renderer::getWindow() const {
     return window;
   }

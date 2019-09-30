@@ -64,7 +64,7 @@ int vkz_create_instance(const char* application_name,
  *         families and create logical device.
  * @return 1 if successful, 0 otherwise
  */
-int vkz_init();
+int vkz_init(void);
 
 /**
  * @brief Create the swapchain that will be used. This will also create
@@ -80,19 +80,19 @@ int vkz_create_swapchain(const uint32_t width, const uint32_t height,
 /**
  * @brief Destroy the swapchain.
  */
-int vkz_destroy_swapchain();
+int vkz_destroy_swapchain(void);
 
 /**
  * @brief Create the image used for depth testing. This function must be called
  *        right after vkz_create_swapchain(). This is not perfect but, for the
  *        time being it is what it is.
  */
-int vkz_create_depth_image();
+int vkz_create_depth_image(void);
 
 /**
  * @brief Destroy the image used for depth testing.
  */
-int vkz_destroy_depth_image();
+int vkz_destroy_depth_image(void);
 
 /**
  * @brief Create a pipeline. This will also create associated Vulkan
@@ -171,13 +171,13 @@ int vkz_destroy_draw_command_buffer(VkCommandBuffer* command_buffer);
 /**
  * @brief Create sync objects for a given pipeline
  */
-int vkz_create_sync_objects();
+int vkz_create_sync_objects(void);
 
 /**
  * @brief Destroy sync objects for a given pipeline
  *
  */
-int vkz_destroy_sync_objects();
+int vkz_destroy_sync_objects(void);
 
 /**
  * @brief Acquire next swapchain image
@@ -195,7 +195,7 @@ int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index);
  *
  *
  */
-int vkz_present_next_image();
+int vkz_present_next_image(void);
 
 /**
  * @brief  Send draw commands (will take effect on the current pipeline image
@@ -311,6 +311,6 @@ int vkz_create_sampler(VkSampler* sampler);
  *         logical device and the Vulkan instance.
  * @return 1 if successful, 0 otherwise
  */
-int vkz_shutdown();
+int vkz_shutdown(void);
 
 #endif //VKZOS_H

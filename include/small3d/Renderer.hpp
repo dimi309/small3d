@@ -9,11 +9,13 @@
 
 #pragma once
 
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #else
+#ifdef __ANDROID__
 #include <android/asset_manager.h>
+#endif
 #endif
 
 #include "Logger.hpp"
@@ -73,7 +75,7 @@ namespace small3d
 
   private:
 
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
     GLFWwindow* window;
 #endif
 
@@ -333,7 +335,7 @@ namespace small3d
      */
     ~Renderer();
 
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
     /**
      * @brief Get the GLFW window object, associated with the Renderer.
      */

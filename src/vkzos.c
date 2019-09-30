@@ -457,7 +457,7 @@ int select_physical_device() {
       if (!supportDetailsOk) {
         LOGDEBUG0(
           "Swapcain not supported or failed to retrieve support detais!");
-        return 0;
+      
       } else {
 
         vkz_physical_device = pds[n];
@@ -611,7 +611,7 @@ int create_logical_device() {
   return logical_device_created;
 }
 
-int vkz_create_depth_image() {
+int vkz_create_depth_image(void) {
 
   VkFormat candidate_formats[3];
   candidate_formats[0] = VK_FORMAT_D32_SFLOAT;
@@ -654,14 +654,14 @@ int vkz_create_depth_image() {
     VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 }
 
-int vkz_destroy_depth_image() {
+int vkz_destroy_depth_image(void) {
   vkDestroyImageView(vkz_logical_device, depth_image_view, NULL);
   vkDestroyImage(vkz_logical_device, depth_image, NULL);
   vkFreeMemory(vkz_logical_device, depth_image_memory, NULL);
   return 1;
 }
 
-int vkz_init() {
+int vkz_init(void) {
   if (!(select_physical_device() && select_queue_families() &&
     create_logical_device())) {
     return 0;
@@ -982,7 +982,7 @@ int vkz_create_swapchain(const uint32_t width, const uint32_t height,
     create_render_pass() && create_framebuffers(render_pass);
 }
 
-int vkz_destroy_swapchain() {
+int vkz_destroy_swapchain(void) {
 
   // This function sometimes produced the error
   // "Thread 1: EXC_BAD_ACCESS (code=1, address=0x150)"
@@ -1490,7 +1490,7 @@ int vkz_destroy_draw_command_buffer(VkCommandBuffer* command_buffer) {
 }
 
 
-int vkz_create_sync_objects() {
+int vkz_create_sync_objects(void) {
 
   VkFenceCreateInfo fence_ci;
   memset(&fence_ci, 0, sizeof(VkFenceCreateInfo));
@@ -1523,7 +1523,7 @@ int vkz_create_sync_objects() {
   return 1;
 }
 
-int vkz_destroy_sync_objects() {
+int vkz_destroy_sync_objects(void) {
 
   VkResult rwait;
   do {
@@ -1579,7 +1579,7 @@ int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index) {
   return 1;
 }
 
-int vkz_present_next_image() {
+int vkz_present_next_image(void) {
 
   VkPresentInfoKHR pinf;
   memset(&pinf, 0, sizeof(VkPresentInfoKHR));
@@ -1942,7 +1942,7 @@ int vkz_create_sampler(VkSampler* sampler) {
   return 1;
 }
 
-int vkz_shutdown() {
+int vkz_shutdown(void) {
 
   if (logical_device_created) {
     vkDeviceWaitIdle(vkz_logical_device);
