@@ -9,13 +9,13 @@
 
 #pragma once
 
-#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
+#if defined(__ANDROID__)
+#include <android/asset_manager.h>
+#elif defined(__APPLE__) && defined(__MACH__)
+// todo: Add ios includes if necessary
+#else
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-#else
-#ifdef __ANDROID__
-#include <android/asset_manager.h>
-#endif
 #endif
 
 #include "Logger.hpp"
