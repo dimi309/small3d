@@ -3,7 +3,7 @@
 ## Introduction
 
 This is a free, open source, minimalistic 3D framework for the programmer who 
-would like to make games for PCs using a basic set of libraries (glfw, 
+would like to make games for using a basic set of libraries (glfw, 
 glm, png, zlib, ogg, vorbis, portaudio, freetype, bzip) and relying on
 C++ to do the rest. It helps you by providing you with cross-platform rendering
 functionality based on glfw and Vulkan (many thanks to the [Vulkan Tutorial](https://vulkan
@@ -17,18 +17,20 @@ A very easy to use Sound object is also provided that can play OGG files on all
 supported platforms via a common interface. Basic collision detection has
 also been implemented.
 
-small3d works on Windows, MacOS, Linux and Android and supports Visual Studio, 
-gcc (even MinGW) and clang for compilation. 
+small3d works on Windows, MacOS, Linux, iOS and Android and supports Visual Studio,
+Xcode, gcc (even MinGW) and clang for compilation. 
 
 All small3d dependencies, appart from the Vulkan SDK, are distributed together with 
 its source code. They can be built by executing a single script (see below).
 
 The instructions and example below are about building and using small3d on a PC 
-(Windows, Linux or MacOS). No instructions are provided for Android at this point,
-but please have a look at the *android* directory for the cmake configuration
+(Windows, Linux or MacOS). No instructions are provided for Android nor iOS at this 
+point, but please have a look at the *android* directory for the cmake configuration
 and main test program that have been used while adapting the framework
 to that platform, as well as the *deps/prepare-android.bat* file which can
-be used on Windows to build the relevant dependencies. 
+be used on Windows to build the relevant dependencies. In the *ios* directory you 
+can also find source code that has been used for compiling and testing small3d 
+on iOS. The corresponding dependency preparation script is *deps/prepare-ios.sh*.
 
 ## Building
 
