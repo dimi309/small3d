@@ -120,9 +120,12 @@ namespace small3d {
 
   bool Sound::noOutputDevice;
   unsigned int Sound::numInstances = 0;
+
+#ifdef SMALL3D_IOS
   ALCdevice* Sound::openalDevice;
   ALCcontext* Sound::openalContext;
-
+#endif
+  
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
   PaDeviceIndex Sound::defaultOutput;
 

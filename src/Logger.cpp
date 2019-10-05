@@ -13,8 +13,6 @@
 
 #ifdef __ANDROID__
 #include <android/log.h>
-#elif defined(__APPLE__) && defined(__MACH__)
-#include "interop.h"
 #endif
 
 std::shared_ptr<small3d::Logger> logger;
@@ -34,9 +32,6 @@ namespace small3d {
   }
 
   Logger::Logger() {
-#if defined(__APPLE__) && defined(__MACH__)
-    init_log();
-#endif
     this->append(loggerinfo, "Logger created");
   }
 
@@ -68,23 +63,6 @@ namespace small3d {
       }
 
       __android_log_write(lp, "small3d logger", message.c_str());
-    
-#elif defined(__APPLE__) && defined(__MACH__)
-    
-    switch (level) {
-      case loggerinfo:
-        log_info(message.c_str());
-            break;
-      case loggerdebug:
-        log_debug(message.c_str());
-            break;
-      case loggererror:
-        log_error(message.c_str());
-            break;
-      default:
-        log_debug(message.c_str());
-            break;
-    }
     
 #else
       std::ostringstream dateTimeOstringstream;
