@@ -17,6 +17,10 @@ extern "C" {
 #include <glm/gtc/matrix_transform.hpp>
 #include <cstring>
 
+#ifdef SMALL3D_IOS
+#include "interop.h"
+#endif
+
 namespace small3d {
 
   void errorCallback(int error, const char* description)
@@ -244,8 +248,7 @@ namespace small3d {
   }
 
   void Renderer::initVulkan() {
-#if defined(__ANDROID__) || (defined(__APPLE__) && defined(__MACH__))
-#ifdef __ANDROID__
+#if defined(__ANDROID__)
     const char *exts[2];
 
     exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
@@ -269,7 +272,25 @@ namespace small3d {
       VK_SUCCESS) {
       throw std::runtime_error("Could not create surface.");
     }
-#endif
+#elif defined(SMALL3D_IOS)
+    
+    const char *exts[2];
+    
+    exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
+    exts[1] = VK_MVK_IOS_SURFACE_EXTENSION_NAME;
+    
+    uint32_t num = 2;
+    
+    LOGDEBUG("Creating Vulkan instance...");
+
+    if (!vkz_create_instance(windowTitle.c_str(), exts, num)) {
+      throw std::runtime_error("Failed to create Vulkan instance.");
+    }
+    
+    if (!create_ios_surface(vkz_instance, &vkz_surface)) {
+      throw std::runtime_error("Could not create surface.");
+    }
+    
 #else
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
@@ -902,6 +923,12 @@ namespace small3d {
     realScreenHeight = height;
 
     this->shadersPath = shadersPath;
+    
+#ifdef SMALL3D_IOS
+    std::string basePath = get_base_path();
+    basePath += "/";
+    this->shadersPath = basePath + this->shadersPath;
+#endif
 
     this->initWindow(realScreenWidth, realScreenHeight);
 
@@ -910,9 +937,9 @@ namespace small3d {
 
     this->initVulkan();
 
-    std::string vertexShaderPath = shadersPath +
+    std::string vertexShaderPath = this->shadersPath +
       "perspectiveMatrixLightedShader.spv";
-    std::string fragmentShaderPath = shadersPath +
+    std::string fragmentShaderPath = this->shadersPath +
       "textureShader.spv";
 
     if (!vkz_create_sampler(&textureSampler)) {
@@ -932,9 +959,9 @@ namespace small3d {
       boundTextureViews[i] = getTextureHandle("blank").imageView;
     }
 
-    std::string orthoVertexShaderPath = shadersPath +
+    std::string orthoVertexShaderPath = this->shadersPath +
       "simpleVertexShader.spv";
-    std::string orthoFragmentShaderPath = shadersPath +
+    std::string orthoFragmentShaderPath = this->shadersPath +
       "simpleFragmentShader.spv";
 
     vkz_create_pipeline(orthoVertexShaderPath.c_str(),
@@ -1002,12 +1029,13 @@ namespace small3d {
   }
 
   void Renderer::initWindow(int& width, int& height) {
-#if defined(__ANDROID__) || (defined(__APPLE__) && defined(__MACH__))
-#ifdef __ANDROID__
+#if defined(__ANDROID__)
     assert(vkz_android_app->window != nullptr);
     width = ANativeWindow_getWidth(vkz_android_app->window);
     height = ANativeWindow_getHeight(vkz_android_app->window);
-#endif
+#elif defined(SMALL3D_IOS)
+    width = get_app_width();
+    height = get_app_height();
 #else
     glfwSetErrorCallback(errorCallback);
 
@@ -1031,7 +1059,7 @@ namespace small3d {
 
       const GLFWvidmode* mode = glfwGetVideoMode(monitor);
       // Full screen on a mac is very slow, hence this hack
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(SMALL3D_IOS)
       width = mode->width * 0.8;
       height = mode->height * 0.8;
       monitor = nullptr; // back to windowed mode
@@ -1122,7 +1150,7 @@ namespace small3d {
   }
 
   Renderer::Renderer() {
-#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     window = 0;
 #endif
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
@@ -1137,7 +1165,7 @@ namespace small3d {
     const std::string shadersPath,
     const uint32_t maxObjectsPerPass) {
 
-#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     window = 0;
 #endif
 
@@ -1302,7 +1330,7 @@ namespace small3d {
     // glfwTerminate();
   }
 
-#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
   GLFWwindow* Renderer::getWindow() const {
     return window;
   }
@@ -1325,6 +1353,12 @@ namespace small3d {
 
     if (idFacePair == fontFaces.end()) {
       std::string faceFullPath = fontPath;
+#ifdef SMALL3D_IOS
+      std::string basePath = get_base_path();
+      basePath += "/";
+      faceFullPath = basePath + faceFullPath;
+#endif
+      
       LOGDEBUG("Loading font from " + faceFullPath);
 #ifdef __ANDROID__
       AAsset *asset = AAssetManager_open(vkz_android_app->activity->assetManager,

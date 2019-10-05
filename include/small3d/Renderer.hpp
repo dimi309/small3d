@@ -11,7 +11,7 @@
 
 #if defined(__ANDROID__)
 #include <android/asset_manager.h>
-#elif defined(__APPLE__) && defined(__MACH__)
+#elif defined(SMALL3D_IOS)
 // todo: Add ios includes if necessary
 #else
 #define GLFW_INCLUDE_VULKAN
@@ -75,7 +75,7 @@ namespace small3d
 
   private:
 
-#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     GLFWwindow* window;
 #endif
 
@@ -215,7 +215,7 @@ namespace small3d
 
     void setPerspectiveAndLight();
 
-    // On Android, it is useful to be able to destroy and recreate the
+    // On Android and iOS, it is useful to be able to destroy and recreate the
     // renderer, so it is not provided only as a singleton for that platform.
     // By the way, do NOT create a renderer using getInstance and then
     // try to delete it in code. That will make an app crash. Either
@@ -223,7 +223,7 @@ namespace small3d
     // will be destroyed automatically when the program terminates,
     // or instantiate it with "new" if you would like to delete it
     // later.
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(SMALL3D_IOS)
   public:
 		Renderer(const std::string windowTitle = "",
 						 const int width = 0,
@@ -233,9 +233,12 @@ namespace small3d
 						 const float zFar = 24.0f,
 						 const float zOffsetFromCamera = -1.0f,
 						 const std::string shadersPath =
+#ifndef SMALL3D_IOS
 						 "resources/shaders/",
+#else
+             "resources1/shaders/",
+#endif
 						 const uint32_t maxObjectsPerPass = 20);
-
 #else
     Renderer(const std::string windowTitle, const int width,
 	     const int height, const float frustumScale, const float zNear,
@@ -247,7 +250,7 @@ namespace small3d
 
     Renderer();
 
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
   public:
 #endif
     
@@ -335,7 +338,7 @@ namespace small3d
      */
     ~Renderer();
 
-#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     /**
      * @brief Get the GLFW window object, associated with the Renderer.
      */
@@ -459,8 +462,11 @@ namespace small3d
 	       const glm::vec2 topLeft, const glm::vec2 bottomRight,
 	       const int fontSize=48,
 	       const std::string fontPath =
+#ifndef SMALL3D_IOS
 	       "resources/fonts/CrusoeText/CrusoeText-Regular.ttf");
-
+#else
+         "resources1/fonts/CrusoeText/CrusoeText-Regular.ttf");
+#endif
     /**
      * @brief Clear a Model from the GPU buffers (the object itself remains
      *        intact).

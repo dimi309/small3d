@@ -12,10 +12,12 @@
 #include "GetTokens.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__)
 #include "vkzos.h"
 #include <streambuf>
 #include <istream>
+#elif defined(SMALL3D_IOS)
+#include "interop.h"
 #endif
 
 namespace small3d {
@@ -29,7 +31,16 @@ namespace small3d {
     facesVertexIndexes.clear();
     numBoxes = 0;
 
-    if (fileLocation != "") this->loadFromFile(fileLocation);
+    if (fileLocation != "") {
+#ifdef SMALL3D_IOS
+      std::string basePath = get_base_path();
+      basePath += "/";
+      this->loadFromFile(basePath + fileLocation);
+#else
+      this->loadFromFile(fileLocation);
+#endif
+      
+    }
 
   }
 

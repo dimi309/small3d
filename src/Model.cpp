@@ -13,6 +13,10 @@
 #include "GetTokens.hpp"
 #include "Model.hpp"
 
+#ifdef SMALL3D_IOS
+#include "interop.h"
+#endif
+
 #ifdef __ANDROID__
 #include "vkzos.h"
 #include <streambuf>
@@ -229,10 +233,19 @@ namespace small3d {
       clear();
       while (std::getline(in, line)) {
 #else
-    std::ifstream file(fileLocation.c_str());
-    if (file.is_open()) {
-      clear();
-      while (getline(file, line)) {
+
+#ifdef SMALL3D_IOS
+        std::string basePath = get_base_path();
+        basePath += "/";
+        std::ifstream file((basePath + fileLocation).c_str());
+        
+#else
+        std::ifstream file(fileLocation.c_str());
+#endif
+        
+        if (file.is_open()) {
+          clear();
+          while (getline(file, line)) {
 #endif
         if (line[0] == 'v' || line[0] == 'f') {
           std::vector<std::string> tokens;

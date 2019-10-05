@@ -14,6 +14,10 @@
 #include "vkzos.h"
 #endif
 
+#ifdef SMALL3D_IOS
+#include "interop.h"
+#endif
+
 namespace small3d {
 
   Image::Image(const std::string fileLocation) : imageData() {
@@ -22,8 +26,15 @@ namespace small3d {
     height = 0;
     imageDataSize=0;
 
-    if (fileLocation != "")
+    if (fileLocation != "") {
+#ifdef SMALL3D_IOS
+      std::string basePath = get_base_path();
+      basePath += "/";
+      this->loadFromFile(basePath + fileLocation);
+#else
       this->loadFromFile(fileLocation);
+#endif
+    }
   }
 
   void Image::toColour(glm::vec4 colour) {

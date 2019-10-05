@@ -6,21 +6,29 @@
  *     License: BSD 3-Clause License (see LICENSE file)
  */
 
-
 #include "Sound.hpp"
 #include "Logger.hpp"
+
 #include <vector>
 #include <stdexcept>
 #include <cstring>
 #include <vorbis/vorbisfile.h>
-#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
-#include <GLFW/glfw3.h>
-#else
+
+#if defined(__ANDROID__) || defined(SMALL3D_IOS)
 #include "vkzos.h"
 #include <sys/time.h>
+#else
+#include <GLFW/glfw3.h>
 #endif
+
+#ifdef SMALL3D_IOS
+#include "interop.h"
+#endif
+
 #define WORD_SIZE 2
 #define PORTAUDIO_SAMPLE_FORMAT paInt16
+
+// todo: check if this is correct for iOS
 #ifndef __ANDROID__
 #define SAMPLE_DATATYPE short
 #else
@@ -112,8 +120,10 @@ namespace small3d {
 
   bool Sound::noOutputDevice;
   unsigned int Sound::numInstances = 0;
+  ALCdevice* Sound::openalDevice;
+  ALCcontext* Sound::openalContext;
 
-#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
   PaDeviceIndex Sound::defaultOutput;
 
   int Sound::audioCallback(const void *inputBuffer, void *outputBuffer,
@@ -129,7 +139,7 @@ namespace small3d {
       soundData->startTime = glfwGetTime() - 0.1;
     } else if (glfwGetTime() - soundData->startTime > soundData->duration) {
       if (soundData->repeat) {
-	soundData->startTime = glfwGetTime() - 0.1;
+        soundData->startTime = glfwGetTime() - 0.1;
         soundData->currentFrame = 0;
       }
       else {
@@ -162,8 +172,7 @@ namespace small3d {
     return result;
   }
 
-#else
-#ifdef __ANDROID__
+#elif defined(__ANDROID__)
    aaudio_data_callback_result_t Sound::audioCallback (
     AAudioStream *stream,
     void *userData,
@@ -191,13 +200,15 @@ namespace small3d {
      return AAUDIO_CALLBACK_RESULT_CONTINUE;
   }
 #endif
-#endif
+
 
   Sound::Sound() {
-#if !(defined(__APPLE__) && defined(__MACH__))
+
+#if !defined(SMALL3D_IOS)
     this->stream = nullptr;
 #endif
-#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
+
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     if (numInstances == 0) {
       LOGDEBUG("No Sound instances exist. Initialising PortAudio");
 
@@ -217,38 +228,56 @@ namespace small3d {
         noOutputDevice = true;
       }
     }
-#else
-#ifdef __ANDROID__
+#elif defined(__ANDROID__)
     if (AAudio_createStreamBuilder(&streamBuilder) != AAUDIO_OK) {
       LOGERROR("Failed to create stream builder.");
       noOutputDevice = true;
     } else {
       AAudioStreamBuilder_setDeviceId(streamBuilder, AAUDIO_UNSPECIFIED);
     }
-#endif
+#elif defined(SMALL3D_IOS)
+    if (numInstances == 0) {
+      openalDevice = alcOpenDevice(nullptr);
+      if (!openalDevice) {
+        throw std::runtime_error("Could not open OpenAL device.");
+      }
+      openalContext = alcCreateContext(openalDevice, nullptr);
+      alcMakeContextCurrent(openalContext);
+      
+    }
 #endif
     ++numInstances;
   }
   
   Sound::Sound(const std::string soundFilePath) : Sound() {
+#ifdef SMALL3D_IOS
+    std::string basePath = get_base_path();
+    basePath += "/";
+    this->load(basePath + soundFilePath);
+#else
     this->load(soundFilePath);
+#endif
   }
 
   Sound::~Sound() {
-#if !(defined(__APPLE__) && defined(__MACH__))
+
+#if !defined(SMALL3D_IOS)
     if (stream != nullptr) {
 #else
-      if (true) {
+    if (true) {
 #endif
       stop();
-#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
-      Pa_CloseStream(stream);
-#else
-#ifdef __ANDROID__
+      
+#if defined(__ANDROID__)
       AAudioStream_close(stream);
       AAudioStreamBuilder_delete(streamBuilder);
+#elif defined(SMALL3D_IOS)
+      alDeleteBuffers((ALuint) 1, &openalBuffer);
+      alDeleteSources((ALuint) 1, &openalSource);
+#else
+      Pa_CloseStream(stream);
 #endif
-#endif
+
     }
     --numInstances;
     if(numInstances == 0) {
@@ -256,6 +285,11 @@ namespace small3d {
       // declared as a global.
       //LOGDEBUG("Last Sound instance destroyed. Terminating PortAudio.");
       //Pa_Terminate();
+#ifdef SMALL3D_IOS
+      alcMakeContextCurrent(nullptr);
+      alcDestroyContext(openalContext);
+      alcCloseDevice(openalDevice);
+#endif
     }
   }
 
@@ -344,11 +378,13 @@ namespace small3d {
       } while (ret != 0);
       
       ov_clear(&vorbisFile);
+      
 #ifndef __ANDROID__
       fclose(fp);
 #else
       AAsset_close(asset);
 #endif
+      
       char soundInfo[100];
       sprintf(soundInfo, "Loaded sound - channels %d - rate %d - samples %ld "
 	      "- size in bytes %ld", this->soundData.channels,
@@ -362,7 +398,7 @@ namespace small3d {
   }
 
   void Sound::openStream() {
-#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     PaStreamParameters outputParams;
       
     memset(&outputParams, 0, sizeof(PaStreamParameters));
@@ -384,8 +420,7 @@ namespace small3d {
       throw std::runtime_error("Failed to open PortAudio stream: " +
 			       std::string(Pa_GetErrorText(error)));
     }
-#else
-#ifdef __ANDROID__
+#elif defined(__ANDROID__)
     AAudioStreamBuilder_setSampleRate(streamBuilder, soundData.rate / SAMPLES_PER_FRAME);
     AAudioStreamBuilder_setChannelCount(streamBuilder, soundData.channels);
     AAudioStreamBuilder_setFormat(streamBuilder, AAUDIO_FORMAT_PCM_I16);
@@ -395,13 +430,19 @@ namespace small3d {
       soundData.samples / SAMPLES_PER_FRAME);
     AAudioStreamBuilder_setDataCallback(streamBuilder, Sound::audioCallback, &soundData);
     AAudioStreamBuilder_openStream(streamBuilder, &stream);
-#endif
+#elif defined(SMALL3D_IOS)
+    alGenSources((ALuint)1, &openalSource);
+    alGenBuffers((ALuint)1, &openalBuffer);
+    alBufferData(openalBuffer, AL_FORMAT_MONO16, (const ALvoid *)soundData.data.data(),
+                 (ALsizei)soundData.size, (ALsizei)soundData.rate);
+    alSourcei(openalSource, AL_BUFFER, openalBuffer);
 #endif
   }
 
   void Sound::play(const bool repeat) {
     if (!noOutputDevice && this->soundData.size > 0) {
-#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
+      
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
 
       PaError error;
 
@@ -413,52 +454,51 @@ namespace small3d {
         }
       }
 
-#else
-#ifdef __ANDROID__
+#elif defined(__ANDROID__)
       aaudio_stream_state_t s = AAudioStream_getState(stream);
       if (s != AAUDIO_STREAM_STATE_STOPPED && s != AAUDIO_STREAM_STATE_STOPPING) {
         AAudioStream_requestStop(stream);
       }
-#endif
+#elif defined(SMALL3D_IOS)
+      alSourcei(openalSource, AL_LOOPING, repeat);
+      alSourcePlay(openalSource);
 #endif
 
       this->soundData.currentFrame = 0;
       this->soundData.startTime = 0;
       this->soundData.repeat = repeat;
 
-#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
       error = Pa_StartStream(stream);
       if (error != paNoError) {
         throw std::runtime_error("Failed to start stream: " +
 				 std::string(Pa_GetErrorText(error)));
       }
-#else
-#ifdef __ANDROID
+#elif defined(__ANDROID__)
       AAudioStream_requestStart(stream);
 #endif
-#endif
   }
-
 }
 
   void Sound::stop() {
-    #if !(defined(__APPLE__) && defined(__MACH__))
+    
+#if !defined(SMALL3D_IOS)
     if (this->stream != nullptr) {
 #else
       if(true) {
-        
 #endif
-#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
-      Pa_AbortStream(stream);
-#else
-#ifdef __ANDROID__
+
+#if defined(__ANDROID__)
       if (AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTED ||
           AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTING ||
           AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSED ||
           AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSING) {
         AAudioStream_requestStop(stream);
       }
-#endif
+#elif defined(SMALL3D_IOS)
+        alSourceStop(openalSource);
+#else
+        Pa_AbortStream(stream);
 #endif
       this->soundData.currentFrame = 0;
       this->soundData.startTime = 0;
@@ -467,7 +507,8 @@ namespace small3d {
 
   Sound::Sound(const Sound& other) : Sound() {
     this->soundData = other.soundData;
-#if !(defined(__APPLE__) && defined(__MACH__))
+
+#if !defined(SMALL3D_IOS)
     this->stream = nullptr;
 #endif
     this->openStream();
@@ -476,7 +517,7 @@ namespace small3d {
 
   Sound::Sound(const Sound&& other) : Sound() {
     this->soundData = other.soundData;
-    #if !(defined(__APPLE__) && defined(__MACH__))
+#if !defined(SMALL3D_IOS)
     this->stream = nullptr;
 #endif
     this->openStream();
@@ -484,35 +525,39 @@ namespace small3d {
   }
 
   Sound& Sound::operator=(const Sound& other) {
-#if  !(defined(__APPLE__) && defined(__MACH__))
+#if  !defined(SMALL3D_IOS)
     if (this->stream != nullptr) {
 
       Pa_AbortStream(this->stream);
       Pa_CloseStream(this->stream);
 
     }
-    #endif
+#endif
+
     this->soundData = other.soundData;
-    #if !(defined(__APPLE__) && defined(__MACH__))
+    
+#if !defined(SMALL3D_IOS)
     this->stream = nullptr;
 #endif
+    
     this->openStream();
     return *this;
   }
 
   Sound& Sound::operator=(const Sound&& other) {
-    #if !(defined(__APPLE__) && defined(__MACH__))
+#if !defined(SMALL3D_IOS)
     if (this->stream != nullptr) {
 #else
       if (true) {
 #endif
-#if !defined(__ANDROID__) && !(defined(__APPLE__) && defined(__MACH__))
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
       Pa_AbortStream(this->stream);
       Pa_CloseStream(this->stream);
 #endif
     }
     this->soundData = other.soundData;
-      #if !(defined(__APPLE__) && defined(__MACH__))
+      
+#if !defined(SMALL3D_IOS)
     this->stream = nullptr;
 #endif
       this->openStream();

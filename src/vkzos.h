@@ -16,7 +16,11 @@
 extern struct android_app *vkz_android_app;
 #endif
 
+#ifdef SMALL3D_IOS
+#include <MoltenVK/mvk_vulkan.h>
+#else
 #include <vulkan/vulkan.h>
+#endif
 
  /**
   * @brief The Vulkan instance

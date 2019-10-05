@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <vulkan/vulkan.h>
 
 typedef int BOOL;
 #define TRUE 1
