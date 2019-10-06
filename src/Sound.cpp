@@ -528,7 +528,7 @@ namespace small3d {
   }
 
   Sound& Sound::operator=(const Sound& other) {
-#if  !defined(SMALL3D_IOS)
+#if  !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     if (this->stream != nullptr) {
 
       Pa_AbortStream(this->stream);
