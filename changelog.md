@@ -3,7 +3,7 @@
 small3d changes per version
 ===========================
 
-v-beta (no version assigned yet)
+v1.700
 
 - Migrated to Vulkan
 

@@ -3,7 +3,7 @@
 ## Introduction
 
 This is a free, open source, minimalistic 3D framework for the programmer who 
-would like to make games for using a basic set of libraries (glfw, 
+would like to make games using a basic set of libraries (glfw, 
 glm, png, zlib, ogg, vorbis, portaudio, freetype, bzip) and relying on
 C++ to do the rest. It helps you by providing you with cross-platform rendering
 functionality based on glfw and Vulkan (many thanks to the [Vulkan Tutorial](https://vulkan
