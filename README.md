@@ -6,37 +6,41 @@ This is a free, open source, minimalistic 3D framework for the programmer who
 would like to make games using a basic set of libraries (glfw, 
 glm, png, zlib, ogg, vorbis, portaudio, freetype, bzip) and relying on
 C++ to do the rest. It helps you by providing you with cross-platform rendering
-functionality based on Vulkan (many thanks to the [Vulkan Tutorial](https://vulkan
--tutorial.com/) and Sascha Willems' excellent [Vulkan examples and demos]
-(https://github.com/SaschaWillems/Vulkan)). You can also find the OpenGL edition of 
-the framework online.
+functionality based on Vulkan (many thanks to the [Vulkan Tutorial](https://vulk
+an-tutorial.com/) and Sascha Willems' excellent [Vulkan examples and demos]
+(https://github.com/SaschaWillems/Vulkan)). You can also find the OpenGL edition
+of the framework online.
 
-small3d can render Wavefront models, animate them as frames, map textures on them, 
-provide some basic lighting (Gouraud shading) and also render images and text. 
+small3d can render Wavefront models, animate them as frames, map textures on 
+them, provide some basic lighting (Gouraud shading) and also render images and
+text.
+
 A very easy to use Sound object is also provided that can play OGG files on all
 supported platforms via a common interface. Basic collision detection has
 also been implemented.
 
-small3d works on Windows, MacOS, Linux, iOS and Android and supports Visual Studio,
-Xcode, gcc (even MinGW) and clang for compilation. 
+small3d works on Windows, MacOS, Linux, iOS and Android and supports Visual 
+Studio, Xcode, gcc (even MinGW) and clang for compilation. 
 
-All small3d dependencies, appart from the Vulkan SDK, are distributed together with 
-its source code. They can be built by executing a single script (see below).
+All small3d dependencies, appart from the Vulkan SDK, are distributed together 
+with its source code. They can be built by executing a single script (see 
+below).
 
 The instructions and example below are about building and using small3d on a PC 
-(Windows, Linux or MacOS). No instructions are provided for Android nor iOS at this 
-point, but please have a look at the *android* directory for the cmake configuration
-and main test program that have been used while adapting the framework
-to that platform, as well as the *deps/prepare-android.bat* file which can
-be used on Windows to build the relevant dependencies. In the *ios* directory you 
-can also find source code that has been used for compiling and testing small3d 
-on iOS. The corresponding dependency preparation script is *deps/prepare-ios.sh*.
+(Windows, Linux or MacOS). No instructions are provided for Android nor iOS at 
+this point, but please have a look at the *android* directory for the cmake 
+configuration and main test program that have been used while adapting the 
+framework to that platform, as well as the *deps/prepare-android.bat* file which
+can be used on Windows to build the relevant dependencies. In the *ios* 
+directory you can also find source code that has been used for compiling and 
+testing small3d on iOS. The corresponding dependency preparation script is 
+*deps/prepare-ios.sh*.
 
 ## Building
 
-Before starting, note that the Vulkan SDK and cmake have to be installed on your 
-system and accessible on the command line. On Windows, 7zip also has to be in 
-the path and you also need to install the MinGW compiler or Visual Studio, 
+Before starting, note that the Vulkan SDK and cmake have to be installed on 
+your system and accessible on the command line. On Windows, 7zip also has to be 
+in the path and you also need to install the MinGW compiler or Visual Studio, 
 again with their tools available on the command line.
 
 Run the *prepare.bat* (Windows MinGW), *prepare-vs.bat* (Windows Visual Studio)
