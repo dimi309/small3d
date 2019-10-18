@@ -435,7 +435,8 @@ namespace small3d {
 		     const int height, const float frustumScale,
 		     const float zNear, const float zFar,
 		     const float zOffsetFromCamera,
-		     const std::string shadersPath) {
+		     const std::string shadersPath,
+		     const uint32_t maxObjectsPerPass) {
 
     window = 0;
     perspectiveProgram = 0;
@@ -467,10 +468,12 @@ namespace small3d {
 				  const float frustumScale,
 				  const float zNear, const float zFar,
 				  const float zOffsetFromCamera,
-				  const std::string shadersPath) {
+				  const std::string shadersPath,
+				  const uint32_t maxObjectsPerPass) {
 
     static Renderer instance(windowTitle, width, height, frustumScale, zNear,
-			     zFar, zOffsetFromCamera, shadersPath);
+			     zFar, zOffsetFromCamera, shadersPath,
+			     maxObjectsPerPass);
     return instance;
   }
 

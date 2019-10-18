@@ -93,7 +93,8 @@ namespace small3d
 
     Renderer(const std::string windowTitle, const int width, const int height,
 	     const float frustumScale, const float zNear, const float zFar,
-	     const float zOffsetFromCamera, const std::string shadersPath);
+	     const float zOffsetFromCamera, const std::string shadersPath,
+	     const uint32_t maxObjectsPerPass);
     
     Renderer();
     
@@ -143,6 +144,8 @@ namespace small3d
      *                          provided. The shader code can be changed,
      *                          provided that their inputs and outputs are
      *                          maintained the same.
+     * @param maxObjectsPerPass Ignored parameter (used for compatibility with
+     *                          Vulkan edition).
      * @return                  The Renderer object. It can only be assigned to 
      *                          a pointer by its address (Renderer *r =
      *                          &Renderer::getInstance(...), since declaring
@@ -158,7 +161,8 @@ namespace small3d
 				 const float zFar = 24.0f,
 				 const float zOffsetFromCamera = -1.0f,
 				 const std::string shadersPath =
-				 "resources/shaders/");
+				 "resources/shaders/",
+				 const uint32_t maxObjectsPerPass = 20);
 
     /**
      * @brief Destructor
