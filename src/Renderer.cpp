@@ -372,6 +372,13 @@ namespace small3d {
 
     glfwMakeContextCurrent(window);
 
+    width = 0;
+    height = 0;
+    glfwGetFramebufferSize(window, &width, &height);
+
+    LOGINFO("Framebuffer width " + intToStr(width) + " height " +
+	    intToStr(height));
+
   }
 
   void Renderer::setPerspectiveAndLight() {
