@@ -1068,7 +1068,7 @@ namespace small3d {
       height = mode->height;
 #endif
       LOGINFO("Detected screen width " + intToStr(width) + " and height " +
-        intToStr(height));
+	      intToStr(height));
     }
 
     window = glfwCreateWindow(width, height, windowTitle.c_str(), monitor,
