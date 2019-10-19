@@ -1076,6 +1076,14 @@ namespace small3d {
     if (!window) {
       throw std::runtime_error("Unable to create GLFW window");
     }
+
+    width = 0;
+    height = 0;
+    glfwGetFramebufferSize(window, &width, &height);
+
+    LOGINFO("Framebuffer width " + intToStr(width) + " height " +
+	    intToStr(height));
+    
 #endif
   }
 
