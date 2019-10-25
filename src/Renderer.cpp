@@ -168,6 +168,7 @@ namespace small3d {
     vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(),
 		     1, 0, 0, 0);
 
+
   }
 
   int Renderer::setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo*
@@ -1468,10 +1469,6 @@ namespace small3d {
 
       vkDestroyImageView(vkz_logical_device,
 			 nameTexturePair->second.imageView, NULL);
-      vkFreeDescriptorSets(vkz_logical_device, descriptorPool, 1, 
-        &nameTexturePair->second.descriptorSet);
-      vkFreeDescriptorSets(vkz_logical_device, orthoDescriptorPool, 1, 
-        &nameTexturePair->second.orthoDescriptorSet);
       vkz_destroy_image(nameTexturePair->second.image,
 			nameTexturePair->second.imageMemory);
 
