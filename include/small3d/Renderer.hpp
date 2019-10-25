@@ -458,6 +458,8 @@ namespace small3d
      *                    rectangle
      * @param fontSize    The size of the font which will be used
      * @param fontPath    Path to the TrueType font (.ttf) which will be used
+     * @param cache       True to keep generated text texture after rendering
+     *                    for reuse. False to delete it.
      */
     void write(const std::string text, const glm::vec3 colour,
 	       const glm::vec2 topLeft, const glm::vec2 bottomRight,
