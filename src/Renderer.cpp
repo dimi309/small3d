@@ -40,7 +40,7 @@ namespace small3d {
   };
 
   /**
-   * @brief Structure used to keep track of the camera orientation uniform 
+   * @brief Structure used to keep track of the camera orientation uniform
    *        buffer created on the GPU. Used internally
    */
   struct UboCamera {
@@ -58,6 +58,31 @@ namespace small3d {
   struct UboLight {
     float intensity;
   };
+
+  std::string interpretResult(VkResult result) {
+    std::string resultStr;
+    switch (result) {
+    case VK_SUCCESS:
+      resultStr = "success";
+      break;
+    case VK_ERROR_OUT_OF_HOST_MEMORY:
+      resultStr = "out of host memory";
+      break;
+    case VK_ERROR_OUT_OF_DEVICE_MEMORY:
+      resultStr = "out of device memory";
+      break;
+    case VK_ERROR_FRAGMENTED_POOL:
+      resultStr = "fragmented pool";
+      break;
+    case VK_ERROR_OUT_OF_POOL_MEMORY:
+      resultStr = "out of pool memory";
+      break;
+    default:
+      resultStr = "unknown result";
+      break;
+    }
+    return resultStr;
+  }
 
   std::vector<Model> Renderer::nextModelsToDraw;
 
@@ -78,7 +103,7 @@ namespace small3d {
 
 
   int Renderer::setInputStateCallback(VkPipelineVertexInputStateCreateInfo*
-				      inputStateCreateInfo) {
+    inputStateCreateInfo) {
 
     memset(bd, 0, 3 * sizeof(VkVertexInputBindingDescription));
 
@@ -117,7 +142,7 @@ namespace small3d {
   }
 
   int Renderer::setPipelineLayoutCallback(VkPipelineLayoutCreateInfo*
-					  pipelineLayoutCreateInfo) {
+    pipelineLayoutCreateInfo) {
     perspectiveLayouts[0] = descriptorSetLayout;
     perspectiveLayouts[1] = textureDescriptorSetLayout;
     pipelineLayoutCreateInfo->setLayoutCount = 2;
@@ -156,22 +181,22 @@ namespace small3d {
       static_cast<uint32_t>(dynamicColourAlignment);
 
     const uint32_t dynamicOffsets[2] = { dynamicOrientationOffset,
-					 dynamicColourOffset };
+           dynamicColourOffset };
 
     const VkDescriptorSet descriptorSets[2] =
-      { descriptorSet, getTextureHandle(model.textureName).descriptorSet };
+    { descriptorSet, getTextureHandle(model.textureName).descriptorSet };
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
       pipelineLayout, 0, 2,
       descriptorSets, 2, dynamicOffsets);
 
     vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(),
-		     1, 0, 0, 0);
+      1, 0, 0, 0);
 
   }
 
   int Renderer::setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo*
-					   inputStateCreateInfo) {
+    inputStateCreateInfo) {
     memset(orthobd, 0, 2 * sizeof(VkVertexInputBindingDescription));
 
     orthobd[0].binding = 0;
@@ -201,7 +226,7 @@ namespace small3d {
   }
 
   int Renderer::setOrthoPipelineLayoutCallback(VkPipelineLayoutCreateInfo*
-					       pipelineLayoutCreateInfo) {
+    pipelineLayoutCreateInfo) {
     orthographicLayouts[0] = orthoDescriptorSetLayout;
     orthographicLayouts[1] = textureOrthoDescriptorSetLayout;
     pipelineLayoutCreateInfo->setLayoutCount = 2;
@@ -210,7 +235,7 @@ namespace small3d {
   }
 
   int Renderer::bindOrthoBuffers(VkCommandBuffer commandBuffer,
-				 const Model& model) {
+    const Model& model) {
     VkBuffer vertexBuffers[2];
     vertexBuffers[0] = model.positionBuffer;
     vertexBuffers[1] = model.uvBuffer;
@@ -242,13 +267,13 @@ namespace small3d {
       descriptorSets, 1, &dynamicColourOffset);
 
     vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(),
-		     1, 0, 0, 0);
+      1, 0, 0, 0);
 
   }
 
   void Renderer::initVulkan() {
 #if defined(__ANDROID__)
-    const char *exts[2];
+    const char* exts[2];
 
     exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
     exts[1] = VK_KHR_ANDROID_SURFACE_EXTENSION_NAME;
@@ -272,24 +297,24 @@ namespace small3d {
       throw std::runtime_error("Could not create surface.");
     }
 #elif defined(SMALL3D_IOS)
-    
-    const char *exts[2];
-    
+
+    const char* exts[2];
+
     exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
     exts[1] = VK_MVK_IOS_SURFACE_EXTENSION_NAME;
-    
+
     uint32_t num = 2;
-    
+
     LOGDEBUG("Creating Vulkan instance...");
 
     if (!vkz_create_instance(windowTitle.c_str(), exts, num)) {
       throw std::runtime_error("Failed to create Vulkan instance.");
     }
-    
+
     if (!create_ios_surface(vkz_instance, &vkz_surface)) {
       throw std::runtime_error("Could not create surface.");
-    }
-    
+  }
+
 #else
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
@@ -336,7 +361,7 @@ namespace small3d {
     createOrthoDescriptorPool();
     allocateOrthoDescriptorSets();
 
-  }
+}
 
   void Renderer::createDescriptorPool() {
     if (!descriptorPoolCreated) {
@@ -616,7 +641,7 @@ namespace small3d {
     if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
       &orthoDescriptorSetLayout) != VK_SUCCESS) {
       throw std::runtime_error("Failed to create orthographic descriptor"
-			       " set layout.");
+        " set layout.");
     }
     else {
       LOGDEBUG("Created orthographic descriptor set layout.");
@@ -634,7 +659,7 @@ namespace small3d {
       &orthoDescriptorSet);
     if (allocResult != VK_SUCCESS) {
       std::string errortxt = "Failed to allocate orthographic pool descriptor"
-	" sets.";
+        " sets.";
       throw std::runtime_error(errortxt);
     }
 
@@ -654,7 +679,7 @@ namespace small3d {
     if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
       &textureOrthoDescriptorSetLayout) != VK_SUCCESS) {
       throw std::runtime_error("Failed to create orthographic texture"
-			       " descriptor set layout.");
+        " descriptor set layout.");
     }
     else {
       LOGDEBUG("Created orthographic texture descriptor set layout.");
@@ -703,20 +728,20 @@ namespace small3d {
     if (memIndex > maxObjectsPerPass) {
       std::string maxObjects = intToStr(maxObjectsPerPass);
       throw std::runtime_error("Cannot position more than " + maxObjects +
-			       " on the scene.");
+        " on the scene.");
     }
 
     uboOrientationDynamic[memIndex] = {};
 
     uboOrientationDynamic[memIndex].xRotationMatrix =
       glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.x,
-      glm::vec3(1.0f, 0.0f, 0.0f)));
+        glm::vec3(1.0f, 0.0f, 0.0f)));
     uboOrientationDynamic[memIndex].yRotationMatrix =
       glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.y,
-      glm::vec3(0.0f, 1.0f, 0.0f)));
+        glm::vec3(0.0f, 1.0f, 0.0f)));
     uboOrientationDynamic[memIndex].zRotationMatrix =
       glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.z,
-      glm::vec3(0.0f, 0.0f, 1.0f)));
+        glm::vec3(0.0f, 0.0f, 1.0f)));
     uboOrientationDynamic[memIndex].offset = offset;
 
   }
@@ -727,13 +752,13 @@ namespace small3d {
 
     camera.position = cameraPosition;
     camera.xRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f),
-							cameraRotation.x,
+      cameraRotation.x,
       glm::vec3(-1.0f, 0.0f, 0.0f)));
     camera.yRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f),
-							cameraRotation.y,
+      cameraRotation.y,
       glm::vec3(0.0f, -1.0f, 0.0f)));
     camera.zRotationMatrix = glm::transpose(glm::rotate(glm::mat4x4(1.0f),
-							cameraRotation.z,
+      cameraRotation.z,
       glm::vec3(0.0f, 0.0f, -1.0f)));
 
     uint32_t cameraOrientationSize = (3 * 16 + 4) * sizeof(float);
@@ -744,7 +769,7 @@ namespace small3d {
 
       for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
         vkz_create_buffer(&cameraOrientationBuffers[i],
-			  VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+          VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
           cameraOrientationSize,
           &cameraOrientationBufferMemories[i],
           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
@@ -755,11 +780,11 @@ namespace small3d {
 
     void* orientationData;
     vkMapMemory(vkz_logical_device,
-		cameraOrientationBufferMemories[currentSwapchainImageIndex],
+      cameraOrientationBufferMemories[currentSwapchainImageIndex],
       0, cameraOrientationSize, 0, &orientationData);
     memcpy(orientationData, &camera, cameraOrientationSize);
     vkUnmapMemory(vkz_logical_device,
-		  cameraOrientationBufferMemories[currentSwapchainImageIndex]);
+      cameraOrientationBufferMemories[currentSwapchainImageIndex]);
 
   }
 
@@ -776,7 +801,7 @@ namespace small3d {
   }
 
   VulkanImage Renderer::generateTexture(const std::string name,
-					const float* data,
+    const float* data,
     const unsigned long width,
     const unsigned long height) {
 
@@ -795,23 +820,23 @@ namespace small3d {
 
     void* imgData;
     vkMapMemory(vkz_logical_device, stagingBufferMemory, 0, VK_WHOLE_SIZE,
-		0, &imgData);
+      0, &imgData);
     memcpy(imgData, data, imageByteSize);
     vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
 
     if (!vkz_create_image(&textureHandle.image, static_cast<uint32_t>(width),
-                          static_cast<uint32_t>(height),
+      static_cast<uint32_t>(height),
       VK_FORMAT_R32G32B32A32_SFLOAT, VK_IMAGE_TILING_OPTIMAL,
       VK_IMAGE_USAGE_TRANSFER_DST_BIT |
       VK_IMAGE_USAGE_SAMPLED_BIT,
       &textureHandle.imageMemory,
       VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
       throw std::runtime_error("Failed to create image to be used"
-			       " as a texture.");
+        " as a texture.");
     }
 
     vkz_transition_image_layout(textureHandle.image,
-				VK_FORMAT_R32G32B32A32_SFLOAT,
+      VK_FORMAT_R32G32B32A32_SFLOAT,
       VK_IMAGE_LAYOUT_UNDEFINED,
       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
@@ -821,7 +846,7 @@ namespace small3d {
     vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
 
     vkz_transition_image_layout(textureHandle.image,
-				VK_FORMAT_R32G32B32A32_SFLOAT,
+      VK_FORMAT_R32G32B32A32_SFLOAT,
       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
       VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
@@ -845,7 +870,9 @@ namespace small3d {
     VkResult allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
       &textureHandle.descriptorSet);
     if (allocResult != VK_SUCCESS) {
-      std::string errortxt = "Failed to allocate texture descriptor set.";
+      std::string errortxt = "Failed to allocate perspective texture descriptor set. (" +
+        interpretResult(allocResult) + ")";
+      LOGERROR(errortxt);
       throw std::runtime_error(errortxt);
     }
 
@@ -885,7 +912,8 @@ namespace small3d {
       &textureHandle.orthoDescriptorSet);
     if (allocResult != VK_SUCCESS) {
       std::string errortxt = "Failed to allocate orthographic"
-	" texture descriptor set.";
+        " texture descriptor set. (" + interpretResult(allocResult) + ")";
+      LOGERROR(errortxt);
       throw std::runtime_error(errortxt);
     }
 
@@ -922,7 +950,7 @@ namespace small3d {
     realScreenHeight = height;
 
     this->shadersPath = shadersPath;
-    
+
 #ifdef SMALL3D_IOS
     std::string basePath = get_base_path();
     basePath += "/";
@@ -932,7 +960,7 @@ namespace small3d {
     this->initWindow(realScreenWidth, realScreenHeight);
 
     LOGDEBUG("Detected back width " + intToStr(realScreenWidth) +
-    " height " + intToStr(realScreenHeight));
+      " height " + intToStr(realScreenHeight));
 
     this->initVulkan();
 
@@ -947,7 +975,7 @@ namespace small3d {
 
     vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
       setInputStateCallback, setPipelineLayoutCallback,
-			&perspectivePipelineIndex);
+      &perspectivePipelineIndex);
 
     boundTextureViews.resize(vkz_swapchain_image_count);
 
@@ -964,9 +992,9 @@ namespace small3d {
       "simpleFragmentShader.spv";
 
     vkz_create_pipeline(orthoVertexShaderPath.c_str(),
-			orthoFragmentShaderPath.c_str(),
+      orthoFragmentShaderPath.c_str(),
       setOrthoInputStateCallback, setOrthoPipelineLayoutCallback,
-			&orthographicPipelineIndex);
+      &orthographicPipelineIndex);
 
     vkz_create_sync_objects();
 
@@ -978,7 +1006,7 @@ namespace small3d {
     dynamicOrientationAlignment = sizeof(UboOrientation);
     if (minAlignment > 0) {
       dynamicOrientationAlignment = (dynamicOrientationAlignment +
-				     minAlignment - 1) & ~(minAlignment - 1);
+        minAlignment - 1) & ~(minAlignment - 1);
     }
 
     uboOrientationDynamicSize = maxObjectsPerPass * dynamicOrientationAlignment;
@@ -991,7 +1019,7 @@ namespace small3d {
 
     for (size_t i = 0; i < vkz_swapchain_image_count; ++i) {
       vkz_create_buffer(&renderOrientationBuffersDynamic[i],
-			VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+        VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
         (uint32_t)uboOrientationDynamicSize,
         &renderOrientationBuffersDynamicMemory[i],
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
@@ -1002,7 +1030,7 @@ namespace small3d {
     dynamicColourAlignment = sizeof(UboColour);
     if (minAlignment > 0) {
       dynamicColourAlignment = (dynamicColourAlignment + minAlignment - 1) &
-	~(minAlignment - 1);
+        ~(minAlignment - 1);
     }
 
     uboColourDynamicSize = maxObjectsPerPass * dynamicColourAlignment;
@@ -1017,7 +1045,7 @@ namespace small3d {
 
     for (size_t i = 0; i < vkz_swapchain_image_count; ++i) {
       vkz_create_buffer(&colourBuffersDynamic[i],
-			VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+        VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
         (uint32_t)uboColourDynamicSize,
         &colourBuffersDynamicMemory[i],
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
@@ -1067,7 +1095,7 @@ namespace small3d {
       height = mode->height;
 #endif
       LOGINFO("Detected screen width " + intToStr(width) + " and height " +
-	      intToStr(height));
+        intToStr(height));
     }
 
     window = glfwCreateWindow(width, height, windowTitle.c_str(), monitor,
@@ -1081,8 +1109,8 @@ namespace small3d {
     glfwGetFramebufferSize(window, &width, &height);
 
     LOGINFO("Framebuffer width " + intToStr(width) + " height " +
-	    intToStr(height));
-    
+      intToStr(height));
+
 #endif
   }
 
@@ -1105,11 +1133,11 @@ namespace small3d {
     if (worldDetailsBuffers.size() == 0) {
       worldDetailsBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
       worldDetailsBufferMemories =
-	std::vector<VkDeviceMemory>(vkz_swapchain_image_count);
+        std::vector<VkDeviceMemory>(vkz_swapchain_image_count);
 
       for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
         vkz_create_buffer(&worldDetailsBuffers[i],
-			  VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+          VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
           worldDetailsSize,
           &worldDetailsBufferMemories[i],
           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
@@ -1119,11 +1147,11 @@ namespace small3d {
 
     void* worldDetailsData;
     vkMapMemory(vkz_logical_device,
-		worldDetailsBufferMemories[currentSwapchainImageIndex],
+      worldDetailsBufferMemories[currentSwapchainImageIndex],
       0, worldDetailsSize, 0, &worldDetailsData);
     memcpy(worldDetailsData, &world, worldDetailsSize);
     vkUnmapMemory(vkz_logical_device,
-		  worldDetailsBufferMemories[currentSwapchainImageIndex]);
+      worldDetailsBufferMemories[currentSwapchainImageIndex]);
 
     UboLight light = {};
 
@@ -1134,11 +1162,11 @@ namespace small3d {
     if (lightIntensityBuffers.size() == 0) {
       lightIntensityBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
       lightIntensityBufferMemories =
-	std::vector<VkDeviceMemory>(vkz_swapchain_image_count);
+        std::vector<VkDeviceMemory>(vkz_swapchain_image_count);
 
       for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
         vkz_create_buffer(&lightIntensityBuffers[i],
-			  VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+          VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
           lightIntensitySize,
           &lightIntensityBufferMemories[i],
           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
@@ -1148,11 +1176,11 @@ namespace small3d {
 
     void* lightIntensityData;
     vkMapMemory(vkz_logical_device,
-		lightIntensityBufferMemories[currentSwapchainImageIndex],
+      lightIntensityBufferMemories[currentSwapchainImageIndex],
       0, lightIntensitySize, 0, &lightIntensityData);
     memcpy(lightIntensityData, &light, lightIntensitySize);
     vkUnmapMemory(vkz_logical_device,
-		  lightIntensityBufferMemories[currentSwapchainImageIndex]);
+      lightIntensityBufferMemories[currentSwapchainImageIndex]);
 
   }
 
@@ -1200,35 +1228,35 @@ namespace small3d {
   }
 
 
-  int Renderer::getScreenHeight(){
+  int Renderer::getScreenHeight() {
     return realScreenHeight;
   }
 
   Renderer& Renderer::getInstance(const std::string windowTitle,
-				  const int width, const int height,
-				  const float frustumScale,
-				  const float zNear, const float zFar,
-				  const float zOffsetFromCamera,
-				  const std::string shadersPath,
-				  const uint32_t maxObjectsPerPass) {
+    const int width, const int height,
+    const float frustumScale,
+    const float zNear, const float zFar,
+    const float zOffsetFromCamera,
+    const std::string shadersPath,
+    const uint32_t maxObjectsPerPass) {
 
     static Renderer instance(windowTitle, width, height, frustumScale, zNear,
-			     zFar, zOffsetFromCamera, shadersPath,
-			     maxObjectsPerPass);
+      zFar, zOffsetFromCamera, shadersPath,
+      maxObjectsPerPass);
     return instance;
   }
 
   Renderer::~Renderer() {
-    
+
     LOGDEBUG("Renderer destructor running");
 
     vkDeviceWaitIdle(vkz_logical_device);
-    
+
     for (auto model : garbageModels) {
       clearBuffers(model);
     }
     garbageModels.clear();
-    
+
     for (auto it = textures.begin();
       it != textures.end(); ++it) {
       LOGDEBUG("Deleting texture " + it->first);
@@ -1249,9 +1277,9 @@ namespace small3d {
 #endif
 
     FT_Done_FreeType(library);
-    
+
     vkz_destroy_sync_objects();
-    
+
     if (orthographicPipelineIndex != 100) {
       LOGDEBUG("Destroying orthographic pipeline.");
       vkz_destroy_pipeline(orthographicPipelineIndex);
@@ -1261,7 +1289,7 @@ namespace small3d {
       LOGDEBUG("Destroying perspective pipeline.");
       vkz_destroy_pipeline(perspectivePipelineIndex);
     }
-    
+
     vkDestroyDescriptorSetLayout(vkz_logical_device,
       descriptorSetLayout, NULL);
 
@@ -1284,16 +1312,16 @@ namespace small3d {
 
     if (uboOrientationDynamic) {
       alloc.deallocate(reinterpret_cast<char*>(uboOrientationDynamic),
-		       uboOrientationDynamicSize);
+        uboOrientationDynamicSize);
     }
 
     if (uboColourDynamic) {
       alloc.deallocate(reinterpret_cast<char*>(uboColourDynamic),
-		       uboColourDynamicSize);
+        uboColourDynamicSize);
     }
 
     for (uint32_t i = 0; i < vkz_swapchain_image_count; ++i) {
-      
+
       if (i < renderOrientationBuffersDynamic.size()) {
         vkz_destroy_buffer(renderOrientationBuffersDynamic[i],
           renderOrientationBuffersDynamicMemory[i]);
@@ -1317,11 +1345,11 @@ namespace small3d {
     }
 
     vkDestroySampler(vkz_logical_device, textureSampler, NULL);
-  
+
     vkz_destroy_swapchain();
 
     LOGDEBUG("Destroying surface.\n\r");
-    
+
     vkDestroySurfaceKHR(vkz_instance, vkz_surface, NULL);
 
     vkz_shutdown();
@@ -1330,9 +1358,9 @@ namespace small3d {
     // or a "Thread 1: signal SIABRT" exception on MacOS. In
     // the latter case the following message is produced:
     // objc[986]: Attempt to use unknown class 0x1008b4810.
-    
+
     // glfwDestroyWindow(window);
-    
+
     // On linux this causes a segmentation fault
     // glfwTerminate();
   }
@@ -1365,18 +1393,18 @@ namespace small3d {
       basePath += "/";
       faceFullPath = basePath + faceFullPath;
 #endif
-      
+
       LOGDEBUG("Loading font from " + faceFullPath);
 #ifdef __ANDROID__
-      AAsset *asset = AAssetManager_open(vkz_android_app->activity->assetManager,
-                                         faceFullPath.c_str(),
-                                         AASSET_MODE_STREAMING);
+      AAsset* asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+        faceFullPath.c_str(),
+        AASSET_MODE_STREAMING);
       if (!asset) throw std::runtime_error("Opening asset " + faceFullPath +
-                                           " has failed!");
+        " has failed!");
       off_t length;
       length = AAsset_getLength(asset);
       const void* buffer = AAsset_getBuffer(asset);
-      error = FT_New_Memory_Face(library, (const FT_Byte*) buffer,
+      error = FT_New_Memory_Face(library, (const FT_Byte*)buffer,
         length, 0, &face);
       fontAssets.push_back(asset);
 #else
@@ -1389,7 +1417,7 @@ namespace small3d {
         LOGDEBUG("Font loaded successfully");
         fontFaces.insert(make_pair(faceId, face));
       }
-    }
+  }
     else {
       face = idFacePair->second;
     }
@@ -1417,10 +1445,10 @@ namespace small3d {
 
     height = maxTop + static_cast<unsigned long>(0.3 * maxTop);
 
-    textMemory.resize(4 * static_cast<size_t>(width) *
-		      static_cast<size_t>(height) * sizeof(float));
-    memset(&textMemory[0], 0, 4 * static_cast<size_t>(width) *
-	   static_cast<size_t>(height) * sizeof(float));
+    textMemory.resize(4 * static_cast<size_t>(width)*
+      static_cast<size_t>(height) * sizeof(float));
+    memset(&textMemory[0], 0, 4 * static_cast<size_t>(width)*
+      static_cast<size_t>(height) * sizeof(float));
 
     unsigned long totalAdvance = 0;
 
@@ -1435,7 +1463,7 @@ namespace small3d {
       if (slot->bitmap.width * slot->bitmap.rows > 0) {
         for (size_t row = 0; row < static_cast<int>(slot->bitmap.rows); ++row) {
           for (size_t col = 0; col < static_cast<int>(slot->bitmap.width);
-	       ++col) {
+            ++col) {
 
             glm::vec4 colourAlpha = glm::vec4(colour, 0.0f);
 
@@ -1446,7 +1474,7 @@ namespace small3d {
                 255.0f) + 0.5f) / 100.0f;
 
             size_t dst = 4 * (maxTop - static_cast<size_t>(slot->bitmap_top) +
-			      row) *
+              row)*
               width + 4 * (static_cast<size_t>(slot->bitmap_left) + col)
               + totalAdvance;
 
@@ -1459,7 +1487,7 @@ namespace small3d {
     }
     generateTexture(name, &textMemory[0], static_cast<unsigned long>(width),
       static_cast<unsigned long>(height));
-  }
+}
 
   void Renderer::deleteTexture(const std::string name) {
     auto nameTexturePair = textures.find(name);
@@ -1467,13 +1495,18 @@ namespace small3d {
     if (nameTexturePair != textures.end()) {
 
       vkDestroyImageView(vkz_logical_device,
-			 nameTexturePair->second.imageView, NULL);
-      vkFreeDescriptorSets(vkz_logical_device, descriptorPool, 1, 
-        &nameTexturePair->second.descriptorSet);
-      vkFreeDescriptorSets(vkz_logical_device, orthoDescriptorPool, 1, 
-        &nameTexturePair->second.orthoDescriptorSet);
+        nameTexturePair->second.imageView, NULL);
+
+      if (vkFreeDescriptorSets(vkz_logical_device, descriptorPool, 1,
+        &nameTexturePair->second.descriptorSet) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to free texture descriptor set (perspective).");
+      }
+      if (vkFreeDescriptorSets(vkz_logical_device, orthoDescriptorPool, 1,
+        &nameTexturePair->second.orthoDescriptorSet) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to free texture descriptor set (orthographic).");
+      }
       vkz_destroy_image(nameTexturePair->second.image,
-			nameTexturePair->second.imageMemory);
+        nameTexturePair->second.imageMemory);
 
       textures.erase(name);
     }
@@ -1523,7 +1556,7 @@ namespace small3d {
 
     render(rect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
       colour, textureName, perspective);
-    
+
     garbageModels.push_back(rect);
   }
 
@@ -1534,7 +1567,7 @@ namespace small3d {
     this->renderRectangle("", topLeft, bottomRight, perspective, colour);
   }
 
-  void Renderer::render(Model & model, const glm::vec3 offset,
+  void Renderer::render(Model& model, const glm::vec3 offset,
     const glm::vec3 rotation,
     const glm::vec4 colour,
     const std::string textureName,
@@ -1589,7 +1622,7 @@ namespace small3d {
       }
       else {
         throw std::runtime_error("Failed to create the staging buffer"
-				 " for vertices.");
+          " for vertices.");
       }
 
       // Send index data
@@ -1623,7 +1656,7 @@ namespace small3d {
       }
       else {
         throw std::runtime_error("Failed to create the staging"
-				 " buffer for indices.");
+          " buffer for indices.");
       }
 
       // Send normals data
@@ -1657,7 +1690,7 @@ namespace small3d {
       }
       else {
         throw std::runtime_error("Failed to create the staging"
-				 " buffer for indices.");
+          " buffer for indices.");
       }
 
       if (model.textureCoordsDataByteSize != 0) {
@@ -1684,7 +1717,7 @@ namespace small3d {
             VK_WHOLE_SIZE,
             0, &uvData);
           memcpy(uvData, &model.textureCoordsData[0],
-		 model.textureCoordsDataByteSize);
+            model.textureCoordsDataByteSize);
           vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
 
           vkz_copy_buffer(stagingBuffer, model.uvBuffer,
@@ -1694,7 +1727,7 @@ namespace small3d {
         }
         else {
           throw std::runtime_error("Failed to create the staging"
-				   " buffer for texture coordinates.");
+            " buffer for texture coordinates.");
         }
 
       }
@@ -1708,20 +1741,20 @@ namespace small3d {
       model.textureName = textureName;
     }
     else {
-      
+
 #if defined(__APPLE__) || defined(__ANDROID__)
       // On MacOS, and some Android devices, setting the model colour
       // corrupts the game's frames (some objects don't appear). This
       // workaround converts colours to textures.
       std::string texName = "col" + floatToStr(colour.r) +
-	floatToStr(colour.g) +
+        floatToStr(colour.g) +
         floatToStr(colour.b) + floatToStr(colour.a);
       auto nameTexPair = textures.find(texName);
       if (nameTexPair == textures.end()) {
         Image t;
         t.toColour(colour);
         generateTexture(texName, t);
-      }
+    }
       model.textureName = texName;
       setColourBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), colourMemIndex);
 #else
@@ -1729,7 +1762,7 @@ namespace small3d {
       setColourBuffer(colour, colourMemIndex);
       model.textureName = "blank";
 #endif
-    }
+  }
 
     model.colourMemIndex = colourMemIndex;
     ++colourMemIndex;
@@ -1744,22 +1777,22 @@ namespace small3d {
 
     nextModelsToDraw.push_back(model);
 
-  }
+}
 
-  void Renderer::render(Model & model, const glm::vec3 offset,
+  void Renderer::render(Model& model, const glm::vec3 offset,
     const glm::vec3 rotation,
     const std::string textureName) {
     this->render(model, offset, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName);
   }
 
-  void Renderer::render(SceneObject & sceneObject,
+  void Renderer::render(SceneObject& sceneObject,
     const glm::vec4 colour) {
     this->render(sceneObject.getModel(), sceneObject.offset,
       sceneObject.rotation, colour, "");
   }
 
-  void Renderer::render(SceneObject & sceneObject,
+  void Renderer::render(SceneObject& sceneObject,
     const std::string textureName) {
     this->render(sceneObject.getModel(), sceneObject.offset,
       sceneObject.rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1768,7 +1801,7 @@ namespace small3d {
 
   void Renderer::write(const std::string text, const glm::vec3 colour,
     const glm::vec2 topLeft, const glm::vec2 bottomRight,
-    const int fontSize, std::string fontPath) {
+    const int fontSize, std::string fontPath, bool cache) {
 
     std::string textureName = intToStr(fontSize) + "text_" + text;
 
@@ -1784,9 +1817,13 @@ namespace small3d {
 
     renderRectangle(textureName, glm::vec3(topLeft.x, topLeft.y, -0.5f),
       glm::vec3(bottomRight.x, bottomRight.y, -0.5f));
+
+    if (!cache) {
+      garbageTextures.push_back(textureName);
+    }
   }
 
-  void Renderer::clearBuffers(Model & model) const {
+  void Renderer::clearBuffers(Model& model) const {
     if (model.alreadyInGPU) {
       vkz_destroy_buffer(model.positionBuffer, model.positionBufferMemory);
       vkz_destroy_buffer(model.indexBuffer, model.indexBufferMemory);
@@ -1796,8 +1833,8 @@ namespace small3d {
     }
   }
 
-  void Renderer::clearBuffers(SceneObject & sceneObject) const {
-    for (Model &model : sceneObject.models) {
+  void Renderer::clearBuffers(SceneObject& sceneObject) const {
+    for (Model& model : sceneObject.models) {
       clearBuffers(model);
     }
   }
@@ -1818,7 +1855,7 @@ namespace small3d {
   void Renderer::swapBuffers() {
 
     vkz_acquire_next_image(perspectivePipelineIndex,
-			   &currentSwapchainImageIndex);
+      &currentSwapchainImageIndex);
 
     orientationMemIndex = 0;
     colourMemIndex = 0;
@@ -1829,20 +1866,20 @@ namespace small3d {
     // Updating object positioning 
     void* orientationData;
     vkMapMemory(vkz_logical_device,
-	   renderOrientationBuffersDynamicMemory[currentSwapchainImageIndex],
+      renderOrientationBuffersDynamicMemory[currentSwapchainImageIndex],
       0, uboOrientationDynamicSize, 0, &orientationData);
     memcpy(orientationData, uboOrientationDynamic, uboOrientationDynamicSize);
     vkUnmapMemory(vkz_logical_device,
-	   renderOrientationBuffersDynamicMemory[currentSwapchainImageIndex]);
+      renderOrientationBuffersDynamicMemory[currentSwapchainImageIndex]);
 
     // Updating colour
     void* colourData;
     vkMapMemory(vkz_logical_device,
-		colourBuffersDynamicMemory[currentSwapchainImageIndex],
+      colourBuffersDynamicMemory[currentSwapchainImageIndex],
       0, uboColourDynamicSize, 0, &colourData);
     memcpy(colourData, uboColourDynamic, uboColourDynamicSize);
     vkUnmapMemory(vkz_logical_device,
-		  colourBuffersDynamicMemory[currentSwapchainImageIndex]);
+      colourBuffersDynamicMemory[currentSwapchainImageIndex]);
 
     // All of the above is bound here.
     updateDescriptorSets();
@@ -1852,20 +1889,20 @@ namespace small3d {
 
     for (auto model : nextModelsToDraw) {
       if (model.perspective) {
-        
+
         vkz_bind_pipeline_to_command_buffer(perspectivePipelineIndex,
-					    &nextCommandBuffer);
+          &nextCommandBuffer);
         bindBuffers(nextCommandBuffer, model);
         recordDrawCommand(nextCommandBuffer,
-			  vkz_pipeline_layout[perspectivePipelineIndex],
+          vkz_pipeline_layout[perspectivePipelineIndex],
           model, currentSwapchainImageIndex);
       }
       else {
         vkz_bind_pipeline_to_command_buffer(orthographicPipelineIndex,
-					    &nextCommandBuffer);
+          &nextCommandBuffer);
         bindOrthoBuffers(nextCommandBuffer, model);
         recordOrthoDrawCommand(nextCommandBuffer,
-			       vkz_pipeline_layout[orthographicPipelineIndex],
+          vkz_pipeline_layout[orthographicPipelineIndex],
           model, currentSwapchainImageIndex);
 
       }
@@ -1885,6 +1922,11 @@ namespace small3d {
       clearBuffers(model);
     }
     garbageModels.clear();
+
+    for (auto texture : garbageTextures) {
+      deleteTexture(texture);
+    }
+    garbageTextures.clear();
 
   }
 

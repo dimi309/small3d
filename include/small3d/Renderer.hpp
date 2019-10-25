@@ -190,6 +190,7 @@ namespace small3d
     VkCommandBuffer nextCommandBuffer;
 
     std::vector<Model> garbageModels;
+    std::vector<std::string> garbageTextures;
 
     void allocateDescriptorSets();
     void updateDescriptorSets();
@@ -463,9 +464,9 @@ namespace small3d
 	       const int fontSize=48,
 	       const std::string fontPath =
 #ifndef SMALL3D_IOS
-	       "resources/fonts/CrusoeText/CrusoeText-Regular.ttf");
+	       "resources/fonts/CrusoeText/CrusoeText-Regular.ttf", bool cache = true);
 #else
-         "resources1/fonts/CrusoeText/CrusoeText-Regular.ttf");
+         "resources1/fonts/CrusoeText/CrusoeText-Regular.ttf", bool cache = true);
 #endif
     /**
      * @brief Clear a Model from the GPU buffers (the object itself remains
