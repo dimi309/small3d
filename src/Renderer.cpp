@@ -779,9 +779,28 @@ namespace small3d {
   VulkanImage Renderer::generateTexture(const std::string name,
 					const float* data,
     const unsigned long width,
-    const unsigned long height) {
-
+    const unsigned long height,
+    const bool replaceable) {
+    
+    bool foundReplaceable = false;
+    std::string replaceableName = "";
     VulkanImage textureHandle = {};
+
+    for (auto &nameTexturePair : textures) {
+      if (nameTexturePair.second.replace) {
+        replaceableName = nameTexturePair.first;
+        textureHandle = nameTexturePair.second;
+        foundReplaceable = true;
+        break;
+      }
+    }
+
+    if (foundReplaceable) {
+      deleteTexture(replaceableName);
+      textureHandle.image = VK_NULL_HANDLE;
+      textureHandle.imageView = VK_NULL_HANDLE;
+      textureHandle.imageMemory = VK_NULL_HANDLE;
+    }
 
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
@@ -832,22 +851,25 @@ namespace small3d {
       throw std::runtime_error("Failed to create texture image view!\n\r");
     };
 
-    // Allocate perspective texture descriptor set
+    if (!foundReplaceable) {
+    
+      // Allocate perspective texture descriptor set
 
-    VkDescriptorSetAllocateInfo dsai = {};
+      VkDescriptorSetAllocateInfo dsai = {};
 
-    dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-    dsai.descriptorPool = descriptorPool;
-    dsai.descriptorSetCount = 1;
-    dsai.pSetLayouts = &textureDescriptorSetLayout;
+      dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+      dsai.descriptorPool = descriptorPool;
+      dsai.descriptorSetCount = 1;
+      dsai.pSetLayouts = &textureDescriptorSetLayout;
 
-    textureHandle.descriptorSet = {};
+      textureHandle.descriptorSet = {};
 
-    VkResult allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
-      &textureHandle.descriptorSet);
-    if (allocResult != VK_SUCCESS) {
-      std::string errortxt = "Failed to allocate texture descriptor set.";
-      throw std::runtime_error(errortxt);
+      VkResult allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
+        &textureHandle.descriptorSet);
+      if (allocResult != VK_SUCCESS) {
+        std::string errortxt = "Failed to allocate texture descriptor set.";
+        throw std::runtime_error(errortxt);
+      }
     }
 
     // Write texture descriptor set
@@ -872,22 +894,27 @@ namespace small3d {
 
     vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
 
-    // Allocate orthographic texture descriptor set
+    if (!foundReplaceable) {
+      
+      // Allocate orthographic texture descriptor set
+      
+      VkDescriptorSetAllocateInfo dsai = {};
 
-    dsai = {};
-    dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-    dsai.descriptorPool = descriptorPool;
-    dsai.descriptorSetCount = 1;
-    dsai.pSetLayouts = &textureOrthoDescriptorSetLayout;
+      dsai = {};
+      dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+      dsai.descriptorPool = descriptorPool;
+      dsai.descriptorSetCount = 1;
+      dsai.pSetLayouts = &textureOrthoDescriptorSetLayout;
 
-    textureHandle.orthoDescriptorSet = {};
+      textureHandle.orthoDescriptorSet = {};
 
-    allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
-      &textureHandle.orthoDescriptorSet);
-    if (allocResult != VK_SUCCESS) {
-      std::string errortxt = "Failed to allocate orthographic"
-	" texture descriptor set.";
-      throw std::runtime_error(errortxt);
+      VkResult allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
+        &textureHandle.orthoDescriptorSet);
+      if (allocResult != VK_SUCCESS) {
+        std::string errortxt = "Failed to allocate orthographic"
+          " texture descriptor set.";
+        throw std::runtime_error(errortxt);
+      }
     }
 
     // Write orthographic texture descriptor set
@@ -910,6 +937,8 @@ namespace small3d {
     wds.pTexelBufferView = NULL;
 
     vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
+
+    textureHandle.replace = replaceable;
 
     textures.insert(make_pair(name, textureHandle));
 
@@ -1199,8 +1228,7 @@ namespace small3d {
   int Renderer::getScreenWidth() {
     return realScreenWidth;
   }
-
-
+   
   int Renderer::getScreenHeight(){
     return realScreenHeight;
   }
@@ -1346,12 +1374,12 @@ namespace small3d {
 
   void Renderer::generateTexture(const std::string name, const Image image) {
     this->generateTexture(name, image.getData(), image.getWidth(),
-      image.getHeight());
+      image.getHeight(), false);
   }
 
   void Renderer::generateTexture(const std::string name, const std::string text,
     const glm::vec3 colour, const int fontSize,
-    const std::string fontPath) {
+    const std::string fontPath, bool noCache) {
 
     std::string faceId = intToStr(fontSize) + fontPath;
 
@@ -1459,7 +1487,7 @@ namespace small3d {
       totalAdvance += 4 * static_cast<unsigned long>(slot->advance.x / 64);
     }
     generateTexture(name, &textMemory[0], static_cast<unsigned long>(width),
-      static_cast<unsigned long>(height));
+      static_cast<unsigned long>(height), noCache);
   }
 
   void Renderer::deleteTexture(const std::string name) {
@@ -1765,7 +1793,7 @@ namespace small3d {
 
   void Renderer::write(const std::string text, const glm::vec3 colour,
     const glm::vec2 topLeft, const glm::vec2 bottomRight,
-    const int fontSize, std::string fontPath) {
+    const int fontSize, std::string fontPath, bool noCache) {
 
     std::string textureName = intToStr(fontSize) + "text_" + text;
 
@@ -1776,7 +1804,7 @@ namespace small3d {
       handle = nameTexturePair->second;
     }
     else {
-      generateTexture(textureName, text, colour, fontSize, fontPath);
+      generateTexture(textureName, text, colour, fontSize, fontPath, noCache);
     }
 
     renderRectangle(textureName, glm::vec3(topLeft.x, topLeft.y, -0.5f),
