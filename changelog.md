@@ -3,7 +3,16 @@
 small3d changes per version
 ===========================
 
-v1.700
+v1.702 2019-10-26
+
+- Introduced noCache flag for rendered text, allowing for the enclosing
+  texture to be replaced when a new texture is created.
+
+v1.701 2019-10-19
+
+- Rationalised use of Vulkan synchronisation objects.
+
+v1.700 2019-10-10
 
 - Migrated to Vulkan
 

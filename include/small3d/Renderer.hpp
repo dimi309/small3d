@@ -361,8 +361,9 @@ namespace small3d
      * @param colour   The colour of the text
      * @param fontSize The size of the font which will be used
      * @param fontPath Path to the TrueType font (.ttf) which will be used
-     * @param noCache  If true, don't keep the generated textue containing in
-     *                 memory, but delete it upon the creation of a new texture.
+     * @param noCache  If true, don't keep the generated textue containing the
+     *                 text in memory, but delete it upon the creation of a new
+     *                 texture.
      */
     void generateTexture(const std::string name, const std::string text,
       const glm::vec3 colour,
