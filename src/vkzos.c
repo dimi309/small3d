@@ -144,6 +144,7 @@ typedef struct {
 uint32_t pipeline_system_count = 0;
 pipeline_system_struct* pipeline_systems = NULL;
 
+static VkFence gpu_cpu_fence;
 static VkSemaphore draw_semaphore, acquire_semaphore;
 
 int vkz_create_instance(const char* application_name,
@@ -1475,8 +1476,13 @@ int vkz_end_draw_command_buffer(VkCommandBuffer* command_buffer) {
 int vkz_destroy_draw_command_buffer(VkCommandBuffer* command_buffer) {
 
   VkResult rwait;
-  vkDeviceWaitIdle(vkz_logical_device);
-  
+  do {
+    rwait = vkWaitForFences(vkz_logical_device, 1,
+                            &gpu_cpu_fence,
+                            VK_TRUE, UINT64_MAX);
+  }
+  while (rwait == VK_TIMEOUT);
+
   vkFreeCommandBuffers(vkz_logical_device, command_pool, 1, command_buffer);
 
   return 1;
@@ -1489,6 +1495,14 @@ int vkz_create_sync_objects(void) {
   memset(&fence_ci, 0, sizeof(VkFenceCreateInfo));
   fence_ci.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
   fence_ci.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+
+  if (vkCreateFence(vkz_logical_device, &fence_ci, NULL,
+    &gpu_cpu_fence) !=
+    VK_SUCCESS) {
+    LOGDEBUG0("Could not create cpu gpu fence!");
+    return 0;
+  }
 
   VkSemaphoreCreateInfo sci;
   memset(&sci, 0, sizeof(VkSemaphoreCreateInfo));
@@ -1517,8 +1531,15 @@ int vkz_create_sync_objects(void) {
 int vkz_destroy_sync_objects(void) {
 
   VkResult rwait;
-  
-  vkDeviceWaitIdle(vkz_logical_device);
+  do {
+    rwait = vkWaitForFences(vkz_logical_device, 1,
+                            &gpu_cpu_fence,
+                            VK_TRUE, UINT64_MAX);
+  }
+  while (rwait == VK_TIMEOUT);
+
+  vkDestroyFence(vkz_logical_device,
+    gpu_cpu_fence, NULL);
 
   vkDestroySemaphore(vkz_logical_device,
 		     draw_semaphore, NULL);
@@ -1605,9 +1626,12 @@ int vkz_draw(VkCommandBuffer* command_buffer) {
 
   VkPipelineStageFlags wait_stages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
   si.pWaitDstStageMask = wait_stages;
+
+  vkResetFences(vkz_logical_device, 1,
+    &gpu_cpu_fence);
   
   if (vkQueueSubmit(vkz_graphics_queue, 1, &si,
-    VK_NULL_HANDLE) != VK_SUCCESS) {
+    gpu_cpu_fence) != VK_SUCCESS) {
     LOGDEBUG0("Could not submit draw command buffer!");
   }
 
