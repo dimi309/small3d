@@ -28,7 +28,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 xcopy include\GL ..\include\GL /i /s
 if %BUILDTYPE%==Debug (copy lib\%BUILDTYPE%\libglew32d.lib ..\lib\glew.lib) else (copy lib\%BUILDTYPE%\libglew32.lib ..\lib\glew.lib)
 for /r %%a in (*.pdb) do @copy /y "%%a" ..\bin
-cd ..r
+cd ..
 if %BUILDTYPE%==Release (rmdir /Q /S glew-2.1.0-no-nodefaultlib-noentry) else (rmdir /Q /S glew-2.1.0)
 
 7z x glm-0.9.9.0.zip
