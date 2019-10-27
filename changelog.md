@@ -3,7 +3,7 @@
 small3d changes per version
 ===========================
 
-v1.69901
+v1.69901 2019-10-27
 
 - Correctly detecting framebuffer size. This fixes an issue on Apple computers,
   where the games would not render correctly due to the resolution of the
