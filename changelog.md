@@ -8,6 +8,10 @@ v1.69901
 - Correctly detecting framebuffer size. This fixes an issue on Apple computers,
   where the games would not render correctly due to the resolution of the
   window not matching its reported size.
+  
+- Fixed a problem with the VS dependency preparation script (prepare-vs.bat).
+  It would not compile glew because of the nodefaultlib and noentry flags
+  in the cmake linking configuration, which have now been removed.
 
 v1.699 2019-06-07
 
