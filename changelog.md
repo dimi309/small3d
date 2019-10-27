@@ -3,6 +3,12 @@
 small3d changes per version
 ===========================
 
+v1.69901
+
+- Correctly detecting framebuffer size. This fixes an issue on Apple computers,
+  where the games would not render correctly due to the resolution of the
+  window not matching its reported size.
+
 v1.699 2019-06-07
 
 - More sync-backs from Vulkan edition.
