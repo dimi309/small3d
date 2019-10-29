@@ -477,7 +477,7 @@ namespace small3d {
 
     descriptorSet = {};
 
-    VkResult allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
+    auto allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
       &descriptorSet);
     if (allocResult != VK_SUCCESS) {
       std::string errortxt = "Failed to allocate descriptor sets.";
@@ -1193,13 +1193,14 @@ namespace small3d {
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
     cameraPosition = glm::vec3(0, 0, 0);
     cameraRotation = glm::vec3(0, 0, 0);
+
   }
 
-  Renderer::Renderer(const std::string windowTitle, const int width,
+  Renderer::Renderer(const std::string &windowTitle, const int width,
     const int height, const float frustumScale,
     const float zNear, const float zFar,
     const float zOffsetFromCamera,
-    const std::string shadersPath,
+    const std::string &shadersPath,
     const uint32_t maxObjectsPerPass) {
 
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
@@ -1233,12 +1234,12 @@ namespace small3d {
     return realScreenHeight;
   }
 
-  Renderer& Renderer::getInstance(const std::string windowTitle,
+  Renderer& Renderer::getInstance(const std::string &windowTitle,
 				  const int width, const int height,
 				  const float frustumScale,
 				  const float zNear, const float zFar,
 				  const float zOffsetFromCamera,
-				  const std::string shadersPath,
+				  const std::string &shadersPath,
 				  const uint32_t maxObjectsPerPass) {
 
     static Renderer instance(windowTitle, width, height, frustumScale, zNear,
@@ -1372,14 +1373,14 @@ namespace small3d {
   }
 #endif
 
-  void Renderer::generateTexture(const std::string name, const Image image) {
+  void Renderer::generateTexture(const std::string &name, const Image &image) {
     this->generateTexture(name, image.getData(), image.getWidth(),
       image.getHeight(), false);
   }
 
-  void Renderer::generateTexture(const std::string name, const std::string text,
-    const glm::vec3 colour, const int fontSize,
-    const std::string fontPath, bool noCache) {
+  void Renderer::generateTexture(const std::string &name, const std::string &text,
+    const glm::vec3 &colour, const int fontSize,
+    const std::string &fontPath, bool noCache) {
 
     std::string faceId = intToStr(fontSize) + fontPath;
 
@@ -1490,7 +1491,7 @@ namespace small3d {
       static_cast<unsigned long>(height), noCache);
   }
 
-  void Renderer::deleteTexture(const std::string name) {
+  void Renderer::deleteTexture(const std::string &name) {
     auto nameTexturePair = textures.find(name);
 
     if (nameTexturePair != textures.end()) {
@@ -1504,12 +1505,11 @@ namespace small3d {
     }
   }
 
-  void Renderer::renderRectangle(const std::string textureName,
-    const glm::vec3 topLeft,
-    const glm::vec3 bottomRight,
+  void Renderer::renderRectangle(const std::string &textureName,
+    const glm::vec3 &topLeft,
+    const glm::vec3 &bottomRight,
     const bool perspective,
-    const glm::vec4 colour) {
-
+    const glm::vec4 &colour) {
 
     Model rect;
 
@@ -1552,17 +1552,17 @@ namespace small3d {
     garbageModels.push_back(rect);
   }
 
-  void Renderer::renderRectangle(const glm::vec4 colour,
-    const glm::vec3 topLeft,
-    const glm::vec3 bottomRight,
+  void Renderer::renderRectangle(const glm::vec4 &colour,
+    const glm::vec3 &topLeft,
+    const glm::vec3 &bottomRight,
     const bool perspective) {
     this->renderRectangle("", topLeft, bottomRight, perspective, colour);
   }
 
-  void Renderer::render(Model & model, const glm::vec3 offset,
-    const glm::vec3 rotation,
-    const glm::vec4 colour,
-    const std::string textureName,
+  void Renderer::render(Model & model, const glm::vec3 &offset,
+    const glm::vec3 &rotation,
+    const glm::vec4 &colour,
+    const std::string &textureName,
     const bool perspective) {
 
 #if defined(DEBUG) || defined(_DEBUG) || !defined (NDEBUG)
@@ -1771,29 +1771,29 @@ namespace small3d {
 
   }
 
-  void Renderer::render(Model & model, const glm::vec3 offset,
-    const glm::vec3 rotation,
-    const std::string textureName) {
+  void Renderer::render(Model & model, const glm::vec3 &offset,
+    const glm::vec3 &rotation,
+    const std::string &textureName) {
     this->render(model, offset, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName);
   }
 
-  void Renderer::render(SceneObject & sceneObject,
-    const glm::vec4 colour) {
+  void Renderer::render(SceneObject &sceneObject,
+    const glm::vec4 &colour) {
     this->render(sceneObject.getModel(), sceneObject.offset,
       sceneObject.rotation, colour, "");
   }
 
-  void Renderer::render(SceneObject & sceneObject,
-    const std::string textureName) {
+  void Renderer::render(SceneObject &sceneObject,
+    const std::string &textureName) {
     this->render(sceneObject.getModel(), sceneObject.offset,
       sceneObject.rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName);
   }
 
-  void Renderer::write(const std::string text, const glm::vec3 colour,
-    const glm::vec2 topLeft, const glm::vec2 bottomRight,
-    const int fontSize, std::string fontPath, bool noCache) {
+  void Renderer::write(const std::string &text, const glm::vec3 &colour,
+    const glm::vec2 &topLeft, const glm::vec2 &bottomRight,
+    const int fontSize, const std::string &fontPath, bool noCache) {
 
     std::string textureName = intToStr(fontSize) + "text_" + text;
 
@@ -1835,7 +1835,7 @@ namespace small3d {
 
   }
 
-  void Renderer::clearScreen(const glm::vec4 colour) {
+  void Renderer::clearScreen(const glm::vec4 &colour) {
     this->renderRectangle(colour, glm::vec3(-1.0f, 1.0f, 1.0f),
       glm::vec3(1.0f, -1.0f, 1.0f));
   }

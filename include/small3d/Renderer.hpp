@@ -38,11 +38,11 @@ namespace small3d
    *        created on the GPU. Used internally
    */
   struct VulkanImage {
-    VkImageView imageView;
-    VkImage image;
-    VkDeviceMemory imageMemory;
-    VkDescriptorSet descriptorSet;
-    VkDescriptorSet orthoDescriptorSet;
+    VkImageView imageView = VK_NULL_HANDLE;
+    VkImage image = VK_NULL_HANDLE;
+    VkDeviceMemory imageMemory = VK_NULL_HANDLE;
+    VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
+    VkDescriptorSet orthoDescriptorSet = VK_NULL_HANDLE;
     bool replace = false;
   };
 
@@ -147,15 +147,15 @@ namespace small3d
     static VkDescriptorSetLayout textureOrthoDescriptorSetLayout;
     static VkDescriptorSetLayout orthographicLayouts[2];
 
-    size_t dynamicOrientationAlignment;
-    UboOrientation* uboOrientationDynamic;
+    size_t dynamicOrientationAlignment = 0;
+    UboOrientation* uboOrientationDynamic = nullptr;
     uint32_t orientationMemIndex = 0;
-    size_t uboOrientationDynamicSize;
+    size_t uboOrientationDynamicSize = 0;
 
-    size_t dynamicColourAlignment;
-    UboColour* uboColourDynamic;
+    size_t dynamicColourAlignment = 0;
+    UboColour* uboColourDynamic = nullptr;
     uint32_t colourMemIndex = 0;
-    size_t uboColourDynamicSize;
+    size_t uboColourDynamicSize = 0;
 
     static int setInputStateCallback(VkPipelineVertexInputStateCreateInfo*
       inputStateCreateInfo);
@@ -242,10 +242,10 @@ namespace small3d
 #endif
       const uint32_t maxObjectsPerPass = 20);
 #else
-    Renderer(const std::string windowTitle, const int width,
+    Renderer(const std::string &windowTitle, const int width,
       const int height, const float frustumScale, const float zNear,
       const float zFar, const float zOffsetFromCamera,
-      const std::string shadersPath, const uint32_t maxObjectsPerPass);
+      const std::string &shadersPath, const uint32_t maxObjectsPerPass);
 
 
 #endif
@@ -324,14 +324,14 @@ namespace small3d
      *                          would invoke the default constructor, which has
      *                          been deleted.
      */
-    static Renderer& getInstance(const std::string windowTitle = "",
+    static Renderer& getInstance(const std::string &windowTitle = "",
       const int width = 0,
       const int height = 0,
       const float frustumScale = 1.0f,
       const float zNear = 1.0f,
       const float zFar = 24.0f,
       const float zOffsetFromCamera = -1.0f,
-      const std::string shadersPath =
+      const std::string &shadersPath =
       "resources/shaders/",
       const uint32_t maxObjectsPerPass = 20);
 
@@ -352,7 +352,7 @@ namespace small3d
      * @param name The name by which the texture will be known
      * @param image The image from which the texture will be generated
      */
-    void generateTexture(const std::string name, const Image image);
+    void generateTexture(const std::string &name, const Image &image);
 
     /**
      * @brief Generate a texture on the GPU that contains the given text
@@ -365,10 +365,10 @@ namespace small3d
      *                 text in memory, but delete it upon the creation of a new
      *                 texture.
      */
-    void generateTexture(const std::string name, const std::string text,
-      const glm::vec3 colour,
+    void generateTexture(const std::string &name, const std::string &text,
+      const glm::vec3 &colour,
       const int fontSize,
-      const std::string fontPath =
+      const std::string &fontPath =
       "resources/fonts/CrusoeText/CrusoeText-Regular.ttf",
       bool noCache = false);
 
@@ -377,7 +377,7 @@ namespace small3d
      *
      * @param	name	The name of the texture.
      */
-    void deleteTexture(const std::string name);
+    void deleteTexture(const std::string &name);
 
     /**
      * @brief Render a rectangle, using two of its corners that are diagonally
@@ -391,10 +391,10 @@ namespace small3d
      * @param colour      The colour of the rectangle (RGBA). If this is set,
      *                    textureName will be ignored.
      */
-    void renderRectangle(const std::string textureName, const glm::vec3 topLeft,
-      const glm::vec3 bottomRight,
+    void renderRectangle(const std::string &textureName, const glm::vec3 &topLeft,
+      const glm::vec3 &bottomRight,
       const bool perspective = false,
-      const glm::vec4 colour =
+      const glm::vec4 &colour =
       glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
     /**
@@ -406,8 +406,8 @@ namespace small3d
      * @param perspective If set to true, use perspective rendering.
      *                    Otherwise use orthographic rendering.
      */
-    void renderRectangle(const glm::vec4 colour, const glm::vec3 topLeft,
-      const glm::vec3 bottomRight,
+    void renderRectangle(const glm::vec4 &colour, const glm::vec3 &topLeft,
+      const glm::vec3 &bottomRight,
       const bool perspective = false);
 
     /**
@@ -422,8 +422,8 @@ namespace small3d
      *                    be ignored.
      * @param perspective True = perspective drawing, otherwise orthographic
      */
-    void render(Model& model, const glm::vec3 offset, const glm::vec3 rotation,
-      const glm::vec4 colour, const std::string textureName = "",
+    void render(Model& model, const glm::vec3 &offset, const glm::vec3 &rotation,
+      const glm::vec4 &colour, const std::string &textureName = "",
       const bool perspective = true);
 
     /**
@@ -434,15 +434,15 @@ namespace small3d
      * @param textureName The name of the texture to attach to the model.
      *                    The texture has to have been generated already.
      */
-    void render(Model& model, const glm::vec3 offset, const glm::vec3 rotation,
-      const std::string textureName);
+    void render(Model& model, const glm::vec3 &offset, const glm::vec3 &rotation,
+      const std::string &textureName);
 
     /**
      * @brief Render a SceneObject
      * @param sceneObject The object
      * @param colour The colour the object.
      */
-    void render(SceneObject& sceneObject, const glm::vec4 colour);
+    void render(SceneObject &sceneObject, const glm::vec4 &colour);
 
     /**
      * @brief Render a SceneObject
@@ -450,7 +450,7 @@ namespace small3d
      * @param textureName The name of the texture to attach to the object.
      *                    The texture has to have been generated already.
      */
-    void render(SceneObject& sceneObject, const std::string textureName);
+    void render(SceneObject &sceneObject, const std::string &textureName);
 
     /**
      * @brief Render some text on the screen.
@@ -467,10 +467,10 @@ namespace small3d
      *                    text in memory, but delete it upon the creation of a new
      *                    texture.
      */
-    void write(const std::string text, const glm::vec3 colour,
-      const glm::vec2 topLeft, const glm::vec2 bottomRight,
+    void write(const std::string &text, const glm::vec3 &colour,
+      const glm::vec2 &topLeft, const glm::vec2 &bottomRight,
       const int fontSize = 48,
-      const std::string fontPath =
+      const std::string &fontPath =
 #ifndef SMALL3D_IOS
       "resources/fonts/CrusoeText/CrusoeText-Regular.ttf", bool noCache = false);
 #else
@@ -507,7 +507,7 @@ namespace small3d
      *        that uses the framework.
      * @param colour The colour with which the screen is to be cleared
      */
-    void clearScreen(const glm::vec4 colour);
+    void clearScreen(const glm::vec4 &colour);
 
     /**
      * @brief Swap the buffers.
@@ -520,5 +520,4 @@ namespace small3d
     void operator=(Renderer&&) = delete;
 
   };
-
 }
