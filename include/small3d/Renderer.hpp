@@ -363,7 +363,8 @@ namespace small3d
      * @param fontPath Path to the TrueType font (.ttf) which will be used
      * @param noCache  If true, don't keep the generated textue containing the
      *                 text in memory, but delete it upon the creation of a new
-     *                 texture.
+     *                 texture. BUG: If this is used for more than one texture 
+     *                 per frame it will crash (sorry).
      */
     void generateTexture(const std::string &name, const std::string &text,
       const glm::vec3 &colour,
@@ -465,7 +466,8 @@ namespace small3d
      * @param fontPath    Path to the TrueType font (.ttf) which will be used
      * @param noCache     If true, don't keep the generated textue containing the
      *                    text in memory, but delete it upon the creation of a new
-     *                    texture.
+     *                    texture. BUG: If this is used for more than one write 
+     *                    command per frame it will crash (sorry).
      */
     void write(const std::string &text, const glm::vec3 &colour,
       const glm::vec2 &topLeft, const glm::vec2 &bottomRight,
