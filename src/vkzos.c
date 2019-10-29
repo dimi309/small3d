@@ -90,6 +90,8 @@ VkInstance vkz_instance;
 VkSurfaceKHR vkz_surface;
 VkPhysicalDevice vkz_physical_device;
 VkDevice vkz_logical_device;
+VkClearColorValue vkz_clear_colour;
+
 static int vkz_graphics_family_index = -1;
 static int vkz_present_family_index = -1;
 static VkQueue vkz_graphics_queue;
@@ -661,6 +663,12 @@ int vkz_destroy_depth_image(void) {
 }
 
 int vkz_init(void) {
+
+  vkz_clear_colour.float32[0] = 0.0f;
+  vkz_clear_colour.float32[1] = 0.0f;
+  vkz_clear_colour.float32[2] = 0.0f;
+  vkz_clear_colour.float32[3] = 1.0f;
+
   if (!(select_physical_device() && select_queue_families() &&
     create_logical_device())) {
     return 0;
@@ -1432,10 +1440,7 @@ int vkz_begin_draw_command_buffer(VkCommandBuffer* command_buffer) {
 
       VkClearValue clear_values[2];
       memset(clear_values, 0, 2 * sizeof(VkClearValue));
-      clear_values[0].color.float32[0] = 0.0f;
-      clear_values[0].color.float32[1] = 0.0f;
-      clear_values[0].color.float32[2] = 0.0f;
-      clear_values[0].color.float32[3] = 1.0f;
+      clear_values[0].color = vkz_clear_colour;
       clear_values[1].depthStencil.depth = 1.0f;
       clear_values[1].depthStencil.stencil = 0;
 

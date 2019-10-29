@@ -1836,8 +1836,14 @@ namespace small3d {
   }
 
   void Renderer::clearScreen(const glm::vec4 &colour) {
-    this->renderRectangle(colour, glm::vec3(-1.0f, 1.0f, 1.0f),
-      glm::vec3(1.0f, -1.0f, 1.0f));
+
+    // Clearing is performed before rendering (see above).
+    // Here only the clear colour is set.
+
+    vkz_clear_colour.float32[0] = colour.r;
+    vkz_clear_colour.float32[1] = colour.g;
+    vkz_clear_colour.float32[2] = colour.b;
+    vkz_clear_colour.float32[3] = colour.a;
   }
 
   void Renderer::swapBuffers() {

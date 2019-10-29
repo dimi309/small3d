@@ -54,6 +54,11 @@ extern VkPipelineLayout* vkz_pipeline_layout;
 extern uint32_t vkz_swapchain_image_count;
 
 /**
+ * @brief The colour used to clear the screen.
+ */
+extern VkClearColorValue vkz_clear_colour;
+
+/**
  * @brief  Create a vulkan instance
  * @param  application_name The name of the application that will be using Vulkan
  * @param  enabled_extension_names Names of extensions used
