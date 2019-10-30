@@ -22,7 +22,7 @@ namespace small3d {
 
   static std::string openglErrorToString(GLenum error);
 
-  std::string Renderer::loadShaderFromFile(const std::string fileLocation)
+  std::string Renderer::loadShaderFromFile(const std::string &fileLocation)
     const {
     initLogger();
     std::string shaderSource = "";
@@ -36,7 +36,7 @@ namespace small3d {
     return shaderSource;
   }
 
-  GLuint Renderer::compileShader(const std::string shaderSourceFile,
+  GLuint Renderer::compileShader(const std::string &shaderSourceFile,
 				 const uint32_t shaderType) const {
     GLuint shader = glCreateShader(shaderType);
     std::string shaderSource = this->loadShaderFromFile(shaderSourceFile);
@@ -122,7 +122,7 @@ namespace small3d {
 
   }
 
-  void Renderer::checkForOpenGLErrors(const std::string when, const bool abort)
+  void Renderer::checkForOpenGLErrors(const std::string &when, const bool abort)
     const {
     GLenum errorCode = glGetError();
     if (errorCode != GL_NO_ERROR) {
@@ -138,8 +138,8 @@ namespace small3d {
     }
   }
 
-  void Renderer::positionNextObject(const glm::vec3 offset,
-				    const glm::vec3 rotation) const {
+  void Renderer::positionNextObject(const glm::vec3 &offset,
+				    const glm::vec3 &rotation) const {
     // Rotation
 
     GLint xRotationMatrixUniform = glGetUniformLocation(perspectiveProgram,
@@ -200,7 +200,7 @@ namespace small3d {
     glUniform3fv(cameraPositionUniform, 1, glm::value_ptr(cameraPosition));
   }
 
-  GLuint Renderer::getTextureHandle(const std::string name) const {
+  GLuint Renderer::getTextureHandle(const std::string &name) const {
     GLuint handle = 0;
     auto nameTexturePair = textures.find(name);
     if (nameTexturePair != textures.end()) {
@@ -209,7 +209,7 @@ namespace small3d {
     return handle;
   }
 
-  GLuint Renderer::generateTexture(const std::string name, const float* data,
+  GLuint Renderer::generateTexture(const std::string &name, const float* data,
 				   const unsigned long width,
 				   const unsigned long height) {
 
@@ -230,8 +230,8 @@ namespace small3d {
   }
 
   void Renderer::init(const int width, const int height,
-		      const std::string windowTitle,
-		      const std::string shadersPath) {
+		      const std::string &windowTitle,
+		      const std::string &shadersPath) {
 
     realScreenWidth = width;
     realScreenHeight = height;
@@ -321,7 +321,7 @@ namespace small3d {
   }
 
   void Renderer::initWindow(int& width, int& height,
-			    const std::string windowTitle) {
+			    const std::string &windowTitle) {
 
     glfwSetErrorCallback(error_callback);
 
@@ -407,12 +407,13 @@ namespace small3d {
     glUniform1f(lightIntensityUniform, lightIntensity);
 
   }
-  void Renderer::bindTexture(std::string name, bool perspective) {
+
+  void Renderer::bindTexture(const std::string& name, bool perspective) {
     GLuint textureHandle = getTextureHandle(name);
 
     if (textureHandle == 0) {
       throw std::runtime_error("Texture " + name +
-			       " has not been generated");
+        " has not been generated");
     }
 
     if (perspective)
@@ -426,6 +427,7 @@ namespace small3d {
     glUniform1i(loc, perspective ? 0 : 1);
 
   }
+  
 
   Renderer::Renderer() {
     window = 0;
@@ -438,11 +440,11 @@ namespace small3d {
 
   }
 
-  Renderer::Renderer(const std::string windowTitle, const int width,
+  Renderer::Renderer(const std::string &windowTitle, const int width,
 		     const int height, const float frustumScale,
 		     const float zNear, const float zFar,
 		     const float zOffsetFromCamera,
-		     const std::string shadersPath,
+		     const std::string &shadersPath,
 		     const uint32_t maxObjectsPerPass) {
 
     window = 0;
@@ -470,12 +472,12 @@ namespace small3d {
     glBindVertexArray(vao);
   }
 
-  Renderer& Renderer::getInstance(const std::string windowTitle,
+  Renderer& Renderer::getInstance(const std::string &windowTitle,
 				  const int width, const int height,
 				  const float frustumScale,
 				  const float zNear, const float zFar,
 				  const float zOffsetFromCamera,
-				  const std::string shadersPath,
+				  const std::string &shadersPath,
 				  const uint32_t maxObjectsPerPass) {
 
     static Renderer instance(windowTitle, width, height, frustumScale, zNear,
@@ -521,14 +523,14 @@ namespace small3d {
     return window;
   }
 
-  void Renderer::generateTexture(const std::string name, const Image image) {
+  void Renderer::generateTexture(const std::string &name, const Image &image) {
     this->generateTexture(name, image.getData(), image.getWidth(),
 			  image.getHeight());
   }
 
-  void Renderer::generateTexture(const std::string name, const std::string text,
-				 const glm::vec3 colour, const int fontSize,
-				 const std::string fontPath) {
+  void Renderer::generateTexture(const std::string &name, const std::string &text,
+				 const glm::vec3 &colour, const int fontSize,
+				 const std::string &fontPath) {
 
     std::string faceId = intToStr(fontSize) + fontPath;
 
@@ -617,7 +619,7 @@ namespace small3d {
     generateTexture(name, &textMemory[0], width, height);
   }
 
-  void Renderer::deleteTexture(const std::string name) {
+  void Renderer::deleteTexture(const std::string &name) {
     auto nameTexturePair = textures.find(name);
 
     if (nameTexturePair != textures.end()) {
@@ -626,11 +628,11 @@ namespace small3d {
     }
   }
 
-  void Renderer::renderRectangle(const std::string textureName,
-				 const glm::vec3 topLeft,
-				 const glm::vec3 bottomRight,
+  void Renderer::renderRectangle(const std::string &textureName,
+				 const glm::vec3 &topLeft,
+				 const glm::vec3 &bottomRight,
 				 const bool perspective,
-				 const glm::vec4 colour) {
+				 const glm::vec4 &colour) {
     Model rect;
 
     rect.vertexData = {
@@ -673,17 +675,17 @@ namespace small3d {
 
   }
 
-  void Renderer::renderRectangle(const glm::vec4 colour,
-				 const glm::vec3 topLeft,
-				 const glm::vec3 bottomRight,
+  void Renderer::renderRectangle(const glm::vec4 &colour,
+				 const glm::vec3 &topLeft,
+				 const glm::vec3 &bottomRight,
 				 const bool perspective) {
     this->renderRectangle("", topLeft, bottomRight, perspective, colour);
   }
 
-  void Renderer::render(Model & model, const glm::vec3 offset,
-			const glm::vec3 rotation,
-			const glm::vec4 colour,
-			const std::string textureName,
+  void Renderer::render(Model &model, const glm::vec3 &offset,
+			const glm::vec3 &rotation,
+			const glm::vec4 &colour,
+			const std::string &textureName,
 			const bool perspective) {
 
     glUseProgram(perspective ? perspectiveProgram : orthographicProgram);
@@ -795,29 +797,29 @@ namespace small3d {
 
   }
 
-  void Renderer::render(Model & model, const glm::vec3 offset,
-			const glm::vec3 rotation,
-			const std::string textureName) {
+  void Renderer::render(Model & model, const glm::vec3 &offset,
+			const glm::vec3 &rotation,
+			const std::string &textureName) {
     this->render(model, offset, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
 		 textureName);
   }
 
   void Renderer::render(SceneObject & sceneObject,
-			const glm::vec4 colour) {
+			const glm::vec4 &colour) {
     this->render(sceneObject.getModel(), sceneObject.offset,
 		 sceneObject.rotation, colour, "");
   }
 
-  void Renderer::render(SceneObject & sceneObject,
-			const std::string textureName) {
+  void Renderer::render(SceneObject &sceneObject,
+			const std::string &textureName) {
     this->render(sceneObject.getModel(), sceneObject.offset,
 		 sceneObject.rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
 		 textureName);
   }
 
-  void Renderer::write(const std::string text, const glm::vec3 colour,
-		       const glm::vec2 topLeft, const glm::vec2 bottomRight,
-		       const int fontSize, std::string fontPath) {
+  void Renderer::write(const std::string &text, const glm::vec3 &colour,
+		       const glm::vec2 &topLeft, const glm::vec2 &bottomRight,
+		       const int fontSize, const std::string &fontPath) {
 
     std::string textureName = intToStr(fontSize) + "text_" + text;
 
@@ -829,7 +831,7 @@ namespace small3d {
     deleteTexture(textureName);
   }
 
-  void Renderer::clearBuffers(Model & model) const {
+  void Renderer::clearBuffers(Model &model) const {
     if (model.positionBufferObjectId != 0) {
       glDeleteBuffers(1, &model.positionBufferObjectId);
       model.positionBufferObjectId = 0;
@@ -850,7 +852,7 @@ namespace small3d {
     }
   }
 
-  void Renderer::clearBuffers(SceneObject & sceneObject) const {
+  void Renderer::clearBuffers(SceneObject &sceneObject) const {
     for (auto model : sceneObject.models) {
       clearBuffers(model);
     }
@@ -866,7 +868,7 @@ namespace small3d {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 
-  void Renderer::clearScreen(const glm::vec4 colour) const {
+  void Renderer::clearScreen(const glm::vec4 &colour) const {
     glClearColor(colour.r, colour.g, colour.b, colour.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }

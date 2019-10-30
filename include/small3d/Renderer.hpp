@@ -66,34 +66,34 @@ namespace small3d
     std::vector<float> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
 
-    std::string loadShaderFromFile(const std::string fileLocation) const;
-    uint32_t compileShader(const std::string shaderSourceFile,
+    std::string loadShaderFromFile(const std::string &fileLocation) const;
+    uint32_t compileShader(const std::string &shaderSourceFile,
 			 const uint32_t shaderType) const;
     std::string getProgramInfoLog(const uint32_t linkedProgram) const;
     std::string getShaderInfoLog(const uint32_t shader) const;
     void initOpenGL();
-    void checkForOpenGLErrors(const std::string when, const bool abort) const;
+    void checkForOpenGLErrors(const std::string &when, const bool abort) const;
 
-    void positionNextObject(const glm::vec3 offset,
-			    const glm::vec3 rotation) const;
+    void positionNextObject(const glm::vec3 &offset,
+			    const glm::vec3 &rotation) const;
     void positionCamera() const;
-    uint32_t getTextureHandle(const std::string name) const;
-    uint32_t generateTexture(const std::string name, const float *data,
+    uint32_t getTextureHandle(const std::string &name) const;
+    uint32_t generateTexture(const std::string &name, const float *data,
 			   const unsigned long width,
 			   const unsigned long height);
 
-    void init(const int width, const int height, const std::string windowTitle,
-              const std::string shadersPath);
+    void init(const int width, const int height, const std::string &windowTitle,
+              const std::string &shadersPath);
     void initWindow(int &width, int &height,
-		    const std::string windowTitle = "");
+		    const std::string &windowTitle = "");
 
     void setPerspectiveAndLight();
 
-    void bindTexture(std::string name, bool perspective);
+    void bindTexture(const std::string &name, bool perspective);
 
-    Renderer(const std::string windowTitle, const int width, const int height,
+    Renderer(const std::string &windowTitle, const int width, const int height,
 	     const float frustumScale, const float zNear, const float zFar,
-	     const float zOffsetFromCamera, const std::string shadersPath,
+	     const float zOffsetFromCamera, const std::string &shadersPath,
 	     const uint32_t maxObjectsPerPass);
     
     Renderer();
@@ -153,14 +153,14 @@ namespace small3d
      *                          would invoke the default constructor, which has
      *                          been deleted.
      */
-    static Renderer& getInstance(const std::string windowTitle = "",
+    static Renderer& getInstance(const std::string &windowTitle = "",
 				 const int width = 0, 
 				 const int height = 0,
 				 const float frustumScale = 1.0f,
 				 const float zNear = 1.0f,
 				 const float zFar = 24.0f,
 				 const float zOffsetFromCamera = -1.0f,
-				 const std::string shadersPath =
+				 const std::string &shadersPath =
 				 "resources/shaders/",
 				 const uint32_t maxObjectsPerPass = 20);
 
@@ -179,7 +179,7 @@ namespace small3d
      * @param name The name by which the texture will be known
      * @param image The image from which the texture will be generated
      */
-    void generateTexture(const std::string name, const Image image);
+    void generateTexture(const std::string &name, const Image &image);
 
     /**
      * @brief Generate a texture on the GPU that contains the given text
@@ -189,10 +189,10 @@ namespace small3d
      * @param fontSize The size of the font which will be used
      * @param fontPath Path to the TrueType font (.ttf) which will be used
      */
-    void generateTexture(const std::string name, const std::string text,
-			 const glm::vec3 colour,
+    void generateTexture(const std::string &name, const std::string &text,
+			 const glm::vec3 &colour,
 			 const int fontSize,
-			 const std::string fontPath =
+			 const std::string &fontPath =
 			 "resources/fonts/CrusoeText/CrusoeText-Regular.ttf");
 
     /**
@@ -200,7 +200,7 @@ namespace small3d
      *
      * @param	name	The name of the texture.
      */
-    void deleteTexture(const std::string name);
+    void deleteTexture(const std::string &name);
 
     /**
      * @brief Render a rectangle, using two of its corners that are diagonally
@@ -214,10 +214,10 @@ namespace small3d
      * @param colour      The colour of the rectangle (RGBA). If this is set,
      *                    textureName will be ignored.
      */
-    void renderRectangle(const std::string textureName, const glm::vec3 topLeft,
-			 const glm::vec3 bottomRight,
+    void renderRectangle(const std::string &textureName, const glm::vec3 &topLeft,
+			 const glm::vec3 &bottomRight,
 			 const bool perspective = false,
-			 const glm::vec4 colour =
+			 const glm::vec4 &colour =
 			 glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
     /**
@@ -229,8 +229,8 @@ namespace small3d
      * @param perspective If set to true, use perspective rendering.
      *                    Otherwise use orthographic rendering.
      */
-    void renderRectangle(const glm::vec4 colour, const glm::vec3 topLeft,
-			 const glm::vec3 bottomRight, 
+    void renderRectangle(const glm::vec4 &colour, const glm::vec3 &topLeft,
+			 const glm::vec3 &bottomRight, 
 			 const bool perspective = false);
     
     /**
@@ -245,8 +245,8 @@ namespace small3d
      *                    be ignored.
      * @param perspective Perspective drawing if true, otherwise orthographic
      */
-    void render(Model &model, const glm::vec3 offset, const glm::vec3 rotation, 
-		const glm::vec4 colour, const std::string textureName="",
+    void render(Model &model, const glm::vec3 &offset, const glm::vec3 &rotation, 
+		const glm::vec4 &colour, const std::string &textureName="",
 		const bool perspective = true);
 
     /**
@@ -257,15 +257,15 @@ namespace small3d
      * @param textureName The name of the texture to attach to the model.
      *                    The texture has to have been generated already.
      */
-    void render(Model &model, const glm::vec3 offset, const glm::vec3 rotation,
-		const std::string textureName);
+    void render(Model &model, const glm::vec3 &offset, const glm::vec3 &rotation,
+		const std::string &textureName);
 
     /**
      * @brief Render a SceneObject
      * @param sceneObject The object
      * @param colour The colour the object. 
      */
-    void render(SceneObject &sceneObject, const glm::vec4 colour);
+    void render(SceneObject &sceneObject, const glm::vec4 &colour);
 
     /**
      * @brief Render a SceneObject
@@ -273,7 +273,7 @@ namespace small3d
      * @param textureName The name of the texture to attach to the object.
      *                    The texture has to have been generated already. 
      */
-    void render(SceneObject &sceneObject, const std::string textureName);
+    void render(SceneObject &sceneObject, const std::string &textureName);
 
     /**
      * @brief Render some text on the screen.
@@ -286,10 +286,10 @@ namespace small3d
      * @param fontSize    The size of the font which will be used
      * @param fontPath    Path to the TrueType font (.ttf) which will be used
      */
-    void write(const std::string text, const glm::vec3 colour,
-	       const glm::vec2 topLeft, const glm::vec2 bottomRight,
+    void write(const std::string &text, const glm::vec3 &colour,
+	       const glm::vec2 &topLeft, const glm::vec2 &bottomRight,
 	       const int fontSize=48,
-	       const std::string fontPath =
+	       const std::string &fontPath =
 	       "resources/fonts/CrusoeText/CrusoeText-Regular.ttf");
 
     /**
@@ -304,7 +304,7 @@ namespace small3d
      * (the object itself remains intact).
      * @param model The model
      */
-    void clearBuffers(SceneObject& sceneObject) const;
+    void clearBuffers(SceneObject &sceneObject) const;
 
     /**
      * @brief Clears the screen.
@@ -315,7 +315,7 @@ namespace small3d
      * @brief Clears the screen.
      * @param colour The colour with which the screen is to be cleared
      */
-    void clearScreen(const glm::vec4 colour) const;
+    void clearScreen(const glm::vec4 &colour) const;
 
     /**
      * @brief This is a double buffered system and this command swaps
