@@ -1505,13 +1505,9 @@ namespace small3d {
     }
   }
 
-  void Renderer::renderRectangle(const std::string &textureName,
-    const glm::vec3 &topLeft,
-    const glm::vec3 &bottomRight,
-    const bool perspective,
-    const glm::vec4 &colour) {
-
-    Model rect;
+  void Renderer::createRectangle(Model& rect,
+    const glm::vec3& topLeft,
+    const glm::vec3& bottomRight) {
 
     rect.vertexData = {
       bottomRight.x, bottomRight.y, bottomRight.z, 1.0f,
@@ -1519,7 +1515,6 @@ namespace small3d {
       topLeft.x, topLeft.y, topLeft.z, 1.0f,
       topLeft.x, bottomRight.y, bottomRight.z, 1.0f
     };
-
 
     rect.vertexDataByteSize = 16 * sizeof(float);
 
@@ -1539,24 +1534,7 @@ namespace small3d {
         0.0f, 0.0f,
         0.0f, 1.0f
     };
-
     rect.textureCoordsDataByteSize = 8 * sizeof(float);
-
-    if (colour == glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)) {
-      rect.textureName = textureName;
-    }
-
-    render(rect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-      colour, textureName, perspective);
-    
-    garbageModels.push_back(rect);
-  }
-
-  void Renderer::renderRectangle(const glm::vec4 &colour,
-    const glm::vec3 &topLeft,
-    const glm::vec3 &bottomRight,
-    const bool perspective) {
-    this->renderRectangle("", topLeft, bottomRight, perspective, colour);
   }
 
   void Renderer::render(Model & model, const glm::vec3 &offset,
@@ -1789,26 +1767,6 @@ namespace small3d {
     this->render(sceneObject.getModel(), sceneObject.offset,
       sceneObject.rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName);
-  }
-
-  void Renderer::write(const std::string &text, const glm::vec3 &colour,
-    const glm::vec2 &topLeft, const glm::vec2 &bottomRight,
-    const int fontSize, const std::string &fontPath, bool noCache) {
-
-    std::string textureName = intToStr(fontSize) + "text_" + text;
-
-    VulkanImage handle;
-    auto nameTexturePair = textures.find(textureName);
-
-    if (nameTexturePair != textures.end()) {
-      handle = nameTexturePair->second;
-    }
-    else {
-      generateTexture(textureName, text, colour, fontSize, fontPath, noCache);
-    }
-
-    renderRectangle(textureName, glm::vec3(topLeft.x, topLeft.y, -0.5f),
-      glm::vec3(bottomRight.x, bottomRight.y, -0.5f));
   }
 
   void Renderer::clearBuffers(Model & model) const {
