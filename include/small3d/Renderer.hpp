@@ -380,6 +380,13 @@ namespace small3d
      */
     void deleteTexture(const std::string &name);
 
+    /**
+    * @brief Populates a Model object with a rectangle stretching between the
+    *        given coordinates.
+    * @param rect        Model object in which the rectangle data will be entered
+    * @param topLeft     Top left corner of the rectangle
+    * @param bottomRight Bottom right corner of the rectangle
+    */
     void Renderer::createRectangle(Model& rect,
       const glm::vec3& topLeft,
       const glm::vec3& bottomRight);
