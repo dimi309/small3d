@@ -52,7 +52,7 @@ namespace small3d
     uint32_t lightUboId = 0;
     uint32_t perspColourUboId = 0;
     uint32_t orthoColourUboId = 0;
-    
+
     bool noShaders;
 
     float frustumScale = 0.0f;
@@ -66,38 +66,38 @@ namespace small3d
     std::vector<float> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
 
-    std::string loadShaderFromFile(const std::string &fileLocation) const;
-    uint32_t compileShader(const std::string &shaderSourceFile,
-			 const uint32_t shaderType) const;
+    std::string loadShaderFromFile(const std::string& fileLocation) const;
+    uint32_t compileShader(const std::string& shaderSourceFile,
+      const uint32_t shaderType) const;
     std::string getProgramInfoLog(const uint32_t linkedProgram) const;
     std::string getShaderInfoLog(const uint32_t shader) const;
     void initOpenGL();
-    void checkForOpenGLErrors(const std::string &when, const bool abort) const;
+    void checkForOpenGLErrors(const std::string& when, const bool abort) const;
 
-    void positionNextObject(const glm::vec3 &offset,
-			    const glm::vec3 &rotation) const;
+    void positionNextObject(const glm::vec3& offset,
+      const glm::vec3& rotation) const;
     void positionCamera() const;
-    uint32_t getTextureHandle(const std::string &name) const;
-    uint32_t generateTexture(const std::string &name, const float *data,
-			   const unsigned long width,
-			   const unsigned long height);
+    uint32_t getTextureHandle(const std::string& name) const;
+    uint32_t generateTexture(const std::string& name, const float* data,
+      const unsigned long width,
+      const unsigned long height);
 
-    void init(const int width, const int height, const std::string &windowTitle,
-              const std::string &shadersPath);
-    void initWindow(int &width, int &height,
-		    const std::string &windowTitle = "");
+    void init(const int width, const int height, const std::string& windowTitle,
+      const std::string& shadersPath);
+    void initWindow(int& width, int& height,
+      const std::string& windowTitle = "");
 
     void setPerspectiveAndLight();
 
-    void bindTexture(const std::string &name, bool perspective);
+    void bindTexture(const std::string& name, bool perspective);
 
-    Renderer(const std::string &windowTitle, const int width, const int height,
-	     const float frustumScale, const float zNear, const float zFar,
-	     const float zOffsetFromCamera, const std::string &shadersPath,
-	     const uint32_t maxObjectsPerPass);
-    
+    Renderer(const std::string& windowTitle, const int width, const int height,
+      const float frustumScale, const float zNear, const float zFar,
+      const float zOffsetFromCamera, const std::string& shadersPath,
+      const uint32_t maxObjectsPerPass);
+
     Renderer();
-    
+
   public:
     /**
      * @brief Vector, indicating the direction of the light in the scene.
@@ -146,23 +146,23 @@ namespace small3d
      *                          maintained the same.
      * @param maxObjectsPerPass Ignored parameter (used for compatibility with
      *                          Vulkan edition).
-     * @return                  The Renderer object. It can only be assigned to 
+     * @return                  The Renderer object. It can only be assigned to
      *                          a pointer by its address (Renderer *r =
      *                          &Renderer::getInstance(...), since declaring
      *                          another Renderer variable and assigning to it
      *                          would invoke the default constructor, which has
      *                          been deleted.
      */
-    static Renderer& getInstance(const std::string &windowTitle = "",
-				 const int width = 0, 
-				 const int height = 0,
-				 const float frustumScale = 1.0f,
-				 const float zNear = 1.0f,
-				 const float zFar = 24.0f,
-				 const float zOffsetFromCamera = -1.0f,
-				 const std::string &shadersPath =
-				 "resources/shaders/",
-				 const uint32_t maxObjectsPerPass = 20);
+    static Renderer& getInstance(const std::string& windowTitle = "",
+      const int width = 0,
+      const int height = 0,
+      const float frustumScale = 1.0f,
+      const float zNear = 1.0f,
+      const float zFar = 24.0f,
+      const float zOffsetFromCamera = -1.0f,
+      const std::string& shadersPath =
+      "resources/shaders/",
+      const uint32_t maxObjectsPerPass = 20);
 
     /**
      * @brief Destructor
@@ -179,7 +179,7 @@ namespace small3d
      * @param name The name by which the texture will be known
      * @param image The image from which the texture will be generated
      */
-    void generateTexture(const std::string &name, const Image &image);
+    void generateTexture(const std::string& name, const Image& image);
 
     /**
      * @brief Generate a texture on the GPU that contains the given text
@@ -189,50 +189,23 @@ namespace small3d
      * @param fontSize The size of the font which will be used
      * @param fontPath Path to the TrueType font (.ttf) which will be used
      */
-    void generateTexture(const std::string &name, const std::string &text,
-			 const glm::vec3 &colour,
-			 const int fontSize,
-			 const std::string &fontPath =
-			 "resources/fonts/CrusoeText/CrusoeText-Regular.ttf");
+    void generateTexture(const std::string& name, const std::string& text,
+      const glm::vec3& colour,
+      const int fontSize = 48,
+      const std::string& fontPath =
+      "resources/fonts/CrusoeText/CrusoeText-Regular.ttf");
 
     /**
      * @brief Deletes the texture indicated by the given name.
      *
      * @param	name	The name of the texture.
      */
-    void deleteTexture(const std::string &name);
+    void deleteTexture(const std::string& name);
 
-    /**
-     * @brief Render a rectangle, using two of its corners that are diagonally
-     *        opposed to each other to position it.
-     * @param textureName The name of the texture to be used (must have been
-     *                    generated with generateTexture())
-     * @param topLeft     Where to place the top left corner
-     * @param bottomRight Where to place the bottom right corner
-     * @param perspective If set to true, use perspective rendering.
-     *                    Otherwise use orthographic rendering.
-     * @param colour      The colour of the rectangle (RGBA). If this is set,
-     *                    textureName will be ignored.
-     */
-    void renderRectangle(const std::string &textureName, const glm::vec3 &topLeft,
-			 const glm::vec3 &bottomRight,
-			 const bool perspective = false,
-			 const glm::vec4 &colour =
-			 glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+    void createRectangle(Model& rect,
+      const glm::vec3& topLeft,
+      const glm::vec3& bottomRight);
 
-    /**
-     * @brief Render a rectangle, using two of its corners that are diagonally
-     *        opposed to each other to position it.
-     * @param colour      The colour of the rectangle (RGBA)
-     * @param topLeft     Where to place the top left corner 
-     * @param bottomRight Where to place the bottom right corner 
-     * @param perspective If set to true, use perspective rendering.
-     *                    Otherwise use orthographic rendering.
-     */
-    void renderRectangle(const glm::vec4 &colour, const glm::vec3 &topLeft,
-			 const glm::vec3 &bottomRight, 
-			 const bool perspective = false);
-    
     /**
      * @brief Render a Model
      * @param model       The model
@@ -245,9 +218,9 @@ namespace small3d
      *                    be ignored.
      * @param perspective Perspective drawing if true, otherwise orthographic
      */
-    void render(Model &model, const glm::vec3 &offset, const glm::vec3 &rotation, 
-		const glm::vec4 &colour, const std::string &textureName="",
-		const bool perspective = true);
+    void render(Model& model, const glm::vec3& offset, const glm::vec3& rotation,
+      const glm::vec4& colour, const std::string& textureName = "",
+      const bool perspective = true);
 
     /**
      * @brief Render a Model.
@@ -257,54 +230,37 @@ namespace small3d
      * @param textureName The name of the texture to attach to the model.
      *                    The texture has to have been generated already.
      */
-    void render(Model &model, const glm::vec3 &offset, const glm::vec3 &rotation,
-		const std::string &textureName);
+    void render(Model& model, const glm::vec3& offset, const glm::vec3& rotation,
+      const std::string& textureName);
 
     /**
      * @brief Render a SceneObject
      * @param sceneObject The object
-     * @param colour The colour the object. 
+     * @param colour The colour the object.
      */
-    void render(SceneObject &sceneObject, const glm::vec4 &colour);
+    void render(SceneObject& sceneObject, const glm::vec4& colour);
 
     /**
      * @brief Render a SceneObject
      * @param sceneObject The object
      * @param textureName The name of the texture to attach to the object.
-     *                    The texture has to have been generated already. 
+     *                    The texture has to have been generated already.
      */
-    void render(SceneObject &sceneObject, const std::string &textureName);
-
-    /**
-     * @brief Render some text on the screen.
-     * @param text The text to be rendered
-     * @param colour      The colour in which the text will be rendered (r, g, b)
-     * @param topLeft     Where to place the top left corner of the text
-     *                    rectangle
-     * @param bottomRight Where to place the bottom right corner of the text
-     *                    rectangle
-     * @param fontSize    The size of the font which will be used
-     * @param fontPath    Path to the TrueType font (.ttf) which will be used
-     */
-    void write(const std::string &text, const glm::vec3 &colour,
-	       const glm::vec2 &topLeft, const glm::vec2 &bottomRight,
-	       const int fontSize=48,
-	       const std::string &fontPath =
-	       "resources/fonts/CrusoeText/CrusoeText-Regular.ttf");
+    void render(SceneObject& sceneObject, const std::string& textureName);
 
     /**
      * @brief Clear a Model from the GPU buffers (the object itself remains
      *        intact).
      * @param model The model
      */
-    void clearBuffers(Model &model) const;
+    void clearBuffers(Model& model) const;
 
     /**
-     * @brief Clear an object (multiple models) from the GPU buffers 
+     * @brief Clear an object (multiple models) from the GPU buffers
      * (the object itself remains intact).
      * @param model The model
      */
-    void clearBuffers(SceneObject &sceneObject) const;
+    void clearBuffers(SceneObject& sceneObject) const;
 
     /**
      * @brief Clears the screen.
@@ -315,7 +271,7 @@ namespace small3d
      * @brief Clears the screen.
      * @param colour The colour with which the screen is to be cleared
      */
-    void clearScreen(const glm::vec4 &colour) const;
+    void clearScreen(const glm::vec4& colour) const;
 
     /**
      * @brief This is a double buffered system and this command swaps
@@ -325,9 +281,9 @@ namespace small3d
 
     Renderer(Renderer const&) = delete;
     void operator=(Renderer const&) = delete;
-    Renderer(Renderer &&) = delete;
-    void operator=(Renderer &&) = delete;
+    Renderer(Renderer&&) = delete;
+    void operator=(Renderer&&) = delete;
 
   };
-  
+
 }
