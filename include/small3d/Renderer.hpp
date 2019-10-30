@@ -368,7 +368,7 @@ namespace small3d
      */
     void generateTexture(const std::string &name, const std::string &text,
       const glm::vec3 &colour,
-      const int fontSize,
+      const int fontSize = 48,
       const std::string &fontPath =
       "resources/fonts/CrusoeText/CrusoeText-Regular.ttf",
       bool noCache = false);
@@ -380,36 +380,9 @@ namespace small3d
      */
     void deleteTexture(const std::string &name);
 
-    /**
-     * @brief Render a rectangle, using two of its corners that are diagonally
-     *        opposed to each other to position it.
-     * @param textureName The name of the texture to be used (must have been
-     *                    generated with generateTexture())
-     * @param topLeft     Where to place the top left corner
-     * @param bottomRight Where to place the bottom right corner
-     * @param perspective If set to true, use perspective rendering.
-     *                    Otherwise use orthographic rendering.
-     * @param colour      The colour of the rectangle (RGBA). If this is set,
-     *                    textureName will be ignored.
-     */
-    void renderRectangle(const std::string &textureName, const glm::vec3 &topLeft,
-      const glm::vec3 &bottomRight,
-      const bool perspective = false,
-      const glm::vec4 &colour =
-      glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
-
-    /**
-     * @brief Render a rectangle, using two of its corners that are diagonally
-     *        opposed to each other to position it.
-     * @param colour      The colour of the rectangle (RGBA)
-     * @param topLeft     Where to place the top left corner
-     * @param bottomRight Where to place the bottom right corner
-     * @param perspective If set to true, use perspective rendering.
-     *                    Otherwise use orthographic rendering.
-     */
-    void renderRectangle(const glm::vec4 &colour, const glm::vec3 &topLeft,
-      const glm::vec3 &bottomRight,
-      const bool perspective = false);
+    void Renderer::createRectangle(Model& rect,
+      const glm::vec3& topLeft,
+      const glm::vec3& bottomRight);
 
     /**
      * @brief Render a Model
@@ -453,31 +426,6 @@ namespace small3d
      */
     void render(SceneObject &sceneObject, const std::string &textureName);
 
-    /**
-     * @brief Render some text on the screen.
-     * @param text The text to be rendered
-     * @param colour      The colour in which the text will be rendered
-     *                    (r, g, b)
-     * @param topLeft     Where to place the top left corner of the text
-     *                    rectangle
-     * @param bottomRight Where to place the bottom right corner of the text
-     *                    rectangle
-     * @param fontSize    The size of the font which will be used
-     * @param fontPath    Path to the TrueType font (.ttf) which will be used
-     * @param noCache     If true, don't keep the generated textue containing the
-     *                    text in memory, but delete it upon the creation of a new
-     *                    texture. BUG: If this is used for more than one write 
-     *                    command per frame it will crash (sorry).
-     */
-    void write(const std::string &text, const glm::vec3 &colour,
-      const glm::vec2 &topLeft, const glm::vec2 &bottomRight,
-      const int fontSize = 48,
-      const std::string &fontPath =
-#ifndef SMALL3D_IOS
-      "resources/fonts/CrusoeText/CrusoeText-Regular.ttf", bool noCache = false);
-#else
-      "resources1/fonts/CrusoeText/CrusoeText-Regular.ttf", bool noCache = false);
-#endif
     /**
      * @brief Clear a Model from the GPU buffers (the object itself remains
      *        intact).

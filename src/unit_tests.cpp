@@ -146,21 +146,39 @@ int RendererTest() {
 
   double startSeconds = glfwGetTime();
 
+  Model rectangle;
+  renderer->createRectangle(rectangle, glm::vec3(-1.0f, 0.0f, 1.0f),
+    glm::vec3(-0.5f, -0.5f, 1.0f));
+
+  Model rect2;
+
+  renderer->createRectangle(rect2, glm::vec3(0.0f, 0.5f, -2.0f),
+    glm::vec3(1.0f, -1.0f, -2.0f));
+
+  renderer->generateTexture("small3dTexture", "small3d :)",
+    glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+
+  Model rect3;
+
+  renderer->createRectangle(rect3, glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(0.5f, -0.5f, -0.5f));
+
   while (glfwGetTime() - startSeconds < 3.0) {
     glfwPollEvents();
     renderer->clearScreen();
-    renderer->renderRectangle(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
-      glm::vec3(-1.0f, 0.0f, 1.0f),
-      glm::vec3(-0.5f, -0.5f, 1.0f), false);
+    
+    renderer->render(rectangle,
+      glm::vec3(0.0f, 0.0f, 0.0f),
+      glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), "", false);
 
-    renderer->renderRectangle("cubeTexture",
-      glm::vec3(0.0f, 0.5f, -2.0f),
-      glm::vec3(1.0f, -1.0f, -2.0f), true);
+    renderer->render(rect2,
+      glm::vec3(0.0f, 0.0f, 0.0f),
+      glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "cubeTexture", true);
 
     renderer->render(object2, "cubeTexture");
 
-    renderer->write("small3d :) p q", glm::vec3(0.0f, 1.0f, 0.0f),
-      glm::vec2(-1.0f, 0.0f), glm::vec2(0.5f, -0.5f));
+    renderer->render(rect3, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+      glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", false);
+
     renderer->swapBuffers();
   }
   renderer->clearBuffers(object);
