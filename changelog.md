@@ -3,6 +3,18 @@
 small3d changes per version
 ===========================
 
+v1.69902
+
+- Eliminated Renderer write function and all the renderRectangle
+  functions as they were too resource hungry. This is a breaking change.
+  
+- Modified Renderer generateTexture function to contain a confirmation
+  flag for replacing an existing texture if it has the same name as
+  the texture being generated.
+  
+- Added some convenient render functions to Renderer, for rendering models
+  without a given offset nor rotation (defaulting to 0).
+
 v1.69901 2019-10-27
 
 - Correctly detecting framebuffer size. This fixes an issue on Apple computers,
