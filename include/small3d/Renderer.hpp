@@ -385,7 +385,7 @@ namespace small3d
     * @param topLeft     Top left corner of the rectangle
     * @param bottomRight Bottom right corner of the rectangle
     */
-    void Renderer::createRectangle(Model& rect,
+    void createRectangle(Model& rect,
       const glm::vec3& topLeft,
       const glm::vec3& bottomRight);
 
