@@ -156,7 +156,7 @@ int RendererTest() {
     glm::vec3(1.0f, -1.0f, -2.0f));
 
   renderer->generateTexture("small3dTexture", "small3d :)",
-    glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+    glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
   Model rect3;
 
