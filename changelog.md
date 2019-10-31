@@ -3,6 +3,18 @@
 small3d changes per version
 ===========================
 
+v1.703
+
+- Eliminated Renderer write function and all the renderRectangle
+  functions as they were too resource hungry. This is a breaking change.
+  
+- Modified Renderer generateTexture function to contain a confirmation
+  flag for replacing an existing texture if it has the same name as
+  the texture being generated.
+  
+- Added some convenient render functions to Renderer, for rendering models
+  without a given offset nor rotation (defaulting to 0).
+
 v1.702 2019-10-26
 
 - Introduced noCache flag for rendered text, allowing for the enclosing
