@@ -780,23 +780,26 @@ namespace small3d {
 					const float* data,
     const unsigned long width,
     const unsigned long height,
-    const bool replaceable) {
+    const bool replace) {
     
-    bool foundReplaceable = false;
-    std::string replaceableName = "";
+    bool found = false;
+    
     VulkanImage textureHandle = {};
 
     for (auto &nameTexturePair : textures) {
-      if (nameTexturePair.second.replace) {
-        replaceableName = nameTexturePair.first;
+      if (nameTexturePair.first == name) {
+        if (!replace) {
+          throw std::runtime_error("Texture with name " + name + 
+            " already exists and replace flag not set.");
+        }
         textureHandle = nameTexturePair.second;
-        foundReplaceable = true;
+        found = true;
         break;
       }
     }
 
-    if (foundReplaceable) {
-      deleteTexture(replaceableName);
+    if (found) {
+      deleteTexture(name);
       textureHandle.image = VK_NULL_HANDLE;
       textureHandle.imageView = VK_NULL_HANDLE;
       textureHandle.imageMemory = VK_NULL_HANDLE;
@@ -851,7 +854,7 @@ namespace small3d {
       throw std::runtime_error("Failed to create texture image view!\n\r");
     };
 
-    if (!foundReplaceable) {
+    if (!found) {
     
       // Allocate perspective texture descriptor set
 
@@ -894,7 +897,7 @@ namespace small3d {
 
     vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
 
-    if (!foundReplaceable) {
+    if (!found) {
       
       // Allocate orthographic texture descriptor set
       
@@ -937,8 +940,6 @@ namespace small3d {
     wds.pTexelBufferView = NULL;
 
     vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
-
-    textureHandle.replace = replaceable;
 
     textures.insert(make_pair(name, textureHandle));
 
@@ -1380,7 +1381,7 @@ namespace small3d {
 
   void Renderer::generateTexture(const std::string &name, const std::string &text,
     const glm::vec3 &colour, const int fontSize,
-    const std::string &fontPath, bool noCache) {
+    const std::string &fontPath, bool replace) {
 
     std::string faceId = intToStr(fontSize) + fontPath;
 
@@ -1488,7 +1489,7 @@ namespace small3d {
       totalAdvance += 4 * static_cast<unsigned long>(slot->advance.x / 64);
     }
     generateTexture(name, &textMemory[0], static_cast<unsigned long>(width),
-      static_cast<unsigned long>(height), noCache);
+      static_cast<unsigned long>(height), replace);
   }
 
   void Renderer::deleteTexture(const std::string &name) {
@@ -1754,6 +1755,18 @@ namespace small3d {
     const std::string &textureName) {
     this->render(model, offset, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName);
+  }
+
+  void Renderer::render(Model& model, const std::string& textureName,
+    const bool perspective) {
+    this->render(model, glm::vec3(0.0f, 0.0f,0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
+      textureName, perspective);
+  }
+
+  void Renderer::render(Model& model, const glm::vec4 &colour,
+    const bool perspective) {
+    this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), colour,
+      "", perspective);
   }
 
   void Renderer::render(SceneObject &sceneObject,
