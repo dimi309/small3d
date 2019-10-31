@@ -369,7 +369,7 @@ namespace small3d
       const int fontSize = 48,
       const std::string &fontPath =
       "resources/fonts/CrusoeText/CrusoeText-Regular.ttf",
-      bool replace = true);
+      const bool replace = true);
 
     /**
      * @brief Deletes the texture indicated by the given name.

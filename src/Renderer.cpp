@@ -1381,7 +1381,7 @@ namespace small3d {
 
   void Renderer::generateTexture(const std::string &name, const std::string &text,
     const glm::vec3 &colour, const int fontSize,
-    const std::string &fontPath, bool replace) {
+    const std::string &fontPath, const bool replace) {
 
     std::string faceId = intToStr(fontSize) + fontPath;
 
