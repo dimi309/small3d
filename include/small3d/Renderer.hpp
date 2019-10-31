@@ -80,7 +80,8 @@ namespace small3d
     uint32_t getTextureHandle(const std::string& name) const;
     uint32_t generateTexture(const std::string& name, const float* data,
       const unsigned long width,
-      const unsigned long height);
+      const unsigned long height,
+      const bool replace);
 
     void init(const int width, const int height, const std::string& windowTitle,
       const std::string& shadersPath);
@@ -188,12 +189,16 @@ namespace small3d
      * @param colour   The colour of the text
      * @param fontSize The size of the font which will be used
      * @param fontPath Path to the TrueType font (.ttf) which will be used
+     * @param replace  If true, an exception will be thrown if a texture
+     *                 with the same name already exists. Otherwise it will
+     *                 be overwritten.
      */
     void generateTexture(const std::string& name, const std::string& text,
       const glm::vec3& colour,
       const int fontSize = 48,
       const std::string& fontPath =
-      "resources/fonts/CrusoeText/CrusoeText-Regular.ttf");
+      "resources/fonts/CrusoeText/CrusoeText-Regular.ttf",
+      const bool replace = true);
 
     /**
      * @brief Deletes the texture indicated by the given name.
@@ -239,6 +244,25 @@ namespace small3d
      */
     void render(Model& model, const glm::vec3& offset, const glm::vec3& rotation,
       const std::string& textureName);
+
+    /**
+     * @brief Render a Model.
+     * @param model       The model
+     * @param textureName The name of the texture to attach to the model.
+     *                    The texture has to have been generated already.
+     * @param perspective True = perspective drawing, otherwise orthographic
+     */
+    void render(Model& model, const std::string& textureName,
+      const bool perspective = true);
+
+    /**
+     * @brief Render a Model
+     * @param model       The model
+     * @param colour      The colour of the model
+     * @param perspective True = perspective drawing, otherwise orthographic
+     */
+    void render(Model& model, const glm::vec4& colour,
+      const bool perspective = true);
 
     /**
      * @brief Render a SceneObject

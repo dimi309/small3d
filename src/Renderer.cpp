@@ -211,9 +211,28 @@ namespace small3d {
 
   GLuint Renderer::generateTexture(const std::string& name, const float* data,
     const unsigned long width,
-    const unsigned long height) {
+    const unsigned long height,
+    const bool replace) {
+
+    bool found = false;
 
     GLuint textureHandle;
+
+    for (auto& nameTexturePair : textures) {
+      if (nameTexturePair.first == name) {
+        if (!replace) {
+          throw std::runtime_error("Texture with name " + name +
+            " already exists and replace flag not set.");
+        }
+        found = true;
+        break;
+      }
+    }
+
+    if (found) {
+      deleteTexture(name);
+    }
+
     glGenTextures(1, &textureHandle);
     glBindTexture(GL_TEXTURE_2D, textureHandle);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
@@ -525,12 +544,13 @@ namespace small3d {
 
   void Renderer::generateTexture(const std::string& name, const Image& image) {
     this->generateTexture(name, image.getData(), image.getWidth(),
-      image.getHeight());
+      image.getHeight(), true);
   }
 
   void Renderer::generateTexture(const std::string& name, const std::string& text,
     const glm::vec3& colour, const int fontSize,
-    const std::string& fontPath) {
+    const std::string& fontPath,
+    const bool replace) {
 
     std::string faceId = intToStr(fontSize) + fontPath;
 
@@ -616,7 +636,7 @@ namespace small3d {
       }
       totalAdvance += 4 * static_cast<unsigned long>(slot->advance.x / 64);
     }
-    generateTexture(name, &textMemory[0], width, height);
+    generateTexture(name, &textMemory[0], width, height, replace);
   }
 
   void Renderer::deleteTexture(const std::string& name) {
@@ -780,6 +800,18 @@ namespace small3d {
     const std::string& textureName) {
     this->render(model, offset, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName);
+  }
+
+  void Renderer::render(Model& model, const std::string& textureName,
+    const bool perspective) {
+    this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
+      textureName, perspective);
+  }
+
+  void Renderer::render(Model& model, const glm::vec4& colour,
+    const bool perspective) {
+    this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), colour,
+      "", perspective);
   }
 
   void Renderer::render(SceneObject& sceneObject,
