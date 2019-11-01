@@ -283,16 +283,16 @@ namespace small3d
     void render(SceneObject& sceneObject, const std::string& textureName);
 
     /**
-     * @brief Clear a Model from the GPU buffers (the object itself remains
+     * @brief Clear a Model from the GPU buffers (the Model itself remains
      *        intact).
      * @param model The model
      */
     void clearBuffers(Model& model) const;
 
     /**
-     * @brief Clear an object (multiple models) from the GPU buffers
-     * (the object itself remains intact).
-     * @param model The model
+     * @brief Clear a SceneObject (multiple models) from the GPU buffers
+     *        (the SceneObject itself remains intact).
+     * @param sceneObject The scene object
      */
     void clearBuffers(SceneObject& sceneObject) const;
 
