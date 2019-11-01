@@ -3,7 +3,7 @@
 small3d changes per version
 ===========================
 
-v1.69902
+v1.69902 2019-11-01
 
 - Eliminated Renderer write function and all the renderRectangle
   functions as they were too resource hungry. This is a breaking change.
