@@ -393,13 +393,16 @@ namespace small3d
      * @brief Render a Model
      * @param model       The model
      * @param offset      The offset (position) where to draw the model
+     *                    (ignored in orthographic rendering)
      * @param rotation    Rotation (x, y, z)
+     *                    (ignored in orthographic rendering)
      * @param colour      The colour of the model
      * @param textureName The name of the texture to attach to the model
      *                    (optional). The texture has to have been generated
      *                    already. If this is set, the colour parameter will
      *                    be ignored.
-     * @param perspective True = perspective drawing, otherwise orthographic
+     * @param perspective If true perform perspective rendering, otherwise 
+     *                    orthographic.
      */
     void render(Model& model, const glm::vec3 &offset, const glm::vec3 &rotation,
       const glm::vec4 &colour, const std::string &textureName = "",
