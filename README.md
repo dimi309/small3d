@@ -6,10 +6,9 @@ This is a free, open source, minimalistic 3D framework for the programmer who
 would like to make games using a basic set of libraries (glfw, 
 glm, png, zlib, ogg, vorbis, portaudio, freetype, bzip) and relying on
 C++ to do the rest. It helps you by providing you with cross-platform rendering
-functionality based on Vulkan (many thanks to the [Vulkan Tutorial](https://vulk
-an-tutorial.com/) and Sascha Willems' excellent [Vulkan examples and demos]
-(https://github.com/SaschaWillems/Vulkan)). You can also find the OpenGL edition
-of the framework online.
+functionality based on Vulkan (many thanks to the [Vulkan Tutorial](https://vulkan-tutorial.com/) 
+and Sascha Willems' excellent [Vulkan examples and demos](https://github.com/SaschaWillems/Vulkan)). 
+You can also find the OpenGL edition of the framework online.
 
 small3d can render Wavefront models, animate them as frames, map textures on 
 them, provide some basic lighting (Gouraud shading) and also render images and

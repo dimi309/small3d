@@ -183,6 +183,8 @@ int RendererTest() {
   }
   renderer->clearBuffers(object);
   renderer->clearBuffers(object2);
+  renderer->clearBuffers(rect2);
+  renderer->clearBuffers(rect3);
   renderer->deleteTexture("cubeTexture");
   glfwDestroyWindow(renderer->getWindow());
 
