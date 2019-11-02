@@ -68,7 +68,7 @@ namespace small3d
 
   /**
    * @class Renderer
-   * @brief The renderer. It works as a singleton.
+   * @brief The renderer (Vulkan)
    */
   class Renderer
   {
@@ -462,28 +462,27 @@ namespace small3d
     void clearBuffers(Model& model) const;
 
     /**
-     * @brief Clear an object (multiple models) from the GPU buffers
-     * (the object itself remains intact).
-     * @param sceneObject The object
+     * @brief Clear an SceneObject (multiple models) from the GPU buffers
+     *        (the SceneObject itself remains intact).
+     * @param sceneObject The scene object
      */
     void clearBuffers(SceneObject& sceneObject) const;
 
     /**
-     * @brief Clears the screen. DEPRECATED: this function no longer
-     *        does anything, as the screen is automatically cleared
-     *        for every render pass in the Vulkan edition of small3d.
-     *        It has not been deleted so as not to break legacy code
-     *        that uses the framework.
+     * @brief This function does not do anything in this edition (Vulkan) of 
+     *        small3d, since the screen is automatically cleared every time 
+     *        swapBuffers() is invoked. It still exists though so as not to 
+     *        break compatibility with code written for the OpenGL edition.
      */
     void clearScreen() const;
 
     /**
-     * @brief Clears the screen. DEPRECATED: this function no longer
-     *        does anything, as the screen is automatically cleared
-     *        for every render pass in the Vulkan edition of small3d.
-     *        It has not been deleted so as not to break legacy code
-     *        that uses the framework.
-     * @param colour The colour with which the screen is to be cleared
+     * @brief In this edition (Vulkan) of small3d this function only sets the 
+     *        screen clearing colour. The  screen is automatically cleared every
+     *        time swapBuffers() is invoked anyway. The name of the function has
+     *        remained the same so as not to break compatibility with code 
+     *        written for the OpenGL edition.
+     * @param colour The screen clearing colour
      */
     void clearScreen(const glm::vec4 &colour);
 

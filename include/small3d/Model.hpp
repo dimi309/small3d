@@ -48,28 +48,73 @@ namespace small3d {
 
   public:
 
-    // Vulkan-specific variables. Avoid manipulating these directly.
-
+    /**
+     * @brief Is the model already in GPU memory?
+     *        (Vulkan-specific, avoid direct manipulation)
+     */
     bool alreadyInGPU = false;
 
+    /**
+     * @brief Buffer containing vertex positions
+     *        (Vulkan-specific, avoid direct manipulation)
+     */
     VkBuffer positionBuffer;
+
+    /**
+     * @brief Memory for buffer containing vertex positions
+     *        (Vulkan-specific, avoid direct manipulation)
+     */
     VkDeviceMemory positionBufferMemory;
 
+    /**
+     * @brief Index buffer
+     *        (Vulkan-specific, avoid direct manipulation)
+     */
     VkBuffer indexBuffer;
+
+    /**
+     * @brief Memory for index buffer
+     *        (Vulkan-specific, avoid direct manipulation)
+     */
     VkDeviceMemory indexBufferMemory;
 
+    /**
+     * @brief Normals buffer
+     *        (Vulkan-specific, avoid direct manipulation)
+     */
     VkBuffer normalsBuffer;
+
+    /**
+     * @brief Memory for normals buffer
+     *        (Vulkan-specific, avoid direct manipulation)
+     */
     VkDeviceMemory normalsBufferMemory;
 
+    /**
+     * @brief UV coordinates buffer
+     *        (Vulkan-specific, avoid direct manipulation)
+     */
     VkBuffer uvBuffer;
+
+    /**
+     * @brief Memory for UV coordinates buffer
+     *        (Vulkan-specific, avoid direct manipulation)
+     */
     VkDeviceMemory uvBufferMemory;
 
+    /**
+     * @brief Index of model orientation in the orientation dynamic uniform 
+     *        buffer
+     *        (Vulkan-specific, avoid direct manipulation)
+     */
     uint32_t orientationMemIndex = 0;
 
+    /**
+     * @brief Index of model colour in the colour dynamic uniform buffer
+     *        (Vulkan-specific, avoid direct manipulation)
+     */
     uint32_t colourMemIndex = 0;
 
-    // End of Vulkan-specific variables.
-        
     /**
      * @brief The vertex data. This is an array, which is to be treated as a 4
      *        column table, holding the x, y, z values in each column. The
