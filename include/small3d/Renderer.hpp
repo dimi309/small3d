@@ -226,14 +226,14 @@ namespace small3d
     // later.
 #if defined(__ANDROID__) || defined(SMALL3D_IOS)
   public:
-    Renderer(const std::string windowTitle = "",
+    Renderer(const std::string &windowTitle = "",
       const int width = 0,
       const int height = 0,
       const float frustumScale = 1.0f,
       const float zNear = 1.0f,
       const float zFar = 24.0f,
       const float zOffsetFromCamera = -1.0f,
-      const std::string shadersPath =
+      const std::string &shadersPath =
 #ifndef SMALL3D_IOS
       "resources/shaders/",
 #else
