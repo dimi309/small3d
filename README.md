@@ -26,14 +26,12 @@ with its source code. They can be built by executing a single script (see
 below).
 
 The instructions and example below are about building and using small3d on a PC 
-(Windows, Linux or MacOS). No instructions are provided for Android nor iOS at 
-this point, but please have a look at the *android* directory for the cmake 
-configuration and main test program that have been used while adapting the 
-framework to that platform, as well as the *deps/prepare-android.bat* file which
-can be used on Windows to build the relevant dependencies. In the *ios* 
-directory you can also find source code that has been used for compiling and 
-testing small3d on iOS. The corresponding dependency preparation script is 
-*deps/prepare-ios.sh*.
+(Windows, Linux or MacOS). As far as mobile devices are concerned, the sample 
+game, Avoid the Bug has been ported to both Android and iOS and the corresponding
+projects can be downloaded from my GitHub profile. Also, I am providing the scripts 
+to build the required libraries for mobile devices  (*deps/prepare-android.bat* for 
+Android and *deps/prepare-ios.sh* for iOS) even though they have already been 
+built and included in the sample projects.
 
 ## Building
 
