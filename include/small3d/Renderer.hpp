@@ -368,7 +368,11 @@ namespace small3d
       const glm::vec3 &colour,
       const int fontSize = 48,
       const std::string &fontPath =
+#ifndef SMALL3D_IOS
       "resources/fonts/CrusoeText/CrusoeText-Regular.ttf",
+#else
+      "resources1/fonts/CrusoeText/CrusoeText-Regular.ttf",
+#endif
       const bool replace = true);
 
     /**
