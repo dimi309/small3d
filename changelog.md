@@ -3,6 +3,10 @@
 small3d changes per version
 ===========================
 
+v1.704 2019-11-06
+
+- Corrections for Android and iOS
+
 v1.703 2019-11-02
 
 - Eliminated Renderer write function and all the renderRectangle
