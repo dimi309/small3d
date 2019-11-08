@@ -429,9 +429,11 @@ namespace small3d {
     AAudioStreamBuilder_setFormat(streamBuilder, AAUDIO_FORMAT_PCM_I16);
     AAudioStreamBuilder_setSharingMode(streamBuilder, AAUDIO_SHARING_MODE_SHARED);
     AAudioStreamBuilder_setSamplesPerFrame(streamBuilder, SAMPLES_PER_FRAME);
-    AAudioStreamBuilder_setBufferCapacityInFrames(streamBuilder,
-      soundData.samples / SAMPLES_PER_FRAME);
+    // Used to call AAudioStreamBuilder_setBufferCapacityInFrames but then I read that
+    // it is not guaranteed that the capacity will be the one requested, so I left it
+    // unspecified.
     AAudioStreamBuilder_setDataCallback(streamBuilder, Sound::audioCallback, &soundData);
+
     AAudioStreamBuilder_openStream(streamBuilder, &stream);
 #elif defined(SMALL3D_IOS)
     alGenSources((ALuint)1, &openalSource);
