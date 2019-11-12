@@ -42,7 +42,7 @@ or with the preferred Visual Studio configuration
 Make sure that *prepare-vs.bat* is run with the same configuration (see the
 parameters at the top, inside the file). Also, make sure to run build under the
 configuration also defined in *prepare-vs.bat* parameters, e.g.
-`cmake --build . --config Release`.
+`cmake --build . --config Debug`.
 	
 The unit tests can be run via the *unittests* binary from *build/bin*. 
 
