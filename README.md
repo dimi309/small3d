@@ -21,7 +21,7 @@ also been implemented.
 small3d works on Windows, MacOS, Linux, iOS and Android and supports Visual 
 Studio, Xcode, gcc (even MinGW) and clang for compilation. 
 
-All small3d dependencies, appart from the Vulkan SDK, are distributed together 
+All small3d dependencies, apart from the Vulkan SDK, are distributed together 
 with its source code. They can be built by executing a single script (see 
 below).
 
@@ -57,7 +57,7 @@ or with the preferred Visual Studio configuration
 Make sure that *prepare-vs.bat* is run with the same configuration (see the
 parameters at the top, inside the file). Also, make sure to run build under the
 configuration also defined in *prepare-vs.bat* parameters, e.g.
-`cmake --build . --config Release`.
+`cmake --build . --config Debug`.
 	
 The unit tests can be run via the *unittests* binary from *build/bin*. 
 
