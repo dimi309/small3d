@@ -19,7 +19,10 @@ supported platforms via a common interface. Basic collision detection has
 also been implemented.
 
 small3d works on Windows, MacOS, Linux, iOS and Android and supports Visual 
-Studio, Xcode, gcc (even MinGW) and clang for compilation. 
+Studio, Xcode, gcc (even MinGW) and clang for compilation. The only problem
+is that on MacOS, in full screen mode, performance used to suffer, so windowed
+mode is enforced. This only concerns Apple computers. On Apple mobile devices 
+(iOS) small3d runs fine.
 
 All small3d dependencies, apart from the Vulkan SDK, are distributed together 
 with its source code. They can be built by executing a single script (see 
