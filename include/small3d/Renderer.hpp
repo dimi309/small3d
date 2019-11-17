@@ -242,7 +242,8 @@ namespace small3d
       const std::string &shadersPath =
 #ifndef SMALL3D_IOS
       "resources/shaders/",
-#else
+#else // On iOS "resources" is the name of a special folder, so it cannot be
+      // used for small3d resources.
       "resources1/shaders/",
 #endif
       const uint32_t maxObjectsPerPass = 20);
@@ -251,8 +252,6 @@ namespace small3d
       const int height, const float frustumScale, const float zNear,
       const float zFar, const float zOffsetFromCamera,
       const std::string &shadersPath, const uint32_t maxObjectsPerPass);
-
-
 #endif
 
     Renderer();
