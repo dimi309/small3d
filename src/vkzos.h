@@ -135,14 +135,6 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo*), uint32_t* index);
 
 /**
- * @brief  Destroy a pipeline
- * @param  index The index (position in the internal array containing pipelines)
- *              of the pipeline to be destroyed.
- * @return 1 if successful, 0 otherwise
- */
-int vkz_destroy_pipeline(uint32_t index);
-
-/**
  * @brief Begin creating a drawing command buffer for a given pipeline
  *        not bound to a specific pipeline.
  *

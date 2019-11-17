@@ -1074,7 +1074,7 @@ namespace small3d {
     }
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     GLFWmonitor* monitor = nullptr; // If NOT null, a full-screen window will
     // be created.
@@ -1282,16 +1282,6 @@ namespace small3d {
     FT_Done_FreeType(library);
     
     vkz_destroy_sync_objects();
-    
-    if (orthographicPipelineIndex != 100) {
-      LOGDEBUG("Destroying orthographic pipeline.");
-      vkz_destroy_pipeline(orthographicPipelineIndex);
-    }
-
-    if (perspectivePipelineIndex != 100) {
-      LOGDEBUG("Destroying perspective pipeline.");
-      vkz_destroy_pipeline(perspectivePipelineIndex);
-    }
     
     vkDestroyDescriptorSetLayout(vkz_logical_device,
       descriptorSetLayout, NULL);

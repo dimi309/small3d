@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+
 typedef int BOOL;
 #define TRUE 1
 #define FALSE 0
@@ -1096,14 +1097,26 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
 
         pipeline_system_count++;
         memset(&pipeline_systems[*index], 0, sizeof(pipeline_system_struct));
-        pipeline_systems[*index].vertex_shader_path = (char*)vertex_shader_path;
-        pipeline_systems[*index].fragment_shader_path = (char*)fragment_shader_path;
+	size_t path_length = strchr(vertex_shader_path, '\0') -
+	  vertex_shader_path + 1;
+	pipeline_systems[*index].vertex_shader_path = malloc(path_length);
+        strcpy(pipeline_systems[*index].vertex_shader_path, (char*)vertex_shader_path);
+	path_length = strchr(fragment_shader_path, '\0') - fragment_shader_path + 1;
+	pipeline_systems[*index].fragment_shader_path = malloc(path_length);
+        strcpy(pipeline_systems[*index].fragment_shader_path, (char*)fragment_shader_path);
         pipeline_systems[*index].set_input_state_function = set_input_state;
         pipeline_systems[*index].set_pipeline_layout_function =
           set_pipeline_layout;
       }
       else {
         // Reuse existing slot
+
+	if (*index >= pipeline_system_count) {
+	  LOGDEBUG1("Pipeline %d has ever been created! Cannot reuse index!",
+		    *index);
+	  return 0;
+	}
+	
         char* vsp = pipeline_systems[*index].vertex_shader_path;
         char* fsp = pipeline_systems[*index].fragment_shader_path;
         int (*sis)(VkPipelineVertexInputStateCreateInfo*) =
@@ -1125,7 +1138,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   else {
     // Pipeline has never been created
     if (*index != 100) {
-      LOGDEBUG1("Pipeline has never been created! Cannot reuse index %d!",
+      LOGDEBUG1("No pipeline has ever been created! Cannot reuse index %d!",
         *index);
       return 0;
     }
@@ -1135,8 +1148,15 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
     vkz_pipeline_layout = malloc(sizeof(VkPipelineLayout));
     memset(vkz_pipeline_layout, 0, sizeof(VkPipelineLayout));
     *index = 0;
-    pipeline_systems[*index].vertex_shader_path = (char*)vertex_shader_path;
-    pipeline_systems[*index].fragment_shader_path = (char*)fragment_shader_path;
+
+    size_t path_length = strchr(vertex_shader_path, '\0') -
+      vertex_shader_path + 1;
+    pipeline_systems[*index].vertex_shader_path = malloc(path_length);
+    strcpy(pipeline_systems[*index].vertex_shader_path, (char*)vertex_shader_path);
+    path_length = strchr(fragment_shader_path, '\0') - fragment_shader_path + 1;
+    pipeline_systems[*index].fragment_shader_path = malloc(path_length);
+    strcpy(pipeline_systems[*index].fragment_shader_path, (char*)fragment_shader_path);
+    
     pipeline_systems[*index].set_input_state_function = set_input_state;
     pipeline_systems[*index].set_pipeline_layout_function = set_pipeline_layout;
   }
@@ -1378,13 +1398,13 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   return 1;
 }
 
-int vkz_destroy_pipeline(uint32_t index) {
+int destroy_pipeline(uint32_t index, BOOL free_shader_path_strings) {
 
   if (pipeline_system_count <= index) {
     return 0;
   }
 
-  LOGDEBUG0("Destroying pipeline.");
+  LOGDEBUG1("Destroying pipeline %d.", index);
 
   vkDestroyPipeline(vkz_logical_device,
     pipeline_systems[index].pipeline, NULL);
@@ -1396,8 +1416,14 @@ int vkz_destroy_pipeline(uint32_t index) {
   vkDestroyShaderModule(vkz_logical_device,
     pipeline_systems[index].fragment_shader_module, NULL);
 
+  if (free_shader_path_strings) {
+    free(pipeline_systems[index].vertex_shader_path);
+    free(pipeline_systems[index].fragment_shader_path);
+  }
+
   return 1;
 }
+
 
 int vkz_begin_draw_command_buffer(VkCommandBuffer* command_buffer) {
 
@@ -1564,7 +1590,7 @@ int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index) {
 
   if (r == VK_ERROR_OUT_OF_DATE_KHR) {
     LOGDEBUG0("Recreating pipeline and swapchain.");
-    vkz_destroy_pipeline(pipeline_index);
+    destroy_pipeline(pipeline_index, FALSE);
     vkz_destroy_swapchain();
     vkz_create_swapchain(vkz_width, vkz_height, -1);
     vkz_create_pipeline(NULL, NULL, NULL, NULL, &pipeline_index);
@@ -1596,10 +1622,10 @@ int vkz_present_next_image(void) {
 
   VkResult r = vkQueuePresentKHR(vkz_present_queue, &pinf);
   if (r == VK_ERROR_OUT_OF_DATE_KHR || r == VK_SUBOPTIMAL_KHR) {
-    LOGDEBUG0("Recreating pipeline and swapchain.");
+    LOGDEBUG0("Recreating pipelines and swapchain.");
 
     for (uint32_t i = 0; i < pipeline_system_count; ++i) {
-      vkz_destroy_pipeline(i);
+      destroy_pipeline(i, FALSE);
     }
 
     vkz_destroy_swapchain();
@@ -1947,6 +1973,11 @@ int vkz_shutdown(void) {
   }
 
   if (pipeline_systems) {
+
+    for (int n = 0; n < pipeline_system_count; ++n) {
+      destroy_pipeline(n, TRUE);
+    }
+    
     free(pipeline_systems);
     pipeline_systems = NULL;
   }
