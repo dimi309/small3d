@@ -1550,7 +1550,7 @@ int vkz_destroy_sync_objects(void) {
   return 1;
 }
 
-int vkz_recreate_pipelines_and_swapchain() {
+int vkz_recreate_pipelines_and_swapchain(void) {
   LOGDEBUG0("Recreating pipelines and swapchain.");
 
   for (uint32_t i = 0; i < pipeline_system_count; ++i) {

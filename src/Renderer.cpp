@@ -78,6 +78,7 @@ namespace small3d {
   int Renderer::realScreenWidth;
   int Renderer::realScreenHeight;
 
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
   void Renderer::framebufferSizeCallback(GLFWwindow* window, int width,
 					 int height) {
     realScreenWidth = width;
@@ -87,6 +88,7 @@ namespace small3d {
 	     intToStr(height));
     vkz_recreate_pipelines_and_swapchain();
   }
+#endif
 
   int Renderer::setInputStateCallback(VkPipelineVertexInputStateCreateInfo*
 				      inputStateCreateInfo) {

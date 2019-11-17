@@ -156,9 +156,12 @@ namespace small3d
     uint32_t colourMemIndex = 0;
     size_t uboColourDynamicSize = 0;
 
+
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     static void framebufferSizeCallback(GLFWwindow* window, int width,
 					int height);
-
+#endif
+    
     static int setInputStateCallback(VkPipelineVertexInputStateCreateInfo*
       inputStateCreateInfo);
     static int setPipelineLayoutCallback(VkPipelineLayoutCreateInfo*
