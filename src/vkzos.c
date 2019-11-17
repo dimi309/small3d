@@ -1550,7 +1550,7 @@ int vkz_destroy_sync_objects(void) {
   return 1;
 }
 
-int recreate_pipelines_and_swapchain() {
+int vkz_recreate_pipelines_and_swapchain() {
   LOGDEBUG0("Recreating pipelines and swapchain.");
 
   for (uint32_t i = 0; i < pipeline_system_count; ++i) {
@@ -1575,7 +1575,7 @@ int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index) {
 			  VK_NULL_HANDLE, &next_image_index);
 
   if (r == VK_ERROR_OUT_OF_DATE_KHR) {
-    recreate_pipelines_and_swapchain();
+    vkz_recreate_pipelines_and_swapchain();
     return 1;
   }
   else if (r != VK_SUCCESS && r != VK_SUBOPTIMAL_KHR) {
@@ -1604,7 +1604,7 @@ int vkz_present_next_image(void) {
 
   VkResult r = vkQueuePresentKHR(vkz_present_queue, &pinf);
   if (r == VK_ERROR_OUT_OF_DATE_KHR || r == VK_SUBOPTIMAL_KHR) {
-    recreate_pipelines_and_swapchain();
+    vkz_recreate_pipelines_and_swapchain();
   }
   else if (r != VK_SUCCESS) {
     LOGDEBUG0("Could not present swapchain image!");
