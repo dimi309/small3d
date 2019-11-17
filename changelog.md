@@ -1,7 +1,4 @@
-@page changelog
-
-small3d changes per version
-===========================
+/*! \page changelog changes per version
 
 v1.705 2019-11-19
 
