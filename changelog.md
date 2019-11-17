@@ -3,6 +3,10 @@
 small3d changes per version
 ===========================
 
+v1.705
+
+- Window resizing is now supported.
+
 v1.704 2019-11-06
 
 - Corrections for Android and iOS
