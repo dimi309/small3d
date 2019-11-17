@@ -3,7 +3,7 @@
 small3d changes per version
 ===========================
 
-v1.705
+v1.705 2019-11-19
 
 - Window resizing is now supported.
 
