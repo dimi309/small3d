@@ -188,9 +188,9 @@ int vkz_destroy_sync_objects(void);
 
 /**
  * @brief Recreate the swapchain and the pipelines.
- * @ 
+ * @return 1 if successful, 0 otherwise
  */
-int vkz_recreate_pipelines_and_swapchain();
+int vkz_recreate_pipelines_and_swapchain(void);
 
 /**
  * @brief Acquire next swapchain image
