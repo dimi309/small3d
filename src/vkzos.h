@@ -22,9 +22,9 @@ extern struct android_app *vkz_android_app;
 #include <vulkan/vulkan.h>
 #endif
 
- /**
-  * @brief The Vulkan instance
-  */
+/**
+ * @brief The Vulkan instance
+ */
  extern VkInstance vkz_instance;
 
 /**
@@ -93,6 +93,7 @@ int vkz_create_swapchain(int with_image_sampler);
 
 /**
  * @brief Destroy the swapchain.
+ * @return 1 if successful, 0 otherwise
  */
 int vkz_destroy_swapchain(void);
 
@@ -100,11 +101,13 @@ int vkz_destroy_swapchain(void);
  * @brief Create the image used for depth testing. This function must be called
  *        right after vkz_create_swapchain(). This is not perfect but, for the
  *        time being it is what it is.
+ * @return 1 if successful, 0 otherwise
  */
 int vkz_create_depth_image(void);
 
 /**
  * @brief Destroy the image used for depth testing.
+ * @return 1 if successful, 0 otherwise
  */
 int vkz_destroy_depth_image(void);
 
@@ -275,6 +278,7 @@ int vkz_create_image(VkImage* image,
  * @param image        The image to be destroyed
  * @param image_memory The GPU memory previously reserved for the image,
  *                     to be released
+ * @return 1 if successful, 0 otherwise
  */
 int vkz_destroy_image(VkImage image, VkDeviceMemory image_memory);
 
