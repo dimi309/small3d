@@ -176,14 +176,21 @@ int vkz_destroy_draw_command_buffer(VkCommandBuffer* command_buffer);
 
 /**
  * @brief Create sync objects for a given pipeline
+ * @return 1 if successful, 0 otherwise
  */
 int vkz_create_sync_objects(void);
 
 /**
  * @brief Destroy sync objects for a given pipeline
- *
+ * @return 1 if successful, 0 otherwise
  */
 int vkz_destroy_sync_objects(void);
+
+/**
+ * @brief Recreate the swapchain and the pipelines.
+ * @ 
+ */
+int vkz_recreate_pipelines_and_swapchain();
 
 /**
  * @brief Acquire next swapchain image
@@ -192,14 +199,14 @@ int vkz_destroy_sync_objects(void);
  *                       TODO: Independentise synchronisation from
  *                             pipelines perhaps...
  * @param image_index    The index of the acquired swapchain image
+ * @return 1 if successful, 0 otherwise
  */
 int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index);
 
 /**
  * @brief Present next swapchain image (the one acquired by
  *        vkz_acquire_next_image())
- *
- *
+ * @return 1 if successful, 0 otherwise
  */
 int vkz_present_next_image(void);
 

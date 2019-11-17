@@ -85,6 +85,7 @@ namespace small3d {
     vkz_set_width_height(width, height);
     LOGDEBUG("New framebuffer dimensions " + intToStr(width) + " x " +
 	     intToStr(height));
+    vkz_recreate_pipelines_and_swapchain();
   }
 
   int Renderer::setInputStateCallback(VkPipelineVertexInputStateCreateInfo*
