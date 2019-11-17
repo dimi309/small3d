@@ -75,7 +75,17 @@ namespace small3d {
   VkDescriptorSetLayout Renderer::textureOrthoDescriptorSetLayout;
   VkDescriptorSetLayout Renderer::orthographicLayouts[2];
 
+  int Renderer::realScreenWidth;
+  int Renderer::realScreenHeight;
 
+  void Renderer::framebufferSizeCallback(GLFWwindow* window, int width,
+					 int height) {
+    realScreenWidth = width;
+    realScreenHeight = height;
+    vkz_set_width_height(width, height);
+    LOGDEBUG("New framebuffer dimensions " + intToStr(width) + " x " +
+	     intToStr(height));
+  }
 
   int Renderer::setInputStateCallback(VkPipelineVertexInputStateCreateInfo*
 				      inputStateCreateInfo) {
@@ -323,9 +333,11 @@ namespace small3d {
       throw std::runtime_error("Could not initialise Vulkan.");
     }
 
+    vkz_set_width_height(realScreenWidth, realScreenHeight);
+
     LOGDEBUG("Creating swapchain...");
 
-    if (!vkz_create_swapchain(realScreenWidth, realScreenHeight, 1)) {
+    if (!vkz_create_swapchain(1)) {
       throw std::runtime_error("Failed to create swapchain.");
     }
 
@@ -1110,6 +1122,8 @@ namespace small3d {
     width = 0;
     height = 0;
     glfwGetFramebufferSize(window, &width, &height);
+
+    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
     LOGINFO("Framebuffer width " + intToStr(width) + " height " +
 	    intToStr(height));

@@ -81,7 +81,7 @@ namespace small3d
 
     std::string windowTitle = "";
 
-    int realScreenWidth = 0, realScreenHeight = 0;
+    static int realScreenWidth, realScreenHeight;
 
     std::string shadersPath = "";
 
@@ -155,6 +155,9 @@ namespace small3d
     UboColour* uboColourDynamic = nullptr;
     uint32_t colourMemIndex = 0;
     size_t uboColourDynamicSize = 0;
+
+    static void framebufferSizeCallback(GLFWwindow* window, int width,
+					int height);
 
     static int setInputStateCallback(VkPipelineVertexInputStateCreateInfo*
       inputStateCreateInfo);
