@@ -76,15 +76,20 @@ int vkz_create_instance(const char* application_name,
 int vkz_init(void);
 
 /**
+ * @brief Set width and height for all rendering calculations.
+ * @param width The new width
+ * @param height The new height
+ * @return 1 if successful, 0 otherwise
+ */
+int vkz_set_width_height(const uint32_t width, const uint32_t height);
+
+/**
  * @brief Create the swapchain that will be used. This will also create
  * the associated image views.
- * @param width The width of the images used in the swapchain, in pixels.
- * @param height The height of the images used in the swapchain, in pixels.
  * @param with_image_sampler 1 If an image sampler will be used, 0 otherwise.
  * @return 1 if successful, 0 otherwise
  */
-int vkz_create_swapchain(const uint32_t width, const uint32_t height,
-  int with_image_sampler);
+int vkz_create_swapchain(int with_image_sampler);
 
 /**
  * @brief Destroy the swapchain.

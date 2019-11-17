@@ -692,46 +692,11 @@ int vkz_init(void) {
   return 1;
 }
 
-int select_swap_extent(const uint32_t width, const uint32_t height) {
+int select_swap_extent() {
 
-  vkz_width = width;
-  vkz_height = height;
+  vkz_swap_extent.width = vkz_width;
+  vkz_swap_extent.height = vkz_height;
 
-  if (vkz_swapchain_support_details.capabilities.currentExtent.width != UINT32_MAX) {
-    vkz_swap_extent = vkz_swapchain_support_details.capabilities.currentExtent;
-  }
-  else {
-    vkz_swap_extent.width = vkz_width;
-    vkz_swap_extent.height = vkz_height;
-
-    if (vkz_swapchain_support_details.capabilities.maxImageExtent.width <
-      vkz_swap_extent.width) {
-      vkz_swap_extent.width =
-        vkz_swapchain_support_details.capabilities.maxImageExtent.width;
-    }
-
-    if (vkz_swapchain_support_details.capabilities.minImageExtent.width >
-      vkz_swap_extent.width) {
-      vkz_swap_extent.width =
-        vkz_swapchain_support_details.capabilities.minImageExtent.width;
-    }
-
-    if (vkz_swapchain_support_details.capabilities.maxImageExtent.height <
-      vkz_swap_extent.height) {
-      vkz_swap_extent.height =
-        vkz_swapchain_support_details.capabilities.maxImageExtent.height;
-    }
-
-    if (vkz_swapchain_support_details.capabilities.minImageExtent.height >
-      vkz_swap_extent.height) {
-      vkz_swap_extent.height =
-        vkz_swapchain_support_details.capabilities.minImageExtent.height;
-    }
-
-  }
-
-  LOGDEBUG2("Swap extent selected width: %d height: %d",
-    vkz_swap_extent.width, vkz_swap_extent.height);
   return 1;
 }
 
@@ -884,8 +849,8 @@ int create_framebuffers(VkRenderPass render_pass) {
     framebuffer_ci.renderPass = render_pass;
     framebuffer_ci.attachmentCount = 2;
     framebuffer_ci.pAttachments = attachments;
-    framebuffer_ci.width = vkz_swap_extent.width;
-    framebuffer_ci.height = vkz_swap_extent.height;
+    framebuffer_ci.width = vkz_width;
+    framebuffer_ci.height = vkz_height;
     framebuffer_ci.layers = 1;
 
     if (vkCreateFramebuffer(vkz_logical_device, &framebuffer_ci, NULL,
@@ -900,9 +865,14 @@ int create_framebuffers(VkRenderPass render_pass) {
   return 1;
 }
 
-int vkz_create_swapchain(const uint32_t width, const uint32_t height,
-  int with_image_sampler) {
-  select_swap_extent(width, height);
+int vkz_set_width_height(const uint32_t width, const uint32_t height) {
+  vkz_width = width;
+  vkz_height = height;
+  return 1;
+}
+
+int vkz_create_swapchain(int with_image_sampler) {
+  select_swap_extent();
 
   if (with_image_sampler != -1) {
     intrn_with_image_sampler = with_image_sampler;
@@ -1241,8 +1211,8 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   memset(&viewport, 0, sizeof(viewport));
   viewport.x = 0.0f;
   viewport.y = 0.0f;
-  viewport.width = (float)vkz_swap_extent.width;
-  viewport.height = (float)vkz_swap_extent.height;
+  viewport.width = (float)vkz_width;
+  viewport.height = (float)vkz_height;
 
   viewport.minDepth = 0.0f;
   viewport.maxDepth = 1.0f;
@@ -1580,6 +1550,22 @@ int vkz_destroy_sync_objects(void) {
   return 1;
 }
 
+int recreate_pipelines_and_swapchain() {
+  LOGDEBUG0("Recreating pipelines and swapchain.");
+
+  for (uint32_t i = 0; i < pipeline_system_count; ++i) {
+    destroy_pipeline(i, FALSE);
+  }
+
+  vkz_destroy_swapchain();
+  vkz_create_swapchain(-1);
+  for (uint32_t i = 0; i < pipeline_system_count; ++i) {
+    vkz_create_pipeline(NULL, NULL, NULL, NULL, &i);
+  }
+
+  return 1;
+}
+
 int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index) {
 
   VkResult r =
@@ -1589,11 +1575,7 @@ int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index) {
 			  VK_NULL_HANDLE, &next_image_index);
 
   if (r == VK_ERROR_OUT_OF_DATE_KHR) {
-    LOGDEBUG0("Recreating pipeline and swapchain.");
-    destroy_pipeline(pipeline_index, FALSE);
-    vkz_destroy_swapchain();
-    vkz_create_swapchain(vkz_width, vkz_height, -1);
-    vkz_create_pipeline(NULL, NULL, NULL, NULL, &pipeline_index);
+    recreate_pipelines_and_swapchain();
     return 1;
   }
   else if (r != VK_SUCCESS && r != VK_SUBOPTIMAL_KHR) {
@@ -1622,17 +1604,7 @@ int vkz_present_next_image(void) {
 
   VkResult r = vkQueuePresentKHR(vkz_present_queue, &pinf);
   if (r == VK_ERROR_OUT_OF_DATE_KHR || r == VK_SUBOPTIMAL_KHR) {
-    LOGDEBUG0("Recreating pipelines and swapchain.");
-
-    for (uint32_t i = 0; i < pipeline_system_count; ++i) {
-      destroy_pipeline(i, FALSE);
-    }
-
-    vkz_destroy_swapchain();
-    vkz_create_swapchain(vkz_width, vkz_height, -1);
-    for (uint32_t i = 0; i < pipeline_system_count; ++i) {
-      vkz_create_pipeline(NULL, NULL, NULL, NULL, &i);
-    }
+    recreate_pipelines_and_swapchain();
   }
   else if (r != VK_SUCCESS) {
     LOGDEBUG0("Could not present swapchain image!");
