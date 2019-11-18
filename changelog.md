@@ -1,7 +1,8 @@
-@page changelog
+/*! \page changelog changes per version
 
-small3d changes per version
-===========================
+v1.69903
+
+- Window resizing is now supported.
 
 v1.69902 2019-11-01
 

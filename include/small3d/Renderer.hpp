@@ -40,7 +40,7 @@ namespace small3d
 
     GLFWwindow* window;
 
-    int realScreenWidth = 0, realScreenHeight = 0;
+    static int realScreenWidth, realScreenHeight;
 
     uint32_t perspectiveProgram = 0;
     uint32_t orthographicProgram = 0;
@@ -65,6 +65,9 @@ namespace small3d
     FT_Library library = 0;
     std::vector<float> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
+
+    static void framebufferSizeCallback(GLFWwindow* window, int width,
+					int height);
 
     std::string loadShaderFromFile(const std::string& fileLocation) const;
     uint32_t compileShader(const std::string& shaderSourceFile,

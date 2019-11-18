@@ -22,6 +22,22 @@ namespace small3d {
 
   static std::string openglErrorToString(GLenum error);
 
+  int Renderer::realScreenWidth;
+  int Renderer::realScreenHeight;
+  
+  void Renderer::framebufferSizeCallback(GLFWwindow* window, int width,
+					 int height) {
+    realScreenWidth = width;
+    realScreenHeight = height;
+
+    glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
+      static_cast<GLsizei>(realScreenHeight));
+    
+    LOGDEBUG("New framebuffer dimensions " + intToStr(width) + " x " +
+	     intToStr(height));
+    
+  }
+
   std::string Renderer::loadShaderFromFile(const std::string& fileLocation)
     const {
     initLogger();
@@ -362,6 +378,8 @@ namespace small3d {
 
     bool fullScreen = false;
 
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+
     GLFWmonitor* monitor = nullptr; // If NOT null, a full-screen window will
     // be created.
 
@@ -394,6 +412,8 @@ namespace small3d {
     width = 0;
     height = 0;
     glfwGetFramebufferSize(window, &width, &height);
+
+    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
     LOGINFO("Framebuffer width " + intToStr(width) + " height " +
       intToStr(height));
