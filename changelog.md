@@ -1,8 +1,9 @@
 /*! \page changelog changes per version
 
-v1.69903
+v1.69903 2019-11-19
 
 - Window resizing is now supported.
+- Upgraded glew library to latest snapshot.
 
 v1.69902 2019-11-01
 
