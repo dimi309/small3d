@@ -1,5 +1,5 @@
 set VSCONFIG=-G"Visual Studio 16 2019" -A x64
-set BUILDTYPE=Release
+set BUILDTYPE=Debug
 
 mkdir include
 mkdir lib
@@ -19,9 +19,10 @@ for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 cd ..\..
 rmdir /Q /S glfw-3.3
 
-if %BUILDTYPE%==Release (7z x glew-2.1.0-no-nodefaultlib-noentry.zip) else (7z x glew-2.1.0.zip)
+7z x glew-20190928.tgz
+7z x glew-20190928.tar
 if %errorlevel% neq 0 exit /b %errorlevel%
-if %BUILDTYPE%==Release (cd glew-2.1.0-no-nodefaultlib-noentry) else (cd glew-2.1.0)
+cd glew-2.2.0
 cmake %VSCONFIG% build/cmake -DBUILD_UTILS=OFF
 cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 exit /b %errorlevel%
@@ -29,7 +30,8 @@ xcopy include\GL ..\include\GL /i /s
 if %BUILDTYPE%==Debug (copy lib\%BUILDTYPE%\libglew32d.lib ..\lib\glew.lib) else (copy lib\%BUILDTYPE%\libglew32.lib ..\lib\glew.lib)
 for /r %%a in (*.pdb) do @copy /y "%%a" ..\bin
 cd ..
-if %BUILDTYPE%==Release (rmdir /Q /S glew-2.1.0-no-nodefaultlib-noentry) else (rmdir /Q /S glew-2.1.0)
+del glew-20190928.tar
+rmdir /Q /S glew-2.2.0
 
 7z x glm-0.9.9.0.zip
 if %errorlevel% neq 0 exit /b %errorlevel%
