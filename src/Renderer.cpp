@@ -48,7 +48,7 @@ namespace small3d {
     glm::mat4x4 yRotationMatrix;
     glm::mat4x4 zRotationMatrix;
     glm::vec3 position;
-    float padding;
+    float padding[13];
   };
 
   /**
@@ -57,6 +57,7 @@ namespace small3d {
    */
   struct UboLight {
     float intensity;
+    float padding[7];
   };
 
   std::vector<Model> Renderer::nextModelsToDraw;
@@ -374,7 +375,7 @@ namespace small3d {
       ps[3].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
       ps[3].descriptorCount = vkz_swapchain_image_count * 2 * maxObjectsPerPass;
 
-      ps[4].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      ps[4].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
       ps[4].descriptorCount = vkz_swapchain_image_count;
 
       ps[5].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -561,7 +562,7 @@ namespace small3d {
 
     wds[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     wds[0].dstSet = descriptorSet;
-    wds[0].dstBinding = 0;
+    wds[0].dstBinding = worldDescBinding;
     wds[0].dstArrayElement = 0;
     wds[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     wds[0].descriptorCount = 1;
@@ -571,7 +572,7 @@ namespace small3d {
 
     wds[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     wds[1].dstSet = descriptorSet;
-    wds[1].dstBinding = 1;
+    wds[1].dstBinding = orientationDescBinding;
     wds[1].dstArrayElement = 0;
     wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     wds[1].descriptorCount = 1;
@@ -581,7 +582,7 @@ namespace small3d {
 
     wds[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     wds[2].dstSet = descriptorSet;
-    wds[2].dstBinding = 2;
+    wds[2].dstBinding = cameraDescBinding;
     wds[2].dstArrayElement = 0;
     wds[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     wds[2].descriptorCount = 1;
@@ -591,7 +592,7 @@ namespace small3d {
 
     wds[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     wds[3].dstSet = descriptorSet;
-    wds[3].dstBinding = 4;
+    wds[3].dstBinding = colourDescBinding;
     wds[3].dstArrayElement = 0;
     wds[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     wds[3].descriptorCount = 1;
@@ -601,7 +602,7 @@ namespace small3d {
 
     wds[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     wds[4].dstSet = descriptorSet;
-    wds[4].dstBinding = 5;
+    wds[4].dstBinding = lightDescBinding;
     wds[4].dstArrayElement = 0;
     wds[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     wds[4].descriptorCount = 1;
@@ -687,7 +688,7 @@ namespace small3d {
     VkWriteDescriptorSet wds = {};
     wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     wds.dstSet = orthoDescriptorSet;
-    wds.dstBinding = 1;
+    wds.dstBinding = colourDescBindingOrtho;
     wds.dstArrayElement = 0;
     wds.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     wds.descriptorCount = 1;
@@ -902,7 +903,7 @@ namespace small3d {
 
     wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     wds.dstSet = textureHandle.descriptorSet;
-    wds.dstBinding = 3;
+    wds.dstBinding = textureDescBinding;
     wds.dstArrayElement = 0;
     wds.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     wds.descriptorCount = 1;
@@ -946,7 +947,7 @@ namespace small3d {
 
     wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     wds.dstSet = textureHandle.orthoDescriptorSet;
-    wds.dstBinding = 0;
+    wds.dstBinding = textureDescBindingOrtho;
     wds.dstArrayElement = 0;
     wds.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     wds.descriptorCount = 1;

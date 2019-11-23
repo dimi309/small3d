@@ -156,6 +156,15 @@ namespace small3d
     uint32_t colourMemIndex = 0;
     size_t uboColourDynamicSize = 0;
 
+    const uint32_t worldDescBinding = 0;
+    const uint32_t orientationDescBinding = 1;
+    const uint32_t cameraDescBinding = 2;
+    const uint32_t textureDescBinding = 3;
+    const uint32_t colourDescBinding = 4;
+    const uint32_t lightDescBinding = 5;
+
+    const uint32_t textureDescBindingOrtho = 0;
+    const uint32_t colourDescBindingOrtho = 1;
 
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     static void framebufferSizeCallback(GLFWwindow* window, int width,
