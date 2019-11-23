@@ -431,7 +431,7 @@ namespace small3d {
 
   void Renderer::allocateDescriptorSets() {
 
-    VkDescriptorSetLayoutBinding dslb[6];
+    VkDescriptorSetLayoutBinding dslb[5];
     memset(dslb, 0, 5 * sizeof(VkDescriptorSetLayoutBinding));
 
     // perspectiveMatrixLightedShader - uboWorld
@@ -493,9 +493,8 @@ namespace small3d {
 
     descriptorSet = {};
 
-    auto allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
-      &descriptorSet);
-    if (allocResult != VK_SUCCESS) {
+    if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
+      &descriptorSet) != VK_SUCCESS) {
       std::string errortxt = "Failed to allocate descriptor sets.";
       throw std::runtime_error(errortxt);
     }
@@ -647,9 +646,9 @@ namespace small3d {
     dsai.pSetLayouts = &orthoDescriptorSetLayout;
 
     orthoDescriptorSet = {};
-    VkResult allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
-      &orthoDescriptorSet);
-    if (allocResult != VK_SUCCESS) {
+    
+    if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
+      &orthoDescriptorSet) != VK_SUCCESS) {
       std::string errortxt = "Failed to allocate orthographic pool descriptor"
 	" sets.";
       throw std::runtime_error(errortxt);
@@ -883,9 +882,8 @@ namespace small3d {
 
       textureHandle.descriptorSet = {};
 
-      VkResult allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
-        &textureHandle.descriptorSet);
-      if (allocResult != VK_SUCCESS) {
+      if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
+        &textureHandle.descriptorSet) != VK_SUCCESS) {
         std::string errortxt = "Failed to allocate texture descriptor set.";
         throw std::runtime_error(errortxt);
       }
@@ -926,10 +924,9 @@ namespace small3d {
       dsai.pSetLayouts = &textureOrthoDescriptorSetLayout;
 
       textureHandle.orthoDescriptorSet = {};
-
-      VkResult allocResult = vkAllocateDescriptorSets(vkz_logical_device, &dsai,
-        &textureHandle.orthoDescriptorSet);
-      if (allocResult != VK_SUCCESS) {
+      
+      if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
+        &textureHandle.orthoDescriptorSet) != VK_SUCCESS) {
         std::string errortxt = "Failed to allocate orthographic"
           " texture descriptor set.";
         throw std::runtime_error(errortxt);
