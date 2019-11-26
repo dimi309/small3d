@@ -270,7 +270,7 @@ namespace small3d
     /**
      * @brief The camera position in world space.
      */
-    glm::vec3 cameraOffset;
+    glm::vec3 cameraPosition;
 
     /**
      * @brief The camera rotation (around the x, y and z axes)

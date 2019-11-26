@@ -1062,7 +1062,7 @@ namespace small3d {
     world.perspectiveMatrix = glm::make_mat4(tmpmat4);
     world.lightDirection = lightDirection;
 
-    world.cameraOffset = cameraOffset;
+    world.cameraOffset = cameraPosition;
     world.cameraTransformation =
       glm::transpose(glm::rotate(glm::mat4x4(1.0f), cameraRotation.z, glm::vec3(0.0f, 0.0f, -1.0f))) *
       glm::transpose(glm::rotate(glm::mat4x4(1.0f), cameraRotation.x, glm::vec3(-1.0f, 0.0f, 0.0f))) *
@@ -1129,7 +1129,7 @@ namespace small3d {
     window = 0;
 #endif
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
-    cameraOffset = glm::vec3(0, 0, 0);
+    cameraPosition = glm::vec3(0, 0, 0);
     cameraRotation = glm::vec3(0, 0, 0);
 
   }
@@ -1146,7 +1146,7 @@ namespace small3d {
 #endif
 
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
-    cameraOffset = glm::vec3(0, 0, 0);
+    cameraPosition = glm::vec3(0, 0, 0);
     cameraRotation = glm::vec3(0, 0, 0);
     this->maxObjectsPerPass = maxObjectsPerPass;
     this->zNear = zNear;
