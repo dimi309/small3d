@@ -36,17 +36,10 @@ namespace small3d {
   struct UboWorld {
     glm::mat4 perspectiveMatrix;
     glm::vec3 lightDirection;
-    float padding;
-  };
-
-  /**
-   * @brief Structure used to keep track of the camera orientation uniform
-   *        buffer created on the GPU. Used internally
-   */
-  struct UboCamera {
+    float padding1;
     glm::mat4x4 cameraTransformation;
-    glm::vec3 position;
-    float padding[13];
+    glm::vec3 cameraOffset;
+    float padding2[13];
   };
 
   /**
@@ -161,13 +154,13 @@ namespace small3d {
     VkPipelineLayout pipelineLayout, const Model& model,
     uint32_t swapchainImageIndex) {
 
-    uint32_t dynamicOrientationOffset = model.orientationMemIndex *
-      static_cast<uint32_t>(dynamicOrientationAlignment);
+    uint32_t dynamicModelPlacementOffset = model.placementMemIndex *
+      static_cast<uint32_t>(dynamicModelPlacementAlignment);
 
     uint32_t dynamicColourOffset = model.colourMemIndex *
       static_cast<uint32_t>(dynamicColourAlignment);
 
-    const uint32_t dynamicOffsets[2] = { dynamicOrientationOffset,
+    const uint32_t dynamicOffsets[2] = { dynamicModelPlacementOffset,
            dynamicColourOffset };
 
     const VkDescriptorSet descriptorSets[2] =
@@ -179,8 +172,6 @@ namespace small3d {
 
     vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(),
       1, 0, 0, 0);
-
-
   }
 
   int Renderer::setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo*
@@ -358,7 +349,7 @@ namespace small3d {
 
       VkDescriptorPoolSize ps[6];
 
-      memset(ps, 0, 6 * sizeof(VkDescriptorPoolSize));
+      memset(ps, 0, 5 * sizeof(VkDescriptorPoolSize));
 
       ps[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
       ps[0].descriptorCount = vkz_swapchain_image_count;
@@ -366,23 +357,20 @@ namespace small3d {
       ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
       ps[1].descriptorCount = vkz_swapchain_image_count;
 
-      ps[2].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-      ps[2].descriptorCount = vkz_swapchain_image_count;
-
       // TODO: Review descriptor pool size
-      ps[3].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-      ps[3].descriptorCount = vkz_swapchain_image_count * 2 * maxObjectsPerPass;
+      ps[2].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+      ps[2].descriptorCount = vkz_swapchain_image_count * 2 * maxObjectsPerPass;
 
-      ps[4].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+      ps[3].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+      ps[3].descriptorCount = vkz_swapchain_image_count;
+
+      ps[4].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
       ps[4].descriptorCount = vkz_swapchain_image_count;
-
-      ps[5].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-      ps[5].descriptorCount = vkz_swapchain_image_count;
 
       VkDescriptorPoolCreateInfo dpci;
       memset(&dpci, 0, sizeof(VkDescriptorPoolCreateInfo));
       dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-      dpci.poolSizeCount = 6;
+      dpci.poolSizeCount = 5;
       dpci.pPoolSizes = ps;
       dpci.maxSets = vkz_swapchain_image_count * 2 * maxObjectsPerPass;
 
@@ -430,48 +418,41 @@ namespace small3d {
   void Renderer::allocateDescriptorSets() {
 
     VkDescriptorSetLayoutBinding dslb[5];
-    memset(dslb, 0, 5 * sizeof(VkDescriptorSetLayoutBinding));
+    memset(dslb, 0, 4 * sizeof(VkDescriptorSetLayoutBinding));
 
     // perspectiveMatrixLightedShader - uboWorld
-    dslb[0].binding = 0;
+    dslb[0].binding = worldDescBinding;
     dslb[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     dslb[0].descriptorCount = 1;
     dslb[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     dslb[0].pImmutableSamplers = NULL;
 
-    // perspectiveMatrixLightedShader - uboOrientation
+    // perspectiveMatrixLightedShader - uboModelPlacement
 
-    dslb[1].binding = 1;
+    dslb[1].binding = modelPlacementDescBinding;
     dslb[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     dslb[1].descriptorCount = 1;
     dslb[1].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     dslb[1].pImmutableSamplers = NULL;
 
-    // perspectiveMatrixLightedShader - uboCamera
-    dslb[2].binding = 2;
-    dslb[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    // textureShader - uboColour
+    dslb[2].binding = colourDescBinding;
+    dslb[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     dslb[2].descriptorCount = 1;
-    dslb[2].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    dslb[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
     dslb[2].pImmutableSamplers = NULL;
 
-    // textureShader - uboColour
-    dslb[3].binding = 4;
-    dslb[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+    // textureShader - uboLight
+    dslb[3].binding = lightDescBinding;
+    dslb[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     dslb[3].descriptorCount = 1;
     dslb[3].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
     dslb[3].pImmutableSamplers = NULL;
 
-    // textureShader - uboLight
-    dslb[4].binding = 5;
-    dslb[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    dslb[4].descriptorCount = 1;
-    dslb[4].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    dslb[4].pImmutableSamplers = NULL;
-
     VkDescriptorSetLayoutCreateInfo dslci;
     memset(&dslci, 0, sizeof(VkDescriptorSetLayoutCreateInfo));
     dslci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    dslci.bindingCount = 5;
+    dslci.bindingCount = 4;
     dslci.pBindings = dslb;
 
     if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
@@ -497,10 +478,10 @@ namespace small3d {
       throw std::runtime_error(errortxt);
     }
 
-    memset(dslb, 0, 5 * sizeof(VkDescriptorSetLayoutBinding));
+    memset(dslb, 0, 4 * sizeof(VkDescriptorSetLayoutBinding));
 
     // textureShader - textureImage
-    dslb[0].binding = 3;
+    dslb[0].binding = textureDescBinding;
     dslb[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     dslb[0].descriptorCount = 1;
     dslb[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
@@ -530,18 +511,12 @@ namespace small3d {
     dbiWorld.offset = 0;
     dbiWorld.range = sizeof(UboWorld);
 
-    VkDescriptorBufferInfo dbiOrientation = {};
+    VkDescriptorBufferInfo dbiModelPlacement = {};
 
-    dbiOrientation.buffer =
-      renderOrientationBuffersDynamic[currentSwapchainImageIndex];
-    dbiOrientation.offset = 0;
-    dbiOrientation.range = sizeof(UboOrientation);
-
-    VkDescriptorBufferInfo dbiCamera = {};
-
-    dbiCamera.buffer = cameraOrientationBuffers[currentSwapchainImageIndex];
-    dbiCamera.offset = 0;
-    dbiCamera.range = sizeof(UboCamera);
+    dbiModelPlacement.buffer =
+      renderModelPlacementBuffersDynamic[currentSwapchainImageIndex];
+    dbiModelPlacement.offset = 0;
+    dbiModelPlacement.range = sizeof(UboModelPlacement);
 
     VkDescriptorBufferInfo dbiColour = {};
 
@@ -555,7 +530,7 @@ namespace small3d {
     dbiLight.offset = 0;
     dbiLight.range = sizeof(UboLight);
 
-    std::vector<VkWriteDescriptorSet> wds(6);
+    std::vector<VkWriteDescriptorSet> wds(4);
 
     wds[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     wds[0].dstSet = descriptorSet;
@@ -569,45 +544,35 @@ namespace small3d {
 
     wds[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     wds[1].dstSet = descriptorSet;
-    wds[1].dstBinding = orientationDescBinding;
+    wds[1].dstBinding = modelPlacementDescBinding;
     wds[1].dstArrayElement = 0;
     wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     wds[1].descriptorCount = 1;
-    wds[1].pBufferInfo = &dbiOrientation;
+    wds[1].pBufferInfo = &dbiModelPlacement;
     wds[1].pImageInfo = NULL;
     wds[1].pTexelBufferView = NULL;
 
     wds[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     wds[2].dstSet = descriptorSet;
-    wds[2].dstBinding = cameraDescBinding;
+    wds[2].dstBinding = colourDescBinding;
     wds[2].dstArrayElement = 0;
-    wds[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    wds[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     wds[2].descriptorCount = 1;
-    wds[2].pBufferInfo = &dbiCamera;
+    wds[2].pBufferInfo = &dbiColour;
     wds[2].pImageInfo = NULL;
     wds[2].pTexelBufferView = NULL;
 
     wds[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     wds[3].dstSet = descriptorSet;
-    wds[3].dstBinding = colourDescBinding;
+    wds[3].dstBinding = lightDescBinding;
     wds[3].dstArrayElement = 0;
-    wds[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+    wds[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     wds[3].descriptorCount = 1;
-    wds[3].pBufferInfo = &dbiColour;
+    wds[3].pBufferInfo = &dbiLight;
     wds[3].pImageInfo = NULL;
     wds[3].pTexelBufferView = NULL;
 
-    wds[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[4].dstSet = descriptorSet;
-    wds[4].dstBinding = lightDescBinding;
-    wds[4].dstArrayElement = 0;
-    wds[4].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    wds[4].descriptorCount = 1;
-    wds[4].pBufferInfo = &dbiLight;
-    wds[4].pImageInfo = NULL;
-    wds[4].pTexelBufferView = NULL;
-
-    vkUpdateDescriptorSets(vkz_logical_device, 5, &wds[0], 0, NULL);
+    vkUpdateDescriptorSets(vkz_logical_device, 4, &wds[0], 0, NULL);
   }
 
   void Renderer::allocateOrthoDescriptorSets() {
@@ -654,7 +619,7 @@ namespace small3d {
 
     // simpleFragmentShader - textureImage
     dslb = {};
-    dslb.binding = 0;
+    dslb.binding = textureDescBindingOrtho;
     dslb.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     dslb.descriptorCount = 1;
     dslb.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
@@ -711,7 +676,7 @@ namespace small3d {
 
   }
 
-  void Renderer::positionNextObject(const glm::vec3 offset,
+  void Renderer::positionNextModel(const glm::vec3 offset,
     const glm::vec3 rotation, uint32_t memIndex) {
 
     if (memIndex > maxObjectsPerPass) {
@@ -720,50 +685,14 @@ namespace small3d {
         " on the scene.");
     }
 
-    uboOrientationDynamic[memIndex] = {};
+    uboModelPlacementDynamic[memIndex] = {};
 
-    uboOrientationDynamic[memIndex].objectTransformation =
+    uboModelPlacementDynamic[memIndex].modelTransformation =
       glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f))) *
       glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f))) *
       glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)));
 
-    uboOrientationDynamic[memIndex].offset = offset;
-
-  }
-
-  void Renderer::positionCamera() {
-
-    UboCamera camera = {};
-
-    camera.position = cameraPosition;
-    camera.cameraTransformation =
-      glm::transpose(glm::rotate(glm::mat4x4(1.0f), cameraRotation.z, glm::vec3(0.0f, 0.0f, -1.0f))) *
-      glm::transpose(glm::rotate(glm::mat4x4(1.0f), cameraRotation.x, glm::vec3(-1.0f, 0.0f, 0.0f))) *
-      glm::transpose(glm::rotate(glm::mat4x4(1.0f), cameraRotation.y, glm::vec3(0.0f, -1.0f, 0.0f)));
-
-    uint32_t cameraOrientationSize = sizeof(UboCamera);
-
-    if (cameraOrientationBuffers.size() == 0) {
-      cameraOrientationBuffers.resize(vkz_swapchain_image_count);
-      cameraOrientationBufferMemories.resize(vkz_swapchain_image_count);
-
-      for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
-        vkz_create_buffer(&cameraOrientationBuffers[i],
-          VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-          cameraOrientationSize,
-          &cameraOrientationBufferMemories[i],
-          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-      }
-    }
-
-    void* orientationData;
-    vkMapMemory(vkz_logical_device,
-      cameraOrientationBufferMemories[currentSwapchainImageIndex],
-      0, cameraOrientationSize, 0, &orientationData);
-    memcpy(orientationData, &camera, cameraOrientationSize);
-    vkUnmapMemory(vkz_logical_device,
-      cameraOrientationBufferMemories[currentSwapchainImageIndex]);
+    uboModelPlacementDynamic[memIndex].modelOffset = offset;
 
   }
 
@@ -1007,25 +936,25 @@ namespace small3d {
     vkGetPhysicalDeviceProperties(vkz_physical_device, &pdp);
     VkDeviceSize minAlignment = pdp.limits.minUniformBufferOffsetAlignment;
 
-    dynamicOrientationAlignment = sizeof(UboOrientation);
+    dynamicModelPlacementAlignment = sizeof(UboModelPlacement);
     if (minAlignment > 0) {
-      dynamicOrientationAlignment = (dynamicOrientationAlignment +
+      dynamicModelPlacementAlignment = (dynamicModelPlacementAlignment +
         minAlignment - 1) & ~(minAlignment - 1);
     }
 
-    uboOrientationDynamicSize = maxObjectsPerPass * dynamicOrientationAlignment;
-    char* mem = alloc.allocate(uboOrientationDynamicSize);
-    std::fill(mem, &mem[uboOrientationDynamicSize], 0);
-    uboOrientationDynamic = (UboOrientation*)mem;
+    uboModelPlacementDynamicSize = maxObjectsPerPass * dynamicModelPlacementAlignment;
+    char* mem = alloc.allocate(uboModelPlacementDynamicSize);
+    std::fill(mem, &mem[uboModelPlacementDynamicSize], 0);
+    uboModelPlacementDynamic = (UboModelPlacement*)mem;
 
-    renderOrientationBuffersDynamic.resize(vkz_swapchain_image_count);
-    renderOrientationBuffersDynamicMemory.resize(vkz_swapchain_image_count);
+    renderModelPlacementBuffersDynamic.resize(vkz_swapchain_image_count);
+    renderModelPlacementBuffersDynamicMemory.resize(vkz_swapchain_image_count);
 
     for (size_t i = 0; i < vkz_swapchain_image_count; ++i) {
-      vkz_create_buffer(&renderOrientationBuffersDynamic[i],
+      vkz_create_buffer(&renderModelPlacementBuffersDynamic[i],
         VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-        (uint32_t)uboOrientationDynamicSize,
-        &renderOrientationBuffersDynamicMemory[i],
+        (uint32_t)uboModelPlacementDynamicSize,
+        &renderModelPlacementBuffersDynamicMemory[i],
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
     }
@@ -1134,6 +1063,12 @@ namespace small3d {
     world.perspectiveMatrix = glm::make_mat4(tmpmat4);
     world.lightDirection = lightDirection;
 
+    world.cameraOffset = cameraOffset;
+    world.cameraTransformation =
+      glm::transpose(glm::rotate(glm::mat4x4(1.0f), cameraRotation.z, glm::vec3(0.0f, 0.0f, -1.0f))) *
+      glm::transpose(glm::rotate(glm::mat4x4(1.0f), cameraRotation.x, glm::vec3(-1.0f, 0.0f, 0.0f))) *
+      glm::transpose(glm::rotate(glm::mat4x4(1.0f), cameraRotation.y, glm::vec3(0.0f, -1.0f, 0.0f)));
+
     uint32_t worldDetailsSize = sizeof(UboWorld);
 
     if (worldDetailsBuffers.size() == 0) {
@@ -1195,7 +1130,7 @@ namespace small3d {
     window = 0;
 #endif
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
-    cameraPosition = glm::vec3(0, 0, 0);
+    cameraOffset = glm::vec3(0, 0, 0);
     cameraRotation = glm::vec3(0, 0, 0);
 
   }
@@ -1212,7 +1147,7 @@ namespace small3d {
 #endif
 
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
-    cameraPosition = glm::vec3(0, 0, 0);
+    cameraOffset = glm::vec3(0, 0, 0);
     cameraRotation = glm::vec3(0, 0, 0);
     this->maxObjectsPerPass = maxObjectsPerPass;
     this->zNear = zNear;
@@ -1306,9 +1241,9 @@ namespace small3d {
       vkDestroyDescriptorPool(vkz_logical_device, orthoDescriptorPool, NULL);
     }
 
-    if (uboOrientationDynamic) {
-      alloc.deallocate(reinterpret_cast<char*>(uboOrientationDynamic),
-        uboOrientationDynamicSize);
+    if (uboModelPlacementDynamic) {
+      alloc.deallocate(reinterpret_cast<char*>(uboModelPlacementDynamic),
+        uboModelPlacementDynamicSize);
     }
 
     if (uboColourDynamic) {
@@ -1318,14 +1253,11 @@ namespace small3d {
 
     for (uint32_t i = 0; i < vkz_swapchain_image_count; ++i) {
 
-      if (i < renderOrientationBuffersDynamic.size()) {
-        vkz_destroy_buffer(renderOrientationBuffersDynamic[i],
-          renderOrientationBuffersDynamicMemory[i]);
+      if (i < renderModelPlacementBuffersDynamic.size()) {
+        vkz_destroy_buffer(renderModelPlacementBuffersDynamic[i],
+          renderModelPlacementBuffersDynamicMemory[i]);
       }
-      if (i < cameraOrientationBuffers.size()) {
-        vkz_destroy_buffer(cameraOrientationBuffers[i],
-          cameraOrientationBufferMemories[i]);
-      }
+      
       if (i < worldDetailsBuffers.size()) {
         vkz_destroy_buffer(worldDetailsBuffers[i],
           worldDetailsBufferMemories[i]);
@@ -1734,9 +1666,9 @@ namespace small3d {
     model.perspective = perspective;
 
     if (perspective) {
-      positionNextObject(offset, rotation, orientationMemIndex);
-      model.orientationMemIndex = orientationMemIndex;
-      ++orientationMemIndex;
+      positionNextModel(offset, rotation, modelPlacementMemIndex);
+      model.placementMemIndex = modelPlacementMemIndex;
+      ++modelPlacementMemIndex;
     }
 
     nextModelsToDraw.push_back(model);
@@ -1815,20 +1747,19 @@ namespace small3d {
     vkz_acquire_next_image(perspectivePipelineIndex,
       &currentSwapchainImageIndex);
 
-    orientationMemIndex = 0;
+    modelPlacementMemIndex = 0;
     colourMemIndex = 0;
 
     setPerspectiveAndLight();
-    positionCamera();
 
     // Updating object positioning 
-    void* orientationData;
+    void* modelPlacementData;
     vkMapMemory(vkz_logical_device,
-      renderOrientationBuffersDynamicMemory[currentSwapchainImageIndex],
-      0, uboOrientationDynamicSize, 0, &orientationData);
-    memcpy(orientationData, uboOrientationDynamic, uboOrientationDynamicSize);
+      renderModelPlacementBuffersDynamicMemory[currentSwapchainImageIndex],
+      0, uboModelPlacementDynamicSize, 0, &modelPlacementData);
+    memcpy(modelPlacementData, uboModelPlacementDynamic, uboModelPlacementDynamicSize);
     vkUnmapMemory(vkz_logical_device,
-      renderOrientationBuffersDynamicMemory[currentSwapchainImageIndex]);
+      renderModelPlacementBuffersDynamicMemory[currentSwapchainImageIndex]);
 
     // Updating colour
     void* colourData;

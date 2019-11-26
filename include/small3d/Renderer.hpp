@@ -46,18 +46,16 @@ namespace small3d
   };
 
   /**
-   * @brief Structure used to keep track of the orientation uniform buffers
-   *        created on the GPU. Used internally
+   * @brief Model placement uniform buffer object. Used internally
    */
-  struct UboOrientation {
-    glm::mat4x4 objectTransformation;
-    glm::vec3 offset;
+  struct UboModelPlacement {
+    glm::mat4x4 modelTransformation;
+    glm::vec3 modelOffset;
     float padding[13];
   };
 
   /**
-   * @brief Structure used to keep track of the colour uniform buffers
-   *        created on the GPU. Used internally
+   * @brief Model colour uniform buffer object. Used internally
    */
   struct UboColour {
     glm::vec4 colour;
@@ -90,11 +88,8 @@ namespace small3d
 
     uint32_t currentSwapchainImageIndex = 0;
 
-    std::vector<VkBuffer> renderOrientationBuffersDynamic;
-    std::vector<VkDeviceMemory> renderOrientationBuffersDynamicMemory;
-
-    std::vector<VkBuffer> cameraOrientationBuffers;
-    std::vector<VkDeviceMemory> cameraOrientationBufferMemories;
+    std::vector<VkBuffer> renderModelPlacementBuffersDynamic;
+    std::vector<VkDeviceMemory> renderModelPlacementBuffersDynamicMemory;
 
     std::vector<VkBuffer> worldDetailsBuffers;
     std::vector<VkDeviceMemory> worldDetailsBufferMemories;
@@ -144,10 +139,10 @@ namespace small3d
     static VkDescriptorSetLayout textureOrthoDescriptorSetLayout;
     static VkDescriptorSetLayout orthographicLayouts[2];
 
-    size_t dynamicOrientationAlignment = 0;
-    UboOrientation* uboOrientationDynamic = nullptr;
-    uint32_t orientationMemIndex = 0;
-    size_t uboOrientationDynamicSize = 0;
+    size_t dynamicModelPlacementAlignment = 0;
+    UboModelPlacement* uboModelPlacementDynamic = nullptr;
+    uint32_t modelPlacementMemIndex = 0;
+    size_t uboModelPlacementDynamicSize = 0;
 
     size_t dynamicColourAlignment = 0;
     UboColour* uboColourDynamic = nullptr;
@@ -155,11 +150,11 @@ namespace small3d
     size_t uboColourDynamicSize = 0;
 
     const uint32_t worldDescBinding = 0;
-    const uint32_t orientationDescBinding = 1;
-    const uint32_t cameraDescBinding = 2;
-    const uint32_t textureDescBinding = 3;
-    const uint32_t colourDescBinding = 4;
-    const uint32_t lightDescBinding = 5;
+    const uint32_t modelPlacementDescBinding = 1;
+    
+    const uint32_t colourDescBinding = 2;
+    const uint32_t lightDescBinding = 3;
+    const uint32_t textureDescBinding = 4;
 
     const uint32_t textureDescBindingOrtho = 0;
     const uint32_t colourDescBindingOrtho = 1;
@@ -212,10 +207,10 @@ namespace small3d
 
     void setColourBuffer(glm::vec4 colour, uint32_t memIndex);
 
-    void positionNextObject(const glm::vec3 offset,
+    void positionNextModel(const glm::vec3 offset,
       const glm::vec3 rotation,
       uint32_t memIndex);
-    void positionCamera();
+    
     VulkanImage getTextureHandle(const std::string name) const;
     VulkanImage generateTexture(const std::string name,
       const float* data,
@@ -275,7 +270,7 @@ namespace small3d
     /**
      * @brief The camera position in world space.
      */
-    glm::vec3 cameraPosition;
+    glm::vec3 cameraOffset;
 
     /**
      * @brief The camera rotation (around the x, y and z axes)
