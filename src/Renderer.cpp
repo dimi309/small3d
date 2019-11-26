@@ -29,9 +29,9 @@ namespace small3d {
   }
 
   /**
-   * @brief Structure used to keep track of the uniform buffer that contains
-   *        the direction of the light and the matrix used to add perspective to
-   *        the scene. Used internally
+   * @brief World uniform buffer object, containing the perspective matrix,
+   *        light direction and camera transformation and offset. Used
+   *        internally
    */
   struct UboWorld {
     glm::mat4 perspectiveMatrix;
@@ -43,11 +43,10 @@ namespace small3d {
   };
 
   /**
-   * @brief Structure used to keep track of the light intensity uniform buffer
-   *        created on the GPU. Used internally
+   * @brief Light uniform buffer object. Used internally
    */
   struct UboLight {
-    float intensity;
+    float lightIntensity;
     float padding[7];
   };
 
@@ -672,7 +671,7 @@ namespace small3d {
 
     uboColourDynamic[memIndex] = {};
 
-    uboColourDynamic[memIndex].colour = colour;
+    uboColourDynamic[memIndex].modelColour = colour;
 
   }
 
@@ -1096,7 +1095,7 @@ namespace small3d {
 
     UboLight light = {};
 
-    light.intensity = lightIntensity;
+    light.lightIntensity = lightIntensity;
 
     uint32_t lightIntensitySize = sizeof(float);
 
@@ -1257,7 +1256,7 @@ namespace small3d {
         vkz_destroy_buffer(renderModelPlacementBuffersDynamic[i],
           renderModelPlacementBuffersDynamicMemory[i]);
       }
-      
+
       if (i < worldDetailsBuffers.size()) {
         vkz_destroy_buffer(worldDetailsBuffers[i],
           worldDetailsBufferMemories[i]);
