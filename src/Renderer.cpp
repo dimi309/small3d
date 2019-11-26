@@ -723,10 +723,9 @@ namespace small3d {
     uboOrientationDynamic[memIndex] = {};
 
     uboOrientationDynamic[memIndex].objectTransformation =
-      glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.y,
-        glm::vec3(0.0f, 1.0f, 0.0f)) * glm::rotate(glm::mat4x4(1.0f), rotation.x,
-          glm::vec3(1.0f, 0.0f, 0.0f)) * glm::rotate(glm::mat4x4(1.0f), rotation.z,
-            glm::vec3(0.0f, 0.0f, 1.0f)));
+      glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f))) *
+      glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f))) *
+      glm::transpose(glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)));
 
     uboOrientationDynamic[memIndex].offset = offset;
 
@@ -737,11 +736,10 @@ namespace small3d {
     UboCamera camera = {};
 
     camera.position = cameraPosition;
-    camera.cameraTransformation = glm::transpose(glm::rotate(glm::mat4x4(1.0f),
-      cameraRotation.z, glm::vec3(0.0f, 0.0f, -1.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), cameraRotation.x,
-        glm::vec3(-1.0f, 0.0f, 0.0f)) * glm::rotate(glm::mat4x4(1.0f),
-          cameraRotation.y, glm::vec3(0.0f, -1.0f, 0.0f)));
+    camera.cameraTransformation =
+      glm::transpose(glm::rotate(glm::mat4x4(1.0f), cameraRotation.z, glm::vec3(0.0f, 0.0f, -1.0f))) *
+      glm::transpose(glm::rotate(glm::mat4x4(1.0f), cameraRotation.x, glm::vec3(-1.0f, 0.0f, 0.0f))) *
+      glm::transpose(glm::rotate(glm::mat4x4(1.0f), cameraRotation.y, glm::vec3(0.0f, -1.0f, 0.0f)));
 
     uint32_t cameraOrientationSize = sizeof(UboCamera);
 
@@ -1074,7 +1072,7 @@ namespace small3d {
 
     if (!glfwInit()) {
       throw std::runtime_error("Unable to initialise GLFW");
-  }
+    }
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
@@ -1120,7 +1118,7 @@ namespace small3d {
       intToStr(height));
 
 #endif
-}
+  }
 
   void Renderer::setPerspectiveAndLight() {
 
@@ -1410,12 +1408,12 @@ namespace small3d {
 #endif
       if (error != 0) {
         throw std::runtime_error("Failed to load font from " + faceFullPath);
-    }
+      }
       else {
         LOGDEBUG("Font loaded successfully");
         fontFaces.insert(make_pair(faceId, face));
       }
-  }
+    }
     else {
       face = idFacePair->second;
     }
@@ -1885,4 +1883,4 @@ namespace small3d {
 
   }
 
-  }
+}
