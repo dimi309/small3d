@@ -11,16 +11,12 @@ layout(binding = 0) uniform uboWorld {
 } world;
 
 layout(binding = 1) uniform uboOrientation {
-  mat4 xRotationMatrix;
-  mat4 yRotationMatrix;
-  mat4 zRotationMatrix;
+  mat4 objectTransformation;
   vec3 offset;
 } ori;
 
 layout(binding = 2) uniform uboCamera {
-  mat4 xRotationMatrix;
-  mat4 yRotationMatrix;
-  mat4 zRotationMatrix;
+  mat4 cameraTransformation;
   vec3 cposition;
 } cam;
 
@@ -29,16 +25,14 @@ layout(location = 1) out vec2 textureCoords;
 
 void main()
 {
-  vec4 worldPos = ori.yRotationMatrix * ori.xRotationMatrix *
-    ori.zRotationMatrix * position + vec4(ori.offset, 0.0);
+  vec4 worldPos = ori.objectTransformation * position + vec4(ori.offset, 0.0);
 
-  vec4 cameraPos = cam.zRotationMatrix * cam.xRotationMatrix *
-    cam.yRotationMatrix * (worldPos - vec4(cam.cposition, 0.0));
+  vec4 cameraPos = cam.cameraTransformation * (worldPos -
+					       vec4(cam.cposition, 0.0));
 
   gl_Position =  cameraPos * world.perspectiveMatrix;
 
-  vec4 normalInWorld = normalize(ori.yRotationMatrix * ori.xRotationMatrix *
-				 ori.zRotationMatrix * vec4(normal, 1) *
+  vec4 normalInWorld = normalize(ori.objectTransformation * vec4(normal, 1) *
 				 world.perspectiveMatrix);
     
   vec4 lightDirectionWorld = normalize(vec4(world.lightDirection, 1) *
