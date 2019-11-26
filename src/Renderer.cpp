@@ -46,7 +46,7 @@ namespace small3d {
   struct UboCamera {
     glm::mat4x4 cameraTransformation;
     glm::vec3 position;
-    float padding[17];
+    float padding[13];
   };
 
   /**
@@ -528,7 +528,7 @@ namespace small3d {
     VkDescriptorBufferInfo dbiWorld = {};
     dbiWorld.buffer = worldDetailsBuffers[currentSwapchainImageIndex];
     dbiWorld.offset = 0;
-    dbiWorld.range = (16 + 4) * sizeof(float);
+    dbiWorld.range = sizeof(UboWorld);
 
     VkDescriptorBufferInfo dbiOrientation = {};
 
@@ -541,19 +541,19 @@ namespace small3d {
 
     dbiCamera.buffer = cameraOrientationBuffers[currentSwapchainImageIndex];
     dbiCamera.offset = 0;
-    dbiCamera.range = (3 * 16 + 4) * sizeof(float);
+    dbiCamera.range = sizeof(UboCamera);
 
     VkDescriptorBufferInfo dbiColour = {};
 
     dbiColour.buffer = colourBuffersDynamic[currentSwapchainImageIndex];
     dbiColour.offset = 0;
-    dbiColour.range = 4 * sizeof(float);
+    dbiColour.range = sizeof(UboColour);
 
     VkDescriptorBufferInfo dbiLight = {};
 
     dbiLight.buffer = lightIntensityBuffers[currentSwapchainImageIndex];
     dbiLight.offset = 0;
-    dbiLight.range = sizeof(float);
+    dbiLight.range = sizeof(UboLight);
 
     std::vector<VkWriteDescriptorSet> wds(6);
 
@@ -680,7 +680,7 @@ namespace small3d {
     VkDescriptorBufferInfo dbiColour = {};
     dbiColour.buffer = colourBuffersDynamic[currentSwapchainImageIndex];
     dbiColour.offset = 0;
-    dbiColour.range = 4 * sizeof(float);
+    dbiColour.range = sizeof(UboColour);
 
     VkWriteDescriptorSet wds = {};
     wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -743,7 +743,7 @@ namespace small3d {
         glm::vec3(-1.0f, 0.0f, 0.0f)) * glm::rotate(glm::mat4x4(1.0f),
           cameraRotation.y, glm::vec3(0.0f, -1.0f, 0.0f)));
 
-    uint32_t cameraOrientationSize = (16 + 4) * sizeof(float);
+    uint32_t cameraOrientationSize = sizeof(UboCamera);
 
     if (cameraOrientationBuffers.size() == 0) {
       cameraOrientationBuffers.resize(vkz_swapchain_image_count);
@@ -1136,7 +1136,7 @@ namespace small3d {
     world.perspectiveMatrix = glm::make_mat4(tmpmat4);
     world.lightDirection = lightDirection;
 
-    uint32_t worldDetailsSize = (16 + 4) * sizeof(float);
+    uint32_t worldDetailsSize = sizeof(UboWorld);
 
     if (worldDetailsBuffers.size() == 0) {
       worldDetailsBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
