@@ -50,11 +50,9 @@ namespace small3d
    *        created on the GPU. Used internally
    */
   struct UboOrientation {
-    glm::mat4x4 xRotationMatrix;
-    glm::mat4x4 yRotationMatrix;
-    glm::mat4x4 zRotationMatrix;
+    glm::mat4x4 objectTransformation;
     glm::vec3 offset;
-    float padding[13];
+    float padding[17];
   };
 
   /**
