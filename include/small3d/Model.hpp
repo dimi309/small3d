@@ -107,7 +107,7 @@ namespace small3d {
      *        buffer
      *        (Vulkan-specific, avoid direct manipulation)
      */
-    uint32_t orientationMemIndex = 0;
+    uint32_t placementMemIndex = 0;
 
     /**
      * @brief Index of model colour in the colour dynamic uniform buffer
