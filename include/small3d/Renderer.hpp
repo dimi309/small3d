@@ -52,7 +52,7 @@ namespace small3d
   struct UboOrientation {
     glm::mat4x4 objectTransformation;
     glm::vec3 offset;
-    float padding[17];
+    float padding[13];
   };
 
   /**
