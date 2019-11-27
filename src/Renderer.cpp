@@ -29,20 +29,6 @@ namespace small3d {
   }
 
   /**
-   * @brief World uniform buffer object, containing the perspective matrix,
-   *        light direction and camera transformation and offset. Used
-   *        internally
-   */
-  struct UboWorld {
-    glm::mat4 perspectiveMatrix;
-    glm::vec3 lightDirection;
-    float padding1;
-    glm::mat4x4 cameraTransformation;
-    glm::vec3 cameraOffset;
-    float padding2[13];
-  };
-
-  /**
    * @brief Light uniform buffer object. Used internally
    */
   struct UboLight {
@@ -58,13 +44,6 @@ namespace small3d {
   VkDescriptorSet Renderer::descriptorSet;
   VkDescriptorSetLayout Renderer::textureDescriptorSetLayout;
   VkDescriptorSetLayout Renderer::perspectiveLayouts[2];
-
-  VkVertexInputBindingDescription Renderer::orthobd[2];
-  VkVertexInputAttributeDescription Renderer::orthoad[2];
-  VkDescriptorSetLayout Renderer::orthoDescriptorSetLayout;
-  VkDescriptorSet Renderer::orthoDescriptorSet;
-  VkDescriptorSetLayout Renderer::textureOrthoDescriptorSetLayout;
-  VkDescriptorSetLayout Renderer::orthographicLayouts[2];
 
   int Renderer::realScreenWidth;
   int Renderer::realScreenHeight;
@@ -151,104 +130,32 @@ namespace small3d {
 
   void Renderer::recordDrawCommand(VkCommandBuffer commandBuffer,
     VkPipelineLayout pipelineLayout, const Model& model,
-    uint32_t swapchainImageIndex) {
+    uint32_t swapchainImageIndex, bool perspective) {
 
     uint32_t dynamicModelPlacementOffset = model.placementMemIndex *
       static_cast<uint32_t>(dynamicModelPlacementAlignment);
 
+    uint32_t dynamicWorldDetailsOffset = perspective ? 0 : 1 *
+      static_cast<uint32_t>(dynamicWorldDetailsAlignment);
+
     uint32_t dynamicColourOffset = model.colourMemIndex *
       static_cast<uint32_t>(dynamicColourAlignment);
 
-    const uint32_t dynamicOffsets[2] = { dynamicModelPlacementOffset,
-           dynamicColourOffset };
+    const uint32_t dynamicOffsets[3] = { dynamicWorldDetailsOffset,
+      dynamicModelPlacementOffset,
+      dynamicColourOffset };
 
     const VkDescriptorSet descriptorSets[2] =
     { descriptorSet, getTextureHandle(model.textureName).descriptorSet };
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
       pipelineLayout, 0, 2,
-      descriptorSets, 2, dynamicOffsets);
+      descriptorSets, 3, dynamicOffsets);
 
     vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(),
       1, 0, 0, 0);
   }
-
-  int Renderer::setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo*
-    inputStateCreateInfo) {
-    memset(orthobd, 0, 2 * sizeof(VkVertexInputBindingDescription));
-
-    orthobd[0].binding = 0;
-    orthobd[0].stride = 4 * sizeof(float);
-
-    orthobd[1].binding = 1;
-    orthobd[1].stride = 2 * sizeof(float);
-
-    memset(orthoad, 0, 2 * sizeof(VkVertexInputAttributeDescription));
-
-    orthoad[0].binding = 0;
-    orthoad[0].location = 0;
-    orthoad[0].format = VK_FORMAT_R32G32B32A32_SFLOAT;
-    orthoad[0].offset = 0;
-
-    orthoad[1].binding = 1;
-    orthoad[1].location = 1;
-    orthoad[1].format = VK_FORMAT_R32G32_SFLOAT;
-    orthoad[1].offset = 0;
-
-    inputStateCreateInfo->vertexBindingDescriptionCount = 2;
-    inputStateCreateInfo->vertexAttributeDescriptionCount = 2;
-    inputStateCreateInfo->pVertexBindingDescriptions = orthobd;
-    inputStateCreateInfo->pVertexAttributeDescriptions = orthoad;
-
-    return 1;
-  }
-
-  int Renderer::setOrthoPipelineLayoutCallback(VkPipelineLayoutCreateInfo*
-    pipelineLayoutCreateInfo) {
-    orthographicLayouts[0] = orthoDescriptorSetLayout;
-    orthographicLayouts[1] = textureOrthoDescriptorSetLayout;
-    pipelineLayoutCreateInfo->setLayoutCount = 2;
-    pipelineLayoutCreateInfo->pSetLayouts = orthographicLayouts;
-    return 1;
-  }
-
-  int Renderer::bindOrthoBuffers(VkCommandBuffer commandBuffer,
-    const Model& model) {
-    VkBuffer vertexBuffers[2];
-    vertexBuffers[0] = model.positionBuffer;
-    vertexBuffers[1] = model.uvBuffer;
-    VkDeviceSize offsets[2];
-    offsets[0] = 0;
-    offsets[1] = 0;
-
-    // Vertex buffer
-    vkCmdBindVertexBuffers(commandBuffer, 0, 2, vertexBuffers, offsets);
-
-    // Index buffer
-    vkCmdBindIndexBuffer(commandBuffer, model.indexBuffer,
-      0, VK_INDEX_TYPE_UINT32);
-    return 1;
-  }
-
-  void Renderer::recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
-    VkPipelineLayout pipelineLayout, const Model& model,
-    uint32_t swapchainImageIndex) {
-
-    uint32_t dynamicColourOffset = model.colourMemIndex *
-      static_cast<uint32_t>(dynamicColourAlignment);
-
-    const VkDescriptorSet descriptorSets[2] = { orthoDescriptorSet,
-      getTextureHandle(model.textureName).orthoDescriptorSet };
-
-    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-      pipelineLayout, 0, 2,
-      descriptorSets, 1, &dynamicColourOffset);
-
-    vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(),
-      1, 0, 0, 0);
-
-  }
-
+  
   void Renderer::initVulkan() {
 #if defined(__ANDROID__)
     const char* exts[2];
@@ -338,9 +245,6 @@ namespace small3d {
     createDescriptorPool();
     allocateDescriptorSets();
 
-    createOrthoDescriptorPool();
-    allocateOrthoDescriptorSets();
-
   }
 
   void Renderer::createDescriptorPool() {
@@ -350,7 +254,7 @@ namespace small3d {
 
       memset(ps, 0, 5 * sizeof(VkDescriptorPoolSize));
 
-      ps[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      ps[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
       ps[0].descriptorCount = vkz_swapchain_image_count;
 
       ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
@@ -384,36 +288,6 @@ namespace small3d {
     }
   }
 
-  void Renderer::createOrthoDescriptorPool() {
-    if (!orthoDescriptorPoolCreated) {
-
-      VkDescriptorPoolSize ps[2];
-      memset(ps, 0, 2 * sizeof(VkDescriptorPoolSize));
-
-      ps[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-      ps[0].descriptorCount = vkz_swapchain_image_count * 2 * maxObjectsPerPass;
-
-      ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-      ps[1].descriptorCount = vkz_swapchain_image_count * 2 * maxObjectsPerPass;
-
-      VkDescriptorPoolCreateInfo dpci;
-      memset(&dpci, 0, sizeof(VkDescriptorPoolCreateInfo));
-      dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-      dpci.poolSizeCount = 2;
-      dpci.pPoolSizes = ps;
-      dpci.maxSets = vkz_swapchain_image_count;
-
-      if (vkCreateDescriptorPool(vkz_logical_device, &dpci, NULL,
-        &orthoDescriptorPool) != VK_SUCCESS) {
-        LOGDEBUG("Failed to create orthographic shaders descriptor pool.");
-      }
-      else {
-        orthoDescriptorPoolCreated = true;
-        LOGDEBUG("Created orthographic shaders descriptor pool.");
-      }
-    }
-  }
-
   void Renderer::allocateDescriptorSets() {
 
     VkDescriptorSetLayoutBinding dslb[5];
@@ -421,7 +295,7 @@ namespace small3d {
 
     // perspectiveMatrixLightedShader - uboWorld
     dslb[0].binding = worldDescBinding;
-    dslb[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    dslb[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     dslb[0].descriptorCount = 1;
     dslb[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     dslb[0].pImmutableSamplers = NULL;
@@ -506,9 +380,9 @@ namespace small3d {
   void Renderer::updateDescriptorSets() {
 
     VkDescriptorBufferInfo dbiWorld = {};
-    dbiWorld.buffer = worldDetailsBuffers[currentSwapchainImageIndex];
+    dbiWorld.buffer = worldDetailsBuffersDynamic[currentSwapchainImageIndex];
     dbiWorld.offset = 0;
-    dbiWorld.range = sizeof(UboWorld);
+    dbiWorld.range = sizeof(UboWorldDetails);
 
     VkDescriptorBufferInfo dbiModelPlacement = {};
 
@@ -535,7 +409,7 @@ namespace small3d {
     wds[0].dstSet = descriptorSet;
     wds[0].dstBinding = worldDescBinding;
     wds[0].dstArrayElement = 0;
-    wds[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    wds[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     wds[0].descriptorCount = 1;
     wds[0].pBufferInfo = &dbiWorld;
     wds[0].pImageInfo = NULL;
@@ -572,93 +446,6 @@ namespace small3d {
     wds[3].pTexelBufferView = NULL;
 
     vkUpdateDescriptorSets(vkz_logical_device, 4, &wds[0], 0, NULL);
-  }
-
-  void Renderer::allocateOrthoDescriptorSets() {
-
-    VkDescriptorSetLayoutBinding dslb = {};
-
-    // simpleFragmentShader - uboColour
-    dslb.binding = 1;
-    dslb.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    dslb.descriptorCount = 1;
-    dslb.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    dslb.pImmutableSamplers = NULL;
-
-    VkDescriptorSetLayoutCreateInfo dslci = {};
-
-    dslci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    dslci.bindingCount = 1;
-    dslci.pBindings = &dslb;
-
-    if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
-      &orthoDescriptorSetLayout) != VK_SUCCESS) {
-      throw std::runtime_error("Failed to create orthographic descriptor"
-        " set layout.");
-    }
-    else {
-      LOGDEBUG("Created orthographic descriptor set layout.");
-    }
-
-    VkDescriptorSetAllocateInfo dsai = {};
-
-    dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-    dsai.descriptorPool = orthoDescriptorPool;
-    dsai.descriptorSetCount = 1;
-    dsai.pSetLayouts = &orthoDescriptorSetLayout;
-
-    orthoDescriptorSet = {};
-
-    if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
-      &orthoDescriptorSet) != VK_SUCCESS) {
-      std::string errortxt = "Failed to allocate orthographic pool descriptor"
-        " sets.";
-      throw std::runtime_error(errortxt);
-    }
-
-    // simpleFragmentShader - textureImage
-    dslb = {};
-    dslb.binding = textureDescBindingOrtho;
-    dslb.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    dslb.descriptorCount = 1;
-    dslb.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    dslb.pImmutableSamplers = NULL;
-
-    dslci = {};
-    dslci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    dslci.bindingCount = 1;
-    dslci.pBindings = &dslb;
-
-    if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
-      &textureOrthoDescriptorSetLayout) != VK_SUCCESS) {
-      throw std::runtime_error("Failed to create orthographic texture"
-        " descriptor set layout.");
-    }
-    else {
-      LOGDEBUG("Created orthographic texture descriptor set layout.");
-    }
-  }
-
-  void Renderer::updateOrthoDescriptorSets() {
-
-    VkDescriptorBufferInfo dbiColour = {};
-    dbiColour.buffer = colourBuffersDynamic[currentSwapchainImageIndex];
-    dbiColour.offset = 0;
-    dbiColour.range = sizeof(UboColour);
-
-    VkWriteDescriptorSet wds = {};
-    wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds.dstSet = orthoDescriptorSet;
-    wds.dstBinding = colourDescBindingOrtho;
-    wds.dstArrayElement = 0;
-    wds.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    wds.descriptorCount = 1;
-    wds.pBufferInfo = &dbiColour;
-    wds.pImageInfo = NULL;
-    wds.pTexelBufferView = NULL;
-
-    vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
-
   }
 
   void Renderer::setColourBuffer(glm::vec4 colour, uint32_t memIndex) {
@@ -827,49 +614,6 @@ namespace small3d {
 
     vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
 
-    if (!found) {
-
-      // Allocate orthographic texture descriptor set
-
-      VkDescriptorSetAllocateInfo dsai = {};
-
-      dsai = {};
-      dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-      dsai.descriptorPool = descriptorPool;
-      dsai.descriptorSetCount = 1;
-      dsai.pSetLayouts = &textureOrthoDescriptorSetLayout;
-
-      textureHandle.orthoDescriptorSet = {};
-
-      if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
-        &textureHandle.orthoDescriptorSet) != VK_SUCCESS) {
-        std::string errortxt = "Failed to allocate orthographic"
-          " texture descriptor set.";
-        throw std::runtime_error(errortxt);
-      }
-    }
-
-    // Write orthographic texture descriptor set
-
-    diiTexture = {};
-    diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    diiTexture.imageView = textureHandle.imageView;
-    diiTexture.sampler = textureSampler;
-
-    wds = {};
-
-    wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds.dstSet = textureHandle.orthoDescriptorSet;
-    wds.dstBinding = textureDescBindingOrtho;
-    wds.dstArrayElement = 0;
-    wds.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    wds.descriptorCount = 1;
-    wds.pBufferInfo = NULL;
-    wds.pImageInfo = &diiTexture;
-    wds.pTexelBufferView = NULL;
-
-    vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
-
     textures.insert(make_pair(name, textureHandle));
 
     return textureHandle;
@@ -923,14 +667,9 @@ namespace small3d {
     std::string orthoFragmentShaderPath = this->shadersPath +
       "simpleFragmentShader.spv";
 
-    vkz_create_pipeline(orthoVertexShaderPath.c_str(),
-      orthoFragmentShaderPath.c_str(),
-      setOrthoInputStateCallback, setOrthoPipelineLayoutCallback,
-      &orthographicPipelineIndex);
-
     vkz_create_sync_objects();
 
-    // Allocate memory & vulkan dynamic buffer for object positioning
+    // Allocate memory & vulkan dynamic buffers for object positioning
     VkPhysicalDeviceProperties pdp = {};
     vkGetPhysicalDeviceProperties(vkz_physical_device, &pdp);
     VkDeviceSize minAlignment = pdp.limits.minUniformBufferOffsetAlignment;
@@ -958,7 +697,31 @@ namespace small3d {
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
     }
 
-    // Allocate memory & vulkan dynamic buffer for colour
+    // Allocate memory & vulkan dynamic buffers for world details
+    dynamicWorldDetailsAlignment = sizeof(UboWorldDetails);
+    if (minAlignment > 0) {
+      dynamicWorldDetailsAlignment = (dynamicWorldDetailsAlignment +
+        minAlignment - 1) & ~(minAlignment - 1);
+    }
+
+    // 2x, one for perspective, the other for orthographic rendering
+    uboWorldDetailsDynamicSize = 2 * dynamicWorldDetailsAlignment;
+    mem = alloc.allocate(uboWorldDetailsDynamicSize);
+    std::fill(mem, &mem[uboWorldDetailsDynamicSize], 0);
+    uboWorldDetailsDynamic = (UboWorldDetails*)mem;
+    worldDetailsBuffersDynamic.resize(vkz_swapchain_image_count);
+    worldDetailsBuffersDynamicMemory.resize(vkz_swapchain_image_count);
+
+    for (size_t i = 0; i < vkz_swapchain_image_count; ++i) {
+      vkz_create_buffer(&worldDetailsBuffersDynamic[i],
+        VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+        (uint32_t)uboWorldDetailsDynamicSize,
+        &worldDetailsBuffersDynamicMemory[i],
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+    }
+
+    // Allocate memory & vulkan dynamic buffer for model colour
     dynamicColourAlignment = sizeof(UboColour);
     if (minAlignment > 0) {
       dynamicColourAlignment = (dynamicColourAlignment + minAlignment - 1) &
@@ -1048,50 +811,42 @@ namespace small3d {
 #endif
   }
 
-  void Renderer::setPerspectiveAndLight() {
+  void Renderer::setPerspectiveAndLight(bool perspective) {
 
-    UboWorld world = {};
+    uint32_t worldDetailsIndex = perspective ? 0 : 1;
+
+    uboWorldDetailsDynamic[worldDetailsIndex] = {};
 
     float tmpmat4[16];
     memset(&tmpmat4, 0, 16 * sizeof(float));
-    tmpmat4[0] = frustumScale;
-    tmpmat4[5] = frustumScale * realScreenWidth / realScreenHeight;
-    tmpmat4[10] = (zNear + zFar) / (zNear - zFar);
-    tmpmat4[11] = 2.0f * zNear * zFar / (zNear - zFar);
-    tmpmat4[14] = zOffsetFromCamera;
-    world.perspectiveMatrix = glm::make_mat4(tmpmat4);
-    world.lightDirection = lightDirection;
+    if (perspective) {
+      tmpmat4[0] = frustumScale;
+      tmpmat4[5] = frustumScale * realScreenWidth / realScreenHeight;
+      tmpmat4[10] = (zNear + zFar) / (zNear - zFar);
+      tmpmat4[11] = 2.0f * zNear * zFar / (zNear - zFar);
+      tmpmat4[14] = zOffsetFromCamera;
+    }
+    else {
+      tmpmat4[0] = 1.0f;
+      tmpmat4[5] = 1.0f;
+      tmpmat4[10] = 1.0f;
+      tmpmat4[11] = 1.0f;
+      tmpmat4[15] = 1.0f;
+    }
+    uboWorldDetailsDynamic[worldDetailsIndex].perspectiveMatrix = glm::make_mat4(tmpmat4);
 
-    world.cameraOffset = cameraPosition;
-    world.cameraTransformation =
+
+    uboWorldDetailsDynamic[worldDetailsIndex].lightDirection = perspective ?
+      lightDirection : glm::vec3(0.0f, 0.0f, 0.0f);
+
+    uboWorldDetailsDynamic[worldDetailsIndex].cameraOffset = perspective ?
+      cameraPosition : glm::vec3(0.0f, 0.0f, 0.0f);
+
+    uboWorldDetailsDynamic[worldDetailsIndex].cameraTransformation = perspective ?
       glm::rotate(glm::mat4x4(1.0f), cameraRotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
       glm::rotate(glm::mat4x4(1.0f), cameraRotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), cameraRotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-
-    uint32_t worldDetailsSize = sizeof(UboWorld);
-
-    if (worldDetailsBuffers.size() == 0) {
-      worldDetailsBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
-      worldDetailsBufferMemories =
-        std::vector<VkDeviceMemory>(vkz_swapchain_image_count);
-
-      for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
-        vkz_create_buffer(&worldDetailsBuffers[i],
-          VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-          worldDetailsSize,
-          &worldDetailsBufferMemories[i],
-          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-      }
-    }
-
-    void* worldDetailsData;
-    vkMapMemory(vkz_logical_device,
-      worldDetailsBufferMemories[currentSwapchainImageIndex],
-      0, worldDetailsSize, 0, &worldDetailsData);
-    memcpy(worldDetailsData, &world, worldDetailsSize);
-    vkUnmapMemory(vkz_logical_device,
-      worldDetailsBufferMemories[currentSwapchainImageIndex]);
+      glm::rotate(glm::mat4x4(1.0f), cameraRotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) :
+      glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 
     UboLight light = {};
 
@@ -1226,23 +981,18 @@ namespace small3d {
     vkDestroyDescriptorSetLayout(vkz_logical_device,
       textureDescriptorSetLayout, NULL);
 
-    vkDestroyDescriptorSetLayout(vkz_logical_device,
-      orthoDescriptorSetLayout, NULL);
-
-    vkDestroyDescriptorSetLayout(vkz_logical_device,
-      textureOrthoDescriptorSetLayout, NULL);
-
     if (descriptorPoolCreated) {
       vkDestroyDescriptorPool(vkz_logical_device, descriptorPool, NULL);
-    }
-
-    if (orthoDescriptorPoolCreated) {
-      vkDestroyDescriptorPool(vkz_logical_device, orthoDescriptorPool, NULL);
     }
 
     if (uboModelPlacementDynamic) {
       alloc.deallocate(reinterpret_cast<char*>(uboModelPlacementDynamic),
         uboModelPlacementDynamicSize);
+    }
+
+    if (uboWorldDetailsDynamic) {
+      alloc.deallocate(reinterpret_cast<char*>(uboWorldDetailsDynamic),
+        uboWorldDetailsDynamicSize);
     }
 
     if (uboColourDynamic) {
@@ -1257,10 +1007,11 @@ namespace small3d {
           renderModelPlacementBuffersDynamicMemory[i]);
       }
 
-      if (i < worldDetailsBuffers.size()) {
-        vkz_destroy_buffer(worldDetailsBuffers[i],
-          worldDetailsBufferMemories[i]);
+      if (i < worldDetailsBuffersDynamic.size()) {
+        vkz_destroy_buffer(worldDetailsBuffersDynamic[i],
+          worldDetailsBuffersDynamicMemory[i]);
       }
+
       if (i < lightIntensityBuffers.size()) {
         vkz_destroy_buffer(lightIntensityBuffers[i],
           lightIntensityBufferMemories[i]);
@@ -1646,11 +1397,11 @@ namespace small3d {
 
     model.perspective = perspective;
 
-    if (perspective) {
+    
       positionNextModel(offset, rotation, modelPlacementMemIndex);
       model.placementMemIndex = modelPlacementMemIndex;
       ++modelPlacementMemIndex;
-    }
+    
 
     nextModelsToDraw.push_back(model);
 
@@ -1731,7 +1482,8 @@ namespace small3d {
     modelPlacementMemIndex = 0;
     colourMemIndex = 0;
 
-    setPerspectiveAndLight();
+    setPerspectiveAndLight(true);
+    setPerspectiveAndLight(false);
 
     // Updating object positioning 
     void* modelPlacementData;
@@ -1741,6 +1493,15 @@ namespace small3d {
     memcpy(modelPlacementData, uboModelPlacementDynamic, uboModelPlacementDynamicSize);
     vkUnmapMemory(vkz_logical_device,
       renderModelPlacementBuffersDynamicMemory[currentSwapchainImageIndex]);
+
+    // Updating world details
+    void* worldDetailsData;
+    vkMapMemory(vkz_logical_device,
+      worldDetailsBuffersDynamicMemory[currentSwapchainImageIndex],
+      0, uboWorldDetailsDynamicSize, 0, &worldDetailsData);
+    memcpy(worldDetailsData, uboWorldDetailsDynamic, uboWorldDetailsDynamicSize);
+    vkUnmapMemory(vkz_logical_device,
+      worldDetailsBuffersDynamicMemory[currentSwapchainImageIndex]);
 
     // Updating colour
     void* colourData;
@@ -1753,29 +1514,16 @@ namespace small3d {
 
     // All of the above is bound here.
     updateDescriptorSets();
-    updateOrthoDescriptorSets();
 
     vkz_begin_draw_command_buffer(&nextCommandBuffer);
 
     for (auto model : nextModelsToDraw) {
-      if (model.perspective) {
-
-        vkz_bind_pipeline_to_command_buffer(perspectivePipelineIndex,
-          &nextCommandBuffer);
-        bindBuffers(nextCommandBuffer, model);
-        recordDrawCommand(nextCommandBuffer,
-          vkz_pipeline_layout[perspectivePipelineIndex],
-          model, currentSwapchainImageIndex);
-      }
-      else {
-        vkz_bind_pipeline_to_command_buffer(orthographicPipelineIndex,
-          &nextCommandBuffer);
-        bindOrthoBuffers(nextCommandBuffer, model);
-        recordOrthoDrawCommand(nextCommandBuffer,
-          vkz_pipeline_layout[orthographicPipelineIndex],
-          model, currentSwapchainImageIndex);
-
-      }
+      vkz_bind_pipeline_to_command_buffer(perspectivePipelineIndex,
+        &nextCommandBuffer);
+      bindBuffers(nextCommandBuffer, model);
+      recordDrawCommand(nextCommandBuffer,
+        vkz_pipeline_layout[perspectivePipelineIndex],
+        model, currentSwapchainImageIndex, model.perspective);
     }
 
     vkz_end_draw_command_buffer(&nextCommandBuffer);

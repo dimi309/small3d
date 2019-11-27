@@ -42,7 +42,20 @@ namespace small3d
     VkImage image = VK_NULL_HANDLE;
     VkDeviceMemory imageMemory = VK_NULL_HANDLE;
     VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-    VkDescriptorSet orthoDescriptorSet = VK_NULL_HANDLE;
+  };
+
+  /**
+   * @brief World uniform buffer object, containing the perspective matrix,
+   *        light direction and camera transformation and offset. Used
+   *        internally
+   */
+  struct UboWorldDetails {
+    glm::mat4 perspectiveMatrix;
+    glm::vec3 lightDirection;
+    float padding1;
+    glm::mat4x4 cameraTransformation;
+    glm::vec3 cameraOffset;
+    float padding2[25];
   };
 
   /**
@@ -84,21 +97,34 @@ namespace small3d
     uint32_t maxObjectsPerPass;
 
     uint32_t perspectivePipelineIndex = 100;
-    uint32_t orthographicPipelineIndex = 100;
 
     uint32_t currentSwapchainImageIndex = 0;
 
     std::vector<VkBuffer> renderModelPlacementBuffersDynamic;
     std::vector<VkDeviceMemory> renderModelPlacementBuffersDynamicMemory;
 
-    std::vector<VkBuffer> worldDetailsBuffers;
-    std::vector<VkDeviceMemory> worldDetailsBufferMemories;
+    size_t dynamicModelPlacementAlignment = 0;
+    UboModelPlacement* uboModelPlacementDynamic = nullptr;
+    uint32_t modelPlacementMemIndex = 0;
+    size_t uboModelPlacementDynamicSize = 0;
+
+    std::vector<VkBuffer> worldDetailsBuffersDynamic;
+    std::vector<VkDeviceMemory> worldDetailsBuffersDynamicMemory;
+
+    size_t dynamicWorldDetailsAlignment = 0;
+    UboWorldDetails* uboWorldDetailsDynamic = nullptr;
+    size_t uboWorldDetailsDynamicSize = 0;
 
     std::vector<VkBuffer> lightIntensityBuffers;
     std::vector<VkDeviceMemory> lightIntensityBufferMemories;
 
     std::vector<VkBuffer> colourBuffersDynamic;
     std::vector<VkDeviceMemory> colourBuffersDynamicMemory;
+
+    size_t dynamicColourAlignment = 0;
+    UboColour* uboColourDynamic = nullptr;
+    uint32_t colourMemIndex = 0;
+    size_t uboColourDynamicSize = 0;
 
     VkSampler textureSampler;
 
@@ -131,33 +157,12 @@ namespace small3d
     static VkDescriptorSetLayout textureDescriptorSetLayout;
     static VkDescriptorSetLayout perspectiveLayouts[2];
 
-    static VkVertexInputBindingDescription orthobd[2];
-    static VkVertexInputAttributeDescription orthoad[2];
-
-    static VkDescriptorSetLayout orthoDescriptorSetLayout;
-    static VkDescriptorSet orthoDescriptorSet;
-    static VkDescriptorSetLayout textureOrthoDescriptorSetLayout;
-    static VkDescriptorSetLayout orthographicLayouts[2];
-
-    size_t dynamicModelPlacementAlignment = 0;
-    UboModelPlacement* uboModelPlacementDynamic = nullptr;
-    uint32_t modelPlacementMemIndex = 0;
-    size_t uboModelPlacementDynamicSize = 0;
-
-    size_t dynamicColourAlignment = 0;
-    UboColour* uboColourDynamic = nullptr;
-    uint32_t colourMemIndex = 0;
-    size_t uboColourDynamicSize = 0;
-
     const uint32_t worldDescBinding = 0;
     const uint32_t modelPlacementDescBinding = 1;
 
     const uint32_t colourDescBinding = 2;
     const uint32_t lightDescBinding = 3;
     const uint32_t textureDescBinding = 4;
-
-    const uint32_t textureDescBindingOrtho = 0;
-    const uint32_t colourDescBindingOrtho = 1;
 
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     static void framebufferSizeCallback(GLFWwindow* window, int width,
@@ -172,18 +177,8 @@ namespace small3d
     int bindBuffers(VkCommandBuffer commandBuffer, const Model& model);
     void recordDrawCommand(VkCommandBuffer commandBuffer,
       VkPipelineLayout pipelineLayout, const Model& model,
-      uint32_t swapchainImageIndex);
+      uint32_t swapchainImageIndex, bool perspective);
 
-    static int setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo*
-      inputStateCreateInfo);
-    static int setOrthoPipelineLayoutCallback(VkPipelineLayoutCreateInfo*
-      pipelineLayoutCreateInfo);
-
-    int bindOrthoBuffers(VkCommandBuffer commandBuffer,
-      const Model& model);
-    void recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
-      VkPipelineLayout pipelineLayout, const Model& model,
-      uint32_t swapchainImageIndex);
 
     void initVulkan();
 
@@ -191,19 +186,12 @@ namespace small3d
     bool descriptorPoolCreated = false;
     void createDescriptorPool();
 
-    VkDescriptorPool orthoDescriptorPool;
-    bool orthoDescriptorPoolCreated = false;
-    void createOrthoDescriptorPool();
-
     VkCommandBuffer nextCommandBuffer;
 
     std::vector<Model> garbageModels;
 
     void allocateDescriptorSets();
     void updateDescriptorSets();
-
-    void allocateOrthoDescriptorSets();
-    void updateOrthoDescriptorSets();
 
     void setColourBuffer(glm::vec4 colour, uint32_t memIndex);
 
@@ -222,7 +210,7 @@ namespace small3d
       const std::string shadersPath);
     void initWindow(int& width, int& height);
 
-    void setPerspectiveAndLight();
+    void setPerspectiveAndLight(bool perspective);
 
     // On Android and iOS, it is useful to be able to destroy and recreate the
     // renderer, so it is not provided only as a singleton for that platform.
@@ -404,9 +392,7 @@ namespace small3d
      * @brief Render a Model
      * @param model       The model
      * @param offset      The offset (position) where to draw the model
-     *                    (ignored in orthographic rendering)
      * @param rotation    Rotation (x, y, z)
-     *                    (ignored in orthographic rendering)
      * @param colour      The colour of the model
      * @param textureName The name of the texture to attach to the model
      *                    (optional). The texture has to have been generated
