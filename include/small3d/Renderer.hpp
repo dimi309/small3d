@@ -55,7 +55,7 @@ namespace small3d
     float padding1;
     glm::mat4x4 cameraTransformation;
     glm::vec3 cameraOffset;
-    float padding2[13];
+    float padding2[25];
   };
 
   /**
