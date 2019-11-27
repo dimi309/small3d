@@ -1636,27 +1636,9 @@ namespace small3d {
       model.textureName = textureName;
     }
     else {
-
-#if defined(__APPLE__) || defined(__ANDROID__)
-      // On MacOS, and some Android devices, setting the model colour
-      // corrupts the game's frames (some objects don't appear). This
-      // workaround converts colours to textures.
-      std::string texName = "col" + floatToStr(colour.r) +
-        floatToStr(colour.g) +
-        floatToStr(colour.b) + floatToStr(colour.a);
-      auto nameTexPair = textures.find(texName);
-      if (nameTexPair == textures.end()) {
-        Image t;
-        t.toColour(colour);
-        generateTexture(texName, t);
-      }
-      model.textureName = texName;
-      setColourBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), colourMemIndex);
-#else
       // If there is no texture, use the given colour
       setColourBuffer(colour, colourMemIndex);
       model.textureName = "blank";
-#endif
     }
 
     model.colourMemIndex = colourMemIndex;
