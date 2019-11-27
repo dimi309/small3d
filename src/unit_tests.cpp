@@ -146,45 +146,45 @@ int RendererTest() {
 
   double startSeconds = glfwGetTime();
 
-  Model rectangle;
-  renderer->createRectangle(rectangle, glm::vec3(-1.0f, 0.0f, 0.0f),
+  Model singleColourRect;
+  renderer->createRectangle(singleColourRect, glm::vec3(-1.0f, 0.0f, 0.0f),
     glm::vec3(-0.5f, -0.5f, 0.0f));
 
-  Model rect2;
+  Model texturedRect;
 
-  renderer->createRectangle(rect2, glm::vec3(0.0f, 0.5f, 0.0f),
+  renderer->createRectangle(texturedRect, glm::vec3(0.0f, 0.5f, 0.0f),
     glm::vec3(1.0f, -1.0f, 0.0f));
 
   renderer->generateTexture("small3dTexture", "small3d :)",
     glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
-  Model rect3;
+  Model textRect;
 
-  renderer->createRectangle(rect3, glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.5f, -0.5f, 0.0f));
+  renderer->createRectangle(textRect, glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.5f, -0.5f, 0.0f));
 
   while (glfwGetTime() - startSeconds < 3.0) {
     glfwPollEvents();
     renderer->clearScreen();
     
-    renderer->render(rectangle,
-      glm::vec3(0.0f, 0.0f, -2.0f),
+    renderer->render(singleColourRect,
+      glm::vec3(0.0f, 0.0f, 0.0f),
       glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), "", false);
 
-    renderer->render(rect2,
+    renderer->render(texturedRect,
       glm::vec3(0.0f, 0.0f, -2.0f),
       glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "cubeTexture", true);
 
     renderer->render(object2, "cubeTexture");
 
-    renderer->render(rect3, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+    renderer->render(textRect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
       glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", false);
 
     renderer->swapBuffers();
   }
   renderer->clearBuffers(object);
   renderer->clearBuffers(object2);
-  renderer->clearBuffers(rect2);
-  renderer->clearBuffers(rect3);
+  renderer->clearBuffers(texturedRect);
+  renderer->clearBuffers(textRect);
   renderer->deleteTexture("cubeTexture");
   glfwDestroyWindow(renderer->getWindow());
 
