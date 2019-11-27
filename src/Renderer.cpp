@@ -45,13 +45,6 @@ namespace small3d {
   VkDescriptorSetLayout Renderer::textureDescriptorSetLayout;
   VkDescriptorSetLayout Renderer::perspectiveLayouts[2];
 
-  VkVertexInputBindingDescription Renderer::orthobd[2];
-  VkVertexInputAttributeDescription Renderer::orthoad[2];
-  VkDescriptorSetLayout Renderer::orthoDescriptorSetLayout;
-  VkDescriptorSet Renderer::orthoDescriptorSet;
-  VkDescriptorSetLayout Renderer::textureOrthoDescriptorSetLayout;
-  VkDescriptorSetLayout Renderer::orthographicLayouts[2];
-
   int Renderer::realScreenWidth;
   int Renderer::realScreenHeight;
 
@@ -157,88 +150,12 @@ namespace small3d {
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
       pipelineLayout, 0, 2,
-      descriptorSets, 2, dynamicOffsets);
+      descriptorSets, 3, dynamicOffsets);
 
     vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(),
       1, 0, 0, 0);
   }
-
-  int Renderer::setOrthoInputStateCallback(VkPipelineVertexInputStateCreateInfo*
-    inputStateCreateInfo) {
-    memset(orthobd, 0, 2 * sizeof(VkVertexInputBindingDescription));
-
-    orthobd[0].binding = 0;
-    orthobd[0].stride = 4 * sizeof(float);
-
-    orthobd[1].binding = 1;
-    orthobd[1].stride = 2 * sizeof(float);
-
-    memset(orthoad, 0, 2 * sizeof(VkVertexInputAttributeDescription));
-
-    orthoad[0].binding = 0;
-    orthoad[0].location = 0;
-    orthoad[0].format = VK_FORMAT_R32G32B32A32_SFLOAT;
-    orthoad[0].offset = 0;
-
-    orthoad[1].binding = 1;
-    orthoad[1].location = 1;
-    orthoad[1].format = VK_FORMAT_R32G32_SFLOAT;
-    orthoad[1].offset = 0;
-
-    inputStateCreateInfo->vertexBindingDescriptionCount = 2;
-    inputStateCreateInfo->vertexAttributeDescriptionCount = 2;
-    inputStateCreateInfo->pVertexBindingDescriptions = orthobd;
-    inputStateCreateInfo->pVertexAttributeDescriptions = orthoad;
-
-    return 1;
-  }
-
-  int Renderer::setOrthoPipelineLayoutCallback(VkPipelineLayoutCreateInfo*
-    pipelineLayoutCreateInfo) {
-    orthographicLayouts[0] = orthoDescriptorSetLayout;
-    orthographicLayouts[1] = textureOrthoDescriptorSetLayout;
-    pipelineLayoutCreateInfo->setLayoutCount = 2;
-    pipelineLayoutCreateInfo->pSetLayouts = orthographicLayouts;
-    return 1;
-  }
-
-  int Renderer::bindOrthoBuffers(VkCommandBuffer commandBuffer,
-    const Model& model) {
-    VkBuffer vertexBuffers[2];
-    vertexBuffers[0] = model.positionBuffer;
-    vertexBuffers[1] = model.uvBuffer;
-    VkDeviceSize offsets[2];
-    offsets[0] = 0;
-    offsets[1] = 0;
-
-    // Vertex buffer
-    vkCmdBindVertexBuffers(commandBuffer, 0, 2, vertexBuffers, offsets);
-
-    // Index buffer
-    vkCmdBindIndexBuffer(commandBuffer, model.indexBuffer,
-      0, VK_INDEX_TYPE_UINT32);
-    return 1;
-  }
-
-  void Renderer::recordOrthoDrawCommand(VkCommandBuffer commandBuffer,
-    VkPipelineLayout pipelineLayout, const Model& model,
-    uint32_t swapchainImageIndex) {
-
-    uint32_t dynamicColourOffset = model.colourMemIndex *
-      static_cast<uint32_t>(dynamicColourAlignment);
-
-    const VkDescriptorSet descriptorSets[2] = { orthoDescriptorSet,
-      getTextureHandle(model.textureName).orthoDescriptorSet };
-
-    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-      pipelineLayout, 0, 2,
-      descriptorSets, 1, &dynamicColourOffset);
-
-    vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(),
-      1, 0, 0, 0);
-
-  }
-
+  
   void Renderer::initVulkan() {
 #if defined(__ANDROID__)
     const char* exts[2];
@@ -328,9 +245,6 @@ namespace small3d {
     createDescriptorPool();
     allocateDescriptorSets();
 
-    createOrthoDescriptorPool();
-    allocateOrthoDescriptorSets();
-
   }
 
   void Renderer::createDescriptorPool() {
@@ -370,36 +284,6 @@ namespace small3d {
       else {
         descriptorPoolCreated = true;
         LOGDEBUG("Created descriptor pool.");
-      }
-    }
-  }
-
-  void Renderer::createOrthoDescriptorPool() {
-    if (!orthoDescriptorPoolCreated) {
-
-      VkDescriptorPoolSize ps[2];
-      memset(ps, 0, 2 * sizeof(VkDescriptorPoolSize));
-
-      ps[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-      ps[0].descriptorCount = vkz_swapchain_image_count * 2 * maxObjectsPerPass;
-
-      ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-      ps[1].descriptorCount = vkz_swapchain_image_count * 2 * maxObjectsPerPass;
-
-      VkDescriptorPoolCreateInfo dpci;
-      memset(&dpci, 0, sizeof(VkDescriptorPoolCreateInfo));
-      dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-      dpci.poolSizeCount = 2;
-      dpci.pPoolSizes = ps;
-      dpci.maxSets = vkz_swapchain_image_count;
-
-      if (vkCreateDescriptorPool(vkz_logical_device, &dpci, NULL,
-        &orthoDescriptorPool) != VK_SUCCESS) {
-        LOGDEBUG("Failed to create orthographic shaders descriptor pool.");
-      }
-      else {
-        orthoDescriptorPoolCreated = true;
-        LOGDEBUG("Created orthographic shaders descriptor pool.");
       }
     }
   }
@@ -498,7 +382,7 @@ namespace small3d {
     VkDescriptorBufferInfo dbiWorld = {};
     dbiWorld.buffer = worldDetailsBuffersDynamic[currentSwapchainImageIndex];
     dbiWorld.offset = 0;
-    dbiWorld.range = sizeof(UboWorld);
+    dbiWorld.range = sizeof(UboWorldDetails);
 
     VkDescriptorBufferInfo dbiModelPlacement = {};
 
@@ -562,93 +446,6 @@ namespace small3d {
     wds[3].pTexelBufferView = NULL;
 
     vkUpdateDescriptorSets(vkz_logical_device, 4, &wds[0], 0, NULL);
-  }
-
-  void Renderer::allocateOrthoDescriptorSets() {
-
-    VkDescriptorSetLayoutBinding dslb = {};
-
-    // simpleFragmentShader - uboColour
-    dslb.binding = 1;
-    dslb.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    dslb.descriptorCount = 1;
-    dslb.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    dslb.pImmutableSamplers = NULL;
-
-    VkDescriptorSetLayoutCreateInfo dslci = {};
-
-    dslci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    dslci.bindingCount = 1;
-    dslci.pBindings = &dslb;
-
-    if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
-      &orthoDescriptorSetLayout) != VK_SUCCESS) {
-      throw std::runtime_error("Failed to create orthographic descriptor"
-        " set layout.");
-    }
-    else {
-      LOGDEBUG("Created orthographic descriptor set layout.");
-    }
-
-    VkDescriptorSetAllocateInfo dsai = {};
-
-    dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-    dsai.descriptorPool = orthoDescriptorPool;
-    dsai.descriptorSetCount = 1;
-    dsai.pSetLayouts = &orthoDescriptorSetLayout;
-
-    orthoDescriptorSet = {};
-
-    if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
-      &orthoDescriptorSet) != VK_SUCCESS) {
-      std::string errortxt = "Failed to allocate orthographic pool descriptor"
-        " sets.";
-      throw std::runtime_error(errortxt);
-    }
-
-    // simpleFragmentShader - textureImage
-    dslb = {};
-    dslb.binding = textureDescBindingOrtho;
-    dslb.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    dslb.descriptorCount = 1;
-    dslb.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    dslb.pImmutableSamplers = NULL;
-
-    dslci = {};
-    dslci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    dslci.bindingCount = 1;
-    dslci.pBindings = &dslb;
-
-    if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
-      &textureOrthoDescriptorSetLayout) != VK_SUCCESS) {
-      throw std::runtime_error("Failed to create orthographic texture"
-        " descriptor set layout.");
-    }
-    else {
-      LOGDEBUG("Created orthographic texture descriptor set layout.");
-    }
-  }
-
-  void Renderer::updateOrthoDescriptorSets() {
-
-    VkDescriptorBufferInfo dbiColour = {};
-    dbiColour.buffer = colourBuffersDynamic[currentSwapchainImageIndex];
-    dbiColour.offset = 0;
-    dbiColour.range = sizeof(UboColour);
-
-    VkWriteDescriptorSet wds = {};
-    wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds.dstSet = orthoDescriptorSet;
-    wds.dstBinding = colourDescBindingOrtho;
-    wds.dstArrayElement = 0;
-    wds.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    wds.descriptorCount = 1;
-    wds.pBufferInfo = &dbiColour;
-    wds.pImageInfo = NULL;
-    wds.pTexelBufferView = NULL;
-
-    vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
-
   }
 
   void Renderer::setColourBuffer(glm::vec4 colour, uint32_t memIndex) {
@@ -817,49 +614,6 @@ namespace small3d {
 
     vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
 
-    if (!found) {
-
-      // Allocate orthographic texture descriptor set
-
-      VkDescriptorSetAllocateInfo dsai = {};
-
-      dsai = {};
-      dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-      dsai.descriptorPool = descriptorPool;
-      dsai.descriptorSetCount = 1;
-      dsai.pSetLayouts = &textureOrthoDescriptorSetLayout;
-
-      textureHandle.orthoDescriptorSet = {};
-
-      if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
-        &textureHandle.orthoDescriptorSet) != VK_SUCCESS) {
-        std::string errortxt = "Failed to allocate orthographic"
-          " texture descriptor set.";
-        throw std::runtime_error(errortxt);
-      }
-    }
-
-    // Write orthographic texture descriptor set
-
-    diiTexture = {};
-    diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    diiTexture.imageView = textureHandle.imageView;
-    diiTexture.sampler = textureSampler;
-
-    wds = {};
-
-    wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds.dstSet = textureHandle.orthoDescriptorSet;
-    wds.dstBinding = textureDescBindingOrtho;
-    wds.dstArrayElement = 0;
-    wds.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    wds.descriptorCount = 1;
-    wds.pBufferInfo = NULL;
-    wds.pImageInfo = &diiTexture;
-    wds.pTexelBufferView = NULL;
-
-    vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
-
     textures.insert(make_pair(name, textureHandle));
 
     return textureHandle;
@@ -913,11 +667,6 @@ namespace small3d {
     std::string orthoFragmentShaderPath = this->shadersPath +
       "simpleFragmentShader.spv";
 
-    vkz_create_pipeline(orthoVertexShaderPath.c_str(),
-      orthoFragmentShaderPath.c_str(),
-      setOrthoInputStateCallback, setOrthoPipelineLayoutCallback,
-      &orthographicPipelineIndex);
-
     vkz_create_sync_objects();
 
     // Allocate memory & vulkan dynamic buffers for object positioning
@@ -949,7 +698,7 @@ namespace small3d {
     }
 
     // Allocate memory & vulkan dynamic buffers for world details
-    dynamicWorldDetailsAlignment = sizeof(UboWorld);
+    dynamicWorldDetailsAlignment = sizeof(UboWorldDetails);
     if (minAlignment > 0) {
       dynamicWorldDetailsAlignment = (dynamicWorldDetailsAlignment +
         minAlignment - 1) & ~(minAlignment - 1);
@@ -959,7 +708,7 @@ namespace small3d {
     uboWorldDetailsDynamicSize = 2 * dynamicWorldDetailsAlignment;
     mem = alloc.allocate(uboWorldDetailsDynamicSize);
     std::fill(mem, &mem[uboWorldDetailsDynamicSize], 0);
-    uboWorldDetailsDynamic = (UboWorld*)mem;
+    uboWorldDetailsDynamic = (UboWorldDetails*)mem;
     worldDetailsBuffersDynamic.resize(vkz_swapchain_image_count);
     worldDetailsBuffersDynamicMemory.resize(vkz_swapchain_image_count);
 
@@ -971,7 +720,6 @@ namespace small3d {
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
     }
-
 
     // Allocate memory & vulkan dynamic buffer for model colour
     dynamicColourAlignment = sizeof(UboColour);
@@ -1233,18 +981,8 @@ namespace small3d {
     vkDestroyDescriptorSetLayout(vkz_logical_device,
       textureDescriptorSetLayout, NULL);
 
-    vkDestroyDescriptorSetLayout(vkz_logical_device,
-      orthoDescriptorSetLayout, NULL);
-
-    vkDestroyDescriptorSetLayout(vkz_logical_device,
-      textureOrthoDescriptorSetLayout, NULL);
-
     if (descriptorPoolCreated) {
       vkDestroyDescriptorPool(vkz_logical_device, descriptorPool, NULL);
-    }
-
-    if (orthoDescriptorPoolCreated) {
-      vkDestroyDescriptorPool(vkz_logical_device, orthoDescriptorPool, NULL);
     }
 
     if (uboModelPlacementDynamic) {
@@ -1659,11 +1397,11 @@ namespace small3d {
 
     model.perspective = perspective;
 
-    if (perspective) {
+    
       positionNextModel(offset, rotation, modelPlacementMemIndex);
       model.placementMemIndex = modelPlacementMemIndex;
       ++modelPlacementMemIndex;
-    }
+    
 
     nextModelsToDraw.push_back(model);
 
@@ -1776,7 +1514,6 @@ namespace small3d {
 
     // All of the above is bound here.
     updateDescriptorSets();
-    updateOrthoDescriptorSets();
 
     vkz_begin_draw_command_buffer(&nextCommandBuffer);
 
