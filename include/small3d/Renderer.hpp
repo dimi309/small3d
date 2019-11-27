@@ -59,7 +59,7 @@ namespace small3d
    */
   struct UboColour {
     glm::vec4 modelColour;
-    float padding[4];
+    float padding[12];
   };
 
   /**
