@@ -169,7 +169,7 @@ int RendererTest() {
     renderer->clearScreen();
     
     renderer->render(rectangle,
-      glm::vec3(0.0f, 0.0f, -1.0f),
+      glm::vec3(0.0f, 0.0f, -2.0f),
       glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), "", false);
 
     renderer->render(rect2,
@@ -178,7 +178,7 @@ int RendererTest() {
 
     renderer->render(object2, "cubeTexture");
 
-    renderer->render(rect3, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+    renderer->render(rect3, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f),
       glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", false);
 
     renderer->swapBuffers();
