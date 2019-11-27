@@ -1097,7 +1097,7 @@ namespace small3d {
 
     light.lightIntensity = lightIntensity;
 
-    uint32_t lightIntensitySize = sizeof(float);
+    uint32_t lightIntensitySize = sizeof(UboLight);
 
     if (lightIntensityBuffers.size() == 0) {
       lightIntensityBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
