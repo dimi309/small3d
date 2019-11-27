@@ -29,20 +29,6 @@ namespace small3d {
   }
 
   /**
-   * @brief World uniform buffer object, containing the perspective matrix,
-   *        light direction and camera transformation and offset. Used
-   *        internally
-   */
-  struct UboWorld {
-    glm::mat4 perspectiveMatrix;
-    glm::vec3 lightDirection;
-    float padding1;
-    glm::mat4x4 cameraTransformation;
-    glm::vec3 cameraOffset;
-    float padding2[13];
-  };
-
-  /**
    * @brief Light uniform buffer object. Used internally
    */
   struct UboLight {
@@ -151,16 +137,20 @@ namespace small3d {
 
   void Renderer::recordDrawCommand(VkCommandBuffer commandBuffer,
     VkPipelineLayout pipelineLayout, const Model& model,
-    uint32_t swapchainImageIndex) {
+    uint32_t swapchainImageIndex, bool perspective) {
 
     uint32_t dynamicModelPlacementOffset = model.placementMemIndex *
       static_cast<uint32_t>(dynamicModelPlacementAlignment);
 
+    uint32_t dynamicWorldDetailsOffset = perspective ? 0 : 1 *
+      static_cast<uint32_t>(dynamicWorldDetailsAlignment);
+
     uint32_t dynamicColourOffset = model.colourMemIndex *
       static_cast<uint32_t>(dynamicColourAlignment);
 
-    const uint32_t dynamicOffsets[2] = { dynamicModelPlacementOffset,
-           dynamicColourOffset };
+    const uint32_t dynamicOffsets[3] = { dynamicWorldDetailsOffset,
+      dynamicModelPlacementOffset,
+      dynamicColourOffset };
 
     const VkDescriptorSet descriptorSets[2] =
     { descriptorSet, getTextureHandle(model.textureName).descriptorSet };
@@ -350,7 +340,7 @@ namespace small3d {
 
       memset(ps, 0, 5 * sizeof(VkDescriptorPoolSize));
 
-      ps[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      ps[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
       ps[0].descriptorCount = vkz_swapchain_image_count;
 
       ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
@@ -421,7 +411,7 @@ namespace small3d {
 
     // perspectiveMatrixLightedShader - uboWorld
     dslb[0].binding = worldDescBinding;
-    dslb[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    dslb[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     dslb[0].descriptorCount = 1;
     dslb[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     dslb[0].pImmutableSamplers = NULL;
@@ -506,7 +496,7 @@ namespace small3d {
   void Renderer::updateDescriptorSets() {
 
     VkDescriptorBufferInfo dbiWorld = {};
-    dbiWorld.buffer = worldDetailsBuffers[currentSwapchainImageIndex];
+    dbiWorld.buffer = worldDetailsBuffersDynamic[currentSwapchainImageIndex];
     dbiWorld.offset = 0;
     dbiWorld.range = sizeof(UboWorld);
 
@@ -535,7 +525,7 @@ namespace small3d {
     wds[0].dstSet = descriptorSet;
     wds[0].dstBinding = worldDescBinding;
     wds[0].dstArrayElement = 0;
-    wds[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    wds[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     wds[0].descriptorCount = 1;
     wds[0].pBufferInfo = &dbiWorld;
     wds[0].pImageInfo = NULL;
@@ -930,7 +920,7 @@ namespace small3d {
 
     vkz_create_sync_objects();
 
-    // Allocate memory & vulkan dynamic buffer for object positioning
+    // Allocate memory & vulkan dynamic buffers for object positioning
     VkPhysicalDeviceProperties pdp = {};
     vkGetPhysicalDeviceProperties(vkz_physical_device, &pdp);
     VkDeviceSize minAlignment = pdp.limits.minUniformBufferOffsetAlignment;
@@ -958,7 +948,32 @@ namespace small3d {
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
     }
 
-    // Allocate memory & vulkan dynamic buffer for colour
+    // Allocate memory & vulkan dynamic buffers for world details
+    dynamicWorldDetailsAlignment = sizeof(UboWorld);
+    if (minAlignment > 0) {
+      dynamicWorldDetailsAlignment = (dynamicWorldDetailsAlignment +
+        minAlignment - 1) & ~(minAlignment - 1);
+    }
+
+    // 2x, one for perspective, the other for orthographic rendering
+    uboWorldDetailsDynamicSize = 2 * dynamicWorldDetailsAlignment;
+    mem = alloc.allocate(uboWorldDetailsDynamicSize);
+    std::fill(mem, &mem[uboWorldDetailsDynamicSize], 0);
+    uboWorldDetailsDynamic = (UboWorld*)mem;
+    worldDetailsBuffersDynamic.resize(vkz_swapchain_image_count);
+    worldDetailsBuffersDynamicMemory.resize(vkz_swapchain_image_count);
+
+    for (size_t i = 0; i < vkz_swapchain_image_count; ++i) {
+      vkz_create_buffer(&worldDetailsBuffersDynamic[i],
+        VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+        (uint32_t)uboWorldDetailsDynamicSize,
+        &worldDetailsBuffersDynamicMemory[i],
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+    }
+
+
+    // Allocate memory & vulkan dynamic buffer for model colour
     dynamicColourAlignment = sizeof(UboColour);
     if (minAlignment > 0) {
       dynamicColourAlignment = (dynamicColourAlignment + minAlignment - 1) &
@@ -1048,50 +1063,42 @@ namespace small3d {
 #endif
   }
 
-  void Renderer::setPerspectiveAndLight() {
+  void Renderer::setPerspectiveAndLight(bool perspective) {
 
-    UboWorld world = {};
+    uint32_t worldDetailsIndex = perspective ? 0 : 1;
+
+    uboWorldDetailsDynamic[worldDetailsIndex] = {};
 
     float tmpmat4[16];
     memset(&tmpmat4, 0, 16 * sizeof(float));
-    tmpmat4[0] = frustumScale;
-    tmpmat4[5] = frustumScale * realScreenWidth / realScreenHeight;
-    tmpmat4[10] = (zNear + zFar) / (zNear - zFar);
-    tmpmat4[11] = 2.0f * zNear * zFar / (zNear - zFar);
-    tmpmat4[14] = zOffsetFromCamera;
-    world.perspectiveMatrix = glm::make_mat4(tmpmat4);
-    world.lightDirection = lightDirection;
+    if (perspective) {
+      tmpmat4[0] = frustumScale;
+      tmpmat4[5] = frustumScale * realScreenWidth / realScreenHeight;
+      tmpmat4[10] = (zNear + zFar) / (zNear - zFar);
+      tmpmat4[11] = 2.0f * zNear * zFar / (zNear - zFar);
+      tmpmat4[14] = zOffsetFromCamera;
+    }
+    else {
+      tmpmat4[0] = 1.0f;
+      tmpmat4[5] = 1.0f;
+      tmpmat4[10] = 1.0f;
+      tmpmat4[11] = 1.0f;
+      tmpmat4[15] = 1.0f;
+    }
+    uboWorldDetailsDynamic[worldDetailsIndex].perspectiveMatrix = glm::make_mat4(tmpmat4);
 
-    world.cameraOffset = cameraPosition;
-    world.cameraTransformation =
+
+    uboWorldDetailsDynamic[worldDetailsIndex].lightDirection = perspective ?
+      lightDirection : glm::vec3(0.0f, 0.0f, 0.0f);
+
+    uboWorldDetailsDynamic[worldDetailsIndex].cameraOffset = perspective ?
+      cameraPosition : glm::vec3(0.0f, 0.0f, 0.0f);
+
+    uboWorldDetailsDynamic[worldDetailsIndex].cameraTransformation = perspective ?
       glm::rotate(glm::mat4x4(1.0f), cameraRotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
       glm::rotate(glm::mat4x4(1.0f), cameraRotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), cameraRotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-
-    uint32_t worldDetailsSize = sizeof(UboWorld);
-
-    if (worldDetailsBuffers.size() == 0) {
-      worldDetailsBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
-      worldDetailsBufferMemories =
-        std::vector<VkDeviceMemory>(vkz_swapchain_image_count);
-
-      for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
-        vkz_create_buffer(&worldDetailsBuffers[i],
-          VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-          worldDetailsSize,
-          &worldDetailsBufferMemories[i],
-          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-      }
-    }
-
-    void* worldDetailsData;
-    vkMapMemory(vkz_logical_device,
-      worldDetailsBufferMemories[currentSwapchainImageIndex],
-      0, worldDetailsSize, 0, &worldDetailsData);
-    memcpy(worldDetailsData, &world, worldDetailsSize);
-    vkUnmapMemory(vkz_logical_device,
-      worldDetailsBufferMemories[currentSwapchainImageIndex]);
+      glm::rotate(glm::mat4x4(1.0f), cameraRotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) :
+      glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 
     UboLight light = {};
 
@@ -1245,6 +1252,11 @@ namespace small3d {
         uboModelPlacementDynamicSize);
     }
 
+    if (uboWorldDetailsDynamic) {
+      alloc.deallocate(reinterpret_cast<char*>(uboWorldDetailsDynamic),
+        uboWorldDetailsDynamicSize);
+    }
+
     if (uboColourDynamic) {
       alloc.deallocate(reinterpret_cast<char*>(uboColourDynamic),
         uboColourDynamicSize);
@@ -1257,10 +1269,11 @@ namespace small3d {
           renderModelPlacementBuffersDynamicMemory[i]);
       }
 
-      if (i < worldDetailsBuffers.size()) {
-        vkz_destroy_buffer(worldDetailsBuffers[i],
-          worldDetailsBufferMemories[i]);
+      if (i < worldDetailsBuffersDynamic.size()) {
+        vkz_destroy_buffer(worldDetailsBuffersDynamic[i],
+          worldDetailsBuffersDynamicMemory[i]);
       }
+
       if (i < lightIntensityBuffers.size()) {
         vkz_destroy_buffer(lightIntensityBuffers[i],
           lightIntensityBufferMemories[i]);
@@ -1731,7 +1744,8 @@ namespace small3d {
     modelPlacementMemIndex = 0;
     colourMemIndex = 0;
 
-    setPerspectiveAndLight();
+    setPerspectiveAndLight(true);
+    setPerspectiveAndLight(false);
 
     // Updating object positioning 
     void* modelPlacementData;
@@ -1741,6 +1755,15 @@ namespace small3d {
     memcpy(modelPlacementData, uboModelPlacementDynamic, uboModelPlacementDynamicSize);
     vkUnmapMemory(vkz_logical_device,
       renderModelPlacementBuffersDynamicMemory[currentSwapchainImageIndex]);
+
+    // Updating world details
+    void* worldDetailsData;
+    vkMapMemory(vkz_logical_device,
+      worldDetailsBuffersDynamicMemory[currentSwapchainImageIndex],
+      0, uboWorldDetailsDynamicSize, 0, &worldDetailsData);
+    memcpy(worldDetailsData, uboWorldDetailsDynamic, uboWorldDetailsDynamicSize);
+    vkUnmapMemory(vkz_logical_device,
+      worldDetailsBuffersDynamicMemory[currentSwapchainImageIndex]);
 
     // Updating colour
     void* colourData;
@@ -1758,24 +1781,12 @@ namespace small3d {
     vkz_begin_draw_command_buffer(&nextCommandBuffer);
 
     for (auto model : nextModelsToDraw) {
-      if (model.perspective) {
-
-        vkz_bind_pipeline_to_command_buffer(perspectivePipelineIndex,
-          &nextCommandBuffer);
-        bindBuffers(nextCommandBuffer, model);
-        recordDrawCommand(nextCommandBuffer,
-          vkz_pipeline_layout[perspectivePipelineIndex],
-          model, currentSwapchainImageIndex);
-      }
-      else {
-        vkz_bind_pipeline_to_command_buffer(orthographicPipelineIndex,
-          &nextCommandBuffer);
-        bindOrthoBuffers(nextCommandBuffer, model);
-        recordOrthoDrawCommand(nextCommandBuffer,
-          vkz_pipeline_layout[orthographicPipelineIndex],
-          model, currentSwapchainImageIndex);
-
-      }
+      vkz_bind_pipeline_to_command_buffer(perspectivePipelineIndex,
+        &nextCommandBuffer);
+      bindBuffers(nextCommandBuffer, model);
+      recordDrawCommand(nextCommandBuffer,
+        vkz_pipeline_layout[perspectivePipelineIndex],
+        model, currentSwapchainImageIndex, model.perspective);
     }
 
     vkz_end_draw_command_buffer(&nextCommandBuffer);
