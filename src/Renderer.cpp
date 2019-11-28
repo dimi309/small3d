@@ -817,23 +817,12 @@ namespace small3d {
 
     uboWorldDetailsDynamic[worldDetailsIndex] = {};
 
-    float tmpmat4[16];
-    memset(&tmpmat4, 0, 16 * sizeof(float));
-    if (perspective) {
-      tmpmat4[0] = frustumScale;
-      tmpmat4[5] = frustumScale * realScreenWidth / realScreenHeight;
-      tmpmat4[10] = (zNear + zFar) / (zNear - zFar);
-      tmpmat4[11] = 2.0f * zNear * zFar / (zNear - zFar);
-      tmpmat4[14] = zOffsetFromCamera;
-    }
-    else {
-      tmpmat4[0] = 1.0f;
-      tmpmat4[5] = 1.0f;
-      tmpmat4[10] = 1.0f;
-      tmpmat4[11] = 1.0f;
-      tmpmat4[15] = 1.0f;
-    }
-    uboWorldDetailsDynamic[worldDetailsIndex].perspectiveMatrix = glm::make_mat4(tmpmat4);
+    uboWorldDetailsDynamic[worldDetailsIndex].perspectiveMatrix = perspective ?
+      glm::mat4x4(frustumScale, 0, 0, 0,
+        0, frustumScale * realScreenWidth / realScreenHeight, 0, 0, 
+        0, 0, (zNear + zFar) / (zNear - zFar), 2.0f * zNear * zFar / (zNear - zFar), 
+        0, 0, zOffsetFromCamera, 0) :
+      glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 
 
     uboWorldDetailsDynamic[worldDetailsIndex].lightDirection = perspective ?
