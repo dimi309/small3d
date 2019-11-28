@@ -94,7 +94,7 @@ namespace small3d
 
     std::string shadersPath = "";
 
-    uint32_t maxObjectsPerPass;
+    uint32_t maxObjectsPerPass = 0;
 
     uint32_t perspectivePipelineIndex = 100;
 
@@ -126,7 +126,7 @@ namespace small3d
     uint32_t colourMemIndex = 0;
     size_t uboColourDynamicSize = 0;
 
-    VkSampler textureSampler;
+    VkSampler textureSampler = VK_NULL_HANDLE;
 
     std::vector<VkImageView> boundTextureViews;
 
@@ -182,11 +182,11 @@ namespace small3d
 
     void initVulkan();
 
-    VkDescriptorPool descriptorPool;
+    VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
     bool descriptorPoolCreated = false;
     void createDescriptorPool();
 
-    VkCommandBuffer nextCommandBuffer;
+    VkCommandBuffer nextCommandBuffer = VK_NULL_HANDLE;
 
     std::vector<Model> garbageModels;
 
@@ -210,7 +210,9 @@ namespace small3d
       const std::string shadersPath);
     void initWindow(int& width, int& height);
 
-    void setPerspectiveAndLight(bool perspective);
+    void setWorldDetails(bool perspective);
+    void setLightIntensity();
+
 
     // On Android and iOS, it is useful to be able to destroy and recreate the
     // renderer, so it is not provided only as a singleton for that platform.
@@ -253,17 +255,17 @@ namespace small3d
     /**
      * @brief Vector, indicating the direction of the light in the scene.
      */
-    glm::vec3 lightDirection;
+    glm::vec3 lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
 
     /**
      * @brief The camera position in world space.
      */
-    glm::vec3 cameraPosition;
+    glm::vec3 cameraPosition = glm::vec3(0, 0, 0);
 
     /**
      * @brief The camera rotation (around the x, y and z axes)
      */
-    glm::vec3 cameraRotation;
+    glm::vec3 cameraRotation = glm::vec3(0, 0, 0);
 
     /**
      * @brief Get the real screen width

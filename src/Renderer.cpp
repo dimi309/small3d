@@ -155,7 +155,7 @@ namespace small3d {
     vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(),
       1, 0, 0, 0);
   }
-  
+
   void Renderer::initVulkan() {
 #if defined(__ANDROID__)
     const char* exts[2];
@@ -811,7 +811,7 @@ namespace small3d {
 #endif
   }
 
-  void Renderer::setPerspectiveAndLight(bool perspective) {
+  void Renderer::setWorldDetails(bool perspective) {
 
     uint32_t worldDetailsIndex = perspective ? 0 : 1;
 
@@ -819,11 +819,10 @@ namespace small3d {
 
     uboWorldDetailsDynamic[worldDetailsIndex].perspectiveMatrix = perspective ?
       glm::mat4x4(frustumScale, 0, 0, 0,
-        0, frustumScale * realScreenWidth / realScreenHeight, 0, 0, 
-        0, 0, (zNear + zFar) / (zNear - zFar), 2.0f * zNear * zFar / (zNear - zFar), 
+        0, frustumScale * realScreenWidth / realScreenHeight, 0, 0,
+        0, 0, (zNear + zFar) / (zNear - zFar), 2.0f * zNear * zFar / (zNear - zFar),
         0, 0, zOffsetFromCamera, 0) :
       glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-
 
     uboWorldDetailsDynamic[worldDetailsIndex].lightDirection = perspective ?
       lightDirection : glm::vec3(0.0f, 0.0f, 0.0f);
@@ -837,6 +836,9 @@ namespace small3d {
       glm::rotate(glm::mat4x4(1.0f), cameraRotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) :
       glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 
+  }
+
+  void Renderer::setLightIntensity() {
     UboLight light = {};
 
     light.lightIntensity = lightIntensity;
@@ -865,16 +867,12 @@ namespace small3d {
     memcpy(lightIntensityData, &light, lightIntensitySize);
     vkUnmapMemory(vkz_logical_device,
       lightIntensityBufferMemories[currentSwapchainImageIndex]);
-
   }
 
   Renderer::Renderer() {
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     window = 0;
 #endif
-    lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
-    cameraPosition = glm::vec3(0, 0, 0);
-    cameraRotation = glm::vec3(0, 0, 0);
 
   }
 
@@ -1035,7 +1033,7 @@ namespace small3d {
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
   GLFWwindow* Renderer::getWindow() const {
     return window;
-  }
+}
 #endif
 
   void Renderer::generateTexture(const std::string& name, const Image& image) {
@@ -1386,11 +1384,11 @@ namespace small3d {
 
     model.perspective = perspective;
 
-    
-      positionNextModel(offset, rotation, modelPlacementMemIndex);
-      model.placementMemIndex = modelPlacementMemIndex;
-      ++modelPlacementMemIndex;
-    
+
+    positionNextModel(offset, rotation, modelPlacementMemIndex);
+    model.placementMemIndex = modelPlacementMemIndex;
+    ++modelPlacementMemIndex;
+
 
     nextModelsToDraw.push_back(model);
 
@@ -1471,8 +1469,9 @@ namespace small3d {
     modelPlacementMemIndex = 0;
     colourMemIndex = 0;
 
-    setPerspectiveAndLight(true);
-    setPerspectiveAndLight(false);
+    setWorldDetails(true);
+    setWorldDetails(false);
+    setLightIntensity();
 
     // Updating object positioning 
     void* modelPlacementData;
