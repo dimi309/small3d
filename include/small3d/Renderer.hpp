@@ -64,7 +64,7 @@ namespace small3d
   struct UboModelPlacement {
     glm::mat4x4 modelTransformation;
     glm::vec3 modelOffset;
-    float padding[13];
+    float padding[45];
   };
 
   /**
