@@ -33,7 +33,7 @@ namespace small3d {
    */
   struct UboLight {
     float lightIntensity;
-    float padding[7];
+    float padding[63];
   };
 
   std::vector<Model> Renderer::nextModelsToDraw;
