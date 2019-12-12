@@ -42,8 +42,8 @@ namespace small3d
 
     static int realScreenWidth, realScreenHeight;
 
-    uint32_t perspectiveProgram = 0;
-    uint32_t orthographicProgram = 0;
+    uint32_t shaderProgram = 0;
+   
     uint32_t vao = 0;
 
     uint32_t renderOrientation = 0;
@@ -91,9 +91,9 @@ namespace small3d
     void initWindow(int& width, int& height,
       const std::string& windowTitle = "");
 
-    void setPerspectiveAndLight();
+    void setWorldDetails();
 
-    void bindTexture(const std::string& name, bool perspective);
+    void bindTexture(const std::string& name);
 
     Renderer(const std::string& windowTitle, const int width, const int height,
       const float frustumScale, const float zNear, const float zFar,

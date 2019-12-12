@@ -158,28 +158,28 @@ namespace small3d {
     const glm::vec3& rotation) const {
     // Rotation
 
-    GLint xRotationMatrixUniform = glGetUniformLocation(perspectiveProgram,
+    GLint xRotationMatrixUniform = glGetUniformLocation(shaderProgram,
       "xRotationMatrix");
     glUniformMatrix4fv(xRotationMatrixUniform, 1, GL_TRUE,
       glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.x,
         glm::vec3(1.0f, 0.0f, 0.0f)))
     );
 
-    GLint yRotationMatrixUniform = glGetUniformLocation(perspectiveProgram,
+    GLint yRotationMatrixUniform = glGetUniformLocation(shaderProgram,
       "yRotationMatrix");
     glUniformMatrix4fv(yRotationMatrixUniform, 1, GL_TRUE,
       glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.y,
         glm::vec3(0.0f, 1.0f, 0.0f)))
     );
 
-    GLint zRotationMatrixUniform = glGetUniformLocation(perspectiveProgram,
+    GLint zRotationMatrixUniform = glGetUniformLocation(shaderProgram,
       "zRotationMatrix");
     glUniformMatrix4fv(zRotationMatrixUniform, 1, GL_TRUE,
       glm::value_ptr(glm::rotate(glm::mat4x4(1.0f), rotation.z,
         glm::vec3(0.0f, 0.0f, 1.0f)))
     );
 
-    GLint offsetUniform = glGetUniformLocation(perspectiveProgram, "offset");
+    GLint offsetUniform = glGetUniformLocation(shaderProgram, "offset");
     glUniform3fv(offsetUniform, 1, glm::value_ptr(offset));
   }
 
@@ -188,11 +188,11 @@ namespace small3d {
     // Camera rotation
 
     GLint xCameraRotationMatrixUniform =
-      glGetUniformLocation(perspectiveProgram, "xCameraRotationMatrix");
+      glGetUniformLocation(shaderProgram, "xCameraRotationMatrix");
     GLint yCameraRotationMatrixUniform =
-      glGetUniformLocation(perspectiveProgram, "yCameraRotationMatrix");
+      glGetUniformLocation(shaderProgram, "yCameraRotationMatrix");
     GLint zCameraRotationMatrixUniform =
-      glGetUniformLocation(perspectiveProgram, "zCameraRotationMatrix");
+      glGetUniformLocation(shaderProgram, "zCameraRotationMatrix");
 
     glUniformMatrix4fv(xCameraRotationMatrixUniform, 1, GL_TRUE,
       glm::value_ptr(glm::rotate(glm::mat4x4(1.0f),
@@ -211,7 +211,7 @@ namespace small3d {
     );
 
     // Camera position
-    GLint cameraPositionUniform = glGetUniformLocation(perspectiveProgram,
+    GLint cameraPositionUniform = glGetUniformLocation(shaderProgram,
       "cameraPosition");
     glUniform3fv(cameraPositionUniform, 1, glm::value_ptr(cameraPosition));
   }
@@ -292,29 +292,29 @@ namespace small3d {
     GLuint fragmentShader = compileShader(shadersPath + "textureShader.frag",
       GL_FRAGMENT_SHADER);
 
-    perspectiveProgram = glCreateProgram();
-    glAttachShader(perspectiveProgram, vertexShader);
-    glAttachShader(perspectiveProgram, fragmentShader);
+    shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
 
-    glLinkProgram(perspectiveProgram);
+    glLinkProgram(shaderProgram);
 
     GLint status;
-    glGetProgramiv(perspectiveProgram, GL_LINK_STATUS, &status);
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &status);
     if (status == GL_FALSE) {
       throw std::runtime_error("Failed to link program:\n" +
-        this->getProgramInfoLog(perspectiveProgram));
+        this->getProgramInfoLog(shaderProgram));
     }
     else {
       LOGDEBUG("Linked main rendering program successfully");
 
-      glUseProgram(perspectiveProgram);
+      glUseProgram(shaderProgram);
 
-      setPerspectiveAndLight();
+      setWorldDetails();
 
       glUseProgram(0);
     }
-    glDetachShader(perspectiveProgram, vertexShader);
-    glDetachShader(perspectiveProgram, fragmentShader);
+    glDetachShader(shaderProgram, vertexShader);
+    glDetachShader(shaderProgram, fragmentShader);
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
@@ -324,34 +324,7 @@ namespace small3d {
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClearDepth(1.0f);
-
-    // Program (with shaders) for orthographic rendering for text
-
-    GLuint simpleVertexShader = compileShader(shadersPath +
-      "simpleShader.vert",
-      GL_VERTEX_SHADER);
-    GLuint simpleFragmentShader = compileShader(shadersPath +
-      "simpleShader.frag",
-      GL_FRAGMENT_SHADER);
-
-    orthographicProgram = glCreateProgram();
-    glAttachShader(orthographicProgram, simpleVertexShader);
-    glAttachShader(orthographicProgram, simpleFragmentShader);
-
-    glLinkProgram(orthographicProgram);
-
-    glGetProgramiv(orthographicProgram, GL_LINK_STATUS, &status);
-    if (status == GL_FALSE) {
-      throw std::runtime_error("Failed to link program:\n" +
-        this->getProgramInfoLog(orthographicProgram));
-    }
-    else {
-      LOGDEBUG("Linked orthographic rendering program successfully");
-    }
-    glDetachShader(orthographicProgram, simpleVertexShader);
-    glDetachShader(orthographicProgram, simpleFragmentShader);
-    glDeleteShader(simpleVertexShader);
-    glDeleteShader(simpleFragmentShader);
+    
     glUseProgram(0);
   }
 
@@ -420,10 +393,10 @@ namespace small3d {
 
   }
 
-  void Renderer::setPerspectiveAndLight() {
+  void Renderer::setWorldDetails() {
 
     GLint perspectiveMatrixUniform =
-      glGetUniformLocation(perspectiveProgram, "perspectiveMatrix");
+      glGetUniformLocation(shaderProgram, "perspectiveMatrix");
 
     float perspectiveMatrix[16];
     memset(perspectiveMatrix, 0, sizeof(float) * 16);
@@ -436,18 +409,18 @@ namespace small3d {
     glUniformMatrix4fv(perspectiveMatrixUniform, 1, GL_FALSE,
       perspectiveMatrix);
 
-    GLint lightDirectionUniform = glGetUniformLocation(perspectiveProgram,
+    GLint lightDirectionUniform = glGetUniformLocation(shaderProgram,
       "lightDirection");
     glUniform3fv(lightDirectionUniform, 1,
       glm::value_ptr(lightDirection));
 
-    GLint lightIntensityUniform = glGetUniformLocation(perspectiveProgram,
+    GLint lightIntensityUniform = glGetUniformLocation(shaderProgram,
       "lightIntensity");
     glUniform1f(lightIntensityUniform, lightIntensity);
 
   }
 
-  void Renderer::bindTexture(const std::string& name, bool perspective) {
+  void Renderer::bindTexture(const std::string& name) {
     GLuint textureHandle = getTextureHandle(name);
 
     if (textureHandle == 0) {
@@ -455,23 +428,19 @@ namespace small3d {
         " has not been generated");
     }
 
-    if (perspective)
-      glActiveTexture(GL_TEXTURE0);
-    else
-      glActiveTexture(GL_TEXTURE1);
+    glActiveTexture(GL_TEXTURE0);
 
     glBindTexture(GL_TEXTURE_2D, textureHandle);
-    GLint loc = glGetUniformLocation(perspective ? perspectiveProgram : orthographicProgram, "textureImage");
+    GLint loc = glGetUniformLocation(shaderProgram, "textureImage");
 
-    glUniform1i(loc, perspective ? 0 : 1);
+    glUniform1i(loc, 0);
 
   }
 
 
   Renderer::Renderer() {
     window = 0;
-    perspectiveProgram = 0;
-    orthographicProgram = 0;
+    shaderProgram = 0;
     noShaders = false;
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
     cameraPosition = glm::vec3(0, 0, 0);
@@ -487,8 +456,8 @@ namespace small3d {
     const uint32_t maxObjectsPerPass) {
 
     window = 0;
-    perspectiveProgram = 0;
-    orthographicProgram = 0;
+    shaderProgram = 0;
+    
     noShaders = false;
     lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
     cameraPosition = glm::vec3(0, 0, 0);
@@ -547,12 +516,8 @@ namespace small3d {
 
     }
 
-    if (orthographicProgram != 0) {
-      glDeleteProgram(orthographicProgram);
-    }
-
-    if (perspectiveProgram != 0) {
-      glDeleteProgram(perspectiveProgram);
+    if (shaderProgram != 0) {
+      glDeleteProgram(shaderProgram);
     }
 
     glfwTerminate();
@@ -706,7 +671,7 @@ namespace small3d {
     const std::string& textureName,
     const bool perspective) {
 
-    glUseProgram(perspective ? perspectiveProgram : orthographicProgram);
+    glUseProgram(shaderProgram);
 
     bool alreadyInGPU = model.positionBufferObjectId != 0;
 
@@ -752,8 +717,7 @@ namespace small3d {
     }
 
     // Find the colour uniform
-    GLint colourUniform = glGetUniformLocation(perspective ? perspectiveProgram :
-      orthographicProgram, "colour");
+    GLint colourUniform = glGetUniformLocation(shaderProgram, "modelColour");
 
     if (textureName != "") {
 
@@ -761,7 +725,7 @@ namespace small3d {
       glUniform4fv(colourUniform, 1,
         glm::value_ptr(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)));
 
-      bindTexture(textureName, true);
+      bindTexture(textureName);
 
       // UV Coordinates
 
@@ -785,7 +749,7 @@ namespace small3d {
 
     if (perspective) {
 
-      setPerspectiveAndLight();
+      setWorldDetails();
 
       positionNextObject(offset, rotation);
 

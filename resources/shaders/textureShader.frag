@@ -3,19 +3,22 @@
 
 layout(location = 0) smooth in float cosAngIncidence;
 layout(location = 1) in vec2 textureCoords;
-uniform sampler2D textureImage;
-uniform vec4 colour;
+
+uniform vec4 modelColour;
+
 uniform float lightIntensity;
+
+uniform sampler2D textureImage;
 
 layout(location = 0) out vec4 outputColour;
 
 void main() {
-  if (colour != vec4(0, 0, 0, 0)) {
+  if (modelColour != vec4(0, 0, 0, 0)) {
     if (lightIntensity == -1) {
-      outputColour = colour;
+      outputColour = modelColour;
     }
     else {
-      outputColour = vec4((cosAngIncidence * colour).rgb, colour.a);
+      outputColour = vec4((cosAngIncidence * modelColour).rgb, modelColour.a);
     }
   }
   else {
