@@ -109,12 +109,14 @@ namespace small3d
     glm::vec3 lightDirection;
 
     /**
-     * @brief The camera position in world space.
+     * @brief The camera position in world space. Ignored for orthographic
+     *        rendering.
      */
     glm::vec3 cameraPosition;
 
     /**
-     * @brief The camera rotation (around the x, y and z axes)
+     * @brief The camera rotation (around the x, y and z axes). Ignored for
+     *        orthographic rendering.
      */
     glm::vec3 cameraRotation;
 

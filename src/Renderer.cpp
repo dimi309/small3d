@@ -360,8 +360,10 @@ namespace small3d {
 
     GLint lightDirectionUniform = glGetUniformLocation(shaderProgram,
       "lightDirection");
+    glm::vec3 lightDirectionOut = perspective ?
+      lightDirection : glm::vec3(0.0f, 0.0f, 0.0f);
     glUniform3fv(lightDirectionUniform, 1,
-      glm::value_ptr(lightDirection));
+      glm::value_ptr(lightDirectionOut));
 
     GLint lightIntensityUniform = glGetUniformLocation(shaderProgram,
       "lightIntensity");
@@ -381,7 +383,10 @@ namespace small3d {
 
     GLint cameraOffsetUniform = glGetUniformLocation(shaderProgram,
       "cameraOffset");
-    glUniform3fv(cameraOffsetUniform, 1, glm::value_ptr(cameraPosition));
+
+    glm::vec3 cameraPositionOut = perspective ?
+      cameraPosition : glm::vec3(0.0f, 0.0f, 0.0f);
+    glUniform3fv(cameraOffsetUniform, 1, glm::value_ptr(cameraPositionOut));
 
   }
 
