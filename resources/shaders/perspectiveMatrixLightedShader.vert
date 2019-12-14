@@ -13,8 +13,6 @@ uniform vec3 cameraOffset;
 uniform mat4 modelTransformation;
 uniform vec3 modelOffset;
 
-uniform vec3 cameraPosition;
-
 layout(location = 0) smooth out float cosAngIncidence;
 layout(location = 1) out vec2 textureCoords;
 

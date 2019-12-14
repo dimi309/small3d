@@ -77,9 +77,9 @@ namespace small3d
     void initOpenGL();
     void checkForOpenGLErrors(const std::string& when, const bool abort) const;
 
-    void positionNextObject(const glm::vec3& offset,
+    void positionNextModel(const glm::vec3& offset,
       const glm::vec3& rotation) const;
-    void positionCamera() const;
+
     uint32_t getTextureHandle(const std::string& name) const;
     uint32_t generateTexture(const std::string& name, const float* data,
       const unsigned long width,
@@ -91,7 +91,7 @@ namespace small3d
     void initWindow(int& width, int& height,
       const std::string& windowTitle = "");
 
-    void setWorldDetails();
+    void setWorldDetails(bool perspective);
 
     void bindTexture(const std::string& name);
 
@@ -225,9 +225,7 @@ namespace small3d
      * @brief Render a Model
      * @param model       The model
      * @param offset      The offset (position) where to draw the model
-     *                    (ignored in orthographic rendering)
      * @param rotation    Rotation (x, y, z)
-     *                    (ignored in orthographic rendering)
      * @param colour      The colour of the model
      * @param textureName The name of the texture to attach to the model
      *                    (optional). The texture has to have been generated
