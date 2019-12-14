@@ -251,19 +251,20 @@ namespace small3d
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
   public:
 #endif
-
     /**
      * @brief Vector, indicating the direction of the light in the scene.
      */
     glm::vec3 lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
 
     /**
-     * @brief The camera position in world space.
+     * @brief The camera position in world space. Ignored for orthographic
+     *        rendering.
      */
     glm::vec3 cameraPosition = glm::vec3(0, 0, 0);
 
     /**
-     * @brief The camera rotation (around the x, y and z axes)
+     * @brief The camera rotation (around the x, y and z axes). Ignored for
+     *        orthographic rendering.
      */
     glm::vec3 cameraRotation = glm::vec3(0, 0, 0);
 
