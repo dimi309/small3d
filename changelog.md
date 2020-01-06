@@ -1,5 +1,9 @@
 /*! \page changelog changes per version
 
+v1.706
+
+- The slowdown on MacOS in full screen mode has now been corrected.
+
 v1.705 2019-11-19
 
 - Window resizing is now supported.
