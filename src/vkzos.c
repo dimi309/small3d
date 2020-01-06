@@ -879,7 +879,10 @@ int vkz_create_swapchain(int with_image_sampler) {
   }
 
   uint32_t ic = vkz_swapchain_support_details.capabilities.minImageCount;
-  if (vkz_swapchain_support_details.capabilities.maxImageCount >= 2) {
+  if (vkz_swapchain_support_details.capabilities.maxImageCount >= 3) {
+    ic = 3;
+  }
+  else if (vkz_swapchain_support_details.capabilities.maxImageCount >= 2) {
     ic = 2;
   }
 
