@@ -780,15 +780,10 @@ namespace small3d {
       monitor = glfwGetPrimaryMonitor();
 
       const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-      // Full screen on a mac is very slow, hence this hack
-#if defined(__APPLE__) && !defined(SMALL3D_IOS)
-      width = mode->width * 0.8;
-      height = mode->height * 0.8;
-      monitor = nullptr; // back to windowed mode
-#else
+
       width = mode->width;
       height = mode->height;
-#endif
+
       LOGINFO("Detected screen width " + intToStr(width) + " and height " +
         intToStr(height));
     }
