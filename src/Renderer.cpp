@@ -1398,14 +1398,15 @@ namespace small3d {
 
   void Renderer::render(Model& model, const std::string& textureName,
     const bool perspective) {
-    this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
+    this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		 glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName, perspective);
   }
 
   void Renderer::render(Model& model, const glm::vec4& colour,
     const bool perspective) {
-    this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), colour,
-      "", perspective);
+    this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+		 colour, "", perspective);
   }
 
   void Renderer::render(SceneObject& sceneObject,
