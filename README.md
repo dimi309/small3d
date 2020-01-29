@@ -148,6 +148,7 @@ directory:
 		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 	elseif(WIN32)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+		set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
 	elseif(APPLE)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
 	elseif(UNIX)
