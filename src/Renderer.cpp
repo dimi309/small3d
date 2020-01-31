@@ -517,7 +517,7 @@ namespace small3d {
     FT_Error error;
 
     if (idFacePair == fontFaces.end()) {
-      std::string faceFullPath = fontPath;
+      std::string faceFullPath = getBasePath() + fontPath;
       LOGDEBUG("Loading font from " + faceFullPath);
       error = FT_New_Face(library, faceFullPath.c_str(), 0, &face);
       if (error != 0) {

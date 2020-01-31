@@ -9,6 +9,7 @@
 #include "Image.hpp"
 #include <stdexcept>
 #include <cstring>
+#include "BasePath.hpp"
 
 namespace small3d {
 
@@ -36,10 +37,13 @@ namespace small3d {
   void Image::loadFromFile(const std::string fileLocation) {
     // function developed based on example at
     // http://zarb.org/~gc/html/libpng.html
-    FILE *fp = fopen(fileLocation.c_str(), "rb");
+
+    std::string fullPath = getBasePath() + fileLocation;
+    
+    FILE *fp = fopen(fullPath.c_str(), "rb");
 
     if (!fp) {
-      throw std::runtime_error("Could not open file " + fileLocation);
+      throw std::runtime_error("Could not open file " + fullPath);
     }
 
     png_infop pngInformation = nullptr;
@@ -53,7 +57,7 @@ namespace small3d {
 
     if (png_sig_cmp(header, 0, 8)) {
       throw std::runtime_error(
-        "File " + fileLocation
+        "File " + fullPath
         + " is not recognised as a PNG file.");
     }
 
