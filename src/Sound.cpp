@@ -14,6 +14,7 @@
 #include <cstring>
 #include <vorbis/vorbisfile.h>
 #include <GLFW/glfw3.h>
+#include "BasePath.hpp"
 
 #define WORD_SIZE 2
 #define PORTAUDIO_SAMPLE_FORMAT paInt16
@@ -117,19 +118,21 @@ namespace small3d {
   }
 
   void Sound::load(const std::string soundFilePath) {
+
+    std::string fullPath = getBasePath() + soundFilePath;
     
     if (!noOutputDevice) {
       
       OggVorbis_File vorbisFile;
       
-      FILE *fp = fopen((soundFilePath).c_str(), "rb");
+      FILE *fp = fopen((fullPath).c_str(), "rb");
       
       if (!fp) {
-        throw std::runtime_error("Could not open file " + soundFilePath);
+        throw std::runtime_error("Could not open file " + fullPath);
       }
       
       if (ov_open_callbacks(fp, &vorbisFile, NULL, 0, OV_CALLBACKS_NOCLOSE) < 0) {
-        throw std::runtime_error("Could not load sound from file " + soundFilePath);
+        throw std::runtime_error("Could not load sound from file " + fullPath);
       }
       
       vorbis_info *vi = ov_info(&vorbisFile, -1);

@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include "GetTokens.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include "BasePath.hpp"
 
 namespace small3d {
 
@@ -33,7 +34,8 @@ namespace small3d {
       throw std::runtime_error("Illegal attempt to reload bounding boxes. "
         "Please use another object.");
     }
-    std::ifstream file(fileLocation.c_str());
+    std::string fullPath = getBasePath() + fileLocation;
+    std::ifstream file(fullPath.c_str());
     std::string line;
     if (file.is_open()) {
       while (getline(file, line)) {

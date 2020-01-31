@@ -1,4 +1,4 @@
-file(GLOB SOURCE_FILES *.cpp)
+file(GLOB SOURCE_FILES *.*pp)
 list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/unit_tests.cpp)
 file(GLOB HEADER_FILES ${CMAKE_SOURCE_DIR}/include/small3d/*.hpp)
 

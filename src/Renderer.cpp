@@ -13,6 +13,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "BasePath.hpp"
+
 namespace small3d {
 
   static void error_callback(int error, const char* description)
@@ -42,7 +44,8 @@ namespace small3d {
     const {
     initLogger();
     std::string shaderSource = "";
-    std::ifstream file(fileLocation.c_str());
+    std::string fullPath = getBasePath() + fileLocation;
+    std::ifstream file(fullPath.c_str());
     std::string line;
     if (file.is_open()) {
       while (std::getline(file, line)) {

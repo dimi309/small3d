@@ -12,6 +12,7 @@
 #include <memory>
 #include "GetTokens.hpp"
 #include "Model.hpp"
+#include "BasePath.hpp"
 
 namespace small3d {
 
@@ -195,7 +196,8 @@ namespace small3d {
   }
 
   Model::Model(const std::string fileLocation) {
-    std::ifstream file(fileLocation.c_str());
+    std::string fullPath = getBasePath() + fileLocation;
+    std::ifstream file(fullPath.c_str());
     std::string line;
     if (file.is_open()) {
       clear();
