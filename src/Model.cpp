@@ -12,6 +12,7 @@
 #include <memory>
 #include "GetTokens.hpp"
 #include "Model.hpp"
+#include "BasePath.hpp"
 
 #ifdef SMALL3D_IOS
 #include "interop.h"
@@ -240,7 +241,8 @@ namespace small3d {
         std::ifstream file((basePath + fileLocation).c_str());
         
 #else
-        std::ifstream file(fileLocation.c_str());
+	std::string fullPath = getBasePath() + fileLocation;
+        std::ifstream file(fullPath.c_str());
 #endif
         
         if (file.is_open()) {

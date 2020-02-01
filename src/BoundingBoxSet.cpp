@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include "GetTokens.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include "BasePath.hpp"
 
 #if defined(__ANDROID__)
 #include "vkzos.h"
@@ -37,7 +38,7 @@ namespace small3d {
       basePath += "/";
       this->loadFromFile(basePath + fileLocation);
 #else
-      this->loadFromFile(fileLocation);
+      this->loadFromFile(getBasePath() + fileLocation);
 #endif
       
     }

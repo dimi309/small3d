@@ -15,6 +15,7 @@ extern "C" {
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "BasePath.hpp"
 #include <cstring>
 
 #ifdef SMALL3D_IOS
@@ -625,12 +626,12 @@ namespace small3d {
     realScreenWidth = width;
     realScreenHeight = height;
 
-    this->shadersPath = shadersPath;
-
 #ifdef SMALL3D_IOS
     std::string basePath = get_base_path();
     basePath += "/";
-    this->shadersPath = basePath + this->shadersPath;
+    this->shadersPath = basePath + shadersPath;
+#else
+    this->shadersPath = getBasePath() + shadersPath;
 #endif
 
     this->initWindow(realScreenWidth, realScreenHeight);
@@ -1047,11 +1048,13 @@ namespace small3d {
     FT_Error error;
 
     if (idFacePair == fontFaces.end()) {
-      std::string faceFullPath = fontPath;
+      std::string faceFullPath;
 #ifdef SMALL3D_IOS
       std::string basePath = get_base_path();
       basePath += "/";
-      faceFullPath = basePath + faceFullPath;
+      faceFullPath = basePath + fontPath;
+#else
+      faceFullPath = getBasePath() + fontPath; 
 #endif
 
       LOGDEBUG("Loading font from " + faceFullPath);
