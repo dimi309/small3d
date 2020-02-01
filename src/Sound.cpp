@@ -21,6 +21,8 @@
 #include <GLFW/glfw3.h>
 #endif
 
+#include "BasePath.hpp"
+
 #ifdef SMALL3D_IOS
 #include "interop.h"
 #endif
@@ -258,7 +260,7 @@ namespace small3d {
     basePath += "/";
     this->load(basePath + soundFilePath);
 #else
-    this->load(soundFilePath);
+    this->load(getBasePath() + soundFilePath);
 #endif
   }
 

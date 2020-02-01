@@ -9,6 +9,7 @@
 #include "Image.hpp"
 #include <stdexcept>
 #include <cstring>
+#include "BasePath.hpp"
 
 #ifdef __ANDROID__
 #include "vkzos.h"
@@ -32,7 +33,7 @@ namespace small3d {
       basePath += "/";
       this->loadFromFile(basePath + fileLocation);
 #else
-      this->loadFromFile(fileLocation);
+      this->loadFromFile(getBasePath() + fileLocation);
 #endif
     }
   }
