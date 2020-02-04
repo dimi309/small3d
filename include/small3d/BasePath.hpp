@@ -11,8 +11,8 @@
 
 /**
  * @brief Helper function that returns the path of the directory where the
- *        executable is located. It returns "" in all cases appart from when running
- *        on MacOS / iOS.
+ *        executable is located. It returns "" in all cases apart from when 
+ *        running on MacOS / iOS.
  */
 
 std::string getBasePath();
