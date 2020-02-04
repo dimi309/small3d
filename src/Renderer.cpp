@@ -626,13 +626,7 @@ namespace small3d {
     realScreenWidth = width;
     realScreenHeight = height;
 
-#ifdef SMALL3D_IOS
-    std::string basePath = get_base_path();
-    basePath += "/";
-    this->shadersPath = basePath + shadersPath;
-#else
     this->shadersPath = getBasePath() + shadersPath;
-#endif
 
     this->initWindow(realScreenWidth, realScreenHeight);
 
@@ -1049,13 +1043,8 @@ namespace small3d {
 
     if (idFacePair == fontFaces.end()) {
       std::string faceFullPath;
-#ifdef SMALL3D_IOS
-      std::string basePath = get_base_path();
-      basePath += "/";
-      faceFullPath = basePath + fontPath;
-#else
+
       faceFullPath = getBasePath() + fontPath; 
-#endif
 
       LOGDEBUG("Loading font from " + faceFullPath);
 #ifdef __ANDROID__
