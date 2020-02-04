@@ -14,10 +14,6 @@
 #include "Model.hpp"
 #include "BasePath.hpp"
 
-#ifdef SMALL3D_IOS
-#include "interop.h"
-#endif
-
 #ifdef __ANDROID__
 #include "vkzos.h"
 #include <streambuf>
@@ -234,17 +230,10 @@ namespace small3d {
       clear();
       while (std::getline(in, line)) {
 #else
-
-#ifdef SMALL3D_IOS
-        std::string basePath = get_base_path();
-        basePath += "/";
-        std::ifstream file((basePath + fileLocation).c_str());
-        
-#else
-	std::string fullPath = getBasePath() + fileLocation;
+        std::string fullPath = getBasePath() + fileLocation;
+  
         std::ifstream file(fullPath.c_str());
-#endif
-        
+
         if (file.is_open()) {
           clear();
           while (getline(file, line)) {

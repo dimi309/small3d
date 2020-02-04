@@ -23,10 +23,6 @@
 
 #include "BasePath.hpp"
 
-#ifdef SMALL3D_IOS
-#include "interop.h"
-#endif
-
 #define WORD_SIZE 2
 #define PORTAUDIO_SAMPLE_FORMAT paInt16
 
@@ -255,13 +251,9 @@ namespace small3d {
   }
   
   Sound::Sound(const std::string soundFilePath) : Sound() {
-#ifdef SMALL3D_IOS
-    std::string basePath = get_base_path();
-    basePath += "/";
-    this->load(basePath + soundFilePath);
-#else
-    this->load(getBasePath() + soundFilePath);
-#endif
+
+  this->load(getBasePath() + soundFilePath);
+    
   }
 
   Sound::~Sound() {

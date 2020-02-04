@@ -15,10 +15,6 @@
 #include "vkzos.h"
 #endif
 
-#ifdef SMALL3D_IOS
-#include "interop.h"
-#endif
-
 namespace small3d {
 
   Image::Image(const std::string fileLocation) : imageData() {
@@ -28,13 +24,7 @@ namespace small3d {
     imageDataSize=0;
 
     if (fileLocation != "") {
-#ifdef SMALL3D_IOS
-      std::string basePath = get_base_path();
-      basePath += "/";
-      this->loadFromFile(basePath + fileLocation);
-#else
       this->loadFromFile(getBasePath() + fileLocation);
-#endif
     }
   }
 
