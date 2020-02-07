@@ -164,9 +164,9 @@ namespace small3d {
       "modelTransformation");
 
     glm::mat4x4 modelTranformation = 
-      glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, -1.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(-1.0f, 0.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, -1.0f));
+      glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
     
     glUniformMatrix4fv(modelTransformationUniformLocation, 1, GL_FALSE,
       glm::value_ptr(modelTranformation));
@@ -376,9 +376,9 @@ namespace small3d {
       "cameraTransformation");
 
     glm::mat4x4 cameraTransformation = perspective ?
-      glm::rotate(glm::mat4x4(1.0f), cameraRotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), cameraRotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), cameraRotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) :
+      glm::rotate(glm::mat4x4(1.0f), -cameraRotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), -cameraRotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), -cameraRotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) :
       glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 
     glUniformMatrix4fv(cameraTransformationUniform, 1, GL_FALSE,
