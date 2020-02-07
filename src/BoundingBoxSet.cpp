@@ -153,10 +153,10 @@ namespace small3d {
       glm::rotate(
         glm::rotate(
           glm::rotate(glm::mat4x4(1.0f), -thisRotation.y,
-            glm::vec3(0.0f, -1.0f, 0.0f)),
+            glm::vec3(0.0f, 1.0f, 0.0f)),
           -thisRotation.x,
-          glm::vec3(-1.0f, 0.0f, 0.0f)), -thisRotation.z,
-        glm::vec3(0.0f, 0.0f, -1.0f)
+          glm::vec3(1.0f, 0.0f, 0.0f)), -thisRotation.z,
+        glm::vec3(0.0f, 0.0f, 1.0f)
       );
 
     glm::vec4 pointInBoxSpace = glm::vec4(point, 1.0f) -
