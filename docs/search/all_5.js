@@ -1,6 +1,7 @@
 var searchData=
 [
   ['generatetexture',['generateTexture',['../classsmall3d_1_1_renderer.html#aa3fc446b4ee64fbb831aa8f08a54dbdc',1,'small3d::Renderer::generateTexture(const std::string &amp;name, const Image &amp;image)'],['../classsmall3d_1_1_renderer.html#a071ed4cfc38f7553d2e16a058ebd992b',1,'small3d::Renderer::generateTexture(const std::string &amp;name, const std::string &amp;text, const glm::vec3 &amp;colour, const int fontSize=48, const std::string &amp;fontPath=&quot;resources/fonts/CrusoeText/CrusoeText-Regular.ttf&quot;, const bool replace=true)']]],
+  ['getbasepath',['getBasePath',['../_base_path_8hpp.html#add32e1431a57d5c1fcbf8b5fc9c6ffa4',1,'BasePath.cpp']]],
   ['getbytesize',['getByteSize',['../classsmall3d_1_1_image.html#a2ca91e211b1f2eb978def755cb1821f3',1,'small3d::Image']]],
   ['getdata',['getData',['../classsmall3d_1_1_image.html#ab26bc22464edb7aefbcd4a2b95d788a2',1,'small3d::Image']]],
   ['getheight',['getHeight',['../classsmall3d_1_1_image.html#adf097899bb8212b43a6e620ff0d15007',1,'small3d::Image']]],
