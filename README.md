@@ -1,5 +1,8 @@
 # small3d
 
+[Source Code](https://github.com/dimi309/small3d) [API Documentation](https://dimi309.github.io/small3d)
+
+
 ## Introduction
 
 This is a free, open source, minimalistic 3D framework for the programmer who 

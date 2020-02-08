@@ -894,10 +894,9 @@ EXCLUDE_PATTERNS       =
 # exclude all test directories use the pattern */test/*
 
 EXCLUDE_SYMBOLS        = VulkanImage \
-			 UboOrientation \
+			 UboModelPlacement \
 			 UboColour \
-			 UboWorld \
-			 UboCamera \
+			 UboWorldDetails \
 		       	 UboLight \
 			 pipeline_system_struct \
 			 swapchain_support_struct
