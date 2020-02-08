@@ -1,7 +1,8 @@
 REM For this to work, set the %NDK% variable to your ndk path. It should look like
 REM C:\Users\me\AppData\Local\Android\Sdk\ndk\20.0.5594570 for example. Also, the
 REM script needs to run in an environment with MinGW set up and no settings for
-REM Visual Studio.
+REM Visual Studio. Finally, the %depspath% environment variable has to be set
+REM to point to the deps directory inside the small3d project.
 
 mkdir include
 mkdir lib
