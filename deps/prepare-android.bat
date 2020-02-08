@@ -17,10 +17,10 @@ set CMAKE_DEFINITIONS=-DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain
 
 mkdir lib\%%A
 
-7z x libpng-1.6.34.tar.gz
+7z x libpng-1.6.37.tar.gz
 if %errorlevel% neq 0 exit /b %errorlevel%
-7z x libpng-1.6.34.tar
-cd libpng-1.6.34
+7z x libpng-1.6.37.tar
+cd libpng-1.6.37
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF  %CMAKE_DEFINITIONS%
@@ -30,8 +30,8 @@ copy ..\*.h ..\..\include /y
 copy pnglibconf.h ..\..\include /y
 copy libpng.a ..\..\lib\%%A
 cd ..\..\
-rmdir /Q /S libpng-1.6.34
-del libpng-1.6.34.tar
+rmdir /Q /S libpng-1.6.37
+del libpng-1.6.37.tar
 del pax_global_header
 
 7z x ogg-1.3.3.tar.gz
