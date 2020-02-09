@@ -11,7 +11,6 @@ glm, png, zlib, ogg, vorbis, portaudio, freetype, bzip) and relying on
 C++ to do the rest. It helps you by providing you with cross-platform rendering
 functionality based on Vulkan (many thanks to the [Vulkan Tutorial](https://vulkan-tutorial.com/) 
 and Sascha Willems' excellent [Vulkan examples and demos](https://github.com/SaschaWillems/Vulkan)). 
-You can also find the OpenGL edition of the framework online.
 
 small3d can render Wavefront models, animate them as frames, map textures on 
 them, provide some basic lighting (Gouraud shading) and also render images and
@@ -28,13 +27,28 @@ All small3d dependencies, apart from the Vulkan SDK, are distributed together
 with its source code. They can be built by executing a single script (see 
 below).
 
-The instructions and example below are about building and using small3d on a PC 
+## small3d with OpenGL
+
+small3d started out as an OpenGL-based project. The OpenGL edition of the
+framework is [still maintained](https://github.com/dimi309/small3d/tree/opengl33), 
+with an API identical to that of the Vulkan edition so that a game that has been
+compiled with one can easily switch to the other.
+
+## small3d on mobile
+
+The instructions and example below describe building and using small3d on a PC 
 (Windows, Linux or MacOS). As far as mobile devices are concerned, the sample 
-game, Avoid the Bug has been ported to both Android and iOS and the corresponding
-projects can be downloaded from my GitHub profile. Also, I am providing the scripts 
-to build the required libraries for mobile devices  (*deps/prepare-android.bat* for 
-Android and *deps/prepare-ios.sh* for iOS) even though they have already been 
-built and included in the sample projects.
+game, [Avoid the Bug](https://github.com/dimi309/avoidthebug) has been ported to
+both [Android](https://github.com/dimi309/avoidthebug-android) and 
+[iOS](https://github.com/dimi309/avoidthebug-ios). I use these projects as a basis
+for mobile development, rather than provide a prebuilt mobile small3d library. They
+contain the small3d source files (unchanged, I sync back and forth), prebuilt
+dependencies (vorbis, ogg, freetype etc.) and the required CMakeLists file. 
+The scripts to build the dependencies for mobile devices are provided in the main
+small3d repository (*deps/prepare-android.bat* for Android and 
+*deps/prepare-ios.sh* for iOS). Note that, while with the desktop edition of small3d
+I use GLFW for windowing functionalities and I/O, on mobile I access the native
+infrastructure directly.
 
 ## Building
 
