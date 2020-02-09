@@ -38,30 +38,28 @@ if(WIN32)
 endif(WIN32)
 
 # Unit testing
-if(BUILD_UNIT_TESTS)
-  add_executable(unittests unit_tests.cpp)
 
-  target_include_directories(unittests PUBLIC
-    "${CMAKE_SOURCE_DIR}/include")
+add_executable(unittests unit_tests.cpp)
 
-  target_link_libraries(unittests PUBLIC small3d)
+target_include_directories(unittests PUBLIC
+  "${CMAKE_SOURCE_DIR}/include")
 
-  if(MSVC)
-    set_target_properties(unittests PROPERTIES LINK_FLAGS_DEBUG
-      "-NODEFAULTLIB:LIBCMTD")
-    set_target_properties(unittests PROPERTIES LINK_FLAGS_RELEASE
-      "-NODEFAULTLIB:LIBCMT")
-    
-    set_target_properties(unittests PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
-      "${small3d_BINARY_DIR}/bin")
-  endif(MSVC)
+target_link_libraries(unittests PUBLIC small3d)
 
-  if(APPLE)
-    set_target_properties(unittests PROPERTIES LINK_FLAGS "-framework \
+if(MSVC)
+  set_target_properties(unittests PROPERTIES LINK_FLAGS_DEBUG
+    "-NODEFAULTLIB:LIBCMTD")
+  set_target_properties(unittests PROPERTIES LINK_FLAGS_RELEASE
+    "-NODEFAULTLIB:LIBCMT")
+  
+  set_target_properties(unittests PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
+    "${small3d_BINARY_DIR}/bin")
+endif(MSVC)
+
+if(APPLE)
+  set_target_properties(unittests PROPERTIES LINK_FLAGS "-framework \
 AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
 -framework IOKit -framework CoreVideo")
-  elseif(UNIX)
-    target_link_libraries(unittests PUBLIC "m")
-  endif(APPLE)
-endif(BUILD_UNIT_TESTS)
-
+elseif(UNIX)
+  target_link_libraries(unittests PUBLIC "m")
+endif(APPLE)

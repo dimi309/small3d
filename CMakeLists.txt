@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(small3d)
 
-option(BUILD_UNIT_TESTS "Build unit tests executable." ON)
-
 file(COPY "deps/include" DESTINATION ".")
 file(COPY "deps/lib" DESTINATION ".")
 
