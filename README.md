@@ -1,5 +1,8 @@
 # small3d
 
+This is the OpenGL edition of small3d. You might also want to have a look at 
+the [Vulkan edition](https://github.com/dimi309/small3d).
+
 ## Introduction
 
 This is a free, open source, minimalistic 3D framework for the programmer who 
