@@ -5,11 +5,8 @@ v1.706
 - The slowdown on MacOS in full screen mode has now been corrected and full
   screen mode has been re-enabled on MacOS.
 
-- [BREAKING] Corrected coordinate system handedness. OpenGL is using 
-  right-handed coordinates. This is being emulated in this Vulkan
-  edition but, nonetheless, in the past the coordinates were not being 
-  handled correctly neither in the OpenGL edition nor in the Vulkan 
-  edition of small3d.
+- [BREAKING] Corrected coordinate system handedness (right handed 
+  implementation, emulating OpenGL).
 
 v1.705 2019-11-19
 
