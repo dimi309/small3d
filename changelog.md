@@ -2,9 +2,7 @@
 
 v1.69904
 
-- [BREAKING] Corrected coordinate system handedness. OpenGL is using 
-  right-handed coordinates and in the past this was not being handled
-  correctly.
+- [BREAKING] Corrected coordinate system handedness (right handed).
 
 v1.69903 2019-11-19
 
