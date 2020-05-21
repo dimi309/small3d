@@ -1,6 +1,6 @@
 /*! \page changelog changes per version
 
-v1.69904
+v1.69904 2019-05-21
 
 - [BREAKING] Corrected coordinate system handedness (right handed).
 
