@@ -1,6 +1,6 @@
 /*! \page changelog changes per version
 
-v1.706
+v1.706 2020-05-21
 
 - The slowdown on MacOS in full screen mode has now been corrected and full
   screen mode has been re-enabled on MacOS.
