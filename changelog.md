@@ -1,6 +1,6 @@
 /*! \page changelog changes per version
 
-v1.69904 2019-05-21
+v1.69904 2020-05-21
 
 - [BREAKING] Corrected coordinate system handedness (right handed).
 
@@ -18,7 +18,7 @@ v1.69902 2019-11-01
   flag for replacing an existing texture if it has the same name as
   the texture being generated.
   
-- Added some convenient render functions to Renderer, for rendering models
+- Added some convenient render functions 4to Renderer, for rendering models
   without a given offset nor rotation (defaulting to 0).
 
 v1.69901 2019-10-27
