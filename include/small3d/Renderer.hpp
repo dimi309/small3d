@@ -56,7 +56,7 @@ namespace small3d
     glm::mat4x4 cameraTransformation;
     glm::vec3 cameraOffset;
     float padding2[25]; // Successively increased padding up to 64 x float
-                        // (256k on windows where float is 4 bytes) for
+                        // (256 bytes on windows where float is 4 bytes) for
                         // ALL ubos. All smaller sizes were causing memory
                         // alignment problems on one supported platform or
                         // another.
