@@ -1,5 +1,5 @@
 REM For this to work, set the %NDK% variable to your ndk path. It should look like
-REM C:\Users\me\AppData\Local\Android\Sdk\ndk\21.1.6352462 for example. Also, the
+REM C:\Users\user\AppData\Local\Android\Sdk\ndk\21.2.6472646 for example. Also, the
 REM script needs to run in an environment with MinGW set up and no settings for
 REM Visual Studio.
 
