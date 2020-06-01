@@ -5,9 +5,9 @@ unzip glm-0.9.9.0.zip
 cp -rf glm/glm include/
 rm -rf glm
 
-export ARCH=arm64 # armv7 or arm64
+export ARCH=arm64 # armv7, arm64 or x86_64
 export CHOST=aarch64-apple-darwin* # arm-apple-darwin* or aarch64-apple-darwin*
-export SDK=iphoneos
+export SDK=iphoneos #iphonesimulator also possible
 
 export SDKVERSION=9 #$(xcrun --sdk $SDK --show-sdk-version) # current version
 export SDKROOT=$(xcrun --sdk $SDK --show-sdk-path) # current version
@@ -46,7 +46,6 @@ rm -rf bzip2-1.0.8
 
 unset ARCH
 unset CHOST
-unset SDK
 unset SDKVERSION
 unset SDKROOT
 unset PREFIX
@@ -64,6 +63,7 @@ export CMAKE_DEFINITIONS="-GXcode -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.too
 
 # -DPLATFORM=OS64 and no -DARCHS for arm64
 # -DPLATFORM=OS -DARCHS=armv7 for armv7
+# -DPLATFORM=SIMULATOR64 -DARCHS=x86_64
 
 tar xvf libpng-1.6.37.tar.gz
 cd libpng-1.6.37
@@ -74,7 +74,7 @@ cmake --build .
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp ../*.h ../../include/
 cp pnglibconf.h ../../include/
-cp Debug-iphoneos/libpng.a ../../lib/
+cp Debug-$SDK/libpng.a ../../lib/
 cd ../../
 rm -rf libpng-1.6.37
 
@@ -87,7 +87,7 @@ cmake --build . --config Release
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp -rf ../include/ogg ../../include/
 cp include/ogg/config_types.h ../../include/ogg/
-cp Release-iphoneos/libogg.a ../../lib/
+cp Release-$SDK/libogg.a ../../lib/
 cd ../../
 rm -rf ogg-1.3.3
 
@@ -99,7 +99,7 @@ cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ -DOGG_INCLUDE
 cmake --build . --config Release
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp -rf ../include/vorbis ../../include/
-cp lib/Release-iphoneos/*.a ../../lib/
+cp lib/Release-$SDK/*.a ../../lib/
 cd ../../
 rm -rf vorbis-1.3.6
 
@@ -113,6 +113,8 @@ cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINI
 cmake --build . --config Release
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp -rf ../include/* ../../include/
-cp Release-iphoneos/libfreetype.a ../../lib/
+cp Release-$SDK/libfreetype.a ../../lib/
 cd ../..
 rm -rf freetype-2.9.1
+
+unset $SDK
