@@ -101,6 +101,7 @@ int BoundingBoxesTest() {
 
   if (bboxes.vertices.size() != 16) return 0;
   if (bboxes.facesVertexIndexes.size() != 12) return 0;
+  if (bboxes.facesVertexIndexesTriangulated.size() != 24) return 0;
 
   cout << "Bounding boxes vertices: " << endl;
   for (unsigned long idx = 0; idx < 16; idx++) {
