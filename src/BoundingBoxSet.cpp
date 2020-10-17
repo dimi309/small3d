@@ -128,8 +128,8 @@ namespace small3d {
       // Correct indices. OpenGL indices are 0 based. Wavefront indices start
       // from 1 and the numbering continues for multiple objects.
 
-      for (auto vi : facesVertexIndexes) {
-        for (auto vi2 : vi) {
+      for (auto &vi : facesVertexIndexes) {
+        for (auto &vi2 : vi) {
           --vi2;
         }
       }
