@@ -34,7 +34,6 @@ namespace small3d {
 
       this->loadFromFile(getBasePath() + fileLocation);
 
-      
     }
 
   }
@@ -100,6 +99,7 @@ namespace small3d {
               }
               ++idx;
             }
+            v.push_back(1.0f); // w component
             vertices.push_back(v);
           }
           else {
@@ -124,20 +124,20 @@ namespace small3d {
 #else
       file.close();
 #endif
-      numBoxes = (int)(facesVertexIndexes.size() / 6);
 
       // Correct indices. OpenGL indices are 0 based. Wavefront indices start
       // from 1 and the numbering continues for multiple objects.
 
-      for (int idx = 0; idx < numBoxes; ++idx) {
-        for (int idx2 = 0; idx2 < 6; ++idx2) {
-          for (int idx3 = 0; idx3 < 4; ++idx3) {
-            facesVertexIndexes[6 * idx + idx2][idx3] -= 1 + 8 * idx;
-          }
+      for (auto vi : facesVertexIndexes) {
+        for (auto vi2 : vi) {
+          --vi2;
         }
       }
 
+      numBoxes = (int)(facesVertexIndexes.size() / 6);
       LOGINFO("Loaded " + intToStr(numBoxes) + " bounding boxes.");
+
+      triangulate();
     }
     else
       throw std::runtime_error(
@@ -248,8 +248,18 @@ namespace small3d {
         break;
       }
     }
-
     return collides;
+  }
+
+  void BoundingBoxSet::triangulate()
+  { 
+    if (facesVertexIndexesTriangulated.empty()) {
+      uint32_t numIter = 0;
+      for (auto x : facesVertexIndexes) {
+        facesVertexIndexesTriangulated.push_back(std::vector<unsigned int> {x.at(0), x.at(1), x.at(2)});
+        facesVertexIndexesTriangulated.push_back(std::vector<unsigned int> {x.at(2), x.at(3), x.at(0)});
+      }
+    }
   }
 
   int BoundingBoxSet::getNumBoxes() const {

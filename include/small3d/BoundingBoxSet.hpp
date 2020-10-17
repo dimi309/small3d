@@ -27,7 +27,7 @@ namespace small3d {
   private:
     int numBoxes;
     void loadFromFile(std::string fileLocation);
-    
+    void triangulate();
   public:
 
     /**
@@ -57,10 +57,15 @@ namespace small3d {
     std::vector<std::vector<float> > vertices;
 
     /**
-     * @brief Faces vertex indexes read from Wavefront .obj file
+     * @brief Faces vertex indexes read from Wavefront .obj file (rectangles)
      */
 
     std::vector<std::vector<unsigned int> > facesVertexIndexes;
+
+    /**
+    * @brief Faces vertex indexes (triangles, for rendering)
+    */
+    std::vector<std::vector<unsigned int> > facesVertexIndexesTriangulated;
 
     /**
      * @brief Check if a point collides (or is inside) any of the boxes of the
