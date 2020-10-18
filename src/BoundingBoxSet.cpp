@@ -39,27 +39,27 @@ namespace small3d {
   }
 
 #ifdef __ANDROID__
-    struct membuf : std::streambuf
-    {
-        membuf(char* begin, char* end) {
-            this->setg(begin, begin, end);
-        }
-    };
+  struct membuf : std::streambuf
+  {
+    membuf(char* begin, char* end) {
+      this->setg(begin, begin, end);
+    }
+  };
 
 #endif
 
 
-    void BoundingBoxSet::loadFromFile(std::string fileLocation) {
+  void BoundingBoxSet::loadFromFile(std::string fileLocation) {
     if (vertices.size() != 0) {
       throw std::runtime_error("Illegal attempt to reload bounding boxes. "
         "Please use another object.");
     }
-      std::string line;
+    std::string line;
 #ifdef __ANDROID__
-    AAsset *asset = AAssetManager_open(vkz_android_app->activity->assetManager,
-                                       fileLocation.c_str(),
-                                       AASSET_MODE_STREAMING);
-    if(!asset) {
+    AAsset* asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+      fileLocation.c_str(),
+      AASSET_MODE_STREAMING);
+    if (!asset) {
       throw std::runtime_error(
         "Opening asset " + fileLocation + " has failed!");
     }
@@ -70,7 +70,7 @@ namespace small3d {
     std::istream in(&sbuf);
     if (in) {
       while (std::getline(in, line)) {
-      LOGDEBUG("Got line: " + line);
+        LOGDEBUG("Got line: " + line);
 #else
     std::ifstream file(fileLocation.c_str());
 
@@ -128,8 +128,8 @@ namespace small3d {
       // Correct indices. OpenGL indices are 0 based. Wavefront indices start
       // from 1 and the numbering continues for multiple objects.
 
-      for (auto &vi : facesVertexIndexes) {
-        for (auto &vi2 : vi) {
+      for (auto& vi : facesVertexIndexes) {
+        for (auto& vi2 : vi) {
           --vi2;
         }
       }
@@ -152,10 +152,10 @@ namespace small3d {
     glm::mat4 rotationMatrix =
       glm::rotate(
         glm::rotate(
-          glm::rotate(glm::mat4x4(1.0f), -thisRotation.y,
+          glm::rotate(glm::mat4x4(1.0f), thisRotation.y,
             glm::vec3(0.0f, 1.0f, 0.0f)),
-          -thisRotation.x,
-          glm::vec3(1.0f, 0.0f, 0.0f)), -thisRotation.z,
+          thisRotation.x,
+          glm::vec3(1.0f, 0.0f, 0.0f)), thisRotation.z,
         glm::vec3(0.0f, 0.0f, 1.0f)
       );
 
@@ -222,11 +222,11 @@ namespace small3d {
     glm::mat4 rotationMatrix =
       glm::rotate(
         glm::rotate(
-          glm::rotate(glm::mat4x4(1.0f), otherRotation.z,
-            glm::vec3(0.0f, 0.0f, -1.0f)),
+          glm::rotate(glm::mat4x4(1.0f), otherRotation.y,
+            glm::vec3(0.0f, 0.0f, 1.0f)),
           otherRotation.x,
-          glm::vec3(-1.0f, 0.0f, 0.0f)),
-        otherRotation.y, glm::vec3(0.0f, -1.0f, 0.0f));
+          glm::vec3(1.0f, 0.0f, 0.0f)),
+        otherRotation.z, glm::vec3(0.0f, 1.0f, 0.0f));
 
     for (auto vertex = otherBoxSet.vertices.begin();
       vertex != otherBoxSet.vertices.end(); ++vertex) {
@@ -252,7 +252,7 @@ namespace small3d {
   }
 
   void BoundingBoxSet::triangulate()
-  { 
+  {
     if (facesVertexIndexesTriangulated.empty()) {
       uint32_t numIter = 0;
       for (auto x : facesVertexIndexes) {
