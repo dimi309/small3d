@@ -149,20 +149,20 @@ namespace small3d {
     const glm::vec3 thisOffset,
     const glm::vec3 thisRotation) const {
     bool collides = false;
-    glm::mat4 rotationMatrix =
+    glm::mat4 reverseRotationMatrix =
       glm::rotate(
         glm::rotate(
-          glm::rotate(glm::mat4x4(1.0f), thisRotation.y,
+          glm::rotate(glm::mat4x4(1.0f), -thisRotation.y,
             glm::vec3(0.0f, 1.0f, 0.0f)),
-          thisRotation.x,
-          glm::vec3(1.0f, 0.0f, 0.0f)), thisRotation.z,
+          -thisRotation.x,
+          glm::vec3(1.0f, 0.0f, 0.0f)), -thisRotation.z,
         glm::vec3(0.0f, 0.0f, 1.0f)
       );
 
     glm::vec4 pointInBoxSpace = glm::vec4(point, 1.0f) -
       glm::vec4(thisOffset, 0.0f);
 
-    pointInBoxSpace = rotationMatrix * pointInBoxSpace;
+    pointInBoxSpace = reverseRotationMatrix * pointInBoxSpace;
 
     for (int idx = 0; idx < numBoxes; ++idx) {
       float minZ, maxZ, minX, maxX, minY, maxY;
@@ -171,34 +171,31 @@ namespace small3d {
         vertices[static_cast<unsigned int>(idx * 8)][1],
         vertices[static_cast<unsigned int>(idx * 8)][2], 1);
 
-      glm::vec4 rotatedCoords;
-      rotatedCoords = coords;
+      minX = coords.x;
+      maxX = coords.x;
+      minY = coords.y;
+      maxY = coords.y;
+      minZ = coords.z;
+      maxZ = coords.z;
 
-      minX = rotatedCoords.x;
-      maxX = rotatedCoords.x;
-      minY = rotatedCoords.y;
-      maxY = rotatedCoords.y;
-      minZ = rotatedCoords.z;
-      maxZ = rotatedCoords.z;
+      for (size_t checkidx = idx * 8; checkidx < (idx + 1) * 8; ++checkidx) {
 
-      for (int checkidx = idx * 8; checkidx < (idx + 1) * 8; ++checkidx) {
         coords = glm::vec4(vertices[static_cast<unsigned int>(checkidx)][0],
           vertices[static_cast<unsigned int>(checkidx)][1],
           vertices[static_cast<unsigned int>(checkidx)][2], 1);
-        rotatedCoords = coords;
 
-        if (rotatedCoords.x < minX)
-          minX = rotatedCoords.x;
-        if (rotatedCoords.x > maxX)
-          maxX = rotatedCoords.x;
-        if (rotatedCoords.y < minY)
-          minY = rotatedCoords.y;
-        if (rotatedCoords.y > maxY)
-          maxY = rotatedCoords.y;
-        if (rotatedCoords.z < minZ)
-          minZ = rotatedCoords.z;
-        if (rotatedCoords.z > maxZ)
-          maxZ = rotatedCoords.z;
+        if (coords.x < minX)
+          minX = coords.x;
+        if (coords.x > maxX)
+          maxX = coords.x;
+        if (coords.y < minY)
+          minY = coords.y;
+        if (coords.y > maxY)
+          maxY = coords.y;
+        if (coords.z < minZ)
+          minZ = coords.z;
+        if (coords.z > maxZ)
+          maxZ = coords.z;
       }
 
       if (pointInBoxSpace.x > minX && pointInBoxSpace.x < maxX &&
@@ -219,7 +216,7 @@ namespace small3d {
     const glm::vec3 otherRotation) const {
     bool collides = false;
 
-    glm::mat4 rotationMatrix =
+    glm::mat4 otherRotationMatrix =
       glm::rotate(
         glm::rotate(
           glm::rotate(glm::mat4x4(1.0f), otherRotation.y,
@@ -234,7 +231,7 @@ namespace small3d {
       glm::vec4 otherCoords(vertex->at(0), vertex->at(1), vertex->at(2), 1.0f);
       glm::vec4 rotatedOtherCoords;
 
-      rotatedOtherCoords = rotationMatrix * otherCoords;
+      rotatedOtherCoords = otherRotationMatrix * otherCoords;
 
       rotatedOtherCoords.x += otherOffset.x;
       rotatedOtherCoords.y += otherOffset.y;
