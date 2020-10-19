@@ -138,6 +138,7 @@ namespace small3d {
       LOGINFO("Loaded " + intToStr(numBoxes) + " bounding boxes.");
 
       triangulate();
+      calcExtremes();
     }
     else
       throw std::runtime_error(
@@ -164,43 +165,12 @@ namespace small3d {
 
     pointInBoxSpace = reverseRotationMatrix * pointInBoxSpace;
 
-    for (int idx = 0; idx < numBoxes; ++idx) {
-      float minZ, maxZ, minX, maxX, minY, maxY;
+    
+    for (auto &ext: boxExtremes) {
 
-      glm::vec4 coords(vertices[static_cast<unsigned int>(idx * 8)][0],
-        vertices[static_cast<unsigned int>(idx * 8)][1],
-        vertices[static_cast<unsigned int>(idx * 8)][2], 1);
-
-      minX = coords.x;
-      maxX = coords.x;
-      minY = coords.y;
-      maxY = coords.y;
-      minZ = coords.z;
-      maxZ = coords.z;
-
-      for (size_t checkidx = idx * 8; checkidx < (idx + 1) * 8; ++checkidx) {
-
-        coords = glm::vec4(vertices[static_cast<unsigned int>(checkidx)][0],
-          vertices[static_cast<unsigned int>(checkidx)][1],
-          vertices[static_cast<unsigned int>(checkidx)][2], 1);
-
-        if (coords.x < minX)
-          minX = coords.x;
-        if (coords.x > maxX)
-          maxX = coords.x;
-        if (coords.y < minY)
-          minY = coords.y;
-        if (coords.y > maxY)
-          maxY = coords.y;
-        if (coords.z < minZ)
-          minZ = coords.z;
-        if (coords.z > maxZ)
-          maxZ = coords.z;
-      }
-
-      if (pointInBoxSpace.x > minX && pointInBoxSpace.x < maxX &&
-        pointInBoxSpace.y > minY && pointInBoxSpace.y < maxY &&
-        pointInBoxSpace.z > minZ && pointInBoxSpace.z < maxZ) {
+      if (pointInBoxSpace.x > ext.minX && pointInBoxSpace.x < ext.maxX &&
+        pointInBoxSpace.y > ext.minY && pointInBoxSpace.y < ext.maxY &&
+        pointInBoxSpace.z > ext.minZ && pointInBoxSpace.z < ext.maxZ) {
 
         collides = true;
         break;
@@ -256,6 +226,47 @@ namespace small3d {
         facesVertexIndexesTriangulated.push_back(std::vector<unsigned int> {x.at(0), x.at(1), x.at(2)});
         facesVertexIndexesTriangulated.push_back(std::vector<unsigned int> {x.at(2), x.at(3), x.at(0)});
       }
+    }
+  }
+
+  void BoundingBoxSet::calcExtremes() {
+    boxExtremes.clear();
+    for (size_t idx = 0; idx < numBoxes; ++idx) {
+
+      extremes ext;
+
+      glm::vec4 coords(vertices[static_cast<unsigned int>(idx * 8)][0],
+        vertices[static_cast<unsigned int>(idx * 8)][1],
+        vertices[static_cast<unsigned int>(idx * 8)][2], 1);
+
+      ext.minX = coords.x;
+      ext.maxX = coords.x;
+      ext.minY = coords.y;
+      ext.maxY = coords.y;
+      ext.minZ = coords.z;
+      ext.maxZ = coords.z;
+
+      for (size_t checkidx = idx * 8; checkidx < (idx + 1) * 8; ++checkidx) {
+
+        coords = glm::vec4(vertices[static_cast<unsigned int>(checkidx)][0],
+          vertices[static_cast<unsigned int>(checkidx)][1],
+          vertices[static_cast<unsigned int>(checkidx)][2], 1);
+
+        if (coords.x < ext.minX)
+          ext.minX = coords.x;
+        if (coords.x > ext.maxX)
+          ext.maxX = coords.x;
+        if (coords.y < ext.minY)
+          ext.minY = coords.y;
+        if (coords.y > ext.maxY)
+          ext.maxY = coords.y;
+        if (coords.z < ext.minZ)
+          ext.minZ = coords.z;
+        if (coords.z > ext.maxZ)
+          ext.maxZ = coords.z;
+      }
+
+      boxExtremes.push_back(ext);
     }
   }
 
