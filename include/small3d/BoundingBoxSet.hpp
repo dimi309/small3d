@@ -25,10 +25,25 @@ namespace small3d {
 
   class BoundingBoxSet {
   private:
+
     int numBoxes;
     void loadFromFile(std::string fileLocation);
     void triangulate();
+    void calcExtremes();
+    
   public:
+
+    /**
+     * @brief Structure to hold the coordinates of the extremes of each box.
+     */
+    typedef struct extremes_ {
+      float minZ, maxZ, minX, maxX, minY, maxY;
+    } extremes;
+
+    /**
+     * @brief The extreme coordinates (max and min) of each box.
+     */
+    std::vector<extremes> boxExtremes;
 
     /**
      * @brief Get the number of boxes contained in the set.
