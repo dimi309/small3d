@@ -146,7 +146,7 @@ namespace small3d {
 
   }
 
-  bool BoundingBoxSet::collidesWith(const glm::vec3 point,
+  bool BoundingBoxSet::contains(const glm::vec3 point,
     const glm::vec3 thisOffset,
     const glm::vec3 thisRotation) const {
     bool collides = false;
@@ -165,8 +165,8 @@ namespace small3d {
 
     pointInBoxSpace = reverseRotationMatrix * pointInBoxSpace;
 
-    
-    for (auto &ext: boxExtremes) {
+
+    for (auto& ext : boxExtremes) {
 
       if (pointInBoxSpace.x > ext.minX && pointInBoxSpace.x < ext.maxX &&
         pointInBoxSpace.y > ext.minY && pointInBoxSpace.y < ext.maxY &&
@@ -179,7 +179,7 @@ namespace small3d {
     return collides;
   }
 
-  bool BoundingBoxSet::collidesWith(const BoundingBoxSet otherBoxSet,
+  bool BoundingBoxSet::containsCorners(const BoundingBoxSet otherBoxSet,
     const glm::vec3 thisOffset,
     const glm::vec3 thisRotation,
     const glm::vec3 otherOffset,
@@ -207,7 +207,7 @@ namespace small3d {
       rotatedOtherCoords.y += otherOffset.y;
       rotatedOtherCoords.z += otherOffset.z;
 
-      if (collidesWith(glm::vec3(rotatedOtherCoords.x, rotatedOtherCoords.y,
+      if (contains(glm::vec3(rotatedOtherCoords.x, rotatedOtherCoords.y,
         rotatedOtherCoords.z),
         thisOffset, thisRotation)) {
 
@@ -272,6 +272,39 @@ namespace small3d {
 
   int BoundingBoxSet::getNumBoxes() const {
     return numBoxes;
+  }
+
+  std::vector<Model> BoundingBoxSet::getModels() {
+
+    std::vector<Model> models;
+
+    for (auto boxIdx = 0; boxIdx < getNumBoxes(); ++boxIdx) {
+      Model m;
+
+      for (auto vertexIdx = 0; vertexIdx < 8; ++vertexIdx) {
+        for (auto vertexComponent : vertices[boxIdx * (size_t)8 + vertexIdx]) {
+          m.vertexData.push_back(vertexComponent);
+          m.vertexDataByteSize += sizeof(float);
+        }
+      }
+
+      for (auto faceIndexIdx = 0; faceIndexIdx < 12; ++faceIndexIdx) {
+        for (auto vertexIndex : facesVertexIndexesTriangulated[boxIdx * (size_t)12 + faceIndexIdx]) {
+          m.indexData.push_back(vertexIndex - boxIdx * 8);
+          m.indexDataByteSize += sizeof(uint32_t);
+        }
+      }
+
+      m.normalsData = std::vector<float>(24); // 8 vertex coords * 3 components per normal
+      m.normalsDataByteSize = 24 * sizeof(float);
+
+      m.textureCoordsData = std::vector<float>(16); // 8 vertex coords * 2 components per texture coord
+      m.textureCoordsDataByteSize = 16 * sizeof(float);
+
+      models.push_back(m);
+    }
+
+    return models;
   }
 
 }
