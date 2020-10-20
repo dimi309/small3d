@@ -14,6 +14,7 @@
 #include "Logger.hpp"
 #include <vector>
 #include <glm/glm.hpp>
+#include "Model.hpp"
 
 namespace small3d {
 
@@ -30,7 +31,7 @@ namespace small3d {
     void loadFromFile(std::string fileLocation);
     void triangulate();
     void calcExtremes();
-    
+
   public:
 
     /**
@@ -48,7 +49,7 @@ namespace small3d {
     /**
      * @brief Get the number of boxes contained in the set.
      */
-    
+
     int getNumBoxes() const;
 
     /**
@@ -83,34 +84,39 @@ namespace small3d {
     std::vector<std::vector<unsigned int> > facesVertexIndexesTriangulated;
 
     /**
-     * @brief Check if a point collides (or is inside) any of the boxes of the
-     *        box set, assuming that they are in a given offset and have a
-     *        certain rotation.
+     * @brief Check if a point is inside any of the boxes.
      * @param point        The point (as a vector)
      * @param thisOffset   The offset (location) of the box set
      * @param thisRotation The rotation of the box set
-     * @return True if there is a collision, False if not.
+     * @return True the point is inside a box, False if not.
      */
 
-    bool collidesWith(const glm::vec3 point, const glm::vec3 thisOffset,
+    bool contains(const glm::vec3 point, const glm::vec3 thisOffset,
       const glm::vec3 thisRotation) const;
 
     /**
-     * @brief Check if another set of bounding boxes is located with this set
-     *        (even partially), thus colliding with it.
+     * @brief Check any of the corners of another set of bounding boxes 
+     *        is inside any of the boxes of this set.
      * @param otherBoxSet   The other box set
      * @param thisOffset    The offset (location) of this box set
      * @param thisRotation  The rotation of this box set
      * @param otherOffset   The offset (location) of the other box set
      * @param otherRotation The rotation of the other box set
-     * @return True if there is a collision, False if not.
+     * @return True if a corner of the other bounding box set is contained in 
+     *         this set, False otherwise.
      */
 
-    bool collidesWith(const BoundingBoxSet otherBoxSet,
-		      const glm::vec3 thisOffset,
-		      const glm::vec3 thisRotation,
-		      const glm::vec3 otherOffset,
-		      const glm::vec3 otherRotation) const;
+    bool containsCorners(const BoundingBoxSet otherBoxSet,
+      const glm::vec3 thisOffset,
+      const glm::vec3 thisRotation,
+      const glm::vec3 otherOffset,
+      const glm::vec3 otherRotation) const;
+
+    /**
+     * @brief Get the bounding boxes in a set of Models that can be rendered
+     * @return The set of bounding boxes as Models
+     */
+    std::vector<Model> getModels();
 
   };
 }

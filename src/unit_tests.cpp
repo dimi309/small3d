@@ -117,10 +117,11 @@ int BoundingBoxesTest() {
       bboxes.facesVertexIndexes[idx][2] << ", " <<
       bboxes.facesVertexIndexes[idx][3] << ", " << endl;
   }
-  
-  if (bboxes.collidesWith(glm::vec3(0.1f, 0.1f, 0.1f),
-			  glm::vec3(0.0f, 0.1f, 0.1f), 
-			  glm::vec3(0.0f, 0.0f, 0.0f))) {
+
+  if (bboxes.contains(glm::vec3(0.1f, 0.1f, 0.1f),
+    glm::vec3(0.0f, 0.1f, 0.1f),
+    glm::vec3(0.0f, 0.0f, 0.0f))) {
+
     return 0;
   }
   return 1;

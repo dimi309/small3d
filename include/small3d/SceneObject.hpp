@@ -153,21 +153,26 @@ namespace small3d
     BoundingBoxSet boundingBoxSet;
 
     /**
-     * @brief Check if the object collides with a given point
+     * @brief  Check if the bounding boxes of this object contain 
+     *         a given point.
      * @param  point The point
-     * @return True if a collision is detected, False otherwise.
+     * @return True if the point is contained in the bounding boxes
+     *         of the object, False otherwise.
      */
 
-    bool collidesWith(const glm::vec3 point) const;
+    bool contains(const glm::vec3 point) const;
 
     /**
      *
-     * @brief	Check if the object collides with another given object.
-     * @param	otherObject The other object.
-     * @return	True if there is a collision, False if not.
+     * @brief	 Check if the bounding boxes of this object contain 
+     *         a corner of the bounding boxes of another object.
+     * @param	 otherObject The other object.
+     * @return True if the bounding boxes of this object contain
+     *         a corner of the bounding boxes of another object,
+     *         False otherwise.
      */
 
-    bool collidesWith(SceneObject otherObject) const;
+    bool containsCorners(SceneObject otherObject) const;
 
   };
   
