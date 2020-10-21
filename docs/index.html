@@ -286,9 +286,10 @@ cd bin
 <p>Try moving it around with the arrows. A good way to learn about the other features of small3d is to read the documentation (in docs) and also to explore the source code of the sample games.</p>
 <h2><a class="anchor" id="autotoc_md9"></a>
 Collision Detection</h2>
-<p>The framework supports collision detection via manually created bounding boxes. In order to create these in Blender for example, just place them in the preferred position over the model. Ideally, they should be aligned with the axes but that is not mandatory. It will just increase the detection accuracy.</p>
+<p>The framework supports collision detection via manually created bounding boxes. In order to create these in Blender for example, just place them in the preferred position over the model. Ideally, they should be aligned with the axes, (but note that small3d does more than just a simple axis-aligned bounding box collision detection).</p>
 <p><img src="boundingboxes.png" alt="" class="inline" title="Bounding boxes"/>   </p>
-<p>Export the bounding boxes to a Wavefront file separately from the model. You can do this if you "save as" a new file after placing the boxes and deleting the original model. During export, only set the options <b>Apply Modifiers</b>, <b>Include Edges</b>, <b>Objects as OBJ Objects</b> and <b>Keep Vertex Order</b>. On the contrary to what is the case when exporting the model itself, more than one bounding box objects can be exported to the same Wavefront file. </p>
+<p>Export the bounding boxes to a Wavefront file separately from the model. You can do this if you "save as" a new file after placing the boxes and deleting the original model. During export, only set the options <b>Apply Modifiers</b>, <b>Objects as OBJ Objects</b> and <b>Keep Vertex Order</b>. On the contrary to what is the case when exporting the model itself, more than one bounding box objects can be exported to the same Wavefront file.</p>
+<p>It is good to keep the default origin in Blender for the models as well as the bounding boxes. User-set origins are ignored by Blender when exporting Wavefront files. That can cause misalignments between bounding boxes and models, even if the origins of both have been properly set to a new position. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
