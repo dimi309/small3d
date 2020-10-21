@@ -1,4 +1,4 @@
-- [BREAKING] Improved collision detection./*! \page changelog changes per version
+/*! \page changelog changes per version
 
 v1.707
 
