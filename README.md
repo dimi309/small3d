@@ -413,9 +413,10 @@ collision detection).
 Export the bounding boxes to a Wavefront file separately from the model. You can
 do this if you "save as" a new file after placing the boxes and deleting the
 original model. During export, only set the options **Apply Modifiers**, 
-**Objects as OBJ Objects** and **Keep Vertex Order**. On the contrary to what 
-is the case when exporting the model itself, more than one bounding box objects 
-can be exported to the same Wavefront file.
+**Include Edges** (but not in newer versions of Blender, where it is not 
+available), **Objects as OBJ Objects** and **Keep Vertex Order**. On the 
+contrary to what is the case when exporting the model itself, more than one 
+bounding box objects can be exported to the same Wavefront file.
 
 It is good to keep the default origin in Blender for the models as well as the
 bounding boxes. User-set origins are ignored by Blender when exporting Wavefront 
