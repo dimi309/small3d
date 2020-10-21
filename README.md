@@ -404,14 +404,20 @@ the source code of the sample games.
 
 The framework supports collision detection via manually created bounding boxes. 
 In order to create these in Blender for example, just place them in the 
-preferred position over the model. Ideally, they should be aligned with the axes
-but that is not mandatory. It will just increase the detection accuracy.
+preferred position over the model. Ideally, they should be aligned with the axes,
+(but note that small3d does more than just a simple axis-aligned bounding box
+collision detection).
 
 ![Bounding boxes](img/boundingboxes.png)
 
 Export the bounding boxes to a Wavefront file separately from the model. You can
 do this if you "save as" a new file after placing the boxes and deleting the
-original model. During export, only set the options **Apply Modifiers**,
-**Include Edges**, **Objects as OBJ Objects** and **Keep Vertex Order**.
-On the contrary to what is the case when exporting the model itself, more than
-one bounding box objects can be exported to the same Wavefront file.
+original model. During export, only set the options **Apply Modifiers**, 
+**Objects as OBJ Objects** and **Keep Vertex Order**. On the contrary to what 
+is the case when exporting the model itself, more than one bounding box objects 
+can be exported to the same Wavefront file.
+
+It is good to keep the default origin in Blender for the models as well as the
+bounding boxes. User-set origins are ignored by Blender when exporting Wavefront 
+files. That can cause misalignments between bounding boxes and models, even if 
+the origins of both have been properly set to a new position.
