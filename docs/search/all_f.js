@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['uvbuffer',['uvBuffer',['../structsmall3d_1_1_model.html#a77d6e46a357f5216c27dec374582d4f0',1,'small3d::Model']]],
-  ['uvbuffermemory',['uvBufferMemory',['../structsmall3d_1_1_model.html#a9628ad75022570c3fdda0c449790cd5f',1,'small3d::Model']]]
+  ['texturecoordsdata_85',['textureCoordsData',['../structsmall3d_1_1_model.html#a3dc1c38f06ad7bd19126933197e7b443',1,'small3d::Model']]],
+  ['texturecoordsdatabytesize_86',['textureCoordsDataByteSize',['../structsmall3d_1_1_model.html#affd005f6c0fb8b2adf5b25193033bf50',1,'small3d::Model']]],
+  ['texturename_87',['textureName',['../structsmall3d_1_1_model.html#a8d316f1a607a9bdd658aaed8341a886f',1,'small3d::Model']]],
+  ['tocolour_88',['toColour',['../classsmall3d_1_1_image.html#a619d1f2f4c5e4e8c973abcd6b7d03aa5',1,'small3d::Image']]]
 ];

@@ -149,22 +149,17 @@ namespace small3d {
   bool BoundingBoxSet::contains(const glm::vec3 point,
     const glm::vec3 thisOffset,
     const glm::vec3 thisRotation) const {
+
     bool collides = false;
     glm::mat4 reverseRotationMatrix =
-      glm::rotate(
-        glm::rotate(
-          glm::rotate(glm::mat4x4(1.0f), -thisRotation.y,
-            glm::vec3(0.0f, 1.0f, 0.0f)),
-          -thisRotation.x,
-          glm::vec3(1.0f, 0.0f, 0.0f)), -thisRotation.z,
-        glm::vec3(0.0f, 0.0f, 1.0f)
-      );
+      glm::rotate(glm::mat4x4(1.0f), -thisRotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), -thisRotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), -thisRotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 
     glm::vec4 pointInBoxSpace = glm::vec4(point, 1.0f) -
       glm::vec4(thisOffset, 0.0f);
 
     pointInBoxSpace = reverseRotationMatrix * pointInBoxSpace;
-
 
     for (auto& ext : boxExtremes) {
 
@@ -175,6 +170,7 @@ namespace small3d {
         collides = true;
         break;
       }
+
     }
     return collides;
   }
@@ -187,13 +183,9 @@ namespace small3d {
     bool collides = false;
 
     glm::mat4 otherRotationMatrix =
-      glm::rotate(
-        glm::rotate(
-          glm::rotate(glm::mat4x4(1.0f), otherRotation.y,
-            glm::vec3(0.0f, 0.0f, 1.0f)),
-          otherRotation.x,
-          glm::vec3(1.0f, 0.0f, 0.0f)),
-        otherRotation.z, glm::vec3(0.0f, 1.0f, 0.0f));
+      glm::rotate(glm::mat4x4(1.0f), otherRotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), otherRotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), otherRotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 
     for (auto vertex = otherBoxSet.vertices.begin();
       vertex != otherBoxSet.vertices.end(); ++vertex) {

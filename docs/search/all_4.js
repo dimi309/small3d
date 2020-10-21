@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['facesvertexindexes',['facesVertexIndexes',['../classsmall3d_1_1_bounding_box_set.html#a4cc9b979ea109f835753ec2c245e34b6',1,'small3d::BoundingBoxSet']]],
-  ['floattostr',['floatToStr',['../_logger_8hpp.html#ad91ee33eea082a7ba7726690bb3fb608',1,'small3d']]]
+  ['extremes_18',['extremes',['../classsmall3d_1_1_bounding_box_set.html#ad7cb6023fd0693de5564135369d9a101',1,'small3d::BoundingBoxSet']]],
+  ['extremes_5f_19',['extremes_',['../structsmall3d_1_1_bounding_box_set_1_1extremes__.html',1,'small3d::BoundingBoxSet']]]
 ];

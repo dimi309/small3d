@@ -1,12 +1,19 @@
 var searchData=
 [
-  ['image',['Image',['../classsmall3d_1_1_image.html',1,'small3d::Image'],['../classsmall3d_1_1_image.html#afe8aec09a44cfc52975166d930466dea',1,'small3d::Image::Image()']]],
-  ['image_2ehpp',['Image.hpp',['../_image_8hpp.html',1,'']]],
-  ['indexbuffer',['indexBuffer',['../structsmall3d_1_1_model.html#a39db7cf562b604314c1d09e83c51fa43',1,'small3d::Model']]],
-  ['indexbuffermemory',['indexBufferMemory',['../structsmall3d_1_1_model.html#a02bc354c84beb68570369cd9b831aad3',1,'small3d::Model']]],
-  ['indexdata',['indexData',['../structsmall3d_1_1_model.html#affb0aba31845367125ed2008e12f1cac',1,'small3d::Model']]],
-  ['indexdatabytesize',['indexDataByteSize',['../structsmall3d_1_1_model.html#a586e014f77c030f2761fc3e02f4af7b9',1,'small3d::Model']]],
-  ['initlogger',['initLogger',['../_logger_8hpp.html#a7ffafe7a0562ca3c76da6bfb30a62e1b',1,'small3d']]],
-  ['inttostr',['intToStr',['../_logger_8hpp.html#ae370f472bbbb0ab777b5cdf928ac1066',1,'small3d']]],
-  ['isanimated',['isAnimated',['../classsmall3d_1_1_scene_object.html#aee619cd4506fc9c9ede6db7f7542a48d',1,'small3d::SceneObject']]]
+  ['generatetexture_23',['generateTexture',['../classsmall3d_1_1_renderer.html#aa3fc446b4ee64fbb831aa8f08a54dbdc',1,'small3d::Renderer::generateTexture(const std::string &amp;name, const Image &amp;image)'],['../classsmall3d_1_1_renderer.html#a071ed4cfc38f7553d2e16a058ebd992b',1,'small3d::Renderer::generateTexture(const std::string &amp;name, const std::string &amp;text, const glm::vec3 &amp;colour, const int fontSize=48, const std::string &amp;fontPath=&quot;resources/fonts/CrusoeText/CrusoeText-Regular.ttf&quot;, const bool replace=true)']]],
+  ['getbasepath_24',['getBasePath',['../_base_path_8hpp.html#add32e1431a57d5c1fcbf8b5fc9c6ffa4',1,'BasePath.cpp']]],
+  ['getbytesize_25',['getByteSize',['../classsmall3d_1_1_image.html#a2ca91e211b1f2eb978def755cb1821f3',1,'small3d::Image']]],
+  ['getdata_26',['getData',['../classsmall3d_1_1_image.html#ab26bc22464edb7aefbcd4a2b95d788a2',1,'small3d::Image']]],
+  ['getheight_27',['getHeight',['../classsmall3d_1_1_image.html#adf097899bb8212b43a6e620ff0d15007',1,'small3d::Image']]],
+  ['getinstance_28',['getInstance',['../classsmall3d_1_1_renderer.html#ab46fe5ff51af0389eb84dc98601a69ff',1,'small3d::Renderer']]],
+  ['getmodel_29',['getModel',['../classsmall3d_1_1_scene_object.html#a990a1b6f6f3ab08fd71f5c4a220afc4c',1,'small3d::SceneObject']]],
+  ['getmodels_30',['getModels',['../classsmall3d_1_1_bounding_box_set.html#abf45f0d5ed515b0d7e5a9b319ba98f62',1,'small3d::BoundingBoxSet']]],
+  ['getname_31',['getName',['../classsmall3d_1_1_scene_object.html#ae18cf681f49f719fa77f9b83bdb88da8',1,'small3d::SceneObject']]],
+  ['getnumboxes_32',['getNumBoxes',['../classsmall3d_1_1_bounding_box_set.html#a0d8a4eac5d06e723ae60aef2bc2b0a83',1,'small3d::BoundingBoxSet']]],
+  ['getscreenheight_33',['getScreenHeight',['../classsmall3d_1_1_renderer.html#aed406b218be5e972d7566a321f893e82',1,'small3d::Renderer']]],
+  ['getscreenwidth_34',['getScreenWidth',['../classsmall3d_1_1_renderer.html#adc8816c9329595bbe489131cc2bf4495',1,'small3d::Renderer']]],
+  ['gettokens_35',['getTokens',['../_get_tokens_8hpp.html#a36d83f2d89b0c15a4e475eae75949296',1,'small3d']]],
+  ['gettokens_2ehpp_36',['GetTokens.hpp',['../_get_tokens_8hpp.html',1,'']]],
+  ['getwidth_37',['getWidth',['../classsmall3d_1_1_image.html#a335588f99053b1f55c15c60c76c26624',1,'small3d::Image']]],
+  ['getwindow_38',['getWindow',['../classsmall3d_1_1_renderer.html#a2065e4645034d538e5bbd40cd5fa3a50',1,'small3d::Renderer']]]
 ];
