@@ -66,7 +66,11 @@ $(function() {
 <div class="title">changes per version </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>v1.706 2020-05-21</p>
+<div class="textblock"><p>v1.707</p>
+<ul>
+<li>[BREAKING] Improved collision detection.</li>
+</ul>
+<p>v1.706 2020-05-21</p>
 <ul>
 <li>The slowdown on MacOS in full screen mode has now been corrected and full screen mode has been re-enabled on MacOS.</li>
 <li>[BREAKING] Corrected coordinate system handedness (right handed implementation, emulating OpenGL).</li>
@@ -81,7 +85,7 @@ $(function() {
 </ul>
 <p>v1.703 2019-11-02</p>
 <ul>
-<li>Eliminated Renderer write function and all the renderRectangle functions as they were too resource hungry. This is a breaking change.</li>
+<li>[BREAKING] Eliminated Renderer write function and all the renderRectangle functions as they were too resource hungry.</li>
 <li>Modified Renderer generateTexture function to contain a confirmation flag for replacing an existing texture if it has the same name as the texture being generated.</li>
 <li>Added some convenient render functions to Renderer, for rendering models without a given offset nor rotation (defaulting to 0).</li>
 </ul>

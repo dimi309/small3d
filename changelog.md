@@ -1,4 +1,8 @@
-/*! \page changelog changes per version
+- [BREAKING] Improved collision detection./*! \page changelog changes per version
+
+v1.707
+
+- [BREAKING] Improved collision detection.
 
 v1.706 2020-05-21
 
@@ -18,8 +22,8 @@ v1.704 2019-11-06
 
 v1.703 2019-11-02
 
-- Eliminated Renderer write function and all the renderRectangle
-  functions as they were too resource hungry. This is a breaking change.
+- [BREAKING] Eliminated Renderer write function and all the renderRectangle
+  functions as they were too resource hungry.
   
 - Modified Renderer generateTexture function to contain a confirmation
   flag for replacing an existing texture if it has the same name as
