@@ -213,7 +213,7 @@ namespace small3d {
   void BoundingBoxSet::triangulate()
   {
     if (facesVertexIndexesTriangulated.empty()) {
-      uint32_t numIter = 0;
+      
       for (auto x : facesVertexIndexes) {
         facesVertexIndexesTriangulated.push_back(std::vector<unsigned int> {x.at(0), x.at(1), x.at(2)});
         facesVertexIndexesTriangulated.push_back(std::vector<unsigned int> {x.at(2), x.at(3), x.at(0)});
