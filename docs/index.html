@@ -69,18 +69,15 @@ $(function() {
 <div class="textblock"><p><a class="anchor" id="md_small3d_README"></a> <a href="https://github.com/dimi309/small3d">[Source Code]</a> <a href="https://dimi309.github.io/small3d">[API Documentation]</a></p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Introduction</h1>
-<p>This is a free, open source, minimalistic 3D framework for the programmer who would like to make games using a basic set of libraries (glfw, glm, png, zlib, ogg, vorbis, portaudio, freetype, bzip) and relying on C++ to do the rest. It helps you by providing you with cross-platform rendering functionality based on Vulkan (many thanks to the <a href="https://vulkan-tutorial.com/">Vulkan Tutorial</a> and Sascha Willems' excellent <a href="https://github.com/SaschaWillems/Vulkan">Vulkan examples and demos</a>).</p>
+<p>This is a free, open source, minimalistic 3D framework for the programmer who would like to make games using a basic set of libraries (glfw, glm, png, zlib, ogg, vorbis, portaudio, freetype, bzip) and relying on C++ to do the rest. It helps you by providing you with cross-platform rendering functionality based on Vulkan. It can also be compiled with OpenGL.</p>
 <p>small3d can render Wavefront models, animate them as frames, map textures on them, provide some basic lighting (Gouraud shading) and also render images and text.</p>
 <p>A very easy to use Sound object is also provided that can play OGG files on all supported platforms via a common interface. Basic collision detection has also been implemented.</p>
 <p>small3d works on Windows, MacOS, Linux, iOS and Android and supports Visual Studio, Xcode, gcc (even MinGW) and clang for compilation.</p>
 <p>All small3d dependencies, apart from the Vulkan SDK, are distributed together with its source code. They can be built by executing a single script (see below).</p>
 <h1><a class="anchor" id="autotoc_md2"></a>
-small3d with OpenGL</h1>
-<p>small3d started out as an OpenGL-based project. The OpenGL edition of the framework is <a href="https://github.com/dimi309/small3d/tree/opengl33">still maintained</a>, with an API identical to that of the Vulkan edition so that a game that has been compiled with one can easily switch to the other.</p>
-<h1><a class="anchor" id="autotoc_md3"></a>
 small3d on mobile</h1>
 <p>The instructions and example below describe building and using small3d on a PC (Windows, Linux or MacOS). As far as mobile devices are concerned, the sample game, <a href="https://github.com/dimi309/avoidthebug">Avoid the Bug</a> has been ported to both <a href="https://github.com/dimi309/avoidthebug-android">Android</a> and <a href="https://github.com/dimi309/avoidthebug-ios">iOS</a>. I use these projects as a basis for mobile development, rather than provide a prebuilt mobile small3d library. They contain the small3d source files (unchanged, I sync back and forth), prebuilt dependencies (vorbis, ogg, freetype etc.) and the required CMakeLists file. The scripts to build the dependencies for mobile devices are provided in the main small3d repository (<em>deps/prepare-android.bat</em> for Android and <em>deps/prepare-ios.sh</em> for iOS). Note that, while with the desktop edition of small3d I use GLFW for windowing functionalities and I/O, on mobile I access the native infrastructure directly.</p>
-<h1><a class="anchor" id="autotoc_md4"></a>
+<h1><a class="anchor" id="autotoc_md3"></a>
 Building</h1>
 <p>Before starting, note that the Vulkan SDK and cmake have to be installed on your system and accessible on the command line. On Windows, 7zip also has to be in the path and you also need to install the MinGW compiler or Visual Studio, again with their tools available on the command line.</p>
 <p>Run the <em>prepare.bat</em> (Windows MinGW), <em>prepare-vs.bat</em> (Windows Visual Studio) or <em>prepare.sh</em> script from within the <em>deps</em> directory, in order to build the dependencies.</p>
@@ -88,12 +85,13 @@ Building</h1>
 cmake ..
 cmake --build .
 </pre><p>On Windows, you need to execute <code>cmake .. -G"MinGW Makefiles"</code>, or with the preferred Visual Studio configuration (e.g. <code>cmake .. -G"Visual Studio 16 2019" -A x64</code>). Make sure that <em>prepare-vs.bat</em> is run with the same configuration (see the parameters at the top, inside the file). Also, make sure to run build under the configuration also defined in <em>prepare-vs.bat</em> parameters, e.g. <code>cmake --build . --config Debug</code>.</p>
+<p>If you would rather build small3d with OpenGL rather than Vulkan, also add the definition <code>-DSMALL3D_OPENGL=ON</code> when running <code>cmake ..</code>.</p>
 <p>The unit tests can be run via the <em>unittests</em> binary from <em>build/bin</em>.</p>
 <p>For building your own project, you need the header files from the <em>build/include</em> directory, the libraries from the <em>build/lib</em> directory and the shaders from <em>build/shaders</em>. If you are using cmake, the modules in <em>small3d/cmake</em> can be useful. Check the CMakeLists.txt and src/CMakeLists.txt files for other configuration details (link flags, etc) that may also be required or useful.</p>
-<h1><a class="anchor" id="autotoc_md5"></a>
+<h1><a class="anchor" id="autotoc_md4"></a>
 Example</h1>
 <p>Let's move an object around the screen.</p>
-<h2><a class="anchor" id="autotoc_md6"></a>
+<h2><a class="anchor" id="autotoc_md5"></a>
 Get a 3D model</h2>
 <p>We need a Wavefront file. Suppose that it is a model of a ball, called ball.obj. Here's how to make one with Blender (skip the following part if you already have a model ready and go to the Setup section).</p>
 <p>When you start Blender, you see a cube:</p>
@@ -111,7 +109,7 @@ Get a 3D model</h2>
 <p><img src="export.png" alt="" class="inline" title="Wavefront export options"/>   </p>
 <p><em>Note: Later, for exporting animations to a series of Wavefront files in a way that will allow small3d to load them, also select "Animation" and "Apply Modifiers".</em></p>
 <p>Save the exported file as "ball.obj".</p>
-<h2><a class="anchor" id="autotoc_md7"></a>
+<h2><a class="anchor" id="autotoc_md6"></a>
 Setup</h2>
 <p>Let's proceed to make our first program. Create a directory, called <em>ball</em>. Then create another directory within it, called <em>resources</em> and place <em>ball.obj</em> in it. Also add the following code to a CMakeFiles.txt within the <em>ball</em> directory: </p><pre class="fragment">cmake_minimum_required(VERSION 3.0.2)
 
@@ -144,7 +142,10 @@ elseif(UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif(MSVC)
 
-find_package(Vulkan REQUIRED)
+find_package(Vulkan REQUIRED) # Delete for OpenGL
+# Uncomment for OpenGL:
+# find_package(OpenGL REQUIRED)
+# find_package(GLEW REQUIRED)
 find_package(GLFW REQUIRED)
 find_package(PNG REQUIRED)
 find_package(GLM)
@@ -166,7 +167,7 @@ target_include_directories(ball PUBLIC "${CMAKE_SOURCE_DIR}/include")
 target_include_directories(ball PUBLIC
     ${SMALL3D_INCLUDE_DIR}
     ${GLFW_INCLUDE_DIRS}
-    ${Vulkan_INCLUDE_DIR}
+    ${Vulkan_INCLUDE_DIR} # Replace with ${OPENGL_INCLUDE_DIR} for OpenGL
     ${PNG_INCLUDE_DIRS}
     ${GLM_INCLUDE_DIRS}
     ${OGG_INCLUDE_DIRS}
@@ -177,8 +178,11 @@ target_include_directories(ball PUBLIC
 
 target_link_libraries(ball PUBLIC
     ${SMALL3D_LIBRARY}
+    # Uncomment for OpenGL
+    # ${GLEW_LIBRARIES} and
+    # ${OPENGL_LIBRARIES}
     ${GLFW_LIBRARIES}
-    ${Vulkan_LIBRARIES}
+    ${Vulkan_LIBRARIES} # Remove for OpenGL
     ${PNG_LIBRARIES}
     ${VORBIS_LIBRARIES}
     ${OGG_LIBRARIES}
@@ -212,7 +216,7 @@ if(MSVC)
     set_target_properties(ball PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
         "${small3d_BINARY_DIR}/bin")
 endif(MSVC)
-</pre><h2><a class="anchor" id="autotoc_md8"></a>
+</pre><h2><a class="anchor" id="autotoc_md7"></a>
 The code</h2>
 <p>Inside <em>ball/src</em>, create the <em>main.cpp</em> file: </p><pre class="fragment">int main(int argc, char **argv) {
 
@@ -284,7 +288,7 @@ cd bin
 <p>There's our ball:</p>
 <p><img src="ball.png" alt="" class="inline" title="The ball"/>   </p>
 <p>Try moving it around with the arrows. A good way to learn about the other features of small3d is to read the documentation (in docs) and also to explore the source code of the sample games.</p>
-<h2><a class="anchor" id="autotoc_md9"></a>
+<h2><a class="anchor" id="autotoc_md8"></a>
 Collision Detection</h2>
 <p>The framework supports collision detection via manually created bounding boxes. In order to create these in Blender for example, just place them in the preferred position over the model. Ideally, they should be aligned with the axes, (but note that small3d does more than just a simple axis-aligned bounding box collision detection).</p>
 <p><img src="boundingboxes.png" alt="" class="inline" title="Bounding boxes"/>   </p>
