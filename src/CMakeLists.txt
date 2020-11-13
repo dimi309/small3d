@@ -31,6 +31,7 @@ if(NOT SMALL3D_OPENGL)
 else()
   include_directories(${OPENGL_INCLUDE_DIR}
     ${CMAKE_BINARY_DIR}/include/small3d) # because we don't want to include the Vulkan-based Renderer.hpp
+  message(WARNING "ATTENTION: You cannot just edit small3d header files from an IDE like Visual Studio when using the OpenGL build. You need to also copy them to the build directory! (build/include/small3d)")
 endif()
 
 if(NOT SMALL3D_OPENGL)

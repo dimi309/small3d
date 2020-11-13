@@ -28,12 +28,15 @@ endif()
 
 file(COPY "include" DESTINATION ".")
 
+file(COPY "resources" DESTINATION "./bin")
+
 if(SMALL3D_OPENGL)
   file(REMOVE "${PROJECT_BINARY_DIR}/include/small3d/Renderer.hpp")
   file(COPY "opengl33/include/small3d/Renderer.hpp" DESTINATION "./include/small3d")
+  file(GLOB VULKAN_BIN_SHADERS ${PROJECT_BINARY_DIR}/bin/resources/shaders/*)
+  file(REMOVE ${VULKAN_BIN_SHADERS})
+  file(COPY ${SHADERS} DESTINATION ./bin/resources/shaders) 
 endif()
-
-file(COPY "resources" DESTINATION "./bin")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
