@@ -68,14 +68,12 @@ endif()
 
 if(NOT SMALL3D_OPENGL)
   find_package(Vulkan REQUIRED)
-endif()
-
-find_package(GLFW REQUIRED)
-
-if(SMALL3D_OPENGL)
+else()
+  find_package(OpenGL REQUIRED)
   find_package(GLEW REQUIRED)
 endif()
 
+find_package(GLFW REQUIRED)
 find_package(PNG REQUIRED)
 find_package(GLM REQUIRED)
 find_package(OGG REQUIRED)
