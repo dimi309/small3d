@@ -9,8 +9,7 @@ This is a free, open source, minimalistic 3D framework for the programmer who
 would like to make games using a basic set of libraries (glfw, 
 glm, png, zlib, ogg, vorbis, portaudio, freetype, bzip) and relying on
 C++ to do the rest. It helps you by providing you with cross-platform rendering
-functionality based on Vulkan (many thanks to the [Vulkan Tutorial](https://vulkan-tutorial.com/) 
-and Sascha Willems' excellent [Vulkan examples and demos](https://github.com/SaschaWillems/Vulkan)). 
+functionality based on Vulkan. It can also be compiled with OpenGL. 
 
 small3d can render Wavefront models, animate them as frames, map textures on 
 them, provide some basic lighting (Gouraud shading) and also render images and
@@ -26,13 +25,6 @@ Studio, Xcode, gcc (even MinGW) and clang for compilation.
 All small3d dependencies, apart from the Vulkan SDK, are distributed together 
 with its source code. They can be built by executing a single script (see 
 below).
-
-## small3d with OpenGL
-
-small3d started out as an OpenGL-based project. The OpenGL edition of the
-framework is [still maintained](https://github.com/dimi309/small3d/tree/opengl33), 
-with an API identical to that of the Vulkan edition so that a game that has been
-compiled with one can easily switch to the other.
 
 ## small3d on mobile
 
@@ -74,7 +66,10 @@ or with the preferred Visual Studio configuration
 Make sure that *prepare-vs.bat* is run with the same configuration (see the
 parameters at the top, inside the file). Also, make sure to run build under the
 configuration also defined in *prepare-vs.bat* parameters, e.g.
-`cmake --build . --config Debug`.
+`cmake --build . --config Debug`. 
+
+If you would rather build small3d with OpenGL rather than Vulkan, also add
+the definition `-DSMALL3D_OPENGL=ON` when running `cmake ..`.
 	
 The unit tests can be run via the *unittests* binary from *build/bin*. 
 
@@ -171,8 +166,11 @@ directory:
 	elseif(UNIX)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 	endif(MSVC)
-
-	find_package(Vulkan REQUIRED)
+	
+	find_package(Vulkan REQUIRED) # Delete for OpenGL
+	# Uncomment for OpenGL:
+    # find_package(OpenGL REQUIRED)
+	# find_package(GLEW REQUIRED)
 	find_package(GLFW REQUIRED)
 	find_package(PNG REQUIRED)
 	find_package(GLM)
@@ -198,7 +196,7 @@ another *CMakeLists.txt* file:
 	target_include_directories(ball PUBLIC
 		${SMALL3D_INCLUDE_DIR}
 		${GLFW_INCLUDE_DIRS}
-		${Vulkan_INCLUDE_DIR}
+		${Vulkan_INCLUDE_DIR} # Replace with ${OPENGL_INCLUDE_DIR} for OpenGL
 		${PNG_INCLUDE_DIRS}
 		${GLM_INCLUDE_DIRS}
 		${OGG_INCLUDE_DIRS}
@@ -209,8 +207,11 @@ another *CMakeLists.txt* file:
 
 	target_link_libraries(ball PUBLIC
 		${SMALL3D_LIBRARY}
+		# Uncomment for OpenGL
+		# ${GLEW_LIBRARIES} and
+        # ${OPENGL_LIBRARIES}
 		${GLFW_LIBRARIES}
-		${Vulkan_LIBRARIES}
+		${Vulkan_LIBRARIES} # Remove for OpenGL
 		${PNG_LIBRARIES}
 		${VORBIS_LIBRARIES}
 		${OGG_LIBRARIES}
