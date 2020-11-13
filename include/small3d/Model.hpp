@@ -117,6 +117,32 @@ namespace small3d {
      *        (Vulkan-specific, avoid direct manipulation)
      */
     uint32_t colourMemIndex = 0;
+#else
+
+    /**
+     * @brief Position buffer object id. It is suggested not to manipulate
+     *        this directly.
+     */
+    uint32_t positionBufferObjectId = 0;
+
+    /**
+     * @brief Index buffer object id. It is suggested not to manipulate
+     *        this directly.
+     */
+    uint32_t indexBufferObjectId = 0;
+
+    /**
+     * @brief Normals buffer object id. It is suggested not to manipulate
+     *        this directly.
+     */
+    uint32_t normalsBufferObjectId = 0;
+
+    /**
+     * @brief UV buffer object id. It is suggested not to manipulate this
+     *        directly.
+     */
+    uint32_t uvBufferObjectId = 0;
+    
 #endif
 
     /**

@@ -16,7 +16,6 @@ endif()
 add_library(small3d ${SOURCE_FILES} ${HEADER_FILES})
 
 include_directories(
-  "${CMAKE_SOURCE_DIR}/include/small3d"
   ${GLFW_INCLUDE_DIRS}
   ${PNG_INCLUDE_DIRS}
   ${GLM_INCLUDE_DIRS}
@@ -27,9 +26,11 @@ include_directories(
   )
 
 if(NOT SMALL3D_OPENGL)
-  include_directories(${Vulkan_INCLUDE_DIRS})
+  include_directories(${Vulkan_INCLUDE_DIRS}
+    ${CMAKE_SOURCE_DIR}/include/small3d)
 else()
-  include_directories(${OPENGL_INCLUDE_DIR})
+  include_directories(${OPENGL_INCLUDE_DIR}
+    ${CMAKE_BINARY_DIR}/include/small3d) # because we don't want to include the Vulkan-based Renderer.hpp
 endif()
 
 if(NOT SMALL3D_OPENGL)
@@ -68,8 +69,13 @@ endif(WIN32)
 
 add_executable(unittests unit_tests.cpp)
 
-target_include_directories(unittests PUBLIC
-  "${CMAKE_SOURCE_DIR}/include")
+if(NOT SMALL3D_OPENGL)
+  target_include_directories(unittests PUBLIC
+    ${CMAKE_SOURCE_DIR}/include)
+else()
+  target_include_directories(unittests PUBLIC
+    ${CMAKE_BINARY_DIR}/include) # because we don't want to include the Vulkan-based Renderer.hpp
+endif()
 
 target_link_libraries(unittests PUBLIC small3d)
 
