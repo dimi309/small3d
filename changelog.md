@@ -3,6 +3,8 @@
 v1.707
 
 - [BREAKING] Improved collision detection.
+- Merged OpenGL and Vulkan codebases. OpenGL can be optionally selected
+  instead of Vulkan when configuring with CMake.
 
 v1.706 2020-05-21
 
