@@ -208,7 +208,7 @@ another *CMakeLists.txt* file:
 	target_link_libraries(ball PUBLIC
 		${SMALL3D_LIBRARY}
 		# Uncomment for OpenGL
-		# ${GLEW_LIBRARIES} and
+		# ${GLEW_LIBRARIES}
         # ${OPENGL_LIBRARIES}
 		${GLFW_LIBRARIES}
 		${Vulkan_LIBRARIES} # Remove for OpenGL
