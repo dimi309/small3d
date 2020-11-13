@@ -10,10 +10,12 @@
 
 #include <string>
 #include <vector>
-#include <vulkan/vulkan.h>
 
+#ifndef SMALL3D_OPENGL
+#include <vulkan/vulkan.h>
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
+#endif
 
 namespace small3d {
   /**
@@ -48,6 +50,7 @@ namespace small3d {
 
   public:
 
+#ifndef SMALL3D_OPENGL
     /**
      * @brief Is the model already in GPU memory?
      *        (Vulkan-specific, avoid direct manipulation)
@@ -114,6 +117,7 @@ namespace small3d {
      *        (Vulkan-specific, avoid direct manipulation)
      */
     uint32_t colourMemIndex = 0;
+#endif
 
     /**
      * @brief The vertex data. This is an array, which is to be treated as a 4
@@ -165,6 +169,9 @@ namespace small3d {
      */
     int textureCoordsDataByteSize = 0;
 
+
+#ifndef SMALL3D_OPENGL
+    
     /**
     * @brief Name of the texture the model will be rendered with. The texture has to
     *        have been previously generated with Renderer.generateTexture().
@@ -176,7 +183,8 @@ namespace small3d {
      *        rendering
      */
     bool perspective = false;
-
+    
+#endif
     
     /**
      * @brief Default constructor
