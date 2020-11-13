@@ -11,6 +11,7 @@ find_library(
   NAMES
   glew
   glew32
+  GLEW
   PATHS
   lib
   /usr/lib
