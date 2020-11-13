@@ -10,7 +10,7 @@ else()
   list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/Renderer.cpp)
   list(APPEND SOURCE_FILES ${CMAKE_SOURCE_DIR}/opengl33/src/Renderer.cpp)
   list(REMOVE_ITEM HEADER_FILES  ${CMAKE_SOURCE_DIR}/include/small3d/Renderer.hpp)
-  list(APPEND HEADER_FILES ${CMAKE_SOURCE_DIR}/opengl33/include/small3d/Renderer.cpp)
+  list(APPEND HEADER_FILES ${CMAKE_SOURCE_DIR}/opengl33/include/small3d/Renderer.hpp)
 endif()
 
 add_library(small3d ${SOURCE_FILES} ${HEADER_FILES})

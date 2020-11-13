@@ -25,7 +25,8 @@ endif()
 file(COPY "include" DESTINATION ".")
 
 if(SMALL3D_OPENGL)
-  file(COPY "small3d/include/small3d/Renderer.hpp" DESTINATION "./include/small3d")
+  file(REMOVE "${PROJECT_BINARY_DIR}/include/small3d/Renderer.hpp")
+  file(COPY "include/small3d/Renderer.hpp" DESTINATION "./include/small3d")
 endif()
 
 file(COPY "resources" DESTINATION "./bin")
