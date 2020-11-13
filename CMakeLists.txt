@@ -2,17 +2,32 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(small3d)
 
+if(NOT SMALL3D_OPENGL)
+  set(SMALL3D OFF CACHE BOOL "Compile with OpenGL 3.3")
+endif()
+
 file(COPY "deps/include" DESTINATION ".")
+
 file(COPY "deps/lib" DESTINATION ".")
 
-file(GLOB SHADERS_SOURCE "resources/shaders/*")
-file(COPY ${SHADERS_SOURCE} DESTINATION "./shaders")
+if(NOT SMALL3D_OPENGL)
+  file(GLOB SHADERS "resources/shaders/*.spv")
+else()
+  file(GLOB SHADERS "opengl33/resources/shaders/*")
+endif()
+
+file(COPY ${SHADERS} DESTINATION "./shaders")
 
 if(MSVC)
   file(COPY "deps/bin" DESTINATION ".")
-endif(MSVC)
+endif()
 
 file(COPY "include" DESTINATION ".")
+
+if(SMALL3D_OPENGL)
+  file(COPY "small3d/include/small3d/Renderer.hpp" DESTINATION "./include/small3d")
+endif()
+
 file(COPY "resources" DESTINATION "./bin")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
@@ -27,7 +42,7 @@ if(MSVC)
   set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${PROJECT_BINARY_DIR}/lib")
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${PROJECT_BINARY_DIR}/lib")
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${PROJECT_BINARY_DIR}/lib")
-endif(MSVC)
+endif()
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -44,10 +59,18 @@ elseif(APPLE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
 elseif(UNIX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-endif(MSVC)
+endif()
 
-find_package(Vulkan REQUIRED)
+if(NOT SMALL3D_OPENGL)
+  find_package(Vulkan REQUIRED)
+endif()
+
 find_package(GLFW REQUIRED)
+
+if(SMALL3D_OPENGL)
+  find_package(GLEW REQUIRED)
+endif()
+
 find_package(PNG REQUIRED)
 find_package(GLM REQUIRED)
 find_package(OGG REQUIRED)
@@ -57,7 +80,11 @@ find_package(Freetype REQUIRED)
 
 if(UNIX)
   find_package(BZip2 REQUIRED)
-endif(UNIX)
+endif()
+
+if(SMALL3D_OPENGL AND WIN32)
+  add_definitions(-DGLEW_STATIC)
+endif()
 
 add_definitions(${PNG_DEFINITIONS})
 
