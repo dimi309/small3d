@@ -209,7 +209,7 @@ another *CMakeLists.txt* file:
 		${SMALL3D_LIBRARY}
 		# Uncomment for OpenGL
 		# ${GLEW_LIBRARIES}
-        # ${OPENGL_LIBRARIES}
+		# ${OPENGL_LIBRARIES}
 		${GLFW_LIBRARIES}
 		${Vulkan_LIBRARIES} # Remove for OpenGL
 		${PNG_LIBRARIES}
