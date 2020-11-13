@@ -36,6 +36,17 @@ if [ $(uname) != 'Linux' ]; then
     rm -rf glfw-3.3
 fi
 
+# Only needed for OpenGL build
+tar xvf glew-20190928.tgz
+cd glew-2.2.0
+cmake build/cmake -DBUILD_UTILS=OFF
+cmake --build .
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+cp -rf include/GL ../include/
+cp lib/libGLEW.a ../lib/
+cd ..
+rm -rf glew-2.2.0
+
 unzip glm-0.9.9.0.zip
 cp -rf glm/glm include/
 rm -rf glm
