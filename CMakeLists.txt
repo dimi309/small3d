@@ -2,8 +2,12 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(small3d)
 
-if(NOT SMALL3D_OPENGL)
-  set(SMALL3D OFF CACHE BOOL "Compile with OpenGL 3.3")
+option(SMALL3D_OPENGL "Compile with OpenGL 3.3" OFF)
+
+MESSAGE(STATUS "OpenGL: ${SMALL3D_OPENGL}")
+
+if(SMALL3D_OPENGL)
+  add_compile_definitions(SMALL3D_OPENGL)
 endif()
 
 file(COPY "deps/include" DESTINATION ".")
