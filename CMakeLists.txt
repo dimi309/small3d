@@ -30,6 +30,8 @@ file(COPY "include" DESTINATION ".")
 
 if(NOT DEFINED ANDROID_PLATFORM)
   file(COPY "resources" DESTINATION "./bin")
+else()
+  file(COPY "src/vkzos.h" DESTINATION "./include")
 endif()
 
 if(SMALL3D_OPENGL)
