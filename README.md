@@ -33,12 +33,7 @@ The instructions and example below describe building and using small3d on a PC
 game, [Avoid the Bug](https://github.com/dimi309/avoidthebug) has been ported to
 both [Android](https://github.com/dimi309/avoidthebug-android) and 
 [iOS](https://github.com/dimi309/avoidthebug-ios). I use these projects as a basis
-for mobile development, rather than provide a prebuilt mobile small3d library. They
-contain the small3d source files (unchanged, I sync back and forth), prebuilt
-dependencies (vorbis, ogg, freetype etc.) and the required CMakeLists file. 
-The scripts to build the dependencies for mobile devices are provided in the main
-small3d repository (*deps/prepare-android.bat* for Android and 
-*deps/prepare-ios.sh* for iOS). Note that, while with the desktop edition of small3d
+for mobile development. Note that, while with the desktop edition of small3d
 I use GLFW for windowing functionalities and I/O, on mobile I access the native
 infrastructure directly.
 
