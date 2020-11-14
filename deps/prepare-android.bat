@@ -1,12 +1,12 @@
 REM For this to work, set the %NDK% variable to your ndk path. It should look like
-REM C:\Users\user\AppData\Local\Android\Sdk\ndk\21.2.6472646 for example. Also, the
+REM C:\Users\user\AppData\Local\Android\Sdk\ndk\22.0.6917172 for example. Also, the
 REM script needs to run in an environment with MinGW set up and no settings for
 REM Visual Studio.
 
 mkdir include
 mkdir lib
 
-SET depspath=%cd%
+SET sourcepath=%cd%
 SET platformstr=android-28
 
 7z x glm-0.9.9.0.zip
@@ -61,7 +61,7 @@ cd vorbis-1.3.6
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF^
- -DOGG_INCLUDE_DIRS=%depspath%/include -DOGG_LIBRARIES=%depspath%/lib/%%A/libogg.a^
+ -DOGG_INCLUDE_DIRS=%sourcepath%/include -DOGG_LIBRARIES=%sourcepath%/lib/%%A/libogg.a^
  -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A
 cmake --build .
 if errorlevel 1 exit /B
