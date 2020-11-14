@@ -118,3 +118,8 @@ cd ../..
 rm -rf freetype-2.9.1
 
 unset $SDK
+
+cp $VULKAN_SDK/../MoltenVK/MoltenVK.xcframework/ios-arm64/libMoltenVK.a lib/
+cp -rf $VULKAN_SDK/../MoltenVK/include/* include/
+cp ios/interop.h include/
+cp ios/interop.m lib/

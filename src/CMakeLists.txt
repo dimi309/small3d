@@ -13,6 +13,10 @@ else()
   list(APPEND HEADER_FILES ${CMAKE_SOURCE_DIR}/opengl33/include/small3d/Renderer.hpp)
 endif()
 
+if(IOS)
+  list(APPEND HEADER_FILES ${CMAKE_SOURCE_DIR}/deps/lib/interop.m)
+endif()
+
 add_library(small3d ${SOURCE_FILES} ${HEADER_FILES})
 
 if(NOT SMALL3D_OPENGL)
@@ -24,7 +28,7 @@ else()
   message(WARNING "ATTENTION: You cannot just edit small3d header files from an IDE like Visual Studio when using the OpenGL build. You need to also copy them to the build directory! (build/include/small3d)")
 endif()
 
-if(NOT DEFINED ANDROID_PLATFORM)
+if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
   include_directories(
     ${PNG_INCLUDE_DIRS}
     ${GLM_INCLUDE_DIRS}
@@ -34,15 +38,20 @@ if(NOT DEFINED ANDROID_PLATFORM)
     ${GLFW_INCLUDE_DIRS}
     ${PORTAUDIO_INCLUDE_DIRS}
     )
-else()
+elseif(NOT IOS)
   target_include_directories(small3d PUBLIC
     ${CMAKE_SOURCE_DIR}/deps/include
     ${Vulkan_INCLUDE_DIRS}
     ${ZLIB_INCLUDE_DIRS}
     )
+elseif(IOS)
+  target_include_directories(small3d PUBLIC
+    ${CMAKE_SOURCE_DIR}/deps/include
+    ${ZLIB_INCLUDE_DIRS}
+    )
 endif()
 
-if(NOT SMALL3D_OPENGL AND NOT DEFINED ANDROID_PLATFORM)
+if(NOT SMALL3D_OPENGL AND NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
   target_link_libraries(small3d PUBLIC
     ${GLFW_LIBRARIES}
     ${Vulkan_LIBRARIES}
@@ -83,9 +92,22 @@ elseif(DEFINED ANDROID_PLATFORM)
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libogg.a
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libfreetype.a
     ${ZLIB_LIBRARIES})
+elseif(IOS)
+  target_link_libraries(small3d
+    ${CMAKE_SOURCE_DIR}/deps/lib/libbz2.a
+    ${CMAKE_SOURCE_DIR}/deps/lib/libfreetype.a
+    ${CMAKE_SOURCE_DIR}/deps/lib/libMoltenVK.a
+    ${CMAKE_SOURCE_DIR}/deps/lib/libogg.a
+    ${CMAKE_SOURCE_DIR}/deps/lib/libpng.a
+    ${CMAKE_SOURCE_DIR}/deps/lib/libvorbis.a
+    ${CMAKE_SOURCE_DIR}/deps/lib/libvorbisfile.a
+    ${CMAKE_SOURCE_DIR}/deps/lib/libz.a
+    OpenAL.framework
+    
+    )
 endif()
 
-if(NOT DEFINED ANDROID_PLATFORM)
+if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
 
   if(UNIX)
     include_directories(${BZIP2_INCLUDE_DIRS})
