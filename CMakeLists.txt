@@ -4,6 +4,12 @@ project(small3d)
 
 option(SMALL3D_OPENGL "Compile with OpenGL 3.3" OFF)
 
+if(IOS)
+  message(STATUS "IOS build...")
+  add_compile_definitions(SMALL3D_IOS)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -x objective-c -fmodules")
+endif()
+
 MESSAGE(STATUS "OpenGL: ${SMALL3D_OPENGL}")
 
 if(SMALL3D_OPENGL)
@@ -28,7 +34,7 @@ endif()
 
 file(COPY "include" DESTINATION ".")
 
-if(NOT DEFINED ANDROID_PLATFORM)
+if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
   file(COPY "resources" DESTINATION "./bin")
 else()
   file(COPY "src/vkzos.h" DESTINATION "./include")
@@ -73,14 +79,14 @@ elseif(UNIX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 
-if(NOT SMALL3D_OPENGL)
+if(NOT SMALL3D_OPENGL AND NOT IOS)
   find_package(Vulkan REQUIRED)
-else()
+elseif(NOT IOS)
   find_package(OpenGL REQUIRED)
   find_package(GLEW REQUIRED)
 endif()
 
-if(NOT DEFINED ANDROID_PLATFORM)
+if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
   find_package(GLFW REQUIRED)
   find_package(Portaudio REQUIRED)
   find_package(PNG REQUIRED)
@@ -91,7 +97,7 @@ if(NOT DEFINED ANDROID_PLATFORM)
   if(UNIX)
     find_package(BZip2 REQUIRED)
   endif()
-else()
+elseif(NOT IOS)
   find_package(ZLIB REQUIRED)
 endif()
 
