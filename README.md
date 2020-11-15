@@ -26,17 +26,6 @@ All small3d dependencies, apart from the Vulkan SDK, are distributed together
 with its source code. They can be built by executing a single script (see 
 below).
 
-## small3d on mobile
-
-The instructions and example below describe building and using small3d on a PC 
-(Windows, Linux or MacOS). As far as mobile devices are concerned, the sample 
-game, [Avoid the Bug](https://github.com/dimi309/avoidthebug) has been ported to
-both [Android](https://github.com/dimi309/avoidthebug-android) and 
-[iOS](https://github.com/dimi309/avoidthebug-ios). I use these projects as a basis
-for mobile development. Note that, while with the desktop edition of small3d
-I use GLFW for windowing functionalities and I/O, on mobile I access the native
-infrastructure directly.
-
 ## Building
 
 Before starting, note that the Vulkan SDK and cmake have to be installed on 
@@ -74,6 +63,19 @@ the shaders from *build/shaders*. If you are using cmake, the
 modules in *small3d/cmake* can be useful. Check the CMakeLists.txt and
 src/CMakeLists.txt files for other configuration details (link flags, etc) that 
 may also be required or useful.
+
+## small3d on mobile
+
+The scripts for preparing the dependencies of small3d for mobile are `prepare-android`
+and `prepare-ios` for Android and iOS respectively, found in the `deps` directory. 
+After executing one of those, you can build small3d for these platforms by executing
+either `build-android.bat` or `build-ios.sh` from the main directory. The sample game, 
+[Avoid the Bug](https://github.com/dimi309/avoidthebug) has been ported to
+both [Android](https://github.com/dimi309/avoidthebug-android) and 
+[iOS](https://github.com/dimi309/avoidthebug-ios). I use these projects as a basis
+for mobile development. Note that, while with the desktop edition of small3d
+I use GLFW for windowing functionalities and I/O, on mobile I access the native
+infrastructure directly.
 
 # Example
 

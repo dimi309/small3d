@@ -75,9 +75,6 @@ Introduction</h1>
 <p>small3d works on Windows, MacOS, Linux, iOS and Android and supports Visual Studio, Xcode, gcc (even MinGW) and clang for compilation.</p>
 <p>All small3d dependencies, apart from the Vulkan SDK, are distributed together with its source code. They can be built by executing a single script (see below).</p>
 <h1><a class="anchor" id="autotoc_md2"></a>
-small3d on mobile</h1>
-<p>The instructions and example below describe building and using small3d on a PC (Windows, Linux or MacOS). As far as mobile devices are concerned, the sample game, <a href="https://github.com/dimi309/avoidthebug">Avoid the Bug</a> has been ported to both <a href="https://github.com/dimi309/avoidthebug-android">Android</a> and <a href="https://github.com/dimi309/avoidthebug-ios">iOS</a>. I use these projects as a basis for mobile development. Note that, while with the desktop edition of small3d I use GLFW for windowing functionalities and I/O, on mobile I access the native infrastructure directly.</p>
-<h1><a class="anchor" id="autotoc_md3"></a>
 Building</h1>
 <p>Before starting, note that the Vulkan SDK and cmake have to be installed on your system and accessible on the command line. On Windows, 7zip also has to be in the path and you also need to install the MinGW compiler or Visual Studio, again with their tools available on the command line.</p>
 <p>Run the <em>prepare.bat</em> (Windows MinGW), <em>prepare-vs.bat</em> (Windows Visual Studio) or <em>prepare.sh</em> script from within the <em>deps</em> directory, in order to build the dependencies.</p>
@@ -88,6 +85,9 @@ cmake --build .
 <p>If you would rather build small3d with OpenGL rather than Vulkan, also add the definition <code>-DSMALL3D_OPENGL=ON</code> when running <code>cmake ..</code>.</p>
 <p>The unit tests can be run via the <em>unittests</em> binary from <em>build/bin</em>.</p>
 <p>For building your own project, you need the header files from the <em>build/include</em> directory, the libraries from the <em>build/lib</em> directory and the shaders from <em>build/shaders</em>. If you are using cmake, the modules in <em>small3d/cmake</em> can be useful. Check the CMakeLists.txt and src/CMakeLists.txt files for other configuration details (link flags, etc) that may also be required or useful.</p>
+<h1><a class="anchor" id="autotoc_md3"></a>
+small3d on mobile</h1>
+<p>The scripts for preparing the dependencies of small3d for mobile are <code>prepare-android</code> and <code>prepare-ios</code> for Android and iOS respectively, found in the <code>deps</code> directory. After executing one of those, you can build small3d for these platforms by executing either <code>build-android.bat</code> or <code>build-ios.sh</code> from the main directory. The sample game, <a href="https://github.com/dimi309/avoidthebug">Avoid the Bug</a> has been ported to both <a href="https://github.com/dimi309/avoidthebug-android">Android</a> and <a href="https://github.com/dimi309/avoidthebug-ios">iOS</a>. I use these projects as a basis for mobile development. Note that, while with the desktop edition of small3d I use GLFW for windowing functionalities and I/O, on mobile I access the native infrastructure directly.</p>
 <h1><a class="anchor" id="autotoc_md4"></a>
 Example</h1>
 <p>Let's move an object around the screen.</p>
