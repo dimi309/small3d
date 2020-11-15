@@ -1,6 +1,7 @@
 if [ -z $1 ]
 then
-  echo "Please indicate what we are building for, './build-ios.sh ios' for iOS devices or './build-ios.sh simulator' for the Xcode iOS Simulator." 
+    echo "Please indicate what we are building for, './build-ios.sh ios' for iOS devices or './build-ios.sh simulator' for the Xcode iOS Simulator."
+    exit 1
 else
     if [ $1 = "ios" ]
     then
@@ -10,6 +11,7 @@ else
 	echo "Building for Xcode iOS Simulator..."
     else
 	echo $1 "not supported"
+	exit 1
     fi    
 fi
 
@@ -24,3 +26,7 @@ then
 fi
 
 cmake --build . --config Release
+
+mv lib/Release/* lib/
+rmdir lib/Release
+rm lib/interop.m

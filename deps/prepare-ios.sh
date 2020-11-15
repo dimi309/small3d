@@ -1,11 +1,13 @@
 if [ -z $VULKAN_SDK ]
 then
     echo "VULKAN_SDK is not set. Please set it to your Vulkan SDK location, e.g. export VULKAN_SDK=/Users/john/Software/vulkansdk-macos-1.2.154.0/macOS"
+    exit 1
 fi
 
 if [ -z $1 ]
 then
-  echo "Please indicate what we are building for, './build-ios.sh ios' for iOS devices or './build-ios.sh simulator' for the Xcode iOS Simulator." 
+    echo "Please indicate what we are building for, './build-ios.sh ios' for iOS devices or './build-ios.sh simulator' for the Xcode iOS Simulator."
+    exit 1
 else
     if [ $1 = "ios" ]
     then
@@ -15,6 +17,7 @@ else
 	echo "Building for Xcode iOS Simulator..."
     else
 	echo $1 "not supported"
+	exit 1
     fi    
 fi
 
