@@ -1,3 +1,23 @@
+if [ -z $VULKAN_SDK ]
+then
+    echo "VULKAN_SDK is not set. Please set it to your Vulkan SDK location, e.g. export VULKAN_SDK=/Users/john/Software/vulkansdk-macos-1.2.154.0/macOS"
+fi
+
+if [ -z $1 ]
+then
+  echo "Please indicate what we are building for, './build-ios.sh ios' for iOS devices or './build-ios.sh simulator' for the Xcode iOS Simulator." 
+else
+    if [ $1 = "ios" ]
+    then
+	echo "Building for iOS devices..."
+    elif [ $1 = "simulator" ]
+    then
+	echo "Building for Xcode iOS Simulator..."
+    else
+	echo $1 "not supported"
+    fi    
+fi
+
 mkdir include
 mkdir lib
 
@@ -5,9 +25,17 @@ unzip glm-0.9.9.0.zip
 cp -rf glm/glm include/
 rm -rf glm
 
-export ARCH=arm64 # armv7, arm64 or x86_64
-export CHOST=aarch64-apple-darwin* # arm-apple-darwin* or aarch64-apple-darwin*
-export SDK=iphoneos #iphonesimulator also possible
+if [ $1 = "ios" ]
+then
+    export ARCH=arm64 
+    export SDK=iphoneos
+elif [ $1 = "simulator" ]
+then
+    export ARCH=x86_64
+    export SDK=iphonesimulator
+fi
+
+export CHOST=aarch64-apple-darwin* # Never used arm-apple-darwin*
 
 export SDKVERSION=9 #$(xcrun --sdk $SDK --show-sdk-version) # current version
 export SDKROOT=$(xcrun --sdk $SDK --show-sdk-path) # current version
@@ -59,11 +87,15 @@ unset CXXFLAGS
 unset LDFLAGS
 unset PKG_CONFIG_PATH
 
-export CMAKE_DEFINITIONS="-GXcode -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64"
 
-# -DPLATFORM=OS64 and no -DARCHS for arm64
-# -DPLATFORM=OS -DARCHS=armv7 for armv7
-# -DPLATFORM=SIMULATOR64 -DARCHS=x86_64
+if [ $1 = "ios" ]
+then
+    export CMAKE_DEFINITIONS="-GXcode -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64"
+
+elif [ $1 = "simulator" ]
+then
+    export CMAKE_DEFINITIONS="-GXcode -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64"
+fi
 
 tar xvf libpng-1.6.37.tar.gz
 cd libpng-1.6.37
@@ -119,7 +151,14 @@ rm -rf freetype-2.9.1
 
 unset $SDK
 
-cp $VULKAN_SDK/../MoltenVK/MoltenVK.xcframework/ios-arm64/libMoltenVK.a lib/
+if [ $1 = "ios" ]
+then
+    cp $VULKAN_SDK/../MoltenVK/MoltenVK.xcframework/ios-arm64/libMoltenVK.a lib/
+elif [ $1 = "simulator" ]
+then
+    cp $VULKAN_SDK/../MoltenVK/MoltenVK.xcframework/ios-x86_64-simulator/libMoltenVK.a lib/
+fi
+
 cp -rf $VULKAN_SDK/../MoltenVK/include/* include/
 cp ios/interop.h include/
 cp ios/interop.m lib/
