@@ -71,7 +71,7 @@ when configured with cmake by default:
 
 	cmake ..
 
-However you might want to create an Xcode project, in order to Debug your
+However you might want to create an Xcode project, in order to debug your
 program in Xcode for example. In that case, some additional steps are needed, in
 order to ensure that the programs run without error. First of all, small3d
 together with its unit tests can be configured and built for Xcode as follows:
