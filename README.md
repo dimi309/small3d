@@ -110,7 +110,7 @@ path locations may vary):
 The scripts for preparing the dependencies of small3d for mobile are `prepare-android`
 and `prepare-ios` for Android and iOS respectively, found in the `deps` directory. 
 After executing one of those, you can build small3d for these platforms by executing
-either `build-android.bat` or `build-ios.sh` from the main directory. The sample game, 
+either `build-android` or `build-ios` from the main directory. The sample game, 
 [Avoid the Bug](https://github.com/dimi309/avoidthebug) has been ported to
 both [Android](https://github.com/dimi309/avoidthebug-android) and 
 [iOS](https://github.com/dimi309/avoidthebug-ios). I use these projects as a basis
