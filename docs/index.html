@@ -88,7 +88,7 @@ cmake --build .
 <h1><a class="anchor" id="autotoc_md3"></a>
 Xcode workarounds</h1>
 <p>On MacOS, the small3d unit tests and sample game work like on any other platform when configured with cmake by default: </p><pre class="fragment">cmake ..
-</pre><p>However you might want to create an Xcode project, in order to Debug your program in Xcode for example. In that case, some additional steps are needed, in order to ensure that the programs run without error. First of all, small3d together with its unit tests can be configured and built for Xcode as follows: </p><pre class="fragment">cmake .. -G"Xcode"
+</pre><p>However you might want to create an Xcode project, in order to debug your program in Xcode for example. In that case, some additional steps are needed, in order to ensure that the programs run without error. First of all, small3d together with its unit tests can be configured and built for Xcode as follows: </p><pre class="fragment">cmake .. -G"Xcode"
 cmake --build .
 </pre><p>The created project, <code>build/small3d.xcodeproj</code> can then be opened in Xcode.</p>
 <p>There are two things that need to be taken care of before proceeding to run and debug the unit tests though. First of all, from the Project Navigator, click on <code>small3d</code>, and then on the <code>unittests</code> target. Select Build Settings and scroll down to User-Defined. There, the <code>CONFIGURATION_BUILD_DIR</code> variable needs to be set to the <code>bin</code> directory in all cases, for example <code>/Users/me/Source/small3d/build/bin/</code>, rather than the differentiated directories it is set to by default, e.g. <code>bin/Debug</code>, <code>bin/Release</code>, etc.</p>
