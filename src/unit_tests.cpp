@@ -128,9 +128,10 @@ int BoundingBoxesTest() {
 }
 
 int RendererTest() {
-
-  Renderer* renderer = &Renderer::getInstance("test", 640, 480);
-
+  Renderer* renderer;
+  
+  renderer = &Renderer::getInstance("test", 640, 480);
+  
   renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
 
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
@@ -167,7 +168,7 @@ int RendererTest() {
   while (glfwGetTime() - startSeconds < 3.0) {
     glfwPollEvents();
     renderer->clearScreen();
-    
+
     renderer->render(singleColourRect,
       glm::vec3(0.0f, 0.0f, 0.0f),
       glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), "", false);
@@ -243,42 +244,48 @@ int TokenTest() {
   return 1;
 }
 
-int main(int argc, char **argv) {
-
-  if (!LoggerTest()) {
-    printf("*** Failing LoggerTest.\n\r");
-    return 1;
+int main(int argc, char** argv) {
+  try
+  {
+    if (!LoggerTest()) {
+      printf("*** Failing LoggerTest.\n\r");
+      return 1;
+    }
+    if (!ImageTest()) {
+      printf("*** Failing ImageTest.\n\r");
+      return 1;
+    }
+    if (!ModelTest()) {
+      printf("*** Failing ModelTest.\n\r");
+      return 1;
+    }
+    if (!BoundingBoxesTest()) {
+      printf("*** Failing BoundingBoxesTest.\n\r");
+      return 1;
+    }
+    if (!RendererTest()) {
+      printf("*** Failing RendererTest.\n\r");
+      return 1;
+    }
+    if (!SoundTest()) {
+      printf("*** Failing SoundTest.\n\r");
+      return 1;
+    }
+    if (!SoundTest2()) {
+      printf("*** Failing SoundTest2.\n\r");
+      return 1;
+    }
+    if (!SoundTest3()) {
+      printf("*** Failing SoundTest3.\n\r");
+      return 1;
+    }
+    if (!TokenTest()) {
+      printf("*** Failing TokenTest.\n\r");
+      return 1;
+    }
   }
-  if (!ImageTest()) {
-    printf("*** Failing ImageTest.\n\r");
-    return 1;
-  }
-  if (!ModelTest()) {
-    printf("*** Failing ModelTest.\n\r");
-    return 1;
-  }
-  if (!BoundingBoxesTest()) {
-    printf("*** Failing BoundingBoxesTest.\n\r");
-    return 1;
-  }
-  if (!RendererTest()) {
-    printf("*** Failing RendererTest.\n\r");
-    return 1;
-  }
-  if (!SoundTest()) {
-    printf("*** Failing SoundTest.\n\r");
-    return 1;
-  }
-  if (!SoundTest2()) {
-    printf("*** Failing SoundTest2.\n\r");
-    return 1;
-  }
-  if (!SoundTest3()) {
-    printf("*** Failing SoundTest3.\n\r");
-    return 1;
-  }
-  if (!TokenTest()) {
-    printf("*** Failing TokenTest.\n\r");
+  catch (exception& e) {
+    printf("%s\n\r", e.what());
     return 1;
   }
   printf("All tests have executed successfully.\n\r");
