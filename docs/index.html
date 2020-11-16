@@ -86,12 +86,23 @@ cmake --build .
 <p>The unit tests can be run via the <em>unittests</em> binary from <em>build/bin</em>.</p>
 <p>For building your own project, you need the header files from the <em>build/include</em> directory, the libraries from the <em>build/lib</em> directory and the shaders from <em>build/shaders</em>. If you are using cmake, the modules in <em>small3d/cmake</em> can be useful. Check the CMakeLists.txt and src/CMakeLists.txt files for other configuration details (link flags, etc) that may also be required or useful.</p>
 <h1><a class="anchor" id="autotoc_md3"></a>
+Xcode workarounds</h1>
+<p>On MacOS, the small3d unit tests and sample game work like on any other platform when configured with cmake by default: </p><pre class="fragment">cmake ..
+</pre><p>However you might want to create an Xcode project, in order to Debug your program in Xcode for example. In that case, some additional steps are needed, in order to ensure that the programs run without error. First of all, small3d together with its unit tests can be configured and built for Xcode as follows: </p><pre class="fragment">cmake .. -G"Xcode"
+cmake --build .
+</pre><p>The created project, <code>build/small3d.xcodeproj</code> can then be opened in Xcode.</p>
+<p>There are two things that need to be taken care of before proceeding to run and debug the unit tests though. First of all, from the Project Navigator, click on <code>small3d</code>, and then on the <code>unittests</code> target. Select Build Settings and scroll down to User-Defined. There, the <code>CONFIGURATION_BUILD_DIR</code> variable needs to be set to the <code>bin</code> directory in all cases, for example <code>/Users/me/Source/small3d/build/bin/</code>, rather than the differentiated directories it is set to by default, e.g. <code>bin/Debug</code>, <code>bin/Release</code>, etc.</p>
+<p>The other problem is that, if you have set some Vulkan-related environment variables in bash / zsh, Xcode is not aware of them. Select the <code>unittests</code> target and then select Edit Scheme. Then select Run Debug, Arguments and add the necessary Environment Variables. They cannot be exactly the same as in <code>.zprofile</code> or <code>.bash_profile</code>. For example <code>VULKAN_SDK</code> does not need to be defined in this case and its value cannot be reused as <code>$VULKAN_SDK</code>anyway. They should look somewhat like these (note that, in my case, I do not install the Vulkan SDK. I just unzip it in my <code>Software</code> directory. So your specific path locations may vary): </p><pre class="fragment">PATH=$PATH:/Users/user/Software/vulkansdk-macos-1.2.154.0/macOS/bin
+DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/Users/user/Software/vulkansdk-macos-1.2.154.0/macOS/lib
+VK_LAYER_PATH=/Users/user/Software/vulkansdk-macos-1.2.154.0/macOS/share/vulkan/explicit_layer.d
+VK_ICD_FILENAMES=/Users/user/Software/vulkansdk-macos-1.2.154.0/MoltenVK/dylib/macOS/MoltenVK_icd.json
+</pre><h1><a class="anchor" id="autotoc_md4"></a>
 small3d on mobile</h1>
 <p>The scripts for preparing the dependencies of small3d for mobile are <code>prepare-android</code> and <code>prepare-ios</code> for Android and iOS respectively, found in the <code>deps</code> directory. After executing one of those, you can build small3d for these platforms by executing either <code>build-android.bat</code> or <code>build-ios.sh</code> from the main directory. The sample game, <a href="https://github.com/dimi309/avoidthebug">Avoid the Bug</a> has been ported to both <a href="https://github.com/dimi309/avoidthebug-android">Android</a> and <a href="https://github.com/dimi309/avoidthebug-ios">iOS</a>. I use these projects as a basis for mobile development. Note that, while with the desktop edition of small3d I use GLFW for windowing functionalities and I/O, on mobile I access the native infrastructure directly.</p>
-<h1><a class="anchor" id="autotoc_md4"></a>
+<h1><a class="anchor" id="autotoc_md5"></a>
 Example</h1>
 <p>Let's move an object around the screen.</p>
-<h2><a class="anchor" id="autotoc_md5"></a>
+<h2><a class="anchor" id="autotoc_md6"></a>
 Get a 3D model</h2>
 <p>We need a Wavefront file. Suppose that it is a model of a ball, called ball.obj. Here's how to make one with Blender (skip the following part if you already have a model ready and go to the Setup section).</p>
 <p>When you start Blender, you see a cube:</p>
@@ -109,7 +120,7 @@ Get a 3D model</h2>
 <p><img src="export.png" alt="" class="inline" title="Wavefront export options"/>   </p>
 <p><em>Note: Later, for exporting animations to a series of Wavefront files in a way that will allow small3d to load them, also select "Animation" and "Apply Modifiers".</em></p>
 <p>Save the exported file as "ball.obj".</p>
-<h2><a class="anchor" id="autotoc_md6"></a>
+<h2><a class="anchor" id="autotoc_md7"></a>
 Setup</h2>
 <p>Let's proceed to make our first program. Create a directory, called <em>ball</em>. Then create another directory within it, called <em>resources</em> and place <em>ball.obj</em> in it. Also add the following code to a CMakeFiles.txt within the <em>ball</em> directory: </p><pre class="fragment">cmake_minimum_required(VERSION 3.0.2)
 
@@ -216,7 +227,7 @@ if(MSVC)
     set_target_properties(ball PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
         "${small3d_BINARY_DIR}/bin")
 endif(MSVC)
-</pre><h2><a class="anchor" id="autotoc_md7"></a>
+</pre><h2><a class="anchor" id="autotoc_md8"></a>
 The code</h2>
 <p>Inside <em>ball/src</em>, create the <em>main.cpp</em> file: </p><pre class="fragment">int main(int argc, char **argv) {
 
@@ -288,7 +299,7 @@ cd bin
 <p>There's our ball:</p>
 <p><img src="ball.png" alt="" class="inline" title="The ball"/>   </p>
 <p>Try moving it around with the arrows. A good way to learn about the other features of small3d is to read the documentation (in docs) and also to explore the source code of the sample games.</p>
-<h2><a class="anchor" id="autotoc_md8"></a>
+<h2><a class="anchor" id="autotoc_md9"></a>
 Collision Detection</h2>
 <p>The framework supports collision detection via manually created bounding boxes. In order to create these in Blender for example, just place them in the preferred position over the model. Ideally, they should be aligned with the axes, (but note that small3d does more than just a simple axis-aligned bounding box collision detection).</p>
 <p><img src="boundingboxes.png" alt="" class="inline" title="Bounding boxes"/>   </p>
