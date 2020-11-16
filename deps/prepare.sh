@@ -105,7 +105,7 @@ rm -rf vorbis-1.3.6
 # Not linking statically to portaudio on Linux, because on Ubuntu
 # the needed static libraries are a mess.
 if [ $(uname) != 'Linux' ]; then
-    tar xvf pa_stable_v190600_20161030.tgz
+    tar xvf pa_snapshot_20201116.tgz
     cd portaudio
     mkdir build1
     cd build1
@@ -113,7 +113,7 @@ if [ $(uname) != 'Linux' ]; then
     cmake --build .
     rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp ../include/* ../../include/
-    cp libportaudio_static.a ../../lib/
+    cp libportaudio.a ../../lib/
     cd ../../
     rm -rf portaudio
 fi
