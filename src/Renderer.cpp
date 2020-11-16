@@ -644,9 +644,11 @@ namespace small3d {
       throw std::runtime_error("Failed to create the sampler!");
     }
 
-    vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
+    if (!vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
       setInputStateCallback, setPipelineLayoutCallback,
-      &perspectivePipelineIndex);
+      &perspectivePipelineIndex)) {
+      throw std::exception("Could not create the Vulkan pipeline!");
+    }
 
     boundTextureViews.resize(vkz_swapchain_image_count);
 
