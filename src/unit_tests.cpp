@@ -285,7 +285,7 @@ int main(int argc, char** argv) {
     }
   }
   catch (exception& e) {
-    printf("%s\n\r", e.what());
+    printf("*** %s\n\r", e.what());
     return 1;
   }
   printf("All tests have executed successfully.\n\r");
