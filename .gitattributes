@@ -1,1 +1,4 @@
 docs/* linguist-documentation
+docs/search/* linguist-documentation
+*.css linguist-documentation
+*.xml linguist-documentation
