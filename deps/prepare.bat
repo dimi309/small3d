@@ -1,4 +1,20 @@
-set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release 
+@echo off
+
+set args_ok=false
+
+if /I "%~1" == "Debug" set args_ok=true
+if /I "%~1" == "Release" set args_ok=true
+
+if "%args_ok%" == "false" (
+echo Please indicate build type: Debug or Release
+exit /B 1
+)
+
+if /I "%~1" == "Debug" set set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Debug
+if /I "%~1" == "Release" set set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
+
+@echo on
+
 mkdir include
 mkdir lib
 7z x glfw-3.3.zip
