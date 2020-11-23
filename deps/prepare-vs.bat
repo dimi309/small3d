@@ -1,5 +1,21 @@
+@echo off
+
+set args_ok=false
+
+if /I "%~1" == "Debug" set args_ok=true
+if /I "%~1" == "Release" set args_ok=true
+
+if "%args_ok%" == "false" (
+echo Please indicate build type: Debug or Release
+exit /B 1
+)
+
+if /I "%~1" == "Debug" set set BUILDTYPE=Debug
+if /I "%~1" == "Release" set set BUILDTYPE=Release
+
+@echo on
+
 set VSCONFIG=-G"Visual Studio 16 2019" -A x64
-set BUILDTYPE=Debug
 
 mkdir include
 mkdir lib
