@@ -1,7 +1,24 @@
+@echo off
+
 REM For this to work, set the %NDK% variable to your ndk path. It should look like
 REM C:\Users\user\AppData\Local\Android\Sdk\ndk\22.0.6917172 for example. Also, the
 REM script needs to run in an environment with MinGW set up and no settings for
 REM Visual Studio.
+
+set args_ok=false
+
+if /I "%~1" == "Debug" set args_ok=true
+if /I "%~1" == "Release" set args_ok=true
+
+if "%args_ok%" == "false" (
+echo Please indicate build type: Debug or Release
+exit /B 1
+)
+
+if /I "%~1" == "Debug" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Debug
+if /I "%~1" == "Release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
+
+@echo on
 
 mkdir include
 mkdir lib
@@ -25,7 +42,8 @@ cd libpng-1.6.37
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF^
- -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A
+ -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A^
+ %CMAKE_DEFINITIONS%
 cmake --build .
 if errorlevel 1 exit /B
 copy ..\*.h ..\..\include /y
@@ -43,7 +61,8 @@ cd ogg-1.3.3
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF^
- -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A
+ -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A^
+ %CMAKE_DEFINITIONS%
 cmake --build .
 if errorlevel 1 exit /B
 xcopy ..\include\ogg ..\..\include\ogg /i /s /y
@@ -62,7 +81,8 @@ mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF^
  -DOGG_INCLUDE_DIRS=%sourcepath%/include -DOGG_LIBRARIES=%sourcepath%/lib/%%A/libogg.a^
- -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A
+ -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A^
+ %CMAKE_DEFINITIONS%
 cmake --build .
 if errorlevel 1 exit /B
 xcopy ..\include\vorbis ..\..\include\vorbis /i /s /y
@@ -79,13 +99,18 @@ cd freetype-2.9.1
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF^
- -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A
+ -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A^
+ %CMAKE_DEFINITIONS%
 cmake --build .
 if errorlevel 1 exit /B
 xcopy ..\include ..\..\include /s /e /y
-copy libfreetype.a ..\..\lib\%%A
+set FREETYPEBIN=libfreetype.a
+if /I "%~1" == "Debug" set FREETYPEBIN=libfreetyped.a
+copy %FREETYPEBIN% ..\..\lib\%%A\libfreetype.a
 cd ..\..
 rmdir /Q /S freetype-2.9.1
 del freetype-2.9.1.tar
 
 )
+
+@echo small3d dependencies built successfully for Android (%BUILDTYPE% mode)
