@@ -10,8 +10,8 @@ echo Please indicate build type: Debug or Release
 exit /B 1
 )
 
-if /I "%~1" == "Debug" set set BUILDTYPE=Debug
-if /I "%~1" == "Release" set set BUILDTYPE=Release
+if /I "%~1" == "Debug" set BUILDTYPE=Debug
+if /I "%~1" == "Release" set BUILDTYPE=Release
 
 @echo on
 
@@ -159,3 +159,4 @@ cd ..\..
 rmdir /Q /S freetype-2.9.1
 del freetype-2.9.1.tar
 
+@echo small3d dependencies built successfully for Visual Studio (%BUILDTYPE% mode)
