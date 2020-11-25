@@ -647,7 +647,7 @@ namespace small3d {
     if (!vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
       setInputStateCallback, setPipelineLayoutCallback,
       &perspectivePipelineIndex)) {
-      throw std::exception("Could not create the Vulkan pipeline!");
+      throw std::runtime_error("Could not create the Vulkan pipeline!");
     }
 
     boundTextureViews.resize(vkz_swapchain_image_count);
