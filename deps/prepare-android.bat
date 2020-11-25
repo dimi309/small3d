@@ -12,7 +12,7 @@ if /I "%~1" == "Release" set args_ok=true
 
 if "%args_ok%" == "false" (
 echo Please indicate build type: Debug or Release
-exit /B 1
+endlocal & exit /B 1
 )
 
 if /I "%~1" == "Debug" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Debug
@@ -121,6 +121,6 @@ rmdir /Q /S freetype-2.9.1
 del freetype-2.9.1.tar
 )
 
-@echo small3d dependencies built successfully for Android ("%~1" mode)
+@echo small3d dependencies built successfully for Android (%~1 mode)
 
 endlocal
