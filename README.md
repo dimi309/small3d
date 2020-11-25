@@ -33,9 +33,9 @@ your system and accessible on the command line. On Windows, 7zip also has to be
 in the path and you also need to install the MinGW compiler or Visual Studio, 
 again with their tools available on the command line.
 
-Run the *prepare.bat* (Windows MinGW), *prepare-vs.bat* (Windows Visual Studio)
-or *prepare.sh* script from within the *deps* directory, in order to build the
-dependencies.
+Run the *prepare-mingw.bat* (Windows MinGW), *prepare-vs.bat* (Windows Visual 
+Studio) or *prepare.sh* script from within the *deps* directory, in order to 
+build the dependencies.
 
 Then, create a directory inside *small3d*, called *build*. Then, build like
 this:
@@ -48,12 +48,14 @@ On Windows, you need to execute `cmake .. -G"MinGW Makefiles"`,
 or with the preferred Visual Studio configuration
 (e.g. `cmake .. -G"Visual Studio 16 2019" -A x64`).
 Make sure that *prepare-vs.bat* is run with the same configuration (see the
-parameters at the top, inside the file). Also, make sure to run build under the
-configuration also defined in *prepare-vs.bat* parameters, e.g.
-`cmake --build . --config Debug`. 
+parameter towards the top, inside the file). Also, make sure to run build under the
+configuration also when running *prepare-vs.bat* parameters, e.g.
+`cmake --build . --config Debug` for `prepare-vs.bat Debug`, 
+`cmake --build . --config Release` for `prepare-vs.bat Release`. 
 
 If you would rather build small3d with OpenGL rather than Vulkan, also add
-the definition `-DSMALL3D_OPENGL=ON` when running `cmake ..`.
+the definition `-DSMALL3D_OPENGL=ON` when running `cmake ..` (this will
+not work for Android).
 	
 The unit tests can be run via the *unittests* binary from *build/bin*. 
 
