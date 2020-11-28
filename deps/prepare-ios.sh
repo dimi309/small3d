@@ -21,6 +21,11 @@ else
     fi    
 fi
 
+if [ "$2" != "Debug" ] && [ "$2" != "Release" ]; then
+    echo "Please indicate build type: Debug or Release (second argument, e.g. ./build-ios.sh simulator Debug)"
+    exit 1
+fi
+
 mkdir include
 mkdir lib
 
@@ -59,19 +64,24 @@ tar xvf zlib-1.2.11-noexample.tar.gz
 cd zlib-1.2.11
 ./configure
 make
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+if [ $? != 0 ]; then exit $rc; fi
 cp zlib.h ../include/
+if [ $? != 0 ]; then exit $rc; fi
 cp zconf.h ../include/
+if [ $? != 0 ]; then exit $rc; fi
 cp libz.a ../lib/
+if [ $? != 0 ]; then exit $rc; fi
 cd ../
 rm -rf zlib-1.2.11
 
 tar xvf bzip2-1.0.8-use-env.tar.gz
 cd bzip2-1.0.8
 make bzip2
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+if [ $? != 0 ]; then exit $rc; fi
 cp bzlib.h ../include/
+if [ $? != 0 ]; then exit $rc; fi
 cp libbz2.a ../lib/
+if [ $? != 0 ]; then exit $rc; fi
 cd ..
 rm -rf bzip2-1.0.8
 
@@ -105,11 +115,14 @@ cd libpng-1.6.37
 mkdir build
 cd build
 cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DPNG_ARM_NEON=off $CMAKE_DEFINITIONS
-cmake --build .
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+cmake --build . --config $2
+if [ $? != 0 ]; then exit $rc; fi
 cp ../*.h ../../include/
+if [ $? != 0 ]; then exit $rc; fi
 cp pnglibconf.h ../../include/
-cp Debug-$SDK/libpng.a ../../lib/
+if [ $? != 0 ]; then exit $rc; fi
+cp $2-$SDK/libpng.a ../../lib/
+if [ $? != 0 ]; then exit $rc; fi
 cd ../../
 rm -rf libpng-1.6.37
 
@@ -118,11 +131,14 @@ cd ogg-1.3.3
 mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF $CMAKE_DEFINITIONS
-cmake --build . --config Release
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+cmake --build . --config $2
+if [ $? != 0 ]; then exit $rc; fi
 cp -rf ../include/ogg ../../include/
+if [ $? != 0 ]; then exit $rc; fi
 cp include/ogg/config_types.h ../../include/ogg/
-cp Release-$SDK/libogg.a ../../lib/
+if [ $? != 0 ]; then exit $rc; fi
+cp $2-$SDK/libogg.a ../../lib/
+if [ $? != 0 ]; then exit $rc; fi
 cd ../../
 rm -rf ogg-1.3.3
 
@@ -131,10 +147,12 @@ cd vorbis-1.3.6
 mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ -DOGG_INCLUDE_DIRS=../../include -DOGG_LIBRARIES=../../lib/libogg.a $CMAKE_DEFINITIONS
-cmake --build . --config Release
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+cmake --build . --config $2
+if [ $? != 0 ]; then exit $rc; fi
 cp -rf ../include/vorbis ../../include/
-cp lib/Release-$SDK/*.a ../../lib/
+if [ $? != 0 ]; then exit $rc; fi
+cp lib/$2-$SDK/*.a ../../lib/
+if [ $? != 0 ]; then exit $rc; fi
 cd ../../
 rm -rf vorbis-1.3.6
 
@@ -145,10 +163,18 @@ cd freetype-2.9.1
 mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS
-cmake --build . --config Release
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+cmake --build . --config $2
+if [ $? != 0 ]; then exit $rc; fi
 cp -rf ../include/* ../../include/
-cp Release-$SDK/libfreetype.a ../../lib/
+if [ $? != 0 ]; then exit $rc; fi
+
+if [ "$2" == "Release" ]; then
+    cp $2-$SDK/libfreetype.a ../../lib/
+else
+    cp $2-$SDK/libfreetyped.a ../../lib/libfreetype.a
+fi
+if [ $? != 0 ]; then exit $rc; fi
+
 cd ../..
 rm -rf freetype-2.9.1
 
@@ -163,5 +189,10 @@ then
 fi
 
 cp -rf $VULKAN_SDK/../MoltenVK/include/* include/
+if [ $? != 0 ]; then exit $rc; fi
 cp ios/interop.h include/
+if [ $? != 0 ]; then exit $rc; fi
 cp ios/interop.m lib/
+if [ $? != 0 ]; then exit $rc; fi
+
+echo "small3d dependencies built successfully for $1 ($2 mode)"
