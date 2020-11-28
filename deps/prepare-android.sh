@@ -2,6 +2,13 @@
 # /Users/user/Library/Android/sdk/ndk/21.2.6472646 for example.
 # Tested on MacOS and Debian
 
+if [ "$1" != "Debug" ] && [ "$1" != "Release" ]; then
+    echo "Please indicate build type: Debug or Release"
+    exit 1
+fi
+
+export CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=$1 
+
 mkdir include
 mkdir lib
 
@@ -21,12 +28,16 @@ do
     mkdir build
     cd build
     cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF \
-	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr -DANDROID_ABI=$androidabi
+	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
+	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
     cmake --build .
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    if [ $? != 0 ]; then exit $rc; fi
     cp ../*.h ../../include/
+    if [ $? != 0 ]; then exit $rc; fi
     cp pnglibconf.h ../../include/
+    if [ $? != 0 ]; then exit $rc; fi
     cp libpng.a ../../lib/$androidabi
+    if [ $? != 0 ]; then exit $rc; fi
     cd ../../
     rm -rf libpng-1.6.37
 
@@ -35,12 +46,16 @@ do
     mkdir build
     cd build
     cmake .. -DBUILD_SHARED_LIBS=OFF \
-	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr -DANDROID_ABI=$androidabi
+	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
+	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
     cmake --build .
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    if [ $? != 0 ]; then exit $rc; fi
     cp -rf ../include/ogg ../../include/
+    if [ $? != 0 ]; then exit $rc; fi
     cp include/ogg/config_types.h ../../include/ogg/
+    if [ $? != 0 ]; then exit $rc; fi
     cp libogg.a ../../lib/$androidabi
+    if [ $? != 0 ]; then exit $rc; fi
     cd ../../
     rm -rf ogg-1.3.3
 
@@ -50,11 +65,14 @@ do
     cd build
     cmake .. -DBUILD_SHARED_LIBS=OFF \
 	  -DOGG_INCLUDE_DIRS=$depspath/include -DOGG_LIBRARIES=$depspath/lib/$andoidabi/libogg.a \
-	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr -DANDROID_ABI=$androidabi
+	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
+	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
     cmake --build .
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    if [ $? != 0 ]; then exit $rc; fi
     cp -rf ../include/vorbis ../../include/
+    if [ $? != 0 ]; then exit $rc; fi
     cp lib/*.a ../../lib/$androidabi
+    if [ $? != 0 ]; then exit $rc; fi
     cd ../../
     rm -rf vorbis-1.3.6
 
@@ -63,16 +81,23 @@ do
     mkdir build
     cd build
     cmake .. -DBUILD_SHARED_LIBS=OFF \
-	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr -DANDROID_ABI=$androidabi
+	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
+	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
     cmake --build .
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    if [ $? != 0 ]; then exit $rc; fi
     cp -rf ../include/* ../../include/
-    cp libfreetype.a ../../lib/$androidabi
+    if [ $? != 0 ]; then exit $rc; fi
+    
+    if [ "$1" == "Release" ]; then
+	cp libfreetype.a ../../lib/$androidabi
+    else
+	cp libfreetyped.a ../../lib/$androidabi/libfreetype.a
+    fi
+    if [ $? != 0 ]; then exit $rc; fi
+    
     cd ../..
     rm -rf freetype-2.9.1
 
 done
 
-
-
-
+echo "small3d dependencies built successfully for Android ($1 mode)"
