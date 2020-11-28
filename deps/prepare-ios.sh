@@ -31,6 +31,7 @@ mkdir lib
 
 unzip glm-0.9.9.0.zip
 cp -rf glm/glm include/
+if [ $? != 0 ]; then exit $rc; fi
 rm -rf glm
 
 if [ $1 = "ios" ]
