@@ -15,6 +15,11 @@ else
     fi    
 fi
 
+if [ "$2" != "Debug" ] && [ "$2" != "Release" ]; then
+    echo "Please indicate build type: Debug or Release (second argument, e.g. ./build-ios.sh simulator Debug)"
+    exit 1
+fi
+
 mkdir build
 cd build
 if [ $1 = "ios" ]
@@ -25,8 +30,11 @@ then
     cmake .. -GXcode -DCMAKE_TOOLCHAIN_FILE=../deps/ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64
 fi
 
-cmake --build . --config Release
+cmake --build . --config $2
 
-mv lib/Release/* lib/
-rmdir lib/Release
+mv lib/$2/* lib/
+if [ $? != 0 ]; then exit $rc; fi
+rmdir lib/$2
 rm lib/interop.m
+
+echo "small3d built successfully for $1 ($2 mode)"
