@@ -8,13 +8,13 @@ if [ $(uname) == 'Linux' ]; then
     if type -p "apt" > /dev/null ; then
 	sudo apt update
 	sudo apt install -y libgl1-mesa-dev libglfw3-dev portaudio19-dev
-	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+	if [ $? != 0 ]; then exit $rc; fi
     elif type -p "dnf" > /dev/null ; then
 	sudo dnf install -y mesa-libGL-devel glfw-devel portaudio-devel
-	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+	if [ $? != 0 ]; then exit $rc; fi
     elif type -p "yum" > /dev/null ; then
 	sudo yum install -y mesa-libGL-devel glfw-devel portaudio-devel
-	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+	if [ $? != 0 ]; then exit $rc; fi
     else
 	echo "No package manager found! Cannot install preprequisites."
 	exit 1
