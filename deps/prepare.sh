@@ -1,3 +1,8 @@
+if [ "$1" != "Debug" ] && [ "$1" != "Release" ]; then
+    echo "Please indicate build type: Debug or Release"
+    exit 1
+fi
+
 if [ $(uname) == 'Linux' ]; then
 
     if type -p "apt" > /dev/null ; then
@@ -16,7 +21,7 @@ if [ $(uname) == 'Linux' ]; then
     fi
 fi
 
-export CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release 
+export CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=$1 
 
 mkdir include
 mkdir lib
@@ -29,26 +34,33 @@ if [ $(uname) != 'Linux' ]; then
     cd build
     cmake .. -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF $CMAKE_DEFINITIONS
     cmake --build .
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    if [ $? != 0 ]; then exit $rc; fi
     cp -rf ../include/GLFW ../../include/
+    if [ $? != 0 ]; then exit $rc; fi
     cp src/libglfw3.a ../../lib/
+    if [ $? != 0 ]; then exit $rc; fi
     cd ../..
     rm -rf glfw-3.3
 fi
 
 # Only needed for OpenGL build
-tar xvf glew-20190928.tgz
-cd glew-2.2.0
-cmake build/cmake -DBUILD_UTILS=OFF
-cmake --build .
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-cp -rf include/GL ../include/
-cp lib/libGLEW.a ../lib/
-cd ..
-rm -rf glew-2.2.0
+if [ "$2" != "noglew" ]; then
+    tar xvf glew-20190928.tgz
+    cd glew-2.2.0
+    cmake build/cmake -DBUILD_UTILS=OFF
+    cmake --build .
+    if [ $? != 0 ]; then exit $rc; fi
+    cp -rf include/GL ../include/
+    if [ $? != 0 ]; then exit $rc; fi
+    cp lib/libGLEW.a ../lib/
+    if [ $? != 0 ]; then exit $rc; fi
+    cd ..
+    rm -rf glew-2.2.0
+fi
 
 unzip glm-0.9.9.0.zip
 cp -rf glm/glm include/
+if [ $? != 0 ]; then exit $rc; fi
 rm -rf glm
 
 tar xvf zlib-1.2.11.tar.gz
@@ -57,10 +69,13 @@ mkdir build
 cd build
 cmake .. $CMAKE_DEFINITIONS
 cmake --build .
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+if [ $? != 0 ]; then exit $rc; fi
 cp ../zlib.h ../../include/
+if [ $? != 0 ]; then exit $rc; fi
 cp zconf.h ../../include/
+if [ $? != 0 ]; then exit $rc; fi
 cp libz.a ../../lib/
+if [ $? != 0 ]; then exit $rc; fi
 cd ../../
 rm -rf zlib-1.2.11
 
@@ -70,10 +85,13 @@ mkdir build
 cd build
 cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=$(pwd)/../../lib/libza -DZLIB_INCLUDE_DIR=$(pwd)/../../include $CMAKE_DEFINITIONS
 cmake --build .
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+if [ $? != 0 ]; then exit $rc; fi
 cp ../*.h ../../include/
+if [ $? != 0 ]; then exit $rc; fi
 cp pnglibconf.h ../../include/
+if [ $? != 0 ]; then exit $rc; fi
 cp libpng.a ../../lib/
+if [ $? != 0 ]; then exit $rc; fi
 cd ../../
 rm -rf libpng-1.6.37
 
@@ -83,10 +101,13 @@ mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF $CMAKE_DEFINITIONS
 cmake --build .
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+if [ $? != 0 ]; then exit $rc; fi
 cp -rf ../include/ogg ../../include/
+if [ $? != 0 ]; then exit $rc; fi
 cp include/ogg/config_types.h ../../include/ogg/
+if [ $? != 0 ]; then exit $rc; fi
 cp libogg.a ../../lib/
+if [ $? != 0 ]; then exit $rc; fi
 cd ../../
 rm -rf ogg-1.3.3
 
@@ -96,9 +117,11 @@ mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS
 cmake --build .
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+if [ $? != 0 ]; then exit $rc; fi
 cp -rf ../include/vorbis ../../include/
+if [ $? != 0 ]; then exit $rc; fi
 cp lib/*.a ../../lib/
+if [ $? != 0 ]; then exit $rc; fi
 cd ../../
 rm -rf vorbis-1.3.6
 
@@ -111,9 +134,11 @@ if [ $(uname) != 'Linux' ]; then
     cd build1
     cmake .. $CMAKE_DEFINITIONS
     cmake --build .
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    if [ $? != 0 ]; then exit $rc; fi
     cp ../include/* ../../include/
+    if [ $? != 0 ]; then exit $rc; fi
     cp libportaudio.a ../../lib/
+    if [ $? != 0 ]; then exit $rc; fi
     cd ../../
     rm -rf portaudio
 fi
@@ -121,9 +146,11 @@ fi
 tar xvf bzip2-1.0.8.tar.gz
 cd bzip2-1.0.8
 make
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+if [ $? != 0 ]; then exit $rc; fi
 cp bzlib.h ../include/
+if [ $? != 0 ]; then exit $rc; fi
 cp libbz2.a ../lib/
+if [ $? != 0 ]; then exit $rc; fi
 cd ..
 rm -rf bzip2-1.0.8
 
@@ -133,8 +160,16 @@ mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS
 cmake --build .
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+if [ $? != 0 ]; then exit $rc; fi
 cp -rf ../include/* ../../include/
-cp libfreetype.a ../../lib/
+if [ $? != 0 ]; then exit $rc; fi
+if [ "$1" == "Release" ]; then
+    cp libfreetype.a ../../lib/
+else
+    cp libfreetyped.a ../../lib/libfreetype.a
+fi
+if [ $? != 0 ]; then exit $rc; fi
 cd ../..
 rm -rf freetype-2.9.1
+
+echo "small3d dependencies built successfully ($1 mode)"
