@@ -86,7 +86,6 @@ elseif(DEFINED ANDROID_PLATFORM)
     ${log-lib}
     ${Vulkan_LIBRARIES}
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libpng.a
-    ${ZLIB_LIBRARIES}
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libvorbis.a
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libvorbisfile.a
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libogg.a
