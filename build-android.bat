@@ -23,7 +23,7 @@ if /I "%~1" == "Release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
 @echo on
 
 set sourcepath=%cd%
-set platformstr=android-28
+set platformstr=android-26
 
 if exist build (
 echo Build directory exists!
