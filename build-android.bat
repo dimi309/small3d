@@ -18,7 +18,7 @@ endlocal & exit /B 1
 )
 
 if /I "%~1" == "Debug" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Debug
-if /I "%~1" == "Release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
+if /I "%~1" == "Release" set CMAKE_DEFINITIONS=
 
 @echo on
 
@@ -47,6 +47,12 @@ rmdir /Q /S CMakeFiles
 rmdir /Q /S src
 )
 
-@echo small3d built successfully for Android (%~1 mode)
+@echo off
+echo small3d built successfully for Android (%~1 mode)
+if /I "%~1" == "Release" (
+echo Warning: Did not set cmake build type to release explicitly because that leads to the following error on some devices:
+echo I/Adreno: Shader compilation failed for shaderType: 0
+)
+@echo on
 
 endlocal
