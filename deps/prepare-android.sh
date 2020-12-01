@@ -13,7 +13,7 @@ mkdir include
 mkdir lib
 
 depspath=$(pwd)
-platformstr=android-28
+platformstr=android-26
 
 unzip glm-0.9.9.0.zip
 cp -rf glm/glm include/

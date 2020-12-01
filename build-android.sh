@@ -1,14 +1,20 @@
 # For this to work, set the NDK variable to your ndk path. It should look like
 # /Users/user/Library/Android/sdk/ndk/21.2.6472646 for example.
-# Tested on MacOS and Debian
 
 if [ "$1" != "Debug" ] && [ "$1" != "Release" ]; then
     echo "Please indicate build type: Debug or Release"
     exit 1
 fi
 
+if [ "$1" == "Debug" ]; then
+    buildtype = Debug
+else
+    buildtype =
+fi
+   
+
 sourcepath=$(pwd)
-platformstr=android-28
+platformstr=android-26
 
 if [ -d "build" ]
 then
@@ -22,7 +28,7 @@ cd build
 for androidabi in x86 x86_64 armeabi-v7a arm64-v8a
 do    
     cmake .. -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake \
-	  -DANDROID_PLATFORM=$platformstr -DANDROID_ABI=$androidabi -DCMAKE_BUILD_TYPE=$1
+	  -DANDROID_PLATFORM=$platformstr -DANDROID_ABI=$androidabi -DCMAKE_BUILD_TYPE=$buildtype
     cmake --build .
     rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     mv lib/*.a lib/$androidabi
@@ -33,3 +39,7 @@ do
 done
 
 echo "small3d built successfully for Android ($1 mode)"
+if [ "$1" == "Release" ]; then
+    echo "Warning: Did not set cmake build type to release explicitly because that leads to the following Vulkan related error on some devices:"
+    echo "I/Adreno: Shader compilation failed for shaderType: 0"
+fi
