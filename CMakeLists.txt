@@ -4,15 +4,22 @@ project(small3d)
 
 option(SMALL3D_OPENGL "Compile with OpenGL 3.3" OFF)
 
+if(IOS AND DEFINED ANDROID_PLATFORM)
+  message(FATAL_ERROR "small3d cannot be built for Android and iOS at the same time (both IOS set to ON and ANDROID_PLATFORM defined)")
+endif()
+
 if(IOS)
   message(STATUS "IOS build...")
   add_compile_definitions(SMALL3D_IOS)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -x objective-c -fmodules")
 endif()
 
-MESSAGE(STATUS "OpenGL: ${SMALL3D_OPENGL}")
+message(STATUS "OpenGL: ${SMALL3D_OPENGL}")
 
 if(SMALL3D_OPENGL)
+  if(IOS OR DEFINED ANDROID_PLATFORM)
+    message(FATAL_ERROR "small3d cannot be built with OpenGL for iOS or Android.")
+  endif()
   add_compile_definitions(SMALL3D_OPENGL)
 endif()
 
@@ -79,9 +86,11 @@ elseif(UNIX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 
-if(NOT SMALL3D_OPENGL AND NOT IOS)
+if(NOT SMALL3D_OPENGL AND NOT IOS) # Linking to MoltenVK explicitly on iOS
   find_package(Vulkan REQUIRED)
-elseif(NOT IOS)
+endif()
+
+if(SMALL3D_OPENGL)
   find_package(OpenGL REQUIRED)
   find_package(GLEW REQUIRED)
 endif()
@@ -97,10 +106,9 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
   if(UNIX)
     find_package(BZip2 REQUIRED)
   endif()
-elseif(NOT IOS)
+elseif(DEFINED ANDROID_PLATFORM)
   find_package(ZLIB REQUIRED)
 endif()
-
 
 if(SMALL3D_OPENGL AND WIN32)
   add_definitions(-DGLEW_STATIC)

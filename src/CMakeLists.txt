@@ -38,7 +38,7 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
     ${GLFW_INCLUDE_DIRS}
     ${PORTAUDIO_INCLUDE_DIRS}
     )
-elseif(NOT IOS)
+elseif(DEFINED ANDROID_PLATFORM)
   target_include_directories(small3d PUBLIC
     ${CMAKE_SOURCE_DIR}/deps/include
     ${Vulkan_INCLUDE_DIRS}
@@ -47,11 +47,10 @@ elseif(NOT IOS)
 elseif(IOS)
   target_include_directories(small3d PUBLIC
     ${CMAKE_SOURCE_DIR}/deps/include
-    ${ZLIB_INCLUDE_DIRS}
     )
 endif()
 
-if(NOT SMALL3D_OPENGL AND NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
+if(NOT SMALL3D_OPENGL AND NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC, Vulkan
   target_link_libraries(small3d PUBLIC
     ${GLFW_LIBRARIES}
     ${Vulkan_LIBRARIES}
@@ -61,7 +60,7 @@ if(NOT SMALL3D_OPENGL AND NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
     ${PORTAUDIO_LIBRARIES}
     ${FREETYPE_LIBRARIES}
     )
-elseif(SMALL3D_OPENGL)
+elseif(SMALL3D_OPENGL) # PC, OpenGL
   target_link_libraries(small3d PUBLIC
     ${GLEW_LIBRARIES}
     ${OPENGL_LIBRARIES}
@@ -102,11 +101,10 @@ elseif(IOS)
     ${CMAKE_SOURCE_DIR}/deps/lib/libvorbisfile.a
     ${CMAKE_SOURCE_DIR}/deps/lib/libz.a
     OpenAL.framework
-    
     )
 endif()
 
-if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
+if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
 
   if(UNIX)
     include_directories(${BZIP2_INCLUDE_DIRS})
