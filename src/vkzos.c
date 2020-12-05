@@ -1949,7 +1949,7 @@ int vkz_shutdown(void) {
 
   if (pipeline_systems) {
 
-    for (int n = 0; n < pipeline_system_count; ++n) {
+    for (uint32_t n = 0; n < pipeline_system_count; ++n) {
       destroy_pipeline(n, TRUE);
     }
     
