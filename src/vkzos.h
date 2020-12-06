@@ -203,8 +203,6 @@ int vkz_recreate_pipelines_and_swapchain(void);
  * @brief Acquire next swapchain image
  *
  * @param pipeline_index The index of the pipeline
- *                       TODO: Independentise synchronisation from
- *                             pipelines perhaps...
  * @param image_index    The index of the acquired swapchain image
  * @return 1 if successful, 0 otherwise
  */

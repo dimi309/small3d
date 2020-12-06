@@ -26,7 +26,6 @@
 #define WORD_SIZE 2
 #define PORTAUDIO_SAMPLE_FORMAT paInt16
 
-// todo: check if this is correct for iOS
 #ifndef __ANDROID__
 #define SAMPLE_DATATYPE short
 #else
