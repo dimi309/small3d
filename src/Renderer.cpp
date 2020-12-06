@@ -659,11 +659,6 @@ namespace small3d {
       boundTextureViews[i] = getTextureHandle("blank").imageView;
     }
 
-    std::string orthoVertexShaderPath = this->shadersPath +
-      "simpleVertexShader.spv";
-    std::string orthoFragmentShaderPath = this->shadersPath +
-      "simpleFragmentShader.spv";
-
     vkz_create_sync_objects();
 
     // Allocate memory & vulkan dynamic buffers for object positioning
