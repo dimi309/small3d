@@ -251,7 +251,7 @@ namespace small3d {
   void Renderer::createDescriptorPool() {
     if (!descriptorPoolCreated) {
 
-      VkDescriptorPoolSize ps[6];
+      VkDescriptorPoolSize ps[5];
 
       memset(ps, 0, 5 * sizeof(VkDescriptorPoolSize));
 
@@ -276,6 +276,7 @@ namespace small3d {
       dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
       dpci.poolSizeCount = 5;
       dpci.pPoolSizes = ps;
+      // TODO: Review max sets calculation
       dpci.maxSets = vkz_swapchain_image_count * 2 * maxObjectsPerPass;
 
       if (vkCreateDescriptorPool(vkz_logical_device, &dpci, NULL,
@@ -291,7 +292,7 @@ namespace small3d {
 
   void Renderer::allocateDescriptorSets() {
 
-    VkDescriptorSetLayoutBinding dslb[5];
+    VkDescriptorSetLayoutBinding dslb[4];
     memset(dslb, 0, 4 * sizeof(VkDescriptorSetLayoutBinding));
 
     // perspectiveMatrixLightedShader - uboWorld
