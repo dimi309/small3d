@@ -11,9 +11,7 @@
 
 #if defined(__ANDROID__)
 #include <android/asset_manager.h>
-#elif defined(SMALL3D_IOS)
- // todo: Add ios includes if necessary
-#else
+#elif !defined(SMALL3D_IOS)
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #endif

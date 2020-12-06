@@ -53,8 +53,7 @@ namespace small3d {
 #ifdef __ANDROID__
 
     LOGDEBUG("About to open image asset " + fileLocation);
-    // todo: Is the asset mode the reason we cannot read the png even if
-    // openfiledescriptor seems to return a positive value?
+    
     asset = AAssetManager_open(vkz_android_app->activity->assetManager,
                                        fileLocation.c_str(), AASSET_MODE_STREAMING);
 
