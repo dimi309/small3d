@@ -261,9 +261,8 @@ namespace small3d {
       ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
       ps[1].descriptorCount = vkz_swapchain_image_count;
 
-      // TODO: Review descriptor pool size
       ps[2].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-      ps[2].descriptorCount = vkz_swapchain_image_count * 2 * maxObjectsPerPass;
+      ps[2].descriptorCount = vkz_swapchain_image_count * maxObjectsPerPass;
 
       ps[3].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
       ps[3].descriptorCount = vkz_swapchain_image_count;
@@ -276,8 +275,8 @@ namespace small3d {
       dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
       dpci.poolSizeCount = 5;
       dpci.pPoolSizes = ps;
-      // TODO: Review max sets calculation
-      dpci.maxSets = vkz_swapchain_image_count * 2 * maxObjectsPerPass;
+
+      dpci.maxSets = vkz_swapchain_image_count * maxObjectsPerPass;
 
       if (vkCreateDescriptorPool(vkz_logical_device, &dpci, NULL,
         &descriptorPool) != VK_SUCCESS) {
