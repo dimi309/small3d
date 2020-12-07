@@ -58,7 +58,7 @@ if [ "$2" != "noglew" ]; then
     rm -rf glew-2.2.0
 fi
 
-unzip glm-0.9.9.0.zip
+unzip glm-0.9.9.8.zip
 cp -rf glm/glm include/
 if [ $? != 0 ]; then exit $rc; fi
 rm -rf glm
