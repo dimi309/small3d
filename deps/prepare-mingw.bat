@@ -173,4 +173,4 @@ del freetype-2.10.4.tar
 
 @echo small3d dependencies built successfully for MinGW (%~1 mode)
 
-endlocal
+@endlocal

@@ -185,4 +185,4 @@ del freetype-2.10.4.tar
 
 @echo small3d dependencies built successfully for Visual Studio (%BUILDTYPE% mode)
 
-endlocal
+@endlocal
