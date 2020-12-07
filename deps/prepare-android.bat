@@ -26,7 +26,7 @@ mkdir lib
 SET sourcepath=%cd%
 SET platformstr=android-26
 
-7z x glm-0.9.9.0.zip
+7z x glm-0.9.9.8.zip
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel% 
 xcopy glm\glm include\glm /i /s /y
 rmdir /Q /S glm

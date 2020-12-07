@@ -29,7 +29,7 @@ fi
 mkdir include
 mkdir lib
 
-unzip glm-0.9.9.0.zip
+unzip glm-0.9.9.8.zip
 cp -rf glm/glm include/
 if [ $? != 0 ]; then exit $rc; fi
 rm -rf glm

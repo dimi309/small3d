@@ -15,7 +15,7 @@ mkdir lib
 depspath=$(pwd)
 platformstr=android-26
 
-unzip glm-0.9.9.0.zip
+unzip glm-0.9.9.8.zip
 cp -rf glm/glm include/
 rm -rf glm
 
