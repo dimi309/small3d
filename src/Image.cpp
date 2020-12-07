@@ -35,7 +35,7 @@ namespace small3d {
     imageData.resize(400);
     
     for(uint32_t i =0; i < 100; ++i) {
-      std::memcpy(&imageData[i * 4], &colour.data, 4 * sizeof(float));
+      std::memcpy(&imageData[i * 4], &colour, 4 * sizeof(float));
     }
   }
 
