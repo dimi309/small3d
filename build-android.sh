@@ -38,8 +38,7 @@ do
     rm -rf src
 done
 
-echo "small3d built successfully for Android ($1 mode)"
 if [ "$1" == "Release" ]; then
-    echo "Warning: Did not set cmake build type to release explicitly because that leads to the following Vulkan related error on some devices:"
-    echo "I/Adreno: Shader compilation failed for shaderType: 0"
+    echo "Warning: Did not set cmake build type to release explicitly because that leads to the following Vulkan related error on some devices: I/Adreno: Shader compilation failed for shaderType: 0"
 fi
+echo "small3d built successfully for Android ($1 mode)"
