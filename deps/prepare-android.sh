@@ -64,7 +64,7 @@ do
     mkdir build
     cd build
     cmake .. -DBUILD_SHARED_LIBS=OFF \
-	  -DOGG_INCLUDE_DIR=$depspath/include -DOGG_LIBRARY=$depspath/lib/$andoidabi/libogg.a \
+	  -DOGG_INCLUDE_DIRS=$depspath/include -DOGG_LIBRARIES=$depspath/lib/$andoidabi/libogg.a \
 	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
 	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
     cmake --build .

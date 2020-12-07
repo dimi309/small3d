@@ -147,7 +147,7 @@ tar xvf vorbis-1.3.6.tar.gz
 cd vorbis-1.3.6
 mkdir build
 cd build
-cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ -DOGG_INCLUDE_DIR=../../include -DOGG_LIBRARY=../../lib/libogg.a $CMAKE_DEFINITIONS
+cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ -DOGG_INCLUDE_DIRS=../../include -DOGG_LIBRARIES=../../lib/libogg.a $CMAKE_DEFINITIONS
 cmake --build . --config $2
 if [ $? != 0 ]; then exit $rc; fi
 cp -rf ../include/vorbis ../../include/
