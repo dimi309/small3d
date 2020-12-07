@@ -23,7 +23,7 @@ if /I "%~1" == "Release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
 mkdir include
 mkdir lib
 
-SET sourcepath=%cd%
+SET depspath=%cd%
 SET platformstr=android-26
 
 7z x glm-0.9.9.8.zip
@@ -85,7 +85,7 @@ cd vorbis-1.3.6
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF^
- -DOGG_INCLUDE_DIRS=%sourcepath%/include -DOGG_LIBRARIES=%sourcepath%/lib/%%A/libogg.a^
+ -DOGG_INCLUDE_DIRS=%depspath%/include -DOGG_LIBRARIES=%depspath%/lib/%%A/libogg.a^
  -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A^
  %CMAKE_DEFINITIONS%
 cmake --build .
