@@ -154,8 +154,8 @@ if [ $? != 0 ]; then exit $rc; fi
 cd ..
 rm -rf bzip2-1.0.8
 
-tar xvf freetype-2.9.1.tar.gz
-cd freetype-2.9.1
+tar xvf freetype-2.10.4.tar.gz
+cd freetype-2.10.4
 mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS
@@ -170,6 +170,6 @@ else
 fi
 if [ $? != 0 ]; then exit $rc; fi
 cd ../..
-rm -rf freetype-2.9.1
+rm -rf freetype-2.10.4
 
 echo "small3d dependencies built successfully ($1 mode)"

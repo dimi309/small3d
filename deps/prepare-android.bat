@@ -99,10 +99,10 @@ rmdir /Q /S vorbis-1.3.6
 del vorbis-1.3.6.tar
 del pax_global_header
 
-7z x freetype-2.9.1.tar.gz
+7z x freetype-2.10.4.tar.gz
 if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
-7z x freetype-2.9.1.tar
-cd freetype-2.9.1
+7z x freetype-2.10.4.tar
+cd freetype-2.10.4
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF^
@@ -117,8 +117,8 @@ if /I "%~1" == "Debug" set FREETYPEBIN=libfreetyped.a
 copy !FREETYPEBIN! ..\..\lib\%%A\libfreetype.a
 if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
 cd ..\..
-rmdir /Q /S freetype-2.9.1
-del freetype-2.9.1.tar
+rmdir /Q /S freetype-2.10.4
+del freetype-2.10.4.tar
 )
 
 @echo small3d dependencies built successfully for Android (%~1 mode)
