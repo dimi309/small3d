@@ -56,10 +56,10 @@ rmdir /Q /S libpng-1.6.37
 del libpng-1.6.37.tar
 del pax_global_header
 
-7z x ogg-1.3.3.tar.gz
+7z x ogg-v1.3.4.tar.gz
 if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
-7z x ogg-1.3.3.tar
-cd ogg-1.3.3
+7z x ogg-v1.3.4.tar
+cd ogg-v1.3.4
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF^
@@ -74,14 +74,14 @@ if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel%
 copy libogg.a ..\..\lib\%%A
 if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
 cd ..\..\
-rmdir /Q /S ogg-1.3.3
-del ogg-1.3.3.tar
+rmdir /Q /S ogg-v1.3.4
+del ogg-v1.3.4.tar
 del pax_global_header
 
-7z x vorbis-1.3.6.tar.gz
+7z x vorbis-v1.3.7.tar.gz
 if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
-7z x vorbis-1.3.6.tar
-cd vorbis-1.3.6
+7z x vorbis-v1.3.7.tar
+cd vorbis-v1.3.7
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF^
@@ -95,8 +95,8 @@ if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel%
 copy lib\*.a ..\..\lib\%%A
 if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
 cd ..\..\
-rmdir /Q /S vorbis-1.3.6
-del vorbis-1.3.6.tar
+rmdir /Q /S vorbis-v1.3.7
+del vorbis-v1.3.7.tar
 del pax_global_header
 
 7z x freetype-2.10.4.tar.gz
