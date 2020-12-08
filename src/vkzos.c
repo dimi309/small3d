@@ -18,7 +18,7 @@ typedef int BOOL;
 
 #ifdef __ANDROID__
 #include <android/log.h>
-struct android_app *vkz_android_app;
+struct android_app* vkz_android_app;
 #endif
 
 #ifndef NDEBUG
@@ -43,7 +43,7 @@ const char* vl[5] = {
 #define LOGDEBUG2(x, y, z) printf(x, y, z); printf("\n\r")
 
 uint32_t numValidationLayers = 1;
-const char* vl[1] = {"VK_LAYER_LUNARG_standard_validation"};
+const char* vl[1] = { "VK_LAYER_LUNARG_standard_validation" };
 
 #endif
 
@@ -212,7 +212,7 @@ int vkz_create_instance(const char* application_name,
 
     allExtensionNames[enabled_extension_count] =
       VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
-    uint32_t allExtensionCount = (uint32_t) enabled_extension_count + 1;
+    uint32_t allExtensionCount = (uint32_t)enabled_extension_count + 1;
     ci.enabledExtensionCount = allExtensionCount;
     ci.ppEnabledExtensionNames = allExtensionNames;
   }
@@ -224,7 +224,7 @@ int vkz_create_instance(const char* application_name,
 
   int success = 1;
   VkResult result = vkCreateInstance(&ci, NULL, &vkz_instance);
-  if ( result != VK_SUCCESS) {
+  if (result != VK_SUCCESS) {
     success = 0;
     LOGDEBUG1("Failed to create Vulkan instance. Error: %d", result);
   }
@@ -285,7 +285,7 @@ int retrieve_swapchain_support_details(VkPhysicalDevice device) {
   if (vkz_swapchain_support_details.formatCount > 0) {
     vkz_swapchain_support_details.formats =
       malloc(vkz_swapchain_support_details.formatCount *
-      sizeof(VkSurfaceFormatKHR));
+        sizeof(VkSurfaceFormatKHR));
     vkGetPhysicalDeviceSurfaceFormatsKHR(device, vkz_surface,
       &vkz_swapchain_support_details.formatCount,
       vkz_swapchain_support_details.formats);
@@ -318,15 +318,15 @@ int retrieve_swapchain_support_details(VkPhysicalDevice device) {
 
 int select_surface_format() {
   LOGDEBUG1("Selecting surface format. formatCount: %d",
-            vkz_swapchain_support_details.formatCount);
+    vkz_swapchain_support_details.formatCount);
   if (!(vkz_swapchain_support_details.formatCount == 1 &&
     vkz_swapchain_support_details.formats[0].format ==
     VK_FORMAT_UNDEFINED)) {
     BOOL found = FALSE;
     for (uint32_t n = 0; n < vkz_swapchain_support_details.formatCount; n++) {
       LOGDEBUG2("Found format %d with colorSpace %d",
-                vkz_swapchain_support_details.formats[n].format,
-                vkz_swapchain_support_details.formats[n].colorSpace);
+        vkz_swapchain_support_details.formats[n].format,
+        vkz_swapchain_support_details.formats[n].colorSpace);
       if (vkz_swapchain_support_details.formats[n].format ==
         VK_FORMAT_B8G8R8A8_UNORM &&
         vkz_swapchain_support_details.formats[n].colorSpace ==
@@ -405,8 +405,10 @@ int select_physical_device() {
   uint32_t deviceExtensionCount = 0;
 
   vkEnumeratePhysicalDevices(vkz_instance, &numDevices, NULL);
+
   if (numDevices > 0) {
     pds = malloc(sizeof(VkPhysicalDevice) * numDevices);
+    if (!pds) return 0;
     vkEnumeratePhysicalDevices(vkz_instance, &numDevices, pds);
 
     LOGDEBUG1("Number of devices: %d - checking features...", numDevices);
@@ -415,6 +417,7 @@ int select_physical_device() {
 
       VkPhysicalDeviceProperties dp;
       VkPhysicalDeviceFeatures df;
+
       vkGetPhysicalDeviceProperties(pds[n], &dp);
       vkGetPhysicalDeviceFeatures(pds[n], &df);
 
@@ -429,38 +432,41 @@ int select_physical_device() {
       }
 
       vkEnumerateDeviceExtensionProperties(pds[n], NULL, &deviceExtensionCount,
-                                           NULL);
+        NULL);
 
       if (deviceExtensionCount) {
         if (deviceExtensions) {
           free(deviceExtensions);
         }
         deviceExtensions = malloc(sizeof(VkExtensionProperties) *
-                                  deviceExtensionCount);
+          deviceExtensionCount);
         vkEnumerateDeviceExtensionProperties(pds[n], NULL,
-                                             &deviceExtensionCount,
-                                             deviceExtensions);
+          &deviceExtensionCount,
+          deviceExtensions);
       }
 
       BOOL swapchainSupported = FALSE;
       BOOL supportDetailsOk = FALSE;
-      for (uint32_t n1 = 0; n1 < deviceExtensionCount; n1++) {
-        swapchainSupported = strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-                                    deviceExtensions[n1].extensionName) == 0;
-        if (swapchainSupported && retrieve_swapchain_support_details(pds[n])) {
-          LOGDEBUG0("The device supports the swapchain extension and"
-                    " support details are ok.");
-          supportDetailsOk = TRUE;
-          break;
-        }
 
+      if (deviceExtensions) {
+        for (uint32_t n1 = 0; n1 < deviceExtensionCount; n1++) {
+          swapchainSupported = strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+            deviceExtensions[n1].extensionName) == 0;
+          if (swapchainSupported && retrieve_swapchain_support_details(pds[n])) {
+            LOGDEBUG0("The device supports the swapchain extension and"
+              " support details are ok.");
+            supportDetailsOk = TRUE;
+            break;
+          }
+        }
       }
 
       if (!supportDetailsOk) {
         LOGDEBUG0(
           "Swapcain not supported or failed to retrieve support detais!");
-      
-      } else {
+
+      }
+      else {
 
         vkz_physical_device = pds[n];
 
@@ -496,42 +502,47 @@ int select_queue_families() {
     queueFamilyProperties);
 
   BOOL found_graphics = FALSE;
-  for (uint32_t n = 0; n < queueFamilyCount; n++) {
-    if (queueFamilyProperties[n].queueCount > 0 &&
-      queueFamilyProperties[n].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-      vkz_graphics_family_index = n;
-      found_graphics = TRUE;
-      LOGDEBUG1("Found graphics queue family index: %d",
-        vkz_graphics_family_index);
-      break;
-    }
-  }
-
-  if (!found_graphics) {
-    LOGDEBUG0("Could not find graphics queue family!");
-  }
-
   BOOL found_present = FALSE;
-  for (uint32_t n = 0; n < queueFamilyCount; n++) {
-    if (queueFamilyProperties[n].queueCount > 0) {
 
-      VkBool32 presentSupport = FALSE;
-      vkGetPhysicalDeviceSurfaceSupportKHR(vkz_physical_device, n, vkz_surface,
-        &presentSupport);
-
-      if (presentSupport) {
-        vkz_present_family_index = n;
-        found_present = TRUE;
-        LOGDEBUG1("Found present queue family index: %d",
-          vkz_present_family_index);
+  if (queueFamilyProperties) {
+    for (uint32_t n = 0; n < queueFamilyCount; n++) {
+      if (queueFamilyProperties[n].queueCount > 0 &&
+        queueFamilyProperties[n].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+        vkz_graphics_family_index = n;
+        found_graphics = TRUE;
+        LOGDEBUG1("Found graphics queue family index: %d",
+          vkz_graphics_family_index);
         break;
       }
     }
+
+    if (!found_graphics) {
+      LOGDEBUG0("Could not find graphics queue family!");
+    }
+
+    for (uint32_t n = 0; n < queueFamilyCount; n++) {
+      if (queueFamilyProperties[n].queueCount > 0) {
+
+        VkBool32 presentSupport = FALSE;
+        vkGetPhysicalDeviceSurfaceSupportKHR(vkz_physical_device, n, vkz_surface,
+          &presentSupport);
+
+        if (presentSupport) {
+          vkz_present_family_index = n;
+          found_present = TRUE;
+          LOGDEBUG1("Found present queue family index: %d",
+            vkz_present_family_index);
+          break;
+        }
+      }
+    }
+    if (!found_present) {
+      LOGDEBUG0("Could not find present queue family!");
+    }
   }
 
-  if (!found_present) {
-    LOGDEBUG0("Could not find present queue family!");
-  }
+
+
 
   free(queueFamilyProperties);
   return (found_graphics && found_present);
@@ -547,6 +558,8 @@ int create_logical_device() {
   else {
     qci = malloc(sizeof(VkDeviceQueueCreateInfo) * 2);
   }
+
+  if (!qci) return 0;
 
   memset(qci, 0, sizeof(VkDeviceQueueCreateInfo));
   qci[0].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
@@ -604,7 +617,8 @@ int create_logical_device() {
     vkGetDeviceQueue(vkz_logical_device, vkz_present_family_index, 0,
       &vkz_present_queue);
     LOGDEBUG0("Present queue retrieved.");
-  } else {
+  }
+  else {
     LOGDEBUG0("Failed to create logical device!");
   }
 
@@ -729,8 +743,13 @@ int vkz_create_image_view(VkImageView* image_view, VkImage image,
 
 int create_swapchain_image_views() {
 
+
+
   vkz_swapchain_image_views = malloc(vkz_swapchain_image_count *
     sizeof(VkImageView));
+
+  if (!vkz_swapchain_image_views) return 0;
+
   memset(vkz_swapchain_image_views, 0, vkz_swapchain_image_count *
     sizeof(VkImageView));
 
@@ -853,6 +872,8 @@ int create_framebuffers(VkRenderPass render_pass) {
     framebuffer_ci.height = vkz_height;
     framebuffer_ci.layers = 1;
 
+    if (!framebuffers) return 0;
+
     if (vkCreateFramebuffer(vkz_logical_device, &framebuffer_ci, NULL,
       &framebuffers[n]) != VK_SUCCESS) {
       LOGDEBUG0("Could not create framebuffers!");
@@ -930,7 +951,7 @@ int vkz_create_swapchain(int with_image_sampler) {
 
   for (uint32_t i = 0; i < sizeof(af); i++) {
     if (vkz_swapchain_support_details.capabilities.supportedCompositeAlpha &
-    af[i]) {
+      af[i]) {
       ci.compositeAlpha = af[i];
       break;
     }
@@ -1009,14 +1030,14 @@ long alloc_load_shader_spv(char* path, uint32_t** spv) {
   long fs = 0;
   LOGDEBUG1("About to load shader from %s", path);
 #ifdef __ANDROID__
-  AAsset *asset = AAssetManager_open(vkz_android_app->activity->assetManager,
-          path, AASSET_MODE_STREAMING);
-  if(!asset) {
+  AAsset* asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+    path, AASSET_MODE_STREAMING);
+  if (!asset) {
     LOGDEBUG1("Could not open file %s!", path);
     return 0;
   }
   fs = AAsset_getLength(asset);
-  const void *buffer = AAsset_getBuffer(asset);
+  const void* buffer = AAsset_getBuffer(asset);
   AAsset_close(asset);
   *spv = (uint32_t*)buffer;
 #else
@@ -1028,10 +1049,14 @@ long alloc_load_shader_spv(char* path, uint32_t** spv) {
     fseek(f, 0, SEEK_SET);
     unsigned char* spvint = NULL;
     spvint = malloc(fs);
+    if (!spvint) {
+      LOGDEBUG1("Could not allocate memory to read spv %s!", path);
+      return 0;
+    }
     fread(spvint, 1, fs, f);
     fclose(f);
     *spv = (uint32_t*)spvint;
-    }
+  }
   else {
     LOGDEBUG1("Could not open file %s!", path);
     return 0;
@@ -1070,12 +1095,12 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
 
         pipeline_system_count++;
         memset(&pipeline_systems[*index], 0, sizeof(pipeline_system_struct));
-	size_t path_length = strchr(vertex_shader_path, '\0') -
-	  vertex_shader_path + 1;
-	pipeline_systems[*index].vertex_shader_path = malloc(path_length);
+        size_t path_length = strchr(vertex_shader_path, '\0') -
+          vertex_shader_path + 1;
+        pipeline_systems[*index].vertex_shader_path = malloc(path_length);
         strcpy(pipeline_systems[*index].vertex_shader_path, (char*)vertex_shader_path);
-	path_length = strchr(fragment_shader_path, '\0') - fragment_shader_path + 1;
-	pipeline_systems[*index].fragment_shader_path = malloc(path_length);
+        path_length = strchr(fragment_shader_path, '\0') - fragment_shader_path + 1;
+        pipeline_systems[*index].fragment_shader_path = malloc(path_length);
         strcpy(pipeline_systems[*index].fragment_shader_path, (char*)fragment_shader_path);
         pipeline_systems[*index].set_input_state_function = set_input_state;
         pipeline_systems[*index].set_pipeline_layout_function =
@@ -1084,12 +1109,12 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
       else {
         // Reuse existing slot
 
-	if (*index >= pipeline_system_count) {
-	  LOGDEBUG1("Pipeline %d has ever been created! Cannot reuse index!",
-		    *index);
-	  return 0;
-	}
-	
+        if (*index >= pipeline_system_count) {
+          LOGDEBUG1("Pipeline %d has ever been created! Cannot reuse index!",
+            *index);
+          return 0;
+        }
+
         char* vsp = pipeline_systems[*index].vertex_shader_path;
         char* fsp = pipeline_systems[*index].fragment_shader_path;
         int (*sis)(VkPipelineVertexInputStateCreateInfo*) =
@@ -1128,8 +1153,11 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
     strcpy(pipeline_systems[*index].vertex_shader_path, (char*)vertex_shader_path);
     path_length = strchr(fragment_shader_path, '\0') - fragment_shader_path + 1;
     pipeline_systems[*index].fragment_shader_path = malloc(path_length);
+
+
+    if (!pipeline_systems[*index].fragment_shader_path) return 0;
     strcpy(pipeline_systems[*index].fragment_shader_path, (char*)fragment_shader_path);
-    
+
     pipeline_systems[*index].set_input_state_function = set_input_state;
     pipeline_systems[*index].set_pipeline_layout_function = set_pipeline_layout;
   }
@@ -1482,10 +1510,9 @@ int vkz_destroy_draw_command_buffer(VkCommandBuffer* command_buffer) {
   VkResult rwait;
   do {
     rwait = vkWaitForFences(vkz_logical_device, 1,
-                            &gpu_cpu_fence,
-                            VK_TRUE, UINT64_MAX);
-  }
-  while (rwait == VK_TIMEOUT);
+      &gpu_cpu_fence,
+      VK_TRUE, UINT64_MAX);
+  } while (rwait == VK_TIMEOUT);
 
   vkFreeCommandBuffers(vkz_logical_device, command_pool, 1, command_buffer);
 
@@ -1510,19 +1537,19 @@ int vkz_create_sync_objects(void) {
 
   VkSemaphoreCreateInfo sci;
   memset(&sci, 0, sizeof(VkSemaphoreCreateInfo));
-  
+
   sci.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
   sci.pNext = NULL;
   sci.flags = 0;
 
   if (vkCreateSemaphore(vkz_logical_device, &sci, NULL,
-			&draw_semaphore) != VK_SUCCESS) {
+    &draw_semaphore) != VK_SUCCESS) {
     LOGDEBUG0("Could not create draw semaphore!");
     return 0;
   }
 
   if (vkCreateSemaphore(vkz_logical_device, &sci, NULL,
-			&acquire_semaphore) != VK_SUCCESS) {
+    &acquire_semaphore) != VK_SUCCESS) {
     LOGDEBUG0("Could not create acquire semaphore!");
     return 0;
   }
@@ -1537,18 +1564,17 @@ int vkz_destroy_sync_objects(void) {
   VkResult rwait;
   do {
     rwait = vkWaitForFences(vkz_logical_device, 1,
-                            &gpu_cpu_fence,
-                            VK_TRUE, UINT64_MAX);
-  }
-  while (rwait == VK_TIMEOUT);
+      &gpu_cpu_fence,
+      VK_TRUE, UINT64_MAX);
+  } while (rwait == VK_TIMEOUT);
 
   vkDestroyFence(vkz_logical_device,
     gpu_cpu_fence, NULL);
 
   vkDestroySemaphore(vkz_logical_device,
-		     draw_semaphore, NULL);
+    draw_semaphore, NULL);
   vkDestroySemaphore(vkz_logical_device,
-		     acquire_semaphore, NULL);
+    acquire_semaphore, NULL);
 
   return 1;
 }
@@ -1573,9 +1599,9 @@ int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index) {
 
   VkResult r =
     vkAcquireNextImageKHR(vkz_logical_device, vkz_swapchain,
-			  UINT64_MAX,
-			  acquire_semaphore,
-			  VK_NULL_HANDLE, &next_image_index);
+      UINT64_MAX,
+      acquire_semaphore,
+      VK_NULL_HANDLE, &next_image_index);
 
   if (r == VK_ERROR_OUT_OF_DATE_KHR) {
     vkz_recreate_pipelines_and_swapchain();
@@ -1630,12 +1656,12 @@ int vkz_draw(VkCommandBuffer* command_buffer) {
   si.pWaitSemaphores = &acquire_semaphore;
   si.waitSemaphoreCount = 1;
 
-  VkPipelineStageFlags wait_stages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+  VkPipelineStageFlags wait_stages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
   si.pWaitDstStageMask = wait_stages;
 
   vkResetFences(vkz_logical_device, 1,
     &gpu_cpu_fence);
-  
+
   if (vkQueueSubmit(vkz_graphics_queue, 1, &si,
     gpu_cpu_fence) != VK_SUCCESS) {
     LOGDEBUG0("Could not submit draw command buffer!");
@@ -1838,7 +1864,7 @@ int vkz_transition_image_layout(VkImage image, VkFormat format,
     mb.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 
     if (format == VK_FORMAT_D32_SFLOAT_S8_UINT ||
-    format == VK_FORMAT_D24_UNORM_S8_UINT) {
+      format == VK_FORMAT_D24_UNORM_S8_UINT) {
       mb.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
     }
   }
@@ -1952,7 +1978,7 @@ int vkz_shutdown(void) {
     for (uint32_t n = 0; n < pipeline_system_count; ++n) {
       destroy_pipeline(n, TRUE);
     }
-    
+
     free(pipeline_systems);
     pipeline_systems = NULL;
   }
