@@ -185,11 +185,16 @@ int vkz_create_instance(const char* application_name,
     vkEnumerateInstanceLayerProperties(&lc, lp);
     for (uint32_t i = 0; i < numValidationLayers; i++) {
       for (uint32_t n = 0; n < lc; ++n) {
+        // Disable C6385 warning in Visual Studio as it probably gives a false positive here.
+        // see https://stackoverflow.com/questions/59649678/warning-c6385-in-visual-studio
+#pragma warning(push)
+#pragma warning(disable:6385)
         if (strcmp(lp[n].layerName, vl[i]) == 0) {
           LOGDEBUG1("Layer %s exists! Will enable...\n", vl[i]);
           validation_layers[validation_layer_count] = vl[i];
           ++validation_layer_count;
         }
+#pragma warning(pop)
       }
     }
   }
@@ -506,6 +511,10 @@ int select_queue_families() {
 
   if (queueFamilyProperties) {
     for (uint32_t n = 0; n < queueFamilyCount; n++) {
+      // Disable C6385 warning in Visual Studio as it probably gives a false positive here.
+      // see https://stackoverflow.com/questions/59649678/warning-c6385-in-visual-studio
+#pragma warning(push)
+#pragma warning(disable:6385)
       if (queueFamilyProperties[n].queueCount > 0 &&
         queueFamilyProperties[n].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
         vkz_graphics_family_index = n;
@@ -514,6 +523,7 @@ int select_queue_families() {
           vkz_graphics_family_index);
         break;
       }
+#pragma warning(pop)
     }
 
     if (!found_graphics) {
