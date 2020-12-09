@@ -20,8 +20,28 @@ namespace small3d {
 
   /**
    * @class BoundingBoxSet
-   * @brief Set of bounding boxes for a SceneObject, loaded from a Wavefront
-   * file, allowing for collision detection (see README.md).
+   * @brief Set of bounding boxes for a SceneObject, normally loaded from a 
+   *        Wavefront file, allowing for collision detection.
+   *        In order to create these in Blender for example (see blender.org), 
+   *        just place them in the preferred position over a model. Ideally, 
+   *        they should be aligned with the axes, (but note that small3d does 
+   *        more than just a simple axis-aligned bounding box collision 
+   *        detection).
+   *
+   *        Export the bounding boxes to a Wavefront file separately from the 
+   *        model. You can do this if you "save as" a new file after placing 
+   *        the boxes and deleting the original model. During export, only set 
+   *        the options Apply Modifiers, Include Edges (but not in newer 
+   *        versions of Blender, where it is not available), 
+   *        Objects as OBJ Objects and Keep Vertex Order. On the contrary to 
+   *        what is the case when exporting the Model itself, more than one 
+   *        bounding box objects can be exported to the same Wavefront file.
+   *
+   *        It is good to keep the default origin in Blender for the models 
+   *        as well as the bounding boxes. User-set origins are ignored by 
+   *        Blender when exporting Wavefront files. That can cause 
+   *        misalignments between bounding boxes and models, even if 
+   *        the origins of both have been properly set to a new position.
    */
 
   class BoundingBoxSet {
