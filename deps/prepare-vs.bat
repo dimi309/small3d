@@ -1,17 +1,21 @@
 @echo off
 setlocal enabledelayedexpansion
 set args_ok=false
+set opengl_ok=false
 
-if /I "%~1" == "Debug" set args_ok=true
-if /I "%~1" == "Release" set args_ok=true
+if /I "%~1" == "debug" set args_ok=true
+if /I "%~1" == "release" set args_ok=true
+if /I "%~2" == "" set opengl_ok=true
+if /I "%~2" == "opengl" set opengl_ok=true
+if not "%opengl_ok%" == "true" set args_ok=false
 
 if "%args_ok%" == "false" (
-echo Please indicate build type: Debug or Release
+echo Please indicate build type: debug or release, followed by opengl if you would like to also prepare OpenGL-related libraries.
 endlocal & exit /b 1
 )
 
-if /I "%~1" == "Debug" set BUILDTYPE=Debug
-if /I "%~1" == "Release" set BUILDTYPE=Release
+if /I "%~1" == "debug" set BUILDTYPE=Debug
+if /I "%~1" == "release" set BUILDTYPE=Release
 
 @echo on
 
@@ -38,22 +42,24 @@ cd ..\..
 rmdir /Q /S glfw-3.3.2
 
 rem Only needed for OpenGL build
+if /I "%~2" == "opengl" (
 7z x glew-20190928.tgz
 7z x glew-20190928.tar
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 cd glew-2.2.0
 cmake %VSCONFIG% build/cmake -DBUILD_UTILS=OFF
 cmake --build . --config %BUILDTYPE%
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 xcopy include\GL ..\include\GL /i /s
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 if %BUILDTYPE%==Debug (copy lib\%BUILDTYPE%\libglew32d.lib ..\lib\glew.lib) else (copy lib\%BUILDTYPE%\libglew32.lib ..\lib\glew.lib)
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 for /r %%a in (*.pdb) do @copy /y "%%a" ..\bin
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 cd ..
 del glew-20190928.tar
 rmdir /Q /S glew-2.2.0
+)
 
 7z x glm-0.9.9.8.zip
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%

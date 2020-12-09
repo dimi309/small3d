@@ -1,17 +1,23 @@
 @echo off
 setlocal enabledelayedexpansion
 set args_ok=false
+set opengl_ok=false
 
-if /I "%~1" == "Debug" set args_ok=true
-if /I "%~1" == "Release" set args_ok=true
+if /I "%~1" == "debug" set args_ok=true
+if /I "%~1" == "release" set args_ok=true
+if /I "%~2" == "" set opengl_ok=true
+if /I "%~2" == "opengl" set opengl_ok=true
+if not "%opengl_ok%" == "true" set args_ok=false
 
 if "%args_ok%" == "false" (
-echo Please indicate build type: Debug or Release
+echo Please indicate build type: debug or release, followed by opengl if you would like an opengl build.
 endlocal & exit /b 1
 )
 
-if /I "%~1" == "Debug" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Debug
-if /I "%~1" == "Release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
+if /I "%~1" == "debug" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Debug
+if /I "%~1" == "release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
+
+if /I "%~2" == "opengl" set CMAKE_DEFINITIONS=%CMAKE_DEFINITIONS% -DSMALL3D_OPENGL=ON
 
 if exist build (
 echo Build directory exists!
