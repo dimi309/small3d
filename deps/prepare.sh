@@ -3,6 +3,13 @@ if [ "$1" != "Debug" ] && [ "$1" != "Release" ]; then
     exit 1
 fi
 
+if [ ! -z "$2" ] && [ "$2" != "opengl" ]; then
+    echo "The second parameter, if entered, can only be opengl if you would like to prepare the OpenGL-related dependencies"
+    exit 1
+fi
+
+
+
 if [ $(uname) == 'Linux' ]; then
 
     if type -p "apt" > /dev/null ; then
@@ -44,7 +51,7 @@ if [ $(uname) != 'Linux' ]; then
 fi
 
 # Only needed for OpenGL build
-if [ "$2" != "noglew" ]; then
+if [ "$2" == "opengl" ]; then
     tar xvf glew-20190928.tgz
     cd glew-2.2.0
     cmake build/cmake -DBUILD_UTILS=OFF
