@@ -29,6 +29,14 @@ namespace small3d
    * @brief An object that appears on the 3D scene. It is made up of one or more
    *        models (the latter for animation), together with information about
    *        positioning and rotation and collision detection functionality.
+   *        Models can be loaded from a Wavefront file.
+   *        Such a file can be exported from Blender for example (see blender.org).
+   *        From its menu, select File > Export > Wavefront (.obj). Then from the
+   *        "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" 
+   *        and "Keep Vertex Order".
+   *        For exporting animations to a series of Wavefront files in a way 
+   *        that will allow this class to load them, also select "Animation" and 
+   *        "Apply Modifiers".*
    *
    */
 

@@ -21,7 +21,13 @@ namespace small3d {
   /**
    * @struct	Model
    *
-   * @brief	A 3D model, loaded from a Wavefront file.
+   * @brief	A 3D model. It can be loaded from a Wavefront file.
+   *            Such a file can be exported from Blender for example (see blender.org).
+   *            From its menu, select File > Export > Wavefront (.obj). Then from the
+   *            "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" 
+   *            and "Keep Vertex Order".
+   *            The 3D model can also be constructed procedurally by code, by inserting
+   *            values to the appropriate member variables.
    */
 
   struct Model {
