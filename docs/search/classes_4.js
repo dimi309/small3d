@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['model_140',['Model',['../structsmall3d_1_1_model.html',1,'small3d']]]
+  ['renderer_139',['Renderer',['../classsmall3d_1_1_renderer.html',1,'small3d']]]
 ];

@@ -899,7 +899,8 @@ EXCLUDE_SYMBOLS        = VulkanImage \
 			 UboWorldDetails \
 		       	 UboLight \
 			 pipeline_system_struct \
-			 swapchain_support_struct
+			 swapchain_support_struct \
+			 extremes_
 			 
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
