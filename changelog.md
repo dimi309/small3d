@@ -1,5 +1,13 @@
 /*! \page changelog changes per version
 
+v1.808
+
+- Scripts now provided for preparing dependencies and building small3d on all 
+  supported platforms.
+- The README has been greatly shortened since a lot of the information that
+  was there is now unnecessary. It can be found in the build scripts and
+  it actually *runs* :)
+
 v1.707 2020-12-01
 
 - [BREAKING] Improved collision detection.

@@ -67,244 +67,45 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_small3d_README"></a> <a href="https://github.com/dimi309/small3d">[Source Code]</a> <a href="https://dimi309.github.io/small3d">[API Documentation]</a></p>
-<h1><a class="anchor" id="autotoc_md1"></a>
-Introduction</h1>
-<p>This is a free, open source, minimalistic 3D framework for the programmer who would like to make games using a basic set of libraries (glfw, glm, png, zlib, ogg, vorbis, portaudio, freetype, bzip) and relying on C++ to do the rest. It helps you by providing you with cross-platform rendering functionality based on Vulkan. It can also be compiled with OpenGL.</p>
+<p>Free, open source, minimalistic 3D framework for the programmer who would like to make games using a basic set of libraries (glfw, glm, png, zlib, ogg, vorbis, portaudio, freetype, bzip) and relying on C++ to do the rest. It helps you by providing you with cross-platform rendering functionality based on Vulkan. It can also be compiled with OpenGL.</p>
 <p>small3d can render Wavefront models, animate them as frames, map textures on them, provide some basic lighting (Gouraud shading) and also render images and text.</p>
 <p>A very easy to use Sound object is also provided that can play OGG files on all supported platforms via a common interface. Basic collision detection has also been implemented.</p>
 <p>small3d works on Windows, MacOS, Linux, iOS and Android and supports Visual Studio, Xcode, gcc (even MinGW) and clang for compilation.</p>
 <p>All small3d dependencies, apart from the Vulkan SDK, are distributed together with its source code. They can be built by executing a single script (see below).</p>
+<h1><a class="anchor" id="autotoc_md1"></a>
+Sample games</h1>
+<ul>
+<li><a href="https://github.com/dimi309/avoidthebug">Avoid the Bug</a></li>
+<li><a href="https://github.com/dimi309/chasethegoat">Chase the Goat</a></li>
+<li><a href="https://github.com/dimi309/frogremixed">Frog Remixed</a></li>
+<li><a href="https://github.com/dimi309/gloom">Gloom</a></li>
+</ul>
 <h1><a class="anchor" id="autotoc_md2"></a>
-Building</h1>
-<p>Before starting, note that the Vulkan SDK and cmake have to be installed on your system and accessible on the command line. On Windows, 7zip also has to be in the path and you also need to install the MinGW compiler or Visual Studio, again with their tools available on the command line.</p>
-<p>Run the <em>prepare-mingw.bat</em> (Windows MinGW), <em>prepare-vs.bat</em> (Windows Visual Studio) or <em>prepare.sh</em> script from within the <em>deps</em> directory, in order to build the dependencies.</p>
-<p>Then, create a directory inside <em>small3d</em>, called <em>build</em>. Then, build like this: </p><pre class="fragment">cd build
-cmake ..
-cmake --build .
-</pre><p>On Windows, you need to execute <code>cmake .. -G"MinGW Makefiles"</code>, or with the preferred Visual Studio generator (e.g. <code>cmake .. -G"Visual Studio 16 2019" -A x64</code>). Make sure that <em>prepare-vs.bat</em> is run with the same generator (see the parameter towards the top, inside the file). Finally, make sure to run build using the same configuration as when running <em>prepare-vs.bat</em>, e.g. <code>cmake --build . --config Debug</code> for <code>prepare-vs.bat Debug</code>, <code>cmake --build . --config Release</code> for <code>prepare-vs.bat Release</code>.</p>
-<p>If you would rather build small3d with OpenGL rather than Vulkan, also add the definition <code>-DSMALL3D_OPENGL=ON</code> when running <code>cmake ..</code> (this will not work for Android or iOS).</p>
-<p>The unit tests can be run via the <em>unittests</em> binary from <em>build/bin</em>.</p>
-<p>For building your own project, you need the header files from the <em>build/include</em> directory, the libraries from the <em>build/lib</em> directory and the shaders from <em>build/shaders</em>. If you are using cmake, the modules in <em>small3d/cmake</em> can be useful. Check the CMakeLists.txt and src/CMakeLists.txt files for other configuration details (link flags, etc) that may also be required or useful.</p>
+Building prerequisites</h1>
+<p>The following need to be installed, with the relevant environment variables and tools accessible via the command line:</p>
+<ul>
+<li>Some compiler, gcc, Visual Studio, clang, etc.</li>
+<li>Vulkan SKD (if it will be used)</li>
+<li>7zip</li>
+<li>CMake</li>
+</ul>
 <h1><a class="anchor" id="autotoc_md3"></a>
-Xcode workarounds</h1>
-<p>On MacOS, the small3d unit tests and sample game work like on any other platform when configured with cmake by default: </p><pre class="fragment">cmake ..
-</pre><p>However you might want to create an Xcode project, in order to debug your program in Xcode for example. In that case, some additional steps are needed, in order to ensure that the programs run without error. First of all, small3d together with its unit tests can be configured and built for Xcode as follows: </p><pre class="fragment">cmake .. -G"Xcode"
-cmake --build .
-</pre><p>The created project, <code>build/small3d.xcodeproj</code> can then be opened in Xcode.</p>
-<p>There are two things that need to be taken care of before proceeding to run and debug the unit tests though. First of all, from the Project Navigator, click on <code>small3d</code>, and then on the <code>unittests</code> target. Select Build Settings and scroll down to User-Defined. There, the <code>CONFIGURATION_BUILD_DIR</code> variable needs to be set to the <code>bin</code> directory in all cases, for example <code>/Users/me/Source/small3d/build/bin/</code>, rather than the differentiated directories it is set to by default, e.g. <code>bin/Debug</code>, <code>bin/Release</code>, etc.</p>
-<p>The other problem is that, if you have set some Vulkan-related environment variables in bash / zsh, Xcode is not aware of them. Select the <code>unittests</code> target and then select Edit Scheme. Then select Run Debug, Arguments and add the necessary Environment Variables. They cannot be exactly the same as in <code>.zprofile</code> or <code>.bash_profile</code>. For example <code>VULKAN_SDK</code> does not need to be defined in this case and its value cannot be reused as <code>$VULKAN_SDK</code>anyway. They should look somewhat like these (note that, in my case, I do not install the Vulkan SDK. I just unzip it in my <code>Software</code> directory. So your specific path locations may vary): </p><pre class="fragment">PATH=$PATH:/Users/user/Software/vulkansdk-macos-1.2.154.0/macOS/bin
-DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/Users/user/Software/vulkansdk-macos-1.2.154.0/macOS/lib
-VK_LAYER_PATH=/Users/user/Software/vulkansdk-macos-1.2.154.0/macOS/share/vulkan/explicit_layer.d
-VK_ICD_FILENAMES=/Users/user/Software/vulkansdk-macos-1.2.154.0/MoltenVK/dylib/macOS/MoltenVK_icd.json
-</pre><h1><a class="anchor" id="autotoc_md4"></a>
+Building</h1>
+<ul>
+<li>Run the dependency preparation script which is suitable to your platform from the <code>deps</code> directory (<code>prepare-vs.bat</code>, <code>prepare-mingw.bat</code> or <code>prepare.sh</code>).</li>
+<li>Run the build script which is suitable to your platform from the root directory (<code>build-vs.bat</code>, <code>build-mingw.bat</code> or <code>build.sh</code>)</li>
+</ul>
+<p>Then, the unit tests can be run via the <code>unittests</code> binary from <code>build/bin</code>.</p>
+<p>For building your own project, you need:</p>
+<ul>
+<li>The header files from the <code>build/include</code> directory</li>
+<li>The libraries from the <code>build/lib</code> directory</li>
+<li>The shaders from <code>build/shaders</code> directory</li>
+</ul>
+<p>If you are using cmake, the modules in <code>small3d/cmake</code> can be useful. Check the <code>CMakeLists.txt</code> and <code>src/CMakeLists.txt</code> files for other configuration details (link flags, etc) that may also be required or useful.</p>
+<h1><a class="anchor" id="autotoc_md4"></a>
 small3d on mobile</h1>
-<p>The scripts for preparing the dependencies of small3d for mobile are <code>prepare-android</code> and <code>prepare-ios</code> for Android and iOS respectively, found in the <code>deps</code> directory. After executing one of those, you can build small3d for these platforms by executing either <code>build-android</code> or <code>build-ios</code> from the main directory. The sample game, <a href="https://github.com/dimi309/avoidthebug">Avoid the Bug</a> has been ported to both <a href="https://github.com/dimi309/avoidthebug-android">Android</a> and <a href="https://github.com/dimi309/avoidthebug-ios">iOS</a>. I use these projects as a basis for mobile development. Note that, while with the desktop edition of small3d I use GLFW for windowing functionalities and I/O, on mobile I access the native infrastructure directly.</p>
-<h1><a class="anchor" id="autotoc_md5"></a>
-Example</h1>
-<p>Let's move an object around the screen.</p>
-<h2><a class="anchor" id="autotoc_md6"></a>
-Get a 3D model</h2>
-<p>We need a Wavefront file. Suppose that it is a model of a ball, called ball.obj. Here's how to make one with Blender (skip the following part if you already have a model ready and go to the Setup section).</p>
-<p>When you start Blender, you see a cube:</p>
-<p><img src="cube.png" alt="" class="inline" title="A cube in Blender"/>   </p>
-<p>Press "a" to select it. If the cube is selected already, pressing "a" will de-select it. Press it again in that case. Then "x" to delete the cube. You will be asked to confirm the deletion:</p>
-<p><img src="delete.png" alt="" class="inline" title="Confirming deletion"/>   </p>
-<p>Just press enter to do so. Then, from the menu at the bottom left of the 3D view, select Add &gt; Mesh &gt; UV Sphere:</p>
-<p><img src="addsphere.png" alt="" class="inline" title="Adding a sphere"/>   </p>
-<p>This will create, as the name implies, a sphere:</p>
-<p><img src="sphere.png" alt="" class="inline" title="The sphere"/>   </p>
-<p>With the sphere selected (use the "a" key if it is not), click on the "Smooth" button, under "Shading" on the "Edit" menu on the left of the screen:</p>
-<p><img src="shadingsmooth.png" alt="" class="inline" title="Smooth shading"/>   </p>
-<p>This is not important but it will make the sphere look better :)</p>
-<p>We now need to create the Wavefront file. From the menu at the top, select File &gt; Export &gt; Wavefront (.obj). We need to set some options on the "Export OBJ" menu on the left. Only select "Write Normals", "Triangulate Faces" and "Keep Vertex Order":</p>
-<p><img src="export.png" alt="" class="inline" title="Wavefront export options"/>   </p>
-<p><em>Note: Later, for exporting animations to a series of Wavefront files in a way that will allow small3d to load them, also select "Animation" and "Apply Modifiers".</em></p>
-<p>Save the exported file as "ball.obj".</p>
-<h2><a class="anchor" id="autotoc_md7"></a>
-Setup</h2>
-<p>Let's proceed to make our first program. Create a directory, called <em>ball</em>. Then create another directory within it, called <em>resources</em> and place <em>ball.obj</em> in it. Also add the following code to a CMakeFiles.txt within the <em>ball</em> directory: </p><pre class="fragment">cmake_minimum_required(VERSION 3.0.2)
-
-project(ball)
-
-file(COPY "resources" DESTINATION "${PROJECT_BINARY_DIR}/bin")
-file(COPY "deps/shaders" DESTINATION "${PROJECT_BINARY_DIR}/bin/resources")
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
-
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-
-if(MSVC)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${PROJECT_BINARY_DIR}/bin")
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${PROJECT_BINARY_DIR}/bin")
-endif(MSVC)
-
-set(DEPS_PATH "${CMAKE_SOURCE_DIR}/deps")
-set(CMAKE_PREFIX_PATH ${DEPS_PATH})
-
-if(MSVC)
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-elseif(WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
-    set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
-elseif(APPLE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
-elseif(UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-endif(MSVC)
-
-find_package(Vulkan REQUIRED) # Delete for OpenGL
-# Uncomment for OpenGL:
-# find_package(OpenGL REQUIRED)
-# find_package(GLEW REQUIRED)
-find_package(GLFW REQUIRED)
-find_package(PNG REQUIRED)
-find_package(GLM)
-find_package(OGG REQUIRED)
-find_package(VORBIS REQUIRED)
-find_package(Portaudio REQUIRED)
-find_package(Freetype REQUIRED)
-find_package(SMALL3D REQUIRED)
-
-if(UNIX)
-    find_package(BZip2 REQUIRED)
-endif(UNIX)
-
-subdirs(src)
-</pre><p>Create a directory called <em>src</em> within the <em>ball</em> directory and, inside it, another <em>CMakeLists.txt</em> file: </p><pre class="fragment">add_executable(ball main.cpp)
-
-target_include_directories(ball PUBLIC "${CMAKE_SOURCE_DIR}/include")
-
-target_include_directories(ball PUBLIC
-    ${SMALL3D_INCLUDE_DIR}
-    ${GLFW_INCLUDE_DIRS}
-    ${Vulkan_INCLUDE_DIR} # Replace with ${OPENGL_INCLUDE_DIR} for OpenGL
-    ${PNG_INCLUDE_DIRS}
-    ${GLM_INCLUDE_DIRS}
-    ${OGG_INCLUDE_DIRS}
-    ${VORBIS_INCLUDE_DIR}
-    ${PORTAUDIO_INCLUDE_DIRS}
-    ${FREETYPE_INCLUDE_DIRS}
-)
-
-target_link_libraries(ball PUBLIC
-    ${SMALL3D_LIBRARY}
-    # Uncomment for OpenGL
-    # ${GLEW_LIBRARIES}
-    # ${OPENGL_LIBRARIES}
-    ${GLFW_LIBRARIES}
-    ${Vulkan_LIBRARIES} # Remove for OpenGL
-    ${PNG_LIBRARIES}
-    ${VORBIS_LIBRARIES}
-    ${OGG_LIBRARIES}
-    ${PORTAUDIO_LIBRARIES}
-    ${FREETYPE_LIBRARIES}
-)
-
-if(UNIX)
-    target_include_directories(ball PUBLIC
-        ${BZIP2_INCLUDE_DIRS})
-    target_link_libraries(ball PUBLIC
-        ${BZIP2_LIBRARIES})
-endif(UNIX)
-
-if(WIN32)
-    target_link_libraries(ball PUBLIC winmm)
-endif(WIN32)
-
-if(APPLE)
-    set_target_properties(ball PROPERTIES LINK_FLAGS "-framework \
-    AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
-    -framework IOKit -framework CoreVideo")
-endif(APPLE)
-
-if(MSVC)
-    set_target_properties(ball PROPERTIES LINK_FLAGS_DEBUG
-        "-NODEFAULTLIB:LIBCMTD")
-    set_target_properties(ball PROPERTIES LINK_FLAGS_RELEASE
-        "-NODEFAULTLIB:LIBCMT")
-
-    set_target_properties(ball PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
-        "${small3d_BINARY_DIR}/bin")
-endif(MSVC)
-</pre><h2><a class="anchor" id="autotoc_md8"></a>
-The code</h2>
-<p>Inside <em>ball/src</em>, create the <em>main.cpp</em> file: </p><pre class="fragment">int main(int argc, char **argv) {
-
-    return 0;
-}
-</pre><p>Include small3d's Renderer and SceneObject classes: </p><pre class="fragment">#include &lt;small3d/Renderer.hpp&gt;
-#include &lt;small3d/SceneObject.hpp&gt;
-</pre><p>Now we need the GLFW header files: </p><pre class="fragment">#include &lt;GLFW/glfw3.h&gt;
-</pre><p>We also need to be using the small3d namespace, so this goes under our include statements: </p><pre class="fragment">using namespace small3d;
-</pre><p>We also need to write the logic that will be detecting key presses: </p><pre class="fragment">bool downkey, leftkey, rightkey, upkey, esckey;
-
-void keyCallback(GLFWwindow* window, int key, int scancode, int action,
-    int mods)
-{
-if (key == GLFW_KEY_DOWN &amp;&amp; action == GLFW_PRESS)
-  downkey = true;
-if (key == GLFW_KEY_UP &amp;&amp; action == GLFW_PRESS)
-  upkey = true;
-if (key == GLFW_KEY_LEFT &amp;&amp; action == GLFW_PRESS)
-  leftkey = true;
-if (key == GLFW_KEY_RIGHT &amp;&amp; action == GLFW_PRESS)
-  rightkey = true;
-if (key == GLFW_KEY_ESCAPE &amp;&amp; action == GLFW_PRESS)
-  esckey = true;
-if (key == GLFW_KEY_DOWN &amp;&amp; action == GLFW_RELEASE)
-  downkey = false;
-if (key == GLFW_KEY_UP &amp;&amp; action == GLFW_RELEASE)
-  upkey = false;
-if (key == GLFW_KEY_LEFT &amp;&amp; action == GLFW_RELEASE)
-  leftkey = false;
-if (key == GLFW_KEY_RIGHT &amp;&amp; action == GLFW_RELEASE)
-  rightkey = false;
-if (key == GLFW_KEY_ESCAPE &amp;&amp; action == GLFW_RELEASE)
-  esckey = false;
-
-}
-</pre><p>And finally, we go to the main program, and we create the renderer. The renderer is a singleton, so it can only be retrieved via the getInstance method, and assigned to a pointer: </p><pre class="fragment">Renderer *renderer = &amp;Renderer::getInstance("Ball demo");
-</pre><p>We will later need to access the window of the application, in order to pick up key events: </p><pre class="fragment">GLFWwindow* window = renderer-&gt;getWindow();
-</pre><p>We create the ball: </p><pre class="fragment">SceneObject ball("ball", "resources/ball.obj");
-</pre><p>small3d uses vectors a lot as parameters for convenience. When positioning the ball, the components are in order, x (-left, +right), y(+up, -down), and z(-away from the camera, +towards the camera): </p><pre class="fragment">ball.offset = glm::vec3(0.0f, -1.0f, -8.0f);
-</pre><p>So let's start our main loop now. small3d uses GLFW and you can use it too! First we need to declare the callback function, which will be the keyCallback method we wrote above. </p><pre class="fragment">glfwSetKeyCallback(window, keyCallback);
-</pre><p>Now in every iteration, we need to check whether we want to exit the program. Let's say that we'll be doing that with the Esc key: </p><pre class="fragment">while (!glfwWindowShouldClose(window) &amp;&amp; !esckey) {
-
-glfwPollEvents();
-    if (esckey)
-        break;
-</pre><p>If after that we are still in the loop (so, no Esc key pressed), we will want to move the ball around with the keyboard.</p>
-<p>We will have the up arrow move the ball away from the camera. Down will do the opposite. Guess what left and right will do :) </p><pre class="fragment">if (upkey)
-  ball.offset.z -= 0.1f;
-else if (downkey)
-  ball.offset.z += 0.1f;
-else if (leftkey)
-  ball.offset.x -= 0.1f;
-else if (rightkey)
-  ball.offset.x += 0.1f;
-</pre><p>Ok, the ball is positioned. Now we need to actually draw it. We clear the screen first: </p><pre class="fragment">renderer-&gt;clearScreen();
-</pre><p>Then we render the ball. The second parameter is the colour. Let's say it's yellow (the vector below symbolises an rgb colour, together with the alpha channel): </p><pre class="fragment">renderer-&gt;render(ball, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
-</pre><p>We are using a double-buffered system (we draw on one buffer, while the user is looking at the other one), so we also need to swap the buffers: </p><pre class="fragment">renderer-&gt;swapBuffers();
-</pre><p>And we close the loop :) </p><pre class="fragment">}
-</pre><p>That's it!</p>
-<p>Let's try it out. Create a <em>ball/deps</em> directory and from the built small3d framework (see Building section above) copy the <em>build/include</em>, <em>build/lib</em> and <em>build/shaders</em> directories to this <em>deps</em> directory. Also, copy the <em>cmake</em> directory from the root of the small3d framework repository to the root <em>ball</em> directory. Then, back from the root <em>ball</em> directory execute: </p><pre class="fragment">mkdir build
-cd build
-cmake ..
-cmake --build .
-cd bin
-./ball
-</pre><p>On Windows, you need to execute <code>cmake .. -G"MinGW Makefiles"</code>, or with the preferred Visual Studio configuration (e.g. <code>cmake .. -G"Visual Studio 16 2019" -A x64</code>).</p>
-<p>Note that you have to be inside the build/bin directory in order to execute the program, otherwise it will not find the necessary resource files (shaders, textures, etc).</p>
-<p>There's our ball:</p>
-<p><img src="ball.png" alt="" class="inline" title="The ball"/>   </p>
-<p>Try moving it around with the arrows. A good way to learn about the other features of small3d is to read the documentation (in docs) and also to explore the source code of the sample games.</p>
-<h2><a class="anchor" id="autotoc_md9"></a>
-Collision Detection</h2>
-<p>The framework supports collision detection via manually created bounding boxes. In order to create these in Blender for example, just place them in the preferred position over the model. Ideally, they should be aligned with the axes, (but note that small3d does more than just a simple axis-aligned bounding box collision detection).</p>
-<p><img src="boundingboxes.png" alt="" class="inline" title="Bounding boxes"/>   </p>
-<p>Export the bounding boxes to a Wavefront file separately from the model. You can do this if you "save as" a new file after placing the boxes and deleting the original model. During export, only set the options <b>Apply Modifiers</b>, <b>Include Edges</b> (but not in newer versions of Blender, where it is not available), <b>Objects as OBJ Objects</b> and <b>Keep Vertex Order</b>. On the contrary to what is the case when exporting the model itself, more than one bounding box objects can be exported to the same Wavefront file.</p>
-<p>It is good to keep the default origin in Blender for the models as well as the bounding boxes. User-set origins are ignored by Blender when exporting Wavefront files. That can cause misalignments between bounding boxes and models, even if the origins of both have been properly set to a new position. </p>
+<p>The scripts for preparing the dependencies of small3d for mobile are <code>prepare-android</code> and <code>prepare-ios</code> for Android and iOS respectively, found in the <code>deps</code> directory. After executing one of those, you can build small3d for these platforms by executing either <code>build-android</code> or <code>build-ios</code> from the main directory. One sample game, <a href="https://github.com/dimi309/avoidthebug">Avoid the Bug</a> has been ported to both <a href="https://github.com/dimi309/avoidthebug-android">Android</a> and <a href="https://github.com/dimi309/avoidthebug-ios">iOS</a>. I use these projects as a basis for mobile development. Note that, while with the desktop edition of small3d I use GLFW for windowing functionalities and I/O, on mobile I access the native infrastructure directly. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
