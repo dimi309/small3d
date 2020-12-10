@@ -48,7 +48,12 @@ and tools accessible via the command line:
 - Run the build script which is suitable to your platform from the root 
   directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`)
 	
-Then, the unit tests can be run via the `unittests` binary from `build/bin`. 
+Then, the unit tests can be run via the `unittests` binary from `build/bin`.
+
+If any of this fails or you would simply like to restart the building
+procedure, the best way to clean the small3d directories is by using git:
+
+	git clean -fdx
 
 For building your own project, you need:
 
