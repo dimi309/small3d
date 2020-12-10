@@ -1,6 +1,6 @@
 /**
  * @file  Renderer.hpp
- * @brief Header of the Renderer class
+ * @brief The small3d renderer
  *
  *  Created on: 2014/10/19
  *      Author: Dimitri Kourkoulis

@@ -1,10 +1,6 @@
 /**
  * @file vkzos.h
- * @brief vkzos header file. I don't even remember what vkzos stands for any
- *        more. I decided to implement some basic Vulkan helper routines in 
- *        C at some point and I put this code together. It has proven to be
- *        quite useful for small3d as it is so I never bothered migrating 
- *        it to C++.
+ * @brief Vulkan helper functions.
  *
  * Created on: 2018/05/01
  *     Author: Dimitri Kourkoulis

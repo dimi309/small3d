@@ -1,6 +1,6 @@
 /**
  * @file  SceneObject.hpp
- * @brief Header of the SceneObject class
+ * @brief An object on the small3d scene
  *
  *  Created on: 2014/10/19
  *      Author: Dimitri Kourkoulis

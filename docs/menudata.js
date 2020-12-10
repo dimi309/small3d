@@ -89,4 +89,5 @@ var menudata={children:[
 {text:"Functions",url:"globals_func.html"},
 {text:"Variables",url:"globals_vars.html"},
 {text:"Macros",url:"globals_defs.html"}]}]},
+{text:"xcode",url:"xcode.html"},
 {text:"changelog",url:"changelog.html"}]}

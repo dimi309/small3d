@@ -1,6 +1,6 @@
 /**
  *  @file  BoundingBoxSet.hpp
- *  @brief Header of the BoundingBoxSet class.
+ *  @brief Bounding boxes for collision detection
  *
  *  Created on: 2014/10/19
  *      Author: Dimitri Kourkoulis

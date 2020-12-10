@@ -1,6 +1,6 @@
 /**
  * @file Logger.hpp
- * @brief Header of the Logger class
+ * @brief Logger used in small3d
  *
  * Created on: 2014/10/18
  *     Author: Dimitri Kourkoulis

@@ -1,6 +1,6 @@
 /**
  * @file Sound.hpp
- * @brief Header of the Sound class
+ * @brief A sound class
  *
  *  Created on: 2017-07-17
  *      Author: Dimitri Kourkoulis

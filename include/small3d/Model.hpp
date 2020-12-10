@@ -1,6 +1,6 @@
 /**
  * @file Model.hpp
- * @brief Header of the Model class
+ * @brief A 3D model class
  *
  * Created on: 2014/10/18
  *     Author: Dimitri Kourkoulis

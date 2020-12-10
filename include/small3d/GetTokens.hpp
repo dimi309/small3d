@@ -1,6 +1,6 @@
 /**
  *  @file  GetTokens.hpp
- *  @brief Declaration of the getTokens function
+ *  @brief Single function that parses tokens from a string
  *
  *  Created on: 2014/10/18
  *      Author: Dimitri Kourkoulis

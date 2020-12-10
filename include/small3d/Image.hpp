@@ -1,6 +1,6 @@
 /**
  * @file  Image.hpp
- * @brief Header of the Image class
+ * @brief Image loading and manipulation
  *
  * Created on: 2014/10/18
  *     Author: Dimitri Kourkoulis
