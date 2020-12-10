@@ -2,26 +2,8 @@
 
 [[Source Code]](https://github.com/dimi309/small3d) [[API Documentation]](https://dimi309.github.io/small3d)
 
-Free, open source, minimalistic 3D framework for the programmer who 
-would like to make games using a basic set of libraries (glfw, 
-glm, png, zlib, ogg, vorbis, portaudio, freetype, bzip) and relying on
-C++ to do the rest. It helps you by providing you with cross-platform rendering
-functionality based on Vulkan. It can also be compiled with OpenGL. 
-
-small3d can render Wavefront models, animate them as frames, map textures on 
-them, provide some basic lighting (Gouraud shading) and also render images and
-text.
-
-A very easy to use Sound object is also provided that can play OGG files on all
-supported platforms via a common interface. Basic collision detection has
-also been implemented.
-
-small3d works on Windows, MacOS, Linux, iOS and Android and supports Visual 
-Studio, Xcode, gcc (even MinGW) and clang for compilation.
-
-All small3d dependencies, apart from the Vulkan SDK, are distributed together 
-with its source code. They can be built by executing a single script (see 
-below).
+Minimalistic, open source library for making 3D games in C++, with
+Vulkan and OpenGL support
 
 ## Sample games
 
@@ -29,6 +11,25 @@ below).
 - [Chase the Goat](https://github.com/dimi309/chasethegoat)
 - [Frog Remixed](https://github.com/dimi309/frogremixed)
 - [Gloom](https://github.com/dimi309/gloom)
+
+## Features
+
+- Loading & rendering Wavefront models
+- Frame-based animation
+- Texture mapping
+- Gouraud shading
+- Image rendering
+- Font rendering
+- Sound
+- Collision detection
+
+## Supported platforms
+
+- Windows
+- MacOS
+- Linux (tested on Debian, Ubuntu and Fedora)
+- Android
+- iOS
 
 ## Building prerequisites
 
@@ -77,3 +78,20 @@ both [Android](https://github.com/dimi309/avoidthebug-android) and
 for mobile development. Note that, while with the desktop edition of small3d
 I use GLFW for windowing functionalities and I/O, on mobile I access the native
 infrastructure directly.
+
+## Referenced libraries
+
+All small3d dependencies, apart from the Vulkan SDK, are distributed together 
+with its source code. They can be built by executing a single script 
+(see "Building", above).
+
+- Vulkan SDK, or glew if building for OpenGL
+- glfw 
+- glm 
+- png
+- zlib
+- ogg
+- vorbis
+- portaudio
+- freetype
+- bzip

@@ -67,11 +67,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_small3d_README"></a> <a href="https://github.com/dimi309/small3d">[Source Code]</a> <a href="https://dimi309.github.io/small3d">[API Documentation]</a></p>
-<p>Free, open source, minimalistic 3D framework for the programmer who would like to make games using a basic set of libraries (glfw, glm, png, zlib, ogg, vorbis, portaudio, freetype, bzip) and relying on C++ to do the rest. It helps you by providing you with cross-platform rendering functionality based on Vulkan. It can also be compiled with OpenGL.</p>
-<p>small3d can render Wavefront models, animate them as frames, map textures on them, provide some basic lighting (Gouraud shading) and also render images and text.</p>
-<p>A very easy to use Sound object is also provided that can play OGG files on all supported platforms via a common interface. Basic collision detection has also been implemented.</p>
-<p>small3d works on Windows, MacOS, Linux, iOS and Android and supports Visual Studio, Xcode, gcc (even MinGW) and clang for compilation.</p>
-<p>All small3d dependencies, apart from the Vulkan SDK, are distributed together with its source code. They can be built by executing a single script (see below).</p>
+<p>Minimalistic, open source library for making 3D games in C++, with Vulkan and OpenGL support</p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Sample games</h1>
 <ul>
@@ -81,6 +77,27 @@ Sample games</h1>
 <li><a href="https://github.com/dimi309/gloom">Gloom</a></li>
 </ul>
 <h1><a class="anchor" id="autotoc_md2"></a>
+Features</h1>
+<ul>
+<li>Loading &amp; rendering Wavefront models</li>
+<li>Frame-based animation</li>
+<li>Texture mapping</li>
+<li>Gouraud shading</li>
+<li>Image rendering</li>
+<li>Font rendering</li>
+<li>Sound</li>
+<li>Collision detection</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md3"></a>
+Supported platforms</h1>
+<ul>
+<li>Windows</li>
+<li>MacOS</li>
+<li>Linux (tested on Debian, Ubuntu and Fedora)</li>
+<li>Android</li>
+<li>iOS</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md4"></a>
 Building prerequisites</h1>
 <p>The following need to be installed, with the relevant environment variables and tools accessible via the command line:</p>
 <ul>
@@ -89,7 +106,7 @@ Building prerequisites</h1>
 <li>7zip (only on Windows)</li>
 <li>CMake</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md3"></a>
+<h1><a class="anchor" id="autotoc_md5"></a>
 Building</h1>
 <ul>
 <li>Run the dependency preparation script which is suitable to your platform from the <code>deps</code> directory (<code>prepare-vs.bat</code>, <code>prepare-mingw.bat</code> or <code>prepare.sh</code>).</li>
@@ -104,9 +121,24 @@ Building</h1>
 <li>The shaders from <code>build/shaders</code> directory</li>
 </ul>
 <p>If you are using cmake, the modules in <code>small3d/cmake</code> can be useful. Check the <code>CMakeLists.txt</code> and <code>src/CMakeLists.txt</code> files for other configuration details (link flags, etc) that may also be required or useful.</p>
-<h1><a class="anchor" id="autotoc_md4"></a>
+<h1><a class="anchor" id="autotoc_md6"></a>
 small3d on mobile</h1>
-<p>The scripts for preparing the dependencies of small3d for mobile are <code>prepare-android</code> and <code>prepare-ios</code> for Android and iOS respectively, found in the <code>deps</code> directory. After executing one of those, you can build small3d for these platforms by executing either <code>build-android</code> or <code>build-ios</code> from the main directory. One sample game, <a href="https://github.com/dimi309/avoidthebug">Avoid the Bug</a> has been ported to both <a href="https://github.com/dimi309/avoidthebug-android">Android</a> and <a href="https://github.com/dimi309/avoidthebug-ios">iOS</a>. I use these projects as a basis for mobile development. Note that, while with the desktop edition of small3d I use GLFW for windowing functionalities and I/O, on mobile I access the native infrastructure directly. </p>
+<p>The scripts for preparing the dependencies of small3d for mobile are <code>prepare-android</code> and <code>prepare-ios</code> for Android and iOS respectively, found in the <code>deps</code> directory. After executing one of those, you can build small3d for these platforms by executing either <code>build-android</code> or <code>build-ios</code> from the main directory. One sample game, <a href="https://github.com/dimi309/avoidthebug">Avoid the Bug</a> has been ported to both <a href="https://github.com/dimi309/avoidthebug-android">Android</a> and <a href="https://github.com/dimi309/avoidthebug-ios">iOS</a>. I use these projects as a basis for mobile development. Note that, while with the desktop edition of small3d I use GLFW for windowing functionalities and I/O, on mobile I access the native infrastructure directly.</p>
+<h1><a class="anchor" id="autotoc_md7"></a>
+Referenced libraries</h1>
+<p>All small3d dependencies, apart from the Vulkan SDK, are distributed together with its source code. They can be built by executing a single script (see "Building", above).</p>
+<ul>
+<li>Vulkan SDK, or glew if building for OpenGL</li>
+<li>glfw</li>
+<li>glm</li>
+<li>png</li>
+<li>zlib</li>
+<li>ogg</li>
+<li>vorbis</li>
+<li>portaudio</li>
+<li>freetype</li>
+<li>bzip </li>
+</ul>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
