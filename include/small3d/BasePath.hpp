@@ -1,6 +1,6 @@
 /**
  * @file  BasePath.hpp
- * @brief Helper function that returns the base path on MacOS / iOS
+ * @brief Single function to return the base path on any platform
  *
  * Created on: 31 Jan 2020
  *     Author: Dimitri Kourkoulis
