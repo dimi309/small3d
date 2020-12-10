@@ -1,7 +1,9 @@
 /*! \page changelog changes per version
 
-v1.808
+v1.708
 
+- Elimination of compiler warnings and other code improvements
+- Upgraded to the latest versions of glfw, glm and freetype.
 - Scripts now provided for preparing dependencies and building small3d on all 
   supported platforms.
 - The README has been greatly shortened since a lot of the information that
