@@ -37,7 +37,7 @@ and tools accessible via the command line:
 
 - Some compiler, gcc, Visual Studio, clang, etc.
 - Vulkan SKD (if it will be used)
-- 7zip
+- 7zip (only on Windows)
 - CMake
 
 ## Building
