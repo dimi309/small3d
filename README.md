@@ -37,7 +37,7 @@ The following need to be installed, with the relevant environment variables
 and tools accessible via the command line:
 
 - Some compiler, gcc, Visual Studio, clang, etc.
-- Vulkan SKD (if it will be used)
+- Vulkan SDK (if it will be used)
 - 7zip (only on Windows)
 - CMake
 
