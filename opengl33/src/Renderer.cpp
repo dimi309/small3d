@@ -240,7 +240,7 @@ namespace small3d {
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LEQUAL);
-    glDepthRange(zNear + zOffsetFromCamera, zFar);
+    glDepthRange(zNear, zFar);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -352,10 +352,10 @@ namespace small3d {
       glGetUniformLocation(shaderProgram, "perspectiveMatrix");
 
     glm::mat4x4 perspectiveMatrix = perspective ?
-      glm::mat4x4(frustumScale, 0, 0, 0,
-        0, frustumScale * realScreenWidth / realScreenHeight, 0, 0,
+      glm::mat4x4(frustumScale * realScreenHeight / realScreenWidth, 0, 0, 0,
+        0, frustumScale, 0, 0,
         0, 0, (zNear + zFar) / (zNear - zFar), 2.0f * zNear * zFar / (zNear - zFar),
-        0, 0, zOffsetFromCamera, 0) :
+        0, 0, -1.0f, 0) :
       glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 
     glUniformMatrix4fv(perspectiveMatrixUniform, 1, GL_FALSE,
@@ -424,7 +424,6 @@ namespace small3d {
   Renderer::Renderer(const std::string& windowTitle, const int width,
     const int height, const float frustumScale,
     const float zNear, const float zFar,
-    const float zOffsetFromCamera,
     const std::string& shadersPath,
     const uint32_t maxObjectsPerPass) {
 
@@ -438,7 +437,6 @@ namespace small3d {
     this->zNear = zNear;
     this->zFar = zFar;
     this->frustumScale = frustumScale;
-    this->zOffsetFromCamera = zOffsetFromCamera;
 
     init(width, height, windowTitle, shadersPath);
 
@@ -457,12 +455,11 @@ namespace small3d {
     const int width, const int height,
     const float frustumScale,
     const float zNear, const float zFar,
-    const float zOffsetFromCamera,
     const std::string& shadersPath,
     const uint32_t maxObjectsPerPass) {
 
     static Renderer instance(windowTitle, width, height, frustumScale, zNear,
-      zFar, zOffsetFromCamera, shadersPath,
+      zFar, shadersPath,
       maxObjectsPerPass);
     return instance;
   }
