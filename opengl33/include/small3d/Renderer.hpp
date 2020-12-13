@@ -58,8 +58,7 @@ namespace small3d
     float frustumScale = 0.0f;
     float zNear = 0.0f;
     float zFar = 0.0f;
-    float zOffsetFromCamera = 0.0f;
-
+    
     std::unordered_map<std::string, uint32_t> textures;
 
     FT_Library library = 0;
@@ -97,7 +96,7 @@ namespace small3d
 
     Renderer(const std::string& windowTitle, const int width, const int height,
       const float frustumScale, const float zNear, const float zFar,
-      const float zOffsetFromCamera, const std::string& shadersPath,
+      const std::string& shadersPath,
       const uint32_t maxObjectsPerPass);
 
     Renderer();
@@ -137,8 +136,6 @@ namespace small3d
      *                          value)
      * @param zFar		Far end of frustum z coordinate (use positive
      *                          value)
-     * @param zOffsetFromCamera	The position of the projection plane with regard
-     *                          to the camera.
      * @param shadersPath	The path where the shaders will be stored,
      *                          relative to the application's executing
      *                          directory. It defaults to the path provided by
@@ -165,7 +162,6 @@ namespace small3d
       const float frustumScale = 1.0f,
       const float zNear = 1.0f,
       const float zFar = 24.0f,
-      const float zOffsetFromCamera = -1.0f,
       const std::string& shadersPath =
       "resources/shaders/",
       const uint32_t maxObjectsPerPass = 20);
