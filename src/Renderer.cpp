@@ -808,7 +808,7 @@ namespace small3d {
       glm::mat4x4(frustumScale * realScreenHeight / realScreenWidth, 0, 0, 0,
         0, frustumScale, 0, 0,
         0, 0, (zNear + zFar) / (zNear - zFar), 2.0f * zNear * zFar / (zNear - zFar),
-        0, 0, zOffsetFromCamera, 0) :
+        0, 0, -1.0f, 0) :
       glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 
     uboWorldDetailsDynamic[worldDetailsIndex].lightDirection = perspective ?
@@ -866,7 +866,6 @@ namespace small3d {
   Renderer::Renderer(const std::string& windowTitle, const int width,
     const int height, const float frustumScale,
     const float zNear, const float zFar,
-    const float zOffsetFromCamera,
     const std::string& shadersPath,
     const uint32_t maxObjectsPerPass) {
 
@@ -881,7 +880,6 @@ namespace small3d {
     this->zNear = zNear;
     this->zFar = zFar;
     this->frustumScale = frustumScale;
-    this->zOffsetFromCamera = zOffsetFromCamera;
     this->windowTitle = windowTitle;
 
     init(width, height, shadersPath);
@@ -905,12 +903,11 @@ namespace small3d {
     const int width, const int height,
     const float frustumScale,
     const float zNear, const float zFar,
-    const float zOffsetFromCamera,
     const std::string& shadersPath,
     const uint32_t maxObjectsPerPass) {
 
     static Renderer instance(windowTitle, width, height, frustumScale, zNear,
-      zFar, zOffsetFromCamera, shadersPath,
+      zFar, shadersPath,
       maxObjectsPerPass);
     return instance;
   }
