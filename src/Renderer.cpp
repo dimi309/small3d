@@ -805,8 +805,8 @@ namespace small3d {
     uboWorldDetailsDynamic[worldDetailsIndex] = {};
 
     uboWorldDetailsDynamic[worldDetailsIndex].perspectiveMatrix = perspective ?
-      glm::mat4x4(frustumScale, 0, 0, 0,
-        0, frustumScale * realScreenWidth / realScreenHeight, 0, 0,
+      glm::mat4x4(frustumScale * realScreenHeight / realScreenWidth, 0, 0, 0,
+        0, frustumScale, 0, 0,
         0, 0, (zNear + zFar) / (zNear - zFar), 2.0f * zNear * zFar / (zNear - zFar),
         0, 0, zOffsetFromCamera, 0) :
       glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
