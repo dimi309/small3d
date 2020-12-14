@@ -55,7 +55,7 @@ namespace small3d
 
     bool noShaders;
 
-    float frustumScale = 0.0f;
+    float fieldOfView = 0.0f;
     float zNear = 0.0f;
     float zFar = 0.0f;
     
@@ -95,7 +95,7 @@ namespace small3d
     void bindTexture(const std::string& name);
 
     Renderer(const std::string& windowTitle, const int width, const int height,
-      const float frustumScale, const float zNear, const float zFar,
+      const float fieldOfView, const float zNear, const float zFar,
       const std::string& shadersPath,
       const uint32_t maxObjectsPerPass);
 
@@ -131,12 +131,12 @@ namespace small3d
      *                          not set or set to 0, the game will run in full
      *                          screen mode.
      * @param height            The height of the window
-     * @param frustumScale	How much the frustum scales the items rendered
-     * @param zNear		Projection plane z coordinate (use positive
+     * @param fieldOfView       Field of view in radians (angle between the top and the bottom plane
+     * @param zNear             Projection plane z coordinate (use positive
      *                          value)
-     * @param zFar		Far end of frustum z coordinate (use positive
+     * @param zFar              Far end of frustum z coordinate (use positive
      *                          value)
-     * @param shadersPath	The path where the shaders will be stored,
+     * @param shadersPath       The path where the shaders will be stored,
      *                          relative to the application's executing
      *                          directory. It defaults to the path provided by
      *                          the engine, but	it can be changed, so as to
@@ -159,7 +159,7 @@ namespace small3d
     static Renderer& getInstance(const std::string& windowTitle = "",
       const int width = 0,
       const int height = 0,
-      const float frustumScale = 1.0f,
+      const float fieldOfView = 0.785,
       const float zNear = 1.0f,
       const float zFar = 24.0f,
       const std::string& shadersPath =

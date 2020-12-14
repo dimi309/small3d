@@ -352,11 +352,13 @@ namespace small3d {
     GLint perspectiveMatrixUniform =
       glGetUniformLocation(shaderProgram, "perspectiveMatrix");
 
+    /*glm::mat4x4(fieldOfView * realScreenHeight / realScreenWidth, 0, 0, 0,
+      0, fieldOfView, 0, 0,
+      0, 0, (zNear + zFar) / (zNear - zFar), 2.0f * zNear * zFar / (zNear - zFar),
+      0, 0, -1.0f, 0)*/
+
     glm::mat4x4 perspectiveMatrix = perspective ?
-      glm::mat4x4(frustumScale * realScreenHeight / realScreenWidth, 0, 0, 0,
-        0, frustumScale, 0, 0,
-        0, 0, (zNear + zFar) / (zNear - zFar), 2.0f * zNear * zFar / (zNear - zFar),
-        0, 0, -1.0f, 0) :
+      glm::perspective(fieldOfView, static_cast<float>(realScreenWidth / realScreenHeight), zNear, zFar) :
       glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 
     glUniformMatrix4fv(perspectiveMatrixUniform, 1, GL_FALSE,
@@ -423,7 +425,7 @@ namespace small3d {
   }
 
   Renderer::Renderer(const std::string& windowTitle, const int width,
-    const int height, const float frustumScale,
+    const int height, const float fieldOfView,
     const float zNear, const float zFar,
     const std::string& shadersPath,
     const uint32_t maxObjectsPerPass) {
@@ -437,7 +439,7 @@ namespace small3d {
     cameraRotation = glm::vec3(0, 0, 0);
     this->zNear = zNear;
     this->zFar = zFar;
-    this->frustumScale = frustumScale;
+    this->fieldOfView = fieldOfView;
 
     init(width, height, windowTitle, shadersPath);
 
@@ -454,12 +456,12 @@ namespace small3d {
 
   Renderer& Renderer::getInstance(const std::string& windowTitle,
     const int width, const int height,
-    const float frustumScale,
+    const float fieldOfView,
     const float zNear, const float zFar,
     const std::string& shadersPath,
     const uint32_t maxObjectsPerPass) {
 
-    static Renderer instance(windowTitle, width, height, frustumScale, zNear,
+    static Renderer instance(windowTitle, width, height, fieldOfView, zNear,
       zFar, shadersPath,
       maxObjectsPerPass);
     return instance;
