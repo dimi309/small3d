@@ -1254,7 +1254,6 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   viewport.y = 0.0f;
   viewport.width = (float)vkz_width;
   viewport.height = (float)vkz_height;
-
   viewport.minDepth = 0.0f;
   viewport.maxDepth = 1.0f;
 

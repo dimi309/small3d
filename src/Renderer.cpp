@@ -805,11 +805,8 @@ namespace small3d {
     uboWorldDetailsDynamic[worldDetailsIndex] = {};
 
     uboWorldDetailsDynamic[worldDetailsIndex].perspectiveMatrix = perspective ?
-      glm::mat4x4(frustumScale * realScreenHeight / realScreenWidth, 0, 0, 0,
-        0, frustumScale, 0, 0,
-        0, 0, (zNear + zFar) / (zNear - zFar), 2.0f * zNear * zFar / (zNear - zFar),
-        0, 0, -1.0f, 0) :
-      glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      glm::perspective(fieldOfView, static_cast<float>(realScreenWidth / realScreenHeight), zNear, zFar) :
+      glm::mat4x4(1);
 
     uboWorldDetailsDynamic[worldDetailsIndex].lightDirection = perspective ?
       lightDirection : glm::vec3(0.0f, 0.0f, 0.0f);
@@ -864,7 +861,7 @@ namespace small3d {
   }
 
   Renderer::Renderer(const std::string& windowTitle, const int width,
-    const int height, const float frustumScale,
+    const int height, const float fieldOfView,
     const float zNear, const float zFar,
     const std::string& shadersPath,
     const uint32_t maxObjectsPerPass) {
@@ -879,7 +876,7 @@ namespace small3d {
     this->maxObjectsPerPass = maxObjectsPerPass;
     this->zNear = zNear;
     this->zFar = zFar;
-    this->frustumScale = frustumScale;
+    this->fieldOfView = fieldOfView;
     this->windowTitle = windowTitle;
 
     init(width, height, shadersPath);
@@ -901,12 +898,12 @@ namespace small3d {
 
   Renderer& Renderer::getInstance(const std::string& windowTitle,
     const int width, const int height,
-    const float frustumScale,
+    const float fieldOfView,
     const float zNear, const float zFar,
     const std::string& shadersPath,
     const uint32_t maxObjectsPerPass) {
 
-    static Renderer instance(windowTitle, width, height, frustumScale, zNear,
+    static Renderer instance(windowTitle, width, height, fieldOfView, zNear,
       zFar, shadersPath,
       maxObjectsPerPass);
     return instance;
@@ -1012,12 +1009,12 @@ namespace small3d {
 
     // On linux this causes a segmentation fault
     // glfwTerminate();
-  }
+    }
 
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
   GLFWwindow* Renderer::getWindow() const {
     return window;
-}
+  }
 #endif
 
   void Renderer::generateTexture(const std::string& name, const Image& image) {
@@ -1038,7 +1035,7 @@ namespace small3d {
     if (idFacePair == fontFaces.end()) {
       std::string faceFullPath;
 
-      faceFullPath = getBasePath() + fontPath; 
+      faceFullPath = getBasePath() + fontPath;
 
       LOGDEBUG("Loading font from " + faceFullPath);
 #ifdef __ANDROID__
@@ -1091,9 +1088,9 @@ namespace small3d {
 
     height = maxTop + static_cast<unsigned long>(0.3 * maxTop);
 
-    textMemory.resize(4 * static_cast<size_t>(width)*
+    textMemory.resize(4 * static_cast<size_t>(width) *
       static_cast<size_t>(height) * sizeof(float));
-    memset(&textMemory[0], 0, 4 * static_cast<size_t>(width)*
+    memset(&textMemory[0], 0, 4 * static_cast<size_t>(width) *
       static_cast<size_t>(height) * sizeof(float));
 
     unsigned long totalAdvance = 0;
@@ -1115,12 +1112,12 @@ namespace small3d {
 
             colourAlpha.a =
               floorf(100.0f * (static_cast<float>
-              (slot->bitmap.buffer[row * slot->bitmap.width +
-                col]) /
+                (slot->bitmap.buffer[row * slot->bitmap.width +
+                  col]) /
                 255.0f) + 0.5f) / 100.0f;
 
             size_t dst = 4 * (maxTop - static_cast<size_t>(slot->bitmap_top) +
-              row)*
+              row) *
               width + 4 * (static_cast<size_t>(slot->bitmap_left) + col)
               + totalAdvance;
 
@@ -1385,14 +1382,14 @@ namespace small3d {
   void Renderer::render(Model& model, const std::string& textureName,
     const bool perspective) {
     this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		 glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
+      glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName, perspective);
   }
 
   void Renderer::render(Model& model, const glm::vec4& colour,
     const bool perspective) {
     this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-		 colour, "", perspective);
+      colour, "", perspective);
   }
 
   void Renderer::render(SceneObject& sceneObject,
@@ -1513,4 +1510,4 @@ namespace small3d {
 
   }
 
-}
+  }
