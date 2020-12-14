@@ -159,9 +159,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a cla
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ab46fe5ff51af0389eb84dc98601a69ff"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classsmall3d_1_1_renderer.html">Renderer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ab46fe5ff51af0389eb84dc98601a69ff">getInstance</a> (const std::string &amp;windowTitle=&quot;&quot;, const int width=0, const int height=0, const float frustumScale=1.0f, const float zNear=1.0f, const float zFar=24.0f, const float zOffsetFromCamera=-1.0f, const std::string &amp;shadersPath=&quot;resources/shaders/&quot;, const uint32_t maxObjectsPerPass=20)</td></tr>
-<tr class="memdesc:ab46fe5ff51af0389eb84dc98601a69ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the instance of the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> (the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> is a singleton).  <a href="classsmall3d_1_1_renderer.html#ab46fe5ff51af0389eb84dc98601a69ff">More...</a><br /></td></tr>
-<tr class="separator:ab46fe5ff51af0389eb84dc98601a69ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b7349cd4572bb58864cea6b02512e3e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classsmall3d_1_1_renderer.html">Renderer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a3b7349cd4572bb58864cea6b02512e3e">getInstance</a> (const std::string &amp;windowTitle=&quot;&quot;, const int width=0, const int height=0, const float fieldOfView=0.785f, const float zNear=1.0f, const float zFar=24.0f, const std::string &amp;shadersPath=&quot;resources/shaders/&quot;, const uint32_t maxObjectsPerPass=20)</td></tr>
+<tr class="memdesc:a3b7349cd4572bb58864cea6b02512e3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the instance of the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> (the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> is a singleton).  <a href="classsmall3d_1_1_renderer.html#a3b7349cd4572bb58864cea6b02512e3e">More...</a><br /></td></tr>
+<tr class="separator:a3b7349cd4572bb58864cea6b02512e3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -435,8 +435,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a id="ab46fe5ff51af0389eb84dc98601a69ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab46fe5ff51af0389eb84dc98601a69ff">&#9670;&nbsp;</a></span>getInstance()</h2>
+<a id="a3b7349cd4572bb58864cea6b02512e3e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b7349cd4572bb58864cea6b02512e3e">&#9670;&nbsp;</a></span>getInstance()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -466,7 +466,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const float&#160;</td>
-          <td class="paramname"><em>frustumScale</em> = <code>1.0f</code>, </td>
+          <td class="paramname"><em>fieldOfView</em> = <code>0.785f</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -479,12 +479,6 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
           <td></td>
           <td class="paramtype">const float&#160;</td>
           <td class="paramname"><em>zFar</em> = <code>24.0f</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const float&#160;</td>
-          <td class="paramname"><em>zOffsetFromCamera</em> = <code>-1.0f</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -517,10 +511,9 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
     <tr><td class="paramname">windowTitle</td><td>The title of the game's window </td></tr>
     <tr><td class="paramname">width</td><td>The width of the window. If width and height are not set or set to 0, the game will run in full screen mode. </td></tr>
     <tr><td class="paramname">height</td><td>The height of the window </td></tr>
-    <tr><td class="paramname">frustumScale</td><td>How much the frustum scales the items rendered </td></tr>
+    <tr><td class="paramname">fieldOfView</td><td>Field of view in radians (angle between the top and the bottom plane of the view frustum). </td></tr>
     <tr><td class="paramname">zNear</td><td>Projection plane z coordinate (use positive value) </td></tr>
     <tr><td class="paramname">zFar</td><td>Far end of frustum z coordinate (use positive value) </td></tr>
-    <tr><td class="paramname">zOffsetFromCamera</td><td>The position of the projection plane with regard to the camera. </td></tr>
     <tr><td class="paramname">shadersPath</td><td>The path where the shaders will be stored, relative to the application's executing directory. It defaults to the path provided by the engine, but it can be changed, so as to accommodate for executables which are going to be using it. Even though the path to the folder can be changed, the folder structure within it and the names of the shaders must remain as provided. The shader code can be changed, provided that their inputs and outputs are maintained the same. </td></tr>
     <tr><td class="paramname">maxObjectsPerPass</td><td>Maximum number of Models and / or SceneObjects that will be rendered on the screen during a render pass at the same time. This is used to pre-allocate the needed memory buffers. </td></tr>
   </table>
