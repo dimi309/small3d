@@ -31,7 +31,7 @@ void main()
   vec4 lightDirectionWorld = normalize(vec4(lightDirection, 1) *
 				       perspectiveMatrix);
 
-  cosAngIncidence = clamp(dot(normalInWorld, lightDirectionWorld), 0, 1);
+  cosAngIncidence = clamp(dot(normalInWorld, lightDirectionWorld), 0.5, 1);
   
   textureCoords = uvCoords;
   
