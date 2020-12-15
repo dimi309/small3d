@@ -352,14 +352,9 @@ namespace small3d {
     GLint perspectiveMatrixUniform =
       glGetUniformLocation(shaderProgram, "perspectiveMatrix");
 
-    /*glm::mat4x4(fieldOfView * realScreenHeight / realScreenWidth, 0, 0, 0,
-      0, fieldOfView, 0, 0,
-      0, 0, (zNear + zFar) / (zNear - zFar), 2.0f * zNear * zFar / (zNear - zFar),
-      0, 0, -1.0f, 0)*/
-
     glm::mat4x4 perspectiveMatrix = perspective ?
       glm::perspective(fieldOfView, static_cast<float>(realScreenWidth / realScreenHeight), zNear, zFar) :
-      glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      glm::mat4x4(1);
 
     glUniformMatrix4fv(perspectiveMatrixUniform, 1, GL_FALSE,
       glm::value_ptr(perspectiveMatrix));
@@ -382,7 +377,7 @@ namespace small3d {
       glm::rotate(glm::mat4x4(1.0f), -cameraRotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
       glm::rotate(glm::mat4x4(1.0f), -cameraRotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), -cameraRotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) :
-      glm::mat4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      glm::mat4x4(1);
 
     glUniformMatrix4fv(cameraTransformationUniform, 1, GL_FALSE,
       glm::value_ptr(cameraTransformation));
