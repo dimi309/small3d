@@ -14,7 +14,7 @@ if [ $(uname) == 'Linux' ]; then
 
     if type -p "apt" > /dev/null ; then
 	sudo apt update
-	sudo apt install -y libgl1-mesa-dev libglfw3-dev portaudio19-dev
+	sudo apt install -y libgl1-mesa-dev libglfw3-dev portaudio19-dev glslang-tools
 	if [ $? != 0 ]; then exit $rc; fi
     elif type -p "dnf" > /dev/null ; then
 	sudo dnf install -y mesa-libGL-devel glfw-devel portaudio-devel
