@@ -2,7 +2,6 @@
 
 v1.708
 
-- Important bug in frustum corrected.
 - Elimination of compiler warnings and other code improvements.
 - Upgraded to the latest versions of glfw, glm and freetype.
 - Scripts now provided for preparing dependencies and building small3d on all 
@@ -10,6 +9,10 @@ v1.708
 - The README has been greatly shortened since a lot of the information that
   was there is now unnecessary. It can be found in the build scripts and
   it actually *runs* :)
+- My perspective matrix was (mistakenly) row-major all this time. After
+  converting it to column-major, I decided to just use glm::perspective 
+  instead, since it is in effect the same thing and makes the code look
+  simpler.
 
 v1.707 2020-12-01
 
