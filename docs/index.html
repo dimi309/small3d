@@ -77,6 +77,9 @@ Sample games</h1>
 <li><a href="https://github.com/dimi309/gloom">Gloom</a></li>
 </ul>
 <h1><a class="anchor" id="autotoc_md2"></a>
+Tutorial</h1>
+<p><a href="https://www.gamedev.net/tutorials/programming/engines-and-middleware/small3d-tutorial-r5655/">https://www.gamedev.net/tutorials/programming/engines-and-middleware/small3d-tutorial-r5655/</a></p>
+<h1><a class="anchor" id="autotoc_md3"></a>
 Features</h1>
 <ul>
 <li>Loading &amp; rendering Wavefront models</li>
@@ -88,7 +91,7 @@ Features</h1>
 <li>Sound</li>
 <li>Collision detection</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md3"></a>
+<h1><a class="anchor" id="autotoc_md4"></a>
 Supported platforms</h1>
 <ul>
 <li>Windows</li>
@@ -97,7 +100,7 @@ Supported platforms</h1>
 <li>Android</li>
 <li>iOS</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md4"></a>
+<h1><a class="anchor" id="autotoc_md5"></a>
 Building prerequisites</h1>
 <p>The following need to be installed, with the relevant environment variables and tools accessible via the command line:</p>
 <ul>
@@ -106,7 +109,7 @@ Building prerequisites</h1>
 <li>7zip (only on Windows)</li>
 <li>CMake</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md5"></a>
+<h1><a class="anchor" id="autotoc_md6"></a>
 Building</h1>
 <ul>
 <li>Run the dependency preparation script which is suitable to your platform from the <code>deps</code> directory (<code>prepare-vs.bat</code>, <code>prepare-mingw.bat</code> or <code>prepare.sh</code>).</li>
@@ -121,10 +124,10 @@ Building</h1>
 <li>The shaders from <code>build/shaders</code> directory</li>
 </ul>
 <p>If you are using cmake, the modules in <code>small3d/cmake</code> can be useful. Check the <code>CMakeLists.txt</code> and <code>src/CMakeLists.txt</code> files for other configuration details (link flags, etc) that may also be required or useful.</p>
-<h1><a class="anchor" id="autotoc_md6"></a>
+<h1><a class="anchor" id="autotoc_md7"></a>
 small3d on mobile</h1>
 <p>The scripts for preparing the dependencies of small3d for mobile are <code>prepare-android</code> and <code>prepare-ios</code> for Android and iOS respectively, found in the <code>deps</code> directory. After executing one of those, you can build small3d for these platforms by executing either <code>build-android</code> or <code>build-ios</code> from the main directory. One sample game, <a href="https://github.com/dimi309/avoidthebug">Avoid the Bug</a> has been ported to both <a href="https://github.com/dimi309/avoidthebug-android">Android</a> and <a href="https://github.com/dimi309/avoidthebug-ios">iOS</a>. I use these projects as a basis for mobile development. Note that, while with the desktop edition of small3d I use GLFW for windowing functionalities and I/O, on mobile I access the native infrastructure directly.</p>
-<h1><a class="anchor" id="autotoc_md7"></a>
+<h1><a class="anchor" id="autotoc_md8"></a>
 Referenced libraries</h1>
 <p>All small3d dependencies, apart from the Vulkan SDK, are distributed together with its source code. They can be built by executing a single script (see "Building", above).</p>
 <ul>
