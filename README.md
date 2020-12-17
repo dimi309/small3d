@@ -12,6 +12,10 @@ Vulkan and OpenGL support
 - [Frog Remixed](https://github.com/dimi309/frogremixed)
 - [Gloom](https://github.com/dimi309/gloom)
 
+## Tutorial
+
+https://www.gamedev.net/tutorials/programming/engines-and-middleware/small3d-tutorial-r5655/
+
 ## Features
 
 - Loading & rendering Wavefront models
