@@ -1,6 +1,6 @@
 /*! \page changelog changes per version
 
-v1.708 (still open)
+v1.708 2020-12-25
 
 - Elimination of compiler warnings and other code improvements.
 - Upgraded to the latest versions of glfw, glm and freetype.
