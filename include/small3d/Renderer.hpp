@@ -254,7 +254,7 @@ namespace small3d
     /**
      * @brief Vector, indicating the direction of the light in the scene.
      */
-    glm::vec3 lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
+    glm::vec3 lightDirection = glm::vec3(0.0f, 0.4f, 0.5f);
 
     /**
      * @brief The camera position in world space. Ignored for orthographic

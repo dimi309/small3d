@@ -413,10 +413,6 @@ namespace small3d {
     window = 0;
     shaderProgram = 0;
     noShaders = false;
-    lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
-    cameraPosition = glm::vec3(0, 0, 0);
-    cameraRotation = glm::vec3(0, 0, 0);
-
   }
 
   Renderer::Renderer(const std::string& windowTitle, const int width,
@@ -429,9 +425,7 @@ namespace small3d {
     shaderProgram = 0;
 
     noShaders = false;
-    lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
-    cameraPosition = glm::vec3(0, 0, 0);
-    cameraRotation = glm::vec3(0, 0, 0);
+
     this->zNear = zNear;
     this->zFar = zFar;
     this->fieldOfView = fieldOfView;

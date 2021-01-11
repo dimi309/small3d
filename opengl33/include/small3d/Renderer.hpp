@@ -105,19 +105,19 @@ namespace small3d
     /**
      * @brief Vector, indicating the direction of the light in the scene.
      */
-    glm::vec3 lightDirection;
+    glm::vec3 lightDirection = glm::vec3(0.0f, 0.4f, 0.5f);
 
     /**
      * @brief The camera position in world space. Ignored for orthographic
      *        rendering.
      */
-    glm::vec3 cameraPosition;
+    glm::vec3 cameraPosition  = glm::vec3(0, 0, 0);
 
     /**
      * @brief The camera rotation (around the x, y and z axes). Ignored for
      *        orthographic rendering.
      */
-    glm::vec3 cameraRotation;
+    glm::vec3 cameraRotation  = glm::vec3(0, 0, 0);
 
     /**
      * @brief The light intensity (set to -1.0f if no lighting is to be used).
