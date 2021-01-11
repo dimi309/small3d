@@ -1,5 +1,10 @@
 /*! \page changelog changes per version
 
+v1.709 (still open)
+
+- Light direction adjusted to match the perspective matrix correction
+  of v1.708.
+
 v1.708 2020-12-25
 
 - Elimination of compiler warnings and other code improvements.
