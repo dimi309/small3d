@@ -2,7 +2,7 @@
 
 v1.709 (still open)
 
-- Light direction adjusted to match the perspective matrix correction
+- Default light direction adjusted to match the perspective matrix correction
   of v1.708.
 
 v1.708 2020-12-25
