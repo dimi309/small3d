@@ -11,7 +11,6 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-
 typedef int BOOL;
 #define TRUE 1
 #define FALSE 0
@@ -551,9 +550,6 @@ int select_queue_families() {
     }
   }
 
-
-
-
   free(queueFamilyProperties);
   return (found_graphics && found_present);
 }
@@ -752,8 +748,6 @@ int vkz_create_image_view(VkImageView* image_view, VkImage image,
 }
 
 int create_swapchain_image_views() {
-
-
 
   vkz_swapchain_image_views = malloc(vkz_swapchain_image_count *
     sizeof(VkImageView));
@@ -1434,7 +1428,6 @@ int destroy_pipeline(uint32_t index, BOOL free_shader_path_strings) {
   return 1;
 }
 
-
 int vkz_begin_draw_command_buffer(VkCommandBuffer* command_buffer) {
 
   VkCommandBufferAllocateInfo command_buffer_ai;
@@ -1528,14 +1521,12 @@ int vkz_destroy_draw_command_buffer(VkCommandBuffer* command_buffer) {
   return 1;
 }
 
-
 int vkz_create_sync_objects(void) {
 
   VkFenceCreateInfo fence_ci;
   memset(&fence_ci, 0, sizeof(VkFenceCreateInfo));
   fence_ci.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
   fence_ci.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-
 
   if (vkCreateFence(vkz_logical_device, &fence_ci, NULL,
     &gpu_cpu_fence) !=
@@ -1781,7 +1772,6 @@ int end_single_time_commands(VkCommandBuffer command_buffer) {
     &command_buffer);
   return 1;
 }
-
 
 int vkz_copy_buffer(VkBuffer source, VkBuffer destination, VkDeviceSize size) {
   VkCommandBuffer cb;
