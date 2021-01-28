@@ -36,7 +36,7 @@ for %%A in (x86,x86_64,armeabi-v7a,arm64-v8a) do (
 mkdir lib\%%A
 
 7z x libpng-1.6.37.tar.gz
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel%
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel!
 7z x libpng-1.6.37.tar
 cd libpng-1.6.37
 mkdir build
@@ -45,19 +45,19 @@ cmake .. -G"MinGW Makefiles" -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF^
  -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A^
  %CMAKE_DEFINITIONS%
 cmake --build .
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 copy ..\*.h ..\..\include /y
 copy pnglibconf.h ..\..\include /y
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 copy libpng.a ..\..\lib\%%A
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 cd ..\..\
 rmdir /Q /S libpng-1.6.37
 del libpng-1.6.37.tar
 del pax_global_header
 
 7z x ogg-1.3.3.tar.gz
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 7z x ogg-1.3.3.tar
 cd ogg-1.3.3
 mkdir build
@@ -66,20 +66,20 @@ cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF^
  -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A^
  %CMAKE_DEFINITIONS%
 cmake --build .
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 xcopy ..\include\ogg ..\..\include\ogg /i /s /y
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 copy include\ogg\config_types.h ..\..\include\ogg /y
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 copy libogg.a ..\..\lib\%%A
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 cd ..\..\
 rmdir /Q /S ogg-1.3.3
 del ogg-1.3.3.tar
 del pax_global_header
 
 7z x vorbis-1.3.6.tar.gz
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 7z x vorbis-1.3.6.tar
 cd vorbis-1.3.6
 mkdir build
@@ -89,18 +89,18 @@ cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF^
  -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A^
  %CMAKE_DEFINITIONS%
 cmake --build .
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 xcopy ..\include\vorbis ..\..\include\vorbis /i /s /y
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 copy lib\*.a ..\..\lib\%%A
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 cd ..\..\
 rmdir /Q /S vorbis-1.3.6
 del vorbis-1.3.6.tar
 del pax_global_header
 
 7z x freetype-2.10.4.tar.gz
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 7z x freetype-2.10.4.tar
 cd freetype-2.10.4
 mkdir build
@@ -109,13 +109,13 @@ cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF^
  -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A^
  %CMAKE_DEFINITIONS%
 cmake --build .
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 xcopy ..\include ..\..\include /s /e /y
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel%
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel!
 set FREETYPEBIN=libfreetype.a
 if /I "%~1" == "Debug" set FREETYPEBIN=libfreetyped.a
 copy !FREETYPEBIN! ..\..\lib\%%A\libfreetype.a
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 cd ..\..
 rmdir /Q /S freetype-2.10.4
 del freetype-2.10.4.tar
