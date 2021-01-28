@@ -55,8 +55,8 @@ namespace small3d {
     realScreenWidth = width;
     realScreenHeight = height;
     vkz_set_width_height(width, height);
-    LOGDEBUG("New framebuffer dimensions " + intToStr(width) + " x " +
-      intToStr(height));
+    LOGDEBUG("New framebuffer dimensions " + std::to_string(width) + " x " +
+      std::to_string(height));
     vkz_recreate_pipelines_and_swapchain();
   }
 #endif
@@ -208,7 +208,7 @@ namespace small3d {
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
     std::string requiredExtensions = "GLFW required extensions (";
-    requiredExtensions += intToStr(glfwExtensionCount) + ")";
+    requiredExtensions += std::to_string(glfwExtensionCount) + ")";
     LOGDEBUG(requiredExtensions);
 
     for (uint32_t n = 0; n < glfwExtensionCount; n++) {
@@ -452,7 +452,7 @@ namespace small3d {
   void Renderer::setColourBuffer(glm::vec4 colour, uint32_t memIndex) {
 
     if (memIndex > maxObjectsPerPass) {
-      std::string maxIndex = intToStr(maxObjectsPerPass - 1);
+      std::string maxIndex = std::to_string(maxObjectsPerPass - 1);
       throw std::runtime_error("Object colour buffer max index (" +
         maxIndex + ") exceeded.");
     }
@@ -467,7 +467,7 @@ namespace small3d {
     const glm::vec3 rotation, uint32_t memIndex) {
 
     if (memIndex > maxObjectsPerPass) {
-      std::string maxObjects = intToStr(maxObjectsPerPass);
+      std::string maxObjects = std::to_string(maxObjectsPerPass);
       throw std::runtime_error("Cannot position more than " + maxObjects +
         " on the scene.");
     }
@@ -630,8 +630,8 @@ namespace small3d {
 
     this->initWindow(realScreenWidth, realScreenHeight);
 
-    LOGDEBUG("Detected back width " + intToStr(realScreenWidth) +
-      " height " + intToStr(realScreenHeight));
+    LOGDEBUG("Detected back width " + std::to_string(realScreenWidth) +
+      " height " + std::to_string(realScreenHeight));
 
     this->initVulkan();
 
@@ -776,8 +776,8 @@ namespace small3d {
       width = mode->width;
       height = mode->height;
 
-      LOGINFO("Detected screen width " + intToStr(width) + " and height " +
-        intToStr(height));
+      LOGINFO("Detected screen width " + std::to_string(width) + " and height " +
+        std::to_string(height));
     }
 
     window = glfwCreateWindow(width, height, windowTitle.c_str(), monitor,
@@ -792,8 +792,8 @@ namespace small3d {
 
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
-    LOGINFO("Framebuffer width " + intToStr(width) + " height " +
-      intToStr(height));
+    LOGINFO("Framebuffer width " + std::to_string(width) + " height " +
+      std::to_string(height));
 
 #endif
   }
@@ -1026,7 +1026,7 @@ namespace small3d {
     const glm::vec3& colour, const int fontSize,
     const std::string& fontPath, const bool replace) {
 
-    std::string faceId = intToStr(fontSize) + fontPath;
+    std::string faceId = std::to_string(fontSize) + fontPath;
 
     auto idFacePair = fontFaces.find(faceId);
     FT_Face face;
