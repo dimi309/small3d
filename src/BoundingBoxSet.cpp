@@ -135,7 +135,7 @@ namespace small3d {
       }
 
       numBoxes = (int)(facesVertexIndexes.size() / 6);
-      LOGINFO("Loaded " + intToStr(numBoxes) + " bounding boxes.");
+      LOGINFO("Loaded " + std::to_string(numBoxes) + " bounding boxes.");
 
       triangulate();
       calcExtremes();

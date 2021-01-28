@@ -10,8 +10,8 @@
 
 namespace small3d {
 
-  int getTokens(const std::string &input, const char sep,
-		std::vector<std::string> &tokens) {
+  int getTokens(const std::string& input, const char sep,
+    std::vector<std::string>& tokens) {
     size_t curPos = 0;
     int count = 0;
 
@@ -25,14 +25,14 @@ namespace small3d {
     ++count;
 
     for (int idx = 0; idx < count; ++idx) {
-		// last one
+      // last one
       if (idx == count - 1) {
-		  tokens.push_back(input.substr(curPos));
+        tokens.push_back(input.substr(curPos));
       }
       else {
 
         size_t foundPos = input.find(sep, curPos);
-		tokens.push_back(input.substr(curPos, foundPos - curPos));
+        tokens.push_back(input.substr(curPos, foundPos - curPos));
         curPos = foundPos + 1;
       }
     }
