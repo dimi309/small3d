@@ -39,9 +39,9 @@ for %%A in (x86,x86_64,armeabi-v7a,arm64-v8a) do (
 cmake .. -G"MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake ^
 -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A %CMAKE_DEFINITIONS%
 cmake --build .
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 move lib\*.a lib\%%A
-if "!errorlevel!" neq "0" endlocal & exit /b %errorlevel% 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 del /Q *.*
 rmdir /Q /S CMakeFiles
 rmdir /Q /S src
