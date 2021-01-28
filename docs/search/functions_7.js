@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['logger_183',['Logger',['../classsmall3d_1_1_logger.html#ad76a868d605a875fb20fac8129f3a139',1,'small3d::Logger']]]
+  ['model_180',['Model',['../structsmall3d_1_1_model.html#aa116b5b0c66b9e7f4dfd401ab5233a79',1,'small3d::Model::Model()'],['../structsmall3d_1_1_model.html#a81045a6f3f7fc07a1950fad87d0a321b',1,'small3d::Model::Model(const std::string fileLocation)']]]
 ];

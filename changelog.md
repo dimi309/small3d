@@ -4,6 +4,8 @@ v1.709 (still open)
 
 - Default light direction adjusted to match the perspective matrix correction
   of v1.708.
+- [BREAKING] Removed custom-made intToStr and floatToStr functions. Using 
+  std::to_string instead.
 
 v1.708 2020-12-25
 
