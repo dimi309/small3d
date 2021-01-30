@@ -15,6 +15,7 @@
 #include <small3d/GetTokens.hpp>
 #include <small3d/Sound.hpp>
 #include <small3d/BoundingBoxSet.hpp>
+#include <small3d/GlbFile.hpp>
 
 using namespace small3d;
 using namespace std;
@@ -244,6 +245,31 @@ int TokenTest() {
   return 1;
 }
 
+int GlbTest() {
+
+  GlbFile glb("resources/models/goat.glb");
+
+  glb.printTokensRecursive();
+
+  glb.printTokensSerial();
+
+  glb.printToken(glb.getChildToken(glb.getChildTokens(glb.getToken("buffers"))[0], "byteLength"));
+
+  std::vector<char> rawData = glb.getBufferByView(std::stoi(glb.getChildToken(glb.getChildTokens(glb.getToken("accessors"))[4], "bufferView")->value));
+
+  float* data = new float[rawData.size() / 4];
+  memcpy(data, &rawData[0], rawData.size());
+
+  for (uint32_t idx = 0; idx < rawData.size() / 4; ++idx) {
+    if (idx % 4 == 0) printf("\n\r");
+    printf("%f ", data[idx]);
+  }
+  printf("\n\r");
+  delete[] data;
+
+  return 1;
+}
+
 int main(int argc, char** argv) {
   try
   {
@@ -267,7 +293,7 @@ int main(int argc, char** argv) {
       printf("*** Failing RendererTest.\n\r");
       return 1;
     }
-    if (!SoundTest()) {
+    /*if (!SoundTest()) {
       printf("*** Failing SoundTest.\n\r");
       return 1;
     }
@@ -278,9 +304,13 @@ int main(int argc, char** argv) {
     if (!SoundTest3()) {
       printf("*** Failing SoundTest3.\n\r");
       return 1;
-    }
+    }*/
     if (!TokenTest()) {
       printf("*** Failing TokenTest.\n\r");
+      return 1;
+    }
+    if (!GlbTest()) {
+      printf("*** Failing GlbTest.\n\r");
       return 1;
     }
   }
