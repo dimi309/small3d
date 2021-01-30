@@ -225,11 +225,21 @@ namespace small3d {
     Model();
 
     /**
-     * @brief Constructor that loads model from file
+     * @brief Constructor that loads model from a Wavefront file
      * @param fileLocation Location of the Wavefront file from which to load the
      *                     model.
      */
     Model(const std::string fileLocation);
+
+
+    /**
+     * @brief Constructor that loads model from a GLB file
+     * @param fileLocation Location of the GLB file from which to load the
+     *                     model.
+     * @param meshName The name of the mesh in the GLB file which will be loaded
+     *                 as the model.
+     */
+    Model(const std::string& fileLocation, const std::string& meshName);
 
   };
 }

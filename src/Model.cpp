@@ -13,6 +13,8 @@
 #include "GetTokens.hpp"
 #include "Model.hpp"
 #include "BasePath.hpp"
+#include "GlbFile.hpp"
+#include "Logger.hpp"
 
 #ifdef __ANDROID__
 #include "vkzos.h"
@@ -379,4 +381,40 @@ namespace small3d {
     else
       throw std::runtime_error("Could not open file " + fileLocation);
   }
+
+  Model::Model(const std::string& fileLocation, const std::string& meshName) {
+    GlbFile glb(fileLocation);
+    bool loaded = false;
+    for (auto& meshToken : glb.getChildTokens(glb.getToken("meshes"))) {
+
+      if (glb.getChildToken(meshToken, "name")->value == meshName) {
+        
+        auto attributes = glb.getChildTokens(glb.getChildToken(glb.getChildTokens(
+          glb.getChildToken(meshToken, "primitives"))[0], "attributes"));
+        auto accessors = glb.getChildTokens(glb.getToken("accessors"));
+
+        for (auto attribute : attributes) {
+          if (attribute->name == "POSITION") {
+
+            auto bufferViewNumber = std::stoi(glb.getChildToken(
+              accessors[std::stoi(attribute->value)], "bufferView")->value);
+
+            auto data = glb.getBufferByView(bufferViewNumber);
+
+            vertexData.resize(data.size() / 4);
+
+            memcpy(&vertexData[0], &data[0], data.size());
+            
+            loaded = true;
+            break;
+          }
+        }
+      }
+    }
+    
+    if (!loaded) throw std::runtime_error("Could not load mesh " + meshName + " from " + fileLocation);
+    LOGDEBUG("Loaded mesh " + meshName + " from " + fileLocation);
+  }
+  
+
 }
