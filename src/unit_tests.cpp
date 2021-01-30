@@ -275,6 +275,8 @@ int GlbTest() {
   printf("\n\r");
   delete[] data;
 
+  Model modelFromGlb("resources/models/goat.glb", "Cube");
+
   return 1;
 }
 
@@ -297,10 +299,10 @@ int main(int argc, char** argv) {
       printf("*** Failing BoundingBoxesTest.\n\r");
       return 1;
     }
-    if (!RendererTest()) {
+    /*if (!RendererTest()) {
       printf("*** Failing RendererTest.\n\r");
       return 1;
-    }
+    }*/
     /*if (!SoundTest()) {
       printf("*** Failing SoundTest.\n\r");
       return 1;
