@@ -117,6 +117,15 @@ namespace small3d {
      */
     std::vector<char> getBufferByView(size_t index);
 
+    /**
+     * @brief Get the data of a buffer from the binary part of the file, using the accessor view index to locate it
+     *        This method can be preferable to getBufferByView because the accessor allows the reading of only part
+     *        of the data described by the view, something which is sometimes required.
+     * @param index The buffer accessor index
+     * @return Vector of the retrieved bytes (chars)
+     */
+    std::vector<char> getBufferByAccessor(size_t index);
+
   };
 
 }
