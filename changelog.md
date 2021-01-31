@@ -6,6 +6,7 @@ v1.709 (still open)
   of v1.708.
 - [BREAKING] Removed custom-made intToStr and floatToStr functions. Using 
   std::to_string instead.
+- Added some glTF support.
 
 v1.708 2020-12-25
 
