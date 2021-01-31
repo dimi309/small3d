@@ -9,6 +9,19 @@
 #include "GlbFile.hpp"
 #include "Logger.hpp"
 
+#ifdef __ANDROID__
+#include "vkzos.h"
+#include <streambuf>
+#include <istream>
+
+struct membuf : std::streambuf
+{
+  membuf(char* begin, char* end) {
+    this->setg(begin, begin, end);
+  }
+};
+#endif
+
 namespace small3d {
 
   std::shared_ptr<GlbFile::tokent> GlbFile::getToken(const std::string& name, size_t index) {
@@ -242,11 +255,28 @@ namespace small3d {
   }
 
   GlbFile::GlbFile(const std::string& filename) {
+
+#ifdef __ANDROID__
+    AAsset* asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+      fileLocation.c_str(),
+      AASSET_MODE_STREAMING);
+    if (!asset) throw std::runtime_error("Opening asset " + fileLocation +
+      " has failed!");
+    off_t offset, length;
+    length = AAsset_getLength(asset);
+    const void* buffer = AAsset_getBuffer(asset);
+    membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * length);
+    std::istream fileOnDisk(&sbuf);
+    if (fileOnDisk) {
+      clear();
+    }
+#else
     std::ifstream fileOnDisk;
     fileOnDisk.open(filename, std::ios::binary);
     if (!fileOnDisk.is_open()) {
       throw std::runtime_error("Could not open GLB file" + filename);
     }
+#endif
 
     std::string magic(4, '\0'); // 4 + 1 for \0
     uint32_t version = 0, length = 0;
@@ -290,7 +320,11 @@ namespace small3d {
       }
     }
 
+#ifdef __ANDROID__
+    AAsset_close(asset);
+#else
     fileOnDisk.close();
+#endif
 
     parseJson(jsonRootToken);
 

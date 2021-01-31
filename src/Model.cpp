@@ -238,7 +238,7 @@ namespace small3d {
 
     if (file.is_open()) {
       clear();
-      while (getline(file, line)) {
+      while (std::getline(file, line)) {
 #endif
         if (line[0] == 'v' || line[0] == 'f') {
           std::vector<std::string> tokens;
