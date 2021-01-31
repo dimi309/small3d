@@ -258,17 +258,18 @@ namespace small3d {
 
 #ifdef __ANDROID__
     AAsset* asset = AAssetManager_open(vkz_android_app->activity->assetManager,
-      fileLocation.c_str(),
+      filename.c_str(),
       AASSET_MODE_STREAMING);
-    if (!asset) throw std::runtime_error("Opening asset " + fileLocation +
+    if (!asset) throw std::runtime_error("Opening asset " + filename +
       " has failed!");
-    off_t offset, length;
-    length = AAsset_getLength(asset);
+    off_t assetLength;
+    assetLength = AAsset_getLength(asset);
     const void* buffer = AAsset_getBuffer(asset);
-    membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * length);
+    membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * assetLength);
     std::istream fileOnDisk(&sbuf);
-    if (fileOnDisk) {
-      clear();
+    if (!fileOnDisk) {
+      throw std::runtime_error("Reading file " + filename +
+			       " has failed!");
     }
 #else
     std::ifstream fileOnDisk;

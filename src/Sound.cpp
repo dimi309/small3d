@@ -328,7 +328,7 @@ namespace small3d {
       filedata.pos = 0;
       filedata.data = (const SAMPLE_DATATYPE*)AAsset_getBuffer(asset);
 
-      LOGINFO("Asset length " + intToStr(filedata.size));
+      LOGINFO("Asset length " + std::to_string(filedata.size));
 
       if (ov_open_callbacks(&filedata, &vorbisFile, NULL, 0,
                             OV_SMALL3D_ANDROID_MEMORY_NOCLOSE) < 0) {
