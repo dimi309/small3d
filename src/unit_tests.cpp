@@ -182,8 +182,8 @@ int RendererTest() {
 
     renderer->render(object2, "cubeTexture");
 
-    renderer->render(modelFromGlb, glm::vec3(0.0f, 0.2f, -1.0f),
-      glm::vec3(0.0f, 0.7f, 0.0f), glm::vec4(0.3f, 1.0f, 1.0f, 1.0f));
+    renderer->render(modelFromGlb, glm::vec3(0.0f, 1.0f, -2.0f),
+      glm::vec3(0.0f, 0.5f, 0.0f), glm::vec4(0.3f, 1.0f, 1.0f, 1.0f));
 
     renderer->render(textRect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
       glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", false);

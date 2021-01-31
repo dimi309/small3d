@@ -391,58 +391,48 @@ namespace small3d {
         auto primitives = glb.getChildTokens(
           glb.getChildToken(meshToken, "primitives"));
         auto attributes = glb.getChildTokens(glb.getChildToken(primitives[0], "attributes"));
-        auto accessors = glb.getChildTokens(glb.getToken("accessors"));
 
         for (auto attribute : attributes) {
 
           if (attribute->name == "POSITION") {
-            auto bufferViewNumber = std::stoi(glb.getChildToken(
-              accessors[std::stoi(attribute->value)], "bufferView")->value);
-            auto data = glb.getBufferByView(bufferViewNumber);
+
+            auto data = glb.getBufferByAccessor(std::stoi(attribute->value));
 
             auto numFloatsInData = data.size() / 4;
 
             vertexData.resize(numFloatsInData + numFloatsInData / 3); // Add 1 float for each 3 for 
                                                                       // the w component of each vector
+
             vertexDataByteSize = static_cast<uint32_t>(vertexData.size() * 4); // Each vertex component is 4 bytes
             size_t vertexPos = 0;
-            
 
             for (size_t idx = 0; idx < numFloatsInData; ++idx) {
-
               memcpy(&vertexData[vertexPos], &data[idx * 4], 4);
               ++vertexPos;
               if (idx > 0 && (idx + 1) % 3 == 0) {
                 vertexData[vertexPos] = 1.0f;
                 ++vertexPos;
               }
-
             }
           }
 
           if (attribute->name == "NORMAL") {
-            auto bufferViewNumber = std::stoi(glb.getChildToken(
-              accessors[std::stoi(attribute->value)], "bufferView")->value);
-            auto data = glb.getBufferByView(bufferViewNumber);
+            auto data = glb.getBufferByAccessor(std::stoi(attribute->value));
             normalsData.resize(data.size() / 4);
             normalsDataByteSize = static_cast<uint32_t>(data.size());
             memcpy(&normalsData[0], &data[0], data.size());
-            
+
           }
 
           if (attribute->name == "TEXCOORD_0") {
-            auto bufferViewNumber = std::stoi(glb.getChildToken(
-              accessors[std::stoi(attribute->value)], "bufferView")->value);
-            auto data = glb.getBufferByView(bufferViewNumber);
+            auto data = glb.getBufferByAccessor(std::stoi(attribute->value));
             textureCoordsData.resize(data.size() / 4);
             textureCoordsDataByteSize = static_cast<uint32_t>(data.size());
             memcpy(&textureCoordsData[0], &data[0], data.size());
-            
           }
 
         }
-        auto indexesBufferViewNumber = std::stoi(glb.getChildToken(primitives[0], "indices")->value);
-        auto data = glb.getBufferByView(indexesBufferViewNumber);
+        auto data = glb.getBufferByAccessor(std::stoi(glb.getChildToken(primitives[0], "indices")->value));
         indexData.resize(data.size() / 2);
         indexDataByteSize = static_cast<uint32_t>(indexData.size() * 4); // 4 because, even though each index is read in 16 bits,
                                                                          // it is stored in 32 bits
@@ -454,7 +444,6 @@ namespace small3d {
 
         loaded = true;
         break;
-
       }
     }
 

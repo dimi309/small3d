@@ -344,4 +344,60 @@ namespace small3d {
     return std::vector<char>(binBuffer.begin() + byteOffset, binBuffer.begin() + byteOffset + byteLength);
 
   }
+
+  std::vector<char> GlbFile::getBufferByAccessor(size_t index) {
+
+    auto accessorToken = getChildTokens(getToken("accessors"))[index];
+    auto bufferViewNumber = std::stoi(getChildToken(accessorToken, "bufferView")->value);
+
+    auto byteOffsetToken = getChildToken(accessorToken, "byteOffset");
+    auto countToken = getChildToken(accessorToken, "count");
+
+    if (byteOffsetToken == nullptr || countToken == nullptr) {
+      return getBufferByView(bufferViewNumber);
+    }
+    else {
+      size_t cnt = 0;
+
+      auto componentType = std::stoi(getChildToken(accessorToken, "componentType")->value);
+
+      switch (componentType) {
+      case 5120:  // byte
+        cnt = 1;
+        break;
+      case 5121:  // unsigned byte
+        cnt = 1;
+        break;
+      case 5122:  // short
+        cnt = 2;
+        break;
+      case 5123:  // unsigned short
+        cnt = 2;
+        break;
+      case 5125:  // unsigned int
+        cnt = 4;
+        break;
+      case 5126:  // float
+        cnt = 4;
+        break;
+      default:
+        throw std::runtime_error("Unrecognised componentType in GLB file: " + std::to_string(componentType));
+         
+      }
+
+      auto dataType = getChildToken(accessorToken, "type")->value;
+      
+      if (dataType.substr(0, 3) == "VEC") {
+        cnt *= std::stoi(dataType.substr(3, 1));
+      }
+
+      cnt *= std::stoi(countToken->value);
+      
+      auto byteOffset = std::stoi(byteOffsetToken->value);
+
+      auto data = getBufferByView(bufferViewNumber);
+      return std::vector<char>(data.begin() + byteOffset, data.begin() + byteOffset + cnt);
+    }
+
+  }
 }
