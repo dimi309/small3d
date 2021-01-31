@@ -23,9 +23,9 @@
 
 struct membuf : std::streambuf
 {
-    membuf(char* begin, char* end) {
-        this->setg(begin, begin, end);
-    }
+  membuf(char* begin, char* end) {
+    this->setg(begin, begin, end);
+  }
 };
 #endif
 
@@ -97,7 +97,7 @@ namespace small3d {
           this->normalsData[3 * (faceVertexIndex->at(vertexIndex) - 1)
             + normalsDataComponent] =
             normals.at(
-            (unsigned long)
+              (unsigned long)
               (facesNormalIndices.at((unsigned long)
                 faceVertexArrayIndex)[vertexIndex]
                 - 1))[normalsDataComponent];
@@ -129,7 +129,7 @@ namespace small3d {
     this->textureCoordsData = std::vector<float>(2 * vertices.size());
 
     if (!textureCoords.empty()) {
-     
+
 
       int faceVertexArrayIndex = 0;
 
@@ -218,9 +218,9 @@ namespace small3d {
     std::string line;
 
 #ifdef __ANDROID__
-    AAsset *asset = AAssetManager_open(vkz_android_app->activity->assetManager,
-                                         fileLocation.c_str(),
-                                         AASSET_MODE_STREAMING);
+    AAsset* asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+      fileLocation.c_str(),
+      AASSET_MODE_STREAMING);
     if (!asset) throw std::runtime_error("Opening asset " + fileLocation +
       " has failed!");
     off_t offset, length;
@@ -232,13 +232,13 @@ namespace small3d {
       clear();
       while (std::getline(in, line)) {
 #else
-        std::string fullPath = getBasePath() + fileLocation;
-  
-        std::ifstream file(fullPath.c_str());
+    std::string fullPath = getBasePath() + fileLocation;
 
-        if (file.is_open()) {
-          clear();
-          while (getline(file, line)) {
+    std::ifstream file(fullPath.c_str());
+
+    if (file.is_open()) {
+      clear();
+      while (getline(file, line)) {
 #endif
         if (line[0] == 'v' || line[0] == 'f') {
           std::vector<std::string> tokens;
@@ -382,39 +382,85 @@ namespace small3d {
       throw std::runtime_error("Could not open file " + fileLocation);
   }
 
-  Model::Model(const std::string& fileLocation, const std::string& meshName) {
+  Model::Model(const std::string & fileLocation, const std::string & meshName) {
     GlbFile glb(fileLocation);
     bool loaded = false;
     for (auto& meshToken : glb.getChildTokens(glb.getToken("meshes"))) {
 
       if (glb.getChildToken(meshToken, "name")->value == meshName) {
-        
-        auto attributes = glb.getChildTokens(glb.getChildToken(glb.getChildTokens(
-          glb.getChildToken(meshToken, "primitives"))[0], "attributes"));
+        auto primitives = glb.getChildTokens(
+          glb.getChildToken(meshToken, "primitives"));
+        auto attributes = glb.getChildTokens(glb.getChildToken(primitives[0], "attributes"));
         auto accessors = glb.getChildTokens(glb.getToken("accessors"));
 
         for (auto attribute : attributes) {
-          if (attribute->name == "POSITION") {
 
+          if (attribute->name == "POSITION") {
             auto bufferViewNumber = std::stoi(glb.getChildToken(
               accessors[std::stoi(attribute->value)], "bufferView")->value);
-
             auto data = glb.getBufferByView(bufferViewNumber);
 
-            vertexData.resize(data.size() / 4);
+            auto numFloatsInData = data.size() / 4;
 
-            memcpy(&vertexData[0], &data[0], data.size());
+            vertexData.resize(numFloatsInData + numFloatsInData / 3); // Add 1 float for each 3 for 
+                                                                      // the w component of each vector
+            vertexDataByteSize = static_cast<uint32_t>(vertexData.size() * 4); // Each vertex component is 4 bytes
+            size_t vertexPos = 0;
             
-            loaded = true;
-            break;
+
+            for (size_t idx = 0; idx < numFloatsInData; ++idx) {
+
+              memcpy(&vertexData[vertexPos], &data[idx * 4], 4);
+              ++vertexPos;
+              if (idx > 0 && (idx + 1) % 3 == 0) {
+                vertexData[vertexPos] = 1.0f;
+                ++vertexPos;
+              }
+
+            }
           }
+
+          if (attribute->name == "NORMAL") {
+            auto bufferViewNumber = std::stoi(glb.getChildToken(
+              accessors[std::stoi(attribute->value)], "bufferView")->value);
+            auto data = glb.getBufferByView(bufferViewNumber);
+            normalsData.resize(data.size() / 4);
+            normalsDataByteSize = static_cast<uint32_t>(data.size());
+            memcpy(&normalsData[0], &data[0], data.size());
+            
+          }
+
+          if (attribute->name == "TEXCOORD_0") {
+            auto bufferViewNumber = std::stoi(glb.getChildToken(
+              accessors[std::stoi(attribute->value)], "bufferView")->value);
+            auto data = glb.getBufferByView(bufferViewNumber);
+            textureCoordsData.resize(data.size() / 4);
+            textureCoordsDataByteSize = static_cast<uint32_t>(data.size());
+            memcpy(&textureCoordsData[0], &data[0], data.size());
+            
+          }
+
         }
+        auto indexesBufferViewNumber = std::stoi(glb.getChildToken(primitives[0], "indices")->value);
+        auto data = glb.getBufferByView(indexesBufferViewNumber);
+        indexData.resize(data.size() / 2);
+        indexDataByteSize = static_cast<uint32_t>(indexData.size() * 4); // 4 because, even though each index is read in 16 bits,
+                                                                         // it is stored in 32 bits
+        uint16_t indexBuf = 0;
+        for (size_t idx = 0; idx < indexData.size(); ++idx) {
+          memcpy(&indexBuf, &data[2 * idx], 2);
+          indexData[idx] = static_cast<uint32_t>(indexBuf);
+        }
+
+        loaded = true;
+        break;
+
       }
     }
-    
+
     if (!loaded) throw std::runtime_error("Could not load mesh " + meshName + " from " + fileLocation);
     LOGDEBUG("Loaded mesh " + meshName + " from " + fileLocation);
   }
-  
+
 
 }
