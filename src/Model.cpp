@@ -223,7 +223,7 @@ namespace small3d {
       AASSET_MODE_STREAMING);
     if (!asset) throw std::runtime_error("Opening asset " + fileLocation +
       " has failed!");
-    off_t offset, length;
+    off_t length;
     length = AAsset_getLength(asset);
     const void* buffer = AAsset_getBuffer(asset);
     membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * length);
