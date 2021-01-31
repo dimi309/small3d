@@ -135,6 +135,8 @@ int RendererTest() {
   
   renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
 
+  Model modelFromGlb("resources/models/goat.glb", "Cube");
+
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
   renderer->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -170,7 +172,7 @@ int RendererTest() {
     glfwPollEvents();
     renderer->clearScreen();
 
-    renderer->render(singleColourRect,
+    /*renderer->render(singleColourRect,
       glm::vec3(0.0f, 0.0f, 0.0f),
       glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), "", false);
 
@@ -181,7 +183,11 @@ int RendererTest() {
     renderer->render(object2, "cubeTexture");
 
     renderer->render(textRect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-      glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", false);
+      glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", false);*/
+
+    
+    renderer->render(modelFromGlb, glm::vec3(0.0f, 0.0f, -2.0f),
+      glm::vec3(0.0f, 0.7f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
     renderer->swapBuffers();
   }
@@ -291,10 +297,10 @@ int main(int argc, char** argv) {
       printf("*** Failing BoundingBoxesTest.\n\r");
       return 1;
     }
-    /*if (!RendererTest()) {
+    if (!RendererTest()) {
       printf("*** Failing RendererTest.\n\r");
       return 1;
-    }*/
+    }
     /*if (!SoundTest()) {
       printf("*** Failing SoundTest.\n\r");
       return 1;
