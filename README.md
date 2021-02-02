@@ -7,10 +7,10 @@ Vulkan and OpenGL support
 
 ## Sample games
 
-- [Avoid the Bug](https://github.com/dimi309/avoidthebug)
-- [Chase the Goat](https://github.com/dimi309/chasethegoat)
-- [Frog Remixed](https://github.com/dimi309/frogremixed)
-- [Gloom](https://github.com/dimi309/gloom)
+- [Avoid the Bug](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug)
+- [Chase the Goat](https://github.com/dimi309/small3d-samples/tree/master/chasethegoat)
+- [Frog Remixed](https://github.com/dimi309/small3d-samples/tree/master/frogremixed)
+- [Gloom](https://github.com/dimi309/small3d-samples/tree/master/gloom)
 
 ## Tutorial
 
