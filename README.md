@@ -80,12 +80,14 @@ The scripts for preparing the dependencies of small3d for mobile are `prepare-an
 and `prepare-ios` for Android and iOS respectively, found in the `deps` directory. 
 After executing one of those, you can build small3d for these platforms by executing
 either `build-android` or `build-ios` from the main directory. One sample game, 
-[Avoid the Bug](https://github.com/dimi309/avoidthebug) has been ported to
-both [Android](https://github.com/dimi309/avoidthebug-android) and 
-[iOS](https://github.com/dimi309/avoidthebug-ios). I use these projects as a basis
-for mobile development. Note that, while with the desktop edition of small3d
-I use GLFW for windowing functionalities and I/O, on mobile I access the native
-infrastructure directly.
+[Avoid the Bug](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug)
+has been ported to both 
+[Android](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-android) 
+and 
+[iOS](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-ios). 
+I use these projects as a basis for mobile development. Note that, while with 
+the desktop edition of small3dI use GLFW for windowing functionalities and I/O,
+on mobile I access the native infrastructure directly.
 
 ## Referenced libraries
 
