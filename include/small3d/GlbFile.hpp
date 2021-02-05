@@ -13,6 +13,8 @@
 #include <string>
 #include <stack>
 #include <vector>
+#include <memory>
+#include <cstring>
 
 namespace small3d {
 
