@@ -35,8 +35,8 @@ namespace small3d {
     glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
       static_cast<GLsizei>(realScreenHeight));
 
-    LOGDEBUG("New framebuffer dimensions " + intToStr(width) + " x " +
-      intToStr(height));
+    LOGDEBUG("New framebuffer dimensions " + std::to_string(width) + " x " +
+      std::to_string(height));
 
   }
 
@@ -324,8 +324,8 @@ namespace small3d {
       width = mode->width;
       height = mode->height;
 
-      LOGINFO("Detected screen width " + intToStr(width) + " and height " +
-        intToStr(height));
+      LOGINFO("Detected screen width " + std::to_string(width) + " and height " +
+        std::to_string(height));
     }
 
     window = glfwCreateWindow(width, height, windowTitle.c_str(), monitor,
@@ -342,8 +342,8 @@ namespace small3d {
 
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
-    LOGINFO("Framebuffer width " + intToStr(width) + " height " +
-      intToStr(height));
+    LOGINFO("Framebuffer width " + std::to_string(width) + " height " +
+      std::to_string(height));
 
   }
 
@@ -499,7 +499,7 @@ namespace small3d {
     const std::string& fontPath,
     const bool replace) {
 
-    std::string faceId = intToStr(fontSize) + fontPath;
+    std::string faceId = std::to_string(fontSize) + fontPath;
 
     auto idFacePair = fontFaces.find(faceId);
     FT_Face face;
