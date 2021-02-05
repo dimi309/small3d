@@ -31,13 +31,13 @@ do
 	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
 	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
     cmake --build .
-    if [ $? != 0 ]; then exit $rc; fi
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp ../*.h ../../include/
-    if [ $? != 0 ]; then exit $rc; fi
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp pnglibconf.h ../../include/
-    if [ $? != 0 ]; then exit $rc; fi
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp libpng.a ../../lib/$androidabi
-    if [ $? != 0 ]; then exit $rc; fi
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cd ../../
     rm -rf libpng-1.6.37
 
@@ -49,13 +49,13 @@ do
 	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
 	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
     cmake --build .
-    if [ $? != 0 ]; then exit $rc; fi
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp -rf ../include/ogg ../../include/
-    if [ $? != 0 ]; then exit $rc; fi
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp include/ogg/config_types.h ../../include/ogg/
-    if [ $? != 0 ]; then exit $rc; fi
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp libogg.a ../../lib/$androidabi
-    if [ $? != 0 ]; then exit $rc; fi
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cd ../../
     rm -rf ogg-1.3.3
 
@@ -68,11 +68,11 @@ do
 	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
 	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
     cmake --build .
-    if [ $? != 0 ]; then exit $rc; fi
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp -rf ../include/vorbis ../../include/
-    if [ $? != 0 ]; then exit $rc; fi
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp lib/*.a ../../lib/$androidabi
-    if [ $? != 0 ]; then exit $rc; fi
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cd ../../
     rm -rf vorbis-1.3.6
 
@@ -84,16 +84,16 @@ do
 	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
 	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
     cmake --build .
-    if [ $? != 0 ]; then exit $rc; fi
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp -rf ../include/* ../../include/
-    if [ $? != 0 ]; then exit $rc; fi
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     
     if [ "$1" == "Release" ]; then
 	cp libfreetype.a ../../lib/$androidabi
     else
 	cp libfreetyped.a ../../lib/$androidabi/libfreetype.a
     fi
-    if [ $? != 0 ]; then exit $rc; fi
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     
     cd ../..
     rm -rf freetype-2.10.4

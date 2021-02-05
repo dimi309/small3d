@@ -32,7 +32,7 @@ do
     cmake --build .
     rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     mv lib/*.a lib/$androidabi
-    if [ $? != 0 ]; then exit $rc; fi
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     find . -maxdepth 1 -type f -exec rm -v {} \;
     rm -rf CMakeFiles
     rm -rf src
