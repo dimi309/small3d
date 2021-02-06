@@ -83,8 +83,8 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_glb_file_1_1tokent.html">tokent</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This token structure is used for storing the parsed GLB file data.  <a href="structsmall3d_1_1_glb_file_1_1tokent.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><b>tokent</b></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This token structure is used for storing the parsed GLB file data. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
@@ -102,7 +102,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5e621f94704aab1c271d196918de1957"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a5e621f94704aab1c271d196918de1957">GlbFile</a> (const std::string &amp;filename)</td></tr>
 <tr class="memdesc:a5e621f94704aab1c271d196918de1957"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor of the <a class="el" href="classsmall3d_1_1_glb_file.html" title="GLB file parser class.">GlbFile</a> class.  <a href="classsmall3d_1_1_glb_file.html#a5e621f94704aab1c271d196918de1957">More...</a><br /></td></tr>
 <tr class="separator:a5e621f94704aab1c271d196918de1957"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a972485c8bf866c838584e56163dcf767"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a972485c8bf866c838584e56163dcf767">printToken</a> (std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1tokent.html">tokent</a> &gt; token)</td></tr>
+<tr class="memitem:a972485c8bf866c838584e56163dcf767"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a972485c8bf866c838584e56163dcf767">printToken</a> (std::shared_ptr&lt; tokent &gt; token)</td></tr>
 <tr class="memdesc:a972485c8bf866c838584e56163dcf767"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a token.  <a href="classsmall3d_1_1_glb_file.html#a972485c8bf866c838584e56163dcf767">More...</a><br /></td></tr>
 <tr class="separator:a972485c8bf866c838584e56163dcf767"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a593e1b7000f33f458dbbce7ac068945e"><td class="memItemLeft" align="right" valign="top"><a id="a593e1b7000f33f458dbbce7ac068945e"></a>
@@ -113,13 +113,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#acfdbe51e25ac549cc5220118b40f8f02">printTokensSerial</a> ()</td></tr>
 <tr class="memdesc:acfdbe51e25ac549cc5220118b40f8f02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print tokens as found in the token queues, without dereferencing queue references. <br /></td></tr>
 <tr class="separator:acfdbe51e25ac549cc5220118b40f8f02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3159585b5f1ce9085d398cb6946751a"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1tokent.html">tokent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#ab3159585b5f1ce9085d398cb6946751a">getToken</a> (const std::string &amp;name)</td></tr>
+<tr class="memitem:ab3159585b5f1ce9085d398cb6946751a"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; tokent &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#ab3159585b5f1ce9085d398cb6946751a">getToken</a> (const std::string &amp;name)</td></tr>
 <tr class="memdesc:ab3159585b5f1ce9085d398cb6946751a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a token by name.  <a href="classsmall3d_1_1_glb_file.html#ab3159585b5f1ce9085d398cb6946751a">More...</a><br /></td></tr>
 <tr class="separator:ab3159585b5f1ce9085d398cb6946751a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9bfdb6710208fb129cdf468610bec4f7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1tokent.html">tokent</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a9bfdb6710208fb129cdf468610bec4f7">getChildTokens</a> (std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1tokent.html">tokent</a> &gt; token)</td></tr>
+<tr class="memitem:a9bfdb6710208fb129cdf468610bec4f7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::shared_ptr&lt; tokent &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a9bfdb6710208fb129cdf468610bec4f7">getChildTokens</a> (std::shared_ptr&lt; tokent &gt; token)</td></tr>
 <tr class="memdesc:a9bfdb6710208fb129cdf468610bec4f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the child tokens of a token.  <a href="classsmall3d_1_1_glb_file.html#a9bfdb6710208fb129cdf468610bec4f7">More...</a><br /></td></tr>
 <tr class="separator:a9bfdb6710208fb129cdf468610bec4f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d9bbe804456a10e1be417cfe78159fe"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1tokent.html">tokent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a6d9bbe804456a10e1be417cfe78159fe">getChildToken</a> (std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1tokent.html">GlbFile::tokent</a> &gt; token, const std::string &amp;name)</td></tr>
+<tr class="memitem:a6d9bbe804456a10e1be417cfe78159fe"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; tokent &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a6d9bbe804456a10e1be417cfe78159fe">getChildToken</a> (std::shared_ptr&lt; GlbFile::tokent &gt; token, const std::string &amp;name)</td></tr>
 <tr class="memdesc:a6d9bbe804456a10e1be417cfe78159fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a child token of a token by name.  <a href="classsmall3d_1_1_glb_file.html#a6d9bbe804456a10e1be417cfe78159fe">More...</a><br /></td></tr>
 <tr class="separator:a6d9bbe804456a10e1be417cfe78159fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68638dc838ba0c9ee3c1f224adac17d0"><td class="memItemLeft" align="right" valign="top">std::vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a68638dc838ba0c9ee3c1f224adac17d0">getBufferByView</a> (size_t index)</td></tr>
@@ -220,9 +220,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1tokent.html">GlbFile::tokent</a> &gt; small3d::GlbFile::getChildToken </td>
+          <td class="memname">std::shared_ptr&lt; GlbFile::tokent &gt; small3d::GlbFile::getChildToken </td>
           <td>(</td>
-          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1tokent.html">GlbFile::tokent</a> &gt;&#160;</td>
+          <td class="paramtype">std::shared_ptr&lt; GlbFile::tokent &gt;&#160;</td>
           <td class="paramname"><em>token</em>, </td>
         </tr>
         <tr>
@@ -258,9 +258,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt; std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1tokent.html">GlbFile::tokent</a> &gt; &gt; small3d::GlbFile::getChildTokens </td>
+          <td class="memname">std::vector&lt; std::shared_ptr&lt; GlbFile::tokent &gt; &gt; small3d::GlbFile::getChildTokens </td>
           <td>(</td>
-          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1tokent.html">tokent</a> &gt;&#160;</td>
+          <td class="paramtype">std::shared_ptr&lt; tokent &gt;&#160;</td>
           <td class="paramname"><em>token</em></td><td>)</td>
           <td></td>
         </tr>
@@ -285,7 +285,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1tokent.html">GlbFile::tokent</a> &gt; small3d::GlbFile::getToken </td>
+          <td class="memname">std::shared_ptr&lt; GlbFile::tokent &gt; small3d::GlbFile::getToken </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>name</em></td><td>)</td>
@@ -314,7 +314,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         <tr>
           <td class="memname">void small3d::GlbFile::printToken </td>
           <td>(</td>
-          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1tokent.html">tokent</a> &gt;&#160;</td>
+          <td class="paramtype">std::shared_ptr&lt; tokent &gt;&#160;</td>
           <td class="paramname"><em>token</em></td><td>)</td>
           <td></td>
         </tr>
