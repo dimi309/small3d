@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['deletelogger_176',['deleteLogger',['../_logger_8hpp.html#ab9c95af461170e41d031a112466c014c',1,'small3d']]],
-  ['deletetexture_177',['deleteTexture',['../classsmall3d_1_1_renderer.html#aa3edaca7521e526b5cf311ed4c541452',1,'small3d::Renderer']]]
+  ['deletelogger_174',['deleteLogger',['../_logger_8hpp.html#ab9c95af461170e41d031a112466c014c',1,'small3d']]],
+  ['deletetexture_175',['deleteTexture',['../classsmall3d_1_1_renderer.html#aa3edaca7521e526b5cf311ed4c541452',1,'small3d::Renderer']]]
 ];
