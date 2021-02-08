@@ -24,10 +24,10 @@ struct membuf : std::streambuf
 
 namespace small3d {
 
-  std::shared_ptr<GlbFile::tokent> GlbFile::getToken(const std::string& name, size_t index) {
-    std::shared_ptr<GlbFile::tokent> foundToken = nullptr;
+  std::shared_ptr<GlbFile::Token> GlbFile::getToken(const std::string& name, size_t index) {
+    std::shared_ptr<GlbFile::Token> foundToken = nullptr;
 
-    std::shared_ptr<GlbFile::tokent> currenttoken = token_queues[index];
+    std::shared_ptr<GlbFile::Token> currenttoken = token_queues[index];
     do {
       if (currenttoken->name == name) {
         foundToken = currenttoken;
@@ -42,8 +42,8 @@ namespace small3d {
     return foundToken;
   }
 
-  void GlbFile::printTokensRecursive(std::shared_ptr<GlbFile::tokent> head_token) {
-    std::shared_ptr<GlbFile::tokent> currenttoken = head_token;
+  void GlbFile::printTokensRecursive(std::shared_ptr<GlbFile::Token> head_token) {
+    std::shared_ptr<GlbFile::Token> currenttoken = head_token;
     do {
       if (currenttoken->valueType == GlbFile::ValueType::MARKER) {
         if (!currenttoken->name.empty()) {
@@ -71,12 +71,12 @@ namespace small3d {
     char c;
     bool inNumber = false;
 
-    jsonRootToken = std::shared_ptr<GlbFile::tokent>(new GlbFile::tokent);
+    jsonRootToken = std::shared_ptr<GlbFile::Token>(new GlbFile::Token);
     jsonRootToken->next = nullptr;
     jsonRootToken->valueType = GlbFile::ValueType::charstring;
     jsonRootToken->value = "root";
 
-    std::shared_ptr<GlbFile::tokent> current = jsonRootToken;
+    std::shared_ptr<GlbFile::Token> current = jsonRootToken;
 
     while (charsLeft != 0) {
       c = json[length - charsLeft];
@@ -156,8 +156,8 @@ namespace small3d {
     }
   }
 
-  std::shared_ptr<GlbFile::tokent> GlbFile::createToken(GlbFile::ValueType valueType, const std::string& value) {
-    std::shared_ptr<GlbFile::tokent> newToken(new GlbFile::tokent);
+  std::shared_ptr<GlbFile::Token> GlbFile::createToken(GlbFile::ValueType valueType, const std::string& value) {
+    std::shared_ptr<GlbFile::Token> newToken(new GlbFile::Token);
     newToken->next = nullptr;
     newToken->name = "";
     newToken->valueType = valueType;
@@ -166,14 +166,14 @@ namespace small3d {
     return newToken;
   }
 
-  void GlbFile::parseJson(std::shared_ptr<GlbFile::tokent> token) {
+  void GlbFile::parseJson(std::shared_ptr<GlbFile::Token> token) {
 
-    std::stack<std::shared_ptr<GlbFile::tokent>> st;
+    std::stack<std::shared_ptr<GlbFile::Token>> st;
 
-    std::shared_ptr<GlbFile::tokent> poppedToken;
-    std::shared_ptr<GlbFile::tokent> prevToken;
-    std::shared_ptr<GlbFile::tokent> antePrevToken;
-    std::shared_ptr<GlbFile::tokent> origNextToken;
+    std::shared_ptr<GlbFile::Token> poppedToken;
+    std::shared_ptr<GlbFile::Token> prevToken;
+    std::shared_ptr<GlbFile::Token> antePrevToken;
+    std::shared_ptr<GlbFile::Token> origNextToken;
 
     char poppedTokenFirstChar;
 
@@ -229,7 +229,7 @@ namespace small3d {
         char tkn[4] = "000";
         sprintf(tkn, "%d", markerPoint);
         ++markerPoint;
-        std::shared_ptr<GlbFile::tokent> marker = createToken(GlbFile::ValueType::MARKER, tkn);
+        std::shared_ptr<GlbFile::Token> marker = createToken(GlbFile::ValueType::MARKER, tkn);
         marker->next = jsonRootToken;
         jsonRootToken = marker;
         st.push(marker);
@@ -241,9 +241,9 @@ namespace small3d {
     }
   }
 
-  std::vector<std::shared_ptr<GlbFile::tokent>> GlbFile::getTokens(uint32_t index) {
-    std::vector<std::shared_ptr<GlbFile::tokent>> ret;
-    std::shared_ptr<GlbFile::tokent> currentToken = token_queues[index];
+  std::vector<std::shared_ptr<GlbFile::Token>> GlbFile::getTokens(uint32_t index) {
+    std::vector<std::shared_ptr<GlbFile::Token>> ret;
+    std::shared_ptr<GlbFile::Token> currentToken = token_queues[index];
     do {
       if (currentToken->value != "[" && currentToken->value != "]" &&
         currentToken->value != "{" && currentToken->value != "}") {
@@ -331,7 +331,7 @@ namespace small3d {
 
   }
 
-  void GlbFile::printToken(std::shared_ptr<GlbFile::tokent> token) {
+  void GlbFile::printToken(std::shared_ptr<GlbFile::Token> token) {
     if (!token->name.empty()) {
       printf("%s: ", token->name.c_str());
     }
@@ -348,7 +348,7 @@ namespace small3d {
 
   void GlbFile::printTokensSerial() {
     for (auto tokenQueue : token_queues) {
-      std::shared_ptr<GlbFile::tokent> currenttoken = tokenQueue;
+      std::shared_ptr<GlbFile::Token> currenttoken = tokenQueue;
       do {
         printToken(currenttoken);
         printf(" ");
@@ -358,20 +358,20 @@ namespace small3d {
     }
   }
 
-  std::shared_ptr<GlbFile::tokent> GlbFile::getToken(const std::string& name) {
+  std::shared_ptr<GlbFile::Token> GlbFile::getToken(const std::string& name) {
     return getToken(name, token_queues.size() - 1);
   }
 
-  std::vector<std::shared_ptr<GlbFile::tokent>> GlbFile::getChildTokens(std::shared_ptr<GlbFile::tokent> token) {
+  std::vector<std::shared_ptr<GlbFile::Token>> GlbFile::getChildTokens(std::shared_ptr<GlbFile::Token> token) {
     return getTokens(std::stoi(token->value));
   }
 
-  std::shared_ptr<GlbFile::tokent> GlbFile::getChildToken(std::shared_ptr<GlbFile::tokent> token, const std::string& name) {
+  std::shared_ptr<GlbFile::Token> GlbFile::getChildToken(std::shared_ptr<GlbFile::Token> token, const std::string& name) {
     return getToken(name, std::stoi(token->value));
   }
 
   std::vector<char> GlbFile::getBufferByView(size_t viewIndex) {
-    std::vector<std::shared_ptr<GlbFile::tokent>> bufferViews = getChildTokens(getToken("bufferViews"));
+    std::vector<std::shared_ptr<GlbFile::Token>> bufferViews = getChildTokens(getToken("bufferViews"));
 
     uint32_t byteLength = std::stoi(getChildToken(bufferViews[viewIndex], "byteLength")->value);
     uint32_t byteOffset = std::stoi(getChildToken(bufferViews[viewIndex], "byteOffset")->value);

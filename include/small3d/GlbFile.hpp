@@ -32,10 +32,10 @@ namespace small3d {
     /**
      * @brief This token structure is used for storing the parsed GLB file data.
      */
-    struct tokent {
+    struct Token {
       ValueType valueType = ValueType::charstring;
       std::string value;
-      std::shared_ptr<tokent> next;
+      std::shared_ptr<Token> next;
       std::string name;
     };
 
@@ -44,25 +44,25 @@ namespace small3d {
     const uint32_t CHUNK_TYPE_JSON = 0x4E4F534A;
     const uint32_t CHUNK_TYPE_BIN = 0x004E4942;
 
-    std::shared_ptr<tokent> jsonRootToken;
+    std::shared_ptr<Token> jsonRootToken;
     std::vector<char> binBuffer;
 
     // The result of parsing json is a series of token queues,
     // each queue being one of the found maps or lists. Some
     // of the nodes in the queues are references to other
     // queues.
-    std::vector<std::shared_ptr<tokent>> token_queues;
+    std::vector<std::shared_ptr<Token>> token_queues;
 
     // Forbid default and copy constructors
     GlbFile();
     GlbFile(const GlbFile&);
 
-    std::shared_ptr<tokent> getToken(const std::string&, size_t);
-    void printTokensRecursive(std::shared_ptr<tokent>);
+    std::shared_ptr<Token> getToken(const std::string&, size_t);
+    void printTokensRecursive(std::shared_ptr<Token>);
     void lexJson(const std::vector<char>&, uint32_t);
-    std::shared_ptr<tokent> createToken(ValueType, const std::string&);
-    void parseJson(std::shared_ptr<tokent>);
-    std::vector<std::shared_ptr<tokent>> getTokens(uint32_t);
+    std::shared_ptr<Token> createToken(ValueType, const std::string&);
+    void parseJson(std::shared_ptr<Token>);
+    std::vector<std::shared_ptr<Token>> getTokens(uint32_t);
 
   public:
 
@@ -76,7 +76,7 @@ namespace small3d {
     * @brief Print a token
     * @param token The token to be printed
     */
-    void printToken(std::shared_ptr<tokent> token);
+    void printToken(std::shared_ptr<Token> token);
 
     /**
      * @brief Recursively print all tokens, starting from the head
@@ -95,14 +95,14 @@ namespace small3d {
      * @param name The name of the token
      * @return Shared pointer to the token
      */
-    std::shared_ptr<tokent> getToken(const std::string& name);
+    std::shared_ptr<Token> getToken(const std::string& name);
 
     /**
      * @brief Get the child tokens of a token
      * @param token The token the children of which will be retrieved
      * @return Vector of shared pointers to the retrieved tokens
      */
-    std::vector<std::shared_ptr<tokent>> getChildTokens(std::shared_ptr<tokent> token);
+    std::vector<std::shared_ptr<Token>> getChildTokens(std::shared_ptr<Token> token);
 
     /**
      * @brief Get a child token of a token by name
@@ -110,7 +110,7 @@ namespace small3d {
      * @param token The name of the child which will be retrieved
      * @return Shared pointer to the retrieved token
      */
-    std::shared_ptr<tokent> getChildToken(std::shared_ptr<GlbFile::tokent> token, const std::string& name);
+    std::shared_ptr<Token> getChildToken(std::shared_ptr<GlbFile::Token> token, const std::string& name);
 
     /**
      * @brief Get the data of a buffer from the binary part of the file, using the buffer view index to locate it
