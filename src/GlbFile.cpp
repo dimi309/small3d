@@ -130,8 +130,8 @@ namespace small3d {
           tokenString += c;
         }
         else {
-          if (strchr("0123456789", c) != nullptr ||
-            (strchr(".-e", c) != nullptr && inNumber)) { // begin number
+          if (strchr("0123456789-", c) != nullptr ||
+            (strchr(".e", c) != nullptr && inNumber)) { // begin number or in number
             inNumber = true;
             tokenNumber += c;
 
@@ -251,6 +251,40 @@ namespace small3d {
       }
       currentToken = currentToken->next;
     } while (currentToken != nullptr);
+    return ret;
+  }
+
+  GlbFile::Node GlbFile::getNode(uint32_t index) {
+    auto nodeToken = getChildTokens(getToken("nodes"))[index];
+    
+    Node ret;
+
+    auto propToken = getChildToken(nodeToken, "name");
+    if (propToken != nullptr) {
+      ret.name = propToken->value;
+    }
+
+    propToken = getChildToken(nodeToken, "rotation");
+    if (propToken != nullptr) {
+      auto values = getChildTokens(propToken);
+      ret.rotation = glm::quat(std::stof(values[0]->value), std::stof(values[1]->value),
+        std::stof(values[2]->value), std::stof(values[3]->value));
+    }
+
+    propToken = getChildToken(nodeToken, "scale");
+    if (propToken != nullptr) {
+      auto values = getChildTokens(propToken);
+      ret.scale = glm::vec3(std::stof(values[0]->value), std::stof(values[1]->value),
+        std::stof(values[2]->value));
+    }
+
+    propToken = getChildToken(nodeToken, "translation");
+    if (propToken != nullptr) {
+      auto values = getChildTokens(propToken);
+      ret.translation = glm::vec3(std::stof(values[0]->value), std::stof(values[1]->value),
+        std::stof(values[2]->value));
+    }
+    
     return ret;
   }
 
