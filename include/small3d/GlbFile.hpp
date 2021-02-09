@@ -53,6 +53,15 @@ namespace small3d {
       std::vector<uint32_t> children;
     };
 
+    /**
+     * @brief glTF skin
+     */
+    struct Skin {
+      std::string name;
+      uint32_t inverseBindMatrices;
+      std::vector<uint32_t> joints;
+    };
+
   private:
 
     const uint32_t CHUNK_TYPE_JSON = 0x4E4F534A;
@@ -155,6 +164,20 @@ namespace small3d {
      * @return The node
      */
     Node getNode(const std::string& name);
+
+    /**
+     * @brief Get a skin by index
+     * @param index The index of the skin in the file
+     * @return The skin
+     */
+    Skin getSkin(const uint32_t index);
+
+    /**
+     * @brief  Get a skin by name
+     * @param  name The name of the skin in the file.
+     * @return The skin
+     */
+    Skin getSkin(const std::string& name);
 
   };
 
