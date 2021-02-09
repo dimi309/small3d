@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['logger_152',['Logger',['../classsmall3d_1_1_logger.html',1,'small3d']]]
+  ['glbfile_161',['GlbFile',['../classsmall3d_1_1_glb_file.html',1,'small3d']]]
 ];
