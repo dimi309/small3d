@@ -104,69 +104,113 @@ $(function() {
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;      std::vector&lt;uint32_t&gt; children;</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    };</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keyword">const</span> uint32_t CHUNK_TYPE_JSON = 0x4E4F534A;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keyword">const</span> uint32_t CHUNK_TYPE_BIN = 0x004E4942;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    std::shared_ptr&lt;Token&gt; jsonRootToken;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    std::vector&lt;char&gt; binBuffer;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="comment">// The result of parsing json is a series of token queues,</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="comment">// each queue being one of the found maps or lists. Some</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="comment">// of the nodes in the queues are references to other</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="comment">// queues.</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    std::vector&lt;std::shared_ptr&lt;Token&gt;&gt; token_queues;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="comment">// Forbid default and copy constructors</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <a class="code" href="classsmall3d_1_1_glb_file.html">GlbFile</a>();</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <a class="code" href="classsmall3d_1_1_glb_file.html">GlbFile</a>(<span class="keyword">const</span> <a class="code" href="classsmall3d_1_1_glb_file.html">GlbFile</a>&amp;);</div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="structsmall3d_1_1_glb_file_1_1_skin.html">   59</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structsmall3d_1_1_glb_file_1_1_skin.html">Skin</a> {</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;      std::string name;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;      uint32_t inverseBindMatrices;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;      std::vector&lt;uint32_t&gt; joints;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    };</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="structsmall3d_1_1_glb_file_1_1_animation_sampler.html">   68</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structsmall3d_1_1_glb_file_1_1_animation_sampler.html">AnimationSampler</a> {</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;      uint32_t input;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;      std::string interpolation;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;      uint32_t output;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    };</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    std::shared_ptr&lt;Token&gt; getToken(<span class="keyword">const</span> std::string&amp;, <span class="keywordtype">size_t</span>);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_glb_file.html#a593e1b7000f33f458dbbce7ac068945e">printTokensRecursive</a>(std::shared_ptr&lt;Token&gt;);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordtype">void</span> lexJson(<span class="keyword">const</span> std::vector&lt;char&gt;&amp;, uint32_t);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    std::shared_ptr&lt;Token&gt; createToken(<a class="code" href="classsmall3d_1_1_glb_file.html#a302956b4d97adfe7f909f4e9c982b92e">ValueType</a>, <span class="keyword">const</span> std::string&amp;);</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keywordtype">void</span> parseJson(std::shared_ptr&lt;Token&gt;);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    std::vector&lt;std::shared_ptr&lt;Token&gt;&gt; getTokens(uint32_t);</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;  <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <a class="code" href="classsmall3d_1_1_glb_file.html">GlbFile</a>(<span class="keyword">const</span> std::string&amp; filename);</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_glb_file.html#a1fd6cfc3bf9962d8fccaea97069dbbf4">printToken</a>(<span class="keyword">const</span> std::shared_ptr&lt;Token&gt;&amp; token);</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_glb_file.html#a593e1b7000f33f458dbbce7ac068945e">printTokensRecursive</a>();</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="structsmall3d_1_1_glb_file_1_1_channel_target.html">   77</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structsmall3d_1_1_glb_file_1_1_channel_target.html">ChannelTarget</a> {</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;      uint32_t node;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;      std::string path;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    };</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="structsmall3d_1_1_glb_file_1_1_animation_channel.html">   85</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structsmall3d_1_1_glb_file_1_1_animation_channel.html">AnimationChannel</a> {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;      uint32_t sampler;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;      <a class="code" href="structsmall3d_1_1_glb_file_1_1_channel_target.html">ChannelTarget</a> target;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    };</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="structsmall3d_1_1_glb_file_1_1_animation.html">   93</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structsmall3d_1_1_glb_file_1_1_animation.html">Animation</a> {</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;      std::string name;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;      std::vector&lt;AnimationChannel&gt; channels;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;      std::vector&lt;AnimationSampler&gt; samplers;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    };</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  <span class="keyword">private</span>:</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_glb_file.html#acfdbe51e25ac549cc5220118b40f8f02">printTokensSerial</a>();</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keyword">const</span> uint32_t CHUNK_TYPE_JSON = 0x4E4F534A;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keyword">const</span> uint32_t CHUNK_TYPE_BIN = 0x004E4942;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    std::shared_ptr&lt;Token&gt; jsonRootToken;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    std::vector&lt;char&gt; binBuffer;</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    std::shared_ptr&lt;Token&gt; getToken(<span class="keyword">const</span> std::string&amp; name);</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    std::vector&lt;std::shared_ptr&lt;Token&gt;&gt; <a class="code" href="classsmall3d_1_1_glb_file.html#a4b03fa502cc74c0473f470c6b2f4c68b">getChildTokens</a>(<span class="keyword">const</span> std::shared_ptr&lt;Token&gt;&amp; token);</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    std::shared_ptr&lt;Token&gt; <a class="code" href="classsmall3d_1_1_glb_file.html#acad89f57e280542da9249a5d4fefeb7e">getChildToken</a>(<span class="keyword">const</span> std::shared_ptr&lt;GlbFile::Token&gt;&amp; token, <span class="keyword">const</span> std::string&amp; name);</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    std::vector&lt;char&gt; <a class="code" href="classsmall3d_1_1_glb_file.html#a9c4f0c4bf4a11591abd67e4cda784fb0">getBufferByView</a>(<span class="keyword">const</span> <span class="keywordtype">size_t</span> index);</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    std::vector&lt;char&gt; <a class="code" href="classsmall3d_1_1_glb_file.html#aa7d2e65aa0e2dc7b0531bbdeecb5affb">getBufferByAccessor</a>(<span class="keyword">const</span> <span class="keywordtype">size_t</span> index);</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    <a class="code" href="structsmall3d_1_1_glb_file_1_1_node.html">Node</a> <a class="code" href="classsmall3d_1_1_glb_file.html#a0064218b174e825a1f72134b651ab9b9">getNode</a>(<span class="keyword">const</span> uint32_t index);</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    <a class="code" href="structsmall3d_1_1_glb_file_1_1_node.html">Node</a> <a class="code" href="classsmall3d_1_1_glb_file.html#a0064218b174e825a1f72134b651ab9b9">getNode</a>(<span class="keyword">const</span> std::string&amp; name);</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;  };</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;}</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="comment">// The result of parsing json is a series of token queues,</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="comment">// each queue being one of the found maps or lists. Some</span></div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="comment">// of the nodes in the queues are references to other</span></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="comment">// queues.</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    std::vector&lt;std::shared_ptr&lt;Token&gt;&gt; token_queues;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="comment">// Forbid default and copy constructors</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <a class="code" href="classsmall3d_1_1_glb_file.html">GlbFile</a>();</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <a class="code" href="classsmall3d_1_1_glb_file.html">GlbFile</a>(<span class="keyword">const</span> <a class="code" href="classsmall3d_1_1_glb_file.html">GlbFile</a>&amp;);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    std::shared_ptr&lt;Token&gt; getToken(<span class="keyword">const</span> std::string&amp;, <span class="keywordtype">size_t</span>);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_glb_file.html#a593e1b7000f33f458dbbce7ac068945e">printTokensRecursive</a>(std::shared_ptr&lt;Token&gt;);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordtype">void</span> lexJson(<span class="keyword">const</span> std::vector&lt;char&gt;&amp;, uint32_t);</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    std::shared_ptr&lt;Token&gt; createToken(<a class="code" href="classsmall3d_1_1_glb_file.html#a302956b4d97adfe7f909f4e9c982b92e">ValueType</a>, <span class="keyword">const</span> std::string&amp;);</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordtype">void</span> parseJson(std::shared_ptr&lt;Token&gt;);</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    std::vector&lt;std::shared_ptr&lt;Token&gt;&gt; getTokens(uint32_t);</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <a class="code" href="classsmall3d_1_1_glb_file.html">GlbFile</a>(<span class="keyword">const</span> std::string&amp; filename);</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_glb_file.html#a1fd6cfc3bf9962d8fccaea97069dbbf4">printToken</a>(<span class="keyword">const</span> std::shared_ptr&lt;Token&gt;&amp; token);</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_glb_file.html#a593e1b7000f33f458dbbce7ac068945e">printTokensRecursive</a>();</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_glb_file.html#acfdbe51e25ac549cc5220118b40f8f02">printTokensSerial</a>();</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    std::shared_ptr&lt;Token&gt; getToken(<span class="keyword">const</span> std::string&amp; name);</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    std::vector&lt;std::shared_ptr&lt;Token&gt;&gt; <a class="code" href="classsmall3d_1_1_glb_file.html#a4b03fa502cc74c0473f470c6b2f4c68b">getChildTokens</a>(<span class="keyword">const</span> std::shared_ptr&lt;Token&gt;&amp; token);</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    std::shared_ptr&lt;Token&gt; <a class="code" href="classsmall3d_1_1_glb_file.html#acad89f57e280542da9249a5d4fefeb7e">getChildToken</a>(<span class="keyword">const</span> std::shared_ptr&lt;GlbFile::Token&gt;&amp; token, <span class="keyword">const</span> std::string&amp; name);</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    std::vector&lt;char&gt; <a class="code" href="classsmall3d_1_1_glb_file.html#a9c4f0c4bf4a11591abd67e4cda784fb0">getBufferByView</a>(<span class="keyword">const</span> <span class="keywordtype">size_t</span> index);</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160; </div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    std::vector&lt;char&gt; <a class="code" href="classsmall3d_1_1_glb_file.html#aa7d2e65aa0e2dc7b0531bbdeecb5affb">getBufferByAccessor</a>(<span class="keyword">const</span> <span class="keywordtype">size_t</span> index);</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160; </div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <a class="code" href="structsmall3d_1_1_glb_file_1_1_node.html">Node</a> <a class="code" href="classsmall3d_1_1_glb_file.html#a0064218b174e825a1f72134b651ab9b9">getNode</a>(<span class="keyword">const</span> uint32_t index);</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160; </div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    <a class="code" href="structsmall3d_1_1_glb_file_1_1_node.html">Node</a> <a class="code" href="classsmall3d_1_1_glb_file.html#a0064218b174e825a1f72134b651ab9b9">getNode</a>(<span class="keyword">const</span> std::string&amp; name);</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <a class="code" href="structsmall3d_1_1_glb_file_1_1_skin.html">Skin</a> <a class="code" href="classsmall3d_1_1_glb_file.html#aebd17d5add996b226696fa3e1ba7f8ea">getSkin</a>(<span class="keyword">const</span> uint32_t index);</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    <a class="code" href="structsmall3d_1_1_glb_file_1_1_skin.html">Skin</a> <a class="code" href="classsmall3d_1_1_glb_file.html#aebd17d5add996b226696fa3e1ba7f8ea">getSkin</a>(<span class="keyword">const</span> std::string&amp; name);</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160; </div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    <a class="code" href="structsmall3d_1_1_glb_file_1_1_animation.html">Animation</a> <a class="code" href="classsmall3d_1_1_glb_file.html#a67df329528ed4b56f61c6330e9625d72">getAnimation</a>(<span class="keyword">const</span> uint32_t index);</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160; </div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    <a class="code" href="structsmall3d_1_1_glb_file_1_1_animation.html">Animation</a> <a class="code" href="classsmall3d_1_1_glb_file.html#a67df329528ed4b56f61c6330e9625d72">getAnimation</a>(<span class="keyword">const</span> std::string&amp; name);</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160; </div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160; </div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;  };</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160; </div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclasssmall3d_1_1_glb_file_html"><div class="ttname"><a href="classsmall3d_1_1_glb_file.html">small3d::GlbFile</a></div><div class="ttdoc">GLB file parser class.</div><div class="ttdef"><b>Definition:</b> GlbFile.hpp:28</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_glb_file_html_acfdbe51e25ac549cc5220118b40f8f02"><div class="ttname"><a href="classsmall3d_1_1_glb_file.html#acfdbe51e25ac549cc5220118b40f8f02">small3d::GlbFile::printTokensSerial</a></div><div class="ttdeci">void printTokensSerial()</div><div class="ttdoc">Print tokens as found in the token queues, without dereferencing queue references.</div><div class="ttdef"><b>Definition:</b> GlbFile.cpp:349</div></div>
+<div class="ttc" id="aclasssmall3d_1_1_glb_file_html_a67df329528ed4b56f61c6330e9625d72"><div class="ttname"><a href="classsmall3d_1_1_glb_file.html#a67df329528ed4b56f61c6330e9625d72">small3d::GlbFile::getAnimation</a></div><div class="ttdeci">Animation getAnimation(const uint32_t index)</div><div class="ttdoc">Get an animation by index.</div><div class="ttdef"><b>Definition:</b> GlbFile.cpp:549</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_glb_file_html_a9c4f0c4bf4a11591abd67e4cda784fb0"><div class="ttname"><a href="classsmall3d_1_1_glb_file.html#a9c4f0c4bf4a11591abd67e4cda784fb0">small3d::GlbFile::getBufferByView</a></div><div class="ttdeci">std::vector&lt; char &gt; getBufferByView(const size_t index)</div><div class="ttdoc">Get the data of a buffer from the binary part of the file, using the buffer view index to locate it.</div><div class="ttdef"><b>Definition:</b> GlbFile.cpp:373</div></div>
+<div class="ttc" id="astructsmall3d_1_1_glb_file_1_1_animation_channel_html"><div class="ttname"><a href="structsmall3d_1_1_glb_file_1_1_animation_channel.html">small3d::GlbFile::AnimationChannel</a></div><div class="ttdoc">glTF animation channel</div><div class="ttdef"><b>Definition:</b> GlbFile.hpp:85</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_glb_file_html_a4b03fa502cc74c0473f470c6b2f4c68b"><div class="ttname"><a href="classsmall3d_1_1_glb_file.html#a4b03fa502cc74c0473f470c6b2f4c68b">small3d::GlbFile::getChildTokens</a></div><div class="ttdeci">std::vector&lt; std::shared_ptr&lt; Token &gt; &gt; getChildTokens(const std::shared_ptr&lt; Token &gt; &amp;token)</div><div class="ttdoc">Get the child tokens of a token.</div><div class="ttdef"><b>Definition:</b> GlbFile.cpp:365</div></div>
 <div class="ttc" id="astructsmall3d_1_1_glb_file_1_1_token_html"><div class="ttname"><a href="structsmall3d_1_1_glb_file_1_1_token.html">small3d::GlbFile::Token</a></div><div class="ttdoc">This token structure is used for storing the parsed GLB file data.</div><div class="ttdef"><b>Definition:</b> GlbFile.hpp:38</div></div>
+<div class="ttc" id="astructsmall3d_1_1_glb_file_1_1_channel_target_html"><div class="ttname"><a href="structsmall3d_1_1_glb_file_1_1_channel_target.html">small3d::GlbFile::ChannelTarget</a></div><div class="ttdoc">glTF animation channel target</div><div class="ttdef"><b>Definition:</b> GlbFile.hpp:77</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_glb_file_html_a0064218b174e825a1f72134b651ab9b9"><div class="ttname"><a href="classsmall3d_1_1_glb_file.html#a0064218b174e825a1f72134b651ab9b9">small3d::GlbFile::getNode</a></div><div class="ttdeci">Node getNode(const uint32_t index)</div><div class="ttdoc">Get a glTF node by index.</div><div class="ttdef"><b>Definition:</b> GlbFile.cpp:439</div></div>
+<div class="ttc" id="astructsmall3d_1_1_glb_file_1_1_animation_html"><div class="ttname"><a href="structsmall3d_1_1_glb_file_1_1_animation.html">small3d::GlbFile::Animation</a></div><div class="ttdoc">glTF animation</div><div class="ttdef"><b>Definition:</b> GlbFile.hpp:93</div></div>
+<div class="ttc" id="astructsmall3d_1_1_glb_file_1_1_skin_html"><div class="ttname"><a href="structsmall3d_1_1_glb_file_1_1_skin.html">small3d::GlbFile::Skin</a></div><div class="ttdoc">glTF skin</div><div class="ttdef"><b>Definition:</b> GlbFile.hpp:59</div></div>
+<div class="ttc" id="aclasssmall3d_1_1_glb_file_html_aebd17d5add996b226696fa3e1ba7f8ea"><div class="ttname"><a href="classsmall3d_1_1_glb_file.html#aebd17d5add996b226696fa3e1ba7f8ea">small3d::GlbFile::getSkin</a></div><div class="ttdeci">Skin getSkin(const uint32_t index)</div><div class="ttdoc">Get a skin by index.</div><div class="ttdef"><b>Definition:</b> GlbFile.cpp:502</div></div>
 <div class="ttc" id="astructsmall3d_1_1_glb_file_1_1_node_html"><div class="ttname"><a href="structsmall3d_1_1_glb_file_1_1_node.html">small3d::GlbFile::Node</a></div><div class="ttdoc">A glTF node.</div><div class="ttdef"><b>Definition:</b> GlbFile.hpp:48</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_glb_file_html_aa7d2e65aa0e2dc7b0531bbdeecb5affb"><div class="ttname"><a href="classsmall3d_1_1_glb_file.html#aa7d2e65aa0e2dc7b0531bbdeecb5affb">small3d::GlbFile::getBufferByAccessor</a></div><div class="ttdeci">std::vector&lt; char &gt; getBufferByAccessor(const size_t index)</div><div class="ttdoc">Get the data of a buffer from the binary part of the file, using the accessor view index to locate it...</div><div class="ttdef"><b>Definition:</b> GlbFile.cpp:383</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_glb_file_html_acad89f57e280542da9249a5d4fefeb7e"><div class="ttname"><a href="classsmall3d_1_1_glb_file.html#acad89f57e280542da9249a5d4fefeb7e">small3d::GlbFile::getChildToken</a></div><div class="ttdeci">std::shared_ptr&lt; Token &gt; getChildToken(const std::shared_ptr&lt; GlbFile::Token &gt; &amp;token, const std::string &amp;name)</div><div class="ttdoc">Get a child token of a token by name.</div><div class="ttdef"><b>Definition:</b> GlbFile.cpp:369</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_glb_file_html_a302956b4d97adfe7f909f4e9c982b92e"><div class="ttname"><a href="classsmall3d_1_1_glb_file.html#a302956b4d97adfe7f909f4e9c982b92e">small3d::GlbFile::ValueType</a></div><div class="ttdeci">ValueType</div><div class="ttdoc">Types of value for the tokens parsed from the GLB file.</div><div class="ttdef"><b>Definition:</b> GlbFile.hpp:33</div></div>
+<div class="ttc" id="astructsmall3d_1_1_glb_file_1_1_animation_sampler_html"><div class="ttname"><a href="structsmall3d_1_1_glb_file_1_1_animation_sampler.html">small3d::GlbFile::AnimationSampler</a></div><div class="ttdoc">glTF animation sampler</div><div class="ttdef"><b>Definition:</b> GlbFile.hpp:68</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_glb_file_html_a1fd6cfc3bf9962d8fccaea97069dbbf4"><div class="ttname"><a href="classsmall3d_1_1_glb_file.html#a1fd6cfc3bf9962d8fccaea97069dbbf4">small3d::GlbFile::printToken</a></div><div class="ttdeci">void printToken(const std::shared_ptr&lt; Token &gt; &amp;token)</div><div class="ttdoc">Print a token.</div><div class="ttdef"><b>Definition:</b> GlbFile.cpp:334</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_glb_file_html_a593e1b7000f33f458dbbce7ac068945e"><div class="ttname"><a href="classsmall3d_1_1_glb_file.html#a593e1b7000f33f458dbbce7ac068945e">small3d::GlbFile::printTokensRecursive</a></div><div class="ttdeci">void printTokensRecursive()</div><div class="ttdoc">Recursively print all tokens, starting from the head of the first token queue, dereferencing queue re...</div><div class="ttdef"><b>Definition:</b> GlbFile.cpp:345</div></div>
 <!-- start footer part -->
