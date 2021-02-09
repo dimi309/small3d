@@ -254,40 +254,6 @@ namespace small3d {
     return ret;
   }
 
-  GlbFile::Node GlbFile::getNode(uint32_t index) {
-    auto nodeToken = getChildTokens(getToken("nodes"))[index];
-    
-    Node ret;
-
-    auto propToken = getChildToken(nodeToken, "name");
-    if (propToken != nullptr) {
-      ret.name = propToken->value;
-    }
-
-    propToken = getChildToken(nodeToken, "rotation");
-    if (propToken != nullptr) {
-      auto values = getChildTokens(propToken);
-      ret.rotation = glm::quat(std::stof(values[0]->value), std::stof(values[1]->value),
-        std::stof(values[2]->value), std::stof(values[3]->value));
-    }
-
-    propToken = getChildToken(nodeToken, "scale");
-    if (propToken != nullptr) {
-      auto values = getChildTokens(propToken);
-      ret.scale = glm::vec3(std::stof(values[0]->value), std::stof(values[1]->value),
-        std::stof(values[2]->value));
-    }
-
-    propToken = getChildToken(nodeToken, "translation");
-    if (propToken != nullptr) {
-      auto values = getChildTokens(propToken);
-      ret.translation = glm::vec3(std::stof(values[0]->value), std::stof(values[1]->value),
-        std::stof(values[2]->value));
-    }
-    
-    return ret;
-  }
-
   GlbFile::GlbFile(const std::string& filename) {
 
 #ifdef __ANDROID__
@@ -365,7 +331,7 @@ namespace small3d {
 
   }
 
-  void GlbFile::printToken(std::shared_ptr<GlbFile::Token> token) {
+  void GlbFile::printToken(const std::shared_ptr<GlbFile::Token>& token) {
     if (!token->name.empty()) {
       printf("%s: ", token->name.c_str());
     }
@@ -396,15 +362,15 @@ namespace small3d {
     return getToken(name, token_queues.size() - 1);
   }
 
-  std::vector<std::shared_ptr<GlbFile::Token>> GlbFile::getChildTokens(std::shared_ptr<GlbFile::Token> token) {
+  std::vector<std::shared_ptr<GlbFile::Token>> GlbFile::getChildTokens(const std::shared_ptr<GlbFile::Token>& token) {
     return getTokens(std::stoi(token->value));
   }
 
-  std::shared_ptr<GlbFile::Token> GlbFile::getChildToken(std::shared_ptr<GlbFile::Token> token, const std::string& name) {
+  std::shared_ptr<GlbFile::Token> GlbFile::getChildToken(const std::shared_ptr<GlbFile::Token>& token, const std::string& name) {
     return getToken(name, std::stoi(token->value));
   }
 
-  std::vector<char> GlbFile::getBufferByView(size_t viewIndex) {
+  std::vector<char> GlbFile::getBufferByView(const size_t viewIndex) {
     std::vector<std::shared_ptr<GlbFile::Token>> bufferViews = getChildTokens(getToken("bufferViews"));
 
     uint32_t byteLength = std::stoi(getChildToken(bufferViews[viewIndex], "byteLength")->value);
@@ -414,7 +380,7 @@ namespace small3d {
 
   }
 
-  std::vector<char> GlbFile::getBufferByAccessor(size_t index) {
+  std::vector<char> GlbFile::getBufferByAccessor(const size_t index) {
 
     auto accessorToken = getChildTokens(getToken("accessors"))[index];
     auto bufferViewNumber = std::stoi(getChildToken(accessorToken, "bufferView")->value);
@@ -467,6 +433,69 @@ namespace small3d {
       auto data = getBufferByView(bufferViewNumber);
       return std::vector<char>(data.begin() + byteOffset, data.begin() + byteOffset + cnt);
     }
+
+  }
+
+  GlbFile::Node GlbFile::getNode(const uint32_t index) {
+    auto nodeToken = getChildTokens(getToken("nodes"))[index];
+
+    Node ret;
+
+    auto propToken = getChildToken(nodeToken, "name");
+    if (propToken != nullptr) {
+      ret.name = propToken->value;
+    }
+
+    propToken = getChildToken(nodeToken, "rotation");
+    if (propToken != nullptr) {
+      auto values = getChildTokens(propToken);
+      ret.rotation = glm::quat(std::stof(values[0]->value), std::stof(values[1]->value),
+        std::stof(values[2]->value), std::stof(values[3]->value));
+    }
+
+    propToken = getChildToken(nodeToken, "scale");
+    if (propToken != nullptr) {
+      auto values = getChildTokens(propToken);
+      ret.scale = glm::vec3(std::stof(values[0]->value), std::stof(values[1]->value),
+        std::stof(values[2]->value));
+    }
+
+    propToken = getChildToken(nodeToken, "translation");
+    if (propToken != nullptr) {
+      auto values = getChildTokens(propToken);
+      ret.translation = glm::vec3(std::stof(values[0]->value), std::stof(values[1]->value),
+        std::stof(values[2]->value));
+    }
+
+    propToken = getChildToken(nodeToken, "children");
+    if (propToken != nullptr) {
+      auto values = getChildTokens(propToken);
+      for (auto val : values) {
+        ret.children.push_back(std::stoi(val->value));
+      }
+    }
+
+    return ret;
+  }
+
+  GlbFile::Node GlbFile::getNode(const std::string& name) {
+
+    auto nodeTokens = getChildTokens(getToken("nodes"));
+
+    bool found = false;
+    uint32_t nodeIndex = 0;
+
+    for (auto nodeToken : nodeTokens) {
+      if (getChildToken(nodeToken, "name")->value == name) {
+        found = true;
+        break;
+      }
+      ++nodeIndex;
+    }
+
+    if (!found) throw std::runtime_error("Node " + name + " not found.");
+
+    return getNode(nodeIndex);
 
   }
 }

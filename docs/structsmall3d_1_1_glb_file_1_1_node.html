@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.20"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>The small3d library: GlbFile.hpp File Reference</title>
+<title>The small3d library: small3d::GlbFile::Node Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,47 +62,47 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_c4e392f45bbb0200e63f7c43bd1c92dc.html">small3d</a></li><li class="navelem"><a class="el" href="dir_462734cae8e2ce0bb33d17bcb656c6db.html">include</a></li><li class="navelem"><a class="el" href="dir_cdc69892a09e6e2f2628da1a7bdd06d9.html">small3d</a></li>  </ul>
+<li class="navelem"><b>small3d</b></li><li class="navelem"><a class="el" href="classsmall3d_1_1_glb_file.html">GlbFile</a></li><li class="navelem"><a class="el" href="structsmall3d_1_1_glb_file_1_1_node.html">Node</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
-<a href="#define-members">Macros</a>  </div>
+<a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="structsmall3d_1_1_glb_file_1_1_node-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">GlbFile.hpp File Reference</div>  </div>
+<div class="title">small3d::GlbFile::Node Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>GLB file parser.  
-<a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;fstream&gt;</code><br />
-<code>#include &lt;string&gt;</code><br />
-<code>#include &lt;stack&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
-<code>#include &lt;memory&gt;</code><br />
-<code>#include &lt;cstring&gt;</code><br />
-<code>#include &lt;glm/glm.hpp&gt;</code><br />
-<code>#include &lt;glm/gtc/quaternion.hpp&gt;</code><br />
-</div>
-<p><a href="_glb_file_8hpp_source.html">Go to the source code of this file.</a></p>
+<p>A glTF node.  
+ <a href="structsmall3d_1_1_glb_file_1_1_node.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_glb_file_8hpp_source.html">GlbFile.hpp</a>&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html">small3d::GlbFile</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">GLB file parser class.  <a href="classsmall3d_1_1_glb_file.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_glb_file_1_1_token.html">small3d::GlbFile::Token</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This token structure is used for storing the parsed GLB file data.  <a href="structsmall3d_1_1_glb_file_1_1_token.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_glb_file_1_1_node.html">small3d::GlbFile::Node</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A glTF node.  <a href="structsmall3d_1_1_glb_file_1_1_node.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a920dc310176c62f4b33178a227e018cb"><td class="memItemLeft" align="right" valign="top"><a id="a920dc310176c62f4b33178a227e018cb"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>name</b></td></tr>
+<tr class="separator:a920dc310176c62f4b33178a227e018cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a420f7869244f00b6073fbeb5368b81da"><td class="memItemLeft" align="right" valign="top"><a id="a420f7869244f00b6073fbeb5368b81da"></a>
+glm::quat&#160;</td><td class="memItemRight" valign="bottom"><b>rotation</b></td></tr>
+<tr class="separator:a420f7869244f00b6073fbeb5368b81da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6bc10794219c49d4a1f3ccb435eec298"><td class="memItemLeft" align="right" valign="top"><a id="a6bc10794219c49d4a1f3ccb435eec298"></a>
+glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><b>scale</b></td></tr>
+<tr class="separator:a6bc10794219c49d4a1f3ccb435eec298"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b76dc7c2ec2d93dcfa7cd73e145ab32"><td class="memItemLeft" align="right" valign="top"><a id="a6b76dc7c2ec2d93dcfa7cd73e145ab32"></a>
+glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><b>translation</b></td></tr>
+<tr class="separator:a6b76dc7c2ec2d93dcfa7cd73e145ab32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a698a0e828ff70d073875589db8ad1d65"><td class="memItemLeft" align="right" valign="top"><a id="a698a0e828ff70d073875589db8ad1d65"></a>
+std::vector&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>children</b></td></tr>
+<tr class="separator:a698a0e828ff70d073875589db8ad1d65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>GLB file parser. </p>
-<p>Created on: 2021/01/30 Author: Dimitri Kourkoulis License: BSD 3-Clause License (see LICENSE file) </p>
-</div></div><!-- contents -->
+<div class="textblock"><p>A glTF node. </p>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<li><a class="el" href="_glb_file_8hpp_source.html">GlbFile.hpp</a></li>
+</ul>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20
