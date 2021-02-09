@@ -15,6 +15,9 @@
 #include <vector>
 #include <memory>
 #include <cstring>
+#include <glm/glm.hpp>
+#define GLM_FORCE_RADIANS
+#include <glm/gtc/quaternion.hpp>
 
 namespace small3d {
 
@@ -37,6 +40,17 @@ namespace small3d {
       std::string value;
       std::shared_ptr<Token> next;
       std::string name;
+    };
+
+    /**
+     * @brief A glTF node
+     */
+    struct Node {
+      std::string name;
+      glm::quat rotation;
+      glm::vec3 scale;
+      glm::vec3 translation;
+      std::vector<Node> children;
     };
 
   private:
@@ -64,7 +78,11 @@ namespace small3d {
     void parseJson(std::shared_ptr<Token>);
     std::vector<std::shared_ptr<Token>> getTokens(uint32_t);
 
+    
+
   public:
+
+    Node getNode(uint32_t index);
 
     /**
      * @brief Constructor of the GlbFile class.
