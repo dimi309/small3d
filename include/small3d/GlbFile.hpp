@@ -62,6 +62,40 @@ namespace small3d {
       std::vector<uint32_t> joints;
     };
 
+    /**
+     * @brief glTF animation sampler
+     */
+    struct AnimationSampler {
+      uint32_t input;
+      std::string interpolation;
+      uint32_t output;
+    };
+
+    /**
+     * @brief glTF animation channel target
+     */
+    struct ChannelTarget {
+      uint32_t node;
+      std::string path;
+    };
+
+    /**
+     * @brief glTF animation channel
+     */
+    struct AnimationChannel {
+      uint32_t sampler;
+      ChannelTarget target;
+    };
+
+    /**
+     * @brief glTF animation
+     */
+    struct Animation {
+      std::string name;
+      std::vector<AnimationChannel> channels;
+      std::vector<AnimationSampler> samplers;
+    };
+
   private:
 
     const uint32_t CHUNK_TYPE_JSON = 0x4E4F534A;
@@ -178,6 +212,21 @@ namespace small3d {
      * @return The skin
      */
     Skin getSkin(const std::string& name);
+
+    /**
+     * @brief Get an animation by index
+     * @param index The index of the animation in the file
+     * @return The animation
+     */
+    Animation getAnimation(const uint32_t index);
+
+    /**
+     * @brief Get an animation by name
+     * @param name The name of the animation in the file
+     * @return The animation
+     */
+    Animation getAnimation(const std::string& name);
+
 
   };
 

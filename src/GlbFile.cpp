@@ -546,4 +546,89 @@ namespace small3d {
 
   }
 
+  GlbFile::Animation GlbFile::getAnimation(const uint32_t index) {
+    auto animationToken = getChildTokens(getToken("animations"))[index];
+
+    GlbFile::Animation ret;
+
+    auto propToken = getChildToken(animationToken, "name");
+    if (propToken != nullptr) {
+      ret.name = propToken->value;
+    }
+
+    propToken = getChildToken(animationToken, "channels");
+    if (propToken != nullptr) {
+      auto channelTokens = getChildTokens(propToken);
+      for (auto& channelToken : channelTokens) {
+        AnimationChannel channel;
+        auto samplerToken = getChildToken(channelToken, "sampler");
+        if (samplerToken != nullptr) {
+          channel.sampler = stoi(samplerToken->value);
+        }
+
+        auto targetToken = getChildToken(channelToken, "target");
+        if (targetToken != nullptr) {
+          ChannelTarget target;
+          auto nodeToken = getChildToken(targetToken, "node");
+          if (nodeToken != nullptr) {
+            target.node = std::stoi(nodeToken->value);
+          }
+          auto pathToken = getChildToken(targetToken, "path");
+          if (pathToken != nullptr) {
+            target.path = pathToken->value;
+          }
+          channel.target = target;
+        }
+        ret.channels.push_back(channel);
+      }
+    }
+
+    propToken = getChildToken(animationToken, "samplers");
+    if (propToken != nullptr) {
+      auto samplerTokens = getChildTokens(propToken);
+      for (auto& samplerToken : samplerTokens) {
+        AnimationSampler sampler;
+        auto inputToken = getChildToken(samplerToken, "input");
+        if (inputToken != nullptr) {
+          sampler.input = std::stoi(inputToken->value);
+        }
+
+        auto interpolationToken = getChildToken(samplerToken, "interpolation");
+        if (interpolationToken != nullptr) {
+          sampler.interpolation = interpolationToken->value;
+        }
+
+        auto outputToken = getChildToken(samplerToken, "output");
+        if (outputToken != nullptr) {
+          sampler.output = std::stoi(outputToken->value);
+        }
+
+        ret.samplers.push_back(sampler);
+
+      }
+
+    }
+    
+    return ret;
+  }
+
+  GlbFile::Animation GlbFile::getAnimation(const std::string& name) {
+    auto animationTokens = getChildTokens(getToken("animations"));
+
+    bool found = false;
+    uint32_t nodeIndex = 0;
+
+    for (auto& animationToken : animationTokens) {
+      if (getChildToken(animationToken, "name")->value == name) {
+        found = true;
+        break;
+      }
+      ++nodeIndex;
+    }
+
+    if (!found) throw std::runtime_error("Animation " + name + " not found.");
+
+    return getAnimation(nodeIndex);
+  }
+
 }
