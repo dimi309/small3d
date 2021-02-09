@@ -470,7 +470,7 @@ namespace small3d {
     propToken = getChildToken(nodeToken, "children");
     if (propToken != nullptr) {
       auto values = getChildTokens(propToken);
-      for (auto val : values) {
+      for (auto &val : values) {
         ret.children.push_back(std::stoi(val->value));
       }
     }
@@ -485,7 +485,7 @@ namespace small3d {
     bool found = false;
     uint32_t nodeIndex = 0;
 
-    for (auto nodeToken : nodeTokens) {
+    for (auto &nodeToken : nodeTokens) {
       if (getChildToken(nodeToken, "name")->value == name) {
         found = true;
         break;
@@ -498,4 +498,52 @@ namespace small3d {
     return getNode(nodeIndex);
 
   }
+
+  GlbFile::Skin GlbFile::getSkin(const uint32_t index) {
+    auto skinToken = getChildTokens(getToken("skins"))[index];
+    
+    Skin ret;
+
+    auto propToken = getChildToken(skinToken, "name");
+    if (propToken != nullptr) {
+      ret.name = propToken->value;
+    }
+
+    propToken = getChildToken(skinToken, "inverseBindMatrices");
+    if (propToken != nullptr) {
+      ret.inverseBindMatrices = std::stoi(propToken->value);
+    }
+
+    propToken = getChildToken(skinToken, "joints");
+    if (propToken != nullptr) {
+      auto jointTokens = getChildTokens(propToken);
+      for (auto &jointToken : jointTokens) {
+        ret.joints.push_back(std::stoi(jointToken->value));
+      }
+    }
+
+    return ret;
+  }
+
+  GlbFile::Skin GlbFile::getSkin(const std::string& name) {
+
+    auto skinTokens = getChildTokens(getToken("skins"));
+
+    bool found = false;
+    uint32_t nodeIndex = 0;
+
+    for (auto& skinToken : skinTokens) {
+      if (getChildToken(skinToken, "name")->value == name) {
+        found = true;
+        break;
+      }
+      ++nodeIndex;
+    }
+
+    if (!found) throw std::runtime_error("Skin " + name + " not found.");
+
+    return getSkin(nodeIndex);
+
+  }
+
 }
