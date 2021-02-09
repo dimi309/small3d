@@ -83,8 +83,11 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><b>tokent</b></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This token structure is used for storing the parsed GLB file data. <br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_glb_file_1_1_node.html">Node</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A glTF node.  <a href="structsmall3d_1_1_glb_file_1_1_node.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_glb_file_1_1_token.html">Token</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This token structure is used for storing the parsed GLB file data.  <a href="structsmall3d_1_1_glb_file_1_1_token.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
@@ -102,9 +105,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5e621f94704aab1c271d196918de1957"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a5e621f94704aab1c271d196918de1957">GlbFile</a> (const std::string &amp;filename)</td></tr>
 <tr class="memdesc:a5e621f94704aab1c271d196918de1957"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor of the <a class="el" href="classsmall3d_1_1_glb_file.html" title="GLB file parser class.">GlbFile</a> class.  <a href="classsmall3d_1_1_glb_file.html#a5e621f94704aab1c271d196918de1957">More...</a><br /></td></tr>
 <tr class="separator:a5e621f94704aab1c271d196918de1957"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a972485c8bf866c838584e56163dcf767"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a972485c8bf866c838584e56163dcf767">printToken</a> (std::shared_ptr&lt; tokent &gt; token)</td></tr>
-<tr class="memdesc:a972485c8bf866c838584e56163dcf767"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a token.  <a href="classsmall3d_1_1_glb_file.html#a972485c8bf866c838584e56163dcf767">More...</a><br /></td></tr>
-<tr class="separator:a972485c8bf866c838584e56163dcf767"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1fd6cfc3bf9962d8fccaea97069dbbf4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a1fd6cfc3bf9962d8fccaea97069dbbf4">printToken</a> (const std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1_token.html">Token</a> &gt; &amp;token)</td></tr>
+<tr class="memdesc:a1fd6cfc3bf9962d8fccaea97069dbbf4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a token.  <a href="classsmall3d_1_1_glb_file.html#a1fd6cfc3bf9962d8fccaea97069dbbf4">More...</a><br /></td></tr>
+<tr class="separator:a1fd6cfc3bf9962d8fccaea97069dbbf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a593e1b7000f33f458dbbce7ac068945e"><td class="memItemLeft" align="right" valign="top"><a id="a593e1b7000f33f458dbbce7ac068945e"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a593e1b7000f33f458dbbce7ac068945e">printTokensRecursive</a> ()</td></tr>
 <tr class="memdesc:a593e1b7000f33f458dbbce7ac068945e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recursively print all tokens, starting from the head of the first token queue, dereferencing queue references. <br /></td></tr>
@@ -113,21 +116,27 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#acfdbe51e25ac549cc5220118b40f8f02">printTokensSerial</a> ()</td></tr>
 <tr class="memdesc:acfdbe51e25ac549cc5220118b40f8f02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print tokens as found in the token queues, without dereferencing queue references. <br /></td></tr>
 <tr class="separator:acfdbe51e25ac549cc5220118b40f8f02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3159585b5f1ce9085d398cb6946751a"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; tokent &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#ab3159585b5f1ce9085d398cb6946751a">getToken</a> (const std::string &amp;name)</td></tr>
-<tr class="memdesc:ab3159585b5f1ce9085d398cb6946751a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a token by name.  <a href="classsmall3d_1_1_glb_file.html#ab3159585b5f1ce9085d398cb6946751a">More...</a><br /></td></tr>
-<tr class="separator:ab3159585b5f1ce9085d398cb6946751a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9bfdb6710208fb129cdf468610bec4f7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::shared_ptr&lt; tokent &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a9bfdb6710208fb129cdf468610bec4f7">getChildTokens</a> (std::shared_ptr&lt; tokent &gt; token)</td></tr>
-<tr class="memdesc:a9bfdb6710208fb129cdf468610bec4f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the child tokens of a token.  <a href="classsmall3d_1_1_glb_file.html#a9bfdb6710208fb129cdf468610bec4f7">More...</a><br /></td></tr>
-<tr class="separator:a9bfdb6710208fb129cdf468610bec4f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d9bbe804456a10e1be417cfe78159fe"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; tokent &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a6d9bbe804456a10e1be417cfe78159fe">getChildToken</a> (std::shared_ptr&lt; GlbFile::tokent &gt; token, const std::string &amp;name)</td></tr>
-<tr class="memdesc:a6d9bbe804456a10e1be417cfe78159fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a child token of a token by name.  <a href="classsmall3d_1_1_glb_file.html#a6d9bbe804456a10e1be417cfe78159fe">More...</a><br /></td></tr>
-<tr class="separator:a6d9bbe804456a10e1be417cfe78159fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68638dc838ba0c9ee3c1f224adac17d0"><td class="memItemLeft" align="right" valign="top">std::vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a68638dc838ba0c9ee3c1f224adac17d0">getBufferByView</a> (size_t index)</td></tr>
-<tr class="memdesc:a68638dc838ba0c9ee3c1f224adac17d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the data of a buffer from the binary part of the file, using the buffer view index to locate it.  <a href="classsmall3d_1_1_glb_file.html#a68638dc838ba0c9ee3c1f224adac17d0">More...</a><br /></td></tr>
-<tr class="separator:a68638dc838ba0c9ee3c1f224adac17d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd16641c8c73c3e1ebf51c49c0a48f39"><td class="memItemLeft" align="right" valign="top">std::vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#afd16641c8c73c3e1ebf51c49c0a48f39">getBufferByAccessor</a> (size_t index)</td></tr>
-<tr class="memdesc:afd16641c8c73c3e1ebf51c49c0a48f39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the data of a buffer from the binary part of the file, using the accessor view index to locate it This method can be preferable to getBufferByView because the accessor allows the reading of only part of the data described by the view, something which is sometimes required.  <a href="classsmall3d_1_1_glb_file.html#afd16641c8c73c3e1ebf51c49c0a48f39">More...</a><br /></td></tr>
-<tr class="separator:afd16641c8c73c3e1ebf51c49c0a48f39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d26cc2e08ed38e25164beb608faddad"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1_token.html">Token</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a9d26cc2e08ed38e25164beb608faddad">getToken</a> (const std::string &amp;name)</td></tr>
+<tr class="memdesc:a9d26cc2e08ed38e25164beb608faddad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a token by name.  <a href="classsmall3d_1_1_glb_file.html#a9d26cc2e08ed38e25164beb608faddad">More...</a><br /></td></tr>
+<tr class="separator:a9d26cc2e08ed38e25164beb608faddad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b03fa502cc74c0473f470c6b2f4c68b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1_token.html">Token</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a4b03fa502cc74c0473f470c6b2f4c68b">getChildTokens</a> (const std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1_token.html">Token</a> &gt; &amp;token)</td></tr>
+<tr class="memdesc:a4b03fa502cc74c0473f470c6b2f4c68b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the child tokens of a token.  <a href="classsmall3d_1_1_glb_file.html#a4b03fa502cc74c0473f470c6b2f4c68b">More...</a><br /></td></tr>
+<tr class="separator:a4b03fa502cc74c0473f470c6b2f4c68b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acad89f57e280542da9249a5d4fefeb7e"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1_token.html">Token</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#acad89f57e280542da9249a5d4fefeb7e">getChildToken</a> (const std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1_token.html">GlbFile::Token</a> &gt; &amp;token, const std::string &amp;name)</td></tr>
+<tr class="memdesc:acad89f57e280542da9249a5d4fefeb7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a child token of a token by name.  <a href="classsmall3d_1_1_glb_file.html#acad89f57e280542da9249a5d4fefeb7e">More...</a><br /></td></tr>
+<tr class="separator:acad89f57e280542da9249a5d4fefeb7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c4f0c4bf4a11591abd67e4cda784fb0"><td class="memItemLeft" align="right" valign="top">std::vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a9c4f0c4bf4a11591abd67e4cda784fb0">getBufferByView</a> (const size_t index)</td></tr>
+<tr class="memdesc:a9c4f0c4bf4a11591abd67e4cda784fb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the data of a buffer from the binary part of the file, using the buffer view index to locate it.  <a href="classsmall3d_1_1_glb_file.html#a9c4f0c4bf4a11591abd67e4cda784fb0">More...</a><br /></td></tr>
+<tr class="separator:a9c4f0c4bf4a11591abd67e4cda784fb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7d2e65aa0e2dc7b0531bbdeecb5affb"><td class="memItemLeft" align="right" valign="top">std::vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#aa7d2e65aa0e2dc7b0531bbdeecb5affb">getBufferByAccessor</a> (const size_t index)</td></tr>
+<tr class="memdesc:aa7d2e65aa0e2dc7b0531bbdeecb5affb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the data of a buffer from the binary part of the file, using the accessor view index to locate it This method can be preferable to getBufferByView because the accessor allows the reading of only part of the data described by the view, something which is sometimes required.  <a href="classsmall3d_1_1_glb_file.html#aa7d2e65aa0e2dc7b0531bbdeecb5affb">More...</a><br /></td></tr>
+<tr class="separator:aa7d2e65aa0e2dc7b0531bbdeecb5affb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0064218b174e825a1f72134b651ab9b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsmall3d_1_1_glb_file_1_1_node.html">Node</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a0064218b174e825a1f72134b651ab9b9">getNode</a> (const uint32_t index)</td></tr>
+<tr class="memdesc:a0064218b174e825a1f72134b651ab9b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a glTF node by index.  <a href="classsmall3d_1_1_glb_file.html#a0064218b174e825a1f72134b651ab9b9">More...</a><br /></td></tr>
+<tr class="separator:a0064218b174e825a1f72134b651ab9b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4648a003abb03789882866cc732b90e5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsmall3d_1_1_glb_file_1_1_node.html">Node</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a4648a003abb03789882866cc732b90e5">getNode</a> (const std::string &amp;name)</td></tr>
+<tr class="memdesc:a4648a003abb03789882866cc732b90e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a glTF node by name.  <a href="classsmall3d_1_1_glb_file.html#a4648a003abb03789882866cc732b90e5">More...</a><br /></td></tr>
+<tr class="separator:a4648a003abb03789882866cc732b90e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>GLB file parser class. </p>
@@ -159,8 +168,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="afd16641c8c73c3e1ebf51c49c0a48f39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afd16641c8c73c3e1ebf51c49c0a48f39">&#9670;&nbsp;</a></span>getBufferByAccessor()</h2>
+<a id="aa7d2e65aa0e2dc7b0531bbdeecb5affb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7d2e65aa0e2dc7b0531bbdeecb5affb">&#9670;&nbsp;</a></span>getBufferByAccessor()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -168,7 +177,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         <tr>
           <td class="memname">std::vector&lt; char &gt; small3d::GlbFile::getBufferByAccessor </td>
           <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
+          <td class="paramtype">const size_t&#160;</td>
           <td class="paramname"><em>index</em></td><td>)</td>
           <td></td>
         </tr>
@@ -186,8 +195,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="a68638dc838ba0c9ee3c1f224adac17d0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68638dc838ba0c9ee3c1f224adac17d0">&#9670;&nbsp;</a></span>getBufferByView()</h2>
+<a id="a9c4f0c4bf4a11591abd67e4cda784fb0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c4f0c4bf4a11591abd67e4cda784fb0">&#9670;&nbsp;</a></span>getBufferByView()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -195,7 +204,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         <tr>
           <td class="memname">std::vector&lt; char &gt; small3d::GlbFile::getBufferByView </td>
           <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
+          <td class="paramtype">const size_t&#160;</td>
           <td class="paramname"><em>index</em></td><td>)</td>
           <td></td>
         </tr>
@@ -213,16 +222,16 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="a6d9bbe804456a10e1be417cfe78159fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6d9bbe804456a10e1be417cfe78159fe">&#9670;&nbsp;</a></span>getChildToken()</h2>
+<a id="acad89f57e280542da9249a5d4fefeb7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acad89f57e280542da9249a5d4fefeb7e">&#9670;&nbsp;</a></span>getChildToken()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt; GlbFile::tokent &gt; small3d::GlbFile::getChildToken </td>
+          <td class="memname">std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1_token.html">GlbFile::Token</a> &gt; small3d::GlbFile::getChildToken </td>
           <td>(</td>
-          <td class="paramtype">std::shared_ptr&lt; GlbFile::tokent &gt;&#160;</td>
+          <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1_token.html">GlbFile::Token</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>token</em>, </td>
         </tr>
         <tr>
@@ -251,16 +260,16 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="a9bfdb6710208fb129cdf468610bec4f7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9bfdb6710208fb129cdf468610bec4f7">&#9670;&nbsp;</a></span>getChildTokens()</h2>
+<a id="a4b03fa502cc74c0473f470c6b2f4c68b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b03fa502cc74c0473f470c6b2f4c68b">&#9670;&nbsp;</a></span>getChildTokens()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt; std::shared_ptr&lt; GlbFile::tokent &gt; &gt; small3d::GlbFile::getChildTokens </td>
+          <td class="memname">std::vector&lt; std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1_token.html">GlbFile::Token</a> &gt; &gt; small3d::GlbFile::getChildTokens </td>
           <td>(</td>
-          <td class="paramtype">std::shared_ptr&lt; tokent &gt;&#160;</td>
+          <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1_token.html">Token</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>token</em></td><td>)</td>
           <td></td>
         </tr>
@@ -278,14 +287,68 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="ab3159585b5f1ce9085d398cb6946751a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab3159585b5f1ce9085d398cb6946751a">&#9670;&nbsp;</a></span>getToken()</h2>
+<a id="a4648a003abb03789882866cc732b90e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4648a003abb03789882866cc732b90e5">&#9670;&nbsp;</a></span>getNode() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt; GlbFile::tokent &gt; small3d::GlbFile::getToken </td>
+          <td class="memname"><a class="el" href="structsmall3d_1_1_glb_file_1_1_node.html">GlbFile::Node</a> small3d::GlbFile::getNode </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a glTF node by name. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the node in the file. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The node </dd></dl>
+
+</div>
+</div>
+<a id="a0064218b174e825a1f72134b651ab9b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0064218b174e825a1f72134b651ab9b9">&#9670;&nbsp;</a></span>getNode() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structsmall3d_1_1_glb_file_1_1_node.html">GlbFile::Node</a> small3d::GlbFile::getNode </td>
+          <td>(</td>
+          <td class="paramtype">const uint32_t&#160;</td>
+          <td class="paramname"><em>index</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a glTF node by index. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>The index of the node in the file. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The node </dd></dl>
+
+</div>
+</div>
+<a id="a9d26cc2e08ed38e25164beb608faddad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d26cc2e08ed38e25164beb608faddad">&#9670;&nbsp;</a></span>getToken()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1_token.html">GlbFile::Token</a> &gt; small3d::GlbFile::getToken </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>name</em></td><td>)</td>
@@ -305,8 +368,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="a972485c8bf866c838584e56163dcf767"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a972485c8bf866c838584e56163dcf767">&#9670;&nbsp;</a></span>printToken()</h2>
+<a id="a1fd6cfc3bf9962d8fccaea97069dbbf4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fd6cfc3bf9962d8fccaea97069dbbf4">&#9670;&nbsp;</a></span>printToken()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -314,7 +377,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         <tr>
           <td class="memname">void small3d::GlbFile::printToken </td>
           <td>(</td>
-          <td class="paramtype">std::shared_ptr&lt; tokent &gt;&#160;</td>
+          <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="structsmall3d_1_1_glb_file_1_1_token.html">Token</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>token</em></td><td>)</td>
           <td></td>
         </tr>

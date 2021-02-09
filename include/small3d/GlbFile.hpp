@@ -50,7 +50,7 @@ namespace small3d {
       glm::quat rotation;
       glm::vec3 scale;
       glm::vec3 translation;
-      std::vector<Node> children;
+      std::vector<uint32_t> children;
     };
 
   private:
@@ -78,11 +78,7 @@ namespace small3d {
     void parseJson(std::shared_ptr<Token>);
     std::vector<std::shared_ptr<Token>> getTokens(uint32_t);
 
-    
-
   public:
-
-    Node getNode(uint32_t index);
 
     /**
      * @brief Constructor of the GlbFile class.
@@ -94,7 +90,7 @@ namespace small3d {
     * @brief Print a token
     * @param token The token to be printed
     */
-    void printToken(std::shared_ptr<Token> token);
+    void printToken(const std::shared_ptr<Token>& token);
 
     /**
      * @brief Recursively print all tokens, starting from the head
@@ -120,7 +116,7 @@ namespace small3d {
      * @param token The token the children of which will be retrieved
      * @return Vector of shared pointers to the retrieved tokens
      */
-    std::vector<std::shared_ptr<Token>> getChildTokens(std::shared_ptr<Token> token);
+    std::vector<std::shared_ptr<Token>> getChildTokens(const std::shared_ptr<Token>& token);
 
     /**
      * @brief Get a child token of a token by name
@@ -128,14 +124,14 @@ namespace small3d {
      * @param token The name of the child which will be retrieved
      * @return Shared pointer to the retrieved token
      */
-    std::shared_ptr<Token> getChildToken(std::shared_ptr<GlbFile::Token> token, const std::string& name);
+    std::shared_ptr<Token> getChildToken(const std::shared_ptr<GlbFile::Token>& token, const std::string& name);
 
     /**
      * @brief Get the data of a buffer from the binary part of the file, using the buffer view index to locate it
      * @param index The buffer view index
      * @return Vector of the retrieved bytes (chars)
      */
-    std::vector<char> getBufferByView(size_t index);
+    std::vector<char> getBufferByView(const size_t index);
 
     /**
      * @brief Get the data of a buffer from the binary part of the file, using the accessor view index to locate it
@@ -144,7 +140,21 @@ namespace small3d {
      * @param index The buffer accessor index
      * @return Vector of the retrieved bytes (chars)
      */
-    std::vector<char> getBufferByAccessor(size_t index);
+    std::vector<char> getBufferByAccessor(const size_t index);
+
+    /**
+     * @brief  Get a glTF node by index
+     * @param  index The index of the node in the file.
+     * @return The node
+     */
+    Node getNode(const uint32_t index);
+
+    /**
+     * @brief  Get a glTF node by name
+     * @param  name The name of the node in the file.
+     * @return The node
+     */
+    Node getNode(const std::string& name);
 
   };
 

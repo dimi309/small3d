@@ -262,11 +262,7 @@ int GlbTest() {
 
   GlbFile glb("resources/models/goat.glb");
 
-  GlbFile::Node n = glb.getNode(0);
-
-  printf("Name: %s\n\r", n.name.c_str());
-
-  /*glb.printTokensRecursive();
+  glb.printTokensRecursive();
 
   glb.printTokensSerial();
 
@@ -282,7 +278,11 @@ int GlbTest() {
     printf("%f ", data[idx]);
   }
   printf("\n\r");
-  delete[] data;*/
+  delete[] data;
+
+  GlbFile::Node n = glb.getNode("Bone");
+
+  printf("Retrieved node from glb file: %s\n\r", n.name.c_str());
 
   return 1;
 }
@@ -290,7 +290,7 @@ int GlbTest() {
 int main(int argc, char** argv) {
   try
   {
-    /*if (!LoggerTest()) {
+    if (!LoggerTest()) {
       printf("*** Failing LoggerTest.\n\r");
       return 1;
     }
@@ -325,7 +325,7 @@ int main(int argc, char** argv) {
     if (!TokenTest()) {
       printf("*** Failing TokenTest.\n\r");
       return 1;
-    }*/
+    }
     if (!GlbTest()) {
       printf("*** Failing GlbTest.\n\r");
       return 1;
