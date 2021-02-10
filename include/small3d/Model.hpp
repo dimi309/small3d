@@ -34,6 +34,19 @@ namespace small3d {
 
   struct Model {
 
+  public:
+
+    struct Joint {
+      uint32_t id;
+      std::string name;
+      glm::mat4 inverseBindMatrix;
+      glm::quat rotation;
+      glm::vec3 scale;
+      glm::vec3 translation;
+      std::vector<uint32_t> childrenIds;
+      std::vector<std::shared_ptr<Joint>> children;
+    };
+
   private:
     // Data read from .obj file
     std::vector<std::vector<float> > vertices;
@@ -226,9 +239,9 @@ namespace small3d {
     uint32_t weightDataByteSize = 0;
 
     /**
-     * @brief Skin data (if found in a glb file)
+     * @brief The model's root joint;
      */
-    GlbFile::Skin skin;
+    std::shared_ptr<Joint> rootJoint;
 
 
 #ifndef SMALL3D_OPENGL
