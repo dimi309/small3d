@@ -17,6 +17,8 @@
 #include <glm/glm.hpp>
 #endif
 
+#include "GlbFile.hpp"
+
 namespace small3d {
   /**
    * @struct	Model
@@ -222,6 +224,11 @@ namespace small3d {
      * @brief Size of the weight data, in bytes.
      */
     uint32_t weightDataByteSize = 0;
+
+    /**
+     * @brief Skin data (if found in a glb file)
+     */
+    GlbFile::Skin skin;
 
 
 #ifndef SMALL3D_OPENGL

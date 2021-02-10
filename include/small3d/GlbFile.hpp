@@ -50,6 +50,8 @@ namespace small3d {
       glm::quat rotation;
       glm::vec3 scale;
       glm::vec3 translation;
+      uint32_t skin;
+      uint32_t mesh;
       std::vector<uint32_t> children;
     };
 
@@ -186,11 +188,25 @@ namespace small3d {
     std::vector<char> getBufferByAccessor(const size_t index);
 
     /**
+     * @brief Does a node with the given index exist?
+     * @param index The index of the node
+     * @return True if the node exists, false otherwise
+     */
+    bool existNode(const uint32_t index);
+
+    /**
      * @brief  Get a glTF node by index
      * @param  index The index of the node in the file.
      * @return The node
      */
     Node getNode(const uint32_t index);
+
+    /**
+     * @brief Does a node with the given name exist?
+     * @param name The name of the node
+     * @return True if the node exists, false otherwise
+     */
+    bool existNode(const std::string& name);
 
     /**
      * @brief  Get a glTF node by name
@@ -200,11 +216,25 @@ namespace small3d {
     Node getNode(const std::string& name);
 
     /**
+     * @brief Does a skin with the given index exist?
+     * @param index The index of the skin
+     * @return True if the skin exists, false otherwise
+     */
+    bool existSkin(const uint32_t index);
+
+    /**
      * @brief Get a skin by index
      * @param index The index of the skin in the file
      * @return The skin
      */
     Skin getSkin(const uint32_t index);
+
+    /**
+     * @brief Does a skin with the given name exist?
+     * @param name The name of the skin
+     * @return True if the skin exists, false otherwise
+     */
+    bool existSkin(const std::string& name);
 
     /**
      * @brief  Get a skin by name
