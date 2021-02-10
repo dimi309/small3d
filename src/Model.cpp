@@ -467,7 +467,42 @@ namespace small3d {
     if (glb.existNode(meshName)) {
       auto meshNode = glb.getNode(meshName);
       if (glb.existSkin(meshNode.skin)) {
-        skin = glb.getSkin(meshNode.skin);
+        auto skin = glb.getSkin(meshNode.skin);
+
+        auto inverseBindMatrices = glb.getBufferByAccessor(skin.inverseBindMatrices);
+
+        std::vector<std::shared_ptr<Joint>> modelJoints;
+
+        for (auto jointIdx : skin.joints) {
+          std::shared_ptr<Joint> j = std::shared_ptr<Joint>(new Joint);
+
+          memcpy(&j->inverseBindMatrix, &inverseBindMatrices[static_cast<uint32_t>(jointIdx) * 16 * 4], 16 * 4);
+          auto jointNode = glb.getNode(jointIdx);
+          j->id = jointIdx;
+          j->name = jointNode.name;
+          j->rotation = jointNode.rotation;
+          j->scale = jointNode.scale;
+          j->translation = jointNode.translation;
+          j->childrenIds = jointNode.children;
+          modelJoints.push_back(j);
+
+        }
+
+        if (modelJoints.size() > 0) {
+
+          for (auto& modelJoint : modelJoints) {
+            for (auto& childId : modelJoint->childrenIds) {
+              for (auto& childJoint : modelJoints) {
+                if (childJoint->id == childId) {
+                  modelJoint->children.push_back(childJoint);
+                }
+              }
+            }
+          }
+
+          rootJoint = modelJoints[0];
+        }
+
       }
     }
 
