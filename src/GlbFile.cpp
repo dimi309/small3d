@@ -436,6 +436,10 @@ namespace small3d {
 
   }
 
+  bool GlbFile::existNode(const uint32_t index) {
+    return getChildTokens(getToken("nodes")).size() > index;
+  }
+
   GlbFile::Node GlbFile::getNode(const uint32_t index) {
     auto nodeToken = getChildTokens(getToken("nodes"))[index];
 
@@ -475,7 +479,28 @@ namespace small3d {
       }
     }
 
+    propToken = getChildToken(nodeToken, "mesh");
+    if (propToken != nullptr) {
+      ret.mesh = std::stoi(propToken->value);
+    }
+
+    propToken = getChildToken(nodeToken, "skin");
+    if (propToken != nullptr) {
+      ret.skin = std::stoi(propToken->value);
+    }
+
     return ret;
+  }
+
+  bool GlbFile::existNode(const std::string& name) {
+    auto nodeTokens = getChildTokens(getToken("nodes"));
+    for (auto& nodeToken : nodeTokens) {
+      if (getChildToken(nodeToken, "name")->value == name) {
+
+        return true;
+      }
+    }
+    return false;
   }
 
   GlbFile::Node GlbFile::getNode(const std::string& name) {
@@ -497,6 +522,10 @@ namespace small3d {
 
     return getNode(nodeIndex);
 
+  }
+
+  bool GlbFile::existSkin(const uint32_t index) {
+    return getChildTokens(getToken("skins")).size() > index;
   }
 
   GlbFile::Skin GlbFile::getSkin(const uint32_t index) {
@@ -523,6 +552,16 @@ namespace small3d {
     }
 
     return ret;
+  }
+
+  bool GlbFile::existSkin(const std::string& name) {
+    auto skinTokens = getChildTokens(getToken("skins"));
+    for (auto& skinToken : skinTokens) {
+      if (getChildToken(skinToken, "name")->value == name) {
+        return true;
+      }
+    }
+    return false;
   }
 
   GlbFile::Skin GlbFile::getSkin(const std::string& name) {

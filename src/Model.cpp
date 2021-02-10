@@ -13,7 +13,6 @@
 #include "GetTokens.hpp"
 #include "Model.hpp"
 #include "BasePath.hpp"
-#include "GlbFile.hpp"
 #include "Logger.hpp"
 
 #ifdef __ANDROID__
@@ -462,7 +461,16 @@ namespace small3d {
     }
 
     if (!loaded) throw std::runtime_error("Could not load mesh " + meshName + " from " + fileLocation);
+
     LOGDEBUG("Loaded mesh " + meshName + " from " + fileLocation);
+
+    if (glb.existNode(meshName)) {
+      auto meshNode = glb.getNode(meshName);
+      if (glb.existSkin(meshNode.skin)) {
+        skin = glb.getSkin(meshNode.skin);
+      }
+    }
+
   }
 
 
