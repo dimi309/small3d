@@ -201,6 +201,28 @@ namespace small3d {
      */
     uint32_t textureCoordsDataByteSize = 0;
 
+    /**
+     * @brief Array, to be treated as a 4 column table. Each "row" potentially 
+     *        contains up to 4 joints that can influence each vertex. 
+     */
+    std::vector<uint8_t> jointData;
+
+    /**
+     * @brief Size of the joint data, in bytes.
+     */ 
+    uint32_t jointDataByteSize = 0;
+
+    /**
+     * @brief Array, to be treated as a 4 column table. Each "row" contains the
+     *        weights by which each of the corresponding joints affect each vertex.
+     */
+    std::vector<float> weightData;
+
+    /**
+     * @brief Size of the weight data, in bytes.
+     */
+    uint32_t weightDataByteSize = 0;
+
 
 #ifndef SMALL3D_OPENGL
     

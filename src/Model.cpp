@@ -431,6 +431,20 @@ namespace small3d {
             memcpy(&textureCoordsData[0], &data[0], data.size());
           }
 
+          if (attribute->name == "JOINTS_0") {
+            auto data = glb.getBufferByAccessor(std::stoi(attribute->value));
+            jointData.resize(data.size());
+            jointDataByteSize = static_cast<uint32_t>(data.size());
+            memcpy(&jointData[0], &data[0], data.size());
+          }
+
+          if (attribute->name == "WEIGHTS_0") {
+            auto data = glb.getBufferByAccessor(std::stoi(attribute->value));
+            weightData.resize(data.size() / 4);
+            weightDataByteSize = static_cast<uint32_t>(data.size());
+            memcpy(&weightData[0], &data[0], data.size());
+          }
+
         }
         auto data = glb.getBufferByAccessor(std::stoi(glb.getChildToken(primitives[0], "indices")->value));
         indexData.resize(data.size() / 2);
