@@ -135,8 +135,8 @@ int RendererTest() {
   
   renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
 
-  Model modelFromGlb("resources/models/goat.glb", "Cube");
-
+  Model modelFromGlb("resources/models/goat.glb", "Cube", "Armature.001", "Armature.001Action");
+                                       
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
   renderer->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -149,8 +149,6 @@ int RendererTest() {
   renderer->generateTexture("cubeTexture", cubeTexture);
 
   glfwShowWindow(renderer->getWindow());
-
-  double startSeconds = glfwGetTime();
 
   Model singleColourRect;
   renderer->createRectangle(singleColourRect, glm::vec3(-1.0f, 0.0f, 0.0f),
@@ -168,27 +166,46 @@ int RendererTest() {
 
   renderer->createRectangle(textRect, glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.5f, -0.5f, 0.0f));
 
-  while (glfwGetTime() - startSeconds < 3.0) {
+  double startSeconds = glfwGetTime();
+  double seconds = glfwGetTime();
+  double prevSeconds = seconds;
+  const uint32_t framerate = 30;
+
+  constexpr double secondsInterval = 1.0 / framerate;
+
+  glm::vec3 rotation(0.0f, 0.0f, 0.0f);
+
+  while (seconds - startSeconds < 5.0) {
     glfwPollEvents();
-    renderer->clearScreen();
+    seconds = glfwGetTime();
+    if (seconds - prevSeconds > secondsInterval) {
+      renderer->clearScreen();
 
-    renderer->render(singleColourRect,
-      glm::vec3(0.0f, 0.0f, 0.0f),
-      glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), "", false);
+      renderer->render(singleColourRect,
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), "", false);
 
-    renderer->render(texturedRect,
-      glm::vec3(0.0f, 0.0f, -2.0f),
-      glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "cubeTexture", true);
+      renderer->generateTexture("small3dTexture", std::to_string(modelFromGlb.currentFrame),
+        glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
-    renderer->render(object2, "cubeTexture");
+      renderer->render(texturedRect,
+        glm::vec3(0.0f, 0.0f, -2.0f),
+        glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "cubeTexture", true);
 
-    renderer->render(modelFromGlb, glm::vec3(0.0f, 1.0f, -2.0f),
-      glm::vec3(0.0f, 0.5f, 0.0f), glm::vec4(0.3f, 1.0f, 1.0f, 1.0f));
+      renderer->render(object2, "cubeTexture");
 
-    renderer->render(textRect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-      glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", false);
+      modelFromGlb.animate();
+      rotation.y += 0.1f;
 
-    renderer->swapBuffers();
+      renderer->render(modelFromGlb, glm::vec3(0.0f, 1.0f, -6.0f),
+        rotation, glm::vec4(0.3f, 1.0f, 1.0f, 1.0f));
+
+      renderer->render(textRect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", false);
+
+      renderer->swapBuffers();
+      prevSeconds = seconds;
+    }
   }
   renderer->clearBuffers(object);
   renderer->clearBuffers(object2);

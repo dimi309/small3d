@@ -46,12 +46,12 @@ namespace small3d {
      * @brief A glTF node
      */
     struct Node {
-      std::string name;
-      glm::quat rotation;
-      glm::vec3 scale;
-      glm::vec3 translation;
-      uint32_t skin;
-      uint32_t mesh;
+      std::string name = "";
+      glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+      glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+      glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
+      uint32_t skin = 0;
+      uint32_t mesh = 0;
       std::vector<uint32_t> children;
     };
 

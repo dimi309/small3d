@@ -37,18 +37,27 @@ namespace small3d {
   public:
 
     struct Joint {
-      uint32_t id;
+      uint32_t node;
       std::string name;
       glm::mat4 inverseBindMatrix;
       glm::quat rotation;
       glm::vec3 scale;
       glm::vec3 translation;
+      glm::quat currRotation = glm::quat(0.0f, 0.0f, 0.0f, 1.0f);
+      glm::vec3 currTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
       std::vector<uint32_t> children;
+      std::vector<glm::quat> rotationAnimation;
+      std::vector<glm::vec3> translationAnimation;
+      std::vector<float> animTime;
     };
 
-    static const uint32_t MAX_JOINTS_SUPPORTED = 32;
-
+    static const uint32_t MAX_JOINTS_SUPPORTED = 16;
+    uint32_t currentFrame = 0;
   private:
+
+    uint64_t numFrames = 0;
+    
+
     // Data read from .obj file
     std::vector<std::vector<float> > vertices;
     std::vector<std::vector<int> > facesVertexIndices;
@@ -266,6 +275,12 @@ namespace small3d {
      */
     std::vector<Joint> joints;
 
+    /**
+     * @brief The armature, binding the model to
+     *        the joints
+     */
+    GlbFile::Node armature;
+
 
 #ifndef SMALL3D_OPENGL
     
@@ -299,12 +314,31 @@ namespace small3d {
 
     /**
      * @brief Constructor that loads model from a GLB file
-     * @param fileLocation Location of the GLB file from which to load the
-     *                     model.
-     * @param meshName The name of the mesh in the GLB file which will be loaded
-     *                 as the model.
+     * @param fileLocation  Location of the GLB file from which to load the
+     *                      model.
+     * @param meshName      The name of the mesh in the GLB file which will be loaded
+     *                      as the model.
+     * 
+     * @param armatureName  The name of the armature binding the model to a set of joints.
+     * @param animationName The name of the animation to load for the model's joints.
+     *                      Only rotations are used.
      */
-    Model(const std::string& fileLocation, const std::string& meshName);
+    Model(const std::string& fileLocation, const std::string& meshName, const std::string& armatureName = "",
+      const std::string& animationName = "");
+
+
+    /**
+     * @brief Advance joint animation frame (if joints are animated) 
+     */
+    void animate();
+
+    /**
+     * @brief Get a joint transform, also calculating the transorms of the parent
+     *        joints in the same tree and the animations, if any exist.
+     *  @param joint The index of the joint in the list of joints
+     *  @return The transform
+     */
+    glm::mat4 getJointTransform(uint64_t joint);
 
   };
 }
