@@ -65,6 +65,7 @@ namespace small3d
    */
   struct UboModelPlacement {
     glm::mat4x4 modelTransformation;
+    glm::mat4x4 boneTransformations[Model::MAX_JOINTS_SUPPORTED];
     glm::vec3 modelOffset;
     float padding[45];
   };
@@ -150,8 +151,8 @@ namespace small3d
 
     static std::vector<Model> nextModelsToDraw;
 
-    static VkVertexInputBindingDescription bd[3];
-    static VkVertexInputAttributeDescription ad[3];
+    static VkVertexInputBindingDescription bd[5];
+    static VkVertexInputAttributeDescription ad[5];
 
     static VkDescriptorSetLayout descriptorSetLayout;
     static VkDescriptorSet descriptorSet;
@@ -196,7 +197,7 @@ namespace small3d
 
     void setColourBuffer(glm::vec4 colour, uint32_t memIndex);
 
-    void positionNextModel(const glm::vec3 offset,
+    void positionNextModel(Model &model, const glm::vec3 offset,
       const glm::vec3 rotation,
       uint32_t memIndex);
 

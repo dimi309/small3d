@@ -4,6 +4,8 @@
 layout(location = 0) in vec4 position;
 layout(location = 1) in vec3 normal;
 layout(location = 2) in vec2 uvCoords;
+layout(location = 3) in vec4 joint;
+layout(location = 4) in vec4 weight;
 
 layout(binding = 0) uniform uboWorld {
   mat4 perspectiveMatrix;
@@ -14,6 +16,7 @@ layout(binding = 0) uniform uboWorld {
 
 layout(binding = 1) uniform uboModelPlacement {
   mat4 modelTransformation;
+  mat4 boneTransformations[32];
   vec3 modelOffset;
 };
 
@@ -22,7 +25,17 @@ layout(location = 1) out vec2 textureCoords;
 
 void main()
 {
-  vec4 worldPos = modelTransformation * position + vec4(modelOffset, 0.0);
+  mat4 skinMat = mat4(1.0f);
+  
+  if (joint != vec4(0,0,0,0)) {
+     skinMat =
+      weight.x * boneTransformations[int(joint.x)] +
+      weight.y * boneTransformations[int(joint.y)] +
+      weight.z * boneTransformations[int(joint.z)] +
+      weight.w * boneTransformations[int(joint.w)];
+  }
+  
+  vec4 worldPos = modelTransformation * skinMat * position + vec4(modelOffset, 0.0);
 
   vec4 cameraPos = cameraTransformation * (worldPos -
 					       vec4(cameraOffset, 0.0));
