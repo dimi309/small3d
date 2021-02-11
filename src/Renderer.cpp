@@ -16,6 +16,7 @@ extern "C" {
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/string_cast.hpp>
 #include "BasePath.hpp"
 #include <cstring>
 
@@ -133,7 +134,7 @@ namespace small3d {
     vertexBuffers[0] = model.positionBuffer;
     vertexBuffers[1] = model.normalsBuffer;
     vertexBuffers[2] = model.uvBuffer;
-    
+
     VkDeviceSize offsets[5];
     offsets[0] = 0;
     offsets[1] = 0;
@@ -510,11 +511,41 @@ namespace small3d {
 
     uboModelPlacementDynamic[memIndex].modelOffset = offset;
 
-    uboModelPlacementDynamic[memIndex].hasJoints = model.joints.size() > 0 ? 1 : 0;
+    uboModelPlacementDynamic[memIndex].hasJoints = model.joints.size() > 0 ? 1U : 0U;
+    uint64_t idx = 0;
+    for (auto& joint : model.joints) {
+      uboModelPlacementDynamic[memIndex].jointTransformations[idx] =
 
-    for (int idx = 0; idx < model.joints.size(); ++idx) {
-      uboModelPlacementDynamic[memIndex].boneTransformations[idx] = glm::toMat4(model.joints[idx].rotation);
+        glm::inverse(
+           glm::translate(glm::mat4(1.0f), model.armature.translation) *
+           glm::toMat4(model.armature.rotation) *
+           glm::scale(glm::mat4(1.0f), model.armature.scale)) *
+
+        model.getJointTransform(idx) *
+
+        joint.inverseBindMatrix;
+
+      ++idx;
     }
+
+    // Probably not a great idea
+    /*uint64_t lastTransformationIdx = idx - 1;
+    uint64_t iterIdx = 0;
+    
+    for (std::vector<Model::Joint>::reverse_iterator i = model.joints.rbegin(); i != model.joints.rend(); ++i) {
+
+      for (auto& childNode : i->children) {
+        idx = 0;
+        for(auto & joint: model.joints) {
+          if (joint.node == childNode) {
+            uboModelPlacementDynamic[memIndex].jointTransformations[idx] *=
+              uboModelPlacementDynamic[memIndex].jointTransformations[lastTransformationIdx - iterIdx];
+          }
+          ++idx;
+        }
+      }
+      ++iterIdx;
+    }*/
 
   }
 
@@ -1044,7 +1075,7 @@ namespace small3d {
 
     // On linux this causes a segmentation fault
     // glfwTerminate();
-    }
+  }
 
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
   GLFWwindow* Renderer::getWindow() const {
@@ -1618,4 +1649,4 @@ namespace small3d {
 
   }
 
-  }
+}

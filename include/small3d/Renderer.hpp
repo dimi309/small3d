@@ -53,11 +53,8 @@ namespace small3d
     float padding1;
     glm::mat4x4 cameraTransformation;
     glm::vec3 cameraOffset;
-    float padding2[25]; // Successively increased padding up to 64 x float
-                        // (256 bytes on windows where float is 4 bytes) for
-                        // ALL ubos. All smaller sizes were causing memory
-                        // alignment problems on one supported platform or
-                        // another.
+    float padding2[25]; // Paddings seem to work when the number of floats (not bytes)
+                        // add up to powers of two for each ubo.
   };
 
   /**
@@ -65,10 +62,10 @@ namespace small3d
    */
   struct UboModelPlacement {
     glm::mat4x4 modelTransformation;
-    glm::mat4x4 boneTransformations[Model::MAX_JOINTS_SUPPORTED];
+    glm::mat4x4 jointTransformations[Model::MAX_JOINTS_SUPPORTED];
     glm::vec3 modelOffset;
-    uint32_t hasJoints = 0;
-    float padding[44];
+    uint32_t hasJoints = 0U;
+    float padding[236];
   };
 
   /**

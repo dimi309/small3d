@@ -275,7 +275,7 @@ namespace small3d {
     std::ifstream fileOnDisk;
     fileOnDisk.open(filename, std::ios::binary);
     if (!fileOnDisk.is_open()) {
-      throw std::runtime_error("Could not open GLB file" + filename);
+      throw std::runtime_error("Could not open GLB file " + filename);
     }
 #endif
 
@@ -377,7 +377,6 @@ namespace small3d {
     uint32_t byteOffset = std::stoi(getChildToken(bufferViews[viewIndex], "byteOffset")->value);
 
     return std::vector<char>(binBuffer.begin() + byteOffset, binBuffer.begin() + byteOffset + byteLength);
-
   }
 
   std::vector<char> GlbFile::getBufferByAccessor(const size_t index) {
@@ -453,8 +452,8 @@ namespace small3d {
     propToken = getChildToken(nodeToken, "rotation");
     if (propToken != nullptr) {
       auto values = getChildTokens(propToken);
-      ret.rotation = glm::quat(std::stof(values[0]->value), std::stof(values[1]->value),
-        std::stof(values[2]->value), std::stof(values[3]->value));
+      ret.rotation = glm::quat(std::stof(values[3]->value), std::stof(values[0]->value),
+        std::stof(values[1]->value), std::stof(values[2]->value));
     }
 
     propToken = getChildToken(nodeToken, "scale");

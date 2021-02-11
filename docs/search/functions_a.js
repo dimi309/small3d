@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['render_227',['render',['../classsmall3d_1_1_renderer.html#a5a8e5e26295601059897e530698f20f7',1,'small3d::Renderer::render(Model &amp;model, const glm::vec3 &amp;offset, const glm::vec3 &amp;rotation, const glm::vec4 &amp;colour, const std::string &amp;textureName=&quot;&quot;, const bool perspective=true)'],['../classsmall3d_1_1_renderer.html#a3ce91f7d1fde411177dd13996108db27',1,'small3d::Renderer::render(Model &amp;model, const glm::vec3 &amp;offset, const glm::vec3 &amp;rotation, const std::string &amp;textureName)'],['../classsmall3d_1_1_renderer.html#a5197bb14286d72ded6397ab1f5d1e9be',1,'small3d::Renderer::render(Model &amp;model, const std::string &amp;textureName, const bool perspective=true)'],['../classsmall3d_1_1_renderer.html#a604f156f1eba38959ec1ef7f0f18b9d7',1,'small3d::Renderer::render(Model &amp;model, const glm::vec4 &amp;colour, const bool perspective=true)'],['../classsmall3d_1_1_renderer.html#a3e2369b6490ee51256c2b58490cced0a',1,'small3d::Renderer::render(SceneObject &amp;sceneObject, const glm::vec4 &amp;colour)'],['../classsmall3d_1_1_renderer.html#a8ad10fd0f0546566c6022931b6b54bed',1,'small3d::Renderer::render(SceneObject &amp;sceneObject, const std::string &amp;textureName)']]],
-  ['resetanimation_228',['resetAnimation',['../classsmall3d_1_1_scene_object.html#a5df12246f187a1660fc54a14e6d7c96d',1,'small3d::SceneObject']]]
+  ['play_241',['play',['../classsmall3d_1_1_sound.html#a24b61d06b9c695f5686846fb59c78676',1,'small3d::Sound']]],
+  ['printtoken_242',['printToken',['../classsmall3d_1_1_glb_file.html#a1fd6cfc3bf9962d8fccaea97069dbbf4',1,'small3d::GlbFile']]],
+  ['printtokensrecursive_243',['printTokensRecursive',['../classsmall3d_1_1_glb_file.html#a593e1b7000f33f458dbbce7ac068945e',1,'small3d::GlbFile']]],
+  ['printtokensserial_244',['printTokensSerial',['../classsmall3d_1_1_glb_file.html#acfdbe51e25ac549cc5220118b40f8f02',1,'small3d::GlbFile']]]
 ];

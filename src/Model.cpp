@@ -14,6 +14,9 @@
 #include "Model.hpp"
 #include "BasePath.hpp"
 #include "Logger.hpp"
+#include <glm/gtx/string_cast.hpp>
+#include <glm/gtx/quaternion.hpp>
+
 
 #ifdef __ANDROID__
 #include "vkzos.h"
@@ -381,7 +384,8 @@ namespace small3d {
       throw std::runtime_error("Could not open file " + fileLocation);
   }
 
-  Model::Model(const std::string & fileLocation, const std::string & meshName) {
+  Model::Model(const std::string & fileLocation, const std::string& meshName, 
+    const std::string& armatureName, const std::string& animationName) {
     GlbFile glb(fileLocation);
     bool loaded = false;
     for (auto& meshToken : glb.getChildTokens(glb.getToken("meshes"))) {
@@ -464,6 +468,14 @@ namespace small3d {
 
     LOGDEBUG("Loaded mesh " + meshName + " from " + fileLocation);
 
+
+    
+  
+    if (armatureName != "") {
+      armature = glb.getNode(armatureName);
+    }
+
+  
     if (glb.existNode(meshName)) {
       auto meshNode = glb.getNode(meshName);
       if (glb.existSkin(meshNode.skin)) {
@@ -475,24 +487,120 @@ namespace small3d {
         }
 
         auto inverseBindMatrices = glb.getBufferByAccessor(skin.inverseBindMatrices);
-
+        uint64_t idx = 0;
         for (auto jointIdx : skin.joints) {
           Joint j;
 
-          memcpy(&j.inverseBindMatrix, &inverseBindMatrices[static_cast<uint32_t>(jointIdx) * 16 * 4], 16 * 4);
+          memcpy(&j.inverseBindMatrix, &inverseBindMatrices[idx * 16 * 4], 16 * 4);
           auto jointNode = glb.getNode(jointIdx);
-          j.id = jointIdx;
+          j.node = jointIdx;
           j.name = jointNode.name;
           j.rotation = jointNode.rotation;
           j.scale = jointNode.scale;
           j.translation = jointNode.translation;
           j.children = jointNode.children;
           joints.push_back(j);
+
+          ++idx;
         }
+
+        GlbFile::Animation animation;
+
+        if (animationName != "") {
+          animation = glb.getAnimation(animationName);
+        }
+
+        for (auto &channel : animation.channels) {
+          if (channel.target.path == "rotation") {
+            auto sampler = animation.samplers[channel.sampler];
+            
+            auto output = glb.getBufferByAccessor(sampler.output);
+            for (auto& joint : joints) {
+              if (joint.node == channel.target.node) {
+                joint.rotationAnimation.resize(output.size() / sizeof(glm::quat));
+                memcpy(&joint.rotationAnimation[0], &output[0], output.size());
+                if (numFrames < joint.rotationAnimation.size())
+                  numFrames = joint.rotationAnimation.size();
+
+                if (joint.animTime.size() == 0) {
+                  auto input = glb.getBufferByAccessor(sampler.input);
+                  joint.animTime.resize(input.size() / 4);
+                  memcpy(&joint.animTime[0], &input[0], input.size());
+                }
+              }
+            }
+          }
+
+          if (channel.target.path == "translation") {
+            auto sampler = animation.samplers[channel.sampler];
+            auto input = glb.getBufferByAccessor(sampler.input);
+            auto output = glb.getBufferByAccessor(sampler.output);
+            for (auto& joint : joints) {
+              if (joint.node == channel.target.node) {
+                joint.translationAnimation.resize(output.size() / sizeof(glm::vec3));
+                memcpy(&joint.translationAnimation[0], &output[0], output.size());
+                if (numFrames < joint.translationAnimation.size())
+                  numFrames = joint.translationAnimation.size();
+              }
+            }
+          }
+
+        }
+
       }
     }
 
   }
 
+  void Model::animate() {
+    if (numFrames != 0) {
+      ++currentFrame;
+      if (currentFrame == numFrames) {
+        currentFrame = 0;
+      }
+      for (auto& joint : joints) {
+        if (joint.rotationAnimation.size() > currentFrame) {
+          joint.currRotation = joint.rotationAnimation[currentFrame];         
+        }
+        if (joint.translationAnimation.size() > currentFrame) {
+          joint.currTranslation = joint.translationAnimation[currentFrame];
+        }
+      }
+    }
+  }
 
+  glm::mat4 Model::getJointTransform(uint64_t joint) {
+
+    glm::mat4 parentTransform(1.0f);
+    glm::mat4 transform(1.0f);
+
+    uint64_t idx = 0;
+    bool found = false;
+    for (auto& j : joints) {
+      for (auto c : j.children) {
+        if (c == joints[joint].node) {
+          found = true;
+          break;
+        }
+      }
+      if (found) break;
+      ++idx;
+    }
+
+    if (found) {
+      parentTransform = getJointTransform(idx);
+    }
+
+    if (currentFrame < joints[joint].rotationAnimation.size() && currentFrame < joints[joint].translationAnimation.size()) {
+      transform = glm::translate(glm::mat4(1.0f), joints[joint].translationAnimation[currentFrame]) *
+        glm::toMat4(joints[joint].rotationAnimation[currentFrame]);
+    }
+    else {
+      transform = glm::translate(glm::mat4(1.0f), joints[joint].translation) *
+        glm::toMat4(joints[joint].rotation) *
+        glm::scale(glm::mat4(1.0f), joints[joint].scale);
+    }
+
+    return parentTransform *  transform;
+  }
 }

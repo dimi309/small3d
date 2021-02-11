@@ -1,11 +1,5 @@
 var searchData=
 [
-  ['perspective_78',['perspective',['../structsmall3d_1_1_model.html#a83b123db1e9c22644c14e69e4bec3c6e',1,'small3d::Model']]],
-  ['placementmemindex_79',['placementMemIndex',['../structsmall3d_1_1_model.html#a14d7094dc24ed8d72b9bdd72eb89be67',1,'small3d::Model']]],
-  ['play_80',['play',['../classsmall3d_1_1_sound.html#a24b61d06b9c695f5686846fb59c78676',1,'small3d::Sound']]],
-  ['positionbuffer_81',['positionBuffer',['../structsmall3d_1_1_model.html#a0dc68151bf7d08e522126f6e4d0269ad',1,'small3d::Model']]],
-  ['positionbuffermemory_82',['positionBufferMemory',['../structsmall3d_1_1_model.html#a25ba40d4f09c7c398eba3a516cdd9987',1,'small3d::Model']]],
-  ['printtoken_83',['printToken',['../classsmall3d_1_1_glb_file.html#a1fd6cfc3bf9962d8fccaea97069dbbf4',1,'small3d::GlbFile']]],
-  ['printtokensrecursive_84',['printTokensRecursive',['../classsmall3d_1_1_glb_file.html#a593e1b7000f33f458dbbce7ac068945e',1,'small3d::GlbFile']]],
-  ['printtokensserial_85',['printTokensSerial',['../classsmall3d_1_1_glb_file.html#acfdbe51e25ac549cc5220118b40f8f02',1,'small3d::GlbFile']]]
+  ['offset_86',['offset',['../classsmall3d_1_1_scene_object.html#a1628b6b7c19ef46e3d42d7973c86a666',1,'small3d::SceneObject']]],
+  ['operator_3d_87',['operator=',['../classsmall3d_1_1_sound.html#ac78234ea0c3d579ae047fa68d915d50a',1,'small3d::Sound::operator=(const Sound &amp;other)'],['../classsmall3d_1_1_sound.html#a7088862814f15b6ba71f4c40ce421ebd',1,'small3d::Sound::operator=(const Sound &amp;&amp;other)']]]
 ];
