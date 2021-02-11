@@ -15,6 +15,7 @@ extern "C" {
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include "BasePath.hpp"
 #include <cstring>
 
@@ -39,8 +40,8 @@ namespace small3d {
 
   std::vector<Model> Renderer::nextModelsToDraw;
 
-  VkVertexInputBindingDescription Renderer::bd[3];
-  VkVertexInputAttributeDescription Renderer::ad[3];
+  VkVertexInputBindingDescription Renderer::bd[5];
+  VkVertexInputAttributeDescription Renderer::ad[5];
   VkDescriptorSetLayout Renderer::descriptorSetLayout;
   VkDescriptorSet Renderer::descriptorSet;
   VkDescriptorSetLayout Renderer::textureDescriptorSetLayout;
@@ -75,7 +76,13 @@ namespace small3d {
     bd[2].binding = 2;
     bd[2].stride = 2 * sizeof(float);
 
-    memset(ad, 0, 3 * sizeof(VkVertexInputAttributeDescription));
+    bd[3].binding = 3;
+    bd[3].stride = 4;
+
+    bd[4].binding = 4;
+    bd[4].stride = 4 * sizeof(float);
+
+    memset(ad, 0, 5 * sizeof(VkVertexInputAttributeDescription));
 
     ad[0].binding = 0;
     ad[0].location = 0;
@@ -92,8 +99,18 @@ namespace small3d {
     ad[2].format = VK_FORMAT_R32G32_SFLOAT;
     ad[2].offset = 0;
 
-    inputStateCreateInfo->vertexBindingDescriptionCount = 3;
-    inputStateCreateInfo->vertexAttributeDescriptionCount = 3;
+    ad[3].binding = 3;
+    ad[3].location = 3;
+    ad[3].format = VK_FORMAT_R8G8B8A8_UINT;
+    ad[3].offset = 0;
+
+    ad[4].binding = 4;
+    ad[4].location = 4;
+    ad[4].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+    ad[4].offset = 0;
+
+    inputStateCreateInfo->vertexBindingDescriptionCount = 5;
+    inputStateCreateInfo->vertexAttributeDescriptionCount = 5;
     inputStateCreateInfo->pVertexBindingDescriptions = bd;
     inputStateCreateInfo->pVertexAttributeDescriptions = ad;
 
@@ -111,17 +128,29 @@ namespace small3d {
   }
 
   int Renderer::bindBuffers(VkCommandBuffer commandBuffer, const Model& model) {
-    VkBuffer vertexBuffers[3];
+
+    VkBuffer vertexBuffers[5];
     vertexBuffers[0] = model.positionBuffer;
     vertexBuffers[1] = model.normalsBuffer;
     vertexBuffers[2] = model.uvBuffer;
-    VkDeviceSize offsets[3];
+    
+    VkDeviceSize offsets[5];
     offsets[0] = 0;
     offsets[1] = 0;
     offsets[2] = 0;
 
+    uint32_t bindingCount = 3;
+
+    if (model.jointDataByteSize > 0 && model.weightDataByteSize > 0) {
+      vertexBuffers[3] = model.jointBuffer;
+      vertexBuffers[4] = model.weightBuffer;
+      offsets[3] = 0;
+      offsets[4] = 0;
+      bindingCount = 5;
+    }
+
     // Vertex buffer
-    vkCmdBindVertexBuffers(commandBuffer, 0, 3, vertexBuffers, offsets);
+    vkCmdBindVertexBuffers(commandBuffer, 0, bindingCount, vertexBuffers, offsets);
 
     // Index buffer
     vkCmdBindIndexBuffer(commandBuffer, model.indexBuffer,
@@ -463,7 +492,7 @@ namespace small3d {
 
   }
 
-  void Renderer::positionNextModel(const glm::vec3 offset,
+  void Renderer::positionNextModel(Model& model, const glm::vec3 offset,
     const glm::vec3 rotation, uint32_t memIndex) {
 
     if (memIndex > maxObjectsPerPass) {
@@ -480,6 +509,10 @@ namespace small3d {
       glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 
     uboModelPlacementDynamic[memIndex].modelOffset = offset;
+
+    for (int idx = 0; idx < model.joints.size(); ++idx) {
+      uboModelPlacementDynamic[memIndex].boneTransformations[idx] = model.joints[idx].inverseBindMatrix;
+    }
 
   }
 
@@ -1343,6 +1376,77 @@ namespace small3d {
 
       }
 
+      if (model.jointDataByteSize != 0) {
+
+        if (!vkz_create_buffer(&model.jointBuffer,
+          VK_BUFFER_USAGE_TRANSFER_DST_BIT |
+          VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+          model.jointDataByteSize,
+          &model.jointBufferMemory,
+          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
+          throw std::runtime_error("Failed to create joint buffer.");
+        }
+
+        if (vkz_create_buffer(&stagingBuffer,
+          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+          model.jointDataByteSize,
+          &stagingBufferMemory,
+          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
+          void* jointData;
+          vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
+            VK_WHOLE_SIZE,
+            0, &jointData);
+          memcpy(jointData, &model.jointData[0],
+            model.jointDataByteSize);
+          vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+
+          vkz_copy_buffer(stagingBuffer, model.jointBuffer,
+            model.jointDataByteSize);
+
+          vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+        }
+        else {
+          throw std::runtime_error("Failed to create the staging"
+            " buffer for joints.");
+        }
+
+      }
+
+      if (model.weightDataByteSize != 0) {
+        if (!vkz_create_buffer(&model.weightBuffer,
+          VK_BUFFER_USAGE_TRANSFER_DST_BIT |
+          VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+          model.weightDataByteSize,
+          &model.weightBufferMemory,
+          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
+          throw std::runtime_error("Failed to create weight buffer.");
+        }
+
+        if (vkz_create_buffer(&stagingBuffer,
+          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+          model.weightDataByteSize,
+          &stagingBufferMemory,
+          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
+          void* weightData;
+          vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
+            VK_WHOLE_SIZE,
+            0, &weightData);
+          memcpy(weightData, &model.weightData[0],
+            model.weightDataByteSize);
+          vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+
+          vkz_copy_buffer(stagingBuffer, model.weightBuffer,
+            model.weightDataByteSize);
+
+          vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+        }
+        else {
+          throw std::runtime_error("Failed to create the staging"
+            " buffer for weights.");
+        }
+      }
       model.alreadyInGPU = true;
     }
 
@@ -1362,11 +1466,9 @@ namespace small3d {
 
     model.perspective = perspective;
 
-
-    positionNextModel(offset, rotation, modelPlacementMemIndex);
+    positionNextModel(model, offset, rotation, modelPlacementMemIndex);
     model.placementMemIndex = modelPlacementMemIndex;
     ++modelPlacementMemIndex;
-
 
     nextModelsToDraw.push_back(model);
 
@@ -1411,6 +1513,10 @@ namespace small3d {
       vkz_destroy_buffer(model.indexBuffer, model.indexBufferMemory);
       vkz_destroy_buffer(model.normalsBuffer, model.normalsBufferMemory);
       vkz_destroy_buffer(model.uvBuffer, model.uvBufferMemory);
+      if (model.jointDataByteSize > 0)
+        vkz_destroy_buffer(model.jointBuffer, model.jointBufferMemory);
+      if (model.weightDataByteSize > 0)
+        vkz_destroy_buffer(model.weightBuffer, model.weightBufferMemory);
       model.alreadyInGPU = false;
     }
   }

@@ -43,9 +43,10 @@ namespace small3d {
       glm::quat rotation;
       glm::vec3 scale;
       glm::vec3 translation;
-      std::vector<uint32_t> childrenIds;
-      std::vector<std::shared_ptr<Joint>> children;
+      std::vector<uint32_t> children;
     };
+
+    static const uint32_t MAX_JOINTS_SUPPORTED = 32;
 
   private:
     // Data read from .obj file
@@ -138,6 +139,28 @@ namespace small3d {
      *        (Vulkan-specific, avoid direct manipulation)
      */
     uint32_t colourMemIndex = 0;
+
+    /**
+     * @brief Joints buffer
+     */
+    VkBuffer jointBuffer;
+
+    /**
+    * @brief Memory for joints buffer
+    *        (Vulkan-specific, avoid direct manipulation)
+    */
+    VkDeviceMemory jointBufferMemory;
+
+    /**
+     * @brief Joint weights buffer
+     */
+    VkBuffer weightBuffer;
+
+    /**
+    * @brief Memory for weights buffer
+    *        (Vulkan-specific, avoid direct manipulation)
+    */
+    VkDeviceMemory weightBufferMemory;
 #else
 
     /**
@@ -241,7 +264,7 @@ namespace small3d {
     /**
      * @brief The model's root joint;
      */
-    std::shared_ptr<Joint> rootJoint;
+    std::vector<Joint> joints;
 
 
 #ifndef SMALL3D_OPENGL
