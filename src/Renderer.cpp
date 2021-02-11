@@ -510,8 +510,10 @@ namespace small3d {
 
     uboModelPlacementDynamic[memIndex].modelOffset = offset;
 
+    uboModelPlacementDynamic[memIndex].hasJoints = model.joints.size() > 0 ? 1 : 0;
+
     for (int idx = 0; idx < model.joints.size(); ++idx) {
-      uboModelPlacementDynamic[memIndex].boneTransformations[idx] = model.joints[idx].inverseBindMatrix;
+      uboModelPlacementDynamic[memIndex].boneTransformations[idx] = glm::toMat4(model.joints[idx].rotation);
     }
 
   }
