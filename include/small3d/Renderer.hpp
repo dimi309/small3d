@@ -67,7 +67,8 @@ namespace small3d
     glm::mat4x4 modelTransformation;
     glm::mat4x4 boneTransformations[Model::MAX_JOINTS_SUPPORTED];
     glm::vec3 modelOffset;
-    float padding[45];
+    uint32_t hasJoints = 0;
+    float padding[44];
   };
 
   /**

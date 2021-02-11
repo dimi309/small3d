@@ -18,6 +18,7 @@ layout(binding = 1) uniform uboModelPlacement {
   mat4 modelTransformation;
   mat4 boneTransformations[32];
   vec3 modelOffset;
+  bool hasJoints;
 };
 
 layout(location = 0) smooth out float cosAngIncidence;
@@ -27,7 +28,7 @@ void main()
 {
   mat4 skinMat = mat4(1.0f);
   
-  if (joint != vec4(0,0,0,0)) {
+  if (hasJoints) {
      skinMat =
       weight.x * boneTransformations[int(joint.x)] +
       weight.y * boneTransformations[int(joint.y)] +
