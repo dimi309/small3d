@@ -528,25 +528,6 @@ namespace small3d {
       ++idx;
     }
 
-    // Probably not a great idea
-    /*uint64_t lastTransformationIdx = idx - 1;
-    uint64_t iterIdx = 0;
-    
-    for (std::vector<Model::Joint>::reverse_iterator i = model.joints.rbegin(); i != model.joints.rend(); ++i) {
-
-      for (auto& childNode : i->children) {
-        idx = 0;
-        for(auto & joint: model.joints) {
-          if (joint.node == childNode) {
-            uboModelPlacementDynamic[memIndex].jointTransformations[idx] *=
-              uboModelPlacementDynamic[memIndex].jointTransformations[lastTransformationIdx - iterIdx];
-          }
-          ++idx;
-        }
-      }
-      ++iterIdx;
-    }*/
-
   }
 
   VulkanImage Renderer::getTextureHandle(const std::string name) const {
