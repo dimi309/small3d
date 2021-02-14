@@ -43,7 +43,7 @@ namespace small3d {
     };
 
     /**
-     * @brief A glTF node
+     * @brief glTF node
      */
     struct Node {
       std::string name = "";

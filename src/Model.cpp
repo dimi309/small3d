@@ -519,8 +519,8 @@ namespace small3d {
               if (joint.node == channel.target.node) {
                 joint.rotationAnimation.resize(output.size() / sizeof(glm::quat));
                 memcpy(&joint.rotationAnimation[0], &output[0], output.size());
-                if (numFrames < joint.rotationAnimation.size())
-                  numFrames = joint.rotationAnimation.size();
+                if (numPoses < joint.rotationAnimation.size())
+                  numPoses = joint.rotationAnimation.size();
 
                 if (joint.animTime.size() == 0) {
                   auto input = glb.getBufferByAccessor(sampler.input);
@@ -539,8 +539,8 @@ namespace small3d {
               if (joint.node == channel.target.node) {
                 joint.translationAnimation.resize(output.size() / sizeof(glm::vec3));
                 memcpy(&joint.translationAnimation[0], &output[0], output.size());
-                if (numFrames < joint.translationAnimation.size())
-                  numFrames = joint.translationAnimation.size();
+                if (numPoses < joint.translationAnimation.size())
+                  numPoses = joint.translationAnimation.size();
               }
             }
           }
@@ -552,18 +552,22 @@ namespace small3d {
 
   }
 
+  uint32_t Model::getCurrentPoseIdx() {
+    return currentPose;
+  }
+
   void Model::animate() {
-    if (numFrames != 0) {
-      ++currentFrame;
-      if (currentFrame == numFrames) {
-        currentFrame = 0;
+    if (numPoses != 0) {
+      ++currentPose;
+      if (currentPose == numPoses) {
+        currentPose = 0;
       }
       for (auto& joint : joints) {
-        if (joint.rotationAnimation.size() > currentFrame) {
-          joint.currRotation = joint.rotationAnimation[currentFrame];         
+        if (joint.rotationAnimation.size() > currentPose) {
+          joint.currRotation = joint.rotationAnimation[currentPose];         
         }
-        if (joint.translationAnimation.size() > currentFrame) {
-          joint.currTranslation = joint.translationAnimation[currentFrame];
+        if (joint.translationAnimation.size() > currentPose) {
+          joint.currTranslation = joint.translationAnimation[currentPose];
         }
       }
     }
@@ -591,9 +595,9 @@ namespace small3d {
       parentTransform = getJointTransform(idx);
     }
 
-    if (currentFrame < joints[joint].rotationAnimation.size() && currentFrame < joints[joint].translationAnimation.size()) {
-      transform = glm::translate(glm::mat4(1.0f), joints[joint].translationAnimation[currentFrame]) *
-        glm::toMat4(joints[joint].rotationAnimation[currentFrame]);
+    if (currentPose < joints[joint].rotationAnimation.size() && currentPose < joints[joint].translationAnimation.size()) {
+      transform = glm::translate(glm::mat4(1.0f), joints[joint].translationAnimation[currentPose]) *
+        glm::toMat4(joints[joint].rotationAnimation[currentPose]);
     }
     else {
       transform = glm::translate(glm::mat4(1.0f), joints[joint].translation) *

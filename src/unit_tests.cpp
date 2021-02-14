@@ -185,7 +185,7 @@ int RendererTest() {
         glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), "", false);
 
-      renderer->generateTexture("small3dTexture", std::to_string(modelFromGlb.currentFrame),
+      renderer->generateTexture("small3dTexture", std::to_string(modelFromGlb.getCurrentPoseIdx()),
         glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
       renderer->render(texturedRect,

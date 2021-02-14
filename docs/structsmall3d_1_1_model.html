@@ -77,7 +77,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>A 3D model. It can be loaded from a Wavefront file. Such a file can be exported from Blender for example (see blender.org). From its menu, select File &gt; Export &gt; Wavefront (.obj). Then from the "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" and "Keep Vertex Order". The 3D model can also be constructed procedurally by code, by inserting values to the appropriate member variables.  
+<p>A 3D model. It can be loaded from a Wavefront or glTF file. A Wavefront file can be exported from Blender for example (see blender.org). From its menu, select File &gt; Export &gt; Wavefront (.obj). Then from the "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" and "Keep Vertex Order". The 3D model can also be constructed procedurally by code, by inserting values to the appropriate member variables.  
  <a href="structsmall3d_1_1_model.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_model_8hpp_source.html">Model.hpp</a>&gt;</code></p>
@@ -85,6 +85,7 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model_1_1_joint.html">Joint</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">glTF joint  <a href="structsmall3d_1_1_model_1_1_joint.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -99,19 +100,19 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3adabf32a0684cc130073ce184c0ccdc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a3adabf32a0684cc130073ce184c0ccdc">Model</a> (const std::string &amp;fileLocation, const std::string &amp;meshName, const std::string &amp;armatureName=&quot;&quot;, const std::string &amp;animationName=&quot;&quot;)</td></tr>
 <tr class="memdesc:a3adabf32a0684cc130073ce184c0ccdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that loads model from a GLB file.  <a href="structsmall3d_1_1_model.html#a3adabf32a0684cc130073ce184c0ccdc">More...</a><br /></td></tr>
 <tr class="separator:a3adabf32a0684cc130073ce184c0ccdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d501a1d394c08b7666a48d55736a5ab"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a5d501a1d394c08b7666a48d55736a5ab">getCurrentPoseIdx</a> ()</td></tr>
+<tr class="memdesc:a5d501a1d394c08b7666a48d55736a5ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the index of the current animation pose.  <a href="structsmall3d_1_1_model.html#a5d501a1d394c08b7666a48d55736a5ab">More...</a><br /></td></tr>
+<tr class="separator:a5d501a1d394c08b7666a48d55736a5ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a570d9db18d28fc5128812d0890881509"><td class="memItemLeft" align="right" valign="top"><a id="a570d9db18d28fc5128812d0890881509"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a570d9db18d28fc5128812d0890881509">animate</a> ()</td></tr>
-<tr class="memdesc:a570d9db18d28fc5128812d0890881509"><td class="mdescLeft">&#160;</td><td class="mdescRight">Advance joint animation frame (if joints are animated) <br /></td></tr>
+<tr class="memdesc:a570d9db18d28fc5128812d0890881509"><td class="mdescLeft">&#160;</td><td class="mdescRight">Advance joint animation pose (if joints are animated) <br /></td></tr>
 <tr class="separator:a570d9db18d28fc5128812d0890881509"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e0989ebceec0bf2c37301d52473b204"><td class="memItemLeft" align="right" valign="top">glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a2e0989ebceec0bf2c37301d52473b204">getJointTransform</a> (uint64_t joint)</td></tr>
-<tr class="memdesc:a2e0989ebceec0bf2c37301d52473b204"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a joint transform, also calculating the transorms of the parent joints in the same tree and the animations, if any exist.  <a href="structsmall3d_1_1_model.html#a2e0989ebceec0bf2c37301d52473b204">More...</a><br /></td></tr>
-<tr class="separator:a2e0989ebceec0bf2c37301d52473b204"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ad87712d50688e377b82710b18e48bd"><td class="memItemLeft" align="right" valign="top">glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a5ad87712d50688e377b82710b18e48bd">getJointTransform</a> (uint64_t jointIdx)</td></tr>
+<tr class="memdesc:a5ad87712d50688e377b82710b18e48bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a joint transform, also calculating the transorms of the parent joints in the same tree and the animations, if any exist.  <a href="structsmall3d_1_1_model.html#a5ad87712d50688e377b82710b18e48bd">More...</a><br /></td></tr>
+<tr class="separator:a5ad87712d50688e377b82710b18e48bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a44ad141726e42de071d3192e813974cd"><td class="memItemLeft" align="right" valign="top"><a id="a44ad141726e42de071d3192e813974cd"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>currentFrame</b> = 0</td></tr>
-<tr class="separator:a44ad141726e42de071d3192e813974cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5449f8e4f8b4f1f3f112a565ff91f9f"><td class="memItemLeft" align="right" valign="top"><a id="ad5449f8e4f8b4f1f3f112a565ff91f9f"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#ad5449f8e4f8b4f1f3f112a565ff91f9f">alreadyInGPU</a> = false</td></tr>
 <tr class="memdesc:ad5449f8e4f8b4f1f3f112a565ff91f9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is the model already in GPU memory? (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
@@ -166,7 +167,7 @@ VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <tr class="separator:a4709ef731a9463dc87ddc8be40b1dad4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e1635fec6d6de4ccdb795f8cf673442"><td class="memItemLeft" align="right" valign="top"><a id="a7e1635fec6d6de4ccdb795f8cf673442"></a>
 VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a7e1635fec6d6de4ccdb795f8cf673442">weightBuffer</a></td></tr>
-<tr class="memdesc:a7e1635fec6d6de4ccdb795f8cf673442"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structsmall3d_1_1_model_1_1_joint.html">Joint</a> weights buffer. <br /></td></tr>
+<tr class="memdesc:a7e1635fec6d6de4ccdb795f8cf673442"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structsmall3d_1_1_model_1_1_joint.html" title="glTF joint">Joint</a> weights buffer. <br /></td></tr>
 <tr class="separator:a7e1635fec6d6de4ccdb795f8cf673442"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09aff074b63ed19fd7a9e6daf0df4c61"><td class="memItemLeft" align="right" valign="top"><a id="a09aff074b63ed19fd7a9e6daf0df4c61"></a>
 VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a09aff074b63ed19fd7a9e6daf0df4c61">weightBufferMemory</a></td></tr>
@@ -244,7 +245,7 @@ static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>MAX_
 <tr class="separator:ad2b52d176f49562bca07f9b238b84854"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A 3D model. It can be loaded from a Wavefront file. Such a file can be exported from Blender for example (see blender.org). From its menu, select File &gt; Export &gt; Wavefront (.obj). Then from the "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" and "Keep Vertex Order". The 3D model can also be constructed procedurally by code, by inserting values to the appropriate member variables. </p>
+<div class="textblock"><p>A 3D model. It can be loaded from a Wavefront or glTF file. A Wavefront file can be exported from Blender for example (see blender.org). From its menu, select File &gt; Export &gt; Wavefront (.obj). Then from the "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" and "Keep Vertex Order". The 3D model can also be constructed procedurally by code, by inserting values to the appropriate member variables. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a81045a6f3f7fc07a1950fad87d0a321b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a81045a6f3f7fc07a1950fad87d0a321b">&#9670;&nbsp;</a></span>Model() <span class="overload">[1/2]</span></h2>
@@ -324,8 +325,28 @@ static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>MAX_
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a2e0989ebceec0bf2c37301d52473b204"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2e0989ebceec0bf2c37301d52473b204">&#9670;&nbsp;</a></span>getJointTransform()</h2>
+<a id="a5d501a1d394c08b7666a48d55736a5ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d501a1d394c08b7666a48d55736a5ab">&#9670;&nbsp;</a></span>getCurrentPoseIdx()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t small3d::Model::getCurrentPoseIdx </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the index of the current animation pose. </p>
+<dl class="section return"><dt>Returns</dt><dd>The index of the current animation pose </dd></dl>
+
+</div>
+</div>
+<a id="a5ad87712d50688e377b82710b18e48bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ad87712d50688e377b82710b18e48bd">&#9670;&nbsp;</a></span>getJointTransform()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -334,7 +355,7 @@ static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>MAX_
           <td class="memname">glm::mat4 small3d::Model::getJointTransform </td>
           <td>(</td>
           <td class="paramtype">uint64_t&#160;</td>
-          <td class="paramname"><em>joint</em></td><td>)</td>
+          <td class="paramname"><em>jointIdx</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -343,7 +364,7 @@ static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>MAX_
 <p>Get a joint transform, also calculating the transorms of the parent joints in the same tree and the animations, if any exist. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">joint</td><td>The index of the joint in the list of joints </td></tr>
+    <tr><td class="paramname">jointIdx</td><td>The index of the joint in the list of joints </td></tr>
   </table>
   </dd>
 </dl>
