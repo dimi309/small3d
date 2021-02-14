@@ -518,7 +518,7 @@ namespace small3d {
 
         glm::inverse(
            glm::translate(glm::mat4(1.0f), model.armature.translation) *
-           glm::toMat4(model.armature.rotation) *
+          // glm::toMat4(model.armature.rotation) *
            glm::scale(glm::mat4(1.0f), model.armature.scale)) *
 
         model.getJointTransform(idx) *

@@ -138,5 +138,18 @@ namespace small3d {
      */
     std::vector<Model> getModels();
 
+    /**
+     * @brief Create the bounding boxes based on the set of extremes.
+     */
+    void generateBoxesFromExtremes();
+
+    /**
+     * @brief From an array of floats to be interpreted as 4 component vertex coordinates, calculate
+     *        the extremes of the bounding box set, which will consist of only one box in this
+     *        case.
+     * @param vertexData 
+     */
+    void generateExtremes(std::vector<float> &vertexData);
+
   };
 }

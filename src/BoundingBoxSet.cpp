@@ -213,8 +213,8 @@ namespace small3d {
   void BoundingBoxSet::triangulate()
   {
     if (facesVertexIndexesTriangulated.empty()) {
-      
-      for (auto x : facesVertexIndexes) {
+
+      for (auto& x : facesVertexIndexes) {
         facesVertexIndexesTriangulated.push_back(std::vector<unsigned int> {x.at(0), x.at(1), x.at(2)});
         facesVertexIndexesTriangulated.push_back(std::vector<unsigned int> {x.at(2), x.at(3), x.at(0)});
       }
@@ -297,6 +297,79 @@ namespace small3d {
     }
 
     return models;
+  }
+
+  void BoundingBoxSet::generateBoxesFromExtremes() {
+    vertices.clear();
+    facesVertexIndexes.clear();
+    facesVertexIndexesTriangulated.clear();
+    numBoxes = 0;
+    uint32_t base = 0;
+    std::vector<float> v;
+    std::vector<unsigned int> i;
+    for (auto& ext : boxExtremes) {
+      
+      v = { ext.minX, ext.minY, ext.maxZ, 1.0f };
+      vertices.push_back(v);
+      v = { ext.minX, ext.minY, ext.minZ, 1.0f };
+      vertices.push_back(v);
+      v = { ext.maxX, ext.minY, ext.minZ, 1.0f };
+      vertices.push_back(v);
+      v = { ext.maxX, ext.minY, ext.maxZ, 1.0f };
+      vertices.push_back(v);
+      v = { ext.minX, ext.maxY, ext.maxZ, 1.0f };
+      vertices.push_back(v);
+      v = { ext.minX, ext.maxY, ext.minZ, 1.0f };
+      vertices.push_back(v);
+      v = { ext.maxX, ext.maxY, ext.minZ, 1.0f };
+      vertices.push_back(v);
+      v = { ext.maxX, ext.maxY, ext.maxZ, 1.0f };
+      vertices.push_back(v);
+
+      i = { base + 4, base + 5, base + 1 , base + 0 };
+      facesVertexIndexes.push_back(i);
+      i = { base + 5, base + 6, base + 2 ,base + 1 };
+      facesVertexIndexes.push_back(i);
+      i = { base + 6, base + 7, base + 3 ,base + 2 };
+      facesVertexIndexes.push_back(i);
+      i = { base + 7, base + 4, base + 0 ,base + 3 };
+      facesVertexIndexes.push_back(i);
+      i = { base + 0, base + 1, base + 2 ,base + 3 };
+      facesVertexIndexes.push_back(i);
+      i = { base + 7, base + 6, base + 5 ,base + 4 };
+      facesVertexIndexes.push_back(i);
+
+      base += 8;
+      ++numBoxes;
+    }
+    triangulate();
+  }
+
+  void BoundingBoxSet::generateExtremes(std::vector<float>& vertexData) {
+    vertices.clear();
+    facesVertexIndexes.clear();
+    facesVertexIndexesTriangulated.clear();
+    boxExtremes.clear();
+    extremes ex = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+    
+    for (uint32_t idx = 0; idx < vertexData.size(); ++idx) {
+      if (idx % 4 == 0) {
+        if (vertexData[idx] < ex.minX) ex.minX = vertexData[idx];
+        else if (vertexData[idx] > ex.maxX) ex.maxX = vertexData[idx];
+      }
+      else if (idx % 4 == 1) {
+        if (vertexData[idx] < ex.minY) ex.minY = vertexData[idx];
+        else if (vertexData[idx] > ex.maxY) ex.maxY = vertexData[idx];
+      }
+      else if (idx % 4 == 2) {
+        if (vertexData[idx] < ex.minZ) ex.minZ = vertexData[idx];
+        else if (vertexData[idx] > ex.maxZ) ex.maxZ = vertexData[idx];
+      }
+    }
+
+    boxExtremes.push_back(ex);
+    generateBoxesFromExtremes();
+
   }
 
 }

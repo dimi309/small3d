@@ -125,17 +125,52 @@ int BoundingBoxesTest() {
 
     return 0;
   }
+
+  Renderer* renderer = &Renderer::getInstance("test", 640, 480);
+  
+  double startSeconds = glfwGetTime();
+  double seconds = glfwGetTime();
+  double prevSeconds = seconds;
+  const uint32_t framerate = 30;
+
+  constexpr double secondsInterval = 1.0 / framerate;
+
+  Model modelGoat("resources/models/goatUnscaled.glb", "Cube");
+
+  bboxes.generateExtremes(modelGoat.vertexData);
+
+  glm::vec3 rotation(0.0f, 0.0f, 0.0f);
+  
+  while (seconds - startSeconds < 5.0) {
+    glfwPollEvents();
+    seconds = glfwGetTime();
+    if (seconds - prevSeconds > secondsInterval) {
+
+
+      renderer->render(modelGoat, glm::vec3(0.0f, 1.0f, -6.0f),
+        rotation, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+      
+      
+      for(auto &model: bboxes.getModels()) {
+        renderer->render(model, glm::vec3(0.0f, 1.0f, -6.0f),
+          rotation, glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
+        rotation.y += 0.001f;
+      }
+      renderer->swapBuffers();
+      rotation.y += 0.01f;
+    }
+  }
+
+
   return 1;
 }
 
 int RendererTest() {
-  Renderer* renderer;
-  
-  renderer = &Renderer::getInstance("test", 640, 480);
+  Renderer* renderer = &Renderer::getInstance("test", 640, 480);
   
   renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
 
-  Model modelFromGlb("resources/models/goat.glb", "Cube", "Armature.001", "Armature.001Action");
+  Model modelFromGlb("resources/models/goatUnscaled.glb", "Cube", "Armature.001", "Armature.001Action");
                                        
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
@@ -212,7 +247,7 @@ int RendererTest() {
   renderer->clearBuffers(texturedRect);
   renderer->clearBuffers(textRect);
   renderer->deleteTexture("cubeTexture");
-  glfwDestroyWindow(renderer->getWindow());
+  
 
   return 1;
 }
@@ -327,7 +362,7 @@ int main(int argc, char** argv) {
       printf("*** Failing RendererTest.\n\r");
       return 1;
     }
-    /*if (!SoundTest()) {
+    if (!SoundTest()) {
       printf("*** Failing SoundTest.\n\r");
       return 1;
     }
@@ -338,7 +373,7 @@ int main(int argc, char** argv) {
     if (!SoundTest3()) {
       printf("*** Failing SoundTest3.\n\r");
       return 1;
-    }*/
+    }
     if (!TokenTest()) {
       printf("*** Failing TokenTest.\n\r");
       return 1;
