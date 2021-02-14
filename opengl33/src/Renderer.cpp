@@ -726,7 +726,7 @@ namespace small3d {
       }
         
         glEnableVertexAttribArray(attrib_joint);
-        glVertexAttribPointer(attrib_joint, 4, GL_UNSIGNED_BYTE, GL_FALSE, 0, 0);
+        glVertexAttribIPointer(attrib_joint, 4, GL_UNSIGNED_BYTE, 0, 0);
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, model.weightBufferObjectId);
@@ -789,7 +789,6 @@ namespace small3d {
     if (model.jointDataByteSize != 0) glDisableVertexAttribArray(attrib_joint);
     if (model.weightDataByteSize != 0) glDisableVertexAttribArray(attrib_weight);
     if (textureName != "") glDisableVertexAttribArray(attrib_uv);
-
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
