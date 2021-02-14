@@ -23,8 +23,8 @@ namespace small3d {
   /**
    * @struct	Model
    *
-   * @brief	A 3D model. It can be loaded from a Wavefront file.
-   *            Such a file can be exported from Blender for example (see blender.org).
+   * @brief	A 3D model. It can be loaded from a Wavefront or glTF file.
+   *            A Wavefront file can be exported from Blender for example (see blender.org).
    *            From its menu, select File > Export > Wavefront (.obj). Then from the
    *            "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" 
    *            and "Keep Vertex Order".
@@ -36,6 +36,9 @@ namespace small3d {
 
   public:
 
+    /**
+     * @brief glTF joint
+     */
     struct Joint {
       uint32_t node;
       std::string name;
@@ -52,11 +55,11 @@ namespace small3d {
     };
 
     static const uint32_t MAX_JOINTS_SUPPORTED = 16;
-    uint32_t currentFrame = 0;
+    
   private:
 
-    uint64_t numFrames = 0;
-    
+    uint64_t numPoses = 0;
+    uint32_t currentPose = 0;
 
     // Data read from .obj file
     std::vector<std::vector<float> > vertices;
@@ -311,7 +314,6 @@ namespace small3d {
      */
     Model(const std::string fileLocation);
 
-
     /**
      * @brief Constructor that loads model from a GLB file
      * @param fileLocation  Location of the GLB file from which to load the
@@ -326,19 +328,25 @@ namespace small3d {
     Model(const std::string& fileLocation, const std::string& meshName, const std::string& armatureName = "",
       const std::string& animationName = "");
 
+    /**
+     * @brief Get the index of the current animation pose
+     * @return The index of the current animation pose
+     */
+
+    uint32_t getCurrentPoseIdx();
 
     /**
-     * @brief Advance joint animation frame (if joints are animated) 
+     * @brief Advance joint animation pose (if joints are animated) 
      */
     void animate();
 
     /**
      * @brief Get a joint transform, also calculating the transorms of the parent
      *        joints in the same tree and the animations, if any exist.
-     *  @param joint The index of the joint in the list of joints
+     *  @param jointIdx The index of the joint in the list of joints
      *  @return The transform
      */
-    glm::mat4 getJointTransform(uint64_t joint);
+    glm::mat4 getJointTransform(uint64_t jointIdx);
 
   };
 }
