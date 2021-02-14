@@ -76,7 +76,7 @@ namespace small3d
     void initOpenGL();
     void checkForOpenGLErrors(const std::string& when, const bool abort) const;
 
-    void positionNextModel(const glm::vec3& offset,
+    void positionNextModel(Model& model, const glm::vec3& offset,
       const glm::vec3& rotation) const;
 
     uint32_t getTextureHandle(const std::string& name) const;

@@ -12,6 +12,7 @@
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "BasePath.hpp"
 
@@ -157,7 +158,7 @@ namespace small3d {
     }
   }
 
-  void Renderer::positionNextModel(const glm::vec3& offset,
+  void Renderer::positionNextModel(Model& model, const glm::vec3& offset,
     const glm::vec3& rotation) const {
     
     GLint modelTransformationUniformLocation = glGetUniformLocation(shaderProgram,
@@ -170,6 +171,33 @@ namespace small3d {
     
     glUniformMatrix4fv(modelTransformationUniformLocation, 1, GL_FALSE,
       glm::value_ptr(modelTranformation));
+
+    
+
+    uint32_t hasJoints = model.joints.size() > 0 ? 1U : 0U;
+    GLint hasJointsUniform = glGetUniformLocation(shaderProgram, "hasJoints");
+    glUniform1ui(hasJointsUniform, hasJoints);
+
+    glm::mat4 jointTransformations[Model::MAX_JOINTS_SUPPORTED];
+
+    uint64_t idx = 0;
+    for (auto& joint : model.joints) {
+      jointTransformations[idx] =
+
+        glm::inverse(
+          glm::translate(glm::mat4(1.0f), model.armature.translation) *
+          glm::toMat4(model.armature.rotation) *
+          glm::scale(glm::mat4(1.0f), model.armature.scale)) *
+
+        model.getJointTransform(idx) *
+
+        joint.inverseBindMatrix;
+
+      ++idx;
+    }
+
+    auto jointTransformationsUniformLocation = glGetUniformLocation(shaderProgram, "jointTransformations");
+    glUniformMatrix4fv(jointTransformationsUniformLocation, 16, GL_FALSE, glm::value_ptr(jointTransformations[0]));
 
     GLint offsetUniform = glGetUniformLocation(shaderProgram, "modelOffset");
     glUniform3fv(offsetUniform, 1, glm::value_ptr(offset));
@@ -633,6 +661,12 @@ namespace small3d {
     const std::string& textureName,
     const bool perspective) {
 
+    unsigned const attrib_position = 0;
+    unsigned const attrib_normal = 1;
+    unsigned const attrib_joint = 2;
+    unsigned const attrib_weight = 3;
+    unsigned const attrib_uv = 4;
+
     glUseProgram(shaderProgram);
 
     bool alreadyInGPU = model.positionBufferObjectId != 0;
@@ -642,6 +676,8 @@ namespace small3d {
       glGenBuffers(1, &model.positionBufferObjectId);
       glGenBuffers(1, &model.normalsBufferObjectId);
       glGenBuffers(1, &model.uvBufferObjectId);
+      glGenBuffers(1, &model.jointBufferObjectId);
+      glGenBuffers(1, &model.weightBufferObjectId);
     }
 
     // Vertices
@@ -662,20 +698,50 @@ namespace small3d {
         GL_STATIC_DRAW);
     }
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(attrib_position);
+    glVertexAttribPointer(attrib_position, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
     // Normals
+    glBindBuffer(GL_ARRAY_BUFFER, model.normalsBufferObjectId);
     if (perspective) {
-      glBindBuffer(GL_ARRAY_BUFFER, model.normalsBufferObjectId);
+      
       if (!alreadyInGPU) {
         glBufferData(GL_ARRAY_BUFFER,
           model.normalsDataByteSize,
           model.normalsData.data(),
           GL_STATIC_DRAW);
       }
-      glEnableVertexAttribArray(1);
-      glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+      
+      glEnableVertexAttribArray(attrib_normal);
+      glVertexAttribPointer(attrib_normal, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, model.jointBufferObjectId);
+    if (model.jointDataByteSize != 0) {
+      if (!alreadyInGPU) {
+        glBufferData(GL_ARRAY_BUFFER,
+          model.jointDataByteSize,
+          model.jointData.data(),
+          GL_STATIC_DRAW);
+      }
+        
+        glEnableVertexAttribArray(attrib_joint);
+        glVertexAttribPointer(attrib_joint, 4, GL_UNSIGNED_BYTE, GL_FALSE, 0, 0);
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, model.weightBufferObjectId);
+    if (model.weightDataByteSize != 0) {
+      if (!alreadyInGPU) {
+        glBufferData(GL_ARRAY_BUFFER,
+          model.weightDataByteSize,
+          model.weightData.data(),
+          GL_STATIC_DRAW);
+      }
+
+      
+      glEnableVertexAttribArray(attrib_weight);
+      glVertexAttribPointer(attrib_weight, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
     }
 
     // Find the colour uniform
@@ -700,8 +766,8 @@ namespace small3d {
           GL_STATIC_DRAW);
       }
 
-      glEnableVertexAttribArray(2);
-      glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+      glEnableVertexAttribArray(attrib_uv);
+      glVertexAttribPointer(attrib_uv, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
     }
     else {
@@ -711,21 +777,19 @@ namespace small3d {
 
     setWorldDetails(perspective);
 
-    positionNextModel(offset, rotation);
+    positionNextModel(model, offset, rotation);
 
     // Draw
     glDrawElements(GL_TRIANGLES,
       static_cast<GLsizei>(model.indexData.size()),
       GL_UNSIGNED_INT, 0);
 
-    if (textureName != "") {
-      glDisableVertexAttribArray(perspective ? 2 : 1);
-    }
+    glDisableVertexAttribArray(attrib_position);
+    if (perspective) glDisableVertexAttribArray(attrib_normal);
+    if (model.jointDataByteSize != 0) glDisableVertexAttribArray(attrib_joint);
+    if (model.weightDataByteSize != 0) glDisableVertexAttribArray(attrib_weight);
+    if (textureName != "") glDisableVertexAttribArray(attrib_uv);
 
-    if (perspective) {
-      glDisableVertexAttribArray(1);
-    }
-    glDisableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

@@ -198,6 +198,18 @@ namespace small3d {
      *        directly.
      */
     uint32_t uvBufferObjectId = 0;
+
+    /**
+     * @brief Joints buffer object id. It is suggested not to manipulate this
+     *        directly.
+     */
+    uint32_t jointBufferObjectId = 0;
+
+    /**
+     * @brief Joint weights buffer object id. It is suggested not to manipulate this
+     *        directly.
+     */
+    uint32_t weightBufferObjectId = 0;
     
 #endif
 
