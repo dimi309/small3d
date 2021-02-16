@@ -6,7 +6,9 @@ v1.709 (still open)
   of v1.708.
 - [BREAKING] Removed custom-made intToStr and floatToStr functions. Using 
   std::to_string instead.
-- Added some glTF support.
+- Added glTF support.
+- Bounding boxes can now be generated automatically, instead of being loaded
+  from a file.
 
 v1.708 2020-12-25
 

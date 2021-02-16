@@ -81,9 +81,9 @@ namespace small3d
      *                  state.
      *
      * @param boundingBoxSetPath The path to the file containing the object's
-     *                           bounding box set. If no such path is given, the
-     *                           object cannot be checked for collision
-     *                           detection.
+     *                           bounding box set. If no such path is given, a 
+     *                           single box set will be calculated, based on the
+     *                           model's vertices.
      * @param startFrameIndex The index number in the filename of the first file
      *                        of the animation sequence. The default value is 1.
      *                        If not loading an animation sequence, this parameter

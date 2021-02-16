@@ -25,7 +25,7 @@ namespace small3d {
    * Constructor
    */
 
-  BoundingBoxSet::BoundingBoxSet(const std::string fileLocation) {
+  BoundingBoxSet::BoundingBoxSet(const std::string& fileLocation) {
     vertices.clear();
     facesVertexIndexes.clear();
     numBoxes = 0;
@@ -35,6 +35,11 @@ namespace small3d {
       this->loadFromFile(getBasePath() + fileLocation);
 
     }
+
+  }
+
+  BoundingBoxSet::BoundingBoxSet(std::vector<float>& vertexData) {
+    generateExtremes(vertexData);
 
   }
 
@@ -262,43 +267,6 @@ namespace small3d {
     }
   }
 
-  int BoundingBoxSet::getNumBoxes() const {
-    return numBoxes;
-  }
-
-  std::vector<Model> BoundingBoxSet::getModels() {
-
-    std::vector<Model> models;
-
-    for (auto boxIdx = 0; boxIdx < getNumBoxes(); ++boxIdx) {
-      Model m;
-
-      for (auto vertexIdx = 0; vertexIdx < 8; ++vertexIdx) {
-        for (auto vertexComponent : vertices[boxIdx * (size_t)8 + vertexIdx]) {
-          m.vertexData.push_back(vertexComponent);
-          m.vertexDataByteSize += sizeof(float);
-        }
-      }
-
-      for (auto faceIndexIdx = 0; faceIndexIdx < 12; ++faceIndexIdx) {
-        for (auto vertexIndex : facesVertexIndexesTriangulated[boxIdx * (size_t)12 + faceIndexIdx]) {
-          m.indexData.push_back(vertexIndex - boxIdx * 8);
-          m.indexDataByteSize += sizeof(uint32_t);
-        }
-      }
-
-      m.normalsData = std::vector<float>(24); // 8 vertex coords * 3 components per normal
-      m.normalsDataByteSize = 24 * sizeof(float);
-
-      m.textureCoordsData = std::vector<float>(16); // 8 vertex coords * 2 components per texture coord
-      m.textureCoordsDataByteSize = 16 * sizeof(float);
-
-      models.push_back(m);
-    }
-
-    return models;
-  }
-
   void BoundingBoxSet::generateBoxesFromExtremes() {
     vertices.clear();
     facesVertexIndexes.clear();
@@ -308,7 +276,7 @@ namespace small3d {
     std::vector<float> v;
     std::vector<unsigned int> i;
     for (auto& ext : boxExtremes) {
-      
+
       v = { ext.minX, ext.minY, ext.maxZ, 1.0f };
       vertices.push_back(v);
       v = { ext.minX, ext.minY, ext.minZ, 1.0f };
@@ -350,8 +318,8 @@ namespace small3d {
     facesVertexIndexes.clear();
     facesVertexIndexesTriangulated.clear();
     boxExtremes.clear();
-    extremes ex = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
-    
+    extremes ex = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+
     for (uint32_t idx = 0; idx < vertexData.size(); ++idx) {
       if (idx % 4 == 0) {
         if (vertexData[idx] < ex.minX) ex.minX = vertexData[idx];
@@ -370,6 +338,43 @@ namespace small3d {
     boxExtremes.push_back(ex);
     generateBoxesFromExtremes();
 
+  }
+
+  int BoundingBoxSet::getNumBoxes() const {
+    return numBoxes;
+  }
+
+  std::vector<Model> BoundingBoxSet::getModels() {
+
+    std::vector<Model> models;
+
+    for (auto boxIdx = 0; boxIdx < getNumBoxes(); ++boxIdx) {
+      Model m;
+
+      for (auto vertexIdx = 0; vertexIdx < 8; ++vertexIdx) {
+        for (auto vertexComponent : vertices[boxIdx * (size_t)8 + vertexIdx]) {
+          m.vertexData.push_back(vertexComponent);
+          m.vertexDataByteSize += sizeof(float);
+        }
+      }
+
+      for (auto faceIndexIdx = 0; faceIndexIdx < 12; ++faceIndexIdx) {
+        for (auto vertexIndex : facesVertexIndexesTriangulated[boxIdx * (size_t)12 + faceIndexIdx]) {
+          m.indexData.push_back(vertexIndex - boxIdx * 8);
+          m.indexDataByteSize += sizeof(uint32_t);
+        }
+      }
+
+      m.normalsData = std::vector<float>(24); // 8 vertex coords * 3 components per normal
+      m.normalsDataByteSize = 24 * sizeof(float);
+
+      m.textureCoordsData = std::vector<float>(16); // 8 vertex coords * 2 components per texture coord
+      m.textureCoordsDataByteSize = 16 * sizeof(float);
+
+      models.push_back(m);
+    }
+
+    return models;
   }
 
 }

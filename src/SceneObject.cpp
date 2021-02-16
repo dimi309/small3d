@@ -14,7 +14,7 @@ namespace small3d {
 			   const int numFrames,
 			   const std::string boundingBoxSetPath,
          const int startFrameIndex) :
-    offset(0,0,0), rotation(0,0,0), boundingBoxSet(boundingBoxSetPath) {
+    offset(0,0,0), rotation(0,0,0) {
     
     initLogger();
     this->name = name;
@@ -41,6 +41,14 @@ namespace small3d {
       Model model1(modelPath);
       models.push_back(model1);
     }
+
+    if (boundingBoxSetPath != "") {
+      boundingBoxSet = BoundingBoxSet(boundingBoxSetPath);
+    }
+    else {
+      boundingBoxSet = BoundingBoxSet(getModel().vertexData);
+    }
+
   }
 
   Model& SceneObject::getModel() {

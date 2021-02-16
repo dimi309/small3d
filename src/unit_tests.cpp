@@ -137,7 +137,7 @@ int BoundingBoxesTest() {
 
   Model modelGoat("resources/models/goatUnscaled.glb", "Cube");
 
-  bboxes.generateExtremes(modelGoat.vertexData);
+  BoundingBoxSet goatBoxes(modelGoat.vertexData);
 
   glm::vec3 rotation(0.0f, 0.0f, 0.0f);
   
@@ -151,7 +151,7 @@ int BoundingBoxesTest() {
         rotation, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
       
       
-      for(auto &model: bboxes.getModels()) {
+      for(auto &model: goatBoxes.getModels()) {
         renderer->render(model, glm::vec3(0.0f, 1.0f, -6.0f),
           rotation, glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
         rotation.y += 0.001f;
