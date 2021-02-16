@@ -51,6 +51,8 @@ namespace small3d {
     void loadFromFile(std::string fileLocation);
     void triangulate();
     void calcExtremes();
+    void generateBoxesFromExtremes();
+    void generateExtremes(std::vector<float>& vertexData);
 
   public:
 
@@ -79,7 +81,17 @@ namespace small3d {
      *
      */
 
-    BoundingBoxSet(const std::string fileLocation = "");
+    BoundingBoxSet(const std::string& fileLocation = "");
+
+    /**
+     * @brief Constructor
+     * @param vertexData Create a single box set, calculated from the the vertex
+     *                   data that can be found in a Model.
+     * @param vertexData The vertex data. Array of floats to be interpreted as
+     *                   an array of 4 component vertex coordinates.
+     */
+
+    BoundingBoxSet(std::vector<float>& vertexData);
 
     /**
      * @brief Destructor
@@ -87,13 +99,13 @@ namespace small3d {
     ~BoundingBoxSet() = default;
 
     /**
-     * @brief Vertex coordinates read from Wavefront .obj file
+     * @brief Vertex coordinates
      */
 
     std::vector<std::vector<float> > vertices;
 
     /**
-     * @brief Faces vertex indexes read from Wavefront .obj file (rectangles)
+     * @brief Faces vertex indexes (rectangles)
      */
 
     std::vector<std::vector<unsigned int> > facesVertexIndexes;
@@ -137,19 +149,6 @@ namespace small3d {
      * @return The set of bounding boxes as Models
      */
     std::vector<Model> getModels();
-
-    /**
-     * @brief Create the bounding boxes based on the set of extremes.
-     */
-    void generateBoxesFromExtremes();
-
-    /**
-     * @brief From an array of floats to be interpreted as 4 component vertex coordinates, calculate
-     *        the extremes of the bounding box set, which will consist of only one box in this
-     *        case.
-     * @param vertexData 
-     */
-    void generateExtremes(std::vector<float> &vertexData);
 
   };
 }
