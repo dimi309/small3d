@@ -102,10 +102,10 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <tr class="memdesc:a0d8a4eac5d06e723ae60aef2bc2b0a83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of boxes contained in the set. <br /></td></tr>
 <tr class="separator:a0d8a4eac5d06e723ae60aef2bc2b0a83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acafb88f72c0ed26335e03f596822aa70"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_bounding_box_set.html#acafb88f72c0ed26335e03f596822aa70">BoundingBoxSet</a> (const std::string &amp;fileLocation=&quot;&quot;)</td></tr>
-<tr class="memdesc:acafb88f72c0ed26335e03f596822aa70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classsmall3d_1_1_bounding_box_set.html#acafb88f72c0ed26335e03f596822aa70">More...</a><br /></td></tr>
+<tr class="memdesc:acafb88f72c0ed26335e03f596822aa70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that loads a set of bounding boxes from a Wavefront file.  <a href="classsmall3d_1_1_bounding_box_set.html#acafb88f72c0ed26335e03f596822aa70">More...</a><br /></td></tr>
 <tr class="separator:acafb88f72c0ed26335e03f596822aa70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a196855ab9bf27793088769294d6e4ad2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_bounding_box_set.html#a196855ab9bf27793088769294d6e4ad2">BoundingBoxSet</a> (std::vector&lt; float &gt; &amp;vertexData)</td></tr>
-<tr class="memdesc:a196855ab9bf27793088769294d6e4ad2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classsmall3d_1_1_bounding_box_set.html#a196855ab9bf27793088769294d6e4ad2">More...</a><br /></td></tr>
+<tr class="memdesc:a196855ab9bf27793088769294d6e4ad2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that creates a box set containing a single box, constructed based on the vertex data that can be found in a <a class="el" href="structsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a Wavefront or glTF file. A Wavefront file can be exported from Ble...">Model</a>.  <a href="classsmall3d_1_1_bounding_box_set.html#a196855ab9bf27793088769294d6e4ad2">More...</a><br /></td></tr>
 <tr class="separator:a196855ab9bf27793088769294d6e4ad2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60b57cda9c3d783c7d88f306ceda3060"><td class="memItemLeft" align="right" valign="top"><a id="a60b57cda9c3d783c7d88f306ceda3060"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_bounding_box_set.html#a60b57cda9c3d783c7d88f306ceda3060">~BoundingBoxSet</a> ()=default</td></tr>
@@ -161,7 +161,7 @@ std::vector&lt; std::vector&lt; unsigned int &gt; &gt;&#160;</td><td class="memI
       </table>
 </div><div class="memdoc">
 
-<p>Constructor. </p>
+<p>Constructor that loads a set of bounding boxes from a Wavefront file. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">fileLocation</td><td>Location of the Wavefront file containing the bounding boxes</td></tr>
@@ -188,10 +188,9 @@ std::vector&lt; std::vector&lt; unsigned int &gt; &gt;&#160;</td><td class="memI
       </table>
 </div><div class="memdoc">
 
-<p>Constructor. </p>
+<p>Constructor that creates a box set containing a single box, constructed based on the vertex data that can be found in a <a class="el" href="structsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a Wavefront or glTF file. A Wavefront file can be exported from Ble...">Model</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">vertexData</td><td>Create a single box set, calculated from the the vertex data that can be found in a <a class="el" href="structsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a Wavefront or glTF file. A Wavefront file can be exported from Ble...">Model</a>. </td></tr>
     <tr><td class="paramname">vertexData</td><td>The vertex data. Array of floats to be interpreted as an array of 4 component vertex coordinates. </td></tr>
   </table>
   </dd>

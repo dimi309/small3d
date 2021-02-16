@@ -75,7 +75,7 @@ namespace small3d {
     int getNumBoxes() const;
 
     /**
-     * @brief Constructor
+     * @brief Constructor that loads a set of bounding boxes from a Wavefront file
      * @param fileLocation Location of the Wavefront file containing the
      *        bounding boxes
      *
@@ -84,11 +84,10 @@ namespace small3d {
     BoundingBoxSet(const std::string& fileLocation = "");
 
     /**
-     * @brief Constructor
-     * @param vertexData Create a single box set, calculated from the the vertex
-     *                   data that can be found in a Model.
-     * @param vertexData The vertex data. Array of floats to be interpreted as
-     *                   an array of 4 component vertex coordinates.
+     * @brief Constructor that creates a box set containing a single box, 
+     *        constructed based on the vertex data that can be found in a Model.
+     * @param vertexData  The vertex data. Array of floats to be interpreted as
+     *                    an array of 4 component vertex coordinates.
      */
 
     BoundingBoxSet(std::vector<float>& vertexData);
