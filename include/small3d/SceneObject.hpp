@@ -49,6 +49,7 @@ namespace small3d
     int framesWaited;
     int numFrames;
     std::string name;
+    bool wavefront = false;
 
   public:
     /**
@@ -58,7 +59,7 @@ namespace small3d
     std::vector<Model> models;
 
     /**
-     * @brief Constructor
+     * @brief Wavefront .obj loading constructor
      *
      * @param name      The name of the object
      * @param modelPath The path to the file containing the object's model.
@@ -94,6 +95,23 @@ namespace small3d
 		const std::string boundingBoxSetPath = "", const int startFrameIndex = 1);
 
     /**
+     * @brief glTF .glb loading constructor
+     *
+     * @param name      The name of the object
+     * @param modelPath The path to the GLB file containing the object's model.
+     *
+     * @param modelMeshName The name of the mesh in the GLB file which will be loaded
+     *                      as the model.
+     *
+     * @param modelArmatureName The name of the armature binding the model to a set of joints.
+     * @param modelAnimationName The name of the animation to load for the model's joints.
+     *                      
+     */
+    SceneObject(const std::string name, const std::string modelPath,
+      const std::string& modelMeshName, const std::string& modelArmatureName = "",
+      const std::string& modelAnimationName = "");
+
+    /**
      * @brief Destructor
      */
     ~SceneObject() = default;
@@ -102,14 +120,7 @@ namespace small3d
      * @brief Get the object's model
      * @return The object's model
      */
-    Model& getModel() ;
-
-    /**
-     * @brief Is this an animated or a static object (is it associated with more than
-     *        one frames/models)?
-     * @return True if animated, False otherwise.
-     */
-    bool isAnimated() const;
+    Model& getModel();
 
     /**
      * @brief Get the name of the object
@@ -120,12 +131,12 @@ namespace small3d
     /**
      * Offset (position) of the object
      */
-    glm::vec3 offset;
+    glm::vec3 offset = glm::vec3(0.0f, 0.0f, 0.0f);
 
     /**
      * Rotation of the object (on x, y, z axes respectively)
      */
-    glm::vec3 rotation;
+    glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
     /**
      * @brief Start animating the object

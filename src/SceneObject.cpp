@@ -15,6 +15,8 @@ namespace small3d {
 			   const std::string boundingBoxSetPath,
          const int startFrameIndex) :
     offset(0,0,0), rotation(0,0,0) {
+
+    wavefront = true;
     
     initLogger();
     this->name = name;
@@ -51,6 +53,21 @@ namespace small3d {
 
   }
 
+  SceneObject::SceneObject(const std::string name, const std::string modelPath,
+    const std::string& modelMeshName, const std::string& modelArmatureName,
+    const std::string& modelAnimationName) {
+    initLogger();
+    this->name = name;
+    animating = false;
+    framesWaited = 0;
+    frameDelay = 1;
+    currentFrame = 0;
+    this->numFrames = 1;
+    Model model1(modelPath, modelMeshName, modelArmatureName, modelAnimationName);
+    models.push_back(model1);
+    boundingBoxSet = BoundingBoxSet(model1.vertexData);
+  }
+
   Model& SceneObject::getModel() {
     return models[currentFrame];
   }
@@ -77,13 +94,18 @@ namespace small3d {
 
   void SceneObject::animate() {
     if (animating) {
-      ++framesWaited;
-      if (framesWaited == frameDelay) {
-        framesWaited = 0;
-        ++currentFrame;
-        if (currentFrame == numFrames) {
-          currentFrame = 0;
+      if (wavefront) {
+        ++framesWaited;
+        if (framesWaited == frameDelay) {
+          framesWaited = 0;
+          ++currentFrame;
+          if (currentFrame == numFrames) {
+            currentFrame = 0;
+          }
         }
+      }
+      else {
+        models[0].animate();
       }
     }
   }
@@ -113,10 +135,6 @@ namespace small3d {
     return boundingBoxSet.containsCorners(otherObject.boundingBoxSet, this->offset,
 				       this->rotation, otherObject.offset,
 				       otherObject.rotation);
-  }
-
-  bool SceneObject::isAnimated() const {
-    return numFrames > 1;
   }
 
 }

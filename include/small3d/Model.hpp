@@ -335,7 +335,7 @@ namespace small3d {
      * 
      * @param armatureName  The name of the armature binding the model to a set of joints.
      * @param animationName The name of the animation to load for the model's joints.
-     *                      Only rotations are used.
+     *                      
      */
     Model(const std::string& fileLocation, const std::string& meshName, const std::string& armatureName = "",
       const std::string& animationName = "");

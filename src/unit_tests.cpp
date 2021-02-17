@@ -135,29 +135,27 @@ int BoundingBoxesTest() {
 
   constexpr double secondsInterval = 1.0 / framerate;
 
-  Model modelGoat("resources/models/goatUnscaled.glb", "Cube");
+  SceneObject goat("goat", "resources/models/goatUnscaled.glb", "Cube",
+    "Armature.001", "Armature.001Action");
+  goat.offset = glm::vec3(0.0f, 0.0f, -3.0f);
+  goat.startAnimating();
 
-  BoundingBoxSet goatBoxes(modelGoat.vertexData);
-
-  glm::vec3 rotation(0.0f, 0.0f, 0.0f);
-  
   while (seconds - startSeconds < 5.0) {
     glfwPollEvents();
     seconds = glfwGetTime();
     if (seconds - prevSeconds > secondsInterval) {
 
+      goat.animate();
 
-      renderer->render(modelGoat, glm::vec3(0.0f, 1.0f, -6.0f),
-        rotation, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+      renderer->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
       
-      
-      for(auto &model: goatBoxes.getModels()) {
-        renderer->render(model, glm::vec3(0.0f, 1.0f, -6.0f),
-          rotation, glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
-        rotation.y += 0.001f;
+      for(auto &model: goat.boundingBoxSet.getModels()) {
+        renderer->render(model, goat.offset,
+          goat.rotation, glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
+        
       }
       renderer->swapBuffers();
-      rotation.y += 0.01f;
+      goat.rotation.y += 0.01f;
     }
   }
 
