@@ -517,9 +517,9 @@ namespace small3d {
       uboModelPlacementDynamic[memIndex].jointTransformations[idx] =
 
         glm::inverse(
-           glm::translate(glm::mat4(1.0f), model.armature.translation) *
+          glm::translate(glm::mat4(1.0f), model.armature.translation) *
           // glm::toMat4(model.armature.rotation) *
-           glm::scale(glm::mat4(1.0f), model.armature.scale)) *
+          glm::scale(glm::mat4(1.0f), model.armature.scale)) *
 
         model.getJointTransform(idx) *
 
@@ -1237,9 +1237,7 @@ namespace small3d {
       model.vertexData.size() == 0 ||
       model.vertexDataByteSize == 0 ||
       model.normalsData.size() == 0 ||
-      model.normalsDataByteSize == 0 ||
-      model.textureCoordsData.size() == 0 ||
-      model.textureCoordsDataByteSize == 0) {
+      model.normalsDataByteSize == 0) {
       throw std::runtime_error("Model to be rendered has some empty values!");
     }
 #endif
@@ -1351,43 +1349,50 @@ namespace small3d {
           " buffer for indices.");
       }
 
-      if (model.textureCoordsDataByteSize != 0) {
+      // Set the texture coordinates data. Replace by a buffer filled with 0s if the data does not exist,
+      // otherwise the bindings of the joints to the shader (bound next, if those exist) will be wrong and it is 
+      // more work to make those flexible.
 
-        // Send texture coordinates data
+      auto uvByteSize = model.textureCoordsDataByteSize == 0 ? model.vertexDataByteSize / 2 : model.textureCoordsDataByteSize;
 
-        if (!vkz_create_buffer(&model.uvBuffer,
-          VK_BUFFER_USAGE_TRANSFER_DST_BIT |
-          VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-          model.textureCoordsDataByteSize,
-          &model.uvBufferMemory,
-          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
-          throw std::runtime_error("Failed to create uv buffer.");
-        }
+      if (!vkz_create_buffer(&model.uvBuffer,
+        VK_BUFFER_USAGE_TRANSFER_DST_BIT |
+        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        uvByteSize,
+        &model.uvBufferMemory,
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
+        throw std::runtime_error("Failed to create uv buffer.");
+      }
 
-        if (vkz_create_buffer(&stagingBuffer,
-          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-          model.textureCoordsDataByteSize,
-          &stagingBufferMemory,
-          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
-          void* uvData;
-          vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
-            VK_WHOLE_SIZE,
-            0, &uvData);
+      if (vkz_create_buffer(&stagingBuffer,
+        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+        uvByteSize,
+        &stagingBufferMemory,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
+        void* uvData;
+        vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
+          VK_WHOLE_SIZE,
+          0, &uvData);
+
+        if (model.textureCoordsDataByteSize != 0) {
           memcpy(uvData, &model.textureCoordsData[0],
-            model.textureCoordsDataByteSize);
-          vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
-
-          vkz_copy_buffer(stagingBuffer, model.uvBuffer,
-            model.textureCoordsDataByteSize);
-
-          vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+            uvByteSize);
         }
         else {
-          throw std::runtime_error("Failed to create the staging"
-            " buffer for texture coordinates.");
+          memset(uvData, 0, uvByteSize);
         }
 
+        vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+
+        vkz_copy_buffer(stagingBuffer, model.uvBuffer,
+          uvByteSize);
+
+        vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+      }
+      else {
+        throw std::runtime_error("Failed to create the staging"
+          " buffer for texture coordinates.");
       }
 
       if (model.jointDataByteSize != 0) {

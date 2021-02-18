@@ -524,6 +524,7 @@ namespace small3d {
   }
 
   bool GlbFile::existSkin(const uint32_t index) {
+    if (getToken("skins") == nullptr) return false;
     return getChildTokens(getToken("skins")).size() > index;
   }
 
