@@ -155,7 +155,7 @@ namespace small3d {
     const glm::vec3 thisOffset,
     const glm::vec3 thisRotation) const {
 
-    bool collides = false;
+    bool doesContain = false;
     glm::mat4 reverseRotationMatrix =
       glm::rotate(glm::mat4x4(1.0f), -thisRotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), -thisRotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
@@ -172,12 +172,12 @@ namespace small3d {
         pointInBoxSpace.y > ext.minY && pointInBoxSpace.y < ext.maxY &&
         pointInBoxSpace.z > ext.minZ && pointInBoxSpace.z < ext.maxZ) {
 
-        collides = true;
+        doesContain = true;
         break;
       }
 
     }
-    return collides;
+    return doesContain;
   }
 
   bool BoundingBoxSet::containsCorners(const BoundingBoxSet otherBoxSet,
@@ -336,7 +336,119 @@ namespace small3d {
     }
 
     boxExtremes.push_back(ex);
+
+    generateSubExtremes(vertexData);
+    generateSubExtremes(vertexData);
+    generateSubExtremes(vertexData);
+    generateSubExtremes(vertexData);
+    
+
     generateBoxesFromExtremes();
+
+  }
+
+  void BoundingBoxSet::generateSubExtremes(std::vector<float>& vertexData) {
+    
+    // Move all extremes to a temporary buffer
+    std::vector<extremes> extBuffer;
+    
+    std::move(boxExtremes.begin(), boxExtremes.end(), std::back_inserter(extBuffer));
+    boxExtremes.clear();
+    // Break each extreme into 8
+    for (auto& ext : extBuffer) {
+
+      float xSplit = ext.minX + (ext.maxX - ext.minX) / 2.0f;
+      float zSplit = ext.minZ + (ext.maxZ - ext.minZ) / 2.0f;
+      float ySplit = ext.minY + (ext.maxY - ext.minY) / 2.0f;
+
+      std::vector<extremes> newExtremes;
+      newExtremes.resize(8);
+      
+      newExtremes[0].minX = ext.minX;
+      newExtremes[0].maxX = xSplit;
+      newExtremes[0].minZ = ext.minZ;
+      newExtremes[0].maxZ = zSplit;
+      newExtremes[0].minY = ext.minY;
+      newExtremes[0].maxY = ySplit;
+
+      newExtremes[1].minX = ext.minX;
+      newExtremes[1].maxX = xSplit;
+      newExtremes[1].minZ = zSplit;
+      newExtremes[1].maxZ = ext.maxZ;
+      newExtremes[1].minY = ext.minY;
+      newExtremes[1].maxY = ySplit;
+
+      newExtremes[2].minX = xSplit;
+      newExtremes[2].maxX = ext.maxX;
+      newExtremes[2].minZ = zSplit;
+      newExtremes[2].maxZ = ext.maxZ;
+      newExtremes[2].minY = ext.minY;
+      newExtremes[2].maxY = ySplit;
+
+      newExtremes[3].minX = xSplit;
+      newExtremes[3].maxX = ext.maxX;
+      newExtremes[3].minZ = ext.minZ;
+      newExtremes[3].maxZ = zSplit;
+      newExtremes[3].minY = ext.minY;
+      newExtremes[3].maxY = ySplit;
+
+      newExtremes[4].minX = ext.minX;
+      newExtremes[4].maxX = xSplit;
+      newExtremes[4].minZ = ext.minZ;
+      newExtremes[4].maxZ = zSplit;
+      newExtremes[4].minY = ySplit;
+      newExtremes[4].maxY = ext.maxY;
+
+      newExtremes[5].minX = ext.minX;
+      newExtremes[5].maxX = xSplit;
+      newExtremes[5].minZ = zSplit;
+      newExtremes[5].maxZ = ext.maxZ;
+      newExtremes[5].minY = ySplit;
+      newExtremes[5].maxY = ext.maxY;
+
+      newExtremes[6].minX = xSplit;
+      newExtremes[6].maxX = ext.maxX;
+      newExtremes[6].minZ = zSplit;
+      newExtremes[6].maxZ = ext.maxZ;
+      newExtremes[6].minY = ySplit;
+      newExtremes[6].maxY = ext.maxY;
+
+      newExtremes[7].minX = xSplit;
+      newExtremes[7].maxX = ext.maxX;
+      newExtremes[7].minZ = ext.minZ;
+      newExtremes[7].maxZ = zSplit;
+      newExtremes[7].minY = ySplit;
+      newExtremes[7].maxY = ext.maxY;
+
+      glm::vec4 point;
+
+      // From the newly formed extremes keep only the ones that
+      // contain one of the model's ponts
+
+      for (uint32_t idx = 0; idx < vertexData.size(); ++idx) {
+        if (idx % 4 == 0) {
+          point.x = vertexData[idx];
+        }
+        else if (idx % 4 == 1) {
+          point.y = vertexData[idx];
+        }
+        else if (idx % 4 == 2) {
+          point.z = vertexData[idx];
+        }
+        else if (idx % 4 == 3) {
+          point.w = vertexData[idx];
+          for (auto& ex : newExtremes) {
+            if (ex.contain(point)) ex.tagged = true;
+          }
+        }
+      }
+
+      for (auto & ex : newExtremes) {
+        if (ex.tagged) {
+          boxExtremes.push_back(ex);
+        }
+      }
+    }
 
   }
 

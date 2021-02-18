@@ -20,27 +20,27 @@ namespace small3d {
 
   /**
    * @class BoundingBoxSet
-   * @brief Set of bounding boxes for a SceneObject, normally loaded from a 
+   * @brief Set of bounding boxes for a SceneObject, normally loaded from a
    *        Wavefront file, allowing for collision detection.
-   *        In order to create these in Blender for example (see blender.org), 
-   *        just place them in the preferred position over a model. Ideally, 
-   *        they should be aligned with the axes, (but note that small3d does 
-   *        more than just a simple axis-aligned bounding box collision 
+   *        In order to create these in Blender for example (see blender.org),
+   *        just place them in the preferred position over a model. Ideally,
+   *        they should be aligned with the axes, (but note that small3d does
+   *        more than just a simple axis-aligned bounding box collision
    *        detection).
    *
-   *        Export the bounding boxes to a Wavefront file separately from the 
-   *        model. You can do this if you "save as" a new file after placing 
-   *        the boxes and deleting the original model. During export, only set 
-   *        the options Apply Modifiers, Include Edges (but not in newer 
-   *        versions of Blender, where it is not available), 
-   *        Objects as OBJ Objects and Keep Vertex Order. On the contrary to 
-   *        what is the case when exporting the Model itself, more than one 
+   *        Export the bounding boxes to a Wavefront file separately from the
+   *        model. You can do this if you "save as" a new file after placing
+   *        the boxes and deleting the original model. During export, only set
+   *        the options Apply Modifiers, Include Edges (but not in newer
+   *        versions of Blender, where it is not available),
+   *        Objects as OBJ Objects and Keep Vertex Order. On the contrary to
+   *        what is the case when exporting the Model itself, more than one
    *        bounding box objects can be exported to the same Wavefront file.
    *
-   *        It is good to keep the default origin in Blender for the models 
-   *        as well as the bounding boxes. User-set origins are ignored by 
-   *        Blender when exporting Wavefront files. That can cause 
-   *        misalignments between bounding boxes and models, even if 
+   *        It is good to keep the default origin in Blender for the models
+   *        as well as the bounding boxes. User-set origins are ignored by
+   *        Blender when exporting Wavefront files. That can cause
+   *        misalignments between bounding boxes and models, even if
    *        the origins of both have been properly set to a new position.
    */
 
@@ -53,15 +53,22 @@ namespace small3d {
     void calcExtremes();
     void generateBoxesFromExtremes();
     void generateExtremes(std::vector<float>& vertexData);
+    void generateSubExtremes(std::vector<float>& vertexData);
 
   public:
 
     /**
      * @brief Structure to hold the coordinates of the extremes of each box.
      */
-    typedef struct extremes_ {
+    struct extremes {
       float minZ, maxZ, minX, maxX, minY, maxY;
-    } extremes;
+      bool tagged = false;
+      bool contain(glm::vec4 point) {
+        return point.x > minX && point.x < maxX&&
+          point.y > minY && point.y < maxY&&
+          point.z > minZ && point.z < maxZ;
+      }
+    };
 
     /**
      * @brief The extreme coordinates (max and min) of each box.
@@ -84,7 +91,7 @@ namespace small3d {
     BoundingBoxSet(const std::string& fileLocation = "");
 
     /**
-     * @brief Constructor that creates a box set containing a single box, 
+     * @brief Constructor that creates a box set containing a single box,
      *        constructed based on the vertex data that can be found in a Model.
      * @param vertexData  The vertex data. Array of floats to be interpreted as
      *                    an array of 4 component vertex coordinates.
@@ -126,14 +133,14 @@ namespace small3d {
       const glm::vec3 thisRotation) const;
 
     /**
-     * @brief Check any of the corners of another set of bounding boxes 
+     * @brief Check any of the corners of another set of bounding boxes
      *        is inside any of the boxes of this set.
      * @param otherBoxSet   The other box set
      * @param thisOffset    The offset (location) of this box set
      * @param thisRotation  The rotation of this box set
      * @param otherOffset   The offset (location) of the other box set
      * @param otherRotation The rotation of the other box set
-     * @return True if a corner of the other bounding box set is contained in 
+     * @return True if a corner of the other bounding box set is contained in
      *         this set, False otherwise.
      */
 
