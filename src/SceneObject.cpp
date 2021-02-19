@@ -13,7 +13,8 @@ namespace small3d {
   SceneObject::SceneObject(const std::string name, const std::string modelPath,
 			   const int numFrames,
 			   const std::string boundingBoxSetPath,
-         const int startFrameIndex) :
+         const int startFrameIndex,
+         const uint32_t boundingBoxSubdivisions) :
     offset(0,0,0), rotation(0,0,0) {
 
     wavefront = true;
@@ -48,14 +49,15 @@ namespace small3d {
       boundingBoxSet = BoundingBoxSet(boundingBoxSetPath);
     }
     else {
-      boundingBoxSet = BoundingBoxSet(getModel().vertexData);
+      boundingBoxSet = BoundingBoxSet(getModel().vertexData, boundingBoxSubdivisions);
     }
 
   }
 
   SceneObject::SceneObject(const std::string name, const std::string modelPath,
     const std::string& modelMeshName, const std::string& modelArmatureName,
-    const std::string& modelAnimationName) {
+    const std::string& modelAnimationName,
+    const uint32_t boundingBoxSubdivisions) {
     initLogger();
     this->name = name;
     animating = false;
@@ -65,7 +67,7 @@ namespace small3d {
     this->numFrames = 1;
     Model model1(modelPath, modelMeshName, modelArmatureName, modelAnimationName);
     models.push_back(model1);
-    boundingBoxSet = BoundingBoxSet(model1.vertexData);
+    boundingBoxSet = BoundingBoxSet(model1.vertexData, boundingBoxSubdivisions);
   }
 
   Model& SceneObject::getModel() {

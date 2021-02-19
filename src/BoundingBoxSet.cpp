@@ -38,8 +38,8 @@ namespace small3d {
 
   }
 
-  BoundingBoxSet::BoundingBoxSet(std::vector<float>& vertexData) {
-    generateExtremes(vertexData);
+  BoundingBoxSet::BoundingBoxSet(std::vector<float>& vertexData, uint32_t subdivisions) {
+    generateExtremes(vertexData, subdivisions);
 
   }
 
@@ -166,12 +166,15 @@ namespace small3d {
 
     pointInBoxSpace = reverseRotationMatrix * pointInBoxSpace;
 
-    for (auto& ext : boxExtremes) {
-
-      if (pointInBoxSpace.x > ext.minX && pointInBoxSpace.x < ext.maxX &&
-        pointInBoxSpace.y > ext.minY && pointInBoxSpace.y < ext.maxY &&
-        pointInBoxSpace.z > ext.minZ && pointInBoxSpace.z < ext.maxZ) {
-
+    for (auto& ex : boxExtremes) {
+      // Very strange behaviour when trying to do this with a function
+      // declared in the struct on VS 2019. The function would not accept
+      // ex as a parameter, even though the parameter was declared to be
+      // glm::vec4 and even though, when the same funchion was used in 
+      // generateSubExtremes it worked.
+      if (pointInBoxSpace.x > ex.minX && pointInBoxSpace.x < ex.maxX &&
+        pointInBoxSpace.y > ex.minY && pointInBoxSpace.y < ex.maxY &&
+        pointInBoxSpace.z > ex.minZ && pointInBoxSpace.z < ex.maxZ) {
         doesContain = true;
         break;
       }
@@ -313,7 +316,7 @@ namespace small3d {
     triangulate();
   }
 
-  void BoundingBoxSet::generateExtremes(std::vector<float>& vertexData) {
+  void BoundingBoxSet::generateExtremes(std::vector<float>&vertexData, uint32_t subdivisions) {
     vertices.clear();
     facesVertexIndexes.clear();
     facesVertexIndexesTriangulated.clear();
@@ -337,21 +340,17 @@ namespace small3d {
 
     boxExtremes.push_back(ex);
 
-    generateSubExtremes(vertexData);
-    generateSubExtremes(vertexData);
-    generateSubExtremes(vertexData);
-    generateSubExtremes(vertexData);
-    
-
+    for (uint32_t idx = 0; idx < subdivisions; ++idx) {
+      generateSubExtremes(vertexData);
+    }
     generateBoxesFromExtremes();
-
   }
 
-  void BoundingBoxSet::generateSubExtremes(std::vector<float>& vertexData) {
-    
+  void BoundingBoxSet::generateSubExtremes(std::vector<float>&vertexData) {
+
     // Move all extremes to a temporary buffer
     std::vector<extremes> extBuffer;
-    
+
     std::move(boxExtremes.begin(), boxExtremes.end(), std::back_inserter(extBuffer));
     boxExtremes.clear();
     // Break each extreme into 8
@@ -363,7 +362,7 @@ namespace small3d {
 
       std::vector<extremes> newExtremes;
       newExtremes.resize(8);
-      
+
       newExtremes[0].minX = ext.minX;
       newExtremes[0].maxX = xSplit;
       newExtremes[0].minZ = ext.minZ;
@@ -438,12 +437,16 @@ namespace small3d {
         else if (idx % 4 == 3) {
           point.w = vertexData[idx];
           for (auto& ex : newExtremes) {
-            if (ex.contain(point)) ex.tagged = true;
+
+            if (point.x > ex.minX && point.x < ex.maxX &&
+              point.y > ex.minY && point.y < ex.maxY &&
+              point.z > ex.minZ && point.z < ex.maxZ) ex.tagged = true;
+
           }
         }
       }
 
-      for (auto & ex : newExtremes) {
+      for (auto& ex : newExtremes) {
         if (ex.tagged) {
           boxExtremes.push_back(ex);
         }

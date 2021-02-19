@@ -52,7 +52,7 @@ namespace small3d {
     void triangulate();
     void calcExtremes();
     void generateBoxesFromExtremes();
-    void generateExtremes(std::vector<float>& vertexData);
+    void generateExtremes(std::vector<float>& vertexData, uint32_t subdivisions);
     void generateSubExtremes(std::vector<float>& vertexData);
 
   public:
@@ -61,13 +61,10 @@ namespace small3d {
      * @brief Structure to hold the coordinates of the extremes of each box.
      */
     struct extremes {
-      float minZ, maxZ, minX, maxX, minY, maxY;
+    
+      float minZ = 0.0f, maxZ = 0.0f, minX = 0.0f, maxX = 0.0f, minY = 0.0f, maxY = 0.0f;
       bool tagged = false;
-      bool contain(glm::vec4 point) {
-        return point.x > minX && point.x < maxX&&
-          point.y > minY && point.y < maxY&&
-          point.z > minZ && point.z < maxZ;
-      }
+    
     };
 
     /**
@@ -95,9 +92,12 @@ namespace small3d {
      *        constructed based on the vertex data that can be found in a Model.
      * @param vertexData  The vertex data. Array of floats to be interpreted as
      *                    an array of 4 component vertex coordinates.
+     * @param subdivisions How many times to subdivide the initially one created
+     *                      bounding box, getting more accurate collision detection
+     *                     at the expense of performance.
      */
 
-    BoundingBoxSet(std::vector<float>& vertexData);
+    BoundingBoxSet(std::vector<float>& vertexData, uint32_t subdivisions);
 
     /**
      * @brief Destructor
