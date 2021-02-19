@@ -480,11 +480,10 @@ namespace small3d {
   }
 
   void Renderer::setColourBuffer(glm::vec4 colour, uint32_t memIndex) {
-
-    if (memIndex > maxObjectsPerPass) {
-      std::string maxIndex = std::to_string(maxObjectsPerPass - 1);
+    
+    if (memIndex >= maxObjectsPerPass) {
       throw std::runtime_error("Object colour buffer max index (" +
-        maxIndex + ") exceeded.");
+        std::to_string(maxObjectsPerPass - 1) + ") exceeded.");
     }
 
     uboColourDynamic[memIndex] = {};
@@ -496,9 +495,8 @@ namespace small3d {
   void Renderer::positionNextModel(Model& model, const glm::vec3 offset,
     const glm::vec3 rotation, uint32_t memIndex) {
 
-    if (memIndex > maxObjectsPerPass) {
-      std::string maxObjects = std::to_string(maxObjectsPerPass);
-      throw std::runtime_error("Cannot position more than " + maxObjects +
+    if (memIndex >= maxObjectsPerPass) {
+      throw std::runtime_error("Cannot position more than " + std::to_string(maxObjectsPerPass) +
         " on the scene.");
     }
 

@@ -126,7 +126,7 @@ int BoundingBoxesTest() {
     return 0;
   }
 
-  Renderer* renderer = &Renderer::getInstance("test", 640, 480);
+  Renderer* renderer = &Renderer::getInstance("test", 640, 480, 0.785f, 1.0f, 24.0f, "resources/shaders/", 1000);
   
   double startSeconds = glfwGetTime();
   double seconds = glfwGetTime();
@@ -137,6 +137,7 @@ int BoundingBoxesTest() {
 
   SceneObject goat("goat", "resources/models/goatUnscaled.glb", "Cube",
     "Armature.001", "Armature.001Action");
+  auto boundingBoxModels = goat.boundingBoxSet.getModels();
   goat.offset = glm::vec3(0.0f, 0.0f, -3.0f);
   goat.startAnimating();
 
@@ -149,10 +150,9 @@ int BoundingBoxesTest() {
 
       renderer->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
       
-      for(auto &model: goat.boundingBoxSet.getModels()) {
-        renderer->render(model, goat.offset,
+      for(auto &m: boundingBoxModels) {
+        renderer->render(m, goat.offset,
           goat.rotation, glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
-        
       }
       renderer->swapBuffers();
       goat.rotation.y += 0.01f;

@@ -95,6 +95,8 @@ namespace small3d
 
     std::string shadersPath = "";
 
+    static const uint32_t defaultMaxObjectsPerPass = 20;
+
     uint32_t maxObjectsPerPass = 0;
 
     uint32_t perspectivePipelineIndex = 100;
@@ -237,7 +239,7 @@ namespace small3d
       // used for small3d resources.
       "resources1/shaders/",
 #endif
-      const uint32_t maxObjectsPerPass = 20);
+      const uint32_t maxObjectsPerPass = defaultMaxObjectsPerPass);
 #else
     Renderer(const std::string& windowTitle, const int width,
       const int height, const float fieldOfView, const float zNear,
@@ -328,7 +330,7 @@ namespace small3d
       const float zFar = 24.0f,
       const std::string& shadersPath =
       "resources/shaders/",
-      const uint32_t maxObjectsPerPass = 20);
+      const uint32_t maxObjectsPerPass = defaultMaxObjectsPerPass);
 
     /**
      * @brief Destructor
