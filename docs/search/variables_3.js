@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['facesvertexindexes_297',['facesVertexIndexes',['../classsmall3d_1_1_bounding_box_set.html#a4cc9b979ea109f835753ec2c245e34b6',1,'small3d::BoundingBoxSet']]],
-  ['facesvertexindexestriangulated_298',['facesVertexIndexesTriangulated',['../classsmall3d_1_1_bounding_box_set.html#a543d45e64464ea9d7452b0a0816543dd',1,'small3d::BoundingBoxSet']]]
+  ['defaulttextureimage_298',['defaultTextureImage',['../structsmall3d_1_1_model.html#a6244cbef6be48272417b5c4515716fbc',1,'small3d::Model']]]
 ];
