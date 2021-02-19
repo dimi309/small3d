@@ -459,6 +459,15 @@ namespace small3d {
           indexData[idx] = static_cast<uint32_t>(indexBuf);
         }
 
+        auto materialToken = glb.getChildToken(primitives[0], "material");
+        if (materialToken != nullptr) {
+
+          uint32_t materialIndex = std::stoi(materialToken->value);
+
+          auto materialToken = glb.getChildTokens(glb.getToken("materials"))[materialIndex];
+          auto doubleSided = glb.getChildToken(materialToken, "doubleSided");
+        }
+
         loaded = true;
         break;
       }

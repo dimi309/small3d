@@ -70,6 +70,7 @@ namespace small3d {
     bool inQuotes = false;
     char c;
     bool inNumber = false;
+    bool inTrueOrFalse = false;
 
     jsonRootToken = std::shared_ptr<GlbFile::Token>(new GlbFile::Token);
     jsonRootToken->next = nullptr;
@@ -90,6 +91,14 @@ namespace small3d {
         inNumber = false;
         tokenNumber = "";
 
+      }
+
+      // end true or false
+      if (inTrueOrFalse && strchr("truefals", c) == nullptr) {
+        current->next = createToken(GlbFile::ValueType::charstring, tokenString);
+        current = current->next;
+        inTrueOrFalse = false;
+        tokenString = "";
       }
 
       switch (c) {
@@ -126,19 +135,24 @@ namespace small3d {
         break;
 
       default:
-        if (inQuotes) { // begin string
+        if (inQuotes) { // begin or continue string
           tokenString += c;
         }
-        else {
-          if (strchr("0123456789-", c) != nullptr ||
+        else if (strchr("0123456789-", c) != nullptr ||
             (strchr(".e", c) != nullptr && inNumber)) { // begin number or in number
             inNumber = true;
             tokenNumber += c;
 
           }
+        else if (strchr("truefals", c) != nullptr) { // begin or continue true or false indicator
+          inTrueOrFalse = true;
+          tokenString += c;
         }
+        
         break;
       }
+
+      
 
       if (c == ':') {
         current->next = createToken(GlbFile::ValueType::character, &c);
