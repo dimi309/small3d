@@ -136,7 +136,7 @@ int BoundingBoxesTest() {
   constexpr double secondsInterval = 1.0 / framerate;
 
   SceneObject goat("goat", "resources/models/goatUnscaled.glb", "Cube",
-    "Armature.001", "Armature.001Action");
+    "Armature.001", "Armature.001Action", 3);
   auto boundingBoxModels = goat.boundingBoxSet.getModels();
   goat.offset = glm::vec3(0.0f, 0.0f, -3.0f);
   goat.startAnimating();

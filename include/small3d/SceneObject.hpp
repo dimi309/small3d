@@ -92,10 +92,15 @@ namespace small3d
      *                        of the animation sequence. The default value is 1.
      *                        If not loading an animation sequence, this parameter
      *                        is ignored.
+     * @param boundingBoxSubdivisions If not using bounding boxes loaded from a file,
+     *                        how many times to subdivide the initially one created
+     *                        bounding box, getting more accurate collision detection
+     *                        at the expense of performance.
      */
     SceneObject(const std::string name, const std::string modelPath,
 		const int numFrames = 1,
-		const std::string boundingBoxSetPath = "", const int startFrameIndex = 1);
+		const std::string boundingBoxSetPath = "", const int startFrameIndex = 1,
+      const uint32_t boundingBoxSubdivisions = 0);
 
     /**
      * @brief glTF .glb loading constructor
@@ -108,11 +113,16 @@ namespace small3d
      *
      * @param modelArmatureName The name of the armature binding the model to a set of joints.
      * @param modelAnimationName The name of the animation to load for the model's joints.
+     * @param boundingBoxSubdivisions If not using bounding boxes loaded from a file,
+     *                        how many times to subdivide the initially one created
+     *                        bounding box, getting more accurate collision detection
+     *                        at the expense of performance.
      *                      
      */
     SceneObject(const std::string name, const std::string modelPath,
       const std::string& modelMeshName, const std::string& modelArmatureName = "",
-      const std::string& modelAnimationName = "");
+      const std::string& modelAnimationName = "",
+      const uint32_t boundingBoxSubdivisions = 0);
 
     /**
      * @brief Destructor
