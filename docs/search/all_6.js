@@ -11,7 +11,7 @@ var searchData=
   ['getcurrentposeidx_36',['getCurrentPoseIdx',['../structsmall3d_1_1_model.html#a5d501a1d394c08b7666a48d55736a5ab',1,'small3d::Model']]],
   ['getdata_37',['getData',['../classsmall3d_1_1_image.html#ab26bc22464edb7aefbcd4a2b95d788a2',1,'small3d::Image']]],
   ['getheight_38',['getHeight',['../classsmall3d_1_1_image.html#adf097899bb8212b43a6e620ff0d15007',1,'small3d::Image']]],
-  ['getinstance_39',['getInstance',['../classsmall3d_1_1_renderer.html#a3b7349cd4572bb58864cea6b02512e3e',1,'small3d::Renderer']]],
+  ['getinstance_39',['getInstance',['../classsmall3d_1_1_renderer.html#aa5f473f60796983875a8034514f271ed',1,'small3d::Renderer']]],
   ['getjointtransform_40',['getJointTransform',['../structsmall3d_1_1_model.html#a5ad87712d50688e377b82710b18e48bd',1,'small3d::Model']]],
   ['getmodel_41',['getModel',['../classsmall3d_1_1_scene_object.html#a990a1b6f6f3ab08fd71f5c4a220afc4c',1,'small3d::SceneObject']]],
   ['getmodels_42',['getModels',['../classsmall3d_1_1_bounding_box_set.html#abf45f0d5ed515b0d7e5a9b319ba98f62',1,'small3d::BoundingBoxSet']]],

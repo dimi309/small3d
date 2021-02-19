@@ -82,12 +82,12 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad3b1404596a2d6df58199988d03f6483"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#ad3b1404596a2d6df58199988d03f6483">SceneObject</a> (const std::string name, const std::string modelPath, const int numFrames=1, const std::string boundingBoxSetPath=&quot;&quot;, const int startFrameIndex=1)</td></tr>
-<tr class="memdesc:ad3b1404596a2d6df58199988d03f6483"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wavefront .obj loading constructor.  <a href="classsmall3d_1_1_scene_object.html#ad3b1404596a2d6df58199988d03f6483">More...</a><br /></td></tr>
-<tr class="separator:ad3b1404596a2d6df58199988d03f6483"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a840b2e85e30a8dff09b1d99b847fd8d8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a840b2e85e30a8dff09b1d99b847fd8d8">SceneObject</a> (const std::string name, const std::string modelPath, const std::string &amp;modelMeshName, const std::string &amp;modelArmatureName=&quot;&quot;, const std::string &amp;modelAnimationName=&quot;&quot;)</td></tr>
-<tr class="memdesc:a840b2e85e30a8dff09b1d99b847fd8d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">glTF .glb loading constructor  <a href="classsmall3d_1_1_scene_object.html#a840b2e85e30a8dff09b1d99b847fd8d8">More...</a><br /></td></tr>
-<tr class="separator:a840b2e85e30a8dff09b1d99b847fd8d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a1cc78130e068011e208ba56321067f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a0a1cc78130e068011e208ba56321067f">SceneObject</a> (const std::string name, const std::string modelPath, const int numFrames=1, const std::string boundingBoxSetPath=&quot;&quot;, const int startFrameIndex=1, const uint32_t boundingBoxSubdivisions=0)</td></tr>
+<tr class="memdesc:a0a1cc78130e068011e208ba56321067f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wavefront .obj loading constructor.  <a href="classsmall3d_1_1_scene_object.html#a0a1cc78130e068011e208ba56321067f">More...</a><br /></td></tr>
+<tr class="separator:a0a1cc78130e068011e208ba56321067f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd55112d4ea9db6b653ffeb51eae3510"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#afd55112d4ea9db6b653ffeb51eae3510">SceneObject</a> (const std::string name, const std::string modelPath, const std::string &amp;modelMeshName, const std::string &amp;modelArmatureName=&quot;&quot;, const std::string &amp;modelAnimationName=&quot;&quot;, const uint32_t boundingBoxSubdivisions=0)</td></tr>
+<tr class="memdesc:afd55112d4ea9db6b653ffeb51eae3510"><td class="mdescLeft">&#160;</td><td class="mdescRight">glTF .glb loading constructor  <a href="classsmall3d_1_1_scene_object.html#afd55112d4ea9db6b653ffeb51eae3510">More...</a><br /></td></tr>
+<tr class="separator:afd55112d4ea9db6b653ffeb51eae3510"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ec4802e84b93ec67e858998e6ae2773"><td class="memItemLeft" align="right" valign="top"><a id="a6ec4802e84b93ec67e858998e6ae2773"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a6ec4802e84b93ec67e858998e6ae2773">~SceneObject</a> ()=default</td></tr>
 <tr class="memdesc:a6ec4802e84b93ec67e858998e6ae2773"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br /></td></tr>
@@ -142,8 +142,8 @@ std::vector&lt; <a class="el" href="structsmall3d_1_1_model.html">Model</a> &gt;
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An object that appears on the 3D scene. It is made up of a model, together with information for positioning, rotation and collision detection. Models can be loaded from a Wavefront or glTF .glb file. Wavefront files can be exported from Blender for example (see blender.org). From the menu, select File &gt; Export &gt; Wavefront (.obj). Then, from the "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" and "Keep Vertex Order". Exporting .glb files is much simpler. Just do so using the default options. For animating, more than one models can be loaded from Wavefront files. For exporting animations from Blender to a series of Wavefront files in a way that will allow this class to load them, also select "Animation" and "Apply Modifiers".* glTF animation is skeletal on the other hand, using a single model and joints (see corresponding constructors). </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ad3b1404596a2d6df58199988d03f6483"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad3b1404596a2d6df58199988d03f6483">&#9670;&nbsp;</a></span>SceneObject() <span class="overload">[1/2]</span></h2>
+<a id="a0a1cc78130e068011e208ba56321067f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a1cc78130e068011e208ba56321067f">&#9670;&nbsp;</a></span>SceneObject() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -176,7 +176,13 @@ std::vector&lt; <a class="el" href="structsmall3d_1_1_model.html">Model</a> &gt;
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>startFrameIndex</em> = <code>1</code>&#160;</td>
+          <td class="paramname"><em>startFrameIndex</em> = <code>1</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t&#160;</td>
+          <td class="paramname"><em>boundingBoxSubdivisions</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -194,14 +200,15 @@ std::vector&lt; <a class="el" href="structsmall3d_1_1_model.html">Model</a> &gt;
     <tr><td class="paramname">numFrames</td><td>The number of frames, if the object is animated. A single animation sequence is supported per object and the first frame is considered to be the non-moving state.</td></tr>
     <tr><td class="paramname">boundingBoxSetPath</td><td>The path to the file containing the object's bounding box set. If no such path is given, a single box set will be calculated, based on the model's vertices. </td></tr>
     <tr><td class="paramname">startFrameIndex</td><td>The index number in the filename of the first file of the animation sequence. The default value is 1. If not loading an animation sequence, this parameter is ignored. </td></tr>
+    <tr><td class="paramname">boundingBoxSubdivisions</td><td>If not using bounding boxes loaded from a file, how many times to subdivide the initially one created bounding box, getting more accurate collision detection at the expense of performance. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a840b2e85e30a8dff09b1d99b847fd8d8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a840b2e85e30a8dff09b1d99b847fd8d8">&#9670;&nbsp;</a></span>SceneObject() <span class="overload">[2/2]</span></h2>
+<a id="afd55112d4ea9db6b653ffeb51eae3510"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd55112d4ea9db6b653ffeb51eae3510">&#9670;&nbsp;</a></span>SceneObject() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -234,7 +241,13 @@ std::vector&lt; <a class="el" href="structsmall3d_1_1_model.html">Model</a> &gt;
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>modelAnimationName</em> = <code>&quot;&quot;</code>&#160;</td>
+          <td class="paramname"><em>modelAnimationName</em> = <code>&quot;&quot;</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t&#160;</td>
+          <td class="paramname"><em>boundingBoxSubdivisions</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -252,6 +265,7 @@ std::vector&lt; <a class="el" href="structsmall3d_1_1_model.html">Model</a> &gt;
     <tr><td class="paramname">modelMeshName</td><td>The name of the mesh in the GLB file which will be loaded as the model.</td></tr>
     <tr><td class="paramname">modelArmatureName</td><td>The name of the armature binding the model to a set of joints. </td></tr>
     <tr><td class="paramname">modelAnimationName</td><td>The name of the animation to load for the model's joints. </td></tr>
+    <tr><td class="paramname">boundingBoxSubdivisions</td><td>If not using bounding boxes loaded from a file, how many times to subdivide the initially one created bounding box, getting more accurate collision detection at the expense of performance. </td></tr>
   </table>
   </dd>
 </dl>
