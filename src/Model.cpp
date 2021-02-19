@@ -465,7 +465,22 @@ namespace small3d {
           uint32_t materialIndex = std::stoi(materialToken->value);
 
           auto materialToken = glb.getChildTokens(glb.getToken("materials"))[materialIndex];
-          auto doubleSided = glb.getChildToken(materialToken, "doubleSided");
+          
+          auto metallicRoughnessToken = glb.getChildToken(materialToken, "pbrMetallicRoughness");
+          if (metallicRoughnessToken != nullptr) {
+            auto baseColorTextureToken = glb.getChildToken(metallicRoughnessToken, "baseColorTexture");
+            if (baseColorTextureToken != nullptr) {
+              uint32_t textureIndex = std::stoi(glb.getChildToken(baseColorTextureToken, "index")->value);
+              uint32_t sourceIndex = std::stoi(glb.getChildToken(glb.getChildTokens(glb.getToken("textures"))[textureIndex], "source")->value);
+              auto imageToken = glb.getChildTokens(glb.getToken("images"))[sourceIndex];
+              if (glb.getChildToken(imageToken, "mimeType")->value == "image/png") {
+                auto imageData = glb.getBufferByView(std::stoi(glb.getChildToken(imageToken, "bufferView")->value));
+              }
+              else {
+                LOGINFO("Warning! Only PNG images embedded in .glb files can be read. Texture ignored.");
+              }
+            }
+          }
         }
 
         loaded = true;
