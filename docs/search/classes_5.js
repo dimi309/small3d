@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['joint_177',['Joint',['../structsmall3d_1_1_model_1_1_joint.html',1,'small3d::Model']]]
+  ['image_177',['Image',['../classsmall3d_1_1_image.html',1,'small3d']]]
 ];

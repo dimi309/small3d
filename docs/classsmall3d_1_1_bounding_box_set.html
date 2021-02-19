@@ -68,7 +68,6 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classsmall3d_1_1_bounding_box_set-members.html">List of all members</a>  </div>
@@ -84,16 +83,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><b>extremes_</b></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure to hold the coordinates of the extremes of each box. <br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_bounding_box_set_1_1extremes.html">extremes</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure to hold the coordinates of the extremes of each box.  <a href="structsmall3d_1_1_bounding_box_set_1_1extremes.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
-Public Types</h2></td></tr>
-<tr class="memitem:ad7cb6023fd0693de5564135369d9a101"><td class="memItemLeft" align="right" valign="top"><a id="ad7cb6023fd0693de5564135369d9a101"></a>
-typedef struct small3d::BoundingBoxSet::extremes_&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_bounding_box_set.html#ad7cb6023fd0693de5564135369d9a101">extremes</a></td></tr>
-<tr class="memdesc:ad7cb6023fd0693de5564135369d9a101"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure to hold the coordinates of the extremes of each box. <br /></td></tr>
-<tr class="separator:ad7cb6023fd0693de5564135369d9a101"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -104,9 +96,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <tr class="memitem:acafb88f72c0ed26335e03f596822aa70"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_bounding_box_set.html#acafb88f72c0ed26335e03f596822aa70">BoundingBoxSet</a> (const std::string &amp;fileLocation=&quot;&quot;)</td></tr>
 <tr class="memdesc:acafb88f72c0ed26335e03f596822aa70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that loads a set of bounding boxes from a Wavefront file.  <a href="classsmall3d_1_1_bounding_box_set.html#acafb88f72c0ed26335e03f596822aa70">More...</a><br /></td></tr>
 <tr class="separator:acafb88f72c0ed26335e03f596822aa70"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a196855ab9bf27793088769294d6e4ad2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_bounding_box_set.html#a196855ab9bf27793088769294d6e4ad2">BoundingBoxSet</a> (std::vector&lt; float &gt; &amp;vertexData)</td></tr>
-<tr class="memdesc:a196855ab9bf27793088769294d6e4ad2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that creates a box set containing a single box, constructed based on the vertex data that can be found in a <a class="el" href="structsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a Wavefront or glTF file. A Wavefront file can be exported from Ble...">Model</a>.  <a href="classsmall3d_1_1_bounding_box_set.html#a196855ab9bf27793088769294d6e4ad2">More...</a><br /></td></tr>
-<tr class="separator:a196855ab9bf27793088769294d6e4ad2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae785478001d2c18368ed363afcde7dc0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_bounding_box_set.html#ae785478001d2c18368ed363afcde7dc0">BoundingBoxSet</a> (std::vector&lt; float &gt; &amp;vertexData, uint32_t subdivisions)</td></tr>
+<tr class="memdesc:ae785478001d2c18368ed363afcde7dc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that creates a box set containing a single box, constructed based on the vertex data that can be found in a <a class="el" href="structsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a Wavefront or glTF file. A Wavefront file can be exported from Ble...">Model</a>.  <a href="classsmall3d_1_1_bounding_box_set.html#ae785478001d2c18368ed363afcde7dc0">More...</a><br /></td></tr>
+<tr class="separator:ae785478001d2c18368ed363afcde7dc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60b57cda9c3d783c7d88f306ceda3060"><td class="memItemLeft" align="right" valign="top"><a id="a60b57cda9c3d783c7d88f306ceda3060"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_bounding_box_set.html#a60b57cda9c3d783c7d88f306ceda3060">~BoundingBoxSet</a> ()=default</td></tr>
 <tr class="memdesc:a60b57cda9c3d783c7d88f306ceda3060"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br /></td></tr>
@@ -124,7 +116,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a954fb0543919362f873e9f59f61c83b8"><td class="memItemLeft" align="right" valign="top"><a id="a954fb0543919362f873e9f59f61c83b8"></a>
-std::vector&lt; <a class="el" href="classsmall3d_1_1_bounding_box_set.html#ad7cb6023fd0693de5564135369d9a101">extremes</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_bounding_box_set.html#a954fb0543919362f873e9f59f61c83b8">boxExtremes</a></td></tr>
+std::vector&lt; <a class="el" href="structsmall3d_1_1_bounding_box_set_1_1extremes.html">extremes</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_bounding_box_set.html#a954fb0543919362f873e9f59f61c83b8">boxExtremes</a></td></tr>
 <tr class="memdesc:a954fb0543919362f873e9f59f61c83b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">The extreme coordinates (max and min) of each box. <br /></td></tr>
 <tr class="separator:a954fb0543919362f873e9f59f61c83b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6565272cb69deaf226f4ae892975f93"><td class="memItemLeft" align="right" valign="top"><a id="ad6565272cb69deaf226f4ae892975f93"></a>
@@ -172,8 +164,8 @@ std::vector&lt; std::vector&lt; unsigned int &gt; &gt;&#160;</td><td class="memI
 
 </div>
 </div>
-<a id="a196855ab9bf27793088769294d6e4ad2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a196855ab9bf27793088769294d6e4ad2">&#9670;&nbsp;</a></span>BoundingBoxSet() <span class="overload">[2/2]</span></h2>
+<a id="ae785478001d2c18368ed363afcde7dc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae785478001d2c18368ed363afcde7dc0">&#9670;&nbsp;</a></span>BoundingBoxSet() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -182,8 +174,18 @@ std::vector&lt; std::vector&lt; unsigned int &gt; &gt;&#160;</td><td class="memI
           <td class="memname">small3d::BoundingBoxSet::BoundingBoxSet </td>
           <td>(</td>
           <td class="paramtype">std::vector&lt; float &gt; &amp;&#160;</td>
-          <td class="paramname"><em>vertexData</em></td><td>)</td>
+          <td class="paramname"><em>vertexData</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>subdivisions</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -192,6 +194,7 @@ std::vector&lt; std::vector&lt; unsigned int &gt; &gt;&#160;</td><td class="memI
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">vertexData</td><td>The vertex data. Array of floats to be interpreted as an array of 4 component vertex coordinates. </td></tr>
+    <tr><td class="paramname">subdivisions</td><td>How many times to subdivide the initially one created bounding box, getting more accurate collision detection at the expense of performance. </td></tr>
   </table>
   </dd>
 </dl>
