@@ -107,6 +107,8 @@ int GlbTextureText() {
 
   SceneObject goat("goatTexture", "resources/models/goatTexture.glb", "Cube",
     "Armature.001", "Armature.001Action");
+
+  renderer->generateTexture("goatGlbTexture", goat.getModel().defaultTextureImage);
   
   goat.offset = glm::vec3(0.0f, 0.0f, -3.0f);
   goat.startAnimating();
@@ -118,7 +120,7 @@ int GlbTextureText() {
 
       goat.animate();
 
-      renderer->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+      renderer->render(goat, "goatGlbTexture");
 
       renderer->swapBuffers();
       goat.rotation.y += 0.01f;

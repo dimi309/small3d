@@ -28,6 +28,140 @@ namespace small3d {
     }
   }
 
+  void Image::readDataFromMemory(png_structp png_ptr, png_bytep outBytes,
+    png_size_t byteCountToRead) {
+
+    png_voidp io_ptr = png_get_io_ptr(png_ptr);
+    if (io_ptr == nullptr) {
+      throw std::runtime_error("Could not get png reader from memory.");
+    }
+
+    memoryDataAndPos_& md = *(memoryDataAndPos_*)io_ptr;
+
+    //outBytes = (png_bytep)malloc(byteCountToRead);
+
+    if (byteCountToRead > md.data.size() - md.pos) {
+      throw std::runtime_error("Tried to read more png bytes than those left in memory.");
+    }
+
+    memcpy(outBytes, &md.data[md.pos], byteCountToRead);
+    md.pos += byteCountToRead;
+
+  }
+
+  Image::Image(std::vector<char>& data) {
+    std::copy(data.begin(), data.end(), std::back_inserter(memoryDataAndPos.data));
+    
+    memoryDataAndPos.pos = 0;
+
+    unsigned char header[8];
+    memcpy(header, &memoryDataAndPos.data[0], 8);
+    if (png_sig_cmp(header, 0, 8)) {
+      throw std::runtime_error(
+        "Image found in .glb file not recognised as png.");
+    }
+
+    png_structp pngStructure = png_create_read_struct(PNG_LIBPNG_VER_STRING,
+      nullptr, nullptr, nullptr);
+    if (!pngStructure) {
+
+      throw std::runtime_error("Could not create PNG read structure while processing memory data.");
+    }
+
+    png_infop pngInformation = png_create_info_struct(pngStructure);
+
+    if (!pngInformation) {
+      png_destroy_read_struct(&pngStructure, nullptr, nullptr);
+
+      throw std::runtime_error("Could not create PNG information structure while processing memory data.");
+    }
+
+    if (setjmp(png_jmpbuf(pngStructure))) {
+      png_destroy_read_struct(&pngStructure, &pngInformation, nullptr);
+      pngStructure = nullptr;
+      pngInformation = nullptr;
+
+      throw std::runtime_error("PNG read: Error calling setjmp, while reading memory data.");
+    }
+
+    png_set_read_fn(pngStructure, &memoryDataAndPos, &readDataFromMemory);
+
+    
+
+    png_read_info(pngStructure, pngInformation);
+
+    png_set_sig_bytes(pngStructure, 8);
+
+    width = png_get_image_width(pngStructure, pngInformation);
+    height = png_get_image_height(pngStructure, pngInformation);
+    
+    png_byte colorType = png_get_color_type(pngStructure, pngInformation);
+    png_set_interlace_handling(pngStructure);
+
+    png_read_update_info(pngStructure, pngInformation);
+
+    if (setjmp(png_jmpbuf(pngStructure))) {
+      png_destroy_read_struct(&pngStructure, &pngInformation, nullptr);
+      pngStructure = nullptr;
+      pngInformation = nullptr;
+      throw std::runtime_error("PNG read: Error calling setjmp. (2)");
+    }
+
+    png_bytep* rowPointers = new png_bytep[sizeof(png_bytep) * height];
+
+    for (unsigned long y = 0; y < height; y++) {
+      rowPointers[y] = new png_byte[png_get_rowbytes(pngStructure,
+        pngInformation)];
+    }
+
+    png_read_image(pngStructure, rowPointers);
+
+    if (colorType != PNG_COLOR_TYPE_RGB && colorType != PNG_COLOR_TYPE_RGBA) {
+      throw std::runtime_error(
+        "Image format not recognised. Only RGB / RGBA png images are "
+        "supported.");
+    }
+
+    unsigned int numComponents = colorType == PNG_COLOR_TYPE_RGB ? 3 : 4;
+
+    imageDataSize = 4 * width * height;
+
+    imageData.resize(imageDataSize);
+
+    for (unsigned long y = 0; y < height; y++) {
+
+      png_byte* row = rowPointers[y];
+
+      for (unsigned long x = 0; x < width; x++) {
+
+        png_byte* ptr = &(row[x * numComponents]);
+
+        float rgb[4];
+
+        rgb[0] = static_cast<float>(ptr[0]);
+        rgb[1] = static_cast<float>(ptr[1]);
+        rgb[2] = static_cast<float>(ptr[2]);
+        rgb[3] = numComponents == 3 ? 255.0f : static_cast<float>(ptr[3]);
+
+        imageData[y * width * 4 + x * 4] = rgb[0] / 255.0f;
+        imageData[y * width * 4 + x * 4 + 1] = rgb[1] / 255.0f;
+        imageData[y * width * 4 + x * 4 + 2] = rgb[2] / 255.0f;
+        imageData[y * width * 4 + x * 4 + 3] = rgb[3] / 255.0f;
+
+      }
+    }
+
+    for (unsigned long y = 0; y < height; y++) {
+      delete[] rowPointers[y];
+    }
+    delete[] rowPointers;
+
+    png_destroy_read_struct(&pngStructure, &pngInformation, nullptr);
+    pngStructure = nullptr;
+    pngInformation = nullptr;
+
+  }
+
   void Image::toColour(glm::vec4 colour) {
     width = 10;
     height = 10;

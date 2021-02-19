@@ -29,10 +29,19 @@ namespace small3d {
   class Image {
   private:
 
+    struct memoryDataAndPos_ {
+      std::vector<char> data;
+      uint64_t pos = 0;
+    };
+
+    memoryDataAndPos_ memoryDataAndPos;
+
     unsigned long width, height;
     std::vector<float> imageData;
     unsigned long imageDataSize;
     void loadFromFile(const std::string fileLocation);
+    static void readDataFromMemory(png_structp png_ptr, png_bytep outBytes,
+      png_size_t byteCountToRead);
 
   public:
 
@@ -42,6 +51,13 @@ namespace small3d {
      * @param fileLocation Location of the png image file
      */
     Image(const std::string fileLocation = "");
+
+    /**
+     * @brief Memory-based constructor
+     *
+     * @param PNG bytes already read into memory
+     ¨*/
+    Image(std::vector<char>& data);
 
     /**
      * @brief Destructor
