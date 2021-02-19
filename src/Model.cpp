@@ -17,7 +17,6 @@
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-
 #ifdef __ANDROID__
 #include "vkzos.h"
 #include <streambuf>
@@ -475,6 +474,9 @@ namespace small3d {
               auto imageToken = glb.getChildTokens(glb.getToken("images"))[sourceIndex];
               if (glb.getChildToken(imageToken, "mimeType")->value == "image/png") {
                 auto imageData = glb.getBufferByView(std::stoi(glb.getChildToken(imageToken, "bufferView")->value));
+
+                defaultTextureImage = Image(imageData);
+
               }
               else {
                 LOGINFO("Warning! Only PNG images embedded in .glb files can be read. Texture ignored.");

@@ -17,6 +17,7 @@
 #include <glm/glm.hpp>
 #endif
 
+#include "Image.hpp"
 #include "GlbFile.hpp"
 
 namespace small3d {
@@ -55,6 +56,12 @@ namespace small3d {
     };
 
     static const uint32_t MAX_JOINTS_SUPPORTED = 16;
+
+    /**
+     * @brief Image found in the file the model was loaded from (empty image if not - check the size).
+     *        It can be used to generate a tecture for the model, but other textures can also be used.
+     */
+    Image defaultTextureImage;
     
   private:
 
