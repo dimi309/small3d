@@ -67,6 +67,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classsmall3d_1_1_image-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -84,6 +85,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:afe8aec09a44cfc52975166d930466dea"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_image.html#afe8aec09a44cfc52975166d930466dea">Image</a> (const std::string fileLocation=&quot;&quot;)</td></tr>
 <tr class="memdesc:afe8aec09a44cfc52975166d930466dea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="classsmall3d_1_1_image.html#afe8aec09a44cfc52975166d930466dea">More...</a><br /></td></tr>
 <tr class="separator:afe8aec09a44cfc52975166d930466dea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3c2a88cea4d2628cfb801f9ae414c8e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_image.html#ae3c2a88cea4d2628cfb801f9ae414c8e">Image</a> (std::vector&lt; char &gt; &amp;data)</td></tr>
+<tr class="memdesc:ae3c2a88cea4d2628cfb801f9ae414c8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory-based constructor.  <a href="classsmall3d_1_1_image.html#ae3c2a88cea4d2628cfb801f9ae414c8e">More...</a><br /></td></tr>
+<tr class="separator:ae3c2a88cea4d2628cfb801f9ae414c8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd4336c0afa2ec91f144da3bb17dc9ef"><td class="memItemLeft" align="right" valign="top"><a id="afd4336c0afa2ec91f144da3bb17dc9ef"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_image.html#afd4336c0afa2ec91f144da3bb17dc9ef">~Image</a> ()=default</td></tr>
 <tr class="memdesc:afd4336c0afa2ec91f144da3bb17dc9ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br /></td></tr>
@@ -109,7 +113,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <div class="textblock"><p>An image, loaded from a png file, which can be used for generating textures. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="afe8aec09a44cfc52975166d930466dea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe8aec09a44cfc52975166d930466dea">&#9670;&nbsp;</a></span>Image()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#afe8aec09a44cfc52975166d930466dea">&#9670;&nbsp;</a></span>Image() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -128,6 +132,32 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">fileLocation</td><td>Location of the png image file </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae3c2a88cea4d2628cfb801f9ae414c8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3c2a88cea4d2628cfb801f9ae414c8e">&#9670;&nbsp;</a></span>Image() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">small3d::Image::Image </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; char &gt; &amp;&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Memory-based constructor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">PNG</td><td>bytes already read into memory ¨ </td></tr>
   </table>
   </dd>
 </dl>
