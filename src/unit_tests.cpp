@@ -95,6 +95,41 @@ int ModelTest() {
   return 1;
 }
 
+int GlbTextureText() {
+  Renderer* renderer = &Renderer::getInstance("test", 640, 480, 0.785f, 1.0f, 24.0f, "resources/shaders/", 1000);
+
+  double startSeconds = glfwGetTime();
+  double seconds = glfwGetTime();
+  double prevSeconds = seconds;
+  const uint32_t framerate = 30;
+
+  constexpr double secondsInterval = 1.0 / framerate;
+
+  SceneObject goat("goatTexture", "resources/models/goatTexture.glb", "Cube",
+    "Armature.001", "Armature.001Action");
+  
+  goat.offset = glm::vec3(0.0f, 0.0f, -3.0f);
+  goat.startAnimating();
+
+  while (seconds - startSeconds < 5.0) {
+    glfwPollEvents();
+    seconds = glfwGetTime();
+    if (seconds - prevSeconds > secondsInterval) {
+
+      goat.animate();
+
+      renderer->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+      renderer->swapBuffers();
+      goat.rotation.y += 0.01f;
+    }
+  }
+
+
+  return 1;
+
+}
+
 int BoundingBoxesTest() {
   
   BoundingBoxSet bboxes("resources/models/GoatBB/GoatBB.obj");
@@ -352,6 +387,12 @@ int main(int argc, char** argv) {
       printf("*** Failing ModelTest.\n\r");
       return 1;
     }
+
+    if (!GlbTextureText()) {
+      printf("*** Failing GlbTextureText.\n\r");
+      return 1;
+    }
+
     if (!BoundingBoxesTest()) {
       printf("*** Failing BoundingBoxesTest.\n\r");
       return 1;
