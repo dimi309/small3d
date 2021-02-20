@@ -480,7 +480,7 @@ namespace small3d {
   }
 
   void Renderer::setColourBuffer(glm::vec4 colour, uint32_t memIndex) {
-    
+
     if (memIndex >= maxObjectsPerPass) {
       throw std::runtime_error("Object colour buffer max index (" +
         std::to_string(maxObjectsPerPass - 1) + ") exceeded.");
@@ -960,12 +960,12 @@ namespace small3d {
 
     vkDeviceWaitIdle(vkz_logical_device);
 
-    for (auto model : garbageModels) {
+    for (auto& model : garbageModels) {
       clearBuffers(model);
     }
     garbageModels.clear();
 
-    for (auto it = textures.begin();
+    for (auto& it = textures.begin();
       it != textures.end(); ++it) {
       LOGDEBUG("Deleting texture " + it->first);
 
@@ -974,12 +974,12 @@ namespace small3d {
 
     }
 
-    for (auto idFacePair : fontFaces) {
+    for (auto& idFacePair : fontFaces) {
       FT_Done_Face(idFacePair.second);
     }
 
 #ifdef __ANDROID__
-    for (auto asset : fontAssets) {
+    for (auto& asset : fontAssets) {
       AAsset_close(asset);
     }
 #endif
@@ -1539,7 +1539,7 @@ namespace small3d {
   }
 
   void Renderer::clearBuffers(SceneObject& sceneObject) const {
-    for (Model& model : sceneObject.models) {
+    for (auto& model : sceneObject.models) {
       clearBuffers(model);
     }
   }
@@ -1607,7 +1607,7 @@ namespace small3d {
 
     vkz_begin_draw_command_buffer(&nextCommandBuffer);
 
-    for (auto model : nextModelsToDraw) {
+    for (auto& model : nextModelsToDraw) {
       vkz_bind_pipeline_to_command_buffer(perspectivePipelineIndex,
         &nextCommandBuffer);
       bindBuffers(nextCommandBuffer, model);
@@ -1626,7 +1626,7 @@ namespace small3d {
 
     nextModelsToDraw.clear();
 
-    for (auto model : garbageModels) {
+    for (auto& model : garbageModels) {
       clearBuffers(model);
     }
     garbageModels.clear();

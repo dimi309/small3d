@@ -152,8 +152,6 @@ namespace small3d {
         break;
       }
 
-      
-
       if (c == ':') {
         current->next = createToken(GlbFile::ValueType::character, &c);
         current = current->next;
