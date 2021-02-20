@@ -105,7 +105,7 @@ int GlbTextureText() {
 
   constexpr double secondsInterval = 1.0 / framerate;
 
-  SceneObject goat("goatTexture", "resources/models/goatTexture.glb", "Cube",
+  SceneObject goat("goat5", "resources/models/goatWithTexture.glb", "Cube",
     "Armature.001", "Armature.001Action");
 
   renderer->generateTexture("goatGlbTexture", goat.getModel().defaultTextureImage);
