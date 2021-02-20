@@ -108,11 +108,11 @@ int GlbTextureText() {
   SceneObject goat("goat5", "resources/models/goatAndTree.glb", "Cube",
     "Armature.001", "Armature.001Action");
 
-  renderer->generateTexture("goatGlbTexture", goat.getModel().defaultTextureImage);
+  renderer->generateTexture("goatGlbTexture", *goat.getModel().defaultTextureImage);
   
   SceneObject tree("tree5", "resources/models/goatAndTree.glb", "Cube.001");
 
-  renderer->generateTexture("treeGlbTexture", tree.getModel().defaultTextureImage);
+  renderer->generateTexture("treeGlbTexture", *tree.getModel().defaultTextureImage);
 
   goat.offset = glm::vec3(0.0f, 0.0f, -3.0f);
   goat.startAnimating();
