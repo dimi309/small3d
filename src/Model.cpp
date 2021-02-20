@@ -475,7 +475,7 @@ namespace small3d {
               if (glb.getChildToken(imageToken, "mimeType")->value == "image/png") {
                 auto imageData = glb.getBufferByView(std::stoi(glb.getChildToken(imageToken, "bufferView")->value));
 
-                defaultTextureImage = Image(imageData);
+                defaultTextureImage = std::shared_ptr<Image>(new Image(imageData));
                 imageData.clear();
 
               }

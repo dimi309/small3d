@@ -61,7 +61,7 @@ namespace small3d {
      * @brief Image found in the file the model was loaded from (empty image if not - check the size).
      *        It can be used to generate a texture for the model, but other textures can also be used.
      */
-    Image defaultTextureImage;
+    std::shared_ptr<Image> defaultTextureImage;
     
   private:
 
