@@ -183,17 +183,15 @@ namespace small3d {
     else {
       png_set_read_fn(pngStructure, &memoryDataAndPos, &readDataFromMemory);
     }
-
-    // Changing the order just works, but it needs to be investigated why...
+    
+    // Only when reading from a file because, when reading from memory, 
+    // we start reading at byte 0.
     if (!fromMemory) {
       png_set_sig_bytes(pngStructure, 8);
-      png_read_info(pngStructure, pngInformation);
+      
     }
-    else
-    {
-      png_read_info(pngStructure, pngInformation);
-      png_set_sig_bytes(pngStructure, 8);
-    }
+
+    png_read_info(pngStructure, pngInformation);
 
     width = png_get_image_width(pngStructure, pngInformation);
     height = png_get_image_height(pngStructure, pngInformation);
