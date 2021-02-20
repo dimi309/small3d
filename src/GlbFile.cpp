@@ -501,6 +501,9 @@ namespace small3d {
     if (propToken != nullptr) {
       ret.skin = std::stoi(propToken->value);
     }
+    else {
+      ret.noSkin = true;
+    }
 
     return ret;
   }

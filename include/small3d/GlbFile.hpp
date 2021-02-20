@@ -51,6 +51,7 @@ namespace small3d {
       glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
       glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
       uint32_t skin = 0;
+      bool noSkin = false;
       uint32_t mesh = 0;
       std::vector<uint32_t> children;
     };

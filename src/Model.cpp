@@ -504,7 +504,7 @@ namespace small3d {
   
     if (glb.existNode(meshName)) {
       auto meshNode = glb.getNode(meshName);
-      if (glb.existSkin(meshNode.skin)) {
+      if (!meshNode.noSkin && glb.existSkin(meshNode.skin)) {
         auto skin = glb.getSkin(meshNode.skin);
 
         if (skin.joints.size() > MAX_JOINTS_SUPPORTED) {
