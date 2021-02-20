@@ -105,13 +105,19 @@ int GlbTextureText() {
 
   constexpr double secondsInterval = 1.0 / framerate;
 
-  SceneObject goat("goat5", "resources/models/goatWithTexture.glb", "Cube",
+  SceneObject goat("goat5", "resources/models/goatAndTree.glb", "Cube",
     "Armature.001", "Armature.001Action");
 
   renderer->generateTexture("goatGlbTexture", goat.getModel().defaultTextureImage);
   
+  SceneObject tree("tree5", "resources/models/goatAndTree.glb", "Cube.001");
+
+  renderer->generateTexture("treeGlbTexture", tree.getModel().defaultTextureImage);
+
   goat.offset = glm::vec3(0.0f, 0.0f, -3.0f);
   goat.startAnimating();
+  tree.offset = glm::vec3(0.0f, 0.0f, -4.0f);
+  
 
   while (seconds - startSeconds < 5.0) {
     glfwPollEvents();
@@ -121,6 +127,7 @@ int GlbTextureText() {
       goat.animate();
 
       renderer->render(goat, "goatGlbTexture");
+      renderer->render(tree, "treeGlbTexture");
 
       renderer->swapBuffers();
       goat.rotation.y += 0.01f;
