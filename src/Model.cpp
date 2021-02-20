@@ -476,6 +476,7 @@ namespace small3d {
                 auto imageData = glb.getBufferByView(std::stoi(glb.getChildToken(imageToken, "bufferView")->value));
 
                 defaultTextureImage = Image(imageData);
+                imageData.clear();
 
               }
               else {
