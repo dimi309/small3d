@@ -134,9 +134,7 @@ int GlbTextureText() {
     }
   }
 
-
   return 1;
-
 }
 
 int BoundingBoxesTest() {
@@ -152,7 +150,6 @@ int BoundingBoxesTest() {
     cout << bboxes.vertices[idx][0] << ", " <<
       bboxes.vertices[idx][1] << ", " <<
       bboxes.vertices[idx][2] << ", " << endl;
-
   }
 
   cout << "Bounding boxes faces vertex indexes: " << endl;
