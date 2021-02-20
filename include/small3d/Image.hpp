@@ -39,14 +39,14 @@ namespace small3d {
     unsigned long width, height;
     std::vector<float> imageData;
     unsigned long imageDataSize;
-    void loadFromFile(const std::string fileLocation);
+    void load(const std::string fileLocation, std::vector<char>& data);
     static void readDataFromMemory(png_structp png_ptr, png_bytep outBytes,
       png_size_t byteCountToRead);
 
   public:
 
     /**
-     * @brief Default constructor
+     * @brief File-reading constructor
      *
      * @param fileLocation Location of the png image file
      */
@@ -66,6 +66,7 @@ namespace small3d {
 
     /**
      * @brief Convert to a coloured 10 x 10 pixel image
+     * @param colour The colour of the image
      */
     void toColour(glm::vec4 colour);
 
