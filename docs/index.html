@@ -63,7 +63,7 @@ $(function() {
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">small3d </div>  </div>
+<div class="title"><a class="el" href="namespacesmall3d.html">small3d</a> </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_small3d_README"></a> <a href="https://github.com/dimi309/small3d">[Source Code]</a> <a href="https://dimi309.github.io/small3d">[API Documentation]</a></p>
@@ -118,7 +118,7 @@ Building</h1>
 <li>Run the build script which is suitable to your platform from the root directory (<code>build-vs.bat</code>, <code>build-mingw.bat</code> or <code>build.sh</code>)</li>
 </ul>
 <p>Then, the unit tests can be run via the <code>unittests</code> binary from <code>build/bin</code>.</p>
-<p>If any of this fails or you would simply like to restart the building procedure, the best way to clean the small3d directories is by using git: </p><pre class="fragment">git clean -fdx
+<p>If any of this fails or you would simply like to restart the building procedure, the best way to clean the <a class="el" href="namespacesmall3d.html">small3d</a> directories is by using git: </p><pre class="fragment">git clean -fdx
 </pre><p>For building your own project, you need:</p>
 <ul>
 <li>The header files from the <code>build/include</code> directory</li>
@@ -128,10 +128,10 @@ Building</h1>
 <p>If you are using cmake, the modules in <code>small3d/cmake</code> can be useful. Check the <code>CMakeLists.txt</code> and <code>src/CMakeLists.txt</code> files for other configuration details (link flags, etc) that may also be required or useful.</p>
 <h1><a class="anchor" id="autotoc_md7"></a>
 small3d on mobile</h1>
-<p>The scripts for preparing the dependencies of small3d for mobile are <code>prepare-android</code> and <code>prepare-ios</code> for Android and iOS respectively, found in the <code>deps</code> directory. After executing one of those, you can build small3d for these platforms by executing either <code>build-android</code> or <code>build-ios</code> from the main directory. One sample game, <a href="https://github.com/dimi309/small3d-samples/tree/master/avoidthebug">Avoid the Bug</a> has been ported to both <a href="https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-android">Android</a> and <a href="https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-ios">iOS</a>. I use these projects as a basis for mobile development. Note that, while with the desktop edition of small3dI use GLFW for windowing functionalities and I/O, on mobile I access the native infrastructure directly.</p>
+<p>The scripts for preparing the dependencies of <a class="el" href="namespacesmall3d.html">small3d</a> for mobile are <code>prepare-android</code> and <code>prepare-ios</code> for Android and iOS respectively, found in the <code>deps</code> directory. After executing one of those, you can build <a class="el" href="namespacesmall3d.html">small3d</a> for these platforms by executing either <code>build-android</code> or <code>build-ios</code> from the main directory. One sample game, <a href="https://github.com/dimi309/small3d-samples/tree/master/avoidthebug">Avoid the Bug</a> has been ported to both <a href="https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-android">Android</a> and <a href="https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-ios">iOS</a>. I use these projects as a basis for mobile development. Note that, while with the desktop edition of small3dI use GLFW for windowing functionalities and I/O, on mobile I access the native infrastructure directly.</p>
 <h1><a class="anchor" id="autotoc_md8"></a>
 Referenced libraries</h1>
-<p>All small3d dependencies, apart from the Vulkan SDK, are distributed together with its source code. They can be built by executing a single script (see "Building", above).</p>
+<p>All <a class="el" href="namespacesmall3d.html">small3d</a> dependencies, apart from the Vulkan SDK, are distributed together with its source code. They can be built by executing a single script (see "Building", above).</p>
 <ul>
 <li>Vulkan SDK, or glew if building for OpenGL</li>
 <li>glfw</li>

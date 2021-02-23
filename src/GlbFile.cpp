@@ -1,5 +1,5 @@
 /**
- * @file  GlbFile.cpp
+ *  GlbFile.cpp
  *
  *  Created on: 2021/01/30
  *      Author: Dimitri Kourkoulis

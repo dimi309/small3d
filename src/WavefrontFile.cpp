@@ -1,5 +1,5 @@
 /**
- * @file  WavefrontFile.cpp
+ *  WavefrontFile.cpp
  *
  *  Created on: 2021/02/22
  *      Author: Dimitri Kourkoulis

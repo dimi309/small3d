@@ -22,11 +22,10 @@ var searchData=
   ['getscreenwidth_48',['getScreenWidth',['../classsmall3d_1_1_renderer.html#adc8816c9329595bbe489131cc2bf4495',1,'small3d::Renderer']]],
   ['getskin_49',['getSkin',['../classsmall3d_1_1_glb_file.html#aebd17d5add996b226696fa3e1ba7f8ea',1,'small3d::GlbFile::getSkin(const uint32_t index)'],['../classsmall3d_1_1_glb_file.html#a05a7c47c55b76fc60574c5fe607f1663',1,'small3d::GlbFile::getSkin(const std::string &amp;name)']]],
   ['gettoken_50',['getToken',['../classsmall3d_1_1_glb_file.html#a9d26cc2e08ed38e25164beb608faddad',1,'small3d::GlbFile']]],
-  ['gettokens_51',['getTokens',['../_get_tokens_8hpp.html#a36d83f2d89b0c15a4e475eae75949296',1,'small3d']]],
+  ['gettokens_51',['getTokens',['../namespacesmall3d.html#a36d83f2d89b0c15a4e475eae75949296',1,'small3d']]],
   ['gettokens_2ehpp_52',['GetTokens.hpp',['../_get_tokens_8hpp.html',1,'']]],
   ['getwidth_53',['getWidth',['../classsmall3d_1_1_image.html#a335588f99053b1f55c15c60c76c26624',1,'small3d::Image']]],
   ['getwindow_54',['getWindow',['../classsmall3d_1_1_renderer.html#a2065e4645034d538e5bbd40cd5fa3a50',1,'small3d::Renderer']]],
   ['glbfile_55',['GlbFile',['../classsmall3d_1_1_glb_file.html',1,'small3d::GlbFile'],['../classsmall3d_1_1_glb_file.html#a5e621f94704aab1c271d196918de1957',1,'small3d::GlbFile::GlbFile()']]],
-  ['glbfile_2ecpp_56',['GlbFile.cpp',['../_glb_file_8cpp.html',1,'']]],
-  ['glbfile_2ehpp_57',['GlbFile.hpp',['../_glb_file_8hpp.html',1,'']]]
+  ['glbfile_2ehpp_56',['GlbFile.hpp',['../_glb_file_8hpp.html',1,'']]]
 ];
