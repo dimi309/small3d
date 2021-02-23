@@ -13,6 +13,11 @@
 #include "BoundingBoxSet.hpp"
 
 namespace small3d {
+
+  /**
+   * @class WavefrontFile
+   * @brief Wavefront file parser class
+   */
   class WavefrontFile {
   private:
 
