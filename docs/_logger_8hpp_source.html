@@ -73,12 +73,12 @@ $(function() {
 <a href="_logger_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="_logger_8hpp.html#ae36ea0d604ebf9911ea191aa704a354a">   15</a></span>&#160;<span class="preprocessor">#define LOGERROR(MESSAGE) logger-&gt;append(loggererror, MESSAGE)</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="_logger_8hpp.html#ae36ea0d604ebf9911ea191aa704a354a">   15</a></span>&#160;<span class="preprocessor">#define LOGERROR(MESSAGE) logger-&gt;append(LogLevel::loggererror, MESSAGE)</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="_logger_8hpp.html#a98d4e4ceb51e0eb8db5abdd2a298fcb2">   20</a></span>&#160;<span class="preprocessor">#define LOGINFO(MESSAGE) logger-&gt;append(loggerinfo, MESSAGE)</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="_logger_8hpp.html#a98d4e4ceb51e0eb8db5abdd2a298fcb2">   20</a></span>&#160;<span class="preprocessor">#define LOGINFO(MESSAGE) logger-&gt;append(LogLevel::loggerinfo, MESSAGE)</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#if defined(DEBUG) || defined(_DEBUG) || !defined (NDEBUG)</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="_logger_8hpp.html#a0c1596ba4d50786c25ac66a830c90a93">   26</a></span>&#160;<span class="preprocessor">#define LOGDEBUG(MESSAGE) logger-&gt;append(loggerdebug, MESSAGE)</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="_logger_8hpp.html#a0c1596ba4d50786c25ac66a830c90a93">   26</a></span>&#160;<span class="preprocessor">#define LOGDEBUG(MESSAGE) logger-&gt;append(LogLevel::loggerdebug, MESSAGE)</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define LOGDEBUG(MESSAGE)</span></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#endif</span></div>
@@ -86,9 +86,9 @@ $(function() {
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;ostream&gt;</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">namespace </span>small3d {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacesmall3d.html">small3d</a> {</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="_logger_8hpp.html#a3806e98488fab560ee2f4b5972297597">   40</a></span>&#160;  <span class="keyword">enum</span> <a class="code" href="_logger_8hpp.html#a3806e98488fab560ee2f4b5972297597">LogLevel</a> {</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="namespacesmall3d.html#a3806e98488fab560ee2f4b5972297597">   40</a></span>&#160;  <span class="keyword">enum class</span> <a class="code" href="namespacesmall3d.html#a3806e98488fab560ee2f4b5972297597">LogLevel</a> {</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    loggerinfo, loggerdebug, loggererror</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  };</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
@@ -99,24 +99,25 @@ $(function() {
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <a class="code" href="classsmall3d_1_1_logger.html#ad88b624f27b457aa61d605f046e39757">~Logger</a>();</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_logger.html#a50660c9f132236e0b6657205a83f0513">append</a>(<span class="keyword">const</span> <a class="code" href="_logger_8hpp.html#a3806e98488fab560ee2f4b5972297597">LogLevel</a> level, <span class="keyword">const</span> std::string message) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_logger.html#a50660c9f132236e0b6657205a83f0513">append</a>(<span class="keyword">const</span> <a class="code" href="namespacesmall3d.html#a3806e98488fab560ee2f4b5972297597">LogLevel</a> level, <span class="keyword">const</span> std::string message) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  };</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="_logger_8hpp.html#a7ffafe7a0562ca3c76da6bfb30a62e1b">initLogger</a>();</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="namespacesmall3d.html#a7ffafe7a0562ca3c76da6bfb30a62e1b">initLogger</a>();</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="_logger_8hpp.html#ab9c95af461170e41d031a112466c014c">deleteLogger</a>();</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="namespacesmall3d.html#ab9c95af461170e41d031a112466c014c">deleteLogger</a>();</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;}</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="keyword">extern</span> std::shared_ptr&lt;small3d::Logger&gt; <a class="code" href="_logger_8hpp.html#a1c25b235eec67110b8a55e850bbec26e">logger</a>;</div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclasssmall3d_1_1_logger_html"><div class="ttname"><a href="classsmall3d_1_1_logger.html">small3d::Logger</a></div><div class="ttdoc">The standard logging class for small3d.</div><div class="ttdef"><b>Definition:</b> Logger.hpp:49</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_logger_html_a50660c9f132236e0b6657205a83f0513"><div class="ttname"><a href="classsmall3d_1_1_logger.html#a50660c9f132236e0b6657205a83f0513">small3d::Logger::append</a></div><div class="ttdeci">void append(const LogLevel level, const std::string message) const</div><div class="ttdoc">Appends a message to the logger.</div><div class="ttdef"><b>Definition:</b> Logger.cpp:30</div></div>
+<div class="ttc" id="anamespacesmall3d_html_a3806e98488fab560ee2f4b5972297597"><div class="ttname"><a href="namespacesmall3d.html#a3806e98488fab560ee2f4b5972297597">small3d::LogLevel</a></div><div class="ttdeci">LogLevel</div><div class="ttdoc">Possible logging levels.</div><div class="ttdef"><b>Definition:</b> Logger.hpp:40</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_logger_html_ad88b624f27b457aa61d605f046e39757"><div class="ttname"><a href="classsmall3d_1_1_logger.html#ad88b624f27b457aa61d605f046e39757">small3d::Logger::~Logger</a></div><div class="ttdeci">~Logger()</div><div class="ttdoc">Destructor.</div><div class="ttdef"><b>Definition:</b> Logger.cpp:26</div></div>
-<div class="ttc" id="a_logger_8hpp_html_ab9c95af461170e41d031a112466c014c"><div class="ttname"><a href="_logger_8hpp.html#ab9c95af461170e41d031a112466c014c">small3d::deleteLogger</a></div><div class="ttdeci">void deleteLogger()</div><div class="ttdoc">Destroy the logger.</div><div class="ttdef"><b>Definition:</b> Logger.cpp:95</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_logger_html_ad76a868d605a875fb20fac8129f3a139"><div class="ttname"><a href="classsmall3d_1_1_logger.html#ad76a868d605a875fb20fac8129f3a139">small3d::Logger::Logger</a></div><div class="ttdeci">Logger()</div><div class="ttdoc">Constructor with stream for output.</div><div class="ttdef"><b>Definition:</b> Logger.cpp:22</div></div>
 <div class="ttc" id="a_logger_8hpp_html_a1c25b235eec67110b8a55e850bbec26e"><div class="ttname"><a href="_logger_8hpp.html#a1c25b235eec67110b8a55e850bbec26e">logger</a></div><div class="ttdeci">std::shared_ptr&lt; small3d::Logger &gt; logger</div><div class="ttdoc">The logger object used by the logging macros.</div><div class="ttdef"><b>Definition:</b> Logger.cpp:18</div></div>
-<div class="ttc" id="a_logger_8hpp_html_a3806e98488fab560ee2f4b5972297597"><div class="ttname"><a href="_logger_8hpp.html#a3806e98488fab560ee2f4b5972297597">small3d::LogLevel</a></div><div class="ttdeci">LogLevel</div><div class="ttdoc">Possible logging levels.</div><div class="ttdef"><b>Definition:</b> Logger.hpp:40</div></div>
-<div class="ttc" id="a_logger_8hpp_html_a7ffafe7a0562ca3c76da6bfb30a62e1b"><div class="ttname"><a href="_logger_8hpp.html#a7ffafe7a0562ca3c76da6bfb30a62e1b">small3d::initLogger</a></div><div class="ttdeci">void initLogger()</div><div class="ttdoc">Initialise the logger.</div><div class="ttdef"><b>Definition:</b> Logger.cpp:91</div></div>
+<div class="ttc" id="anamespacesmall3d_html_a7ffafe7a0562ca3c76da6bfb30a62e1b"><div class="ttname"><a href="namespacesmall3d.html#a7ffafe7a0562ca3c76da6bfb30a62e1b">small3d::initLogger</a></div><div class="ttdeci">void initLogger()</div><div class="ttdoc">Initialise the logger.</div><div class="ttdef"><b>Definition:</b> Logger.cpp:91</div></div>
+<div class="ttc" id="anamespacesmall3d_html"><div class="ttname"><a href="namespacesmall3d.html">small3d</a></div><div class="ttdef"><b>Definition:</b> BoundingBoxSet.hpp:19</div></div>
+<div class="ttc" id="anamespacesmall3d_html_ab9c95af461170e41d031a112466c014c"><div class="ttname"><a href="namespacesmall3d.html#ab9c95af461170e41d031a112466c014c">small3d::deleteLogger</a></div><div class="ttdeci">void deleteLogger()</div><div class="ttdoc">Destroy the logger.</div><div class="ttdef"><b>Definition:</b> Logger.cpp:95</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20

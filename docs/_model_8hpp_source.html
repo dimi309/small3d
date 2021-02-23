@@ -85,7 +85,7 @@ $(function() {
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_image_8hpp.html">Image.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_glb_file_8hpp.html">GlbFile.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">namespace </span>small3d {</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacesmall3d.html">small3d</a> {</div>
 <div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="structsmall3d_1_1_model.html">   38</a></span>&#160;  <span class="keyword">struct </span><a class="code" href="structsmall3d_1_1_model.html">Model</a> {</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  <span class="keyword">private</span>:</div>
@@ -96,12 +96,12 @@ $(function() {
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
 <div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="structsmall3d_1_1_model_1_1_joint.html">   50</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structsmall3d_1_1_model_1_1_joint.html">Joint</a> {</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;      uint32_t node;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;      uint32_t node = 0;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;      std::string name;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;      glm::mat4 inverseBindMatrix;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;      glm::quat rotation;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;      glm::vec3 scale;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;      glm::vec3 translation;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;      glm::mat4 inverseBindMatrix = glm::mat4(1.0f);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;      glm::quat rotation = glm::quat(0.0f, 0.0f, 0.0f, 1.0f);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;      glm::vec3 scale = glm::vec3(0.0f, 0.0f, 0.0f);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;      glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;      glm::quat currRotation = glm::quat(0.0f, 0.0f, 0.0f, 1.0f);</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;      glm::vec3 currTranslation = glm::vec3(0.0f, 0.0f, 0.0f);</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;      std::vector&lt;uint32_t&gt; children;</div>
@@ -252,6 +252,7 @@ $(function() {
 <div class="ttc" id="astructsmall3d_1_1_model_html_a0f8f0d5bf988d89b3cf7c6c16bc2871e"><div class="ttname"><a href="structsmall3d_1_1_model.html#a0f8f0d5bf988d89b3cf7c6c16bc2871e">small3d::Model::weightDataByteSize</a></div><div class="ttdeci">uint32_t weightDataByteSize</div><div class="ttdoc">Size of the weight data, in bytes.</div><div class="ttdef"><b>Definition:</b> Model.hpp:275</div></div>
 <div class="ttc" id="astructsmall3d_1_1_model_html_ae0c58e6b9ead5c0ba861d12425a73038"><div class="ttname"><a href="structsmall3d_1_1_model.html#ae0c58e6b9ead5c0ba861d12425a73038">small3d::Model::defaultTextureImage</a></div><div class="ttdeci">std::shared_ptr&lt; Image &gt; defaultTextureImage</div><div class="ttdoc">Image found in the file the model was loaded from (empty image if not - check the size)....</div><div class="ttdef"><b>Definition:</b> Model.hpp:71</div></div>
 <div class="ttc" id="astructsmall3d_1_1_model_html_a6ed04786c848d0ef209c80973dfa26e2"><div class="ttname"><a href="structsmall3d_1_1_model.html#a6ed04786c848d0ef209c80973dfa26e2">small3d::Model::jointDataByteSize</a></div><div class="ttdeci">uint32_t jointDataByteSize</div><div class="ttdoc">Size of the joint data, in bytes.</div><div class="ttdef"><b>Definition:</b> Model.hpp:264</div></div>
+<div class="ttc" id="anamespacesmall3d_html"><div class="ttname"><a href="namespacesmall3d.html">small3d</a></div><div class="ttdef"><b>Definition:</b> BoundingBoxSet.hpp:19</div></div>
 <div class="ttc" id="astructsmall3d_1_1_model_html_aa75d379c3808bfce41889f918656b87f"><div class="ttname"><a href="structsmall3d_1_1_model.html#aa75d379c3808bfce41889f918656b87f">small3d::Model::jointData</a></div><div class="ttdeci">std::vector&lt; uint8_t &gt; jointData</div><div class="ttdoc">Array, to be treated as a 4 column table. Each &quot;row&quot; potentially contains up to 4 joints that can inf...</div><div class="ttdef"><b>Definition:</b> Model.hpp:259</div></div>
 <div class="ttc" id="astructsmall3d_1_1_model_html_a811130bb7e56af0d5e49f2707749a017"><div class="ttname"><a href="structsmall3d_1_1_model.html#a811130bb7e56af0d5e49f2707749a017">small3d::Model::normalsBufferMemory</a></div><div class="ttdeci">VkDeviceMemory normalsBufferMemory</div><div class="ttdoc">Memory for normals buffer (Vulkan-specific, avoid direct manipulation)</div><div class="ttdef"><b>Definition:</b> Model.hpp:117</div></div>
 <div class="ttc" id="astructsmall3d_1_1_glb_file_1_1_node_html"><div class="ttname"><a href="structsmall3d_1_1_glb_file_1_1_node.html">small3d::GlbFile::Node</a></div><div class="ttdoc">glTF node</div><div class="ttdef"><b>Definition:</b> GlbFile.hpp:48</div></div>
