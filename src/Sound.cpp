@@ -503,7 +503,7 @@ namespace small3d {
     }
   }
 
-  Sound::Sound(const Sound& other) : Sound() {
+  Sound::Sound(const Sound& other) noexcept : Sound() {
     this->soundData = other.soundData;
 
 #if !defined(SMALL3D_IOS)
@@ -513,7 +513,7 @@ namespace small3d {
     ++numInstances;
   }
 
-  Sound::Sound(const Sound&& other) : Sound() {
+  Sound::Sound(const Sound&& other) noexcept : Sound()  {
     this->soundData = other.soundData;
 #if !defined(SMALL3D_IOS)
     this->stream = nullptr;
@@ -522,7 +522,7 @@ namespace small3d {
     ++numInstances;
   }
 
-  Sound& Sound::operator=(const Sound& other) {
+  Sound& Sound::operator=(const Sound& other) noexcept {
 #if  !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     if (this->stream != nullptr) {
 
@@ -542,7 +542,7 @@ namespace small3d {
     return *this;
   }
 
-  Sound& Sound::operator=(const Sound&& other) {
+  Sound& Sound::operator=(const Sound&& other) noexcept {
 #if !defined(SMALL3D_IOS)
     if (this->stream != nullptr) {
 #else

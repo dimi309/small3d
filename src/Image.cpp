@@ -229,11 +229,11 @@ namespace small3d {
 
     imageData.resize(imageDataSize);
 
-    for (unsigned long y = 0; y < height; y++) {
+    for (uint64_t y = 0; y < height; y++) {
 
       png_byte* row = rowPointers[y];
 
-      for (unsigned long x = 0; x < width; x++) {
+      for (uint64_t x = 0; x < width; x++) {
 
         png_byte* ptr = &(row[x * numComponents]);
 
