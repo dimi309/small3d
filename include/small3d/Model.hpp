@@ -25,7 +25,9 @@ namespace small3d {
    * @struct	Model
    *
    * @brief	A 3D model. It can be loaded from a Wavefront or glTF file.
-   *            A Wavefront file can be exported from Blender for example (see blender.org).
+   *            In the case of a Wavefront file, the format has to be somewhat specific,
+   *            with triangulated faces and containing the normals. Such a file
+   *            can be exported from Blender for example (see blender.org).
    *            From its menu, select File > Export > Wavefront (.obj). Then from the
    *            "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" 
    *            and "Keep Vertex Order".
@@ -76,53 +78,55 @@ namespace small3d {
      */
     bool alreadyInGPU = false;
 
+
+
     /**
      * @brief Buffer containing vertex positions
      *        (Vulkan-specific, avoid direct manipulation)
      */
-    VkBuffer positionBuffer;
+    VkBuffer positionBuffer = 0;
 
     /**
      * @brief Memory for buffer containing vertex positions
      *        (Vulkan-specific, avoid direct manipulation)
      */
-    VkDeviceMemory positionBufferMemory;
+    VkDeviceMemory positionBufferMemory = 0;
 
     /**
      * @brief Index buffer
      *        (Vulkan-specific, avoid direct manipulation)
      */
-    VkBuffer indexBuffer;
+    VkBuffer indexBuffer = 0;
 
     /**
      * @brief Memory for index buffer
      *        (Vulkan-specific, avoid direct manipulation)
      */
-    VkDeviceMemory indexBufferMemory;
+    VkDeviceMemory indexBufferMemory = 0;
 
     /**
      * @brief Normals buffer
      *        (Vulkan-specific, avoid direct manipulation)
      */
-    VkBuffer normalsBuffer;
+    VkBuffer normalsBuffer = 0;
 
     /**
      * @brief Memory for normals buffer
      *        (Vulkan-specific, avoid direct manipulation)
      */
-    VkDeviceMemory normalsBufferMemory;
+    VkDeviceMemory normalsBufferMemory = 0;
 
     /**
      * @brief UV coordinates buffer
      *        (Vulkan-specific, avoid direct manipulation)
      */
-    VkBuffer uvBuffer;
+    VkBuffer uvBuffer = 0;
 
     /**
      * @brief Memory for UV coordinates buffer
      *        (Vulkan-specific, avoid direct manipulation)
      */
-    VkDeviceMemory uvBufferMemory;
+    VkDeviceMemory uvBufferMemory = 0;
 
     /**
      * @brief Index of model orientation in the orientation dynamic uniform 
@@ -140,24 +144,24 @@ namespace small3d {
     /**
      * @brief Joints buffer
      */
-    VkBuffer jointBuffer;
+    VkBuffer jointBuffer = 0;
 
     /**
     * @brief Memory for joints buffer
     *        (Vulkan-specific, avoid direct manipulation)
     */
-    VkDeviceMemory jointBufferMemory;
+    VkDeviceMemory jointBufferMemory = 0;
 
     /**
      * @brief Joint weights buffer
      */
-    VkBuffer weightBuffer;
+    VkBuffer weightBuffer = 0;
 
     /**
     * @brief Memory for weights buffer
     *        (Vulkan-specific, avoid direct manipulation)
     */
-    VkDeviceMemory weightBufferMemory;
+    VkDeviceMemory weightBufferMemory = 0;
 #else
 
     /**
@@ -312,10 +316,10 @@ namespace small3d {
     Model(const std::string& fileLocation);
 
     /**
-     * @brief Constructor that loads model from a GLB file
-     * @param fileLocation  Location of the GLB file from which to load the
+     * @brief Constructor that loads model from a glTF .glb file
+     * @param fileLocation  Location of the .glb file from which to load the
      *                      model.
-     * @param meshName      The name of the mesh in the GLB file which will be loaded
+     * @param meshName      The name of the mesh in the .glb file which will be loaded
      *                      as the model.
      * 
      * @param armatureName  The name of the armature binding the model to a set of joints.

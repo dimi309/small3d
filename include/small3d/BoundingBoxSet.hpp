@@ -21,9 +21,9 @@ namespace small3d {
   /**
    * @class BoundingBoxSet
    * @brief Set of bounding boxes for a SceneObject, normally loaded from a
-   *        Wavefront file, allowing for collision detection.
-   *        In order to create these in Blender for example (see blender.org),
-   *        just place them in the preferred position over a model. Ideally,
+   *        Wavefront file, or calculated based on the vertices of a Model.
+   *        In order to create a BoundinBoxSet in Blender for example (see blender.org),
+   *        just place the boxes in the preferred position over a model. Ideally,
    *        they should be aligned with the axes, (but note that small3d does
    *        more than just a simple axis-aligned bounding box collision
    *        detection).

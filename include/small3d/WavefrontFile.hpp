@@ -41,8 +41,22 @@ namespace small3d {
     void correctDataVectors();
 
   public:
+    /**
+     * @brief Constructor
+     * @param fileLocation Path to wavefront file
+     */
     WavefrontFile(const std::string& fileLocation);
+
+    /**
+     * @brief Load data from the Wavefront file into a Model
+     * @param The model to load the data to
+     */
     void load(Model& model);
+
+    /**
+     * @brief Load data from the Wavefront file into a BoundingBoxSet
+     * @param The BoundingBoxSet to load the data to
+     */
     void load(BoundingBoxSet& boundingBoxSet);
   };
 }
