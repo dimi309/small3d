@@ -80,11 +80,11 @@ namespace small3d {
     int faceVertexArrayIndex = 0;
     for (auto faceVertexIndex = facesVertexIndices.begin();
       faceVertexIndex != facesVertexIndices.end(); ++faceVertexIndex) {
-      for (int vertexIndex = 0; vertexIndex != 3; ++vertexIndex) {
+      for (uint64_t vertexIndex = 0; vertexIndex != 3; ++vertexIndex) {
 
-        for (int normalsDataComponent = 0; normalsDataComponent != 3;
+        for (uint64_t normalsDataComponent = 0; normalsDataComponent != 3;
           ++normalsDataComponent) {
-          normalsData[3 * (faceVertexIndex->at(vertexIndex) - 1)
+          normalsData[3 * static_cast<uint64_t>((faceVertexIndex->at(vertexIndex) - 1))
             + normalsDataComponent] =
             normals.at(
               (unsigned long)
@@ -118,11 +118,11 @@ namespace small3d {
       for (auto faceVertexIndex = facesVertexIndices.begin();
         faceVertexIndex != facesVertexIndices.end();
         ++faceVertexIndex) {
-        for (int vertexIndex = 0; vertexIndex != 3; ++vertexIndex) {
+        for (uint64_t vertexIndex = 0; vertexIndex != 3; ++vertexIndex) {
 
-          for (int textureCoordsComponent = 0;
+          for (uint64_t textureCoordsComponent = 0;
             textureCoordsComponent != 2; ++textureCoordsComponent) {
-            textureCoordsData[2 * (faceVertexIndex->at(vertexIndex) - 1)
+            textureCoordsData[2 * static_cast<uint64_t>((faceVertexIndex->at(vertexIndex) - 1))
               + textureCoordsComponent] =
               textureCoords.at(
                 static_cast<unsigned long>
@@ -140,11 +140,11 @@ namespace small3d {
 
     std::unordered_map<int, int> vertexUVPairs;
 
-    int numIndexes = static_cast<int>(facesVertexIndices.size());
+    uint64_t numIndexes = facesVertexIndices.size();
 
-    for (int idx = 0; idx < numIndexes; ++idx) {
+    for (uint64_t idx = 0; idx < numIndexes; ++idx) {
 
-      for (int vertexIndex = 0; vertexIndex != 3; ++vertexIndex) {
+      for (uint64_t vertexIndex = 0; vertexIndex != 3; ++vertexIndex) {
 
         auto vertexUVPair = vertexUVPairs.
           find(facesVertexIndices[idx][vertexIndex]);
@@ -156,9 +156,9 @@ namespace small3d {
             std::vector<float> v;
             // -1 because at this stage the indexes are still as exported from
             // Blender, meaning 1-based and not 0-based
-            v.push_back(vertices[facesVertexIndices[idx][vertexIndex] - 1][0]);
-            v.push_back(vertices[facesVertexIndices[idx][vertexIndex] - 1][1]);
-            v.push_back(vertices[facesVertexIndices[idx][vertexIndex] - 1][2]);
+            v.push_back(vertices[static_cast<uint64_t>(facesVertexIndices[idx][vertexIndex] - 1)][0]);
+            v.push_back(vertices[static_cast<uint64_t>(facesVertexIndices[idx][vertexIndex] - 1)][1]);
+            v.push_back(vertices[static_cast<uint64_t>(facesVertexIndices[idx][vertexIndex] - 1)][2]);
             vertices.push_back(v);
 
             facesVertexIndices[idx][vertexIndex] = static_cast<int>

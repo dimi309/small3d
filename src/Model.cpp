@@ -144,7 +144,6 @@ namespace small3d {
     if (armatureName != "") {
       armature = glb.getNode(armatureName);
     }
-
   
     if (glb.existNode(meshName)) {
       auto meshNode = glb.getNode(meshName);
