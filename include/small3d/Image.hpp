@@ -36,9 +36,9 @@ namespace small3d {
 
     memoryDataAndPos_ memoryDataAndPos;
 
-    unsigned long width, height;
+    unsigned long width = 0, height = 0;
     std::vector<float> imageData;
-    unsigned long imageDataSize;
+    unsigned long imageDataSize = 0;
     void load(const std::string fileLocation, std::vector<char>& data);
     static void readDataFromMemory(png_structp png_ptr, png_bytep outBytes,
       png_size_t byteCountToRead);

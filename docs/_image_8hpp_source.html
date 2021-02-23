@@ -92,9 +92,9 @@ $(function() {
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    memoryDataAndPos_ memoryDataAndPos;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> width, height;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> width = 0, height = 0;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    std::vector&lt;float&gt; imageData;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> imageDataSize;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> imageDataSize = 0;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">void</span> load(<span class="keyword">const</span> std::string fileLocation, std::vector&lt;char&gt;&amp; data);</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> readDataFromMemory(png_structp png_ptr, png_bytep outBytes,</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;      png_size_t byteCountToRead);</div>
