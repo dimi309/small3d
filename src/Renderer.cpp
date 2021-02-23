@@ -965,7 +965,7 @@ namespace small3d {
     }
     garbageModels.clear();
 
-    for (auto& it = textures.begin();
+    for (auto it = textures.begin();
       it != textures.end(); ++it) {
       LOGDEBUG("Deleting texture " + it->first);
 

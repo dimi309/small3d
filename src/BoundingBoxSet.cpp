@@ -243,7 +243,7 @@ namespace small3d {
     facesVertexIndexes.clear();
     facesVertexIndexesTriangulated.clear();
     boxExtremes.clear();
-    extremes ex = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+    extremes ex;
 
     for (uint32_t idx = 0; idx < vertexData.size(); ++idx) {
       if (idx % 4 == 0) {

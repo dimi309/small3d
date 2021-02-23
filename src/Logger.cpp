@@ -36,13 +36,13 @@ namespace small3d {
       android_LogPriority lp;
 
       switch (level) {
-        case loggerinfo:
+        case LogLevel::loggerinfo:
           lp = ANDROID_LOG_INFO;
               break;
-        case loggerdebug:
+        case LogLevel::loggerdebug:
           lp = ANDROID_LOG_DEBUG;
               break;
-        case loggererror:
+        case LogLevel::loggererror:
           lp = ANDROID_LOG_ERROR;
               break;
         default:
