@@ -77,7 +77,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>A 3D model. It can be loaded from a Wavefront or glTF file. A Wavefront file can be exported from Blender for example (see blender.org). From its menu, select File &gt; Export &gt; Wavefront (.obj). Then from the "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" and "Keep Vertex Order". The 3D model can also be constructed procedurally by code, by inserting values to the appropriate member variables.  
+<p>A 3D model. It can be loaded from a Wavefront or glTF file. In the case of a Wavefront file, the format has to be somewhat specific, with triangulated faces and containing the normals. Such a file can be exported from Blender for example (see blender.org). From its menu, select File &gt; Export &gt; Wavefront (.obj). Then from the "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" and "Keep Vertex Order". The 3D model can also be constructed procedurally by code, by inserting values to the appropriate member variables.  
  <a href="structsmall3d_1_1_model.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_model_8hpp_source.html">Model.hpp</a>&gt;</code></p>
@@ -94,11 +94,11 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#aa116b5b0c66b9e7f4dfd401ab5233a79">Model</a> ()</td></tr>
 <tr class="memdesc:aa116b5b0c66b9e7f4dfd401ab5233a79"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor. <br /></td></tr>
 <tr class="separator:aa116b5b0c66b9e7f4dfd401ab5233a79"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81045a6f3f7fc07a1950fad87d0a321b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a81045a6f3f7fc07a1950fad87d0a321b">Model</a> (const std::string fileLocation)</td></tr>
-<tr class="memdesc:a81045a6f3f7fc07a1950fad87d0a321b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that loads model from a Wavefront file.  <a href="structsmall3d_1_1_model.html#a81045a6f3f7fc07a1950fad87d0a321b">More...</a><br /></td></tr>
-<tr class="separator:a81045a6f3f7fc07a1950fad87d0a321b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4564a4df275e4ff8a64cf90ac4639410"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a4564a4df275e4ff8a64cf90ac4639410">Model</a> (const std::string &amp;fileLocation)</td></tr>
+<tr class="memdesc:a4564a4df275e4ff8a64cf90ac4639410"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that loads model from a Wavefront file.  <a href="structsmall3d_1_1_model.html#a4564a4df275e4ff8a64cf90ac4639410">More...</a><br /></td></tr>
+<tr class="separator:a4564a4df275e4ff8a64cf90ac4639410"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3adabf32a0684cc130073ce184c0ccdc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a3adabf32a0684cc130073ce184c0ccdc">Model</a> (const std::string &amp;fileLocation, const std::string &amp;meshName, const std::string &amp;armatureName=&quot;&quot;, const std::string &amp;animationName=&quot;&quot;)</td></tr>
-<tr class="memdesc:a3adabf32a0684cc130073ce184c0ccdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that loads model from a GLB file.  <a href="structsmall3d_1_1_model.html#a3adabf32a0684cc130073ce184c0ccdc">More...</a><br /></td></tr>
+<tr class="memdesc:a3adabf32a0684cc130073ce184c0ccdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that loads model from a glTF .glb file.  <a href="structsmall3d_1_1_model.html#a3adabf32a0684cc130073ce184c0ccdc">More...</a><br /></td></tr>
 <tr class="separator:a3adabf32a0684cc130073ce184c0ccdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d501a1d394c08b7666a48d55736a5ab"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a5d501a1d394c08b7666a48d55736a5ab">getCurrentPoseIdx</a> ()</td></tr>
 <tr class="memdesc:a5d501a1d394c08b7666a48d55736a5ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the index of the current animation pose.  <a href="structsmall3d_1_1_model.html#a5d501a1d394c08b7666a48d55736a5ab">More...</a><br /></td></tr>
@@ -113,44 +113,44 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a6244cbef6be48272417b5c4515716fbc"><td class="memItemLeft" align="right" valign="top"><a id="a6244cbef6be48272417b5c4515716fbc"></a>
-<a class="el" href="classsmall3d_1_1_image.html">Image</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a6244cbef6be48272417b5c4515716fbc">defaultTextureImage</a></td></tr>
-<tr class="memdesc:a6244cbef6be48272417b5c4515716fbc"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsmall3d_1_1_image.html" title="An image, loaded from a png file, which can be used for generating textures.">Image</a> found in the file the model was loaded from (empty image if not - check the size). It can be used to generate a texture for the model, but other textures can also be used. <br /></td></tr>
-<tr class="separator:a6244cbef6be48272417b5c4515716fbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0c58e6b9ead5c0ba861d12425a73038"><td class="memItemLeft" align="right" valign="top"><a id="ae0c58e6b9ead5c0ba861d12425a73038"></a>
+std::shared_ptr&lt; <a class="el" href="classsmall3d_1_1_image.html">Image</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#ae0c58e6b9ead5c0ba861d12425a73038">defaultTextureImage</a></td></tr>
+<tr class="memdesc:ae0c58e6b9ead5c0ba861d12425a73038"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsmall3d_1_1_image.html" title="An image, loaded from a png file, which can be used for generating textures.">Image</a> found in the file the model was loaded from (empty image if not - check the size). It can be used to generate a texture for the model, but other textures can also be used. <br /></td></tr>
+<tr class="separator:ae0c58e6b9ead5c0ba861d12425a73038"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5449f8e4f8b4f1f3f112a565ff91f9f"><td class="memItemLeft" align="right" valign="top"><a id="ad5449f8e4f8b4f1f3f112a565ff91f9f"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#ad5449f8e4f8b4f1f3f112a565ff91f9f">alreadyInGPU</a> = false</td></tr>
 <tr class="memdesc:ad5449f8e4f8b4f1f3f112a565ff91f9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is the model already in GPU memory? (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
 <tr class="separator:ad5449f8e4f8b4f1f3f112a565ff91f9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0dc68151bf7d08e522126f6e4d0269ad"><td class="memItemLeft" align="right" valign="top"><a id="a0dc68151bf7d08e522126f6e4d0269ad"></a>
-VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a0dc68151bf7d08e522126f6e4d0269ad">positionBuffer</a></td></tr>
+VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a0dc68151bf7d08e522126f6e4d0269ad">positionBuffer</a> = 0</td></tr>
 <tr class="memdesc:a0dc68151bf7d08e522126f6e4d0269ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer containing vertex positions (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
 <tr class="separator:a0dc68151bf7d08e522126f6e4d0269ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25ba40d4f09c7c398eba3a516cdd9987"><td class="memItemLeft" align="right" valign="top"><a id="a25ba40d4f09c7c398eba3a516cdd9987"></a>
-VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a25ba40d4f09c7c398eba3a516cdd9987">positionBufferMemory</a></td></tr>
+VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a25ba40d4f09c7c398eba3a516cdd9987">positionBufferMemory</a> = 0</td></tr>
 <tr class="memdesc:a25ba40d4f09c7c398eba3a516cdd9987"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory for buffer containing vertex positions (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
 <tr class="separator:a25ba40d4f09c7c398eba3a516cdd9987"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39db7cf562b604314c1d09e83c51fa43"><td class="memItemLeft" align="right" valign="top"><a id="a39db7cf562b604314c1d09e83c51fa43"></a>
-VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a39db7cf562b604314c1d09e83c51fa43">indexBuffer</a></td></tr>
+VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a39db7cf562b604314c1d09e83c51fa43">indexBuffer</a> = 0</td></tr>
 <tr class="memdesc:a39db7cf562b604314c1d09e83c51fa43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Index buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
 <tr class="separator:a39db7cf562b604314c1d09e83c51fa43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02bc354c84beb68570369cd9b831aad3"><td class="memItemLeft" align="right" valign="top"><a id="a02bc354c84beb68570369cd9b831aad3"></a>
-VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a02bc354c84beb68570369cd9b831aad3">indexBufferMemory</a></td></tr>
+VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a02bc354c84beb68570369cd9b831aad3">indexBufferMemory</a> = 0</td></tr>
 <tr class="memdesc:a02bc354c84beb68570369cd9b831aad3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory for index buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
 <tr class="separator:a02bc354c84beb68570369cd9b831aad3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ec7e4ce7cea208d581c5bef94bddd59"><td class="memItemLeft" align="right" valign="top"><a id="a7ec7e4ce7cea208d581c5bef94bddd59"></a>
-VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a7ec7e4ce7cea208d581c5bef94bddd59">normalsBuffer</a></td></tr>
+VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a7ec7e4ce7cea208d581c5bef94bddd59">normalsBuffer</a> = 0</td></tr>
 <tr class="memdesc:a7ec7e4ce7cea208d581c5bef94bddd59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normals buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
 <tr class="separator:a7ec7e4ce7cea208d581c5bef94bddd59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a811130bb7e56af0d5e49f2707749a017"><td class="memItemLeft" align="right" valign="top"><a id="a811130bb7e56af0d5e49f2707749a017"></a>
-VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a811130bb7e56af0d5e49f2707749a017">normalsBufferMemory</a></td></tr>
+VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a811130bb7e56af0d5e49f2707749a017">normalsBufferMemory</a> = 0</td></tr>
 <tr class="memdesc:a811130bb7e56af0d5e49f2707749a017"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory for normals buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
 <tr class="separator:a811130bb7e56af0d5e49f2707749a017"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77d6e46a357f5216c27dec374582d4f0"><td class="memItemLeft" align="right" valign="top"><a id="a77d6e46a357f5216c27dec374582d4f0"></a>
-VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a77d6e46a357f5216c27dec374582d4f0">uvBuffer</a></td></tr>
+VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a77d6e46a357f5216c27dec374582d4f0">uvBuffer</a> = 0</td></tr>
 <tr class="memdesc:a77d6e46a357f5216c27dec374582d4f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">UV coordinates buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
 <tr class="separator:a77d6e46a357f5216c27dec374582d4f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9628ad75022570c3fdda0c449790cd5f"><td class="memItemLeft" align="right" valign="top"><a id="a9628ad75022570c3fdda0c449790cd5f"></a>
-VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a9628ad75022570c3fdda0c449790cd5f">uvBufferMemory</a></td></tr>
+VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a9628ad75022570c3fdda0c449790cd5f">uvBufferMemory</a> = 0</td></tr>
 <tr class="memdesc:a9628ad75022570c3fdda0c449790cd5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory for UV coordinates buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
 <tr class="separator:a9628ad75022570c3fdda0c449790cd5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14d7094dc24ed8d72b9bdd72eb89be67"><td class="memItemLeft" align="right" valign="top"><a id="a14d7094dc24ed8d72b9bdd72eb89be67"></a>
@@ -162,19 +162,19 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <tr class="memdesc:a3b8d0ec778269539b3d9a5cc9b20c496"><td class="mdescLeft">&#160;</td><td class="mdescRight">Index of model colour in the colour dynamic uniform buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
 <tr class="separator:a3b8d0ec778269539b3d9a5cc9b20c496"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4841e05e331faf644a724974248c616"><td class="memItemLeft" align="right" valign="top"><a id="ae4841e05e331faf644a724974248c616"></a>
-VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#ae4841e05e331faf644a724974248c616">jointBuffer</a></td></tr>
+VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#ae4841e05e331faf644a724974248c616">jointBuffer</a> = 0</td></tr>
 <tr class="memdesc:ae4841e05e331faf644a724974248c616"><td class="mdescLeft">&#160;</td><td class="mdescRight">Joints buffer. <br /></td></tr>
 <tr class="separator:ae4841e05e331faf644a724974248c616"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4709ef731a9463dc87ddc8be40b1dad4"><td class="memItemLeft" align="right" valign="top"><a id="a4709ef731a9463dc87ddc8be40b1dad4"></a>
-VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a4709ef731a9463dc87ddc8be40b1dad4">jointBufferMemory</a></td></tr>
+VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a4709ef731a9463dc87ddc8be40b1dad4">jointBufferMemory</a> = 0</td></tr>
 <tr class="memdesc:a4709ef731a9463dc87ddc8be40b1dad4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory for joints buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
 <tr class="separator:a4709ef731a9463dc87ddc8be40b1dad4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e1635fec6d6de4ccdb795f8cf673442"><td class="memItemLeft" align="right" valign="top"><a id="a7e1635fec6d6de4ccdb795f8cf673442"></a>
-VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a7e1635fec6d6de4ccdb795f8cf673442">weightBuffer</a></td></tr>
+VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a7e1635fec6d6de4ccdb795f8cf673442">weightBuffer</a> = 0</td></tr>
 <tr class="memdesc:a7e1635fec6d6de4ccdb795f8cf673442"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structsmall3d_1_1_model_1_1_joint.html" title="glTF joint">Joint</a> weights buffer. <br /></td></tr>
 <tr class="separator:a7e1635fec6d6de4ccdb795f8cf673442"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09aff074b63ed19fd7a9e6daf0df4c61"><td class="memItemLeft" align="right" valign="top"><a id="a09aff074b63ed19fd7a9e6daf0df4c61"></a>
-VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a09aff074b63ed19fd7a9e6daf0df4c61">weightBufferMemory</a></td></tr>
+VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model.html#a09aff074b63ed19fd7a9e6daf0df4c61">weightBufferMemory</a> = 0</td></tr>
 <tr class="memdesc:a09aff074b63ed19fd7a9e6daf0df4c61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory for weights buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
 <tr class="separator:a09aff074b63ed19fd7a9e6daf0df4c61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf9422b7594956d857bc9da9da7b13e4"><td class="memItemLeft" align="right" valign="top"><a id="adf9422b7594956d857bc9da9da7b13e4"></a>
@@ -249,10 +249,10 @@ static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>MAX_
 <tr class="separator:ad2b52d176f49562bca07f9b238b84854"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A 3D model. It can be loaded from a Wavefront or glTF file. A Wavefront file can be exported from Blender for example (see blender.org). From its menu, select File &gt; Export &gt; Wavefront (.obj). Then from the "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" and "Keep Vertex Order". The 3D model can also be constructed procedurally by code, by inserting values to the appropriate member variables. </p>
+<div class="textblock"><p>A 3D model. It can be loaded from a Wavefront or glTF file. In the case of a Wavefront file, the format has to be somewhat specific, with triangulated faces and containing the normals. Such a file can be exported from Blender for example (see blender.org). From its menu, select File &gt; Export &gt; Wavefront (.obj). Then from the "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" and "Keep Vertex Order". The 3D model can also be constructed procedurally by code, by inserting values to the appropriate member variables. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a81045a6f3f7fc07a1950fad87d0a321b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a81045a6f3f7fc07a1950fad87d0a321b">&#9670;&nbsp;</a></span>Model() <span class="overload">[1/2]</span></h2>
+<a id="a4564a4df275e4ff8a64cf90ac4639410"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4564a4df275e4ff8a64cf90ac4639410">&#9670;&nbsp;</a></span>Model() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -260,7 +260,7 @@ static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>MAX_
         <tr>
           <td class="memname">small3d::Model::Model </td>
           <td>(</td>
-          <td class="paramtype">const std::string&#160;</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>fileLocation</em></td><td>)</td>
           <td></td>
         </tr>
@@ -315,11 +315,11 @@ static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>MAX_
       </table>
 </div><div class="memdoc">
 
-<p>Constructor that loads model from a GLB file. </p>
+<p>Constructor that loads model from a glTF .glb file. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">fileLocation</td><td>Location of the GLB file from which to load the model. </td></tr>
-    <tr><td class="paramname">meshName</td><td>The name of the mesh in the GLB file which will be loaded as the model.</td></tr>
+    <tr><td class="paramname">fileLocation</td><td>Location of the .glb file from which to load the model. </td></tr>
+    <tr><td class="paramname">meshName</td><td>The name of the mesh in the .glb file which will be loaded as the model.</td></tr>
     <tr><td class="paramname">armatureName</td><td>The name of the armature binding the model to a set of joints. </td></tr>
     <tr><td class="paramname">animationName</td><td>The name of the animation to load for the model's joints. </td></tr>
   </table>
