@@ -61,7 +61,7 @@ namespace small3d {
     imageDataSize = 400 * sizeof(float);
     imageData.resize(400);
 
-    for (uint32_t i = 0; i < 100; ++i) {
+    for (uint64_t i = 0; i < 100; ++i) {
       std::memcpy(&imageData[i * 4], &colour, 4 * sizeof(float));
     }
   }
