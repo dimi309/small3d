@@ -35,6 +35,11 @@ namespace small3d {
 
   struct Model {
 
+  private:
+
+    uint64_t numPoses = 0;
+    uint32_t currentPose = 0;
+
   public:
 
     /**
@@ -62,34 +67,7 @@ namespace small3d {
      *        It can be used to generate a texture for the model, but other textures can also be used.
      */
     std::shared_ptr<Image> defaultTextureImage;
-    
-  private:
-
-    uint64_t numPoses = 0;
-    uint32_t currentPose = 0;
-
-    // Data read from .obj file
-    std::vector<std::vector<float> > vertices;
-    std::vector<std::vector<int> > facesVertexIndices;
-    std::vector<std::vector<float> > normals;
-    std::vector<std::vector<int> > facesNormalIndices;
-    std::vector<std::vector<float> > textureCoords;
-    std::vector<std::vector<int> > textureCoordsIndices;
-
-    void loadVertexData();
-    void loadIndexData();
-    void loadNormalsData();
-    void loadTextureCoordsData();
-
-    // Make sure that no texture coordinate information is lost when the data
-    // buffers get created (vertexData, indexData, normalsData and
-    // textureCoordsData) by realigning the data vectors, in order to ensure
-    // unique vertex - texture coordinates pairs.
-    void correctDataVectors();
-
-    void clear();
-
-  public:
+  
 
 #ifndef SMALL3D_OPENGL
     /**
@@ -331,7 +309,7 @@ namespace small3d {
      * @param fileLocation Location of the Wavefront file from which to load the
      *                     model.
      */
-    Model(const std::string fileLocation);
+    Model(const std::string& fileLocation);
 
     /**
      * @brief Constructor that loads model from a GLB file
