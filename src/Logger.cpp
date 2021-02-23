@@ -20,11 +20,11 @@ std::shared_ptr<small3d::Logger> logger;
 namespace small3d {
 
   Logger::Logger() {
-    this->append(loggerinfo, "Logger created");
+    this->append(LogLevel::loggerinfo, "Logger created");
   }
 
   Logger::~Logger() {
-    this->append(loggerinfo, "Logger getting destroyed");
+    this->append(LogLevel::loggerinfo, "Logger getting destroyed");
   }
 
   void Logger::append(const LogLevel level, const std::string message) const {
@@ -69,13 +69,13 @@ namespace small3d {
 
       std::string indicator;
       switch (level) {
-      case loggerinfo:
+      case LogLevel::loggerinfo:
         indicator = "INFO";
         break;
-      case loggerdebug:
+      case LogLevel::loggerdebug:
         indicator = "DEBUG";
         break;
-      case loggererror:
+      case LogLevel::loggererror:
         indicator = "ERROR";
         break;
       default:

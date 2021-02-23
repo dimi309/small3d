@@ -12,18 +12,18 @@
 /**
  *  Log an error
  */
-#define LOGERROR(MESSAGE) logger->append(loggererror, MESSAGE)
+#define LOGERROR(MESSAGE) logger->append(LogLevel::loggererror, MESSAGE)
 
 /**
  * Log information (shows up even when not debugging)
  */
-#define LOGINFO(MESSAGE) logger->append(loggerinfo, MESSAGE)
+#define LOGINFO(MESSAGE) logger->append(LogLevel::loggerinfo, MESSAGE)
 
 /** 
  * Log debug information (only shows up when debugging)
  */
 #if defined(DEBUG) || defined(_DEBUG) || !defined (NDEBUG)
-#define LOGDEBUG(MESSAGE) logger->append(loggerdebug, MESSAGE)
+#define LOGDEBUG(MESSAGE) logger->append(LogLevel::loggerdebug, MESSAGE)
 #else
 #define LOGDEBUG(MESSAGE)
 #endif
@@ -37,7 +37,7 @@ namespace small3d {
    * @brief Possible logging levels.
    */
 
-  enum LogLevel {
+  enum class LogLevel {
     loggerinfo, loggerdebug, loggererror
   };
 

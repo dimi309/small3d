@@ -61,7 +61,7 @@ namespace small3d {
      */
     struct Skin {
       std::string name;
-      uint32_t inverseBindMatrices;
+      uint32_t inverseBindMatrices = 0;
       std::vector<uint32_t> joints;
     };
 
@@ -69,16 +69,16 @@ namespace small3d {
      * @brief glTF animation sampler
      */
     struct AnimationSampler {
-      uint32_t input;
+      uint32_t input = 0;
       std::string interpolation;
-      uint32_t output;
+      uint32_t output = 0;
     };
 
     /**
      * @brief glTF animation channel target
      */
     struct ChannelTarget {
-      uint32_t node;
+      uint32_t node = 0;
       std::string path;
     };
 
@@ -86,7 +86,7 @@ namespace small3d {
      * @brief glTF animation channel
      */
     struct AnimationChannel {
-      uint32_t sampler;
+      uint32_t sampler = 0;
       ChannelTarget target;
     };
 

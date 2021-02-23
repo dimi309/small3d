@@ -35,14 +35,14 @@ namespace small3d {
   private:
 
     struct SoundData {
-      int channels;
-      int rate;
-      long samples;
-      long size;
-      double duration;
-      double startTime;
-      bool repeat;
-      unsigned long currentFrame;
+      int channels = 0;
+      int rate = 0;
+      long samples = 0;
+      long size = 0;
+      double duration = 0;
+      double startTime = 0;
+      bool repeat = false;
+      unsigned long currentFrame = 0;
       std::vector<char> data;
     };
 
@@ -113,22 +113,22 @@ static ALCcontext *openalContext;
     /**
      * @brief Copy constructor
      */
-    Sound(const Sound& other);
+    Sound(const Sound& other) noexcept;
 
     /**
      * @brief Move constructor
      */
-    Sound(const Sound&& other);
+    Sound(const Sound&& other) noexcept;
 
     /**
      * @brief Copy assignment
      */
-    Sound& operator=(const Sound& other);
+    Sound& operator=(const Sound& other) noexcept;
 
     /** 
      * @brief Move assignment
      */
-    Sound& operator=(const Sound&& other);
+    Sound& operator=(const Sound&& other) noexcept;
     
   };
 
