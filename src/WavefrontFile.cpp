@@ -45,6 +45,11 @@ namespace small3d {
 
   void WavefrontFile::loadIndexData(std::vector<uint32_t>& indexData) {
 
+    if (!onlyTriangles) {
+      throw std::runtime_error("Cannot load indices from " + fileLocation + " because"
+      " it does not only contain triangles.");
+    }
+
     indexData.clear();
 
     for (auto face = facesVertexIndices.begin();
@@ -178,8 +183,8 @@ namespace small3d {
   }
 
   WavefrontFile::WavefrontFile(const std::string& fileLocation) {
-
-
+    
+    this->fileLocation = fileLocation;
 
     std::string line;
 
@@ -207,15 +212,15 @@ namespace small3d {
         if (line[0] == 'v' || line[0] == 'f') {
           std::vector<std::string> tokens;
 
-          int numTokens = getTokens(line, ' ', tokens);
+          uint32_t numTokens = getTokens(line, ' ', tokens);
 
-          int idx = 0;
+          uint32_t idx = 0;
 
           if (line[0] == 'v' && line[1] == 'n') {
             // get vertex normal
             std::vector<float> vn;
 
-            for (int tokenIdx = 0; tokenIdx < numTokens; ++tokenIdx) {
+            for (uint32_t tokenIdx = 0; tokenIdx < numTokens; ++tokenIdx) {
               std::string t = tokens[tokenIdx];
               if (idx > 0)   // The first token is the vertex normal indicator
               {
@@ -228,7 +233,7 @@ namespace small3d {
           else if (line[0] == 'v' && line[1] == 't') {
             std::vector<float> vt;
 
-            for (int tokenIdx = 0; tokenIdx < numTokens; ++tokenIdx) {
+            for (uint32_t tokenIdx = 0; tokenIdx < numTokens; ++tokenIdx) {
               std::string t = tokens[tokenIdx];
               if (idx > 0)   // The first token is the vertex texture
                  // coordinate indicator.
@@ -247,7 +252,7 @@ namespace small3d {
             // get vertex
             std::vector<float> v;
 
-            for (int tokenIdx = 0; tokenIdx < numTokens; ++tokenIdx) {
+            for (uint32_t tokenIdx = 0; tokenIdx < numTokens; ++tokenIdx) {
               std::string t = tokens[tokenIdx];
               if (idx > 0)   // The first token is the vertex indicator
               {
@@ -259,11 +264,11 @@ namespace small3d {
           }
           else {
             // get vertex index
-            std::vector<int> v = std::vector<int>(3, 0);
-            std::vector<int> n;
-            std::vector<int> textC;
+            std::vector<uint32_t> v;
+            std::vector<uint32_t> n;
+            std::vector<uint32_t> textC;
 
-            for (int tokenIdx = 0; tokenIdx < numTokens; ++tokenIdx) {
+            for (uint32_t tokenIdx = 0; tokenIdx < numTokens; ++tokenIdx) {
               std::string t = tokens[tokenIdx];
 
               if (idx > 0)   // The first token is face indicator
@@ -272,8 +277,8 @@ namespace small3d {
                   // contained in the
                   // string
                 {
-                  v[idx - 1] = atoi(
-                    t.substr(0, t.find("//")).c_str());
+                  v.push_back(atoi(
+                    t.substr(0, t.find("//")).c_str()));
                   n.push_back(atoi(
                     t.substr(t.find("//") + 2).c_str()));
                 }
@@ -291,7 +296,7 @@ namespace small3d {
                     std::string component = components[compIdx];
                     switch (componentIdx) {
                     case 0:
-                      v[idx - 1] = atoi(component.c_str());
+                      v.push_back(atoi(component.c_str()));
                       break;
                     case 1:
                       textC.push_back(atoi(
@@ -313,12 +318,14 @@ namespace small3d {
 
                 else   // just the vertex index is contained in the string
                 {
-                  v[idx - 1] = atoi(t.c_str());
+                  v.push_back(atoi(t.c_str()));
                 }
               }
               ++idx;
             }
             facesVertexIndices.push_back(v);
+            if (v.size() != 3) onlyTriangles = false;
+
             if (!n.empty())
               facesNormalIndices.push_back(n);
             if (!textC.empty())
@@ -339,20 +346,25 @@ namespace small3d {
     }
     else
       throw std::runtime_error("Could not open file " + fileLocation);
-
   }
 
   void WavefrontFile::load(Model& model) {
-    // Generate the data and delete the initial buffers
+    
     loadVertexData(model.vertexData);
     loadIndexData(model.indexData);
     loadNormalsData(model.normalsData, model.vertexData);
     loadTextureCoordsData(model.textureCoordsData, model.vertexData);
 
-    model.vertexDataByteSize = model.vertexData.size() * sizeof(float);
-    model.indexDataByteSize = model.indexData.size() * sizeof(uint32_t);
-    model.normalsDataByteSize = model.normalsData.size() * sizeof(float);
-    model.textureCoordsDataByteSize = model.textureCoordsData.size() * sizeof(float);
+    model.vertexDataByteSize = static_cast<uint32_t>(model.vertexData.size() * sizeof(float));
+    model.indexDataByteSize = static_cast<uint32_t>(model.indexData.size() * sizeof(uint32_t));
+    model.normalsDataByteSize = static_cast<uint32_t>(model.normalsData.size() * sizeof(float));
+    model.textureCoordsDataByteSize = static_cast<uint32_t>(model.textureCoordsData.size() * sizeof(float));
     
   }
+
+  void WavefrontFile::load(BoundingBoxSet& boundingBoxSet) {
+    boundingBoxSet.vertices = this->vertices;
+    boundingBoxSet.facesVertexIndexes = this->facesVertexIndices;
+  }
+
 }

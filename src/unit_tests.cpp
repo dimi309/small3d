@@ -16,6 +16,7 @@
 #include <small3d/Sound.hpp>
 #include <small3d/BoundingBoxSet.hpp>
 #include <small3d/GlbFile.hpp>
+#include <small3d/WavefrontFile.hpp>
 
 using namespace small3d;
 using namespace std;
@@ -62,7 +63,28 @@ int ImageTest() {
   return 1;
 }
 
-int ModelTest() {
+int WavefrontTest() {
+
+  WavefrontFile wf("resources/models/GoatBB/GoatBB.obj");
+  bool threw = false;
+  try {
+    Model m;
+    wf.load(m);
+  }
+  catch (std::runtime_error& e) {
+    LOGINFO("WavefrontFile.load correctly threw a runtime error: " +
+      std::string(e.what()));
+    threw = true;
+  }
+
+  if (!threw) throw std::runtime_error("WavefrontFile.load has not thrown"
+    " a runtime error, as it should have.");
+
+
+  return 1;
+}
+
+int WavefrontModelTest() {
 
   Model model("resources/models/Cube/Cube.obj");
 
@@ -110,7 +132,7 @@ int GlbTextureText() {
     "Armature.001", "Armature.001Action");
 
   renderer->generateTexture("goatGlbTexture", *goat.getModel().defaultTextureImage);
-  
+
   SceneObject tree("tree5", "resources/models/goatAndTree.glb", "Cube.001");
 
   renderer->generateTexture("treeGlbTexture", *tree.getModel().defaultTextureImage);
@@ -118,7 +140,7 @@ int GlbTextureText() {
   goat.offset = glm::vec3(0.0f, 0.0f, -3.0f);
   goat.startAnimating();
   tree.offset = glm::vec3(0.0f, 0.0f, -4.0f);
-  
+
 
   while (seconds - startSeconds < 5.0) {
     glfwPollEvents();
@@ -169,7 +191,7 @@ int BoundingBoxesTest() {
   }
 
   Renderer* renderer = &Renderer::getInstance("test", 640, 480, 0.785f, 1.0f, 24.0f, "resources/shaders/", 1000);
-  
+
   double startSeconds = glfwGetTime();
   double seconds = glfwGetTime();
   double prevSeconds = seconds;
@@ -191,8 +213,8 @@ int BoundingBoxesTest() {
       goat.animate();
 
       renderer->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-      
-      for(auto &m: boundingBoxModels) {
+
+      for (auto& m : boundingBoxModels) {
         renderer->render(m, goat.offset,
           goat.rotation, glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
       }
@@ -207,11 +229,11 @@ int BoundingBoxesTest() {
 
 int RendererTest() {
   Renderer* renderer = &Renderer::getInstance("test", 640, 480);
-  
+
   renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
 
   Model modelFromGlb("resources/models/goatUnscaled.glb", "Cube", "Armature.001", "Armature.001Action");
-                                       
+
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
   renderer->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -287,7 +309,7 @@ int RendererTest() {
   renderer->clearBuffers(texturedRect);
   renderer->clearBuffers(textRect);
   renderer->deleteTexture("cubeTexture");
-  
+
 
   return 1;
 }
@@ -397,8 +419,14 @@ int main(int argc, char** argv) {
       printf("*** Failing ImageTest.\n\r");
       return 1;
     }
-    if (!ModelTest()) {
-      printf("*** Failing ModelTest.\n\r");
+
+    if (!WavefrontTest()) {
+      printf("*** Failing WavefrontTest.\n\r");
+      return 1;
+    }
+
+    if (!WavefrontModelTest()) {
+      printf("*** Failing WavefrontModelTest.\n\r");
       return 1;
     }
 

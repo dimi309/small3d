@@ -12,6 +12,7 @@
 #include "GetTokens.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include "BasePath.hpp"
+#include "WavefrontFile.hpp"
 
 #if defined(__ANDROID__)
 #include "vkzos.h"
@@ -59,95 +60,16 @@ namespace small3d {
       throw std::runtime_error("Illegal attempt to reload bounding boxes. "
         "Please use another object.");
     }
-    std::string line;
-#ifdef __ANDROID__
-    AAsset* asset = AAssetManager_open(vkz_android_app->activity->assetManager,
-      fileLocation.c_str(),
-      AASSET_MODE_STREAMING);
-    if (!asset) {
-      throw std::runtime_error(
-        "Opening asset " + fileLocation + " has failed!");
-    }
-    off_t length;
-    length = AAsset_getLength(asset);
-    const void* buffer = AAsset_getBuffer(asset);
-    membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * length);
-    std::istream in(&sbuf);
-    if (in) {
-      while (std::getline(in, line)) {
-        LOGDEBUG("Got line: " + line);
-#else
-    std::ifstream file(fileLocation.c_str());
 
-    if (file.is_open()) {
-      while (getline(file, line)) {
-#endif
+    WavefrontFile wf(fileLocation);
 
-        if (line[0] == 'v' || line[0] == 'f') {
-          std::vector<std::string> tokens;
+    wf.load(*this);
 
-          // Wavefront file
-          getTokens(line, ' ', tokens);
+    numBoxes = (int)(facesVertexIndexes.size() / 6);
+    LOGINFO("Loaded " + std::to_string(numBoxes) + " bounding boxes.");
 
-          int idx = 0;
-
-          if (line[0] == 'v') {
-            // get vertex
-            std::vector<float> v;
-
-            for (size_t tokenIdx = 0, tokenCount = tokens.size();
-              tokenIdx < tokenCount; ++tokenIdx) {
-              std::string t = tokens[tokenIdx];
-              if (idx > 0)   // The first token is the vertex indicator
-              {
-                v.push_back(static_cast<float>(atof(t.c_str())));
-              }
-              ++idx;
-            }
-            v.push_back(1.0f); // w component
-            vertices.push_back(v);
-          }
-          else {
-            // get vertex index
-            std::vector<unsigned int> v;
-
-            for (size_t tokenIdx = 0, tokenCount = tokens.size();
-              tokenIdx < tokenCount; ++tokenIdx) {
-              std::string t = tokens[tokenIdx];
-              if (idx > 0)   // The first token is face indicator
-              {
-                v.push_back((unsigned int)atoi(t.c_str()));
-              }
-              ++idx;
-            }
-            facesVertexIndexes.push_back(v);
-          }
-        }
-      }
-#ifdef __ANDROID__
-      AAsset_close(asset);
-#else
-      file.close();
-#endif
-
-      // Correct indices. OpenGL indices are 0 based. Wavefront indices start
-      // from 1 and the numbering continues for multiple objects.
-
-      for (auto& vi : facesVertexIndexes) {
-        for (auto& vi2 : vi) {
-          --vi2;
-        }
-      }
-
-      numBoxes = (int)(facesVertexIndexes.size() / 6);
-      LOGINFO("Loaded " + std::to_string(numBoxes) + " bounding boxes.");
-
-      triangulate();
-      calcExtremes();
-    }
-    else
-      throw std::runtime_error(
-        "Could not open file " + fileLocation);
+    triangulate();
+    calcExtremes();
 
   }
 
@@ -316,7 +238,7 @@ namespace small3d {
     triangulate();
   }
 
-  void BoundingBoxSet::generateExtremes(std::vector<float>&vertexData, uint32_t subdivisions) {
+  void BoundingBoxSet::generateExtremes(std::vector<float>& vertexData, uint32_t subdivisions) {
     vertices.clear();
     facesVertexIndexes.clear();
     facesVertexIndexesTriangulated.clear();
@@ -346,7 +268,7 @@ namespace small3d {
     generateBoxesFromExtremes();
   }
 
-  void BoundingBoxSet::generateSubExtremes(std::vector<float>&vertexData) {
+  void BoundingBoxSet::generateSubExtremes(std::vector<float>& vertexData) {
 
     // Move all extremes to a temporary buffer
     std::vector<extremes> extBuffer;

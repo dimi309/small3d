@@ -88,12 +88,12 @@ namespace small3d {
     BoundingBoxSet(const std::string& fileLocation = "");
 
     /**
-     * @brief Constructor that creates a box set containing a single box,
-     *        constructed based on the vertex data that can be found in a Model.
+     * @brief Constructor that creates a box set, constructed based on the vertex 
+     *        data that can be found in a Model.
      * @param vertexData  The vertex data. Array of floats to be interpreted as
      *                    an array of 4 component vertex coordinates.
      * @param subdivisions How many times to subdivide the initially one created
-     *                      bounding box, getting more accurate collision detection
+     *                     bounding box, getting more accurate collision detection
      *                     at the expense of performance.
      */
 
