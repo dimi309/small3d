@@ -145,7 +145,7 @@ int GlbTextureText() {
     glfwPollEvents();
     seconds = glfwGetTime();
     if (seconds - prevSeconds > secondsInterval) {
-
+      renderer->clearScreen();
       goat.animate();
 
       renderer->render(goat, "goatGlbTexture");
@@ -208,7 +208,7 @@ int BoundingBoxesTest() {
     glfwPollEvents();
     seconds = glfwGetTime();
     if (seconds - prevSeconds > secondsInterval) {
-
+      renderer->clearScreen();
       goat.animate();
 
       renderer->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));

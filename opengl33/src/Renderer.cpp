@@ -87,7 +87,7 @@ namespace small3d {
     GLint infoLogLength;
     glGetProgramiv(linkedProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-    GLchar* infoLog = new GLchar[infoLogLength + 1];
+    GLchar* infoLog = new GLchar[static_cast<size_t>(infoLogLength) + 1];
     GLsizei lengthReturned = 0;
     glGetProgramInfoLog(linkedProgram, infoLogLength, &lengthReturned, infoLog);
 
@@ -105,7 +105,7 @@ namespace small3d {
     GLint infoLogLength;
     glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-    GLchar* infoLog = new GLchar[infoLogLength + 1];
+    GLchar* infoLog = new GLchar[static_cast<size_t>(infoLogLength) + 1];
     GLsizei lengthReturned = 0;
     glGetShaderInfoLog(shader, infoLogLength, &lengthReturned, infoLog);
 
@@ -556,7 +556,7 @@ namespace small3d {
       throw std::runtime_error("Failed to set font size.");
     }
 
-    unsigned long width = 0, maxTop = 0, height = 0;
+    size_t width = 0, maxTop = 0, height = 0;
 
     // Figure out bitmap dimensions
     for (const char& c : text) {
@@ -598,11 +598,11 @@ namespace small3d {
                 255.0f) + 0.5f) / 100.0f;
 
             memcpy(&textMemory[4 * (maxTop -
-              static_cast<unsigned long>(slot->bitmap_top)
-              + static_cast<unsigned long>(row))* width +
+              slot->bitmap_top
+              + row)* static_cast<size_t>(width) +
               4 *
-              (static_cast<unsigned long>(slot->bitmap_left) +
-                static_cast<unsigned long>(col))
+              (static_cast<size_t>(slot->bitmap_left) +
+                static_cast<size_t>(col))
               + totalAdvance],
               glm::value_ptr(colourAlpha),
               4 * sizeof(float));
@@ -611,7 +611,7 @@ namespace small3d {
       }
       totalAdvance += 4 * static_cast<unsigned long>(slot->advance.x / 64);
     }
-    generateTexture(name, &textMemory[0], width, height, replace);
+    generateTexture(name, &textMemory[0], static_cast<unsigned long>(width), static_cast<unsigned long>(height), replace);
   }
 
   void Renderer::deleteTexture(const std::string& name) {
