@@ -231,7 +231,7 @@ int RendererTest() {
 
   renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
 
-  Model modelFromGlb("resources/models/goatUnscaled.glb", "Cube", "Armature.001", "Armature.001Action");
+  Model modelFromGlb("resources/models/goatUnscaled.glb", "Cube", "Armature.001");
 
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);

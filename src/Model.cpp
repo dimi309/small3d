@@ -26,8 +26,8 @@ namespace small3d {
     wf.load(*this);
   }
 
-  Model::Model(const std::string & fileLocation, const std::string& meshName, 
-    const std::string& armatureName, const std::string& animationName) {
+  Model::Model(const std::string& fileLocation, const std::string& meshName,
+    const std::string& armatureName) {
     GlbFile glb(fileLocation);
     bool loaded = false;
     for (auto& meshToken : glb.getChildTokens(glb.getToken("meshes"))) {
@@ -107,7 +107,7 @@ namespace small3d {
           uint32_t materialIndex = std::stoi(materialToken->value);
 
           auto materialToken = glb.getChildTokens(glb.getToken("materials"))[materialIndex];
-          
+
           auto metallicRoughnessToken = glb.getChildToken(materialToken, "pbrMetallicRoughness");
           if (metallicRoughnessToken != nullptr) {
             auto baseColorTextureToken = glb.getChildToken(metallicRoughnessToken, "baseColorTexture");
@@ -138,20 +138,17 @@ namespace small3d {
 
     LOGDEBUG("Loaded mesh " + meshName + " from " + fileLocation);
 
-
-    
-  
     if (armatureName != "") {
       armature = glb.getNode(armatureName);
     }
-  
+
     if (glb.existNode(meshName)) {
       auto meshNode = glb.getNode(meshName);
       if (!meshNode.noSkin && glb.existSkin(meshNode.skin)) {
         auto skin = glb.getSkin(meshNode.skin);
 
         if (skin.joints.size() > MAX_JOINTS_SUPPORTED) {
-          throw std::runtime_error("Found more than the maximum of " + 
+          throw std::runtime_error("Found more than the maximum of " +
             std::to_string(MAX_JOINTS_SUPPORTED) + " supported joints.");
         }
 
@@ -173,49 +170,48 @@ namespace small3d {
           ++idx;
         }
 
-        GlbFile::Animation animation;
+        uint32_t animationIdx = 0;
+        while (glb.existAnimation(animationIdx)) {
+          auto animation = glb.getAnimation(animationIdx);
+          ++animationIdx;
 
-        if (animationName != "") {
-          animation = glb.getAnimation(animationName);
-        }
+          for (auto& channel : animation.channels) {
+            if (channel.target.path == "rotation") {
+              auto sampler = animation.samplers[channel.sampler];
 
-        for (auto &channel : animation.channels) {
-          if (channel.target.path == "rotation") {
-            auto sampler = animation.samplers[channel.sampler];
-            
-            auto output = glb.getBufferByAccessor(sampler.output);
-            for (auto& joint : joints) {
-              if (joint.node == channel.target.node) {
-                joint.rotationAnimation.resize(output.size() / sizeof(glm::quat));
-                memcpy(&joint.rotationAnimation[0], &output[0], output.size());
-                if (numPoses < joint.rotationAnimation.size())
-                  numPoses = joint.rotationAnimation.size();
+              auto output = glb.getBufferByAccessor(sampler.output);
+              for (auto& joint : joints) {
+                if (joint.node == channel.target.node) {
+                  joint.rotationAnimation.resize(output.size() / sizeof(glm::quat));
+                  memcpy(&joint.rotationAnimation[0], &output[0], output.size());
+                  if (numPoses < joint.rotationAnimation.size())
+                    numPoses = joint.rotationAnimation.size();
 
-                if (joint.animTime.size() == 0) {
-                  auto input = glb.getBufferByAccessor(sampler.input);
-                  joint.animTime.resize(input.size() / 4);
-                  memcpy(&joint.animTime[0], &input[0], input.size());
+                  if (joint.animTime.size() == 0) {
+                    auto input = glb.getBufferByAccessor(sampler.input);
+                    joint.animTime.resize(input.size() / 4);
+                    memcpy(&joint.animTime[0], &input[0], input.size());
+                  }
                 }
               }
             }
-          }
 
-          if (channel.target.path == "translation") {
-            auto sampler = animation.samplers[channel.sampler];
-            auto input = glb.getBufferByAccessor(sampler.input);
-            auto output = glb.getBufferByAccessor(sampler.output);
-            for (auto& joint : joints) {
-              if (joint.node == channel.target.node) {
-                joint.translationAnimation.resize(output.size() / sizeof(glm::vec3));
-                memcpy(&joint.translationAnimation[0], &output[0], output.size());
-                if (numPoses < joint.translationAnimation.size())
-                  numPoses = joint.translationAnimation.size();
+            if (channel.target.path == "translation") {
+              auto sampler = animation.samplers[channel.sampler];
+              auto input = glb.getBufferByAccessor(sampler.input);
+              auto output = glb.getBufferByAccessor(sampler.output);
+              for (auto& joint : joints) {
+                if (joint.node == channel.target.node) {
+                  joint.translationAnimation.resize(output.size() / sizeof(glm::vec3));
+                  memcpy(&joint.translationAnimation[0], &output[0], output.size());
+                  if (numPoses < joint.translationAnimation.size())
+                    numPoses = joint.translationAnimation.size();
+                }
               }
             }
+
           }
-
         }
-
       }
     }
 
@@ -233,7 +229,7 @@ namespace small3d {
       }
       for (auto& joint : joints) {
         if (joint.rotationAnimation.size() > currentPose) {
-          joint.currRotation = joint.rotationAnimation[currentPose];         
+          joint.currRotation = joint.rotationAnimation[currentPose];
         }
         if (joint.translationAnimation.size() > currentPose) {
           joint.currTranslation = joint.translationAnimation[currentPose];
@@ -274,6 +270,6 @@ namespace small3d {
         glm::scale(glm::mat4(1.0f), joints[joint].scale);
     }
 
-    return parentTransform *  transform;
+    return parentTransform * transform;
   }
 }

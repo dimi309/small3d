@@ -65,7 +65,7 @@ namespace small3d {
     frameDelay = 1;
     currentFrame = 0;
     this->numFrames = 1;
-    Model model1(modelPath, modelMeshName, modelArmatureName, modelAnimationName);
+    Model model1(modelPath, modelMeshName, modelArmatureName);
     models.push_back(model1);
     boundingBoxSet = BoundingBoxSet(model1.vertexData, boundingBoxSubdivisions);
   }

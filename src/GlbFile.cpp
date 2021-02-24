@@ -600,6 +600,11 @@ namespace small3d {
 
   }
 
+  bool GlbFile::existAnimation(const uint32_t index) {
+    if (getToken("animations") == nullptr) return false;
+    return getChildTokens(getToken("animations")).size() > index;
+  }
+
   GlbFile::Animation GlbFile::getAnimation(const uint32_t index) {
     auto animationToken = getChildTokens(getToken("animations"))[index];
 
