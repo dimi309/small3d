@@ -309,7 +309,6 @@ int RendererTest() {
   renderer->clearBuffers(textRect);
   renderer->deleteTexture("cubeTexture");
 
-
   return 1;
 }
 
