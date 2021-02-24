@@ -33,7 +33,7 @@ namespace small3d {
 
     if (fileLocation != "") {
 
-      this->loadFromFile(getBasePath() + fileLocation);
+      this->loadFromFile(fileLocation);
 
     }
 

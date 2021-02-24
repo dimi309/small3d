@@ -134,21 +134,17 @@ namespace small3d {
     vertexBuffers[0] = model.positionBuffer;
     vertexBuffers[1] = model.normalsBuffer;
     vertexBuffers[2] = model.uvBuffer;
-
+    vertexBuffers[3] = model.jointBuffer;
+    vertexBuffers[4] = model.weightBuffer;
+      
     VkDeviceSize offsets[5];
     offsets[0] = 0;
     offsets[1] = 0;
     offsets[2] = 0;
-
-    uint32_t bindingCount = 3;
-
-    if (model.jointDataByteSize > 0 && model.weightDataByteSize > 0) {
-      vertexBuffers[3] = model.jointBuffer;
-      vertexBuffers[4] = model.weightBuffer;
-      offsets[3] = 0;
-      offsets[4] = 0;
-      bindingCount = 5;
-    }
+    offsets[3] = 0;
+    offsets[4] = 0;
+      
+    uint32_t bindingCount = 5;
 
     // Vertex buffer
     vkCmdBindVertexBuffers(commandBuffer, 0, bindingCount, vertexBuffers, offsets);
@@ -1347,9 +1343,9 @@ namespace small3d {
           " buffer for indices.");
       }
 
-      // Set the texture coordinates data. Replace by a buffer filled with 0s if the data does not exist,
-      // otherwise the bindings of the joints to the shader (bound next, if those exist) will be wrong and it is 
-      // more work to make those flexible.
+      // The following buffers are created with 0 values if the corresponding
+      // data does not exist, otherwise there can be issues, especially
+      // with MoltenVK
 
       auto uvByteSize = model.textureCoordsDataByteSize == 0 ? model.vertexDataByteSize / 2 : model.textureCoordsDataByteSize;
 
@@ -1393,12 +1389,13 @@ namespace small3d {
           " buffer for texture coordinates.");
       }
 
-      if (model.jointDataByteSize != 0) {
+        auto jointByteSize = model.jointDataByteSize == 0 ? model.vertexDataByteSize / 4  :
+        model.jointDataByteSize;
 
         if (!vkz_create_buffer(&model.jointBuffer,
           VK_BUFFER_USAGE_TRANSFER_DST_BIT |
           VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-          model.jointDataByteSize,
+          jointByteSize,
           &model.jointBufferMemory,
           VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
           throw std::runtime_error("Failed to create joint buffer.");
@@ -1406,7 +1403,7 @@ namespace small3d {
 
         if (vkz_create_buffer(&stagingBuffer,
           VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-          model.jointDataByteSize,
+          jointByteSize,
           &stagingBufferMemory,
           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
           VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
@@ -1414,12 +1411,18 @@ namespace small3d {
           vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
             VK_WHOLE_SIZE,
             0, &jointData);
+            
+            if(model.jointDataByteSize > 0) {
           memcpy(jointData, &model.jointData[0],
             model.jointDataByteSize);
+            }
+            else {
+                memset(jointData, 0, jointByteSize);
+            }
           vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
 
           vkz_copy_buffer(stagingBuffer, model.jointBuffer,
-            model.jointDataByteSize);
+            jointByteSize);
 
           vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
         }
@@ -1428,13 +1431,14 @@ namespace small3d {
             " buffer for joints.");
         }
 
-      }
+      
 
-      if (model.weightDataByteSize != 0) {
+        auto weightByteSize = model.weightDataByteSize == 0 ? model.vertexDataByteSize :
+        model.weightDataByteSize;
         if (!vkz_create_buffer(&model.weightBuffer,
           VK_BUFFER_USAGE_TRANSFER_DST_BIT |
           VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-          model.weightDataByteSize,
+          weightByteSize,
           &model.weightBufferMemory,
           VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
           throw std::runtime_error("Failed to create weight buffer.");
@@ -1442,7 +1446,7 @@ namespace small3d {
 
         if (vkz_create_buffer(&stagingBuffer,
           VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-          model.weightDataByteSize,
+          weightByteSize,
           &stagingBufferMemory,
           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
           VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
@@ -1450,12 +1454,18 @@ namespace small3d {
           vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
             VK_WHOLE_SIZE,
             0, &weightData);
+            
+            if (model.weightDataByteSize > 0) {
           memcpy(weightData, &model.weightData[0],
             model.weightDataByteSize);
-          vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+            } else {
+                memset(weightData, 0, weightByteSize);
+            }
+          
+            vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
 
           vkz_copy_buffer(stagingBuffer, model.weightBuffer,
-            model.weightDataByteSize);
+            weightByteSize);
 
           vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
         }
@@ -1463,7 +1473,7 @@ namespace small3d {
           throw std::runtime_error("Failed to create the staging"
             " buffer for weights.");
         }
-      }
+      
       model.alreadyInGPU = true;
     }
 
