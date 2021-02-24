@@ -26,8 +26,7 @@ namespace small3d {
     wf.load(*this);
   }
 
-  Model::Model(const std::string& fileLocation, const std::string& meshName,
-    const std::string& armatureName) {
+  Model::Model(const std::string& fileLocation, const std::string& meshName) {
     GlbFile glb(fileLocation);
     bool loaded = false;
     for (auto& meshToken : glb.getChildTokens(glb.getToken("meshes"))) {
@@ -137,10 +136,6 @@ namespace small3d {
     if (!loaded) throw std::runtime_error("Could not load mesh " + meshName + " from " + fileLocation);
 
     LOGDEBUG("Loaded mesh " + meshName + " from " + fileLocation);
-
-    if (armatureName != "") {
-      armature = glb.getNode(armatureName);
-    }
 
     if (glb.existNode(meshName)) {
       auto meshNode = glb.getNode(meshName);

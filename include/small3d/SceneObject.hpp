@@ -111,8 +111,6 @@ namespace small3d
      * @param modelMeshName The name of the mesh in the GLB file which will be loaded
      *                      as the model.
      *
-     * @param modelArmatureName The name of the armature binding the model to a set of joints.
-     * @param modelAnimationName The name of the animation to load for the model's joints.
      * @param boundingBoxSubdivisions If not using bounding boxes loaded from a file,
      *                        how many times to subdivide the initially one created
      *                        bounding box, getting more accurate collision detection
@@ -120,9 +118,7 @@ namespace small3d
      *                      
      */
     SceneObject(const std::string name, const std::string modelPath,
-      const std::string& modelMeshName, const std::string& modelArmatureName = "",
-      const std::string& modelAnimationName = "",
-      const uint32_t boundingBoxSubdivisions = 0);
+      const std::string& modelMeshName, const uint32_t boundingBoxSubdivisions = 0);
 
     /**
      * @brief Destructor
