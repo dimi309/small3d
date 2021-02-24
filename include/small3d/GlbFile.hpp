@@ -245,6 +245,13 @@ namespace small3d {
     Skin getSkin(const std::string& name);
 
     /**
+     * @brief Does an animation with the given index exist?
+     * @param index The index of the animation
+     * @return True if the animation exists, false otherwise
+     */
+    bool existAnimation(const uint32_t index);
+
+    /**
      * @brief Get an animation by index
      * @param index The index of the animation in the file
      * @return The animation

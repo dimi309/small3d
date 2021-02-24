@@ -45,7 +45,7 @@ namespace small3d {
   public:
 
     /**
-     * @brief glTF joint
+     * @brief animation joint
      */
     struct Joint {
       uint32_t node = 0;
@@ -323,11 +323,9 @@ namespace small3d {
      *                      as the model.
      * 
      * @param armatureName  The name of the armature binding the model to a set of joints.
-     * @param animationName The name of the animation to load for the model's joints.
      *                      
      */
-    Model(const std::string& fileLocation, const std::string& meshName, const std::string& armatureName = "",
-      const std::string& animationName = "");
+    Model(const std::string& fileLocation, const std::string& meshName, const std::string& armatureName = "");
 
     /**
      * @brief Get the index of the current animation pose
