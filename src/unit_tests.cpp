@@ -128,8 +128,7 @@ int GlbTextureText() {
 
   constexpr double secondsInterval = 1.0 / framerate;
 
-  SceneObject goat("goat5", "resources/models/goatAndTree.glb", "Cube",
-    "Armature.001", "Armature.001Action");
+  SceneObject goat("goat5", "resources/models/goatAndTree.glb", "Cube");
 
   renderer->generateTexture("goatGlbTexture", *goat.getModel().defaultTextureImage);
 
@@ -199,8 +198,7 @@ int BoundingBoxesTest() {
 
   constexpr double secondsInterval = 1.0 / framerate;
 
-  SceneObject goat("goat", "resources/models/goatUnscaled.glb", "Cube",
-    "Armature.001", "Armature.001Action", 3);
+  SceneObject goat("goat", "resources/models/goatUnscaled.glb", "Cube", 3);
   auto boundingBoxModels = goat.boundingBoxSet.getModels();
   goat.offset = glm::vec3(0.0f, 0.0f, -3.0f);
   goat.startAnimating();
@@ -232,7 +230,7 @@ int RendererTest() {
 
   renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
 
-  Model modelFromGlb("resources/models/goatUnscaled.glb", "Cube", "Armature.001");
+  Model modelFromGlb("resources/models/goatUnscaled.glb", "Cube");
 
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);

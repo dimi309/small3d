@@ -321,11 +321,9 @@ namespace small3d {
      *                      model.
      * @param meshName      The name of the mesh in the .glb file which will be loaded
      *                      as the model.
-     * 
-     * @param armatureName  The name of the armature binding the model to a set of joints.
      *                      
      */
-    Model(const std::string& fileLocation, const std::string& meshName, const std::string& armatureName = "");
+    Model(const std::string& fileLocation, const std::string& meshName);
 
     /**
      * @brief Get the index of the current animation pose
