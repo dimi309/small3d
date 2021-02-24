@@ -101,10 +101,7 @@ namespace small3d {
 
     // Create an array of texture coordinates components which corresponds
     // by index to the array of vertex components
-    // Doing this even if there are no texture coordinates in the file because
-    // Vulkan is a bit rigid about missing data in the shaders and it crashes if 
-    // a bound buffer is empty.
-
+    
     if (vertexData.size() == 0) {
       throw std::runtime_error("Cannot create texture coords data when there is no vertex data.");
     }
@@ -244,8 +241,8 @@ namespace small3d {
             }
 
             vt[1] = 1.0f - vt[1]; // OpenGL's y direction for textures is the
-                            // opposite of that of Blender's, so an
-                            // inversion is needed
+                                  // opposite of that of Blender's, so an
+                                  // inversion is needed
             textureCoords.push_back(vt);
           }
           else if (line[0] == 'v') {
