@@ -343,7 +343,7 @@ namespace small3d {
      *  @param jointIdx The index of the joint in the list of joints
      *  @return The transform
      */
-    glm::mat4 getJointTransform(uint64_t jointIdx);
+    glm::mat4 getJointTransform(size_t jointIdx);
 
   };
 }

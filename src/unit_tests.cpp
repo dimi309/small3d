@@ -117,7 +117,7 @@ int WavefrontModelTest() {
   return 1;
 }
 
-int GlbTextureText() {
+int GlbTextureTest() {
   Renderer* renderer = &Renderer::getInstance("test", 640, 480, 0.785f, 1.0f, 24.0f, "resources/shaders/", 1000);
 
   double startSeconds = glfwGetTime();
@@ -419,7 +419,7 @@ int main(int argc, char** argv) {
       return 1;
     }
 
-    if (!GlbTextureText()) {
+    if (!GlbTextureTest()) {
       printf("*** Failing GlbTextureText.\n\r");
       return 1;
     }
