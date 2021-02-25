@@ -137,6 +137,8 @@ namespace small3d {
 
     LOGDEBUG("Loaded mesh " + meshName + " from " + fileLocation);
 
+    bool animAbort = false;
+
     if (glb.existNode(meshName)) {
       auto meshNode = glb.getNode(meshName);
       if (!meshNode.noSkin && glb.existSkin(meshNode.skin)) {
@@ -166,13 +168,29 @@ namespace small3d {
         }
 
         uint32_t animationIdx = 0;
+        bool animFirstRun = true;
+        
+        uint32_t firstInput = 0;
         while (glb.existAnimation(animationIdx)) {
           auto animation = glb.getAnimation(animationIdx);
           ++animationIdx;
 
           for (auto& channel : animation.channels) {
+
+            auto sampler = animation.samplers[channel.sampler];
+            if (animFirstRun) {
+              firstInput = sampler.input;
+              animFirstRun = false;
+            }
+            else {
+              if (sampler.input != firstInput) {
+                LOGDEBUG("Animation with multiple inputs ignored.");
+                animAbort = true;
+                break;
+              }
+            }
+
             if (channel.target.path == "rotation") {
-              auto sampler = animation.samplers[channel.sampler];
 
               auto output = glb.getBufferByAccessor(sampler.output);
               for (auto& joint : joints) {
@@ -192,8 +210,8 @@ namespace small3d {
             }
 
             if (channel.target.path == "translation") {
-              auto sampler = animation.samplers[channel.sampler];
-              auto input = glb.getBufferByAccessor(sampler.input);
+              
+              
               auto output = glb.getBufferByAccessor(sampler.output);
               for (auto& joint : joints) {
                 if (joint.node == channel.target.node) {
@@ -205,11 +223,20 @@ namespace small3d {
               }
             }
 
+            if (animAbort) break;
+
           }
+
+          if (animAbort) break;
         }
       }
     }
-
+    if (animAbort) {
+      for (auto& joint : joints) {
+        joint.rotationAnimation.clear();
+        joint.translationAnimation.clear();
+      }
+    }
   }
 
   uint32_t Model::getCurrentPoseIdx() {
