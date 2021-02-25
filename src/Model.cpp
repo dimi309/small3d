@@ -233,12 +233,12 @@ namespace small3d {
     }
   }
 
-  glm::mat4 Model::getJointTransform(uint64_t joint) {
+  glm::mat4 Model::getJointTransform(size_t joint) {
 
     glm::mat4 parentTransform(1.0f);
     glm::mat4 transform(1.0f);
 
-    uint64_t idx = 0;
+    size_t idx = 0;
     bool found = false;
     for (auto& j : joints) {
       for (auto c : j.children) {
