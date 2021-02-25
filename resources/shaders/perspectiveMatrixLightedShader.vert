@@ -16,7 +16,7 @@ layout(binding = 0) uniform uboWorld {
 
 layout(binding = 1) uniform uboModelPlacement {
   mat4 modelTransformation;
-  mat4 jointTransformations[16];
+  mat4 jointTransformations[32];
   vec3 modelOffset;
   bool hasJoints;
 };

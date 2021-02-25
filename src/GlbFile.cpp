@@ -435,6 +435,9 @@ namespace small3d {
       
       if (dataType.substr(0, 3) == "VEC") {
         cnt *= std::stoi(dataType.substr(3, 1));
+      } 
+      else if (dataType == "MAT4") {
+        cnt *= 16;
       }
 
       cnt *= std::stoi(countToken->value);
