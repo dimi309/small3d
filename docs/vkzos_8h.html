@@ -98,7 +98,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:ad7fdc47fa92ad88c0d7ba8f37dc6da31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy the swapchain.  <a href="vkzos_8h.html#ad7fdc47fa92ad88c0d7ba8f37dc6da31">More...</a><br /></td></tr>
 <tr class="separator:ad7fdc47fa92ad88c0d7ba8f37dc6da31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bc83914d1f7c03521b12629f0a99863"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vkzos_8h.html#a8bc83914d1f7c03521b12629f0a99863">vkz_create_depth_image</a> (void)</td></tr>
-<tr class="memdesc:a8bc83914d1f7c03521b12629f0a99863"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the image used for depth testing. This function must be called right after <a class="el" href="vkzos_8h.html#ae6b5b1afb79d82d63aad27004a1ec042" title="Create the swapchain that will be used. This will also create the associated image views.">vkz_create_swapchain()</a>. This is not perfect but, for the time being it is what it is.  <a href="vkzos_8h.html#a8bc83914d1f7c03521b12629f0a99863">More...</a><br /></td></tr>
+<tr class="memdesc:a8bc83914d1f7c03521b12629f0a99863"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the image used for depth testing. This function must be called right after <a class="el" href="vkzos_8h.html#ae6b5b1afb79d82d63aad27004a1ec042" title="Create the swapchain that will be used. This will also create the associated image views.">vkz_create_swapchain()</a>.  <a href="vkzos_8h.html#a8bc83914d1f7c03521b12629f0a99863">More...</a><br /></td></tr>
 <tr class="separator:a8bc83914d1f7c03521b12629f0a99863"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47c84cdbe4649348893435572096578c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vkzos_8h.html#a47c84cdbe4649348893435572096578c">vkz_destroy_depth_image</a> (void)</td></tr>
 <tr class="memdesc:a47c84cdbe4649348893435572096578c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy the image used for depth testing.  <a href="vkzos_8h.html#a47c84cdbe4649348893435572096578c">More...</a><br /></td></tr>
@@ -107,7 +107,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:a784cb3ffcb643a79ad4f88ffc9a8a831"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a pipeline. This will also create associated Vulkan objects.  <a href="vkzos_8h.html#a784cb3ffcb643a79ad4f88ffc9a8a831">More...</a><br /></td></tr>
 <tr class="separator:a784cb3ffcb643a79ad4f88ffc9a8a831"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf0e37831055659987cce0d826d24ebb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vkzos_8h.html#adf0e37831055659987cce0d826d24ebb">vkz_begin_draw_command_buffer</a> (VkCommandBuffer *command_buffer)</td></tr>
-<tr class="memdesc:adf0e37831055659987cce0d826d24ebb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Begin creating a drawing command buffer for a given pipeline not bound to a specific pipeline.  <a href="vkzos_8h.html#adf0e37831055659987cce0d826d24ebb">More...</a><br /></td></tr>
+<tr class="memdesc:adf0e37831055659987cce0d826d24ebb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Begin creating a drawing command buffer.  <a href="vkzos_8h.html#adf0e37831055659987cce0d826d24ebb">More...</a><br /></td></tr>
 <tr class="separator:adf0e37831055659987cce0d826d24ebb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00cc3b9c1143cf9c6b94326267593646"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vkzos_8h.html#a00cc3b9c1143cf9c6b94326267593646">vkz_bind_pipeline_to_command_buffer</a> (uint32_t pipeline_index, const VkCommandBuffer *command_buffer)</td></tr>
 <tr class="memdesc:a00cc3b9c1143cf9c6b94326267593646"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bind a pipeline to a command buffer.  <a href="vkzos_8h.html#a00cc3b9c1143cf9c6b94326267593646">More...</a><br /></td></tr>
@@ -119,10 +119,10 @@ Functions</h2></td></tr>
 <tr class="memdesc:a67e75c0f91918e52ec1b69904d68f231"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy a command buffer.  <a href="vkzos_8h.html#a67e75c0f91918e52ec1b69904d68f231">More...</a><br /></td></tr>
 <tr class="separator:a67e75c0f91918e52ec1b69904d68f231"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d2de1d94e33394ca1c2fb6e7323e778"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vkzos_8h.html#a5d2de1d94e33394ca1c2fb6e7323e778">vkz_create_sync_objects</a> (void)</td></tr>
-<tr class="memdesc:a5d2de1d94e33394ca1c2fb6e7323e778"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create sync objects for a given pipeline.  <a href="vkzos_8h.html#a5d2de1d94e33394ca1c2fb6e7323e778">More...</a><br /></td></tr>
+<tr class="memdesc:a5d2de1d94e33394ca1c2fb6e7323e778"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create sync objects.  <a href="vkzos_8h.html#a5d2de1d94e33394ca1c2fb6e7323e778">More...</a><br /></td></tr>
 <tr class="separator:a5d2de1d94e33394ca1c2fb6e7323e778"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ca1ef6f12a537273666f109e943a778"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vkzos_8h.html#a1ca1ef6f12a537273666f109e943a778">vkz_destroy_sync_objects</a> (void)</td></tr>
-<tr class="memdesc:a1ca1ef6f12a537273666f109e943a778"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy sync objects for a given pipeline.  <a href="vkzos_8h.html#a1ca1ef6f12a537273666f109e943a778">More...</a><br /></td></tr>
+<tr class="memdesc:a1ca1ef6f12a537273666f109e943a778"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy sync objects.  <a href="vkzos_8h.html#a1ca1ef6f12a537273666f109e943a778">More...</a><br /></td></tr>
 <tr class="separator:a1ca1ef6f12a537273666f109e943a778"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d7d08f1be55837b8d6ac2a88eda3439"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vkzos_8h.html#a6d7d08f1be55837b8d6ac2a88eda3439">vkz_recreate_pipelines_and_swapchain</a> (void)</td></tr>
 <tr class="memdesc:a6d7d08f1be55837b8d6ac2a88eda3439"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recreate the swapchain and the pipelines.  <a href="vkzos_8h.html#a6d7d08f1be55837b8d6ac2a88eda3439">More...</a><br /></td></tr>
@@ -256,7 +256,7 @@ VkClearColorValue&#160;</td><td class="memItemRight" valign="bottom"><a class="e
       </table>
 </div><div class="memdoc">
 
-<p>Begin creating a drawing command buffer for a given pipeline not bound to a specific pipeline. </p>
+<p>Begin creating a drawing command buffer. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">command_buffer</td><td>Pointer to the command buffer. </td></tr>
@@ -477,7 +477,7 @@ VkClearColorValue&#160;</td><td class="memItemRight" valign="bottom"><a class="e
       </table>
 </div><div class="memdoc">
 
-<p>Create the image used for depth testing. This function must be called right after <a class="el" href="vkzos_8h.html#ae6b5b1afb79d82d63aad27004a1ec042" title="Create the swapchain that will be used. This will also create the associated image views.">vkz_create_swapchain()</a>. This is not perfect but, for the time being it is what it is. </p>
+<p>Create the image used for depth testing. This function must be called right after <a class="el" href="vkzos_8h.html#ae6b5b1afb79d82d63aad27004a1ec042" title="Create the swapchain that will be used. This will also create the associated image views.">vkz_create_swapchain()</a>. </p>
 <dl class="section return"><dt>Returns</dt><dd>1 if successful, 0 otherwise </dd></dl>
 
 </div>
@@ -788,7 +788,7 @@ VkClearColorValue&#160;</td><td class="memItemRight" valign="bottom"><a class="e
       </table>
 </div><div class="memdoc">
 
-<p>Create sync objects for a given pipeline. </p>
+<p>Create sync objects. </p>
 <dl class="section return"><dt>Returns</dt><dd>1 if successful, 0 otherwise </dd></dl>
 
 </div>
@@ -954,7 +954,7 @@ VkClearColorValue&#160;</td><td class="memItemRight" valign="bottom"><a class="e
       </table>
 </div><div class="memdoc">
 
-<p>Destroy sync objects for a given pipeline. </p>
+<p>Destroy sync objects. </p>
 <dl class="section return"><dt>Returns</dt><dd>1 if successful, 0 otherwise </dd></dl>
 
 </div>
