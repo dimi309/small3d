@@ -99,8 +99,7 @@ int vkz_destroy_swapchain(void);
 
 /**
  * @brief Create the image used for depth testing. This function must be called
- *        right after vkz_create_swapchain(). This is not perfect but, for the
- *        time being it is what it is.
+ *        right after vkz_create_swapchain(). 
  * @return 1 if successful, 0 otherwise
  */
 int vkz_create_depth_image(void);
@@ -143,8 +142,7 @@ int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_sha
   int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo*), uint32_t* index);
 
 /**
- * @brief Begin creating a drawing command buffer for a given pipeline
- *        not bound to a specific pipeline.
+ * @brief Begin creating a drawing command buffer 
  *
  * @param command_buffer Pointer to the command buffer.
  * @return 1 if successful, 0 otherwise
@@ -178,13 +176,13 @@ int vkz_end_draw_command_buffer(VkCommandBuffer* command_buffer);
 int vkz_destroy_draw_command_buffer(VkCommandBuffer* command_buffer);
 
 /**
- * @brief Create sync objects for a given pipeline
+ * @brief Create sync objects 
  * @return 1 if successful, 0 otherwise
  */
 int vkz_create_sync_objects(void);
 
 /**
- * @brief Destroy sync objects for a given pipeline
+ * @brief Destroy sync objects
  * @return 1 if successful, 0 otherwise
  */
 int vkz_destroy_sync_objects(void);
