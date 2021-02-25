@@ -62,7 +62,7 @@ namespace small3d {
       std::vector<float> animTime;
     };
 
-    static const uint32_t MAX_JOINTS_SUPPORTED = 32;
+    static const uint32_t MAX_JOINTS_SUPPORTED = 16;
 
     /**
      * @brief Image found in the file the model was loaded from (empty image if not - check the size).
