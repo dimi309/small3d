@@ -145,8 +145,9 @@ namespace small3d {
         auto skin = glb.getSkin(meshNode.skin);
 
         if (skin.joints.size() > MAX_JOINTS_SUPPORTED) {
-          throw std::runtime_error("Found more than the maximum of " +
-            std::to_string(MAX_JOINTS_SUPPORTED) + " supported joints.");
+          LOGDEBUG("Found more than the maximum of " +
+            std::to_string(MAX_JOINTS_SUPPORTED) + " supported joints. Ignoring all.");
+          return;
         }
 
         auto inverseBindMatrices = glb.getBufferByAccessor(skin.inverseBindMatrices);
