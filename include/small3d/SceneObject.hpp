@@ -28,18 +28,13 @@ namespace small3d
    *
    * @brief An object that appears on the 3D scene. It is made up of a model, 
    *        together with information for positioning, rotation and collision detection.
-   *        Models can be loaded from a Wavefront or glTF .glb file.
-   *        Wavefront files can be exported from Blender for example (see blender.org).
-   *        From the menu, select File > Export > Wavefront (.obj). Then, from the
-   *        "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" 
-   *        and "Keep Vertex Order".
-   *        Exporting .glb files is much simpler. Just do so using the default options.
+   *        Models can be loaded from a Wavefront (also see Model) or glTF .glb file.
    *        For animating, more than one models can be loaded from Wavefront files.
    *        For exporting animations from Blender to a series of Wavefront files in a way 
    *        that will allow this class to load them, also select "Animation" and 
-   *        "Apply Modifiers".*
-   *        glTF animation is skeletal on the other hand, using a single model and joints
-   *        (see corresponding constructors).
+   *        "Apply Modifiers".
+   *        glTF animation is skeletal on the other hand, and is included in the single
+   *        exported .glb file.
    *
    */
 

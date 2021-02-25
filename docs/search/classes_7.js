@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['logger_184',['Logger',['../classsmall3d_1_1_logger.html',1,'small3d']]]
+  ['wavefrontfile_174',['WavefrontFile',['../classsmall3d_1_1_wavefront_file.html',1,'small3d']]]
 ];
