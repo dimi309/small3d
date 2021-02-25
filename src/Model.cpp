@@ -212,7 +212,6 @@ namespace small3d {
 
             if (channel.target.path == "translation") {
               
-              
               auto output = glb.getBufferByAccessor(sampler.output);
               for (auto& joint : joints) {
                 if (joint.node == channel.target.node) {

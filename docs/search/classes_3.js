@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['extremes_180',['extremes',['../structsmall3d_1_1_bounding_box_set_1_1extremes.html',1,'small3d::BoundingBoxSet']]]
+  ['logger_169',['Logger',['../classsmall3d_1_1_logger.html',1,'small3d']]]
 ];

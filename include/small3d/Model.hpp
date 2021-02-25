@@ -30,7 +30,8 @@ namespace small3d {
    *            can be exported from Blender for example (see blender.org).
    *            From its menu, select File > Export > Wavefront (.obj). Then from the
    *            "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" 
-   *            and "Keep Vertex Order".
+   *            and "Keep Vertex Order". Exporting .glb files is much simpler. Just do 
+   *            so using the default options.
    *            The 3D model can also be constructed procedurally by code, by inserting
    *            values to the appropriate member variables.
    */
@@ -77,8 +78,6 @@ namespace small3d {
      *        (Vulkan-specific, avoid direct manipulation)
      */
     bool alreadyInGPU = false;
-
-
 
     /**
      * @brief Buffer containing vertex positions
