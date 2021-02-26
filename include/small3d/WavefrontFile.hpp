@@ -19,10 +19,9 @@ namespace small3d {
    * @brief Wavefront file parser class
    */
   class WavefrontFile : public File {
+
   private:
-
-    std::string fileLocation = "";
-
+    
     // Does this file only contain triangles?
     bool onlyTriangles = true;
 
@@ -45,6 +44,14 @@ namespace small3d {
     // unique vertex - texture coordinates pairs.
     void correctDataVectors();
 
+    WavefrontFile(); // No default constructor
+
+    // Forbid moving and copying
+    WavefrontFile(WavefrontFile const&) = delete;
+    void operator=(WavefrontFile const&) = delete;
+    WavefrontFile(WavefrontFile&&) = delete;
+    void operator=(WavefrontFile&&) = delete;
+
   public:
     /**
      * @brief Constructor
@@ -54,14 +61,18 @@ namespace small3d {
 
     /**
      * @brief Load data from the Wavefront file into a Model
-     * @param The model to load the data to
+     * @param model The model to load the data to
+     * @param meshName The name of the mesh to load (unused in the case of Wavefront)
      */
-    void load(Model& model);
+    void load(Model& model, const std::string& meshName);
 
     /**
      * @brief Load data from the Wavefront file into a BoundingBoxSet
      * @param The BoundingBoxSet to load the data to
      */
     void load(BoundingBoxSet& boundingBoxSet);
+
+   
+
   };
 }

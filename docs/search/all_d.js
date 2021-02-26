@@ -1,11 +1,8 @@
 var searchData=
 [
-  ['perspective_83',['perspective',['../structsmall3d_1_1_model.html#a83b123db1e9c22644c14e69e4bec3c6e',1,'small3d::Model']]],
-  ['placementmemindex_84',['placementMemIndex',['../structsmall3d_1_1_model.html#a14d7094dc24ed8d72b9bdd72eb89be67',1,'small3d::Model']]],
-  ['play_85',['play',['../classsmall3d_1_1_sound.html#a24b61d06b9c695f5686846fb59c78676',1,'small3d::Sound']]],
-  ['positionbuffer_86',['positionBuffer',['../structsmall3d_1_1_model.html#a0dc68151bf7d08e522126f6e4d0269ad',1,'small3d::Model']]],
-  ['positionbuffermemory_87',['positionBufferMemory',['../structsmall3d_1_1_model.html#a25ba40d4f09c7c398eba3a516cdd9987',1,'small3d::Model']]],
-  ['printtoken_88',['printToken',['../classsmall3d_1_1_glb_file.html#a1fd6cfc3bf9962d8fccaea97069dbbf4',1,'small3d::GlbFile']]],
-  ['printtokensrecursive_89',['printTokensRecursive',['../classsmall3d_1_1_glb_file.html#a593e1b7000f33f458dbbce7ac068945e',1,'small3d::GlbFile']]],
-  ['printtokensserial_90',['printTokensSerial',['../classsmall3d_1_1_glb_file.html#acfdbe51e25ac549cc5220118b40f8f02',1,'small3d::GlbFile']]]
+  ['render_81',['render',['../classsmall3d_1_1_renderer.html#a5a8e5e26295601059897e530698f20f7',1,'small3d::Renderer::render(Model &amp;model, const glm::vec3 &amp;offset, const glm::vec3 &amp;rotation, const glm::vec4 &amp;colour, const std::string &amp;textureName=&quot;&quot;, const bool perspective=true)'],['../classsmall3d_1_1_renderer.html#a3ce91f7d1fde411177dd13996108db27',1,'small3d::Renderer::render(Model &amp;model, const glm::vec3 &amp;offset, const glm::vec3 &amp;rotation, const std::string &amp;textureName)'],['../classsmall3d_1_1_renderer.html#a5197bb14286d72ded6397ab1f5d1e9be',1,'small3d::Renderer::render(Model &amp;model, const std::string &amp;textureName, const bool perspective=true)'],['../classsmall3d_1_1_renderer.html#a604f156f1eba38959ec1ef7f0f18b9d7',1,'small3d::Renderer::render(Model &amp;model, const glm::vec4 &amp;colour, const bool perspective=true)'],['../classsmall3d_1_1_renderer.html#a3e2369b6490ee51256c2b58490cced0a',1,'small3d::Renderer::render(SceneObject &amp;sceneObject, const glm::vec4 &amp;colour)'],['../classsmall3d_1_1_renderer.html#a8ad10fd0f0546566c6022931b6b54bed',1,'small3d::Renderer::render(SceneObject &amp;sceneObject, const std::string &amp;textureName)']]],
+  ['renderer_82',['Renderer',['../classsmall3d_1_1_renderer.html',1,'small3d']]],
+  ['renderer_2ehpp_83',['Renderer.hpp',['../_renderer_8hpp.html',1,'']]],
+  ['resetanimation_84',['resetAnimation',['../classsmall3d_1_1_scene_object.html#a5df12246f187a1660fc54a14e6d7c96d',1,'small3d::SceneObject']]],
+  ['rotation_85',['rotation',['../classsmall3d_1_1_scene_object.html#a765d692291b6cb49160481f05cbae39b',1,'small3d::SceneObject']]]
 ];

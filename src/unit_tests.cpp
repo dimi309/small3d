@@ -69,7 +69,7 @@ int WavefrontTest() {
   bool threw = false;
   try {
     Model m;
-    wf.load(m);
+    wf.load(m, "");
   }
   catch (std::runtime_error& e) {
     LOGINFO("WavefrontFile.load correctly threw a runtime error: " +
@@ -86,8 +86,8 @@ int WavefrontTest() {
 
 int WavefrontModelTest() {
 
-  Model model("resources/models/Cube/Cube.obj");
-  
+  Model model(WavefrontFile("resources/models/Cube/Cube.obj"), "");
+
   if (model.vertexData.size() == 0) return 0;
   if (model.indexData.size() == 0) return 0;
   if (model.normalsData.size() == 0) return 0;
@@ -101,8 +101,8 @@ int WavefrontModelTest() {
     << "Texture coordinates count: "
     << model.textureCoordsData.size() << endl;
 
-  Model modelWithNoTexture("resources/models/Cube/CubeNoTexture.obj");
-  
+  Model modelWithNoTexture(WavefrontFile("resources/models/Cube/CubeNoTexture.obj"), "");
+
   if (modelWithNoTexture.vertexData.size() == 0) return 0;
   if (modelWithNoTexture.indexData.size() == 0) return 0;
   if (modelWithNoTexture.normalsData.size() == 0) return 0;
@@ -220,7 +220,6 @@ int BoundingBoxesTest() {
     }
   }
 
-
   return 1;
 }
 
@@ -229,7 +228,7 @@ int RendererTest() {
 
   renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
 
-  Model modelFromGlb("resources/models/goatUnscaled.glb", "Cube");
+  Model modelFromGlb(GlbFile("resources/models/goatUnscaled.glb"), "Cube");
 
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
@@ -367,32 +366,6 @@ int GlbTest() {
   glb.printTokensRecursive();
 
   glb.printTokensSerial();
-
-  glb.printToken(glb.getChildToken(glb.getChildTokens(glb.getToken("buffers"))[0], "byteLength"));
-
-  std::vector<char> rawData = glb.getBufferByView(std::stoi(glb.getChildToken(glb.getChildTokens(glb.getToken("accessors"))[4], "bufferView")->value));
-
-  float* data = new float[rawData.size() / 4];
-  memcpy(data, &rawData[0], rawData.size());
-
-  for (uint32_t idx = 0; idx < rawData.size() / 4; ++idx) {
-    if (idx % 4 == 0) printf("\n\r");
-    printf("%f ", data[idx]);
-  }
-  printf("\n\r");
-  delete[] data;
-
-  GlbFile::Node n = glb.getNode("Bone");
-
-  printf("Retrieved node from glb file: %s\n\r", n.name.c_str());
-
-  GlbFile::Skin s = glb.getSkin("Armature.001");
-
-  printf("Retrieved skin from glb file: %s\n\r", s.name.c_str());
-
-  GlbFile::Animation a = glb.getAnimation("Armature.001Action");
-
-  printf("Retrieved animation from glb file: %s\n\r", a.name.c_str());
 
   return 1;
 }

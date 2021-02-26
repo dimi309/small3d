@@ -7,6 +7,8 @@
  */
 
 #include "SceneObject.hpp"
+#include "WavefrontFile.hpp"
+#include "GlbFile.hpp"
 
 namespace small3d {
 
@@ -36,12 +38,12 @@ namespace small3d {
         std::stringstream ss;
         ss << std::setfill('0') << std::setw(6) << idx + startFrameIndex;
         std::string frameNum = ss.str();
-        Model model1(modelPath + "_" + frameNum + ".obj");
+        Model model1(WavefrontFile(modelPath + "_" + frameNum + ".obj"), "");
         models.push_back(model1);
       }
     }
     else {
-      Model model1(modelPath);
+      Model model1(WavefrontFile(modelPath), "");
       models.push_back(model1);
     }
 
@@ -63,7 +65,7 @@ namespace small3d {
     frameDelay = 1;
     currentFrame = 0;
     this->numFrames = 1;
-    Model model1(modelPath, modelMeshName);
+    Model model1(GlbFile(modelPath), modelMeshName);
     models.push_back(model1);
     boundingBoxSet = BoundingBoxSet(model1.vertexData, boundingBoxSubdivisions);
   }

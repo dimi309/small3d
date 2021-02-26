@@ -179,10 +179,8 @@ namespace small3d {
     }
   }
 
-  WavefrontFile::WavefrontFile(const std::string& fileLocation) {
+  WavefrontFile::WavefrontFile(const std::string& fileLocation) : File(fileLocation){
     
-    this->fileLocation = fileLocation;
-
     std::string line;
 
 #ifdef __ANDROID__
@@ -345,7 +343,7 @@ namespace small3d {
       throw std::runtime_error("Could not open file " + fileLocation);
   }
 
-  void WavefrontFile::load(Model& model) {
+  void WavefrontFile::load(Model& model, const std::string& meshName) {
     
     loadVertexData(model.vertexData);
     loadIndexData(model.indexData);

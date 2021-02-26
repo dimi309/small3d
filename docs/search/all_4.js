@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['existanimation_20',['existAnimation',['../classsmall3d_1_1_glb_file.html#abdb04e6d25deb19edd1b37d47876aa58',1,'small3d::GlbFile']]],
-  ['existnode_21',['existNode',['../classsmall3d_1_1_glb_file.html#ae520bc79fba269c0ce7386c7b12fa54b',1,'small3d::GlbFile::existNode(const uint32_t index)'],['../classsmall3d_1_1_glb_file.html#ab9a2c48576390b706a45344a4b98b00e',1,'small3d::GlbFile::existNode(const std::string &amp;name)']]],
-  ['existskin_22',['existSkin',['../classsmall3d_1_1_glb_file.html#a53a4838601dfc5f134b6530cf3f547d2',1,'small3d::GlbFile::existSkin(const uint32_t index)'],['../classsmall3d_1_1_glb_file.html#acc3403419c36d2f5aec3a31eb05d335e',1,'small3d::GlbFile::existSkin(const std::string &amp;name)']]]
+  ['facesvertexindexes_19',['facesVertexIndexes',['../classsmall3d_1_1_bounding_box_set.html#a4cc9b979ea109f835753ec2c245e34b6',1,'small3d::BoundingBoxSet']]],
+  ['facesvertexindexestriangulated_20',['facesVertexIndexesTriangulated',['../classsmall3d_1_1_bounding_box_set.html#a543d45e64464ea9d7452b0a0816543dd',1,'small3d::BoundingBoxSet']]],
+  ['file_21',['File',['../classsmall3d_1_1_file.html',1,'small3d::File'],['../classsmall3d_1_1_file.html#a81bb5738b0904d6904ee39a34e710271',1,'small3d::File::File()']]],
+  ['file_2ehpp_22',['File.hpp',['../_file_8hpp.html',1,'']]]
 ];

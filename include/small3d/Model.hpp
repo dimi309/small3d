@@ -18,16 +18,13 @@
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
-
-
 #include "Image.hpp"
+#include "File.hpp"
 
 namespace small3d {
-
-  class File;
-
+  
   /**
-   * @struct	Model
+   * @class	Model
    *
    * @brief	A 3D model. It can be loaded from a Wavefront or glTF file.
    *            In the case of a Wavefront file, the format has to be somewhat specific,
@@ -41,15 +38,15 @@ namespace small3d {
    *            values to the appropriate member variables.
    */
 
-  struct Model {
-
+  class Model {
+    
   private:
 
     uint64_t numPoses = 0;
     uint32_t currentPose = 0;
 
   public:
-
+    
     /**
      * @brief animation joint
      */
@@ -283,13 +280,6 @@ namespace small3d {
      */
     std::vector<Joint> joints;
 
-    /**
-     * @brief The armature, binding the model to
-     *        the joints
-     */
-    //small3d::GlbFile::Node armature;
-
-
 #ifndef SMALL3D_OPENGL
     
     /**
@@ -311,23 +301,8 @@ namespace small3d {
      *
      */
     Model();
-
-    /**
-     * @brief Constructor that loads model from a Wavefront file
-     * @param fileLocation Location of the Wavefront file from which to load the
-     *                     model.
-     */
-    Model(const std::string& fileLocation);
-
-    /**
-     * @brief Constructor that loads model from a glTF .glb file
-     * @param fileLocation  Location of the .glb file from which to load the
-     *                      model.
-     * @param meshName      The name of the mesh in the .glb file which will be loaded
-     *                      as the model.
-     *                      
-     */
-    Model(const std::string& fileLocation, const std::string& meshName);
+    
+    Model(File& file, const std::string& meshName);
 
     /**
      * @brief Get the index of the current animation pose
@@ -349,7 +324,7 @@ namespace small3d {
      */
     glm::mat4 getJointTransform(size_t jointIdx);
 
-    friend class File;
+    friend class GlbFile;
 
   };
 }

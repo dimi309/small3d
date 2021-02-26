@@ -266,13 +266,13 @@ namespace small3d {
     return ret;
   }
 
-  GlbFile::GlbFile(const std::string& filename) {
+  GlbFile::GlbFile(const std::string& fileLocation) : File(fileLocation) {
 
 #ifdef __ANDROID__
     AAsset* asset = AAssetManager_open(vkz_android_app->activity->assetManager,
-      filename.c_str(),
+      fileLocation.c_str(),
       AASSET_MODE_STREAMING);
-    if (!asset) throw std::runtime_error("Opening asset " + filename +
+    if (!asset) throw std::runtime_error("Opening asset " + fileLocation +
       " has failed!");
     off_t assetLength;
     assetLength = AAsset_getLength(asset);
@@ -280,14 +280,14 @@ namespace small3d {
     membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * assetLength);
     std::istream fileOnDisk(&sbuf);
     if (!fileOnDisk) {
-      throw std::runtime_error("Reading file " + filename +
+      throw std::runtime_error("Reading file " + fileLocation +
 			       " has failed!");
     }
 #else
     std::ifstream fileOnDisk;
-    fileOnDisk.open(filename, std::ios::binary);
+    fileOnDisk.open(fileLocation, std::ios::binary);
     if (!fileOnDisk.is_open()) {
-      throw std::runtime_error("Could not open GLB file " + filename);
+      throw std::runtime_error("Could not open GLB file " + fileLocation);
     }
 #endif
 
@@ -297,7 +297,7 @@ namespace small3d {
     fileOnDisk.read(reinterpret_cast<char*>(&version), 4);
 
     if (magic != "glTF" || version != 2) {
-      throw std::runtime_error(filename + " is not a glTF v2 GLB file!");
+      throw std::runtime_error(fileLocation + " is not a glTF v2 GLB file!");
     }
 
     fileOnDisk.read(reinterpret_cast<char*>(&length), 4);
@@ -693,7 +693,220 @@ namespace small3d {
     return getAnimation(nodeIndex);
   }
 
-  void GlbFile::load(Model& model) {
+  void GlbFile::load(Model& model, const std::string& meshName) {
+
+
+    bool loaded = false;
+    for (auto& meshToken : getChildTokens(getToken("meshes"))) {
+
+      if (getChildToken(meshToken, "name")->value == meshName) {
+        auto primitives = getChildTokens(
+          getChildToken(meshToken, "primitives"));
+        auto attributes = getChildTokens(getChildToken(primitives[0], "attributes"));
+
+        for (auto attribute : attributes) {
+
+          if (attribute->name == "POSITION") {
+
+            auto data = getBufferByAccessor(std::stoi(attribute->value));
+
+            auto numFloatsInData = data.size() / 4;
+
+            model.vertexData.resize(numFloatsInData + numFloatsInData / 3); // Add 1 float for each 3 for 
+                                                                      // the w component of each vector
+
+            model.vertexDataByteSize = static_cast<uint32_t>(model.vertexData.size() * 4); // Each vertex component is 4 bytes
+            size_t vertexPos = 0;
+
+            for (size_t idx = 0; idx < numFloatsInData; ++idx) {
+              memcpy(&model.vertexData[vertexPos], &data[idx * 4], 4);
+              ++vertexPos;
+              if (idx > 0 && (idx + 1) % 3 == 0) {
+                model.vertexData[vertexPos] = 1.0f;
+                ++vertexPos;
+              }
+            }
+          }
+
+          if (attribute->name == "NORMAL") {
+            auto data = getBufferByAccessor(std::stoi(attribute->value));
+            model.normalsData.resize(data.size() / 4);
+            model.normalsDataByteSize = static_cast<uint32_t>(data.size());
+            memcpy(&model.normalsData[0], &data[0], data.size());
+
+          }
+
+          if (attribute->name == "TEXCOORD_0") {
+            auto data = getBufferByAccessor(std::stoi(attribute->value));
+            model.textureCoordsData.resize(data.size() / 4);
+            model.textureCoordsDataByteSize = static_cast<uint32_t>(data.size());
+            memcpy(&model.textureCoordsData[0], &data[0], data.size());
+          }
+
+          if (attribute->name == "JOINTS_0") {
+            auto data = getBufferByAccessor(std::stoi(attribute->value));
+            model.jointData.resize(data.size());
+            model.jointDataByteSize = static_cast<uint32_t>(data.size());
+            memcpy(&model.jointData[0], &data[0], data.size());
+          }
+
+          if (attribute->name == "WEIGHTS_0") {
+            auto data = getBufferByAccessor(std::stoi(attribute->value));
+            model.weightData.resize(data.size() / 4);
+            model.weightDataByteSize = static_cast<uint32_t>(data.size());
+            memcpy(&model.weightData[0], &data[0], data.size());
+          }
+
+        }
+        auto data = getBufferByAccessor(std::stoi(getChildToken(primitives[0], "indices")->value));
+        model.indexData.resize(data.size() / 2);
+        model.indexDataByteSize = 
+          static_cast<uint32_t>(model.indexData.size() * 4); // 4 because, even though each index is read in 16 bits,
+                                                             // it is stored in 32 bits
+        uint16_t indexBuf = 0;
+        for (size_t idx = 0; idx < model.indexData.size(); ++idx) {
+          memcpy(&indexBuf, &data[2 * idx], 2);
+          model.indexData[idx] = static_cast<uint32_t>(indexBuf);
+        }
+
+        auto materialToken = getChildToken(primitives[0], "material");
+        if (materialToken != nullptr) {
+
+          uint32_t materialIndex = std::stoi(materialToken->value);
+
+          auto materialToken = getChildTokens(getToken("materials"))[materialIndex];
+
+          auto metallicRoughnessToken = getChildToken(materialToken, "pbrMetallicRoughness");
+          if (metallicRoughnessToken != nullptr) {
+            auto baseColorTextureToken = getChildToken(metallicRoughnessToken, "baseColorTexture");
+            if (baseColorTextureToken != nullptr) {
+              uint32_t textureIndex = std::stoi(getChildToken(baseColorTextureToken, "index")->value);
+              uint32_t sourceIndex = std::stoi(getChildToken(getChildTokens(getToken("textures"))[textureIndex], "source")->value);
+              auto imageToken = getChildTokens(getToken("images"))[sourceIndex];
+              if (getChildToken(imageToken, "mimeType")->value == "image/png") {
+                auto imageData = getBufferByView(std::stoi(getChildToken(imageToken, "bufferView")->value));
+
+                model.defaultTextureImage = std::shared_ptr<Image>(new Image(imageData));
+                imageData.clear();
+
+              }
+              else {
+                LOGINFO("Warning! Only PNG images embedded in .glb files can be read. Texture ignored.");
+              }
+            }
+          }
+        }
+
+        loaded = true;
+        break;
+      }
+    }
+
+    if (!loaded) throw std::runtime_error("Could not load mesh " + meshName + " from " + fileLocation);
+
+    LOGDEBUG("Loaded mesh " + meshName + " from " + fileLocation);
+
+    bool animAbort = false;
+
+    if (existNode(meshName)) {
+      auto meshNode = getNode(meshName);
+      if (!meshNode.noSkin && existSkin(meshNode.skin)) {
+        auto skin = getSkin(meshNode.skin);
+
+        if (skin.joints.size() > Model::MAX_JOINTS_SUPPORTED) {
+          LOGDEBUG("Found more than the maximum of " +
+            std::to_string(Model::MAX_JOINTS_SUPPORTED) + " supported joints. Ignoring all.");
+          return;
+        }
+
+        auto inverseBindMatrices = getBufferByAccessor(skin.inverseBindMatrices);
+        uint64_t idx = 0;
+        for (auto jointIdx : skin.joints) {
+          Model::Joint j;
+
+          memcpy(&j.inverseBindMatrix, &inverseBindMatrices[idx * 16 * 4], 16 * 4);
+          auto jointNode = getNode(jointIdx);
+          j.node = jointIdx;
+          j.name = jointNode.name;
+          j.rotation = jointNode.rotation;
+          j.scale = jointNode.scale;
+          j.translation = jointNode.translation;
+          j.children = jointNode.children;
+          model.joints.push_back(j);
+
+          ++idx;
+        }
+
+        uint32_t animationIdx = 0;
+        bool animFirstRun = true;
+
+        uint32_t firstInput = 0;
+        while (existAnimation(animationIdx)) {
+          auto animation = getAnimation(animationIdx);
+          ++animationIdx;
+
+          for (auto& channel : animation.channels) {
+
+            auto sampler = animation.samplers[channel.sampler];
+            if (animFirstRun) {
+              firstInput = sampler.input;
+              animFirstRun = false;
+            }
+            else {
+              if (sampler.input != firstInput) {
+                LOGDEBUG("Animation with multiple inputs ignored.");
+                animAbort = true;
+                break;
+              }
+            }
+
+            if (channel.target.path == "rotation") {
+
+              auto output = getBufferByAccessor(sampler.output);
+              for (auto& joint : model.joints) {
+                if (joint.node == channel.target.node) {
+                  joint.rotationAnimation.resize(output.size() / sizeof(glm::quat));
+                  memcpy(&joint.rotationAnimation[0], &output[0], output.size());
+                  if (model.numPoses < joint.rotationAnimation.size())
+                    model.numPoses = joint.rotationAnimation.size();
+
+                  if (joint.animTime.size() == 0) {
+                    auto input = getBufferByAccessor(sampler.input);
+                    joint.animTime.resize(input.size() / 4);
+                    memcpy(&joint.animTime[0], &input[0], input.size());
+                  }
+                }
+              }
+            }
+
+            if (channel.target.path == "translation") {
+
+              auto output = getBufferByAccessor(sampler.output);
+              for (auto& joint : model.joints) {
+                if (joint.node == channel.target.node) {
+                  joint.translationAnimation.resize(output.size() / sizeof(glm::vec3));
+                  memcpy(&joint.translationAnimation[0], &output[0], output.size());
+                  if (model.numPoses < joint.translationAnimation.size())
+                    model.numPoses = joint.translationAnimation.size();
+                }
+              }
+            }
+
+            if (animAbort) break;
+
+          }
+
+          if (animAbort) break;
+        }
+      }
+    }
+    if (animAbort) {
+      for (auto& joint : model.joints) {
+        joint.rotationAnimation.clear();
+        joint.translationAnimation.clear();
+      }
+    }
+
 
   }
 
