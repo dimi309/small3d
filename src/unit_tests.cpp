@@ -12,7 +12,6 @@
 #include <small3d/Image.hpp>
 #include <small3d/Model.hpp>
 #include <small3d/SceneObject.hpp>
-#include <small3d/GetTokens.hpp>
 #include <small3d/Sound.hpp>
 #include <small3d/BoundingBoxSet.hpp>
 #include <small3d/GlbFile.hpp>
@@ -348,17 +347,6 @@ int SoundTest3() {
   return 1;
 }
 
-int TokenTest() {
-  string strTest = "a-b-c-d";
-  std::vector<std::string> tokens;
-  
-  int tokenCount=getTokens(strTest, '-', tokens);
-  
-  if (tokenCount != 4) return 0;
-  if (tokens[1] != "b") return 0;
-  return 1;
-}
-
 int GlbTest() {
 
   GlbFile glb("resources/models/goat.glb");
@@ -377,6 +365,7 @@ int main(int argc, char** argv) {
       printf("*** Failing LoggerTest.\n\r");
       return 1;
     }
+
     if (!ImageTest()) {
       printf("*** Failing ImageTest.\n\r");
       return 1;
@@ -401,30 +390,32 @@ int main(int argc, char** argv) {
       printf("*** Failing BoundingBoxesTest.\n\r");
       return 1;
     }
+
     if (!RendererTest()) {
       printf("*** Failing RendererTest.\n\r");
       return 1;
     }
+
     if (!SoundTest()) {
       printf("*** Failing SoundTest.\n\r");
       return 1;
     }
+
     if (!SoundTest2()) {
       printf("*** Failing SoundTest2.\n\r");
       return 1;
     }
+
     if (!SoundTest3()) {
       printf("*** Failing SoundTest3.\n\r");
       return 1;
     }
-    if (!TokenTest()) {
-      printf("*** Failing TokenTest.\n\r");
-      return 1;
-    }
+
     if (!GlbTest()) {
       printf("*** Failing GlbTest.\n\r");
       return 1;
     }
+
   }
   catch (exception& e) {
     printf("*** %s\n\r", e.what());

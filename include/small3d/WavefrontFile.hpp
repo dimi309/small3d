@@ -21,6 +21,9 @@ namespace small3d {
   class WavefrontFile : public File {
 
   private:
+
+    int getTokens(const std::string& input, const char sep,
+      std::vector<std::string>& tokens);
     
     // Does this file only contain triangles?
     bool onlyTriangles = true;
