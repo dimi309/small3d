@@ -693,4 +693,8 @@ namespace small3d {
     return getAnimation(nodeIndex);
   }
 
+  void GlbFile::load(Model& model) {
+
+  }
+
 }

@@ -13,14 +13,19 @@
 
 #ifndef SMALL3D_OPENGL
 #include <vulkan/vulkan.h>
-#define GLM_FORCE_RADIANS
-#include <glm/glm.hpp>
 #endif
 
+#define GLM_FORCE_RADIANS
+#include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
+
+
 #include "Image.hpp"
-#include "GlbFile.hpp"
 
 namespace small3d {
+
+  class File;
+
   /**
    * @struct	Model
    *
@@ -282,7 +287,7 @@ namespace small3d {
      * @brief The armature, binding the model to
      *        the joints
      */
-    GlbFile::Node armature;
+    //small3d::GlbFile::Node armature;
 
 
 #ifndef SMALL3D_OPENGL
@@ -343,6 +348,8 @@ namespace small3d {
      *  @return The transform
      */
     glm::mat4 getJointTransform(size_t jointIdx);
+
+    friend class File;
 
   };
 }
