@@ -15,7 +15,7 @@
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include "WavefrontFile.hpp"
-
+#include "GlbFile.hpp"
 namespace small3d {
 
   Model::Model() {

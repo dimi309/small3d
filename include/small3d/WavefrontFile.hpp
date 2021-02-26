@@ -9,7 +9,7 @@
 
 #pragma once
 #include <vector>
-#include "Model.hpp"
+#include "File.hpp"
 #include "BoundingBoxSet.hpp"
 
 namespace small3d {
@@ -18,7 +18,7 @@ namespace small3d {
    * @class WavefrontFile
    * @brief Wavefront file parser class
    */
-  class WavefrontFile {
+  class WavefrontFile : public File {
   private:
 
     std::string fileLocation = "";

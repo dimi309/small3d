@@ -18,6 +18,8 @@
 #include <glm/glm.hpp>
 #define GLM_FORCE_RADIANS
 #include <glm/gtc/quaternion.hpp>
+#include "Model.hpp"
+#include "File.hpp"
 
 namespace small3d {
 
@@ -25,7 +27,7 @@ namespace small3d {
    * @class GlbFile
    * @brief GLB file parser class
    */
-  class GlbFile {
+  class GlbFile : public File {
   public:
     /**
      * @brief Types of value for the tokens parsed from the GLB file.
@@ -265,6 +267,7 @@ namespace small3d {
      */
     Animation getAnimation(const std::string& name);
 
+    void load(Model& model);
 
   };
 
