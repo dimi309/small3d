@@ -9,6 +9,10 @@ v1.709 (still open)
 - Added glTF support.
 - Bounding boxes can now be generated automatically, instead of being loaded
   from a file.
+- [BREAKING] GetTokens is now just a private function of WavefrontFile. It
+  cannot be used externally.
+- [BREAKING] Models are no longer loaded with filenames as parameters. The
+  appropriate file parsing object has to be passed instead.
 
 v1.708 2020-12-25
 
