@@ -71,7 +71,7 @@ namespace small3d {
 
     /**
      * @brief Load data from the Wavefront file into a BoundingBoxSet
-     * @param The BoundingBoxSet to load the data to
+     * @param boundingBoxSet The BoundingBoxSet to load the data to
      */
     void load(BoundingBoxSet& boundingBoxSet);
 

@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['image_43',['Image',['../classsmall3d_1_1_image.html',1,'small3d::Image'],['../classsmall3d_1_1_image.html#afe8aec09a44cfc52975166d930466dea',1,'small3d::Image::Image(const std::string fileLocation=&quot;&quot;)'],['../classsmall3d_1_1_image.html#ae3c2a88cea4d2628cfb801f9ae414c8e',1,'small3d::Image::Image(std::vector&lt; char &gt; &amp;data)']]],
-  ['image_2ehpp_44',['Image.hpp',['../_image_8hpp.html',1,'']]],
-  ['indexbuffer_45',['indexBuffer',['../classsmall3d_1_1_model.html#a39db7cf562b604314c1d09e83c51fa43',1,'small3d::Model']]],
-  ['indexbuffermemory_46',['indexBufferMemory',['../classsmall3d_1_1_model.html#a02bc354c84beb68570369cd9b831aad3',1,'small3d::Model']]],
-  ['indexdata_47',['indexData',['../classsmall3d_1_1_model.html#affb0aba31845367125ed2008e12f1cac',1,'small3d::Model']]],
-  ['indexdatabytesize_48',['indexDataByteSize',['../classsmall3d_1_1_model.html#a85d48b3995956a4ee42dc8c34b195ad7',1,'small3d::Model']]],
-  ['initlogger_49',['initLogger',['../namespacesmall3d.html#a7ffafe7a0562ca3c76da6bfb30a62e1b',1,'small3d']]]
+  ['image_42',['Image',['../classsmall3d_1_1_image.html',1,'small3d::Image'],['../classsmall3d_1_1_image.html#afe8aec09a44cfc52975166d930466dea',1,'small3d::Image::Image(const std::string fileLocation=&quot;&quot;)'],['../classsmall3d_1_1_image.html#ae3c2a88cea4d2628cfb801f9ae414c8e',1,'small3d::Image::Image(std::vector&lt; char &gt; &amp;data)']]],
+  ['image_2ehpp_43',['Image.hpp',['../_image_8hpp.html',1,'']]],
+  ['indexbuffer_44',['indexBuffer',['../classsmall3d_1_1_model.html#a39db7cf562b604314c1d09e83c51fa43',1,'small3d::Model']]],
+  ['indexbuffermemory_45',['indexBufferMemory',['../classsmall3d_1_1_model.html#a02bc354c84beb68570369cd9b831aad3',1,'small3d::Model']]],
+  ['indexdata_46',['indexData',['../classsmall3d_1_1_model.html#affb0aba31845367125ed2008e12f1cac',1,'small3d::Model']]],
+  ['indexdatabytesize_47',['indexDataByteSize',['../classsmall3d_1_1_model.html#a85d48b3995956a4ee42dc8c34b195ad7',1,'small3d::Model']]],
+  ['initlogger_48',['initLogger',['../namespacesmall3d.html#a7ffafe7a0562ca3c76da6bfb30a62e1b',1,'small3d']]]
 ];
