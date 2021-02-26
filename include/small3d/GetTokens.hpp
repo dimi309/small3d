@@ -25,6 +25,5 @@ namespace small3d {
    * @return The number of tokens
    */
 
-  int getTokens(const std::string &input, const char sep,
-		std::vector<std::string> &tokens);
+  
 }
