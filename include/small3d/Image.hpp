@@ -54,9 +54,9 @@ namespace small3d {
 
     /**
      * @brief Memory-based constructor
-     *
-     * @param PNG bytes already read into memory
-     ¨*/
+     * 
+     * @param data PNG bytes already read into memory
+     */
     Image(std::vector<char>& data);
 
     /**

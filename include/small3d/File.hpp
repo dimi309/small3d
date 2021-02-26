@@ -30,6 +30,9 @@ namespace small3d {
     void operator=(File&&) = delete;
 
   protected:
+    /**
+     * @brief The path to the file being parsed
+     */
     std::string fileLocation = "";
 
   public:

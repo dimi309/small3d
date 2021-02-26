@@ -65,6 +65,10 @@ namespace small3d {
       std::vector<float> animTime;
     };
 
+    /**
+     * @brief Maximum number of supported joints
+     *        
+     */
     static const uint32_t MAX_JOINTS_SUPPORTED = 16;
 
     /**
@@ -302,6 +306,13 @@ namespace small3d {
      */
     Model();
     
+    /**
+     * @brief Constructor
+     * 
+     * @param file     The file parsing object from which to load the model
+     * @param meshName The name of the model mesh in the file
+     * 
+     */
     Model(File& file, const std::string& meshName);
 
     /**

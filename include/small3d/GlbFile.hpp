@@ -162,8 +162,6 @@ namespace small3d {
 
     void load(Model& model, const std::string& meshName);
 
-    
-
   };
 
 }
