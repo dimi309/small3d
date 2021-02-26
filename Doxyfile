@@ -901,15 +901,7 @@ EXCLUDE_SYMBOLS        = VulkanImage \
 		       	 UboLight \
 			 pipeline_system_struct \
 			 swapchain_support_struct \
-			 extremes \
-			 Animation \
-			 AnimationChannel \
-			 AnimationSampler \
-			 ChannelTarget \
-			 Node \
-			 Skin \
-			 Token \
-			 Joint
+			 extremes 
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include

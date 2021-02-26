@@ -9,8 +9,8 @@
 #include "File.hpp"
 
 namespace small3d {
-  File::File() {
-
+  File::File(const std::string& fileLocation) {
+    this->fileLocation = fileLocation;
   }
 
  

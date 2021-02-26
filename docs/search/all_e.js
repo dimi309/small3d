@@ -1,8 +1,14 @@
 var searchData=
 [
-  ['render_91',['render',['../classsmall3d_1_1_renderer.html#a5a8e5e26295601059897e530698f20f7',1,'small3d::Renderer::render(Model &amp;model, const glm::vec3 &amp;offset, const glm::vec3 &amp;rotation, const glm::vec4 &amp;colour, const std::string &amp;textureName=&quot;&quot;, const bool perspective=true)'],['../classsmall3d_1_1_renderer.html#a3ce91f7d1fde411177dd13996108db27',1,'small3d::Renderer::render(Model &amp;model, const glm::vec3 &amp;offset, const glm::vec3 &amp;rotation, const std::string &amp;textureName)'],['../classsmall3d_1_1_renderer.html#a5197bb14286d72ded6397ab1f5d1e9be',1,'small3d::Renderer::render(Model &amp;model, const std::string &amp;textureName, const bool perspective=true)'],['../classsmall3d_1_1_renderer.html#a604f156f1eba38959ec1ef7f0f18b9d7',1,'small3d::Renderer::render(Model &amp;model, const glm::vec4 &amp;colour, const bool perspective=true)'],['../classsmall3d_1_1_renderer.html#a3e2369b6490ee51256c2b58490cced0a',1,'small3d::Renderer::render(SceneObject &amp;sceneObject, const glm::vec4 &amp;colour)'],['../classsmall3d_1_1_renderer.html#a8ad10fd0f0546566c6022931b6b54bed',1,'small3d::Renderer::render(SceneObject &amp;sceneObject, const std::string &amp;textureName)']]],
-  ['renderer_92',['Renderer',['../classsmall3d_1_1_renderer.html',1,'small3d']]],
-  ['renderer_2ehpp_93',['Renderer.hpp',['../_renderer_8hpp.html',1,'']]],
-  ['resetanimation_94',['resetAnimation',['../classsmall3d_1_1_scene_object.html#a5df12246f187a1660fc54a14e6d7c96d',1,'small3d::SceneObject']]],
-  ['rotation_95',['rotation',['../classsmall3d_1_1_scene_object.html#a765d692291b6cb49160481f05cbae39b',1,'small3d::SceneObject']]]
+  ['small3d_86',['small3d',['../index.html',1,'']]],
+  ['sceneobject_87',['SceneObject',['../classsmall3d_1_1_scene_object.html',1,'small3d::SceneObject'],['../classsmall3d_1_1_scene_object.html#a0a1cc78130e068011e208ba56321067f',1,'small3d::SceneObject::SceneObject(const std::string name, const std::string modelPath, const int numFrames=1, const std::string boundingBoxSetPath=&quot;&quot;, const int startFrameIndex=1, const uint32_t boundingBoxSubdivisions=0)'],['../classsmall3d_1_1_scene_object.html#a1bd665f32145f9b16fc89df98c8713a9',1,'small3d::SceneObject::SceneObject(const std::string name, const std::string modelPath, const std::string &amp;modelMeshName, const uint32_t boundingBoxSubdivisions=0)']]],
+  ['sceneobject_2ehpp_88',['SceneObject.hpp',['../_scene_object_8hpp.html',1,'']]],
+  ['setframedelay_89',['setFrameDelay',['../classsmall3d_1_1_scene_object.html#ac5597d21a46f7208fc92377f9cc8b631',1,'small3d::SceneObject']]],
+  ['small3d_90',['small3d',['../namespacesmall3d.html',1,'']]],
+  ['sound_91',['Sound',['../classsmall3d_1_1_sound.html',1,'small3d::Sound'],['../classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219',1,'small3d::Sound::Sound()'],['../classsmall3d_1_1_sound.html#a5c0dcc69eba4f4f1993d3d8aa50b28f7',1,'small3d::Sound::Sound(const std::string soundFilePath)'],['../classsmall3d_1_1_sound.html#abe9fffa807136a82dba901f6c1b9aeb7',1,'small3d::Sound::Sound(const Sound &amp;other) noexcept'],['../classsmall3d_1_1_sound.html#aa6e96196c84086a30c9d02aa1a4aa358',1,'small3d::Sound::Sound(const Sound &amp;&amp;other) noexcept']]],
+  ['sound_2ehpp_92',['Sound.hpp',['../_sound_8hpp.html',1,'']]],
+  ['startanimating_93',['startAnimating',['../classsmall3d_1_1_scene_object.html#a21bd126617420837019165e892b1ff6b',1,'small3d::SceneObject']]],
+  ['stop_94',['stop',['../classsmall3d_1_1_sound.html#a3b239ef468eae9e89c48351127b329f3',1,'small3d::Sound']]],
+  ['stopanimating_95',['stopAnimating',['../classsmall3d_1_1_scene_object.html#a005d922b169d1922f2f28402cd7a0cf6',1,'small3d::SceneObject']]],
+  ['swapbuffers_96',['swapBuffers',['../classsmall3d_1_1_renderer.html#acdc83f2aaaf3f41f35e99c1eabc6ac98',1,'small3d::Renderer']]]
 ];
