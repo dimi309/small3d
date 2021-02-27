@@ -416,13 +416,13 @@ namespace small3d {
       for (auto i : model.indexData) if (i > maxIndex) maxIndex = i;
 
       model.vertexData = std::vector<float>(model.vertexData.begin() + minIndex * 4,
-        model.vertexData.begin() + maxIndex * 4);
+        model.vertexData.begin() + (maxIndex + 1) * 4);
 
       model.normalsData = std::vector<float>(model.normalsData.begin() + minIndex * 3,
-        model.normalsData.begin() + maxIndex * 3);
+        model.normalsData.begin() + (maxIndex + 1) * 3);
 
       model.textureCoordsData = std::vector<float>(model.textureCoordsData.begin() + minIndex * 2,
-        model.textureCoordsData.begin() + maxIndex * 2);
+        model.textureCoordsData.begin() + (maxIndex + 1) * 2);
   
       for (size_t idx = 0; idx < model.indexData.size(); ++idx) {
         model.indexData[idx] -= static_cast<uint32_t>(minIndex);
