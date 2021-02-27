@@ -75,67 +75,68 @@ $(function() {
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_file_8hpp.html">File.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_bounding_box_set_8hpp.html">BoundingBoxSet.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacesmall3d.html">small3d</a> {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="classsmall3d_1_1_wavefront_file.html">   21</a></span>&#160;  <span class="keyword">class </span><a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a> : <span class="keyword">public</span> <a class="code" href="classsmall3d_1_1_file.html">File</a> {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordtype">int</span> getTokens(<span class="keyword">const</span> std::string&amp; input, <span class="keyword">const</span> <span class="keywordtype">char</span> sep,</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;      std::vector&lt;std::string&gt;&amp; tokens);</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="comment">// Does this file only contain triangles?</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordtype">bool</span> onlyTriangles = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="comment">// Data read from .obj file</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    std::vector&lt;std::vector&lt;float&gt; &gt; vertices;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    std::vector&lt;std::vector&lt;uint32_t&gt; &gt; facesVertexIndices;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    std::vector&lt;std::vector&lt;float&gt; &gt; normals;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    std::vector&lt;std::vector&lt;uint32_t&gt; &gt; facesNormalIndices;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    std::vector&lt;std::vector&lt;float&gt; &gt; textureCoords;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    std::vector&lt;std::vector&lt;uint32_t&gt; &gt; textureCoordsIndices;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">void</span> loadVertexData(std::vector&lt;float&gt;&amp; vertexData);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">void</span> loadIndexData(std::vector&lt;uint32_t&gt;&amp; indexData);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">void</span> loadNormalsData(std::vector&lt;float&gt;&amp; normalsData, <span class="keyword">const</span> std::vector&lt;float&gt;&amp; vertexData);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">void</span> loadTextureCoordsData(std::vector&lt;float&gt;&amp; textureCoordsData, <span class="keyword">const</span> std::vector&lt;float&gt;&amp; vertexData);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="comment">// Make sure that no texture coordinate information is lost when the data</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="comment">// buffers get created (vertexData, indexData, normalsData and</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="comment">// textureCoordsData) by realigning the data vectors, in order to ensure</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="comment">// unique vertex - texture coordinates pairs.</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">void</span> correctDataVectors();</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a>(); <span class="comment">// No default constructor</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="comment">// Forbid moving and copying</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a>(<a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a> <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">void</span> operator=(<a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a> <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a>(<a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordtype">void</span> operator=(<a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a>(<span class="keyword">const</span> std::string&amp; <a class="code" href="classsmall3d_1_1_file.html#a65e0cdfaf2f26b492fbf5fe5fe3a8a93">fileLocation</a>);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_wavefront_file.html#a451f1850c5f5fdcece413758fe491157">load</a>(<a class="code" href="classsmall3d_1_1_model.html">Model</a>&amp; model, <span class="keyword">const</span> std::string&amp; meshName);</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_wavefront_file.html#a451f1850c5f5fdcece413758fe491157">load</a>(<a class="code" href="classsmall3d_1_1_bounding_box_set.html">BoundingBoxSet</a>&amp; boundingBoxSet);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;   </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  };</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;}</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;unordered_map&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacesmall3d.html">small3d</a> {</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classsmall3d_1_1_wavefront_file.html">   22</a></span>&#160;  <span class="keyword">class </span><a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a> : <span class="keyword">public</span> <a class="code" href="classsmall3d_1_1_file.html">File</a> {</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordtype">int</span> getTokens(<span class="keyword">const</span> std::string&amp; input, <span class="keyword">const</span> <span class="keywordtype">char</span> sep,</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;      std::vector&lt;std::string&gt;&amp; tokens);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="comment">// Does this file only contain triangles?</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordtype">bool</span> onlyTriangles = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="comment">// Data read from .obj file</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    std::vector&lt;std::vector&lt;float&gt; &gt; vertices;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    std::vector&lt;std::vector&lt;uint32_t&gt; &gt; facesVertexIndices;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    std::vector&lt;std::vector&lt;float&gt; &gt; normals;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    std::vector&lt;std::vector&lt;uint32_t&gt; &gt; facesNormalIndices;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    std::vector&lt;std::vector&lt;float&gt; &gt; textureCoords;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    std::vector&lt;std::vector&lt;uint32_t&gt; &gt; textureCoordsIndices;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    std::vector&lt;std::string&gt; objectNames;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    std::unordered_map&lt;std::string, size_t&gt; objectStartFaceIdx;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">void</span> loadVertexData(std::vector&lt;float&gt;&amp; vertexData);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">void</span> loadIndexData(std::vector&lt;uint32_t&gt;&amp; indexData);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">void</span> loadNormalsData(std::vector&lt;float&gt;&amp; normalsData, <span class="keyword">const</span> std::vector&lt;float&gt;&amp; vertexData);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordtype">void</span> loadTextureCoordsData(std::vector&lt;float&gt;&amp; textureCoordsData, <span class="keyword">const</span> std::vector&lt;float&gt;&amp; vertexData);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="comment">// Make sure that no texture coordinate information is lost when the data</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="comment">// buffers get created (vertexData, indexData, normalsData and</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="comment">// textureCoordsData) by realigning the data vectors, in order to ensure</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="comment">// unique vertex - texture coordinates pairs.</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordtype">void</span> correctDataVectors();</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a>(); <span class="comment">// No default constructor</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="comment">// Forbid moving and copying</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a>(<a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a> <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">void</span> operator=(<a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a> <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a>(<a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keywordtype">void</span> operator=(<a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <a class="code" href="classsmall3d_1_1_wavefront_file.html">WavefrontFile</a>(<span class="keyword">const</span> std::string&amp; <a class="code" href="classsmall3d_1_1_file.html#a65e0cdfaf2f26b492fbf5fe5fe3a8a93">fileLocation</a>);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_wavefront_file.html#a451f1850c5f5fdcece413758fe491157">load</a>(<a class="code" href="classsmall3d_1_1_model.html">Model</a>&amp; model, <span class="keyword">const</span> std::string&amp; meshName);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_wavefront_file.html#a451f1850c5f5fdcece413758fe491157">load</a>(<a class="code" href="classsmall3d_1_1_bounding_box_set.html">BoundingBoxSet</a>&amp; boundingBoxSet);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;  };</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclasssmall3d_1_1_file_html_a65e0cdfaf2f26b492fbf5fe5fe3a8a93"><div class="ttname"><a href="classsmall3d_1_1_file.html#a65e0cdfaf2f26b492fbf5fe5fe3a8a93">small3d::File::fileLocation</a></div><div class="ttdeci">std::string fileLocation</div><div class="ttdoc">The path to the file being parsed.</div><div class="ttdef"><b>Definition:</b> File.hpp:36</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_model_html"><div class="ttname"><a href="classsmall3d_1_1_model.html">small3d::Model</a></div><div class="ttdoc">A 3D model. It can be loaded from a Wavefront or glTF file. In the case of a Wavefront file,...</div><div class="ttdef"><b>Definition:</b> Model.hpp:41</div></div>
-<div class="ttc" id="aclasssmall3d_1_1_wavefront_file_html"><div class="ttname"><a href="classsmall3d_1_1_wavefront_file.html">small3d::WavefrontFile</a></div><div class="ttdoc">Wavefront file parser class.</div><div class="ttdef"><b>Definition:</b> WavefrontFile.hpp:21</div></div>
+<div class="ttc" id="aclasssmall3d_1_1_wavefront_file_html"><div class="ttname"><a href="classsmall3d_1_1_wavefront_file.html">small3d::WavefrontFile</a></div><div class="ttdoc">Wavefront file parser class.</div><div class="ttdef"><b>Definition:</b> WavefrontFile.hpp:22</div></div>
 <div class="ttc" id="a_bounding_box_set_8hpp_html"><div class="ttname"><a href="_bounding_box_set_8hpp.html">BoundingBoxSet.hpp</a></div><div class="ttdoc">Bounding boxes for collision detection.</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_bounding_box_set_html"><div class="ttname"><a href="classsmall3d_1_1_bounding_box_set.html">small3d::BoundingBoxSet</a></div><div class="ttdoc">Set of bounding boxes for a SceneObject, normally loaded from a Wavefront file, or calculated based o...</div><div class="ttdef"><b>Definition:</b> BoundingBoxSet.hpp:47</div></div>
 <div class="ttc" id="a_file_8hpp_html"><div class="ttname"><a href="_file_8hpp.html">File.hpp</a></div><div class="ttdoc">File parser virtual class.</div></div>
 <div class="ttc" id="anamespacesmall3d_html"><div class="ttname"><a href="namespacesmall3d.html">small3d</a></div><div class="ttdef"><b>Definition:</b> BoundingBoxSet.hpp:19</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_file_html"><div class="ttname"><a href="classsmall3d_1_1_file.html">small3d::File</a></div><div class="ttdoc">File parser class.</div><div class="ttdef"><b>Definition:</b> File.hpp:22</div></div>
-<div class="ttc" id="aclasssmall3d_1_1_wavefront_file_html_a451f1850c5f5fdcece413758fe491157"><div class="ttname"><a href="classsmall3d_1_1_wavefront_file.html#a451f1850c5f5fdcece413758fe491157">small3d::WavefrontFile::load</a></div><div class="ttdeci">void load(Model &amp;model, const std::string &amp;meshName)</div><div class="ttdoc">Load data from the Wavefront file into a Model.</div><div class="ttdef"><b>Definition:</b> WavefrontFile.cpp:374</div></div>
+<div class="ttc" id="aclasssmall3d_1_1_wavefront_file_html_a451f1850c5f5fdcece413758fe491157"><div class="ttname"><a href="classsmall3d_1_1_wavefront_file.html#a451f1850c5f5fdcece413758fe491157">small3d::WavefrontFile::load</a></div><div class="ttdeci">void load(Model &amp;model, const std::string &amp;meshName)</div><div class="ttdoc">Load data from the Wavefront file into a Model.</div><div class="ttdef"><b>Definition:</b> WavefrontFile.cpp:380</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20
