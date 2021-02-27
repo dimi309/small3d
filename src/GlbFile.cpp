@@ -297,6 +297,11 @@ namespace small3d {
     fileOnDisk.read(reinterpret_cast<char*>(&version), 4);
 
     if (magic != "glTF" || version != 2) {
+#ifdef __ANDROID__
+      AAsset_close(asset);
+#else
+      fileOnDisk.close();
+#endif
       throw std::runtime_error(fileLocation + " is not a glTF v2 GLB file!");
     }
 
@@ -427,6 +432,7 @@ namespace small3d {
         cnt = 4;
         break;
       default:
+
         throw std::runtime_error("Unrecognised componentType in GLB file: " + std::to_string(componentType));
          
       }
