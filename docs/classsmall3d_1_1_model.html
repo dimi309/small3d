@@ -95,9 +95,9 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#aa116b5b0c66b9e7f4dfd401ab5233a79">Model</a> ()</td></tr>
 <tr class="memdesc:aa116b5b0c66b9e7f4dfd401ab5233a79"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor. <br /></td></tr>
 <tr class="separator:aa116b5b0c66b9e7f4dfd401ab5233a79"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5357ebf95632eb534178a4cb7f2c44a3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a5357ebf95632eb534178a4cb7f2c44a3">Model</a> (<a class="el" href="classsmall3d_1_1_file.html">File</a> &amp;file, const std::string &amp;meshName)</td></tr>
-<tr class="memdesc:a5357ebf95632eb534178a4cb7f2c44a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classsmall3d_1_1_model.html#a5357ebf95632eb534178a4cb7f2c44a3">More...</a><br /></td></tr>
-<tr class="separator:a5357ebf95632eb534178a4cb7f2c44a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0541e92c2861d9d5738f38909efba394"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a0541e92c2861d9d5738f38909efba394">Model</a> (<a class="el" href="classsmall3d_1_1_file.html">File</a> *file, const std::string &amp;meshName)</td></tr>
+<tr class="memdesc:a0541e92c2861d9d5738f38909efba394"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classsmall3d_1_1_model.html#a0541e92c2861d9d5738f38909efba394">More...</a><br /></td></tr>
+<tr class="separator:a0541e92c2861d9d5738f38909efba394"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d501a1d394c08b7666a48d55736a5ab"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a5d501a1d394c08b7666a48d55736a5ab">getCurrentPoseIdx</a> ()</td></tr>
 <tr class="memdesc:a5d501a1d394c08b7666a48d55736a5ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the index of the current animation pose.  <a href="classsmall3d_1_1_model.html#a5d501a1d394c08b7666a48d55736a5ab">More...</a><br /></td></tr>
 <tr class="separator:a5d501a1d394c08b7666a48d55736a5ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -252,8 +252,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>GlbFile</b></td></tr
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A 3D model. It can be loaded from a Wavefront or glTF file. In the case of a Wavefront file, the format has to be somewhat specific, with triangulated faces and containing the normals. Such a file can be exported from Blender for example (see blender.org). From its menu, select <a class="el" href="classsmall3d_1_1_file.html" title="File parser class.">File</a> &gt; Export &gt; Wavefront (.obj). Then from the "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" and "Keep Vertex Order". Exporting .glb files is much simpler. Just do so using the default options. The 3D model can also be constructed procedurally by code, by inserting values to the appropriate member variables. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a5357ebf95632eb534178a4cb7f2c44a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5357ebf95632eb534178a4cb7f2c44a3">&#9670;&nbsp;</a></span>Model()</h2>
+<a id="a0541e92c2861d9d5738f38909efba394"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0541e92c2861d9d5738f38909efba394">&#9670;&nbsp;</a></span>Model()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -261,7 +261,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>GlbFile</b></td></tr
         <tr>
           <td class="memname">small3d::Model::Model </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classsmall3d_1_1_file.html">File</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classsmall3d_1_1_file.html">File</a> *&#160;</td>
           <td class="paramname"><em>file</em>, </td>
         </tr>
         <tr>
