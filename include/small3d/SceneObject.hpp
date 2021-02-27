@@ -63,9 +63,9 @@ namespace small3d
      * @param name      The name of the object 
      * @param modelPath The path to the file
      *
-     * @param modelMeshName The name of the mesh / object in file which will be loaded
+     * @param modelMeshName The name of the mesh / object in the file which will be loaded
      *                      as the model ("" to load the first object found).
-     * @param boundingBoxSubdivisions How many times to subdivide the initially one created
+     * @param boundingBoxSubdivisions How many times to subdivide the initially created
      *                        bounding box, getting more accurate collision detection
      *                        at the expense of performance.
      */
@@ -105,7 +105,7 @@ namespace small3d
      *                        If not loading an animation sequence, this parameter
      *                        is ignored.
      * @param boundingBoxSubdivisions If not using bounding boxes loaded from a file,
-     *                        how many times to subdivide the initially one created
+     *                        how many times to subdivide the initially created
      *                        bounding box, getting more accurate collision detection
      *                        at the expense of performance.
      */
