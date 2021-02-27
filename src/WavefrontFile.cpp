@@ -165,9 +165,9 @@ namespace small3d {
 
     std::unordered_map<int, int> vertexUVPairs;
 
-    uint64_t numIndexes = facesVertexIndices.size();
+    uint64_t numIndices = facesVertexIndices.size();
 
-    for (uint64_t idx = 0; idx < numIndexes; ++idx) {
+    for (uint64_t idx = 0; idx < numIndices; ++idx) {
 
       for (uint64_t vertexIndex = 0; vertexIndex != 3; ++vertexIndex) {
 
@@ -179,7 +179,7 @@ namespace small3d {
             // duplicate corresponding vertex data entry and point the vertex
             // index to the new tuple
             std::vector<float> v;
-            // -1 because at this stage the indexes are still as exported from
+            // -1 because at this stage the indices are still as exported from
             // Blender, meaning 1-based and not 0-based
             v.push_back(vertices[static_cast<uint64_t>(facesVertexIndices[idx][vertexIndex] - 1)][0]);
             v.push_back(vertices[static_cast<uint64_t>(facesVertexIndices[idx][vertexIndex] - 1)][1]);
@@ -210,7 +210,7 @@ namespace small3d {
   WavefrontFile::WavefrontFile(const std::string& fileLocation) : File(fileLocation){
     
     std::string line;
-
+   
 #ifdef __ANDROID__
     AAsset* asset = AAssetManager_open(vkz_android_app->activity->assetManager,
       fileLocation.c_str(),
@@ -232,7 +232,16 @@ namespace small3d {
     if (file.is_open()) {
       while (std::getline(file, line)) {
 #endif
-        if (line[0] == 'v' || line[0] == 'f') {
+        if (line[0] == 'o') {
+          std::vector<std::string> tokens;
+          uint32_t numTokens = getTokens(line, ' ', tokens);
+          if (numTokens > 1) {
+            std::string objName = tokens[1];
+            objectNames.push_back(objName);
+            objectStartFaceIdx.insert(std::pair<std::string, size_t>(objName, facesVertexIndices.size()));
+          }
+        }
+        else if (line[0] == 'v' || line[0] == 'f') {
           std::vector<std::string> tokens;
 
           uint32_t numTokens = getTokens(line, ' ', tokens);
@@ -336,9 +345,7 @@ namespace small3d {
                     }
                     ++componentIdx;
                   }
-
                 }
-
                 else   // just the vertex index is contained in the string
                 {
                   v.push_back(atoi(t.c_str()));
@@ -354,7 +361,6 @@ namespace small3d {
             if (!textC.empty())
               textureCoordsIndices.push_back(textC);
           }
-
         }
       }
 #ifdef __ANDROID__
@@ -377,6 +383,51 @@ namespace small3d {
     loadIndexData(model.indexData);
     loadNormalsData(model.normalsData, model.vertexData);
     loadTextureCoordsData(model.textureCoordsData, model.vertexData);
+
+    if (objectNames.size() != 0 || meshName != "") {
+      size_t startFaceIdx = 0;
+      size_t endFaceIdx = facesVertexIndices.size() - 1;
+      if (meshName != "") {
+        bool found = false;
+        for (size_t idx = 0; idx < objectNames.size(); ++idx) {
+          if (objectNames[idx] == meshName) {
+            found = true;
+            startFaceIdx = objectStartFaceIdx.find(meshName)->second;
+            if (idx != objectNames.size() - 1) {
+              endFaceIdx = objectStartFaceIdx.find(objectNames[idx + 1])->second - 1;
+            }
+            break;
+          }
+        }
+        if (!found) throw std::runtime_error("Mesh " + meshName + " not found in " + fileLocation + ".");
+      }
+      else if (objectNames.size() > 1) {
+        // Will just load the first mesh (object in Wavefront)
+        endFaceIdx = objectStartFaceIdx.find(objectNames[1])->second - 1;
+      }
+
+      model.indexData = std::vector<uint32_t>(model.indexData.begin() + startFaceIdx * 3,
+        model.indexData.begin() + endFaceIdx * 3);
+
+      size_t minIndex = model.indexData[0];
+      for (auto i : model.indexData) if (i < minIndex) minIndex = i;
+      
+      size_t maxIndex = model.indexData[0];
+      for (auto i : model.indexData) if (i > maxIndex) maxIndex = i;
+
+      model.vertexData = std::vector<float>(model.vertexData.begin() + minIndex * 4,
+        model.vertexData.begin() + maxIndex * 4);
+
+      model.normalsData = std::vector<float>(model.normalsData.begin() + minIndex * 3,
+        model.normalsData.begin() + maxIndex * 3);
+
+      model.textureCoordsData = std::vector<float>(model.textureCoordsData.begin() + minIndex * 2,
+        model.textureCoordsData.begin() + maxIndex * 2);
+  
+      for (size_t idx = 0; idx < model.indexData.size(); ++idx) {
+        model.indexData[idx] -= static_cast<uint32_t>(minIndex);
+      }
+    }
 
     model.vertexDataByteSize = static_cast<uint32_t>(model.vertexData.size() * sizeof(float));
     model.indexDataByteSize = static_cast<uint32_t>(model.indexData.size() * sizeof(uint32_t));
