@@ -697,9 +697,11 @@ namespace small3d {
 
 
     bool loaded = false;
+    std::string actualName = "";
     for (auto& meshToken : getChildTokens(getToken("meshes"))) {
 
-      if (getChildToken(meshToken, "name")->value == meshName) {
+      actualName = getChildToken(meshToken, "name")->value;
+      if (actualName == meshName || meshName == "") { // Just get the first mesh if no name is given.
         auto primitives = getChildTokens(
           getChildToken(meshToken, "primitives"));
         auto attributes = getChildTokens(getChildToken(primitives[0], "attributes"));
@@ -804,12 +806,12 @@ namespace small3d {
 
     if (!loaded) throw std::runtime_error("Could not load mesh " + meshName + " from " + fileLocation);
 
-    LOGDEBUG("Loaded mesh " + meshName + " from " + fileLocation);
+    LOGDEBUG("Loaded mesh " + actualName + " from " + fileLocation);
 
     bool animAbort = false;
 
-    if (existNode(meshName)) {
-      auto meshNode = getNode(meshName);
+    if (existNode(actualName)) {
+      auto meshNode = getNode(actualName);
       if (!meshNode.noSkin && existSkin(meshNode.skin)) {
         auto skin = getSkin(meshNode.skin);
 
@@ -906,8 +908,5 @@ namespace small3d {
         joint.translationAnimation.clear();
       }
     }
-
-
   }
-
 }
