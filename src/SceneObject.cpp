@@ -9,18 +9,46 @@
 #include "SceneObject.hpp"
 #include "WavefrontFile.hpp"
 #include "GlbFile.hpp"
+#include <exception>
 
 namespace small3d {
 
   SceneObject::SceneObject(const std::string name, const std::string modelPath,
-			   const int numFrames,
-			   const std::string boundingBoxSetPath,
-         const int startFrameIndex,
-         const uint32_t boundingBoxSubdivisions) :
-    offset(0,0,0), rotation(0,0,0) {
+    const std::string& modelMeshName, const uint32_t boundingBoxSubdivisions) {
+    initLogger();
+    this->name = name;
+    animating = false;
+    framesWaited = 0;
+    frameDelay = 1;
+    currentFrame = 0;
+    this->numFrames = 1;
+    try {
+      GlbFile g(modelPath);
+      Model model1(&g, modelMeshName);
+      models.push_back(model1);
+      boundingBoxSet = BoundingBoxSet(model1.vertexData, boundingBoxSubdivisions);
+    }
+    catch (std::runtime_error& e) {
+      if (std::string(e.what()).find(GlbFile::NOTGLTF)) {
+        LOGDEBUG("Trying to load " + modelPath + " as Wavefront.");
+        WavefrontFile wf(modelPath);
+        Model model1(&wf, modelMeshName);
+        models.push_back(model1);
+        boundingBoxSet = BoundingBoxSet(model1.vertexData, boundingBoxSubdivisions);
+      }
+      else throw e;
+    }
+  }
+
+  SceneObject::SceneObject(const std::string name, const std::string modelPath,
+    const int numFrames,
+    const std::string boundingBoxSetPath,
+    const int startFrameIndex,
+    const uint32_t boundingBoxSubdivisions) :
+    offset(0, 0, 0), rotation(0, 0, 0) {
 
     wavefront = true;
-    
+
     initLogger();
     this->name = name;
     animating = false;
@@ -38,7 +66,7 @@ namespace small3d {
         std::stringstream ss;
         ss << std::setfill('0') << std::setw(6) << idx + startFrameIndex;
         std::string frameNum = ss.str();
-	WavefrontFile w(modelPath + "_" + frameNum + ".obj");
+        WavefrontFile w(modelPath + "_" + frameNum + ".obj");
         Model model1(&w, "");
         models.push_back(model1);
       }
@@ -55,22 +83,6 @@ namespace small3d {
     else {
       boundingBoxSet = BoundingBoxSet(getModel().vertexData, boundingBoxSubdivisions);
     }
-
-  }
-
-  SceneObject::SceneObject(const std::string name, const std::string modelPath,
-    const std::string& modelMeshName, const uint32_t boundingBoxSubdivisions) {
-    initLogger();
-    this->name = name;
-    animating = false;
-    framesWaited = 0;
-    frameDelay = 1;
-    currentFrame = 0;
-    this->numFrames = 1;
-    GlbFile g(modelPath);
-    Model model1(&g, modelMeshName);
-    models.push_back(model1);
-    boundingBoxSet = BoundingBoxSet(model1.vertexData, boundingBoxSubdivisions);
   }
 
   Model& SceneObject::getModel() {
@@ -118,8 +130,8 @@ namespace small3d {
   bool SceneObject::contains(const glm::vec3 point) const {
     if (boundingBoxSet.vertices.size() == 0) {
       throw std::runtime_error("No bounding boxes have been provided for " +
-			       name +
-			       ", so collision detection is not enabled.");
+        name +
+        ", so collision detection is not enabled.");
     }
     return boundingBoxSet.contains(point, this->offset, this->rotation);
   }
@@ -127,19 +139,19 @@ namespace small3d {
   bool SceneObject::containsCorners(SceneObject otherObject) const {
     if (boundingBoxSet.vertices.size() == 0) {
       throw std::runtime_error("No bounding boxes have been provided for " +
-			       name +
-			       ", so collision detection is not enabled.");
+        name +
+        ", so collision detection is not enabled.");
     }
 
     if (otherObject.boundingBoxSet.vertices.size() == 0) {
       throw std::runtime_error("No bounding boxes have been provided for " +
-			       otherObject.name +
-			       ", so collision detection is not enabled.");
+        otherObject.name +
+        ", so collision detection is not enabled.");
     }
 
     return boundingBoxSet.containsCorners(otherObject.boundingBoxSet, this->offset,
-				       this->rotation, otherObject.offset,
-				       otherObject.rotation);
+      this->rotation, otherObject.offset,
+      otherObject.rotation);
   }
 
 }

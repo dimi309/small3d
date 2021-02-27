@@ -24,6 +24,8 @@ struct membuf : std::streambuf
 
 namespace small3d {
 
+  const std::string GlbFile::NOTGLTF = " is not a glTF v2 .glb file!";
+
   std::shared_ptr<GlbFile::Token> GlbFile::getToken(const std::string& name, size_t index) {
     std::shared_ptr<GlbFile::Token> foundToken = nullptr;
 
@@ -287,7 +289,7 @@ namespace small3d {
     std::ifstream fileOnDisk;
     fileOnDisk.open(fileLocation, std::ios::binary);
     if (!fileOnDisk.is_open()) {
-      throw std::runtime_error("Could not open GLB file " + fileLocation);
+      throw std::runtime_error("Could not open .glb file " + fileLocation);
     }
 #endif
 
@@ -302,7 +304,7 @@ namespace small3d {
 #else
       fileOnDisk.close();
 #endif
-      throw std::runtime_error(fileLocation + " is not a glTF v2 GLB file!");
+      throw std::runtime_error(fileLocation + NOTGLTF);
     }
 
     fileOnDisk.read(reinterpret_cast<char*>(&length), 4);
@@ -328,7 +330,7 @@ namespace small3d {
       }
       else {
 
-        LOGDEBUG("Unknown GLB chunk type or padding reached. Done reading... \n\r");
+        // Unknown .glb chunk type or padding reached. Done reading.
         doneReading = true;
       }
 

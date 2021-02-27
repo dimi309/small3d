@@ -58,7 +58,23 @@ namespace small3d
     std::vector<Model> models;
 
     /**
-     * @brief Wavefront .obj loading constructor
+     * @brief File-loading constructor, supporting Wavefront and glTF .glb files.
+     *
+     * @param name      The name of the object 
+     * @param modelPath The path to the file
+     *
+     * @param modelMeshName The name of the mesh / object in file which will be loaded
+     *                      as the model ("" to load the first object found).
+     * @param boundingBoxSubdivisions How many times to subdivide the initially one created
+     *                        bounding box, getting more accurate collision detection
+     *                        at the expense of performance.
+     */
+    SceneObject(const std::string name, const std::string modelPath,
+      const std::string& modelMeshName, const uint32_t boundingBoxSubdivisions = 0);
+
+    /**
+     * @brief Wavefront-only (.obj) loading constructor that also supports loading
+     *        frame-based animation and customised bounding boxes saved in a file.
      *
      * @param name      The name of the object
      * @param modelPath The path to the file containing the object's model.
@@ -96,23 +112,6 @@ namespace small3d
     SceneObject(const std::string name, const std::string modelPath,
       const int numFrames = 1, const std::string boundingBoxSetPath = "",
       const int startFrameIndex = 1, const uint32_t boundingBoxSubdivisions = 0);
-
-    /**
-     * @brief glTF .glb loading constructor
-     *
-     * @param name      The name of the object
-     * @param modelPath The path to the .glb file containing the object's model.
-     *
-     * @param modelMeshName The name of the mesh in the .glb file which will be loaded
-     *                      as the model.
-     *
-     * @param boundingBoxSubdivisions How many times to subdivide the initially one created
-     *                        bounding box, getting more accurate collision detection
-     *                        at the expense of performance.
-     *
-     */
-    SceneObject(const std::string name, const std::string modelPath,
-      const std::string& modelMeshName, const uint32_t boundingBoxSubdivisions = 0);
 
     /**
      * @brief Destructor
