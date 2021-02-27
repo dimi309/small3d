@@ -254,7 +254,8 @@ int RendererTest() {
 
   renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
 
-  Model modelFromGlb(GlbFile("resources/models/goatUnscaled.glb"), "Cube");
+  // Here loading the mesh without providing a name is also tested.
+  Model modelFromGlb(GlbFile("resources/models/goatUnscaled.glb"), ""); 
 
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
