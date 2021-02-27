@@ -26,12 +26,12 @@ namespace small3d
   /**
    * @class SceneObject
    *
-   * @brief An object that appears on the 3D scene. It is made up of a model, 
+   * @brief An object that appears on the 3D scene. It is made up of a model,
    *        together with information for positioning, rotation and collision detection.
    *        Models can be loaded from a Wavefront (also see Model) or glTF .glb file.
    *        For animating, more than one models can be loaded from Wavefront files.
-   *        For exporting animations from Blender to a series of Wavefront files in a way 
-   *        that will allow this class to load them, also select "Animation" and 
+   *        For exporting animations from Blender to a series of Wavefront files in a way
+   *        that will allow this class to load them, also select "Animation" and
    *        "Apply Modifiers".
    *        glTF animation is skeletal on the other hand, and is included in the single
    *        exported .glb file.
@@ -41,6 +41,7 @@ namespace small3d
   class SceneObject
   {
   private:
+
     bool animating;
     int frameDelay;
     int currentFrame;
@@ -63,24 +64,24 @@ namespace small3d
      * @param modelPath The path to the file containing the object's model.
      *                  When animating (also see numFrames parameter) it is
      *                  assumed that multiple files will be loaded, the name
-     *                  of which contains a 6 digit suffix (after an 
+     *                  of which contains a 6 digit suffix (after an
      *                  underscore) representing the animation sequence, and
      *                  terminates with the .obj extension. This is also the
      *                  format used by Blender when exporting animations to
-     *                  Wavefront files. When loading multiple models for 
+     *                  Wavefront files. When loading multiple models for
      *                  animation do not enter a full filename. Skip the
      *                  suffix and the extension. For example an animation
      *                  sequence made up of files named frog_000001.obj,
-     *                  frog_000002.obj etc. should be loaded using the 
+     *                  frog_000002.obj etc. should be loaded using the
      *                  parameter "directory/frog" here.
      *
      * @param numFrames The number of frames, if the object is animated. A
      *                  single animation sequence is supported per object and
-     *                  the first frame is considered to be the non-moving 
+     *                  the first frame is considered to be the non-moving
      *                  state.
      *
      * @param boundingBoxSetPath The path to the file containing the object's
-     *                           bounding box set. If no such path is given, a 
+     *                           bounding box set. If no such path is given, a
      *                           single box set will be calculated, based on the
      *                           model's vertices.
      * @param startFrameIndex The index number in the filename of the first file
@@ -93,24 +94,22 @@ namespace small3d
      *                        at the expense of performance.
      */
     SceneObject(const std::string name, const std::string modelPath,
-		const int numFrames = 1,
-		const std::string boundingBoxSetPath = "", const int startFrameIndex = 1,
-      const uint32_t boundingBoxSubdivisions = 0);
+      const int numFrames = 1, const std::string boundingBoxSetPath = "",
+      const int startFrameIndex = 1, const uint32_t boundingBoxSubdivisions = 0);
 
     /**
      * @brief glTF .glb loading constructor
      *
      * @param name      The name of the object
-     * @param modelPath The path to the GLB file containing the object's model.
+     * @param modelPath The path to the .glb file containing the object's model.
      *
-     * @param modelMeshName The name of the mesh in the GLB file which will be loaded
+     * @param modelMeshName The name of the mesh in the .glb file which will be loaded
      *                      as the model.
      *
-     * @param boundingBoxSubdivisions If not using bounding boxes loaded from a file,
-     *                        how many times to subdivide the initially one created
+     * @param boundingBoxSubdivisions How many times to subdivide the initially one created
      *                        bounding box, getting more accurate collision detection
      *                        at the expense of performance.
-     *                      
+     *
      */
     SceneObject(const std::string name, const std::string modelPath,
       const std::string& modelMeshName, const uint32_t boundingBoxSubdivisions = 0);
@@ -176,7 +175,7 @@ namespace small3d
     BoundingBoxSet boundingBoxSet;
 
     /**
-     * @brief  Check if the bounding boxes of this object contain 
+     * @brief  Check if the bounding boxes of this object contain
      *         a given point.
      * @param  point The point
      * @return True if the point is contained in the bounding boxes
@@ -187,7 +186,7 @@ namespace small3d
 
     /**
      *
-     * @brief	 Check if the bounding boxes of this object contain 
+     * @brief	 Check if the bounding boxes of this object contain
      *         a corner of the bounding boxes of another object.
      * @param	 otherObject The other object.
      * @return True if the bounding boxes of this object contain
@@ -198,5 +197,5 @@ namespace small3d
     bool containsCorners(SceneObject otherObject) const;
 
   };
-  
+
 }
