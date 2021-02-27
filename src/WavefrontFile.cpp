@@ -433,6 +433,8 @@ namespace small3d {
     model.indexDataByteSize = static_cast<uint32_t>(model.indexData.size() * sizeof(uint32_t));
     model.normalsDataByteSize = static_cast<uint32_t>(model.normalsData.size() * sizeof(float));
     model.textureCoordsDataByteSize = static_cast<uint32_t>(model.textureCoordsData.size() * sizeof(float));
+
+    LOGDEBUG("Loaded mesh " + meshName + " from " + fileLocation);
     
   }
 

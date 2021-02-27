@@ -396,6 +396,17 @@ int GlbTest() {
   return 1;
 }
 
+int GenericSceneObjectConstructorTest() {
+
+  SceneObject so1("goat1", "resources/models/goat.glb", "");
+  SceneObject so2("goat2", "resources/models/goat.obj", "");
+
+  if (so1.getModel().vertexDataByteSize == 0) return 0;
+  if (so2.getModel().vertexDataByteSize == 0) return 0;
+
+  return 1;
+}
+
 int main(int argc, char** argv) {
   try
   {
@@ -426,6 +437,11 @@ int main(int argc, char** argv) {
 
     if (!BoundingBoxesTest()) {
       printf("*** Failing BoundingBoxesTest.\n\r");
+      return 1;
+    }
+
+    if (!GenericSceneObjectConstructorTest()) {
+      printf("*** Failing GenericSceneObjectConstructorTest.\n\r");
       return 1;
     }
 
