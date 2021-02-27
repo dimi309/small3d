@@ -83,8 +83,8 @@ int WavefrontTest() {
 }
 
 int WavefrontModelTest() {
-
-  Model model(WavefrontFile("resources/models/Cube/Cube.obj"), "");
+  WavefrontFile w("resources/models/Cube/Cube.obj");
+  Model model(&w, "");
 
   if (model.vertexData.size() == 0) return 0;
   if (model.indexData.size() == 0) return 0;
@@ -99,7 +99,8 @@ int WavefrontModelTest() {
     << "Texture coordinates count: "
     << model.textureCoordsData.size() << endl;
 
-  Model modelWithNoTexture(WavefrontFile("resources/models/Cube/CubeNoTexture.obj"), "");
+  WavefrontFile w1("resources/models/Cube/CubeNoTexture.obj");
+  Model modelWithNoTexture(&w1, "");
 
   if (modelWithNoTexture.vertexData.size() == 0) return 0;
   if (modelWithNoTexture.indexData.size() == 0) return 0;
@@ -113,9 +114,11 @@ int WavefrontModelTest() {
     << "Texture coordinates count: "
     << modelWithNoTexture.textureCoordsData.size() << endl;
 
-  Model model2(WavefrontFile("resources/models/goatAndTree.obj"), "Cube.001");
-  Model model3(WavefrontFile("resources/models/goatAndTree.obj"), "Cube");
-  Model model4(WavefrontFile("resources/models/goatAndTree.obj"), "");
+  WavefrontFile w2("resources/models/goatAndTree.obj");
+
+  Model model2(&w2, "Cube.001");
+  Model model3(&w2, "Cube");
+  Model model4(&w2, "");
 
   Renderer* renderer = &Renderer::getInstance("test", 640, 480, 0.785f, 1.0f, 24.0f, "resources/shaders/", 1000);
 
@@ -254,8 +257,9 @@ int RendererTest() {
 
   renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
 
+  GlbFile g("resources/models/goatUnscaled.glb");
   // Here loading the mesh without providing a name is also tested.
-  Model modelFromGlb(GlbFile("resources/models/goatUnscaled.glb"), ""); 
+  Model modelFromGlb(&g, ""); 
 
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
