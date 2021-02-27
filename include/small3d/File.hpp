@@ -45,7 +45,7 @@ namespace small3d {
     /**
     * @brief Load data from the file into a Model
     * @param model The model to load the data to
-    * @param meshName The name of the mesh to load (unused in the case of Wavefront)
+    * @param meshName The name of the mesh to load
     */
     virtual void load(Model& model, const std::string& meshName) = 0;
     
