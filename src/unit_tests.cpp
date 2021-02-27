@@ -79,7 +79,6 @@ int WavefrontTest() {
   if (!threw) throw std::runtime_error("WavefrontFile.load has not thrown"
     " a runtime error, as it should have.");
 
-
   return 1;
 }
 
@@ -107,12 +106,40 @@ int WavefrontModelTest() {
   if (modelWithNoTexture.normalsData.size() == 0) return 0;
 
   cout << "Vertex data component count: "
-       << modelWithNoTexture.vertexData.size() << endl << "Index count: "
-       << modelWithNoTexture.indexData.size() << endl
-       << "Normals data component count: "
-       << modelWithNoTexture.normalsData.size() << endl
-       << "Texture coordinates count: "
-       << modelWithNoTexture.textureCoordsData.size() << endl;
+    << modelWithNoTexture.vertexData.size() << endl << "Index count: "
+    << modelWithNoTexture.indexData.size() << endl
+    << "Normals data component count: "
+    << modelWithNoTexture.normalsData.size() << endl
+    << "Texture coordinates count: "
+    << modelWithNoTexture.textureCoordsData.size() << endl;
+
+  Model model2(WavefrontFile("resources/models/goatAndTree.obj"), "Cube.001");
+  Model model3(WavefrontFile("resources/models/goatAndTree.obj"), "Cube");
+  Model model4(WavefrontFile("resources/models/goatAndTree.obj"), "");
+
+  Renderer* renderer = &Renderer::getInstance("test", 640, 480, 0.785f, 1.0f, 24.0f, "resources/shaders/", 1000);
+
+  double startSeconds = glfwGetTime();
+  double seconds = glfwGetTime();
+  double prevSeconds = seconds;
+  const uint32_t framerate = 30;
+
+  constexpr double secondsInterval = 1.0 / framerate;
+
+  while (seconds - startSeconds < 5.0) {
+    glfwPollEvents();
+    seconds = glfwGetTime();
+    if (seconds - prevSeconds > secondsInterval) {
+      renderer->clearScreen();
+      
+      renderer->render(model2, glm::vec3(-1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+      renderer->render(model3, glm::vec3(0.0f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+      renderer->render(model4, glm::vec3(1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+
+      renderer->swapBuffers();
+    }
+  }
+
   return 1;
 }
 

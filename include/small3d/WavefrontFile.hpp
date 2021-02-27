@@ -11,6 +11,7 @@
 #include <vector>
 #include "File.hpp"
 #include "BoundingBoxSet.hpp"
+#include <unordered_map>
 
 namespace small3d {
 
@@ -35,6 +36,8 @@ namespace small3d {
     std::vector<std::vector<uint32_t> > facesNormalIndices;
     std::vector<std::vector<float> > textureCoords;
     std::vector<std::vector<uint32_t> > textureCoordsIndices;
+    std::vector<std::string> objectNames;
+    std::unordered_map<std::string, size_t> objectStartFaceIdx;
 
     void loadVertexData(std::vector<float>& vertexData);
     void loadIndexData(std::vector<uint32_t>& indexData);
@@ -74,8 +77,6 @@ namespace small3d {
      * @param boundingBoxSet The BoundingBoxSet to load the data to
      */
     void load(BoundingBoxSet& boundingBoxSet);
-
-   
 
   };
 }
