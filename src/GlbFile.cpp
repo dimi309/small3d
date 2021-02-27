@@ -42,10 +42,10 @@ namespace small3d {
     return foundToken;
   }
 
-  void GlbFile::printTokensRecursive(std::shared_ptr<GlbFile::Token> head_token) {
+  void GlbFile::printTokensRecursive(std::shared_ptr<Token> head_token) {
     std::shared_ptr<GlbFile::Token> currenttoken = head_token;
     do {
-      if (currenttoken->valueType == GlbFile::ValueType::MARKER) {
+      if (currenttoken->valueType == ValueType::MARKER) {
         if (!currenttoken->name.empty()) {
           printf("%s: ", currenttoken->name.c_str());
         }
