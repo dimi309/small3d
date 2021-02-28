@@ -18,10 +18,9 @@ https://www.gamedev.net/tutorials/programming/engines-and-middleware/small3d-tut
 
 ## Features
 
-- Loading & rendering 3D meshes from Wavefront files
-- Frame-based animation for Wavefront models
-- Loading & rendering 3D meshes from glTF glb files.
-- Skeletal animation when using glTF.
+- 3D models loaded from glTF (glb) or Wavefront (obj) files
+- Other customised meshes and shapes
+- Animation
 - Texture mapping
 - Gouraud shading
 - Image rendering
