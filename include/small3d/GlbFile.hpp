@@ -1,6 +1,6 @@
 /**
  * @file  GlbFile.hpp
- * @brief GLB file parser
+ * @brief .glb file parser
  *
  *  Created on: 2021/01/30
  *      Author: Dimitri Kourkoulis
@@ -25,7 +25,7 @@ namespace small3d {
 
   /**
    * @class GlbFile
-   * @brief GLB file parser class
+   * @brief .glb file parser class
    */
   class GlbFile : public File {
 
