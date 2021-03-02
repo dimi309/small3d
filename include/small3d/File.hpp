@@ -17,7 +17,7 @@ namespace small3d {
 
   /**
    * @class File
-   * @brief File parser class
+   * @brief Abstract file parser class
    */
   class File {
   private:

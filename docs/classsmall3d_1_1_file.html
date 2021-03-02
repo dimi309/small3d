@@ -75,7 +75,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><a class="el" href="classsmall3d_1_1_file.html" title="File parser class.">File</a> parser class.  
+<p>Abstract file parser class.  
  <a href="classsmall3d_1_1_file.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_file_8hpp_source.html">File.hpp</a>&gt;</code></p>
@@ -85,8 +85,8 @@ Inheritance diagram for small3d::File:</div>
  <div class="center">
   <img src="classsmall3d_1_1_file.png" usemap="#small3d::File_map" alt=""/>
   <map id="small3d::File_map" name="small3d::File_map">
-<area href="classsmall3d_1_1_glb_file.html" title=".glb file parser class" alt="small3d::GlbFile" shape="rect" coords="0,56,139,80"/>
-<area href="classsmall3d_1_1_wavefront_file.html" title="Wavefront file parser class." alt="small3d::WavefrontFile" shape="rect" coords="149,56,288,80"/>
+<area href="classsmall3d_1_1_glb_file.html" title=".glb (glTF) file parser class" alt="small3d::GlbFile" shape="rect" coords="0,56,139,80"/>
+<area href="classsmall3d_1_1_wavefront_file.html" title=".obj (Wavefront) file parser class. The file format has to be somewhat specific, with triangulated fa..." alt="small3d::WavefrontFile" shape="rect" coords="149,56,288,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -96,7 +96,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a81bb5738b0904d6904ee39a34e710271"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classsmall3d_1_1_file.html#a81bb5738b0904d6904ee39a34e710271">More...</a><br /></td></tr>
 <tr class="separator:a81bb5738b0904d6904ee39a34e710271"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9506a37fb517dc4fe5e2fee67af60934"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_file.html#a9506a37fb517dc4fe5e2fee67af60934">load</a> (<a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;model, const std::string &amp;meshName)=0</td></tr>
-<tr class="memdesc:a9506a37fb517dc4fe5e2fee67af60934"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load data from the file into a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a Wavefront or glTF file. In the case of a Wavefront file,...">Model</a>.  <a href="classsmall3d_1_1_file.html#a9506a37fb517dc4fe5e2fee67af60934">More...</a><br /></td></tr>
+<tr class="memdesc:a9506a37fb517dc4fe5e2fee67af60934"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load data from the file into a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>.  <a href="classsmall3d_1_1_file.html#a9506a37fb517dc4fe5e2fee67af60934">More...</a><br /></td></tr>
 <tr class="separator:a9506a37fb517dc4fe5e2fee67af60934"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
@@ -107,7 +107,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:a65e0cdfaf2f26b492fbf5fe5fe3a8a93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="el" href="classsmall3d_1_1_file.html" title="File parser class.">File</a> parser class. </p>
+<div class="textblock"><p>Abstract file parser class. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a81bb5738b0904d6904ee39a34e710271"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a81bb5738b0904d6904ee39a34e710271">&#9670;&nbsp;</a></span>File()</h2>
@@ -170,7 +170,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </table>
 </div><div class="memdoc">
 
-<p>Load data from the file into a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a Wavefront or glTF file. In the case of a Wavefront file,...">Model</a>. </p>
+<p>Load data from the file into a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">model</td><td>The model to load the data to </td></tr>

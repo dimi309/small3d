@@ -26,16 +26,9 @@ namespace small3d {
   /**
    * @class	Model
    *
-   * @brief	A 3D model. It can be loaded from a Wavefront or glTF file.
-   *            In the case of a Wavefront file, the format has to be somewhat specific,
-   *            with triangulated faces and containing the normals. Such a file
-   *            can be exported from Blender for example (see blender.org).
-   *            From its menu, select File > Export > Wavefront (.obj). Then from the
-   *            "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" 
-   *            and "Keep Vertex Order". Exporting .glb files is much simpler. Just do 
-   *            so using the default options.
-   *            The 3D model can also be constructed procedurally by code, by inserting
-   *            values to the appropriate member variables.
+   * @brief	A 3D model. It can be loaded from a WavefrontFile or GlbFile.
+   *        It can also be constructed procedurally by code, by inserting
+   *        values to the appropriate member variables.
    */
 
   class Model {
