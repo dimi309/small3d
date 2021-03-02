@@ -74,7 +74,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Wavefront file parser class.  
+<p>.obj (Wavefront) file parser class. The file format has to be somewhat specific, with triangulated faces and containing the normals. Such a file can be exported from Blender for example (see blender.org). From the file menu, select Export &gt; Wavefront (.obj). Then from the "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" and "Keep Vertex Order".  
  <a href="classsmall3d_1_1_wavefront_file.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_wavefront_file_8hpp_source.html">WavefrontFile.hpp</a>&gt;</code></p>
@@ -84,7 +84,7 @@ Inheritance diagram for small3d::WavefrontFile:</div>
  <div class="center">
   <img src="classsmall3d_1_1_wavefront_file.png" usemap="#small3d::WavefrontFile_map" alt=""/>
   <map id="small3d::WavefrontFile_map" name="small3d::WavefrontFile_map">
-<area href="classsmall3d_1_1_file.html" title="File parser class." alt="small3d::File" shape="rect" coords="0,0,139,24"/>
+<area href="classsmall3d_1_1_file.html" title="Abstract file parser class." alt="small3d::File" shape="rect" coords="0,0,139,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -94,7 +94,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a98eb0ec7965cefe49b948ca611825b56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classsmall3d_1_1_wavefront_file.html#a98eb0ec7965cefe49b948ca611825b56">More...</a><br /></td></tr>
 <tr class="separator:a98eb0ec7965cefe49b948ca611825b56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a451f1850c5f5fdcece413758fe491157"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_wavefront_file.html#a451f1850c5f5fdcece413758fe491157">load</a> (<a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;model, const std::string &amp;meshName)</td></tr>
-<tr class="memdesc:a451f1850c5f5fdcece413758fe491157"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load data from the Wavefront file into a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a Wavefront or glTF file. In the case of a Wavefront file,...">Model</a>.  <a href="classsmall3d_1_1_wavefront_file.html#a451f1850c5f5fdcece413758fe491157">More...</a><br /></td></tr>
+<tr class="memdesc:a451f1850c5f5fdcece413758fe491157"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load data from the Wavefront file into a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>.  <a href="classsmall3d_1_1_wavefront_file.html#a451f1850c5f5fdcece413758fe491157">More...</a><br /></td></tr>
 <tr class="separator:a451f1850c5f5fdcece413758fe491157"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab787d1db0ddbe0fd789f09e45e290f6d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_wavefront_file.html#ab787d1db0ddbe0fd789f09e45e290f6d">load</a> (<a class="el" href="classsmall3d_1_1_bounding_box_set.html">BoundingBoxSet</a> &amp;boundingBoxSet)</td></tr>
 <tr class="memdesc:ab787d1db0ddbe0fd789f09e45e290f6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load data from the Wavefront file into a <a class="el" href="classsmall3d_1_1_bounding_box_set.html" title="Set of bounding boxes for a SceneObject, normally loaded from a Wavefront file, or calculated based o...">BoundingBoxSet</a>.  <a href="classsmall3d_1_1_wavefront_file.html#ab787d1db0ddbe0fd789f09e45e290f6d">More...</a><br /></td></tr>
@@ -113,7 +113,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:a65e0cdfaf2f26b492fbf5fe5fe3a8a93 inherit pro_attribs_classsmall3d_1_1_file"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Wavefront file parser class. </p>
+<div class="textblock"><p>.obj (Wavefront) file parser class. The file format has to be somewhat specific, with triangulated faces and containing the normals. Such a file can be exported from Blender for example (see blender.org). From the file menu, select Export &gt; Wavefront (.obj). Then from the "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" and "Keep Vertex Order". </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a98eb0ec7965cefe49b948ca611825b56"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a98eb0ec7965cefe49b948ca611825b56">&#9670;&nbsp;</a></span>WavefrontFile()</h2>
@@ -202,7 +202,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </table>
 </div><div class="memdoc">
 
-<p>Load data from the Wavefront file into a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a Wavefront or glTF file. In the case of a Wavefront file,...">Model</a>. </p>
+<p>Load data from the Wavefront file into a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">model</td><td>The model to load the data to </td></tr>

@@ -25,7 +25,7 @@ namespace small3d {
 
   /**
    * @class GlbFile
-   * @brief .glb file parser class
+   * @brief .glb (glTF) file parser class
    */
   class GlbFile : public File {
 

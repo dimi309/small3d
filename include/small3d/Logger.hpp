@@ -43,7 +43,7 @@ namespace small3d {
 
   /**
    * @class Logger
-   * @brief The standard logging class for small3d.
+   * @brief Used for logging through macros (LOGERROR, LOGDEBUG, LOGINFO)
    */
 
   class Logger {

@@ -26,16 +26,11 @@ namespace small3d
   /**
    * @class SceneObject
    *
-   * @brief An object that appears on the 3D scene. It is made up of a model,
+   * @brief An object that appears on the 3D scene. It is made up of a Model,
    *        together with information for positioning, rotation and collision 
-   *        detection. Models can be loaded from a Wavefront .obj or a 
-   *        glTF .glb file (also see Model).
-   *        For animating, more than one models can be loaded from Wavefront 
-   *        files. For exporting animations from Blender to a series of 
-   *        Wavefront files in a way that will allow this class to load them, 
-   *        select "Animation" and "Apply Modifiers" when exporting.
-   *        glTF animation is skeletal on the other hand, and is included 
-   *        in the single exported .glb file.
+   *        detection. Skeletal animation is supported for models loaded from
+   *        glTF files. A constructor that loads multiple Wavefront files to 
+   *        construct a frame-based animation sequence is also provided.
    *
    */
 
@@ -91,6 +86,10 @@ namespace small3d
      *                  sequence made up of files named frog_000001.obj,
      *                  frog_000002.obj etc. should be loaded using the
      *                  parameter "directory/frog" here.
+     *                  For exporting animations from Blender to a series of 
+     *                  Wavefront files in a way that will allow this constructor
+     *                  class to load them, select "Animation" and 
+     *                  "Apply Modifiers" when exporting to Wavefront.
      *
      * @param numFrames The number of frames, if the object is animated. A
      *                  single animation sequence is supported per object and

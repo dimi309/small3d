@@ -17,7 +17,12 @@ namespace small3d {
 
   /**
    * @class WavefrontFile
-   * @brief Wavefront file parser class
+   * @brief .obj (Wavefront) file parser class. The file format has to be somewhat 
+   *            specific, with triangulated faces and containing the normals. 
+   *            Such a file can be exported from Blender for example (see blender.org).
+   *            From the file menu, select Export > Wavefront (.obj). Then from the
+   *            "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" 
+   *            and "Keep Vertex Order".
    */
   class WavefrontFile : public File {
 
