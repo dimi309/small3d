@@ -102,10 +102,12 @@ namespace small3d {
 
   void SceneObject::startAnimating() {
     animating = true;
+    framesWaited = 0;
   }
 
   void SceneObject::stopAnimating() {
     animating = false;
+    framesWaited = 0;
   }
 
   void SceneObject::resetAnimation() {
@@ -118,18 +120,18 @@ namespace small3d {
 
   void SceneObject::animate() {
     if (animating) {
-      if (wavefront) {
-        ++framesWaited;
-        if (framesWaited == frameDelay) {
-          framesWaited = 0;
+      ++framesWaited;
+      if (framesWaited == frameDelay) {
+        framesWaited = 0;
+        if (wavefront) {
           ++currentFrame;
           if (currentFrame == numFrames) {
             currentFrame = 0;
           }
         }
-      }
-      else {
-        models[0].animate();
+        else {
+          models[0].animate();
+        }
       }
     }
   }

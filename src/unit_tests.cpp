@@ -133,6 +133,7 @@ int WavefrontModelTest() {
     glfwPollEvents();
     seconds = glfwGetTime();
     if (seconds - prevSeconds > secondsInterval) {
+      prevSeconds = seconds;
       renderer->clearScreen();
       
       renderer->render(model2, glm::vec3(-1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -173,6 +174,7 @@ int GlbTextureTest() {
     glfwPollEvents();
     seconds = glfwGetTime();
     if (seconds - prevSeconds > secondsInterval) {
+      prevSeconds = seconds;
       renderer->clearScreen();
       goat.animate();
 
@@ -235,6 +237,7 @@ int BoundingBoxesTest() {
     glfwPollEvents();
     seconds = glfwGetTime();
     if (seconds - prevSeconds > secondsInterval) {
+      prevSeconds = seconds;
       renderer->clearScreen();
       goat.animate();
 
@@ -303,6 +306,7 @@ int RendererTest() {
     glfwPollEvents();
     seconds = glfwGetTime();
     if (seconds - prevSeconds > secondsInterval) {
+      prevSeconds = seconds;
       renderer->clearScreen();
 
       renderer->render(singleColourRect,
@@ -328,7 +332,7 @@ int RendererTest() {
         glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", false);
 
       renderer->swapBuffers();
-      prevSeconds = seconds;
+      
     }
   }
   renderer->clearBuffers(object);
