@@ -194,7 +194,7 @@ namespace small3d {
     uint32_t markerPoint = 0;
 
     while (true) {
-
+      
       // Commas are ignored
       if (token->value == ",") {
         token = token->next;
@@ -240,7 +240,11 @@ namespace small3d {
 
         token_queues.push_back(poppedToken);
 
-        char tkn[4] = "000";
+        char tkn[6] = "00000";
+        if (markerPoint > 99999) {
+          LOGERROR("Too many tokens!"); // Making sure the error shows up
+          throw std::runtime_error("Too many tokens");
+        }
         sprintf(tkn, "%d", markerPoint);
         ++markerPoint;
         std::shared_ptr<GlbFile::Token> marker = createToken(GlbFile::ValueType::MARKER, tkn);
@@ -293,7 +297,7 @@ namespace small3d {
     }
 #endif
 
-    std::string magic(4, '\0'); // 4 + 1 for \0
+    std::string magic(4, '\0'); 
     uint32_t version = 0, length = 0;
     fileOnDisk.read(&magic[0], 4);
     fileOnDisk.read(reinterpret_cast<char*>(&version), 4);
@@ -304,6 +308,7 @@ namespace small3d {
 #else
       fileOnDisk.close();
 #endif
+      LOGDEBUG("Magic number found in .glb: " + magic);
       throw std::runtime_error(fileLocation + NOTGLTF);
     }
 
@@ -393,8 +398,8 @@ namespace small3d {
     std::vector<std::shared_ptr<GlbFile::Token>> bufferViews = getChildTokens(getToken("bufferViews"));
 
     uint32_t byteLength = std::stoi(getChildToken(bufferViews[viewIndex], "byteLength")->value);
-    uint32_t byteOffset = std::stoi(getChildToken(bufferViews[viewIndex], "byteOffset")->value);
-
+    auto offsetToken = getChildToken(bufferViews[viewIndex], "byteOffset");
+    uint32_t byteOffset = offsetToken == nullptr ? 0U : std::stoi(offsetToken->value);
     return std::vector<char>(binBuffer.begin() + byteOffset, binBuffer.begin() + byteOffset + byteLength);
   }
 
@@ -520,8 +525,8 @@ namespace small3d {
   bool GlbFile::existNode(const std::string& name) {
     auto nodeTokens = getChildTokens(getToken("nodes"));
     for (auto& nodeToken : nodeTokens) {
-      if (getChildToken(nodeToken, "name")->value == name) {
-
+      auto nameToken = getChildToken(nodeToken, "name");
+      if (nameToken != nullptr && nameToken->value == name) {
         return true;
       }
     }
@@ -768,7 +773,13 @@ namespace small3d {
           }
 
         }
-        auto data = getBufferByAccessor(std::stoi(getChildToken(primitives[0], "indices")->value));
+
+        auto indicesToken = getChildToken(primitives[0], "indices");
+        if (indicesToken == nullptr) {
+          LOGERROR("Meshes without indices are not supported."); // Make sure the error shows up
+          throw std::runtime_error("Meshes without indices are not supported.");
+        }
+        auto data = getBufferByAccessor(std::stoi(indicesToken->value));
         model.indexData.resize(data.size() / 2);
         model.indexDataByteSize = 
           static_cast<uint32_t>(model.indexData.size() * 4); // 4 because, even though each index is read in 16 bits,
