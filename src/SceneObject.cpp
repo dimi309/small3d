@@ -22,6 +22,7 @@ namespace small3d {
     frameDelay = 1;
     currentFrame = 0;
     this->numFrames = 1;
+    LOGDEBUG("Trying to load " + modelPath + " as glTF.");
     try {
       GlbFile g(modelPath);
       Model model1(&g, modelMeshName);
@@ -31,10 +32,16 @@ namespace small3d {
     catch (std::runtime_error& e) {
       if (std::string(e.what()).find(GlbFile::NOTGLTF)) {
         LOGDEBUG("Trying to load " + modelPath + " as Wavefront.");
-        WavefrontFile wf(modelPath);
-        Model model1(&wf, modelMeshName);
-        models.push_back(model1);
-        boundingBoxSet = BoundingBoxSet(model1.vertexData, boundingBoxSubdivisions);
+        try {
+          WavefrontFile wf(modelPath);
+          Model model1(&wf, modelMeshName);
+          models.push_back(model1);
+          boundingBoxSet = BoundingBoxSet(model1.vertexData, boundingBoxSubdivisions);
+        }
+        catch (std::runtime_error& e2) {
+          LOGERROR(e2.what());
+          throw std::runtime_error("Failed to open " + modelPath + " both as .glb file and as .obj file.");
+        }
       }
       else throw e;
     }
