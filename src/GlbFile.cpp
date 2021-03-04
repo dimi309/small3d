@@ -239,15 +239,8 @@ namespace small3d {
         } while (poppedTokenFirstChar != matching_bracket);
 
         token_queues.push_back(poppedToken);
-
-        char tkn[6] = "00000";
-        if (markerPoint > 99999) {
-          LOGERROR("Too many tokens!"); // Making sure the error shows up
-          throw std::runtime_error("Too many tokens");
-        }
-        sprintf(tkn, "%d", markerPoint);
+        std::shared_ptr<GlbFile::Token> marker = createToken(GlbFile::ValueType::MARKER, std::to_string(markerPoint));
         ++markerPoint;
-        std::shared_ptr<GlbFile::Token> marker = createToken(GlbFile::ValueType::MARKER, tkn);
         marker->next = jsonRootToken;
         jsonRootToken = marker;
         st.push(marker);
