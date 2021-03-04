@@ -68,9 +68,11 @@ namespace small3d {
       parentTransform = getJointTransform(idx);
     }
 
-    if (currentPose < joints[joint].rotationAnimation.size() && currentPose < joints[joint].translationAnimation.size()) {
+    if (currentPose < joints[joint].rotationAnimation.size() && currentPose < joints[joint].translationAnimation.size() &&
+      currentPose < joints[joint].scaleAnimation.size()) {
       transform = glm::translate(glm::mat4(1.0f), joints[joint].translationAnimation[currentPose]) *
-        glm::toMat4(joints[joint].rotationAnimation[currentPose]);
+        glm::toMat4(joints[joint].rotationAnimation[currentPose]) *
+        glm::scale(glm::mat4(1.0f), joints[joint].scaleAnimation[currentPose]);
     }
     else {
       transform = glm::translate(glm::mat4(1.0f), joints[joint].translation) *

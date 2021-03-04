@@ -831,8 +831,17 @@ namespace small3d {
 
     if (existNode(actualName)) {
       auto meshNode = getNode(actualName);
+
       if (!meshNode.noSkin && existSkin(meshNode.skin)) {
+
         auto skin = getSkin(meshNode.skin);
+
+        if (existNode(skin.name)) {
+          auto skinNode = getNode(skin.name);
+          model.origRotation = skinNode.rotation;
+          model.origTranslation = skinNode.translation;
+          model.origScale = skinNode.scale;
+        }
 
         if (skin.joints.size() > Model::MAX_JOINTS_SUPPORTED) {
           LOGDEBUG("Found more than the maximum of " +
@@ -909,6 +918,31 @@ namespace small3d {
                   memcpy(&joint.translationAnimation[0], &output[0], output.size());
                   if (model.numPoses < joint.translationAnimation.size())
                     model.numPoses = joint.translationAnimation.size();
+
+                  if (joint.animTime.size() == 0) {
+                    auto input = getBufferByAccessor(sampler.input);
+                    joint.animTime.resize(input.size() / 4);
+                    memcpy(&joint.animTime[0], &input[0], input.size());
+                  }
+                }
+              }
+            }
+
+            if (channel.target.path == "scale") {
+
+              auto output = getBufferByAccessor(sampler.output);
+              for (auto& joint : model.joints) {
+                if (joint.node == channel.target.node) {
+                  joint.scaleAnimation.resize(output.size() / sizeof(glm::vec3));
+                  memcpy(&joint.scaleAnimation[0], &output[0], output.size());
+                  if (model.numPoses < joint.scaleAnimation.size())
+                    model.numPoses = joint.scaleAnimation.size();
+
+                  if (joint.animTime.size() == 0) {
+                    auto input = getBufferByAccessor(sampler.input);
+                    joint.animTime.resize(input.size() / 4);
+                    memcpy(&joint.animTime[0], &input[0], input.size());
+                  }
                 }
               }
             }
