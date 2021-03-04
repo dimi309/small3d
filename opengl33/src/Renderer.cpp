@@ -183,7 +183,7 @@ namespace small3d {
     uint64_t idx = 0;
     for (auto& joint : model.joints) {
 
-      uboModelPlacementDynamic[memIndex].jointTransformations[idx] =
+      jointTransformations[idx] =
 
         glm::inverse(glm::translate(glm::mat4x4(1.0f), model.origTranslation) *
           glm::toMat4(model.origRotation) *
