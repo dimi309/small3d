@@ -48,15 +48,32 @@ namespace small3d {
       std::string name;
       glm::mat4 inverseBindMatrix = glm::mat4(1.0f);
       glm::quat rotation = glm::quat(0.0f, 0.0f, 0.0f, 1.0f);
-      glm::vec3 scale = glm::vec3(0.0f, 0.0f, 0.0f);
+      glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
       glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
       glm::quat currRotation = glm::quat(0.0f, 0.0f, 0.0f, 1.0f);
       glm::vec3 currTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
       std::vector<uint32_t> children;
       std::vector<glm::quat> rotationAnimation;
       std::vector<glm::vec3> translationAnimation;
+      std::vector<glm::vec3> scaleAnimation;
       std::vector<float> animTime;
     };
+
+    /**
+     *  @brief Original rotation (from armature/skin), as read from a
+     *         file (in quaternion form)
+     */
+    glm::quat origRotation = glm::quat(0.0f, 0.0f, 0.0f, 1.0f);
+
+    /**
+     *  @brief Original scale, as read from a file
+     */
+    glm::vec3 origScale = glm::vec3(1.0f, 1.0f, 1.0f);
+
+    /**
+     *  @brief Original translation, as read from a file
+     */
+    glm::vec3 origTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
 
     /**
      * @brief Maximum number of supported joints
