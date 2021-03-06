@@ -769,20 +769,27 @@ namespace small3d {
 
         auto indicesToken = getChildToken(primitives[0], "indices");
         if (indicesToken == nullptr) {
-          LOGERROR("Meshes without indices are not supported."); // Make sure the error shows up
-          throw std::runtime_error("Meshes without indices are not supported.");
+          // Just create indices that serially output the vertices
+          model.indexData.resize(model.vertexData.size() / 4);
+          uint32_t cnt = 0;
+          for (auto& point : model.indexData) {
+            point = cnt;
+            cnt++;
+          }
+          model.indexDataByteSize = model.indexData.size() * 4;
         }
-        auto data = getBufferByAccessor(std::stoi(indicesToken->value));
-        model.indexData.resize(data.size() / 2);
-        model.indexDataByteSize = 
-          static_cast<uint32_t>(model.indexData.size() * 4); // 4 because, even though each index is read in 16 bits,
-                                                             // it is stored in 32 bits
-        uint16_t indexBuf = 0;
-        for (size_t idx = 0; idx < model.indexData.size(); ++idx) {
-          memcpy(&indexBuf, &data[2 * idx], 2);
-          model.indexData[idx] = static_cast<uint32_t>(indexBuf);
+        else {
+          auto data = getBufferByAccessor(std::stoi(indicesToken->value));
+          model.indexData.resize(data.size() / 2);
+          model.indexDataByteSize =
+            static_cast<uint32_t>(model.indexData.size() * 4); // 4 because, even though each index is read in 16 bits,
+                                                       // it is stored in 32 bits
+          uint16_t indexBuf = 0;
+          for (size_t idx = 0; idx < model.indexData.size(); ++idx) {
+            memcpy(&indexBuf, &data[2 * idx], 2);
+            model.indexData[idx] = static_cast<uint32_t>(indexBuf);
+          }
         }
-
         auto materialToken = getChildToken(primitives[0], "material");
         if (materialToken != nullptr) {
 
