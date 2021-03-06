@@ -1229,9 +1229,7 @@ namespace small3d {
     if (model.indexData.size() == 0 ||
       model.indexDataByteSize == 0 ||
       model.vertexData.size() == 0 ||
-      model.vertexDataByteSize == 0 ||
-      model.normalsData.size() == 0 ||
-      model.normalsDataByteSize == 0) {
+      model.vertexDataByteSize == 0) {
       throw std::runtime_error("Model to be rendered has some empty values!");
     }
 #endif
@@ -1309,12 +1307,18 @@ namespace small3d {
           " buffer for indices.");
       }
 
+      // The following buffers are created with 0 values if the corresponding
+      // data does not exist, otherwise there can be issues, especially
+      // with MoltenVK
+
       // Send normals data
+
+      auto nrByteSize = model.normalsDataByteSize == 0 ? (model.vertexDataByteSize / 4) * 3 : model.normalsDataByteSize;
 
       if (!vkz_create_buffer(&model.normalsBuffer,
         VK_BUFFER_USAGE_TRANSFER_DST_BIT |
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-        model.normalsDataByteSize,
+        nrByteSize,
         &model.normalsBufferMemory,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
         throw std::runtime_error("Failed to create normals buffer.");
@@ -1322,7 +1326,7 @@ namespace small3d {
 
       if (vkz_create_buffer(&stagingBuffer,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        model.normalsDataByteSize,
+        nrByteSize,
         &stagingBufferMemory,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
@@ -1330,11 +1334,19 @@ namespace small3d {
         vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
           VK_WHOLE_SIZE,
           0, &normalsData);
-        memcpy(normalsData, &model.normalsData[0], model.normalsDataByteSize);
+
+
+        if (model.normalsDataByteSize != 0) {
+          memcpy(normalsData, &model.normalsData[0], model.normalsDataByteSize);
+        }
+        else {
+          memset(normalsData, 0, nrByteSize);
+        }
+
         vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
 
         vkz_copy_buffer(stagingBuffer, model.normalsBuffer,
-          model.normalsDataByteSize);
+          nrByteSize);
 
         vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
       }
@@ -1342,10 +1354,6 @@ namespace small3d {
         throw std::runtime_error("Failed to create the staging"
           " buffer for indices.");
       }
-
-      // The following buffers are created with 0 values if the corresponding
-      // data does not exist, otherwise there can be issues, especially
-      // with MoltenVK
 
       auto uvByteSize = model.textureCoordsDataByteSize == 0 ? model.vertexDataByteSize / 2 : model.textureCoordsDataByteSize;
 
