@@ -19,12 +19,13 @@ if /I "%~1" == "release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
 
 if /I "%~2" == "opengl" set CMAKE_DEFINITIONS=%CMAKE_DEFINITIONS% -DSMALL3D_OPENGL=ON
 
-if exist build (
-echo Build directory exists!
-endlocal & exit /B
-)
-
-echo Build directory does not exist (good)...
+cd deps
+if exist include rmdir /Q /S include
+if exist lib rmdir /Q /S lib
+call prepare-mingw %1 %2
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+cd ..
+if exist build rmdir /Q /S build
 
 mkdir build
 cd build

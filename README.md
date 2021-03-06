@@ -48,9 +48,11 @@ and tools accessible via the command line:
 
 ## Building
 
-- Run the dependency preparation script which is suitable to your platform
-  from the `deps` directory (`prepare-vs.bat`, `prepare-mingw.bat` or 
-  `prepare.sh`).
+- If not on Windows, run the dependency preparation script `prepare.sh`
+  from the `deps` directory. On Windows this is called by the build script
+  (see below) but I have not gotten round to implementing this for the other
+  platforms yet.
+  
 - Run the build script which is suitable to your platform from the root 
   directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`)
 	
