@@ -25,12 +25,13 @@ if /I "%~1" == "Release" set CMAKE_DEFINITIONS=
 set sourcepath=%cd%
 set platformstr=android-26
 
-if exist build (
-echo Build directory exists!
-endlocal & exit /B
-)
-
-echo Build directory does not exist (good)...
+cd deps
+if exist include rmdir /Q /S include
+if exist lib rmdir /Q /S lib
+call prepare-android.bat %1 %2
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+cd ..
+if exist build rmdir /Q /S build
 
 mkdir build
 cd build
