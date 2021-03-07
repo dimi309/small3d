@@ -20,6 +20,21 @@ if [ "$2" != "Debug" ] && [ "$2" != "Release" ]; then
     exit 1
 fi
 
+exit_if_error() {
+    rc=$?
+    if [[ $rc != 0 ]]; then
+	echo "Exiting on error."
+	exit $rc
+    fi
+}
+
+git clean -fdx
+exit_if_error
+cd deps
+./prepare-ios.sh $1 $2
+exit_if_error
+cd ..
+
 mkdir build
 cd build
 if [ $1 = "ios" ]
@@ -33,7 +48,7 @@ fi
 cmake --build . --config $2
 
 mv lib/$2/* lib/
-if [ $? != 0 ]; then exit $rc; fi
+exit_if_error
 rmdir lib/$2
 rm lib/interop.m
 
