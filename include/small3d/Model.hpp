@@ -71,6 +71,11 @@ namespace small3d {
     glm::vec3 origScale = glm::vec3(1.0f, 1.0f, 1.0f);
 
     /**
+     * @brief Use this to scale the model and not origScale
+     */
+    glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+
+    /**
      *  @brief Original translation, as read from a file
      */
     glm::vec3 origTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
