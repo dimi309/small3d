@@ -441,7 +441,7 @@ int GenericSceneObjectConstructorTest() {
 int main(int argc, char** argv) {
   try
   {
-    /*if (!LoggerTest()) {
+    if (!LoggerTest()) {
       printf("*** Failing LoggerTest.\n\r");
       return 1;
     }
@@ -454,7 +454,7 @@ int main(int argc, char** argv) {
     if (!WavefrontTest()) {
       printf("*** Failing WavefrontTest.\n\r");
       return 1;
-    }*/
+    }
 
     if (!WavefrontModelTest()) {
       printf("*** Failing WavefrontModelTest.\n\r");
@@ -466,7 +466,7 @@ int main(int argc, char** argv) {
       return 1;
     }
 
-    /*if (!GlbTextureTest()) {
+    if (!GlbTextureTest()) {
       printf("*** Failing GlbTextureText.\n\r");
       return 1;
     }
@@ -504,7 +504,7 @@ int main(int argc, char** argv) {
     if (!GlbTest()) {
       printf("*** Failing GlbTest.\n\r");
       return 1;
-    }*/
+    }
 
   }
   catch (exception& e) {
