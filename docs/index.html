@@ -113,7 +113,7 @@ Building prerequisites</h1>
 <h1><a class="anchor" id="autotoc_md6"></a>
 Building</h1>
 <ul>
-<li>Run the dependency preparation script which is suitable to your platform from the <code>deps</code> directory (<code>prepare-vs.bat</code>, <code>prepare-mingw.bat</code> or <code>prepare.sh</code>).</li>
+<li>If not on Windows, run the dependency preparation script <code>prepare.sh</code> from the <code>deps</code> directory. On Windows this is called by the build script (see below) but I have not gotten round to implementing this for the other platforms yet.</li>
 <li>Run the build script which is suitable to your platform from the root directory (<code>build-vs.bat</code>, <code>build-mingw.bat</code> or <code>build.sh</code>)</li>
 </ul>
 <p>Then, the unit tests can be run via the <code>unittests</code> binary from <code>build/bin</code>.</p>

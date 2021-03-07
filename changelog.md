@@ -13,6 +13,7 @@ v1.709 (still open)
   cannot be used externally.
 - [BREAKING] Models are no longer loaded with filenames as parameters. The
   appropriate file parsing object has to be passed instead.
+- Scaling 3D models now also supported.
 
 v1.708 2020-12-25
 
