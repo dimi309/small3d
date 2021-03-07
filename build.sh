@@ -14,13 +14,20 @@ else
     export CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=$1
 fi
 
-if [ -d "build" ]; then
-    echo "build directory already exists!"
-    exit 1
-else
-    echo "build directory does not exist (good)..."
-fi
+exit_if_error() {
+    rc=$?
+    if [[ $rc != 0 ]]; then
+	echo "Exiting on error."
+	exit $rc
+    fi
+}
 
+git clean -fdx
+exit_if_error
+cd deps
+./prepare.sh $1 $2
+exit_if_error
+cd ..
 mkdir build
 cd build
 cmake .. $CMAKE_DEFINITIONS
