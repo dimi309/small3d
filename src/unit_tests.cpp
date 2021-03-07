@@ -129,6 +129,8 @@ int WavefrontModelTest() {
 
   constexpr double secondsInterval = 1.0 / framerate;
 
+  model3.scale += 0.3f;
+
   while (seconds - startSeconds < 5.0) {
     glfwPollEvents();
     seconds = glfwGetTime();
