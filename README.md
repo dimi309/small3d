@@ -48,13 +48,8 @@ and tools accessible via the command line:
 
 ## Building
 
-- If not on Windows, run the dependency preparation script `prepare.sh`
-  from the `deps` directory. On Windows this is called by the build script
-  (see below) but I have not gotten round to implementing this for the other
-  platforms yet.
-  
-- Run the build script which is suitable to your platform from the root 
-  directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`)
+Run the build script which is suitable to your platform from the root 
+directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`)
 	
 Then, the unit tests can be run via the `unittests` binary from `build/bin`.
 
@@ -75,15 +70,10 @@ If you are using cmake, the modules in `small3d/cmake` can be useful. Check the
 
 ## small3d on mobile
 
-The scripts for preparing the dependencies of small3d for mobile are `prepare-android`
-and `prepare-ios` for Android and iOS respectively, found in the `deps` directory. 
-After executing one of those, you can build small3d for these platforms by executing
-either `build-android` or `build-ios` from the main directory. One sample game, 
-[Avoid the Bug](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug)
-has been ported to both 
-[Android](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-android) 
-and 
-[iOS](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-ios). 
+You can build small3d for mobile platforms by executing either `build-android` or 
+`build-ios` from the main directory. One sample game, [Avoid the Bug](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug)
+has been ported to both [Android](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-android) 
+and [iOS](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-ios). 
 I use these projects as a basis for mobile development. Note that, while with 
 the desktop edition of small3dI use GLFW for windowing functionalities and I/O,
 on mobile I access the native infrastructure directly.
