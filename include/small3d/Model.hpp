@@ -63,7 +63,7 @@ namespace small3d {
      *  @brief Original rotation (from armature/skin), as read from a
      *         file (in quaternion form)
      */
-    glm::quat origRotation = glm::quat(0.0f, 0.0f, 0.0f, 1.0f);
+    glm::quat origRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 
     /**
      *  @brief Original scale, as read from a file

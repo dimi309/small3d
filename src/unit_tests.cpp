@@ -149,6 +149,37 @@ int WavefrontModelTest() {
   return 1;
 }
 
+int ScaleAndTransformTest() {
+  Renderer* renderer = &Renderer::getInstance("test", 640, 480, 0.785f, 1.0f, 24.0f, "resources/shaders/", 1000);
+
+  double startSeconds = glfwGetTime();
+  double seconds = glfwGetTime();
+  double prevSeconds = seconds;
+  const uint32_t framerate = 30;
+
+  constexpr double secondsInterval = 1.0 / framerate;
+
+  SceneObject boxes("boxes", "resources/models/boxes.glb", "");
+
+  boxes.offset = glm::vec3(0.0f, 0.0f, -3.0f);
+  
+  while (seconds - startSeconds < 5.0) {
+    glfwPollEvents();
+    seconds = glfwGetTime();
+    if (seconds - prevSeconds > secondsInterval) {
+      prevSeconds = seconds;
+      renderer->clearScreen();
+
+      renderer->render(boxes, glm::vec4(0.5f, 0.3f, 0.0f, 1.0f));
+
+      renderer->swapBuffers();
+      boxes.rotation.y += 0.01f;
+    }
+  }
+
+  return 1;
+}
+
 int GlbTextureTest() {
   Renderer* renderer = &Renderer::getInstance("test", 640, 480, 0.785f, 1.0f, 24.0f, "resources/shaders/", 1000);
 
@@ -410,7 +441,7 @@ int GenericSceneObjectConstructorTest() {
 int main(int argc, char** argv) {
   try
   {
-    if (!LoggerTest()) {
+    /*if (!LoggerTest()) {
       printf("*** Failing LoggerTest.\n\r");
       return 1;
     }
@@ -423,14 +454,19 @@ int main(int argc, char** argv) {
     if (!WavefrontTest()) {
       printf("*** Failing WavefrontTest.\n\r");
       return 1;
-    }
+    }*/
 
     if (!WavefrontModelTest()) {
       printf("*** Failing WavefrontModelTest.\n\r");
       return 1;
     }
 
-    if (!GlbTextureTest()) {
+    if (!ScaleAndTransformTest()) {
+      printf("*** Failing GlbTextureText.\n\r");
+      return 1;
+    }
+
+    /*if (!GlbTextureTest()) {
       printf("*** Failing GlbTextureText.\n\r");
       return 1;
     }
@@ -468,7 +504,7 @@ int main(int argc, char** argv) {
     if (!GlbTest()) {
       printf("*** Failing GlbTest.\n\r");
       return 1;
-    }
+    }*/
 
   }
   catch (exception& e) {
