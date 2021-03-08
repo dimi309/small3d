@@ -46,6 +46,12 @@ namespace small3d {
   public:
 
     /**
+     * @brief String saying that the colour encoding of the image being read is not RGB/RGBA
+     *
+     */
+    static const std::string NOTRGBA;
+
+    /**
      * @brief File-reading constructor
      *
      * @param fileLocation Location of the png image file

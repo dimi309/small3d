@@ -776,7 +776,7 @@ namespace small3d {
             point = cnt;
             cnt++;
           }
-          model.indexDataByteSize = model.indexData.size() * 4;
+          model.indexDataByteSize = static_cast<uint32_t>(model.indexData.size() * 4);
         }
         else {
           auto data = getBufferByAccessor(std::stoi(indicesToken->value));
@@ -807,7 +807,15 @@ namespace small3d {
               if (getChildToken(imageToken, "mimeType")->value == "image/png") {
                 auto imageData = getBufferByView(std::stoi(getChildToken(imageToken, "bufferView")->value));
 
+                try {
                 model.defaultTextureImage = std::shared_ptr<Image>(new Image(imageData));
+                }
+                catch (std::runtime_error& e) {
+                  if (e.what() == Image::NOTRGBA) {
+                    LOGDEBUG(e.what());
+                    LOGDEBUG("Texture ignored.");
+                  }
+                }
                 imageData.clear();
 
               }
