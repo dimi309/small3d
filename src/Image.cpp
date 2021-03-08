@@ -17,6 +17,8 @@
 
 namespace small3d {
 
+  const std::string Image::NOTRGBA = "Image format not recognised. Only RGB / RGBA png images are supported.";
+
   Image::Image(const std::string fileLocation) : imageData() {
     initLogger();
     width = 0;
@@ -218,9 +220,7 @@ namespace small3d {
     png_read_image(pngStructure, rowPointers);
 
     if (colorType != PNG_COLOR_TYPE_RGB && colorType != PNG_COLOR_TYPE_RGBA) {
-      throw std::runtime_error(
-        "Image format not recognised. Only RGB / RGBA png images are "
-        "supported.");
+      throw std::runtime_error(NOTRGBA);
     }
 
     unsigned int numComponents = colorType == PNG_COLOR_TYPE_RGB ? 3 : 4;
