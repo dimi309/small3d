@@ -60,6 +60,12 @@ namespace small3d {
     };
 
     /**
+     * @brief Original transformation matrix (from armature/skin), 
+     *        as read from a file
+     */
+    glm::mat4 origTransformation = glm::mat4(1.0f);
+
+    /**
      *  @brief Original rotation (from armature/skin), as read from a
      *         file (in quaternion form)
      */
