@@ -465,6 +465,8 @@ namespace small3d {
 
     Node ret;
 
+    ret.index = index;
+
     auto propToken = getChildToken(nodeToken, "name");
     if (propToken != nullptr) {
       ret.name = propToken->value;
@@ -517,9 +519,53 @@ namespace small3d {
       auto values = getChildTokens(propToken);
       uint32_t idx = 0;
       for (auto& val : values) {
-        ret.transformation[idx % 4][idx / 4] = std::stof(val->value);
+        ret.transformation[idx / 4][idx % 4] = std::stof(val->value);
         ++idx;
       }
+    }
+    return ret;
+  }
+
+  bool GlbFile::existParentNode(const uint32_t index) {
+    bool found = false;
+    auto nodeTokens = getChildTokens(getToken("nodes"));
+    for (auto& nodeToken : nodeTokens) {
+      auto childrenToken = getChildToken(nodeToken, "children");
+      if (childrenToken != nullptr) {
+        auto children = getChildTokens(childrenToken);
+        for(auto & childToken : children) {
+          if (std::stoi(childToken->value) == index) {
+            found = true;
+            break;
+          }
+        }
+      }
+    }
+    return found;
+  }
+
+  GlbFile::Node GlbFile::getParentNode(const uint32_t index) {
+
+    bool found = false;
+    GlbFile::Node ret;
+    uint32_t nodeIdx = 0;
+    auto nodeTokens = getChildTokens(getToken("nodes"));
+    for (auto& nodeToken : nodeTokens) {
+      auto childrenToken = getChildToken(nodeToken, "children");
+      if (childrenToken != nullptr) {
+        auto children = getChildTokens(childrenToken);
+        for (auto& childToken : children) {
+          if (std::stoi(childToken->value) == index) {
+            found = true;
+            ret = getNode(nodeIdx);
+            break;
+          }
+        }
+      }
+      ++nodeIdx;
+    }
+    if (!found) {
+      throw std::runtime_error("Parent node of node " + std::to_string(index) + " not found.");
     }
     return ret;
   }
@@ -890,9 +936,14 @@ namespace small3d {
       }
       else {
         meshNode = getNodeForMesh(meshIndex);
-      }
+        model.origTransformation = meshNode.transformation;
+        auto tmpNode = meshNode;
 
-      model.origTransformation = meshNode.transformation;
+        while (existParentNode(tmpNode.index)) {
+          tmpNode = getParentNode(tmpNode.index);
+          model.origTransformation = tmpNode.transformation * model.origTransformation;
+        }
+      }
 
       if (!meshNode.noSkin && existSkin(meshNode.skin)) {
 

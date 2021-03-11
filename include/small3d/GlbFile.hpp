@@ -47,6 +47,7 @@ namespace small3d {
     };
 
     struct Node {
+      uint32_t index = 0;
       std::string name = "";
       glm::mat4 transformation = glm::mat4(1.0f);
       glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
@@ -124,6 +125,10 @@ namespace small3d {
     bool existNode(const std::string& name);
 
     Node getNode(const std::string& name);
+
+    bool existParentNode(const uint32_t index);
+
+    Node getParentNode(const uint32_t index);
 
     bool existNodeForMesh(const uint32_t meshIndex);
 
