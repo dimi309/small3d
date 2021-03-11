@@ -505,7 +505,7 @@ namespace small3d {
       glm::scale(glm::mat4x4(1.0f), model.scale) *
       glm::translate(glm::mat4x4(1.0f), model.origTranslation) *
       glm::toMat4(model.origRotation) *
-      glm::scale(glm::mat4x4(1.0f), model.origScale);
+      glm::scale(glm::mat4x4(1.0f), model.origScale) * model.origTransformation;
 
     uboModelPlacementDynamic[memIndex].modelOffset = offset;
 

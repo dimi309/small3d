@@ -512,7 +512,51 @@ namespace small3d {
       ret.noSkin = true;
     }
 
+    propToken = getChildToken(nodeToken, "matrix");
+    if (propToken != nullptr) {
+      auto values = getChildTokens(propToken);
+      uint32_t idx = 0;
+      for (auto& val : values) {
+        ret.transformation[idx % 4][idx / 4] = std::stof(val->value);
+        ++idx;
+      }
+    }
     return ret;
+  }
+
+  bool GlbFile::existNodeForMesh(const uint32_t meshIndex) {
+    bool found = false;
+    for (auto& nodeToken : getChildTokens(getToken("nodes"))) {
+      auto nodeMeshToken = getChildToken(nodeToken, "mesh");
+      if (nodeMeshToken != nullptr) {
+        if (meshIndex == std::stof(nodeMeshToken->value)) {
+          found = true;
+          break;
+        }
+      }
+    }
+    return found;
+  }
+
+  GlbFile::Node GlbFile::getNodeForMesh(const uint32_t meshIndex) {
+    Node nodeForMesh;
+    uint32_t nodeIdx = 0;
+    bool found = false;
+    for (auto& nodeToken : getChildTokens(getToken("nodes"))) {
+      auto nodeMeshToken = getChildToken(nodeToken, "mesh");
+      if (nodeMeshToken != nullptr) {
+        if (meshIndex == std::stof(nodeMeshToken->value)) {
+          found = true;
+          nodeForMesh = getNode(nodeIdx);
+            break;
+        }
+      }
+      ++nodeIdx;
+    }
+    if (!found) {
+      throw std::runtime_error("Node for mesh " + std::to_string(meshIndex) + " not found.");
+    }
+    return nodeForMesh;
   }
 
   bool GlbFile::existNode(const std::string& name) {
@@ -704,6 +748,7 @@ namespace small3d {
 
     bool loaded = false;
     std::string actualName = "";
+    uint32_t meshIndex = 0;
     for (auto& meshToken : getChildTokens(getToken("meshes"))) {
 
       actualName = getChildToken(meshToken, "name")->value;
@@ -808,7 +853,7 @@ namespace small3d {
                 auto imageData = getBufferByView(std::stoi(getChildToken(imageToken, "bufferView")->value));
 
                 try {
-                model.defaultTextureImage = std::shared_ptr<Image>(new Image(imageData));
+                  model.defaultTextureImage = std::shared_ptr<Image>(new Image(imageData));
                 }
                 catch (std::runtime_error& e) {
                   if (e.what() == Image::NOTRGBA) {
@@ -829,6 +874,7 @@ namespace small3d {
         loaded = true;
         break;
       }
+      ++meshIndex;
     }
 
     if (!loaded) throw std::runtime_error("Could not load mesh " + meshName + " from " + fileLocation);
@@ -837,8 +883,16 @@ namespace small3d {
 
     bool animAbort = false;
 
-    if (existNode(actualName)) {
-      auto meshNode = getNode(actualName);
+    if (existNode(actualName) || existNodeForMesh(meshIndex)) {
+      Node meshNode;
+      if (existNode(actualName)) {
+        meshNode = getNode(actualName);
+      }
+      else {
+        meshNode = getNodeForMesh(meshIndex);
+      }
+
+      model.origTransformation = meshNode.transformation;
 
       if (!meshNode.noSkin && existSkin(meshNode.skin)) {
 

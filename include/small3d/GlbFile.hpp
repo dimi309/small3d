@@ -48,6 +48,7 @@ namespace small3d {
 
     struct Node {
       std::string name = "";
+      glm::mat4 transformation = glm::mat4(1.0f);
       glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
       glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
       glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -123,6 +124,10 @@ namespace small3d {
     bool existNode(const std::string& name);
 
     Node getNode(const std::string& name);
+
+    bool existNodeForMesh(const uint32_t meshIndex);
+
+    Node getNodeForMesh(const uint32_t meshIndex);
 
     bool existSkin(const uint32_t index);
 
