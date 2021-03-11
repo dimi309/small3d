@@ -166,7 +166,17 @@ namespace small3d {
      */
     void printTokensSerial();
 
+    /**
+     * @brief Load a mesh from the file into a Model.
+     * @param model The Model into which to load the data.
+     */
     void load(Model& model, const std::string& meshName);
+
+    /**
+     * @brief Get a list of the names of the meshes contained in the
+     *        file.
+     */
+    std::vector<std::string> getMeshNames();
 
   };
 

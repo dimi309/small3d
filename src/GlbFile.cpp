@@ -970,4 +970,16 @@ namespace small3d {
       }
     }
   }
+
+  std::vector<std::string> GlbFile::getMeshNames() {
+    std::vector<std::string> names;
+
+    for (auto& meshToken : getChildTokens(getToken("meshes"))) {
+      auto nameToken = getChildToken(meshToken, "name");
+      if (nameToken != nullptr) {
+        names.push_back(nameToken->value);
+      }
+    }
+    return names;
+  }
 }
