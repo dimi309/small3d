@@ -202,7 +202,6 @@ int GlbTextureTest() {
   goat.startAnimating();
   tree.offset = glm::vec3(0.0f, 0.0f, -4.0f);
 
-
   while (seconds - startSeconds < 5.0) {
     glfwPollEvents();
     seconds = glfwGetTime();

@@ -141,16 +141,16 @@ namespace small3d {
           tokenString += c;
         }
         else if (strchr("0123456789-", c) != nullptr ||
-            (strchr(".e", c) != nullptr && inNumber)) { // begin number or in number
-            inNumber = true;
-            tokenNumber += c;
+          (strchr(".e", c) != nullptr && inNumber)) { // begin number or in number
+          inNumber = true;
+          tokenNumber += c;
 
-          }
+        }
         else if (strchr("truefals", c) != nullptr) { // begin or continue true or false indicator
           inTrueOrFalse = true;
           tokenString += c;
         }
-        
+
         break;
       }
 
@@ -194,7 +194,7 @@ namespace small3d {
     uint32_t markerPoint = 0;
 
     while (true) {
-      
+
       // Commas are ignored
       if (token->value == ",") {
         token = token->next;
@@ -280,7 +280,7 @@ namespace small3d {
     std::istream fileOnDisk(&sbuf);
     if (!fileOnDisk) {
       throw std::runtime_error("Reading file " + fileLocation +
-			       " has failed!");
+        " has failed!");
     }
 #else
     std::ifstream fileOnDisk;
@@ -290,7 +290,7 @@ namespace small3d {
     }
 #endif
 
-    std::string magic(4, '\0'); 
+    std::string magic(4, '\0');
     uint32_t version = 0, length = 0;
     fileOnDisk.read(&magic[0], 4);
     fileOnDisk.read(reinterpret_cast<char*>(&version), 4);
@@ -434,20 +434,20 @@ namespace small3d {
       default:
 
         throw std::runtime_error("Unrecognised componentType in GLB file: " + std::to_string(componentType));
-         
+
       }
 
       auto dataType = getChildToken(accessorToken, "type")->value;
-      
+
       if (dataType.substr(0, 3) == "VEC") {
         cnt *= std::stoi(dataType.substr(3, 1));
-      } 
+      }
       else if (dataType == "MAT4") {
         cnt *= 16;
       }
 
       cnt *= std::stoi(countToken->value);
-      
+
       auto byteOffset = std::stoi(byteOffsetToken->value);
 
       auto data = getBufferByView(bufferViewNumber);
@@ -496,7 +496,7 @@ namespace small3d {
     propToken = getChildToken(nodeToken, "children");
     if (propToken != nullptr) {
       auto values = getChildTokens(propToken);
-      for (auto &val : values) {
+      for (auto& val : values) {
         ret.children.push_back(std::stoi(val->value));
       }
     }
@@ -533,7 +533,7 @@ namespace small3d {
       auto childrenToken = getChildToken(nodeToken, "children");
       if (childrenToken != nullptr) {
         auto children = getChildTokens(childrenToken);
-        for(auto & childToken : children) {
+        for (auto& childToken : children) {
           if (std::stoi(childToken->value) == index) {
             found = true;
             break;
@@ -594,7 +594,7 @@ namespace small3d {
         if (meshIndex == std::stof(nodeMeshToken->value)) {
           found = true;
           nodeForMesh = getNode(nodeIdx);
-            break;
+          break;
         }
       }
       ++nodeIdx;
@@ -623,7 +623,7 @@ namespace small3d {
     bool found = false;
     uint32_t nodeIndex = 0;
 
-    for (auto &nodeToken : nodeTokens) {
+    for (auto& nodeToken : nodeTokens) {
       if (getChildToken(nodeToken, "name")->value == name) {
         found = true;
         break;
@@ -644,7 +644,7 @@ namespace small3d {
 
   GlbFile::Skin GlbFile::getSkin(const uint32_t index) {
     auto skinToken = getChildTokens(getToken("skins"))[index];
-    
+
     Skin ret;
 
     auto propToken = getChildToken(skinToken, "name");
@@ -660,7 +660,7 @@ namespace small3d {
     propToken = getChildToken(skinToken, "joints");
     if (propToken != nullptr) {
       auto jointTokens = getChildTokens(propToken);
-      for (auto &jointToken : jointTokens) {
+      for (auto& jointToken : jointTokens) {
         ret.joints.push_back(std::stoi(jointToken->value));
       }
     }
@@ -766,7 +766,7 @@ namespace small3d {
       }
 
     }
-    
+
     return ret;
   }
 
@@ -936,13 +936,18 @@ namespace small3d {
       }
       else {
         meshNode = getNodeForMesh(meshIndex);
-        model.origTransformation = meshNode.transformation;
-        auto tmpNode = meshNode;
+      }
 
-        while (existParentNode(tmpNode.index)) {
-          tmpNode = getParentNode(tmpNode.index);
-          model.origTransformation = tmpNode.transformation * model.origTransformation;
-        }
+      model.origTransformation = meshNode.transformation;
+      model.origRotation = meshNode.rotation;
+      model.origTranslation = meshNode.translation;
+      model.origScale = meshNode.scale;
+
+      auto tmpNode = meshNode;
+
+      while (existParentNode(tmpNode.index)) {
+        tmpNode = getParentNode(tmpNode.index);
+        model.origTransformation = tmpNode.transformation * model.origTransformation;
       }
 
       if (!meshNode.noSkin && existSkin(meshNode.skin)) {
