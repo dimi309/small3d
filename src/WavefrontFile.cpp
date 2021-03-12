@@ -443,4 +443,8 @@ namespace small3d {
     boundingBoxSet.facesVertexIndexes = this->facesVertexIndices;
   }
 
+  std::vector<std::string> WavefrontFile::getMeshNames() {
+    return objectNames;
+  }
+
 }
