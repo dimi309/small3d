@@ -10,6 +10,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace small3d {
 
@@ -48,6 +49,13 @@ namespace small3d {
     * @param meshName The name of the mesh to load
     */
     virtual void load(Model& model, const std::string& meshName) = 0;
+
+    /**
+     * @brief Get a list of the names of the meshes contained in the
+     *        file.
+     * @return The list of mesh names
+     */
+    virtual std::vector<std::string> getMeshNames() = 0;
     
   };
 }

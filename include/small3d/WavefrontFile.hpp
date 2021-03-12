@@ -83,5 +83,12 @@ namespace small3d {
      */
     void load(BoundingBoxSet& boundingBoxSet);
 
+    /**
+     * @brief Get a list of the names of the meshes contained in the
+     *        file.
+     * @return The list of mesh names
+     */
+    std::vector<std::string> getMeshNames();
+
   };
 }

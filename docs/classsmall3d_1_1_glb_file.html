@@ -104,8 +104,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:acfdbe51e25ac549cc5220118b40f8f02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print tokens as found in the token queues, without dereferencing queue references. <br /></td></tr>
 <tr class="separator:acfdbe51e25ac549cc5220118b40f8f02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8772586e73b5d4b2f67383be8976b45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#ab8772586e73b5d4b2f67383be8976b45">load</a> (<a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;model, const std::string &amp;meshName)</td></tr>
-<tr class="memdesc:ab8772586e73b5d4b2f67383be8976b45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load data from the file into a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>.  <a href="classsmall3d_1_1_glb_file.html#ab8772586e73b5d4b2f67383be8976b45">More...</a><br /></td></tr>
+<tr class="memdesc:ab8772586e73b5d4b2f67383be8976b45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load a mesh from the file into a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>.  <a href="classsmall3d_1_1_glb_file.html#ab8772586e73b5d4b2f67383be8976b45">More...</a><br /></td></tr>
 <tr class="separator:ab8772586e73b5d4b2f67383be8976b45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5eaf966354dcdc6f122e295a6a4f65af"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_glb_file.html#a5eaf966354dcdc6f122e295a6a4f65af">getMeshNames</a> ()</td></tr>
+<tr class="memdesc:a5eaf966354dcdc6f122e295a6a4f65af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a list of the names of the meshes contained in the file.  <a href="classsmall3d_1_1_glb_file.html#a5eaf966354dcdc6f122e295a6a4f65af">More...</a><br /></td></tr>
+<tr class="separator:a5eaf966354dcdc6f122e295a6a4f65af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classsmall3d_1_1_file"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classsmall3d_1_1_file')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classsmall3d_1_1_file.html">small3d::File</a></td></tr>
 <tr class="memitem:a81bb5738b0904d6904ee39a34e710271 inherit pub_methods_classsmall3d_1_1_file"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_file.html#a81bb5738b0904d6904ee39a34e710271">File</a> (const std::string &amp;<a class="el" href="classsmall3d_1_1_file.html#a65e0cdfaf2f26b492fbf5fe5fe3a8a93">fileLocation</a>)</td></tr>
 <tr class="memdesc:a81bb5738b0904d6904ee39a34e710271 inherit pub_methods_classsmall3d_1_1_file"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classsmall3d_1_1_file.html#a81bb5738b0904d6904ee39a34e710271">More...</a><br /></td></tr>
@@ -156,6 +159,36 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a5eaf966354dcdc6f122e295a6a4f65af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5eaf966354dcdc6f122e295a6a4f65af">&#9670;&nbsp;</a></span>getMeshNames()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; std::string &gt; small3d::GlbFile::getMeshNames </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get a list of the names of the meshes contained in the file. </p>
+<dl class="section return"><dt>Returns</dt><dd>The list of mesh names </dd></dl>
+
+<p>Implements <a class="el" href="classsmall3d_1_1_file.html#a1fa8b53546f047cf51793672d1c33bbc">small3d::File</a>.</p>
+
+</div>
+</div>
 <a id="ab8772586e73b5d4b2f67383be8976b45"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab8772586e73b5d4b2f67383be8976b45">&#9670;&nbsp;</a></span>load()</h2>
 
@@ -190,10 +223,10 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </table>
 </div><div class="memdoc">
 
-<p>Load data from the file into a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>. </p>
+<p>Load a mesh from the file into a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">model</td><td>The model to load the data to </td></tr>
+    <tr><td class="paramname">model</td><td>The <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> into which to load the data </td></tr>
     <tr><td class="paramname">meshName</td><td>The name of the mesh to load </td></tr>
   </table>
   </dd>
