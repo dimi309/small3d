@@ -287,6 +287,60 @@ int BoundingBoxesTest() {
   return 1;
 }
 
+int FPStest() {
+
+  Renderer* renderer = &Renderer::getInstance("test", 640, 480, 0.785f, 1.0f, 24.0f, "resources/shaders/", 1000);
+
+  double startSeconds = glfwGetTime();
+  double seconds = glfwGetTime();
+  double prevSeconds = seconds;
+  uint32_t framerate = 0;
+  uint32_t numFrames = 0;
+
+  SceneObject goat("goat", "resources/models/goatUnscaled.glb", "Cube", 3);
+  auto boundingBoxModels = goat.boundingBoxSet.getModels();
+  goat.offset = glm::vec3(0.0f, 0.0f, -3.0f);
+  goat.startAnimating();
+
+  Model texturedRect;
+
+  renderer->createRectangle(texturedRect, glm::vec3(0.0f, 0.5f, 0.0f),
+    glm::vec3(1.0f, -1.0f, 0.0f));
+
+  while (seconds - startSeconds < 10.0) {
+    glfwPollEvents();
+    seconds = glfwGetTime();
+    if (seconds - prevSeconds > 1.0) {
+      framerate = numFrames;
+      numFrames = 0;
+      prevSeconds = seconds;
+    }
+      renderer->clearScreen();
+      goat.animate();
+
+      renderer->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+      for (auto& m : boundingBoxModels) {
+        renderer->render(m, goat.offset,
+          goat.rotation, glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
+      }
+
+      renderer->generateTexture("frameRate", std::to_string(framerate) + " FPS",
+        glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+
+      renderer->render(texturedRect,
+        glm::vec3(0.0f, 1.0f, -2.0f),
+        glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "frameRate", true);
+
+      renderer->swapBuffers();
+      ++numFrames;
+      goat.rotation.y += 0.01f;
+    
+  }
+
+  return 1;
+}
+
 int RendererTest() {
   Renderer* renderer = &Renderer::getInstance("test", 640, 480);
 
@@ -472,6 +526,11 @@ int main(int argc, char** argv) {
 
     if (!BoundingBoxesTest()) {
       printf("*** Failing BoundingBoxesTest.\n\r");
+      return 1;
+    }
+
+    if (!FPStest()) {
+      printf("*** Failing FPStest.\n\r");
       return 1;
     }
 
