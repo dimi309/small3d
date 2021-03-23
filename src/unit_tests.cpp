@@ -222,34 +222,6 @@ int GlbTextureTest() {
 }
 
 int BoundingBoxesTest() {
-  
-  BoundingBoxSet bboxes("resources/models/GoatBB/GoatBB.obj");
-  
-  if (bboxes.vertices.size() != 16) return 0;
-  if (bboxes.facesVertexIndexes.size() != 12) return 0;
-  if (bboxes.facesVertexIndexesTriangulated.size() != 24) return 0;
-
-  cout << "Bounding boxes vertices: " << endl;
-  for (unsigned long idx = 0; idx < 16; idx++) {
-    cout << bboxes.vertices[idx][0] << ", " <<
-      bboxes.vertices[idx][1] << ", " <<
-      bboxes.vertices[idx][2] << ", " << endl;
-  }
-
-  cout << "Bounding boxes faces vertex indexes: " << endl;
-  for (unsigned long idx = 0; idx < 12; idx++) {
-    cout << bboxes.facesVertexIndexes[idx][0] << ", " <<
-      bboxes.facesVertexIndexes[idx][1] << ", " <<
-      bboxes.facesVertexIndexes[idx][2] << ", " <<
-      bboxes.facesVertexIndexes[idx][3] << ", " << endl;
-  }
-
-  if (bboxes.contains(glm::vec3(0.1f, 0.1f, 0.1f),
-    glm::vec3(0.0f, 0.1f, 0.1f),
-    glm::vec3(0.0f, 0.0f, 0.0f))) {
-
-    return 0;
-  }
 
   Renderer* renderer = &Renderer::getInstance("test", 640, 480, 0.785f, 1.0f, 24.0f, "resources/shaders/", 1000);
 

@@ -20,35 +20,14 @@ namespace small3d {
 
   /**
    * @class BoundingBoxSet
-   * @brief Set of bounding boxes for a SceneObject, normally loaded from a
-   *        Wavefront file, or calculated based on the vertices of a Model.
-   *        In order to create a BoundinBoxSet in Blender for example (see blender.org),
-   *        just place the boxes in the preferred position over a model. Ideally,
-   *        they should be aligned with the axes, (but note that small3d does
-   *        more than just a simple axis-aligned bounding box collision
-   *        detection).
-   *
-   *        Export the bounding boxes to a Wavefront file separately from the
-   *        model. You can do this if you "save as" a new file after placing
-   *        the boxes and deleting the original model. During export, only set
-   *        the options Apply Modifiers, Include Edges (but not in newer
-   *        versions of Blender, where it is not available),
-   *        Objects as OBJ Objects and Keep Vertex Order. On the contrary to
-   *        what is the case when exporting the Model itself, more than one
-   *        bounding box objects can be exported to the same Wavefront file.
-   *
-   *        It is good to keep the default origin in Blender for the models
-   *        as well as the bounding boxes. User-set origins are ignored by
-   *        Blender when exporting Wavefront files. That can cause
-   *        misalignments between bounding boxes and models, even if
-   *        the origins of both have been properly set to a new position.
+   * @brief Set of bounding boxes for a SceneObject, calculated based on the 
+   *        vertices of a Model.
    */
 
   class BoundingBoxSet {
   private:
 
     int numBoxes;
-    void loadFromFile(std::string fileLocation);
     void triangulate();
     void calcExtremes();
     void generateBoxesFromExtremes();
@@ -79,13 +58,9 @@ namespace small3d {
     int getNumBoxes() const;
 
     /**
-     * @brief Constructor that loads a set of bounding boxes from a Wavefront file
-     * @param fileLocation Location of the Wavefront file containing the
-     *        bounding boxes
-     *
+     * @brief Default constructor
      */
-
-    BoundingBoxSet(const std::string& fileLocation = "");
+    BoundingBoxSet();
 
     /**
      * @brief Constructor that creates a box set, constructed based on the vertex 
