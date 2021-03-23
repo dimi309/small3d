@@ -64,7 +64,7 @@ int ImageTest() {
 
 int WavefrontTest() {
 
-  WavefrontFile wf("resources/models/GoatBB/GoatBB.obj");
+  WavefrontFile wf("resources/models/goat.glb");
   bool threw = false;
   try {
     Model m;
