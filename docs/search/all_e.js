@@ -2,7 +2,7 @@ var searchData=
 [
   ['small3d_93',['small3d',['../index.html',1,'']]],
   ['scale_94',['scale',['../classsmall3d_1_1_model.html#a39352fd779afaef6ee5ef398a0481b31',1,'small3d::Model']]],
-  ['sceneobject_95',['SceneObject',['../classsmall3d_1_1_scene_object.html',1,'small3d::SceneObject'],['../classsmall3d_1_1_scene_object.html#a1bd665f32145f9b16fc89df98c8713a9',1,'small3d::SceneObject::SceneObject(const std::string name, const std::string modelPath, const std::string &amp;modelMeshName, const uint32_t boundingBoxSubdivisions=0)'],['../classsmall3d_1_1_scene_object.html#a0a1cc78130e068011e208ba56321067f',1,'small3d::SceneObject::SceneObject(const std::string name, const std::string modelPath, const int numFrames=1, const std::string boundingBoxSetPath=&quot;&quot;, const int startFrameIndex=1, const uint32_t boundingBoxSubdivisions=0)']]],
+  ['sceneobject_95',['SceneObject',['../classsmall3d_1_1_scene_object.html',1,'small3d::SceneObject'],['../classsmall3d_1_1_scene_object.html#a1bd665f32145f9b16fc89df98c8713a9',1,'small3d::SceneObject::SceneObject(const std::string name, const std::string modelPath, const std::string &amp;modelMeshName, const uint32_t boundingBoxSubdivisions=0)'],['../classsmall3d_1_1_scene_object.html#a2e9dfda6e679bbacce88ffdb63685e7e',1,'small3d::SceneObject::SceneObject(const std::string name, const std::string modelPath, const int numFrames=1, const int startFrameIndex=1, const uint32_t boundingBoxSubdivisions=0)']]],
   ['sceneobject_2ehpp_96',['SceneObject.hpp',['../_scene_object_8hpp.html',1,'']]],
   ['setframedelay_97',['setFrameDelay',['../classsmall3d_1_1_scene_object.html#ac5597d21a46f7208fc92377f9cc8b631',1,'small3d::SceneObject']]],
   ['small3d_98',['small3d',['../namespacesmall3d.html',1,'']]],
