@@ -70,7 +70,7 @@ namespace small3d
 
     /**
      * @brief Wavefront-only (.obj) loading constructor that also supports loading
-     *        frame-based animation and customised bounding boxes saved in a file.
+     *        frame-based animation.
      *
      * @param name      The name of the object
      * @param modelPath The path to the file containing the object's model.
@@ -96,22 +96,17 @@ namespace small3d
      *                  the first frame is considered to be the non-moving
      *                  state.
      *
-     * @param boundingBoxSetPath The path to the file containing the object's
-     *                           bounding box set. If no such path is given, a
-     *                           single box set will be calculated, based on the
-     *                           model's vertices.
      * @param startFrameIndex The index number in the filename of the first file
      *                        of the animation sequence. The default value is 1.
      *                        If not loading an animation sequence, this parameter
      *                        is ignored.
-     * @param boundingBoxSubdivisions If not using bounding boxes loaded from a file,
-     *                        how many times to subdivide the initially created
+     * @param boundingBoxSubdivisions How many times to subdivide the initially created
      *                        bounding box, getting more accurate collision detection
      *                        at the expense of performance.
      */
     SceneObject(const std::string name, const std::string modelPath,
-      const int numFrames = 1, const std::string boundingBoxSetPath = "",
-      const int startFrameIndex = 1, const uint32_t boundingBoxSubdivisions = 0);
+      const int numFrames = 1, const int startFrameIndex = 1, 
+      const uint32_t boundingBoxSubdivisions = 0);
 
     /**
      * @brief Destructor

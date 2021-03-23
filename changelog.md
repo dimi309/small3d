@@ -7,8 +7,8 @@ v1.709 (still open)
 - [BREAKING] Removed custom-made intToStr and floatToStr functions. Using 
   std::to_string instead.
 - Added glTF support.
-- Bounding boxes can now be generated automatically, instead of being loaded
-  from a file.
+- [BREAKING] Bounding boxes are now be generated automatically, instead of 
+  being loaded from a file.
 - [BREAKING] GetTokens is now just a private function of WavefrontFile. It
   cannot be used externally.
 - [BREAKING] Models are no longer loaded with filenames as parameters. The

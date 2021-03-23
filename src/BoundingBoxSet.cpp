@@ -21,54 +21,12 @@
 
 namespace small3d {
 
-  /**
-   * Constructor
-   */
-
-  BoundingBoxSet::BoundingBoxSet(const std::string& fileLocation) {
-    vertices.clear();
-    facesVertexIndexes.clear();
-    numBoxes = 0;
-
-    if (fileLocation != "") {
-
-      this->loadFromFile(fileLocation);
-
-    }
+  BoundingBoxSet::BoundingBoxSet() {
 
   }
 
   BoundingBoxSet::BoundingBoxSet(std::vector<float>& vertexData, uint32_t subdivisions) {
     generateExtremes(vertexData, subdivisions);
-
-  }
-
-#ifdef __ANDROID__
-  struct membuf : std::streambuf
-  {
-    membuf(char* begin, char* end) {
-      this->setg(begin, begin, end);
-    }
-  };
-
-#endif
-
-
-  void BoundingBoxSet::loadFromFile(std::string fileLocation) {
-    if (vertices.size() != 0) {
-      throw std::runtime_error("Illegal attempt to reload bounding boxes. "
-        "Please use another object.");
-    }
-
-    WavefrontFile wf(fileLocation);
-
-    wf.load(*this);
-
-    numBoxes = (int)(facesVertexIndexes.size() / 6);
-    LOGINFO("Loaded " + std::to_string(numBoxes) + " bounding boxes.");
-
-    triangulate();
-    calcExtremes();
 
   }
 
