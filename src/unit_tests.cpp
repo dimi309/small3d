@@ -84,7 +84,7 @@ int WavefrontTest() {
 
 int WavefrontModelTest() {
   WavefrontFile w("resources/models/Cube/Cube.obj");
-  Model model(&w, "");
+  Model model(w, "");
 
   if (model.vertexData.size() == 0) return 0;
   if (model.indexData.size() == 0) return 0;
@@ -100,7 +100,7 @@ int WavefrontModelTest() {
     << model.textureCoordsData.size() << endl;
 
   WavefrontFile w1("resources/models/Cube/CubeNoTexture.obj");
-  Model modelWithNoTexture(&w1, "");
+  Model modelWithNoTexture(w1, "");
 
   if (modelWithNoTexture.vertexData.size() == 0) return 0;
   if (modelWithNoTexture.indexData.size() == 0) return 0;
@@ -116,9 +116,9 @@ int WavefrontModelTest() {
 
   WavefrontFile w2("resources/models/goatAndTree.obj");
 
-  Model model2(&w2, "Cube.001");
-  Model model3(&w2, "Cube");
-  Model model4(&w2, "");
+  Model model2(w2, "Cube.001");
+  Model model3(w2, "Cube");
+  Model model4(w2, "");
 
   Renderer* renderer = &Renderer::getInstance("test", 640, 480, 0.785f, 1.0f, 24.0f, "resources/shaders/", 1000);
 
@@ -320,7 +320,7 @@ int RendererTest() {
 
   GlbFile g("resources/models/goatUnscaled.glb");
   // Here loading the mesh without providing a name is also tested.
-  Model modelFromGlb(&g, ""); 
+  Model modelFromGlb(g, ""); 
 
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
