@@ -915,9 +915,6 @@ namespace small3d {
     window = 0;
 #endif
 
-    lightDirection = glm::vec3(0.0f, 0.9f, 0.2f);
-    cameraPosition = glm::vec3(0, 0, 0);
-    cameraRotation = glm::vec3(0, 0, 0);
     this->maxObjectsPerPass = maxObjectsPerPass;
     this->zNear = zNear;
     this->zFar = zFar;
@@ -1381,7 +1378,7 @@ namespace small3d {
           VK_WHOLE_SIZE,
           0, &uvData);
 
-        if (model.textureCoordsDataByteSize != 0) {
+        if (model.textureCoordsDataByteSize != 0 && textureName != "") {
           memcpy(uvData, &model.textureCoordsData[0],
             uvByteSize);
         }
