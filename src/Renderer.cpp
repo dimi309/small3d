@@ -1378,7 +1378,7 @@ namespace small3d {
           VK_WHOLE_SIZE,
           0, &uvData);
 
-        if (model.textureCoordsDataByteSize != 0 && textureName != "") {
+        if (model.textureCoordsDataByteSize != 0) {
           memcpy(uvData, &model.textureCoordsData[0],
             uvByteSize);
         }
