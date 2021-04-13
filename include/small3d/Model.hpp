@@ -337,6 +337,16 @@ namespace small3d {
     Model(File &file, const std::string& meshName);
 
     /**
+     * @brief Constructor (rvalue file - helps for declaring the file on the fly
+     *                     when using gcc)
+     * 
+     * @param file     The file parsing object from which to load the model
+     * @param meshName The name of the model mesh in the file
+     * 
+     */
+    Model(File &&file, const std::string& meshName);
+
+    /**
      * @brief Get the index of the current animation pose
      * @return The index of the current animation pose
      */

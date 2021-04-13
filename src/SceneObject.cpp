@@ -24,8 +24,7 @@ namespace small3d {
     this->numFrames = 1;
     LOGDEBUG("Trying to load " + modelPath + " as glTF.");
     try {
-      GlbFile g(modelPath);
-      Model model1(g, modelMeshName);
+      Model model1(GlbFile(modelPath), modelMeshName);
       models.push_back(model1);
       boundingBoxSet = BoundingBoxSet(model1.vertexData, boundingBoxSubdivisions);
     }
@@ -33,8 +32,7 @@ namespace small3d {
       if (std::string(e.what()).find(GlbFile::NOTGLTF)) {
         LOGDEBUG("Trying to load " + modelPath + " as Wavefront.");
         try {
-          WavefrontFile wf(modelPath);
-          Model model1(wf, modelMeshName);
+          Model model1(WavefrontFile(modelPath), modelMeshName);
           models.push_back(model1);
           boundingBoxSet = BoundingBoxSet(model1.vertexData, boundingBoxSubdivisions);
         }
@@ -72,8 +70,7 @@ namespace small3d {
         std::stringstream ss;
         ss << std::setfill('0') << std::setw(6) << idx + startFrameIndex;
         std::string frameNum = ss.str();
-        WavefrontFile w(modelPath + "_" + frameNum + ".obj");
-        Model model1(w, "");
+        Model model1(WavefrontFile(modelPath + "_" + frameNum + ".obj"), "");
         models.push_back(model1);
       }
     }
