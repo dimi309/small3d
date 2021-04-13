@@ -83,8 +83,7 @@ int WavefrontTest() {
 }
 
 int WavefrontModelTest() {
-  WavefrontFile w("resources/models/Cube/Cube.obj");
-  Model model(w, "");
+  Model model(WavefrontFile("resources/models/Cube/Cube.obj"), "");
 
   if (model.vertexData.size() == 0) return 0;
   if (model.indexData.size() == 0) return 0;
@@ -99,8 +98,7 @@ int WavefrontModelTest() {
     << "Texture coordinates count: "
     << model.textureCoordsData.size() << endl;
 
-  WavefrontFile w1("resources/models/Cube/CubeNoTexture.obj");
-  Model modelWithNoTexture(w1, "");
+  Model modelWithNoTexture(WavefrontFile("resources/models/Cube/CubeNoTexture.obj"), "");
 
   if (modelWithNoTexture.vertexData.size() == 0) return 0;
   if (modelWithNoTexture.indexData.size() == 0) return 0;
@@ -317,10 +315,9 @@ int RendererTest() {
   Renderer* renderer = &Renderer::getInstance("test", 640, 480);
 
   renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
-
-  GlbFile g("resources/models/goatUnscaled.glb");
+  
   // Here loading the mesh without providing a name is also tested.
-  Model modelFromGlb(g, ""); 
+  Model modelFromGlb(GlbFile("resources/models/goatUnscaled.glb"), ""); 
 
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.offset = glm::vec3(0.0f, -1.0f, -8.0f);

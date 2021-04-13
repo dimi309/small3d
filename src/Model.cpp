@@ -25,6 +25,10 @@ namespace small3d {
     file.load(*this, meshName);
   }
 
+  Model::Model(File &&file, const std::string& meshName) {
+    file.load(*this, meshName);
+  }
+
   uint32_t Model::getCurrentPoseIdx() {
     return currentPose;
   }
