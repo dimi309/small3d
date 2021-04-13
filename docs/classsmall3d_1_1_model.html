@@ -98,6 +98,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5357ebf95632eb534178a4cb7f2c44a3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a5357ebf95632eb534178a4cb7f2c44a3">Model</a> (<a class="el" href="classsmall3d_1_1_file.html">File</a> &amp;file, const std::string &amp;meshName)</td></tr>
 <tr class="memdesc:a5357ebf95632eb534178a4cb7f2c44a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classsmall3d_1_1_model.html#a5357ebf95632eb534178a4cb7f2c44a3">More...</a><br /></td></tr>
 <tr class="separator:a5357ebf95632eb534178a4cb7f2c44a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b2884bc6b886a1b7b66d55411ba44cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a2b2884bc6b886a1b7b66d55411ba44cf">Model</a> (<a class="el" href="classsmall3d_1_1_file.html">File</a> &amp;&amp;file, const std::string &amp;meshName)</td></tr>
+<tr class="memdesc:a2b2884bc6b886a1b7b66d55411ba44cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor (rvalue file - helps for declaring the file on the fly when using gcc)  <a href="classsmall3d_1_1_model.html#a2b2884bc6b886a1b7b66d55411ba44cf">More...</a><br /></td></tr>
+<tr class="separator:a2b2884bc6b886a1b7b66d55411ba44cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d501a1d394c08b7666a48d55736a5ab"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a5d501a1d394c08b7666a48d55736a5ab">getCurrentPoseIdx</a> ()</td></tr>
 <tr class="memdesc:a5d501a1d394c08b7666a48d55736a5ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the index of the current animation pose.  <a href="classsmall3d_1_1_model.html#a5d501a1d394c08b7666a48d55736a5ab">More...</a><br /></td></tr>
 <tr class="separator:a5d501a1d394c08b7666a48d55736a5ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -273,7 +276,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>GlbFile</b></td></tr
 <div class="textblock"><p>A 3D model. It can be loaded from a <a class="el" href="classsmall3d_1_1_wavefront_file.html" title=".obj (Wavefront) file parser class. The file format has to be somewhat specific, with triangulated fa...">WavefrontFile</a> or <a class="el" href="classsmall3d_1_1_glb_file.html" title=".glb (glTF) file parser class">GlbFile</a>. It can also be constructed procedurally by code, by inserting values to the appropriate member variables. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5357ebf95632eb534178a4cb7f2c44a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5357ebf95632eb534178a4cb7f2c44a3">&#9670;&nbsp;</a></span>Model()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5357ebf95632eb534178a4cb7f2c44a3">&#9670;&nbsp;</a></span>Model() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -299,6 +302,43 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>GlbFile</b></td></tr
 </div><div class="memdoc">
 
 <p>Constructor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">file</td><td>The file parsing object from which to load the model </td></tr>
+    <tr><td class="paramname">meshName</td><td>The name of the model mesh in the file </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a2b2884bc6b886a1b7b66d55411ba44cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b2884bc6b886a1b7b66d55411ba44cf">&#9670;&nbsp;</a></span>Model() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">small3d::Model::Model </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classsmall3d_1_1_file.html">File</a> &amp;&amp;&#160;</td>
+          <td class="paramname"><em>file</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>meshName</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructor (rvalue file - helps for declaring the file on the fly when using gcc) </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">file</td><td>The file parsing object from which to load the model </td></tr>
