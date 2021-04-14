@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['max_5fjoints_5fsupported_292',['MAX_JOINTS_SUPPORTED',['../classsmall3d_1_1_model.html#ad2b52d176f49562bca07f9b238b84854',1,'small3d::Model']]],
-  ['models_293',['models',['../classsmall3d_1_1_scene_object.html#a973a29155f6498ce34ee3bf5ffe7c5a7',1,'small3d::SceneObject']]]
+  ['normalsdata_271',['normalsData',['../classsmall3d_1_1_model.html#aa9e45810ced27f9336e2e77bca2f8ba6',1,'small3d::Model']]],
+  ['normalsdatabytesize_272',['normalsDataByteSize',['../classsmall3d_1_1_model.html#ab62bf9713060f68517cb7ec34186e884',1,'small3d::Model']]],
+  ['notgltf_273',['NOTGLTF',['../classsmall3d_1_1_glb_file.html#af29722a3cbdc459b2a63aa8fdfdd2848',1,'small3d::GlbFile']]],
+  ['notrgba_274',['NOTRGBA',['../classsmall3d_1_1_image.html#ae8ebe48834ff700dff0f3f30983b70bd',1,'small3d::Image']]]
 ];

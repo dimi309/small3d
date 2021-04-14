@@ -22,7 +22,7 @@
 #include "File.hpp"
 
 namespace small3d {
-  
+
   /**
    * @class	Model
    *
@@ -32,14 +32,45 @@ namespace small3d {
    */
 
   class Model {
-    
+
   private:
+
+#ifndef SMALL3D_OPENGL
+    bool alreadyInGPU = false;
+    VkBuffer positionBuffer = 0;
+    VkDeviceMemory positionBufferMemory = 0;
+    VkBuffer indexBuffer = 0;
+    VkDeviceMemory indexBufferMemory = 0;
+    VkBuffer normalsBuffer = 0;
+    VkDeviceMemory normalsBufferMemory = 0;
+    VkBuffer uvBuffer = 0;
+    VkDeviceMemory uvBufferMemory = 0;
+    uint32_t placementMemIndex = 0;
+    uint32_t colourMemIndex = 0;
+    VkBuffer jointBuffer = 0;
+    VkDeviceMemory jointBufferMemory = 0;
+    VkBuffer weightBuffer = 0;
+    VkDeviceMemory weightBufferMemory = 0;
+
+    bool perspective = false;
+
+    // Name of the texture the model will be rendered with. The texture has to
+    // have been previously generated with Renderer.generateTexture().
+    std::string textureName = "";
+#else
+    uint32_t positionBufferObjectId = 0;
+    uint32_t indexBufferObjectId = 0;
+    uint32_t normalsBufferObjectId = 0;
+    uint32_t uvBufferObjectId = 0;
+    uint32_t jointBufferObjectId = 0;
+    uint32_t weightBufferObjectId = 0;
+#endif
 
     uint64_t numPoses = 0;
     uint32_t currentPose = 0;
 
   public:
-    
+
     /**
      * @brief animation joint
      */
@@ -60,7 +91,7 @@ namespace small3d {
     };
 
     /**
-     * @brief Original transformation matrix (from armature/skin), 
+     * @brief Original transformation matrix (from armature/skin),
      *        as read from a file
      */
     glm::mat4 origTransformation = glm::mat4(1.0f);
@@ -88,7 +119,7 @@ namespace small3d {
 
     /**
      * @brief Maximum number of supported joints
-     *        
+     *
      */
     static const uint32_t MAX_JOINTS_SUPPORTED = 16;
 
@@ -97,136 +128,6 @@ namespace small3d {
      *        It can be used to generate a texture for the model, but other textures can also be used.
      */
     std::shared_ptr<Image> defaultTextureImage;
-  
-
-#ifndef SMALL3D_OPENGL
-    /**
-     * @brief Is the model already in GPU memory?
-     *        (Vulkan-specific, avoid direct manipulation)
-     */
-    bool alreadyInGPU = false;
-
-    /**
-     * @brief Buffer containing vertex positions
-     *        (Vulkan-specific, avoid direct manipulation)
-     */
-    VkBuffer positionBuffer = 0;
-
-    /**
-     * @brief Memory for buffer containing vertex positions
-     *        (Vulkan-specific, avoid direct manipulation)
-     */
-    VkDeviceMemory positionBufferMemory = 0;
-
-    /**
-     * @brief Index buffer
-     *        (Vulkan-specific, avoid direct manipulation)
-     */
-    VkBuffer indexBuffer = 0;
-
-    /**
-     * @brief Memory for index buffer
-     *        (Vulkan-specific, avoid direct manipulation)
-     */
-    VkDeviceMemory indexBufferMemory = 0;
-
-    /**
-     * @brief Normals buffer
-     *        (Vulkan-specific, avoid direct manipulation)
-     */
-    VkBuffer normalsBuffer = 0;
-
-    /**
-     * @brief Memory for normals buffer
-     *        (Vulkan-specific, avoid direct manipulation)
-     */
-    VkDeviceMemory normalsBufferMemory = 0;
-
-    /**
-     * @brief UV coordinates buffer
-     *        (Vulkan-specific, avoid direct manipulation)
-     */
-    VkBuffer uvBuffer = 0;
-
-    /**
-     * @brief Memory for UV coordinates buffer
-     *        (Vulkan-specific, avoid direct manipulation)
-     */
-    VkDeviceMemory uvBufferMemory = 0;
-
-    /**
-     * @brief Index of model orientation in the orientation dynamic uniform 
-     *        buffer
-     *        (Vulkan-specific, avoid direct manipulation)
-     */
-    uint32_t placementMemIndex = 0;
-
-    /**
-     * @brief Index of model colour in the colour dynamic uniform buffer
-     *        (Vulkan-specific, avoid direct manipulation)
-     */
-    uint32_t colourMemIndex = 0;
-
-    /**
-     * @brief Joints buffer
-     */
-    VkBuffer jointBuffer = 0;
-
-    /**
-    * @brief Memory for joints buffer
-    *        (Vulkan-specific, avoid direct manipulation)
-    */
-    VkDeviceMemory jointBufferMemory = 0;
-
-    /**
-     * @brief Joint weights buffer
-     */
-    VkBuffer weightBuffer = 0;
-
-    /**
-    * @brief Memory for weights buffer
-    *        (Vulkan-specific, avoid direct manipulation)
-    */
-    VkDeviceMemory weightBufferMemory = 0;
-#else
-
-    /**
-     * @brief Position buffer object id. It is suggested not to manipulate
-     *        this directly.
-     */
-    uint32_t positionBufferObjectId = 0;
-
-    /**
-     * @brief Index buffer object id. It is suggested not to manipulate
-     *        this directly.
-     */
-    uint32_t indexBufferObjectId = 0;
-
-    /**
-     * @brief Normals buffer object id. It is suggested not to manipulate
-     *        this directly.
-     */
-    uint32_t normalsBufferObjectId = 0;
-
-    /**
-     * @brief UV buffer object id. It is suggested not to manipulate this
-     *        directly.
-     */
-    uint32_t uvBufferObjectId = 0;
-
-    /**
-     * @brief Joints buffer object id. It is suggested not to manipulate this
-     *        directly.
-     */
-    uint32_t jointBufferObjectId = 0;
-
-    /**
-     * @brief Joint weights buffer object id. It is suggested not to manipulate this
-     *        directly.
-     */
-    uint32_t weightBufferObjectId = 0;
-    
-#endif
 
     /**
      * @brief The vertex data. This is an array, which is to be treated as a 4
@@ -279,14 +180,14 @@ namespace small3d {
     uint32_t textureCoordsDataByteSize = 0;
 
     /**
-     * @brief Array, to be treated as a 4 column table. Each "row" potentially 
-     *        contains up to 4 joints that can influence each vertex. 
+     * @brief Array, to be treated as a 4 column table. Each "row" potentially
+     *        contains up to 4 joints that can influence each vertex.
      */
     std::vector<uint8_t> jointData;
 
     /**
      * @brief Size of the joint data, in bytes.
-     */ 
+     */
     uint32_t jointDataByteSize = 0;
 
     /**
@@ -301,50 +202,34 @@ namespace small3d {
     uint32_t weightDataByteSize = 0;
 
     /**
-     * @brief The model's root joint;
+     * @brief The model's joints
      */
     std::vector<Joint> joints;
 
-#ifndef SMALL3D_OPENGL
-    
-    /**
-    * @brief Name of the texture the model will be rendered with. The texture has to
-    *        have been previously generated with Renderer.generateTexture().
-    */
-    std::string textureName = "";
-
-    /**
-     * @brief True if the model is to be rendered with perspective, False for orthographic
-     *        rendering
-     */
-    bool perspective = false;
-    
-#endif
-    
     /**
      * @brief Default constructor
      *
      */
     Model();
-    
+
     /**
      * @brief Constructor
-     * 
+     *
      * @param file     The file parsing object from which to load the model
      * @param meshName The name of the model mesh in the file
-     * 
+     *
      */
-    Model(File &file, const std::string& meshName);
+    Model(File& file, const std::string& meshName);
 
     /**
      * @brief Constructor (rvalue file - helps for declaring the file on the fly
      *                     when using gcc)
-     * 
+     *
      * @param file     The file parsing object from which to load the model
      * @param meshName The name of the model mesh in the file
-     * 
+     *
      */
-    Model(File &&file, const std::string& meshName);
+    Model(File&& file, const std::string& meshName);
 
     /**
      * @brief Get the index of the current animation pose
@@ -354,7 +239,7 @@ namespace small3d {
     uint32_t getCurrentPoseIdx();
 
     /**
-     * @brief Advance joint animation pose (if joints are animated) 
+     * @brief Advance joint animation pose (if joints are animated)
      */
     void animate();
 
@@ -367,6 +252,7 @@ namespace small3d {
     glm::mat4 getJointTransform(size_t jointIdx);
 
     friend class GlbFile;
+    friend class Renderer;
 
   };
 }
