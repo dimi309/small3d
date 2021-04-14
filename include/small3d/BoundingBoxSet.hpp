@@ -27,7 +27,7 @@ namespace small3d {
   class BoundingBoxSet {
   private:
 
-    int numBoxes;
+    uint32_t numBoxes = 0;
     void triangulate();
     void calcExtremes();
     void generateBoxesFromExtremes();
