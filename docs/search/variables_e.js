@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['texturecoordsdata_311',['textureCoordsData',['../classsmall3d_1_1_model.html#a3dc1c38f06ad7bd19126933197e7b443',1,'small3d::Model']]],
-  ['texturecoordsdatabytesize_312',['textureCoordsDataByteSize',['../classsmall3d_1_1_model.html#a3351123ddee47d7b81b9a020ca828061',1,'small3d::Model']]],
-  ['texturename_313',['textureName',['../classsmall3d_1_1_model.html#a8d316f1a607a9bdd658aaed8341a886f',1,'small3d::Model']]]
+  ['weightdata_294',['weightData',['../classsmall3d_1_1_model.html#a41ca4152abcc719e9048258925999f10',1,'small3d::Model']]],
+  ['weightdatabytesize_295',['weightDataByteSize',['../classsmall3d_1_1_model.html#a0f8f0d5bf988d89b3cf7c6c16bc2871e',1,'small3d::Model']]]
 ];

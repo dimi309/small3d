@@ -138,66 +138,6 @@ glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 std::shared_ptr&lt; <a class="el" href="classsmall3d_1_1_image.html">Image</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#ae0c58e6b9ead5c0ba861d12425a73038">defaultTextureImage</a></td></tr>
 <tr class="memdesc:ae0c58e6b9ead5c0ba861d12425a73038"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsmall3d_1_1_image.html" title="An image, loaded from a .png file, which can be used for generating textures.">Image</a> found in the file the model was loaded from (empty image if not - check the size). It can be used to generate a texture for the model, but other textures can also be used. <br /></td></tr>
 <tr class="separator:ae0c58e6b9ead5c0ba861d12425a73038"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5449f8e4f8b4f1f3f112a565ff91f9f"><td class="memItemLeft" align="right" valign="top"><a id="ad5449f8e4f8b4f1f3f112a565ff91f9f"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#ad5449f8e4f8b4f1f3f112a565ff91f9f">alreadyInGPU</a> = false</td></tr>
-<tr class="memdesc:ad5449f8e4f8b4f1f3f112a565ff91f9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is the model already in GPU memory? (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
-<tr class="separator:ad5449f8e4f8b4f1f3f112a565ff91f9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0dc68151bf7d08e522126f6e4d0269ad"><td class="memItemLeft" align="right" valign="top"><a id="a0dc68151bf7d08e522126f6e4d0269ad"></a>
-VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a0dc68151bf7d08e522126f6e4d0269ad">positionBuffer</a> = 0</td></tr>
-<tr class="memdesc:a0dc68151bf7d08e522126f6e4d0269ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer containing vertex positions (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
-<tr class="separator:a0dc68151bf7d08e522126f6e4d0269ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25ba40d4f09c7c398eba3a516cdd9987"><td class="memItemLeft" align="right" valign="top"><a id="a25ba40d4f09c7c398eba3a516cdd9987"></a>
-VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a25ba40d4f09c7c398eba3a516cdd9987">positionBufferMemory</a> = 0</td></tr>
-<tr class="memdesc:a25ba40d4f09c7c398eba3a516cdd9987"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory for buffer containing vertex positions (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
-<tr class="separator:a25ba40d4f09c7c398eba3a516cdd9987"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39db7cf562b604314c1d09e83c51fa43"><td class="memItemLeft" align="right" valign="top"><a id="a39db7cf562b604314c1d09e83c51fa43"></a>
-VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a39db7cf562b604314c1d09e83c51fa43">indexBuffer</a> = 0</td></tr>
-<tr class="memdesc:a39db7cf562b604314c1d09e83c51fa43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Index buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
-<tr class="separator:a39db7cf562b604314c1d09e83c51fa43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02bc354c84beb68570369cd9b831aad3"><td class="memItemLeft" align="right" valign="top"><a id="a02bc354c84beb68570369cd9b831aad3"></a>
-VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a02bc354c84beb68570369cd9b831aad3">indexBufferMemory</a> = 0</td></tr>
-<tr class="memdesc:a02bc354c84beb68570369cd9b831aad3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory for index buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
-<tr class="separator:a02bc354c84beb68570369cd9b831aad3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ec7e4ce7cea208d581c5bef94bddd59"><td class="memItemLeft" align="right" valign="top"><a id="a7ec7e4ce7cea208d581c5bef94bddd59"></a>
-VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a7ec7e4ce7cea208d581c5bef94bddd59">normalsBuffer</a> = 0</td></tr>
-<tr class="memdesc:a7ec7e4ce7cea208d581c5bef94bddd59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normals buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
-<tr class="separator:a7ec7e4ce7cea208d581c5bef94bddd59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a811130bb7e56af0d5e49f2707749a017"><td class="memItemLeft" align="right" valign="top"><a id="a811130bb7e56af0d5e49f2707749a017"></a>
-VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a811130bb7e56af0d5e49f2707749a017">normalsBufferMemory</a> = 0</td></tr>
-<tr class="memdesc:a811130bb7e56af0d5e49f2707749a017"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory for normals buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
-<tr class="separator:a811130bb7e56af0d5e49f2707749a017"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77d6e46a357f5216c27dec374582d4f0"><td class="memItemLeft" align="right" valign="top"><a id="a77d6e46a357f5216c27dec374582d4f0"></a>
-VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a77d6e46a357f5216c27dec374582d4f0">uvBuffer</a> = 0</td></tr>
-<tr class="memdesc:a77d6e46a357f5216c27dec374582d4f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">UV coordinates buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
-<tr class="separator:a77d6e46a357f5216c27dec374582d4f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9628ad75022570c3fdda0c449790cd5f"><td class="memItemLeft" align="right" valign="top"><a id="a9628ad75022570c3fdda0c449790cd5f"></a>
-VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a9628ad75022570c3fdda0c449790cd5f">uvBufferMemory</a> = 0</td></tr>
-<tr class="memdesc:a9628ad75022570c3fdda0c449790cd5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory for UV coordinates buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
-<tr class="separator:a9628ad75022570c3fdda0c449790cd5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a14d7094dc24ed8d72b9bdd72eb89be67"><td class="memItemLeft" align="right" valign="top"><a id="a14d7094dc24ed8d72b9bdd72eb89be67"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a14d7094dc24ed8d72b9bdd72eb89be67">placementMemIndex</a> = 0</td></tr>
-<tr class="memdesc:a14d7094dc24ed8d72b9bdd72eb89be67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Index of model orientation in the orientation dynamic uniform buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
-<tr class="separator:a14d7094dc24ed8d72b9bdd72eb89be67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b8d0ec778269539b3d9a5cc9b20c496"><td class="memItemLeft" align="right" valign="top"><a id="a3b8d0ec778269539b3d9a5cc9b20c496"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a3b8d0ec778269539b3d9a5cc9b20c496">colourMemIndex</a> = 0</td></tr>
-<tr class="memdesc:a3b8d0ec778269539b3d9a5cc9b20c496"><td class="mdescLeft">&#160;</td><td class="mdescRight">Index of model colour in the colour dynamic uniform buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
-<tr class="separator:a3b8d0ec778269539b3d9a5cc9b20c496"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4841e05e331faf644a724974248c616"><td class="memItemLeft" align="right" valign="top"><a id="ae4841e05e331faf644a724974248c616"></a>
-VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#ae4841e05e331faf644a724974248c616">jointBuffer</a> = 0</td></tr>
-<tr class="memdesc:ae4841e05e331faf644a724974248c616"><td class="mdescLeft">&#160;</td><td class="mdescRight">Joints buffer. <br /></td></tr>
-<tr class="separator:ae4841e05e331faf644a724974248c616"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4709ef731a9463dc87ddc8be40b1dad4"><td class="memItemLeft" align="right" valign="top"><a id="a4709ef731a9463dc87ddc8be40b1dad4"></a>
-VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a4709ef731a9463dc87ddc8be40b1dad4">jointBufferMemory</a> = 0</td></tr>
-<tr class="memdesc:a4709ef731a9463dc87ddc8be40b1dad4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory for joints buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
-<tr class="separator:a4709ef731a9463dc87ddc8be40b1dad4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e1635fec6d6de4ccdb795f8cf673442"><td class="memItemLeft" align="right" valign="top"><a id="a7e1635fec6d6de4ccdb795f8cf673442"></a>
-VkBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a7e1635fec6d6de4ccdb795f8cf673442">weightBuffer</a> = 0</td></tr>
-<tr class="memdesc:a7e1635fec6d6de4ccdb795f8cf673442"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structsmall3d_1_1_model_1_1_joint.html" title="animation joint">Joint</a> weights buffer. <br /></td></tr>
-<tr class="separator:a7e1635fec6d6de4ccdb795f8cf673442"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09aff074b63ed19fd7a9e6daf0df4c61"><td class="memItemLeft" align="right" valign="top"><a id="a09aff074b63ed19fd7a9e6daf0df4c61"></a>
-VkDeviceMemory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a09aff074b63ed19fd7a9e6daf0df4c61">weightBufferMemory</a> = 0</td></tr>
-<tr class="memdesc:a09aff074b63ed19fd7a9e6daf0df4c61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory for weights buffer (Vulkan-specific, avoid direct manipulation) <br /></td></tr>
-<tr class="separator:a09aff074b63ed19fd7a9e6daf0df4c61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf9422b7594956d857bc9da9da7b13e4"><td class="memItemLeft" align="right" valign="top"><a id="adf9422b7594956d857bc9da9da7b13e4"></a>
 std::vector&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#adf9422b7594956d857bc9da9da7b13e4">vertexData</a></td></tr>
 <tr class="memdesc:adf9422b7594956d857bc9da9da7b13e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">The vertex data. This is an array, which is to be treated as a 4 column table, holding the x, y, z values in each column. The fourth column is there to assist in matrix operations. <br /></td></tr>
@@ -248,16 +188,8 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <tr class="separator:a0f8f0d5bf988d89b3cf7c6c16bc2871e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab90cce419400675c73e1196cdcb679d8"><td class="memItemLeft" align="right" valign="top"><a id="ab90cce419400675c73e1196cdcb679d8"></a>
 std::vector&lt; <a class="el" href="structsmall3d_1_1_model_1_1_joint.html">Joint</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#ab90cce419400675c73e1196cdcb679d8">joints</a></td></tr>
-<tr class="memdesc:ab90cce419400675c73e1196cdcb679d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">The model's root joint;. <br /></td></tr>
+<tr class="memdesc:ab90cce419400675c73e1196cdcb679d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">The model's joints. <br /></td></tr>
 <tr class="separator:ab90cce419400675c73e1196cdcb679d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d316f1a607a9bdd658aaed8341a886f"><td class="memItemLeft" align="right" valign="top"><a id="a8d316f1a607a9bdd658aaed8341a886f"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a8d316f1a607a9bdd658aaed8341a886f">textureName</a> = &quot;&quot;</td></tr>
-<tr class="memdesc:a8d316f1a607a9bdd658aaed8341a886f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name of the texture the model will be rendered with. The texture has to have been previously generated with Renderer.generateTexture(). <br /></td></tr>
-<tr class="separator:a8d316f1a607a9bdd658aaed8341a886f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a83b123db1e9c22644c14e69e4bec3c6e"><td class="memItemLeft" align="right" valign="top"><a id="a83b123db1e9c22644c14e69e4bec3c6e"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a83b123db1e9c22644c14e69e4bec3c6e">perspective</a> = false</td></tr>
-<tr class="memdesc:a83b123db1e9c22644c14e69e4bec3c6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">True if the model is to be rendered with perspective, False for orthographic rendering. <br /></td></tr>
-<tr class="separator:a83b123db1e9c22644c14e69e4bec3c6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -271,6 +203,9 @@ Friends</h2></td></tr>
 <tr class="memitem:a6ae53f845e04b19a83a6750b540520e0"><td class="memItemLeft" align="right" valign="top"><a id="a6ae53f845e04b19a83a6750b540520e0"></a>
 class&#160;</td><td class="memItemRight" valign="bottom"><b>GlbFile</b></td></tr>
 <tr class="separator:a6ae53f845e04b19a83a6750b540520e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70538530bc36e033e360880ef311df61"><td class="memItemLeft" align="right" valign="top"><a id="a70538530bc36e033e360880ef311df61"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></tr>
+<tr class="separator:a70538530bc36e033e360880ef311df61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A 3D model. It can be loaded from a <a class="el" href="classsmall3d_1_1_wavefront_file.html" title=".obj (Wavefront) file parser class. The file format has to be somewhat specific, with triangulated fa...">WavefrontFile</a> or <a class="el" href="classsmall3d_1_1_glb_file.html" title=".glb (glTF) file parser class">GlbFile</a>. It can also be constructed procedurally by code, by inserting values to the appropriate member variables. </p>
