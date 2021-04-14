@@ -69,6 +69,20 @@ namespace small3d {
     uint64_t numPoses = 0;
     uint32_t currentPose = 0;
 
+    // Original transformation matrix (from armature/skin),
+    // as read from a file
+    glm::mat4 origTransformation = glm::mat4(1.0f);
+
+    // Original rotation (from armature/skin), as read from a
+    // file (in quaternion form)
+    glm::quat origRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+
+    // Original scale, as read from a file
+    glm::vec3 origScale = glm::vec3(1.0f, 1.0f, 1.0f);
+
+    // brief Original translation, as read from a file
+    glm::vec3 origTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
+
   public:
 
     /**
@@ -91,31 +105,9 @@ namespace small3d {
     };
 
     /**
-     * @brief Original transformation matrix (from armature/skin),
-     *        as read from a file
-     */
-    glm::mat4 origTransformation = glm::mat4(1.0f);
-
-    /**
-     *  @brief Original rotation (from armature/skin), as read from a
-     *         file (in quaternion form)
-     */
-    glm::quat origRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-
-    /**
-     *  @brief Original scale, as read from a file
-     */
-    glm::vec3 origScale = glm::vec3(1.0f, 1.0f, 1.0f);
-
-    /**
      * @brief Use this to scale the model and not origScale
      */
     glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
-
-    /**
-     *  @brief Original translation, as read from a file
-     */
-    glm::vec3 origTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
 
     /**
      * @brief Maximum number of supported joints

@@ -46,12 +46,8 @@ namespace small3d
     std::string name;
     bool wavefront = false;
 
-  public:
-    /**
-     * @brief The models making up the object's animation. Do not manipulate
-     *        directly.
-     */
     std::vector<Model> models;
+  public:
 
     /**
      * @brief File-loading constructor, supporting Wavefront and glTF .glb files.
@@ -165,7 +161,6 @@ namespace small3d
     /**
      * @brief The bounding boxes for the object, used for collision detection.
      */
-
     BoundingBoxSet boundingBoxSet;
 
     /**
@@ -189,6 +184,8 @@ namespace small3d
      */
 
     bool containsCorners(SceneObject otherObject) const;
+
+    friend class Renderer;
 
   };
 
