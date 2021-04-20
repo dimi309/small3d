@@ -22,7 +22,7 @@ if /I "%~2" == "opengl" set CMAKE_DEFINITIONS=%CMAKE_DEFINITIONS% -DSMALL3D_OPEN
 
 set VSCONFIG=-G"Visual Studio 16 2019" -A x64
 
-cd deps
+cd ..\deps
 if exist include rmdir /Q /S include
 if exist lib rmdir /Q /S lib
 call prepare-vs.bat %1 %2
