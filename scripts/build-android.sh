@@ -22,6 +22,8 @@ then
     exit 1
 fi
 
+cd ..
+
 mkdir build
 cd build
 

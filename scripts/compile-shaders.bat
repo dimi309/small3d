@@ -1,6 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
-cd resources\shaders
+cd ..\resources\shaders
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 glslangvalidator -V perspectiveMatrixLightedShader.vert -o perspectiveMatrixLightedShader.spv
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
@@ -19,4 +19,4 @@ copy /y "%%a" ..\..\build\bin\resources\shaders
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 )
 )
-cd ..\..
+

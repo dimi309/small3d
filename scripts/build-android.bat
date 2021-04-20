@@ -25,7 +25,7 @@ if /I "%~1" == "Release" set CMAKE_DEFINITIONS=
 set sourcepath=%cd%
 set platformstr=android-26
 
-cd deps
+cd ..\deps
 if exist include rmdir /Q /S include
 if exist lib rmdir /Q /S lib
 call prepare-android.bat %1 %2
