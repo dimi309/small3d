@@ -48,7 +48,7 @@ and tools accessible via the command line:
 
 ## Building
 
-Run the build script which is suitable to your platform from the root 
+Run the build script which is suitable to your platform from the scripts 
 directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`)
 	
 Then, the unit tests can be run via the `unittests` binary from `build/bin`.
@@ -71,7 +71,7 @@ If you are using cmake, the modules in `small3d/cmake` can be useful. Check the
 ## small3d on mobile
 
 You can build small3d for mobile platforms by executing either `build-android` or 
-`build-ios` from the main directory. One sample game, [Avoid the Bug](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug)
+`build-ios` from the scripts directory. One sample game, [Avoid the Bug](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug)
 has been ported to both [Android](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-android) 
 and [iOS](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-ios). 
 I use these projects as a basis for mobile development. Note that, while with 

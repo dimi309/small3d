@@ -27,7 +27,7 @@ exit_if_error() {
 	exit $rc
     fi
 }
-
+cd ..
 git clean -fdx
 exit_if_error
 cd deps
