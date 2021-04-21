@@ -1,4 +1,4 @@
-cd resources/shaders
+cd ../resources/shaders
 echo "Compiling shaders..."
 if [ $? != 0 ]; then exit $rc; fi
 glslangValidator -V perspectiveMatrixLightedShader.vert -o perspectiveMatrixLightedShader.spv
