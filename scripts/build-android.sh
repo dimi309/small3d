@@ -7,11 +7,12 @@ if [ "$1" != "Debug" ] && [ "$1" != "Release" ]; then
 fi
 
 if [ "$1" == "Debug" ]; then
-    buildtype = Debug
+    export buildtype=Debug
 else
-    buildtype =
+    export buildtype=
 fi
    
+cd ..
 
 sourcepath=$(pwd)
 platformstr=android-26
@@ -22,6 +23,8 @@ then
     exit 1
 fi
 
+cd deps
+./prepare-android.sh $1
 cd ..
 
 mkdir build
