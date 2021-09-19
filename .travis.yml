@@ -1,0 +1,4 @@
+os: linux
+dist: focal
+compiler: gcc
+script: cd scripts && ./build.sh Debug
