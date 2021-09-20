@@ -1,6 +1,8 @@
 # For this to work, set the NDK variable to your ndk path. It should look like
 # /Users/user/Library/Android/sdk/ndk/21.2.6472646 for example.
 
+set -e
+
 if [ "$1" != "Debug" ] && [ "$1" != "Release" ]; then
     echo "Please indicate build type: Debug or Release"
     exit 1
@@ -35,9 +37,9 @@ do
     cmake .. -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake \
 	  -DANDROID_PLATFORM=$platformstr -DANDROID_ABI=$androidabi -DCMAKE_BUILD_TYPE=$buildtype
     cmake --build .
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
     mv lib/*.a lib/$androidabi
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
     find . -maxdepth 1 -type f -exec rm -v {} \;
     rm -rf CMakeFiles
     rm -rf src
