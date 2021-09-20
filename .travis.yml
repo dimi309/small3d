@@ -1,5 +1,32 @@
-os: linux
-dist: focal
-language: c++
-compiler: gcc
-script: cd scripts && ./build.sh Debug
+jobs:
+  include:
+    - os: linux
+      dist: focal
+      language: cpp
+      compiler: gcc
+      script: cd scripts && ./build.sh Debug
+    - os: linux
+      dist: focal
+      language: cpp
+      compiler: gcc
+      script: cd scripts && ./build.sh Debug opengl
+    - os: linux
+      dist: focal
+      language: cpp
+      compiler: gcc
+      script: cd scripts && ./build.sh Release
+    - os: linux
+      dist: focal
+      language: cpp
+      compiler: gcc
+      script: cd scripts && ./build.sh Release opengl
+    - os: osx
+      osx_image: xcode12.4
+      language: cpp
+      compiler: clang
+      script: cd scripts && ./build.sh Debug opengl
+    - os: osx
+      osx_image: xcode12.4
+      language: cpp
+      compiler: clang
+      script: cd scripts && ./build.sh Release opengl
