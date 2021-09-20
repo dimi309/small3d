@@ -2,6 +2,8 @@
 
 [[Source Code]](https://github.com/dimi309/small3d) [[API Documentation]](https://dimi309.github.io/small3d)
 
+[![Build Status](https://app.travis-ci.com/dimi309/small3d.svg?branch=master)](https://app.travis-ci.com/dimi309/small3d)
+
 Minimalistic, open source library for making 3D games in C++, with
 Vulkan and OpenGL support
 
