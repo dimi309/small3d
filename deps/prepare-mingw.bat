@@ -152,7 +152,7 @@ cmake --build .
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy ..\include\* ..\..\include
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-copy libportaudio_static.a ..\..\lib
+copy libportaudio.a ..\..\lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S portaudio
