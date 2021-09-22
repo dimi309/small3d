@@ -62,9 +62,9 @@ xcopy glm\glm include\glm /i /s
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 rmdir /Q /S glm
 
-7z x zlib-1.2.11.tar.gz
+7z x zlib-1.2.11-noexample.tar.gz
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-7z x zlib-1.2.11.tar
+7z x zlib-1.2.11-noexample.tar
 cd zlib-1.2.11
 mkdir build
 cd build
@@ -79,7 +79,7 @@ copy libzlibstatic.a ..\..\lib\zlib.a
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S zlib-1.2.11
-del zlib-1.2.11.tar
+del zlib-1.2.11-noexample.tar
 
 7z x libpng-1.6.37.tar.gz
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%

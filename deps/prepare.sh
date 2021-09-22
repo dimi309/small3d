@@ -71,7 +71,7 @@ cp -rf glm/glm include/
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 rm -rf glm
 
-tar xvf zlib-1.2.11.tar.gz
+tar xvf zlib-1.2.11-noexample.tar.gz
 cd zlib-1.2.11
 mkdir build
 cd build

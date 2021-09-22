@@ -1,0 +1,12 @@
+bzip2 is required only on Apple platforms.
+
+bzip2-1.0.8-use-env.tar.gz is bzip2-1.0.8.tar.gz, slightly modified to get the compiler name, etc. from environment variables, so that it can work on ios. This is configured in the Makefile of the bzip2 library.
+
+portaudio and glfw are not used on mobile platforms, where sound and windowing facilities are referenced directly by small3d.
+
+glew is also not used on mobile platforms, on which small3d only runs on Vulkan.
+
+In zlib-1.2.11-noexample.tar.gz, the part of the standard zlib CMakeLists.txt file that configures the builds of some example binaries has been deleted, because it was failing on the small3d ios build.
+
+zlib-1.2.11-noexample.tar.gz is not used for Android builds, where zlib is referenced from the platform infrastructure.
+
