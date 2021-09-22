@@ -14,6 +14,7 @@ v1.709 (still open)
 - [BREAKING] Models are no longer loaded with filenames as parameters. The
   appropriate file parsing object has to be passed instead.
 - Scaling 3D models now also supported.
+- Upgraded portaudio to stable v190700.
 
 v1.708 2020-12-25
 

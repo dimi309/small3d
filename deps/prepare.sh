@@ -136,7 +136,7 @@ rm -rf vorbis-1.3.6
 # Not linking statically to portaudio on Linux, because on Ubuntu
 # the needed static libraries are a mess.
 if [ $(uname) != 'Linux' ]; then
-    tar xvf pa_snapshot_20201116.tgz
+    tar xvf pa_stable_v190700_20210406.tgz
     cd portaudio
     mkdir build1
     cd build1

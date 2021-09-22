@@ -141,9 +141,9 @@ rmdir /Q /S vorbis-1.3.6
 del vorbis-1.3.6.tar
 del pax_global_header
 
-7z x pa_stable_v190600_20161030.tgz
+7z x pa_stable_v190700_20210406.tgz
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-7z x pa_stable_v190600_20161030.tar
+7z x pa_stable_v190700_20210406.tar
 cd portaudio
 mkdir build1
 cd build1
@@ -156,7 +156,7 @@ copy libportaudio_static.a ..\..\lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S portaudio
-del pa_stable_v190600_20161030.tar
+del pa_stable_v190700_20210406.tar
 
 7z x freetype-2.10.4.tar.gz
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
