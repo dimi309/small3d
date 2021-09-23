@@ -19,8 +19,9 @@ fi
 cd ..
 git clean -fdx
 
-cd deps
+cd deps/scripts
 ./prepare.sh $1 $2
+cd ..
 
 cd ..
 mkdir build

@@ -2,6 +2,8 @@
 # /Users/user/Library/Android/sdk/ndk/21.2.6472646 for example.
 # Tested on MacOS and Debian
 
+cd ..
+
 if [ "$1" != "Debug" ] && [ "$1" != "Release" ]; then
     echo "Please indicate build type: Debug or Release"
     exit 1

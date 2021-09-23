@@ -1,3 +1,5 @@
+cd ..
+
 if [ -z $VULKAN_SDK ]
 then
     echo "VULKAN_SDK is not set. Please set it to your Vulkan SDK location, e.g. export VULKAN_SDK=/Users/john/Software/vulkansdk-macos-1.2.154.0/macOS"

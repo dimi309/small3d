@@ -19,7 +19,7 @@ if /I "%~1" == "release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
 
 if /I "%~2" == "opengl" set CMAKE_DEFINITIONS=%CMAKE_DEFINITIONS% -DSMALL3D_OPENGL=ON
 
-cd ..\deps
+cd ..\deps\scripts
 if exist include rmdir /Q /S include
 if exist lib rmdir /Q /S lib
 call prepare-mingw %1 %2

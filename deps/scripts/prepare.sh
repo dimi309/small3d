@@ -1,3 +1,5 @@
+cd ..
+
 if [ "$1" != "Debug" ] && [ "$1" != "Release" ]; then
     echo "Please indicate build type: Debug or Release"
     exit 1
@@ -151,7 +153,7 @@ if [ $(uname) != 'Linux' ]; then
     rm -rf portaudio
 fi
 
-tar xvf bzip2-1.0.8.tar.gz
+tar xvf bzip2-1.0.8-use-env.tar.gz
 cd bzip2-1.0.8
 make
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi

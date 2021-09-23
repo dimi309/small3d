@@ -25,8 +25,9 @@ then
     exit 1
 fi
 
-cd deps
+cd deps/scripts
 ./prepare-android.sh $1
+cd ..
 cd ..
 
 mkdir build

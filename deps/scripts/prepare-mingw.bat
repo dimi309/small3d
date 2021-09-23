@@ -1,4 +1,7 @@
 @echo off
+
+cd ..
+
 setlocal enabledelayedexpansion
 set args_ok=false
 set opengl_ok=false
@@ -14,30 +17,25 @@ echo Please indicate build type: debug or release, followed by opengl if you wou
 endlocal & exit /b 1
 )
 
-if /I "%~1" == "debug" set BUILDTYPE=Debug
-if /I "%~1" == "release" set BUILDTYPE=Release
+if /I "%~1" == "debug" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Debug
+if /I "%~1" == "release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
 
 @echo on
 
-set VSCONFIG=-G"Visual Studio 16 2019" -A x64
-
 mkdir include
 mkdir lib
-mkdir bin
-
 7z x glfw-3.3.2.zip
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd glfw-3.3.2
 mkdir build
 cd build
-cmake .. %VSCONFIG% -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF
-cmake --build . --config %BUILDTYPE%
+cmake .. -G"MinGW Makefiles" -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF %CMAKE_DEFINITIONS%
+cmake --build .
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 xcopy ..\include\GLFW ..\..\include\GLFW /i /s
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-copy src\%BUILDTYPE%\glfw3.lib ..\..\lib\
+copy src\libglfw3.a ..\..\lib\
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 cd ..\..
 rmdir /Q /S glfw-3.3.2
 
@@ -47,14 +45,14 @@ if /I "%~2" == "opengl" (
 7z x glew-20190928.tar
 if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 cd glew-2.2.0
-cmake %VSCONFIG% build/cmake -DBUILD_UTILS=OFF
-cmake --build . --config %BUILDTYPE%
+cmake -G"MinGW Makefiles" build/cmake -DBUILD_UTILS=OFF %CMAKE_DEFINITIONS%
+cmake --build .
 if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 xcopy include\GL ..\include\GL /i /s
 if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
-if %BUILDTYPE%==Debug (copy lib\%BUILDTYPE%\libglew32d.lib ..\lib\glew.lib) else (copy lib\%BUILDTYPE%\libglew32.lib ..\lib\glew.lib)
-if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
-for /r %%a in (*.pdb) do @copy /y "%%a" ..\bin
+set GLEWLIB=libglew32.a
+if /I "%~1" == "Debug" set GLEWLIB=libglew32d.a 
+copy lib\!GLEWLIB! ..\lib\libglew32.a
 if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 cd ..
 del glew-20190928.tar
@@ -62,7 +60,7 @@ rmdir /Q /S glew-2.2.0
 )
 
 7z x glm-0.9.9.8.zip
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel% 
 xcopy glm\glm include\glm /i /s
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 rmdir /Q /S glm
@@ -73,16 +71,15 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd zlib-1.2.11
 mkdir build
 cd build
-cmake .. %VSCONFIG%
-cmake --build . --config %BUILDTYPE%
+cmake .. -G"MinGW Makefiles" %CMAKE_DEFINITIONS%
+cmake --build .
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy ..\zlib.h ..\..\include
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy zconf.h ..\..\include
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-if %BUILDTYPE%==Debug (copy %BUILDTYPE%\zlibstaticd.lib ..\..\lib\zlib.lib) else (copy %BUILDTYPE%\zlibstatic.lib ..\..\lib\zlib.lib)
+copy libzlibstatic.a ..\..\lib\zlib.a
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 cd ..\..\
 rmdir /Q /S zlib-1.2.11
 del zlib-1.2.11-noexample.tar
@@ -93,14 +90,14 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd libpng-1.6.37
 mkdir build
 cd build
-cmake .. %VSCONFIG% -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=..\..\lib/zlib.lib -DZLIB_INCLUDE_DIR=..\..\include
-cmake --build . --config %BUILDTYPE%
+cmake .. -G"MinGW Makefiles" -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=..\..\lib/zlib.a -DZLIB_INCLUDE_DIR=..\..\include %CMAKE_DEFINITIONS%
+cmake --build .
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy ..\*.h ..\..\include
-copy pnglibconf.h ..\..\include
-if %BUILDTYPE%==Debug (copy %BUILDTYPE%\libpng16_staticd.lib ..\..\lib\png.lib) else (copy %BUILDTYPE%\libpng16_static.lib ..\..\lib\png.lib)
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
+copy pnglibconf.h ..\..\include
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy libpng.a ..\..\lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S libpng-1.6.37
@@ -113,16 +110,14 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ogg-1.3.3
 mkdir build
 cd build
-cmake .. %VSCONFIG% -DBUILD_SHARED_LIBS=OFF
-cmake --build . --config %BUILDTYPE%
+cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF %CMAKE_DEFINITIONS%
+cmake --build .
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 xcopy ..\include\ogg ..\..\include\ogg /i /s
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy include\ogg\config_types.h ..\..\include\ogg
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-copy %BUILDTYPE%\ogg.lib ..\..\lib
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
+copy libogg.a ..\..\lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S ogg-1.3.3
@@ -137,14 +132,12 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd vorbis-1.3.6
 mkdir build
 cd build
-cmake .. %VSCONFIG% -DBUILD_SHARED_LIBS=OFF -DOGG_ROOT=%depspath%
-cmake --build . --config %BUILDTYPE%
+cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF -DOGG_ROOT=%depspath% %CMAKE_DEFINITIONS%
+cmake --build .
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 xcopy ..\include\vorbis ..\..\include\vorbis /i /s
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-copy lib\%BUILDTYPE%\*.lib ..\..\lib
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
+copy lib\*.a ..\..\lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S vorbis-1.3.6
@@ -157,14 +150,12 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd portaudio
 mkdir build1
 cd build1
-cmake .. %VSCONFIG% -DPA_USE_WDMKS=OFF -DCMAKE_BUILD_TYPE=%BUILDTYPE%
-cmake --build . --config %BUILDTYPE%
+cmake .. -G"MinGW Makefiles" -DPA_USE_WDMKS=OFF %CMAKE_DEFINITIONS%
+cmake --build .
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy ..\include\* ..\..\include
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-move %BUILDTYPE%\portaudio_static*.lib ..\..\lib\portaudio_static.lib
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
+copy libportaudio.a ..\..\lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S portaudio
@@ -176,19 +167,19 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd freetype-2.10.4
 mkdir build
 cd build
-cmake .. %VSCONFIG% -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=%BUILDTYPE%
-cmake --build . --config %BUILDTYPE%
+cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF %CMAKE_DEFINITIONS%
+cmake --build .
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 xcopy ..\include ..\..\include /s /e
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-copy %BUILDTYPE%\freetype*.lib ..\..\lib
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
+set FREETYPELIB=libfreetype.a
+if /I "%~1" == "Debug" set FREETYPELIB=libfreetyped.a 
+copy %FREETYPELIB% ..\..\lib\libfreetype.a
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..
 rmdir /Q /S freetype-2.10.4
 del freetype-2.10.4.tar
 
-@echo small3d dependencies built successfully for Visual Studio (%BUILDTYPE% mode)
+@echo small3d dependencies built successfully for MinGW (%~1 mode)
 
 @endlocal

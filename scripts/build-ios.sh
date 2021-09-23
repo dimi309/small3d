@@ -25,9 +25,9 @@ fi
 cd ..
 git clean -fdx
 
-cd deps
+cd deps/scripts
 ./prepare-ios.sh $1 $2
-
+cd ..
 cd ..
 
 mkdir build
