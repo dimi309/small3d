@@ -1,5 +1,12 @@
 jobs:
   include:
+    - os: windows
+      language: cpp
+      script:
+        - powershell
+        - cd scripts
+        - dir
+        - build-mingw.bat Debug opengl
     - os: linux
       dist: focal
       language: cpp
@@ -30,3 +37,8 @@ jobs:
       language: cpp
       compiler: clang
       script: cd scripts && ./build.sh Release opengl
+before_install:
+  - |
+    if [ "${TRAVIS_OS_NAME}" == "windows" ]; then
+    choco install -y 7zip
+    fi
