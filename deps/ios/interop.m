@@ -1,10 +1,11 @@
-//
-//  interop.m
-//  small3dios
-//
-//  Created by me on 26/09/2019.
-//  Copyright © 2019 dimi309. All rights reserved.
-//
+/**
+ * @file  interop.m
+ * @brief Utility functions for running small3d on ios
+ *
+ *  Created on: 2019/09/26
+ *      Author: Dimitri Kourkoulis
+ *     License: BSD 3-Clause License (see LICENSE file)
+ */
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>

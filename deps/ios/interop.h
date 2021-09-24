@@ -1,10 +1,11 @@
-//
-//  interop.h
-//  small3dios
-//
-//  Created by me on 26/09/2019.
-//  Copyright © 2019 dimi309. All rights reserved.
-//
+/**
+ * @file  interop.h
+ * @brief Utility functions header file for running small3d on ios
+ *
+ *  Created on: 2019/09/26
+ *      Author: Dimitri Kourkoulis
+ *     License: BSD 3-Clause License (see LICENSE file)
+ */
 
 #ifndef interop_h
 #define interop_h
