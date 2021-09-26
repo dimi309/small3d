@@ -1,6 +1,6 @@
 image:
   - Ubuntu2004
-  - macos-mojave
+  - macos-bigsur
   - Visual Studio 2019
 
 environment:
@@ -28,7 +28,7 @@ for:
 -
   matrix:
     only:
-      - image: macos-mojave
+      - image: macos-bigsur
         job_name: opengl
         
   test_script:
@@ -46,7 +46,7 @@ matrix:
   exclude:
     - image: Visual Studio 2019
       job_name: vulkan
-    - image: macos-mojave
+    - image: macos-bigsur
       job_name: vulkan
   
 build: off
