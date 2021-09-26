@@ -1,0 +1,52 @@
+image:
+  - Ubuntu2004
+  - macos-mojave
+  - Visual Studio 2019
+
+environment:
+  matrix:
+  - job_name: vulkan
+  - job_name: opengl
+
+for:
+-
+  matrix:
+    only:
+      - image: Ubuntu2004
+        job_name: vulkan
+  
+  test_script:
+    - cd scripts && ./build.sh Debug
+-
+  matrix:
+    only:
+      - image: Ubuntu2004
+        job_name: opengl
+  
+  test_script:
+    - cd scripts && ./build.sh Debug opengl
+-
+  matrix:
+    only:
+      - image: macos-mojave
+        job_name: opengl
+        
+  test_script:
+  - cd scripts && ./build.sh Debug opengl
+-
+  matrix:
+    only:
+      - image: Visual Studio 2019
+        job_name: opengl
+        
+  test_script:
+  - cd scripts && .\build-vs.bat Debug opengl
+
+matrix:
+  exclude:
+    - image: Visual Studio 2019
+      job_name: vulkan
+    - image: macos-mojave
+      job_name: vulkan
+  
+build: off
