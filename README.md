@@ -1,5 +1,7 @@
 # small3d
 
+[![Build status](https://ci.appveyor.com/api/projects/status/qpm3qekslivm3kjb?svg=true)](https://ci.appveyor.com/project/dimi309/small3d)
+
 [[Source Code]](https://github.com/dimi309/small3d) [[API Documentation]](https://dimi309.github.io/small3d)
 
 Minimalistic, open source library for making 3D games in C++, with
