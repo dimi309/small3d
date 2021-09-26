@@ -161,8 +161,8 @@ rm -rf vorbis-1.3.6
 
 ./prepare-bzip2-ios.sh
 
-tar xvf freetype-2.10.4.tar.gz
-cd freetype-2.10.4
+tar xvf freetype-2.11.0.tar.gz
+cd freetype-2.11.0
 mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS
@@ -179,7 +179,7 @@ fi
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
 cd ../..
-rm -rf freetype-2.10.4
+rm -rf freetype-2.11.0
 
 unset $SDK
 

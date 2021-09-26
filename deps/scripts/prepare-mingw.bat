@@ -161,10 +161,10 @@ cd ..\..\
 rmdir /Q /S portaudio
 del pa_stable_v190700_20210406.tar
 
-7z x freetype-2.10.4.tar.gz
+7z x freetype-2.11.0.tar.gz
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-7z x freetype-2.10.4.tar
-cd freetype-2.10.4
+7z x freetype-2.11.0.tar
+cd freetype-2.11.0
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF %CMAKE_DEFINITIONS%
@@ -177,8 +177,8 @@ if /I "%~1" == "Debug" set FREETYPELIB=libfreetyped.a
 copy %FREETYPELIB% ..\..\lib\libfreetype.a
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..
-rmdir /Q /S freetype-2.10.4
-del freetype-2.10.4.tar
+rmdir /Q /S freetype-2.11.0
+del freetype-2.11.0.tar
 
 @echo small3d dependencies built successfully for MinGW (%~1 mode)
 

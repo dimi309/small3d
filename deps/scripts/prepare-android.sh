@@ -78,8 +78,8 @@ do
     cd ../../
     rm -rf vorbis-1.3.6
 
-    tar xvf freetype-2.10.4.tar.gz
-    cd freetype-2.10.4
+    tar xvf freetype-2.11.0.tar.gz
+    cd freetype-2.11.0
     mkdir build
     cd build
     cmake .. -DBUILD_SHARED_LIBS=OFF \
@@ -98,7 +98,7 @@ do
     rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     
     cd ../..
-    rm -rf freetype-2.10.4
+    rm -rf freetype-2.11.0
 
 done
 
