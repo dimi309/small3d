@@ -15,6 +15,7 @@ v1.709 (still open)
   appropriate file parsing object has to be passed instead.
 - Scaling 3D models now also supported.
 - Upgraded portaudio to stable v190700.
+- Upgraded freetype to version 2.11.0.
 
 v1.708 2020-12-25
 
