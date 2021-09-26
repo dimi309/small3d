@@ -106,11 +106,11 @@ endif()
 
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
 
-  if(UNIX)
+  if(NOT MSVC)
     include_directories(${BZIP2_INCLUDE_DIRS})
     target_link_libraries(small3d PUBLIC ${BZIP2_LIBRARIES})
   endif()
-
+  
   if(WIN32)
     target_link_libraries(small3d PUBLIC winmm)
   endif()
