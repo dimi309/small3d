@@ -1,9 +1,30 @@
 image:
+  - macos-bigsur
   - Visual Studio 2015
   - Visual Studio 2019
-  - macos-bigsur
   - Ubuntu2004
 for:
+-
+  matrix:
+    only:
+      - image: macos-bigsur
+  install:
+  - curl https://sdk.lunarg.com/sdk/download/1.2.189.0/mac/vulkansdk-macos-1.2.189.0.dmg -o vulkansdk-macos-1.2.189.0.dmg
+  - sudo hdiutil attach vulkansdk-macos-1.2.189.0.dmg
+  - sudo /Volumes/vulkansdk-macos-1.2.189.0/InstallVulkan.app/Contents/MacOS/InstallVulkan --root ~/VulkanSDK/1.2.189.0 --accept-licenses --default-answer --confirm-command install
+  - sudo hdiutil detach /Volumes/vulkansdk-macos-1.2.189.0
+  
+  test_script:
+  - cd scripts && ./build.sh Debug
+  - cd ..
+  - git clean -fdx
+  - cd scripts && ./build.sh Release
+  - cd ..
+  - git clean -fdx
+  - cd scripts && ./build.sh Debug opengl
+  - cd ..
+  - git clean -fdx
+  - cd scripts && ./build.sh Release opengl
 -
   matrix:
     only:
@@ -43,16 +64,6 @@ for:
   - cd scripts && .\build-vs.bat Debug opengl
   - git clean -fdx
   - cd scripts && .\build-vs.bat Release opengl
--
-  matrix:
-    only:
-      - image: macos-bigsur
-        
-  test_script:
-  - cd scripts && ./build.sh Debug opengl
-  - cd ..
-  - git clean -fdx
-  - cd scripts && ./build.sh Release opengl
 -
   matrix:
     only:
