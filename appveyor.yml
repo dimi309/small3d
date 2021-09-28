@@ -1,52 +1,73 @@
 image:
-  - Ubuntu2004
-  - macos-bigsur
+  - Visual Studio 2015
   - Visual Studio 2019
-
-environment:
-  matrix:
-  - job_name: vulkan
-  - job_name: opengl
-
+  - macos-bigsur
+  - Ubuntu2004
 for:
 -
   matrix:
     only:
-      - image: Ubuntu2004
-        job_name: vulkan
+      - image: Visual Studio 2015
+
+  install:
+  - choco install vulkan-sdk
+  - refreshenv
+  - set SELECTED_MINGW=C:\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0
+  - set PATH=%PATH%;%SELECTED_MINGW%\mingw64\bin
+  - rmdir /Q /S C:\msys64
+  - rmdir /Q /S C:\MinGW
+  - del "C:\Program Files\Git\usr\bin\sh.exe"
   
   test_script:
-    - cd scripts && ./build.sh Debug
--
-  matrix:
-    only:
-      - image: Ubuntu2004
-        job_name: opengl
-  
-  test_script:
-    - cd scripts && ./build.sh Debug opengl
--
-  matrix:
-    only:
-      - image: macos-bigsur
-        job_name: opengl
-        
-  test_script:
-  - cd scripts && ./build.sh Debug opengl
+  - cd scripts && .\build-mingw.bat Debug
+  - git clean -fdx
+  - cd scripts && .\build-mingw.bat Release
+  - git clean -fdx
+  - cd scripts && .\build-mingw.bat Debug opengl
+  - git clean -fdx
+  - cd scripts && .\build-mingw.bat Release opengl
 -
   matrix:
     only:
       - image: Visual Studio 2019
-        job_name: opengl
-        
+
+  install:
+  - choco install vulkan-sdk
+  - refreshenv
+  
   test_script:
   - cd scripts && .\build-vs.bat Debug opengl
-
-matrix:
-  exclude:
-    - image: Visual Studio 2019
-      job_name: vulkan
-    - image: macos-bigsur
-      job_name: vulkan
+  - git clean -fdx
+  - cd scripts && .\build-vs.bat Release opengl
+  - git clean -fdx
+  - cd scripts && .\build-vs.bat Debug opengl
+  - git clean -fdx
+  - cd scripts && .\build-vs.bat Release opengl
+-
+  matrix:
+    only:
+      - image: macos-bigsur
+        
+  test_script:
+  - cd scripts && ./build.sh Debug opengl
+  - cd ..
+  - git clean -fdx
+  - cd scripts && ./build.sh Release opengl
+-
+  matrix:
+    only:
+      - image: Ubuntu2004
   
+  test_script:
+    - cd scripts && ./build.sh Debug
+    - cd ..
+    - git clean -fdx
+    - cd scripts && ./build.sh Release
+    - cd ..
+    - git clean -fdx
+    - cd scripts && ./build.sh Debug opengl
+    - cd ..
+    - git clean -fdx
+    - cd scripts && ./build.sh Release opengl
+
 build: off

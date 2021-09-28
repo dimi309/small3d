@@ -1,4 +1,4 @@
-The bzip2 dependency is not used when building with Visual Studio.
+The bzip2 dependency is not used when building with Visual Studio or older versions gcc on MinGW (<10).
 
 bzip2-1.0.8-use-env.tar.gz is the standard bzip2-1.0.8.tar.gz, slightly modified to get the compiler name, etc. from environment variables, so that it can work on ios. This is configured in the Makefile of the bzip2 library.
 
