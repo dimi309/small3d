@@ -164,7 +164,8 @@ tar xvf freetype-2.11.0.tar.gz
 cd freetype-2.11.0
 mkdir build
 cd build
-cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS
+# Not using BrotliDec because it causes linking issues on Linux
+cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_DISABLE_FIND_PACKAGE_BrotliDec=TRUE -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS
 cmake --build .
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp -rf ../include/* ../../include/
