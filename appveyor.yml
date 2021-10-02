@@ -1,5 +1,8 @@
 environment:
   matrix:
+    - job_name: Ubuntu Linux builds
+      appveyor_build_worker_image: Ubuntu2004
+      
     - job_name: MacOS builds
       appveyor_build_worker_image: macos-bigsur
       
@@ -8,11 +11,25 @@ environment:
       
     - job_name: Windows VS 2019 builds
       appveyor_build_worker_image: Visual Studio 2019
-      
-    - job_name: Ubuntu Linux builds
-      appveyor_build_worker_image: Ubuntu2004
   
 for:
+-
+  matrix:
+    only:
+      - job_name: Ubuntu Linux builds
+  
+  test_script:
+    - cd scripts && ./build.sh Debug
+    - cd ..
+    - git clean -fdx
+    - cd scripts && ./build.sh Release
+    - cd ..
+    - git clean -fdx
+    - cd scripts && ./build.sh Debug opengl
+    - cd ..
+    - git clean -fdx
+    - cd scripts && ./build.sh Release opengl
+
 -
   matrix:
     only:
@@ -73,21 +90,5 @@ for:
   - cd scripts && .\build-vs.bat Debug opengl
   - git clean -fdx
   - cd scripts && .\build-vs.bat Release opengl
--
-  matrix:
-    only:
-      - job_name: Ubuntu Linux builds
-  
-  test_script:
-    - cd scripts && ./build.sh Debug
-    - cd ..
-    - git clean -fdx
-    - cd scripts && ./build.sh Release
-    - cd ..
-    - git clean -fdx
-    - cd scripts && ./build.sh Debug opengl
-    - cd ..
-    - git clean -fdx
-    - cd scripts && ./build.sh Release opengl
 
 build: off
