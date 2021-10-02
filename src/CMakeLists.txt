@@ -148,7 +148,7 @@ AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
 -framework IOKit -framework CoreVideo")
   endif()
 
-  if(UNIX AND NOT MACOS)
+  if(UNIX AND NOT APPLE)
     target_link_libraries(small3d PUBLIC m pthread dl rt X11)
   endif()
 
