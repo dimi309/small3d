@@ -36,22 +36,21 @@ export CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=$1
 mkdir include
 mkdir lib
 
-# Not linking to GFLW statically on Linux, because on Ubuntu the needed static libraries are a mess.
-if [ $(uname) != 'Linux' ]; then
-    unzip glfw-3.3.2.zip
-    cd glfw-3.3.2
-    mkdir build
-    cd build
-    cmake .. -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF $CMAKE_DEFINITIONS
-    cmake --build .
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-    cp -rf ../include/GLFW ../../include/
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-    cp src/libglfw3.a ../../lib/
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-    cd ../..
-    rm -rf glfw-3.3.2
-fi
+
+unzip glfw-3.3.2.zip
+cd glfw-3.3.2
+mkdir build
+cd build
+cmake .. -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF $CMAKE_DEFINITIONS
+cmake --build .
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+cp -rf ../include/GLFW ../../include/
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+cp src/libglfw3.a ../../lib/
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+cd ../..
+rm -rf glfw-3.3.2
+
 
 # Only needed for OpenGL build
 if [ "$2" == "opengl" ]; then

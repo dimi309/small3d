@@ -131,6 +131,7 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
 
   target_link_libraries(unittests PUBLIC small3d)
 
+
   if(MSVC)
     set_target_properties(unittests PROPERTIES LINK_FLAGS_DEBUG
       "-NODEFAULTLIB:LIBCMTD")
@@ -145,8 +146,10 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
     set_target_properties(unittests PROPERTIES LINK_FLAGS "-framework \
 AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
 -framework IOKit -framework CoreVideo")
-  elseif(UNIX AND NOT SMALL3D_OPENGL)
-    target_link_libraries(unittests PUBLIC "m")
   endif()
-  
+
+  if(UNIX AND NOT MACOS)
+    target_link_libraries(small3d PUBLIC m pthread dl rt X11)
+  endif()
+
 endif()
