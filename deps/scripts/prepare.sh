@@ -135,23 +135,19 @@ rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cd ../../
 rm -rf vorbis-1.3.6
 
-# Not linking statically to portaudio on Linux, because on Ubuntu
-# the needed static libraries are a mess.
-if [ $(uname) != 'Linux' ]; then
-    tar xvf pa_stable_v190700_20210406.tgz
-    cd portaudio
-    mkdir build1
-    cd build1
-    cmake .. $CMAKE_DEFINITIONS
-    cmake --build .
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-    cp ../include/* ../../include/
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-    cp libportaudio.a ../../lib/
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-    cd ../../
-    rm -rf portaudio
-fi
+tar xvf pa_stable_v190700_20210406.tgz
+cd portaudio
+mkdir build1
+cd build1
+cmake .. $CMAKE_DEFINITIONS
+cmake --build .
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+cp ../include/* ../../include/
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+cp libportaudio.a ../../lib/
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+cd ../../
+rm -rf portaudio
 
 tar xvf bzip2-1.0.8-use-env.tar.gz
 cd bzip2-1.0.8
