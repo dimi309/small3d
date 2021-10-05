@@ -220,12 +220,23 @@ namespace small3d {
         throw std::runtime_error("PortAudio failed to initialise: " + 
 				 std::string(Pa_GetErrorText(initError)));
       }
+
+      auto numDevices = Pa_GetDeviceCount();
+      if (numDevices <= 0) {
+	LOGERROR("Could not retrieve any sound devices! Pa_CountDevices returned: " +
+		 std::to_string(numDevices));
+	noOutputDevice = true;
+	LOGERROR("Sound disabled.");
+	noOutputDevice = true;
+      } else {
     
-      defaultOutput = Pa_GetDefaultOutputDevice();
+	defaultOutput = Pa_GetDefaultOutputDevice();
     
-      if (defaultOutput == paNoDevice) {
-        LOGERROR("No default sound output device.");
-        noOutputDevice = true;
+	if (defaultOutput == paNoDevice) {
+	  LOGERROR("No default sound output device.");
+	  LOGERROR("Sound disabled.");
+	  noOutputDevice = true;
+	}
       }
     }
 #elif defined(__ANDROID__)
@@ -394,6 +405,7 @@ namespace small3d {
   }
 
   void Sound::openStream() {
+    if (noOutputDevice) return;
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     PaStreamParameters outputParams;
       
