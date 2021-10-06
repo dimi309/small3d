@@ -18,7 +18,7 @@ endlocal & exit /B 1
 )
 
 if /I "%~1" == "Debug" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Debug
-if /I "%~1" == "Release" set CMAKE_DEFINITIONS=
+if /I "%~1" == "Release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
 
 @echo on
 
@@ -49,9 +49,6 @@ rmdir /Q /S src
 )
 
 @echo off
-if /I "%~1" == "Release" (
-echo Warning: Did not set cmake build type to release explicitly because that leads to the following Vulkan related error on some devices: I/Adreno: Shader compilation failed for shaderType: 0
-)
 echo small3d built successfully for Android (%~1 mode)
 endlocal
 @echo on
