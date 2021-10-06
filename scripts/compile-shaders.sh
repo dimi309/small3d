@@ -1,10 +1,24 @@
 set -e
+
+if [ "$1" != "Debug" ] && [ "$1" != "Release" ]; then
+    echo "Please indicate build type: Debug or Release"
+    exit 1
+fi
+
+if [ "$1" == "Debug" ]; then
+   export DEBUG_INFO=-g
+fi
+
+if [ "$1" == "Release" ]; then
+   export DEBUG_INFO=-g0
+fi
+
 cd ../resources/shaders
 echo "Compiling shaders..."
 
-glslangValidator -V perspectiveMatrixLightedShader.vert -o perspectiveMatrixLightedShader.spv
+glslangValidator -V perspectiveMatrixLightedShader.vert -o perspectiveMatrixLightedShader.spv $DEBUG_INFO
 
-glslangValidator -V textureShader.frag -o textureShader.spv
+glslangValidator -V textureShader.frag -o textureShader.spv $DEBUG_INFO
 
 if [ -d "../../build/shaders/" ]; then
     echo "Copying binaries to build/shaders..."
