@@ -19,16 +19,16 @@ endif()
 
 add_library(small3d ${SOURCE_FILES} ${HEADER_FILES})
 
-if(NOT SMALL3D_OPENGL)
-  include_directories(${Vulkan_INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/include/small3d)
-else()
-  include_directories(${OPENGL_INCLUDE_DIR}
-    ${CMAKE_BINARY_DIR}/include/small3d) # because we don't want to include the Vulkan-based Renderer.hpp
-  message(WARNING "ATTENTION: You cannot just edit small3d header files from an IDE like Visual Studio when using the OpenGL build. You need to also copy them to the build directory! (build/include/small3d)")
+# When using OpenGL include the OpenGL Renderer.hpp directory first
+# so that OpenGL Renderer.hpp takes precedence over Vulkan Renderer.hpp
+if(SMALL3D_OPENGL)
+  include_directories(${CMAKE_SOURCE_DIR}/opengl33/include/small3d)
 endif()
 
-if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
+include_directories(${Vulkan_INCLUDE_DIRS}
+    ${CMAKE_SOURCE_DIR}/include/small3d)
+
+if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
   include_directories(
     ${PNG_INCLUDE_DIRS}
     ${GLM_INCLUDE_DIRS}
@@ -38,13 +38,13 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
     ${GLFW_INCLUDE_DIRS}
     ${PORTAUDIO_INCLUDE_DIRS}
     )
-elseif(DEFINED ANDROID_PLATFORM)
+elseif(DEFINED ANDROID_PLATFORM) # Android
   target_include_directories(small3d PUBLIC
     ${CMAKE_SOURCE_DIR}/deps/include
     ${Vulkan_INCLUDE_DIRS}
     ${ZLIB_INCLUDE_DIRS}
     )
-elseif(IOS)
+elseif(IOS) #iOS
   target_include_directories(small3d PUBLIC
     ${CMAKE_SOURCE_DIR}/deps/include
     )
@@ -71,7 +71,7 @@ elseif(SMALL3D_OPENGL) # PC, OpenGL
     ${PORTAUDIO_LIBRARIES}
     ${FREETYPE_LIBRARIES}
     )
-elseif(DEFINED ANDROID_PLATFORM)
+elseif(DEFINED ANDROID_PLATFORM) # Android
 
   add_library(native_app_glue STATIC
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
@@ -113,7 +113,7 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
     target_link_libraries(small3d PUBLIC ${BZIP2_LIBRARIES})
   endif()
   
-  if(WIN32)
+  if(WIN32) # Windows
     target_link_libraries(small3d PUBLIC winmm)
   endif()
 
@@ -121,18 +121,18 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
 
   add_executable(unittests unit_tests.cpp)
 
-  if(NOT SMALL3D_OPENGL)
+  # When using OpenGL include the OpenGL Renderer.hpp directory first
+  # so that OpenGL Renderer.hpp takes precedence over Vulkan Renderer.hpp
+  if(SMALL3D_OPENGL)
     target_include_directories(unittests PUBLIC
-      ${CMAKE_SOURCE_DIR}/include)
-  else()
-    target_include_directories(unittests PUBLIC
-      ${CMAKE_BINARY_DIR}/include) # because we don't want to include the Vulkan-based Renderer.hpp
+      ${CMAKE_SOURCE_DIR}/opengl33/include)
   endif()
+  target_include_directories(unittests PUBLIC
+      ${CMAKE_SOURCE_DIR}/include)
 
   target_link_libraries(unittests PUBLIC small3d)
 
-
-  if(MSVC)
+  if(MSVC) # Visual Studio
     set_target_properties(unittests PROPERTIES LINK_FLAGS_DEBUG
       "-NODEFAULTLIB:LIBCMTD")
     set_target_properties(unittests PROPERTIES LINK_FLAGS_RELEASE
@@ -142,13 +142,13 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
       "${small3d_BINARY_DIR}/bin")
   endif()
 
-  if(APPLE)
+  if(APPLE) # MacOS
     set_target_properties(unittests PROPERTIES LINK_FLAGS "-framework \
 AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
 -framework IOKit -framework CoreVideo")
   endif()
 
-  if(UNIX AND NOT APPLE)
+  if(UNIX AND NOT APPLE) # Linux
     target_link_libraries(small3d PUBLIC m pthread dl rt X11)
   endif()
 
