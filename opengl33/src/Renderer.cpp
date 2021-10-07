@@ -446,7 +446,7 @@ namespace small3d {
     // (caused by the transparency hint in initWindow, which is
     // a workaround for a GLFW problem on that platform)
     // This used to be 0,0,0,1. Hopefully it still works.
-    glClearColor(clearColour);
+    glClearColor(clearColour.x, clearColour.y, clearColour.z, clearColour.w);
 #endif
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
