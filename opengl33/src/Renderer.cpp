@@ -440,6 +440,17 @@ namespace small3d {
 
   }
 
+    void Renderer::clearScreen() const {
+#ifdef __APPLE__
+    // Needed to avoid transparent rendering in Mojave by default
+    // (caused by the transparency hint in initWindow, which is
+    // a workaround for a GLFW problem on that platform)
+    // This used to be 0,0,0,1. Hopefully it still works.
+    glClearColor(clearColour);
+#endif
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  }
+
 
   Renderer::Renderer() {
     window = 0;
@@ -860,23 +871,14 @@ namespace small3d {
     }
   }
 
-  void Renderer::clearScreen() const {
-#ifdef __APPLE__
-    // Needed to avoid transparent rendering in Mojave by default
-    // (caused by the transparency hint in initWindow, which is
-    // a workaround for a GLFW problem on that platform)
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-#endif
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  }
-
-  void Renderer::clearScreen(const glm::vec4& colour) const {
-    glClearColor(colour.r, colour.g, colour.b, colour.a);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  void Renderer::setBackgroundColour(const glm::vec4& colour) {
+    clearColour = colour;
+    glClearColor(clearColour.x, clearColour.y, clearColour.z, clearColour.w);
   }
 
   void Renderer::swapBuffers() const {
     glfwSwapBuffers(window);
+    clearScreen();
   }
 
   /**

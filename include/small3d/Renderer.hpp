@@ -469,22 +469,10 @@ namespace small3d
     void clearBuffers(SceneObject& sceneObject) const;
 
     /**
-     * @brief This function does not do anything in this edition (Vulkan) of
-     *        small3d, since the screen is automatically cleared every time
-     *        swapBuffers() is invoked. It still exists though so as not to
-     *        break compatibility with code written for the OpenGL edition.
+     * @brief Set the background colour of the screen.
+     * @param colour The background colour
      */
-    void clearScreen() const;
-
-    /**
-     * @brief In this edition (Vulkan) of small3d this function only sets the
-     *        screen clearing colour. The  screen is automatically cleared every
-     *        time swapBuffers() is invoked anyway. The name of the function has
-     *        remained the same so as not to break compatibility with code
-     *        written for the OpenGL edition.
-     * @param colour The screen clearing colour
-     */
-    void clearScreen(const glm::vec4& colour);
+    void setBackgroundColour(const glm::vec4& colour);
 
     /**
      * @brief Swap the buffers.

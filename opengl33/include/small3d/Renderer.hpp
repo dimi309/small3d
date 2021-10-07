@@ -58,6 +58,8 @@ namespace small3d
     float fieldOfView = 0.0f;
     float zNear = 0.0f;
     float zFar = 0.0f;
+
+    glm::vec4 clearColour = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
     
     std::unordered_map<std::string, uint32_t> textures;
 
@@ -93,6 +95,8 @@ namespace small3d
     void setWorldDetails(bool perspective);
 
     void bindTexture(const std::string& name);
+
+    void clearScreen() const;
 
     Renderer(const std::string& windowTitle, const int width, const int height,
       const float fieldOfView, const float zNear, const float zFar,
@@ -297,15 +301,10 @@ namespace small3d
     void clearBuffers(SceneObject& sceneObject) const;
 
     /**
-     * @brief Clears the screen.
+     * @brief Set the background colour of the screen.
+     * @param colour The background colour
      */
-    void clearScreen() const;
-
-    /**
-     * @brief Clears the screen.
-     * @param colour The colour with which the screen is to be cleared
-     */
-    void clearScreen(const glm::vec4& colour) const;
+    void setBackgroundColour(const glm::vec4& colour);
 
     /**
      * @brief This is a double buffered system and this command swaps

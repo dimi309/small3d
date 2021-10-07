@@ -16,6 +16,8 @@ v1.709 (still open)
 - Scaling 3D models now also supported.
 - Upgraded portaudio to stable v190700.
 - Upgraded freetype to version 2.11.0.
+- [BREAKING] Removed clearScreen command. Clearing the screen now happens
+  automatically when swapBuffers is called.
 
 v1.708 2020-12-25
 

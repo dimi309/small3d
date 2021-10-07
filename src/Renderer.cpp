@@ -1563,18 +1563,7 @@ namespace small3d {
     }
   }
 
-  void Renderer::clearScreen() const {
-
-    // Do nothing. Clearing is performed before rendering
-    // anyway. This stub is left here for legacy compatibility
-    // reasons.
-
-  }
-
-  void Renderer::clearScreen(const glm::vec4& colour) {
-
-    // Clearing is performed before rendering (see above).
-    // Here only the clear colour is set.
+  void Renderer::setBackgroundColour(const glm::vec4& colour) {
 
     vkz_clear_colour.float32[0] = colour.r;
     vkz_clear_colour.float32[1] = colour.g;

@@ -105,7 +105,7 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
   find_package(Freetype REQUIRED)
   # on windows bzip2 is required for gcc version >= 10, otherwise a freetype associated
   # link error is produced
-  if(UNIX OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" AND NOT
+  if(UNIX OR (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT
 	CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10))
     find_package(BZip2 REQUIRED)
   endif()

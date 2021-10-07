@@ -107,7 +107,7 @@ endif()
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
   # on windows bzip2 is required for gcc version >= 10, otherwise a freetype associated
   # link error is produced
-  if(UNIX OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" AND NOT
+  if(UNIX OR (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT
 	CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10))
     include_directories(${BZIP2_INCLUDE_DIRS})
     target_link_libraries(small3d PUBLIC ${BZIP2_LIBRARIES})

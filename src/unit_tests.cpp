@@ -134,7 +134,6 @@ int WavefrontModelTest() {
     seconds = glfwGetTime();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
-      renderer->clearScreen();
       
       renderer->render(model2, glm::vec3(-1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
       renderer->render(model3, glm::vec3(0.0f, -1.0f, -2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
@@ -166,7 +165,6 @@ int ScaleAndTransformTest() {
     seconds = glfwGetTime();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
-      renderer->clearScreen();
 
       renderer->render(boxes, glm::vec4(0.5f, 0.3f, 0.0f, 1.0f));
 
@@ -205,7 +203,6 @@ int GlbTextureTest() {
     seconds = glfwGetTime();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
-      renderer->clearScreen();
       goat.animate();
 
       renderer->render(goat, "goatGlbTexture");
@@ -240,7 +237,7 @@ int BoundingBoxesTest() {
     seconds = glfwGetTime();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
-      renderer->clearScreen();
+
       goat.animate();
 
       renderer->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -285,7 +282,7 @@ int FPStest() {
       numFrames = 0;
       prevSeconds = seconds;
     }
-      renderer->clearScreen();
+
       goat.animate();
 
       renderer->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -362,7 +359,6 @@ int RendererTest() {
     seconds = glfwGetTime();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
-      renderer->clearScreen();
 
       renderer->render(singleColourRect,
         glm::vec3(0.0f, 0.0f, 0.0f),

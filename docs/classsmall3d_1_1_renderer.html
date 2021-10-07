@@ -133,13 +133,9 @@ GLFWwindow *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a2b636d995107d5dce4c20c465d0f6187"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a2b636d995107d5dce4c20c465d0f6187">clearBuffers</a> (<a class="el" href="classsmall3d_1_1_scene_object.html">SceneObject</a> &amp;sceneObject) const</td></tr>
 <tr class="memdesc:a2b636d995107d5dce4c20c465d0f6187"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear an <a class="el" href="classsmall3d_1_1_scene_object.html" title="An object that appears on the 3D scene. It is made up of a Model, together with information for posit...">SceneObject</a> (multiple models) from the GPU buffers (the <a class="el" href="classsmall3d_1_1_scene_object.html" title="An object that appears on the 3D scene. It is made up of a Model, together with information for posit...">SceneObject</a> itself remains intact).  <a href="classsmall3d_1_1_renderer.html#a2b636d995107d5dce4c20c465d0f6187">More...</a><br /></td></tr>
 <tr class="separator:a2b636d995107d5dce4c20c465d0f6187"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af85d1146e340e49cd1b568f7f3cce8cd"><td class="memItemLeft" align="right" valign="top"><a id="af85d1146e340e49cd1b568f7f3cce8cd"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#af85d1146e340e49cd1b568f7f3cce8cd">clearScreen</a> () const</td></tr>
-<tr class="memdesc:af85d1146e340e49cd1b568f7f3cce8cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function does not do anything in this edition (Vulkan) of <a class="el" href="namespacesmall3d.html">small3d</a>, since the screen is automatically cleared every time <a class="el" href="classsmall3d_1_1_renderer.html#acdc83f2aaaf3f41f35e99c1eabc6ac98" title="Swap the buffers.">swapBuffers()</a> is invoked. It still exists though so as not to break compatibility with code written for the OpenGL edition. <br /></td></tr>
-<tr class="separator:af85d1146e340e49cd1b568f7f3cce8cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad89aca86a938646fcf2273aa70dce33a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ad89aca86a938646fcf2273aa70dce33a">clearScreen</a> (const glm::vec4 &amp;colour)</td></tr>
-<tr class="memdesc:ad89aca86a938646fcf2273aa70dce33a"><td class="mdescLeft">&#160;</td><td class="mdescRight">In this edition (Vulkan) of <a class="el" href="namespacesmall3d.html">small3d</a> this function only sets the screen clearing colour. The screen is automatically cleared every time <a class="el" href="classsmall3d_1_1_renderer.html#acdc83f2aaaf3f41f35e99c1eabc6ac98" title="Swap the buffers.">swapBuffers()</a> is invoked anyway. The name of the function has remained the same so as not to break compatibility with code written for the OpenGL edition.  <a href="classsmall3d_1_1_renderer.html#ad89aca86a938646fcf2273aa70dce33a">More...</a><br /></td></tr>
-<tr class="separator:ad89aca86a938646fcf2273aa70dce33a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab68576dfc33356d43722e83fadec55f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ab68576dfc33356d43722e83fadec55f4">setBackgroundColour</a> (const glm::vec4 &amp;colour)</td></tr>
+<tr class="memdesc:ab68576dfc33356d43722e83fadec55f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the background colour of the screen.  <a href="classsmall3d_1_1_renderer.html#ab68576dfc33356d43722e83fadec55f4">More...</a><br /></td></tr>
+<tr class="separator:ab68576dfc33356d43722e83fadec55f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdc83f2aaaf3f41f35e99c1eabc6ac98"><td class="memItemLeft" align="right" valign="top"><a id="acdc83f2aaaf3f41f35e99c1eabc6ac98"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#acdc83f2aaaf3f41f35e99c1eabc6ac98">swapBuffers</a> ()</td></tr>
 <tr class="memdesc:acdc83f2aaaf3f41f35e99c1eabc6ac98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swap the buffers. <br /></td></tr>
@@ -231,32 +227,6 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sceneObject</td><td>The scene object </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ad89aca86a938646fcf2273aa70dce33a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad89aca86a938646fcf2273aa70dce33a">&#9670;&nbsp;</a></span>clearScreen()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void small3d::Renderer::clearScreen </td>
-          <td>(</td>
-          <td class="paramtype">const glm::vec4 &amp;&#160;</td>
-          <td class="paramname"><em>colour</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>In this edition (Vulkan) of <a class="el" href="namespacesmall3d.html">small3d</a> this function only sets the screen clearing colour. The screen is automatically cleared every time <a class="el" href="classsmall3d_1_1_renderer.html#acdc83f2aaaf3f41f35e99c1eabc6ac98" title="Swap the buffers.">swapBuffers()</a> is invoked anyway. The name of the function has remained the same so as not to break compatibility with code written for the OpenGL edition. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">colour</td><td>The screen clearing colour </td></tr>
   </table>
   </dd>
 </dl>
@@ -835,6 +805,32 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   <table class="params">
     <tr><td class="paramname">sceneObject</td><td>The object </td></tr>
     <tr><td class="paramname">textureName</td><td>The name of the texture to attach to the object. The texture has to have been generated already. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab68576dfc33356d43722e83fadec55f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab68576dfc33356d43722e83fadec55f4">&#9670;&nbsp;</a></span>setBackgroundColour()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void small3d::Renderer::setBackgroundColour </td>
+          <td>(</td>
+          <td class="paramtype">const glm::vec4 &amp;&#160;</td>
+          <td class="paramname"><em>colour</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the background colour of the screen. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">colour</td><td>The background colour </td></tr>
   </table>
   </dd>
 </dl>
