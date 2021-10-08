@@ -11,7 +11,7 @@ fi
 if [ "$1" == "Debug" ]; then
     export buildtype=Debug
 else
-    export buildtype=
+    export buildtype=Release
 fi
    
 cd ..
@@ -46,7 +46,13 @@ do
     rm -rf src
 done
 
+cd ../scripts
+
+./compile-shaders.sh $1
+
 if [ "$1" == "Release" ]; then
-    echo "Warning: Did not set cmake build type to release explicitly because that leads to the following Vulkan related error on some devices: I/Adreno: Shader compilation failed for shaderType: 0"
+    echo "WARNING: Release builds can cause the following error on at least some devices:"
+    echo "`I/Adreno: Shader compilation failed for shaderType: 0`"
 fi
+
 echo "small3d built successfully for Android ($1 mode)"

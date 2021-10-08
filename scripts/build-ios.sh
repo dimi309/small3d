@@ -47,4 +47,8 @@ mv lib/$2/* lib/
 rmdir lib/$2
 rm lib/interop.m
 
+cd ../scripts
+
+./compile-shaders.sh $2
+
 echo "small3d built successfully for $1 ($2 mode)"
