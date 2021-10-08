@@ -27,14 +27,6 @@ file(COPY "deps/include" DESTINATION ".")
 
 file(COPY "deps/lib" DESTINATION ".")
 
-if(NOT SMALL3D_OPENGL)
-  file(GLOB SHADERS "resources/shaders/*.spv")
-else()
-  file(GLOB SHADERS "opengl33/resources/shaders/*")
-endif()
-
-file(COPY ${SHADERS} DESTINATION "./shaders")
-
 if(MSVC)
   file(COPY "deps/bin" DESTINATION ".")
 endif()
@@ -50,8 +42,8 @@ endif()
 if(SMALL3D_OPENGL)
   file(REMOVE "${PROJECT_BINARY_DIR}/include/small3d/Renderer.hpp")
   file(COPY "opengl33/include/small3d/Renderer.hpp" DESTINATION "./include/small3d")
-  file(GLOB VULKAN_BIN_SHADERS ${PROJECT_BINARY_DIR}/bin/resources/shaders/*)
-  file(REMOVE ${VULKAN_BIN_SHADERS})
+  file(GLOB SHADERS "opengl33/resources/shaders/*")
+  file(COPY ${SHADERS} DESTINATION "./shaders")
   file(COPY ${SHADERS} DESTINATION ./bin/resources/shaders) 
 endif()
 
