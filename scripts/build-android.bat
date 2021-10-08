@@ -20,8 +20,6 @@ endlocal & exit /B 1
 if /I "%~1" == "Debug" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Debug
 if /I "%~1" == "Release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
 
-@echo on
-
 set sourcepath=%cd%
 set platformstr=android-26
 
@@ -48,7 +46,9 @@ rmdir /Q /S CMakeFiles
 rmdir /Q /S src
 )
 
-@echo off
+cd ..\scripts
+
+compile-shaders.bat %~1
 
 if /I "%~1" == "Release" (
 echo "WARNING: Release builds can cause the following error on at least some devices:"
