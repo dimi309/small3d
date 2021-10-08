@@ -20,7 +20,10 @@ glslangValidator -V perspectiveMatrixLightedShader.vert -o perspectiveMatrixLigh
 
 glslangValidator -V textureShader.frag -o textureShader.spv $DEBUG_INFO
 
-if [ -d "../../build/shaders/" ]; then
+if [ -d "../../build/" ]; then
+    if [ ! -d "../../build/shaders/" ]; then
+	mkdir ../../build/shaders/ ;
+    fi
     echo "Copying binaries to build/shaders..."
     for f in *.spv ; do
 	cp $f ../../build/shaders/ ;

@@ -30,4 +30,10 @@ cd build
 cmake .. $CMAKE_DEFINITIONS
 cmake --build .
 
+cd ../scripts
+
+if [ "$2" != "opengl" ]; then
+    ./compile-shaders.sh $1;
+fi
+
 echo "small3d built successfully ($1 mode)"
