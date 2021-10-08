@@ -19,3 +19,6 @@ Thumbs.db
 /_build
 /Win32
 /bin
+
+#compiled shaders
+*\.spv

@@ -24,7 +24,8 @@ if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 glslangvalidator -V textureShader.frag -o textureShader.spv %debug_info%
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 echo SPV binaries created successfully
-if exist ..\..\build\shaders\perspectiveMatrixLightedShader.spv (
+if exist ..\..\build (
+if not exist ..\..\build\shaders mkdir ..\..\build\shaders
 for /r %%a in (*.spv) do (
 echo Copying %%a to build\shaders
 copy /y "%%a" ..\..\build\shaders

@@ -34,4 +34,13 @@ cmake .. -G"MinGW Makefiles" %CMAKE_DEFINITIONS%
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cmake --build .
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+
+cd ..\scripts
+
+if /I "%~2" neq "opengl" (
+compile-shaders.bat %~1
+)
+if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
+
+
 echo small3d built successfully for MinGW (%~1 mode)
