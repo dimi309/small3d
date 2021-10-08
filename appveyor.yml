@@ -66,13 +66,13 @@ for:
   - del "C:\Program Files\Git\usr\bin\sh.exe"
   
   test_script:
-  - cd scripts && .\build-mingw.bat Debug
+  - cd scripts && .\build-mingw.bat Debug && cd ..
   - git clean -fdx
-  - cd scripts && .\build-mingw.bat Release
+  - cd scripts && .\build-mingw.bat Release && cd ..
   - git clean -fdx
-  - cd scripts && .\build-mingw.bat Debug opengl
+  - cd scripts && .\build-mingw.bat Debug opengl && cd ..
   - git clean -fdx
-  - cd scripts && .\build-mingw.bat Release opengl
+  - cd scripts && .\build-mingw.bat Release opengl && cd ..
 -
   matrix:
     only:
@@ -83,12 +83,12 @@ for:
   - refreshenv
   
   test_script:
-  - cd scripts && .\build-vs.bat Debug opengl
+  - cd scripts && .\build-vs.bat Debug opengl && cd ..
   - git clean -fdx
-  - cd scripts && .\build-vs.bat Release opengl
+  - cd scripts && .\build-vs.bat Release opengl && cd ..
   - git clean -fdx
-  - cd scripts && .\build-vs.bat Debug opengl
+  - cd scripts && .\build-vs.bat Debug opengl && cd ..
   - git clean -fdx
-  - cd scripts && .\build-vs.bat Release opengl
+  - cd scripts && .\build-vs.bat Release opengl && cd ..
 
 build: off
