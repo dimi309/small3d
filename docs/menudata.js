@@ -24,12 +24,8 @@
 */
 var menudata={children:[
 {text:"Main Page",url:"index.html"},
-{text:"Namespaces",url:"namespaces.html",children:[
-{text:"Namespace List",url:"namespaces.html"},
-{text:"Namespace Members",url:"namespacemembers.html",children:[
-{text:"All",url:"namespacemembers.html"},
-{text:"Functions",url:"namespacemembers_func.html"},
-{text:"Enumerations",url:"namespacemembers_enum.html"}]}]},
+{text:"Topics",url:"topics.html",children:[
+{text:"Xcode",url:"xcode.html"}]},
 {text:"Classes",url:"annotated.html",children:[
 {text:"Class List",url:"annotated.html"},
 {text:"Class Index",url:"classes.html"},
@@ -83,5 +79,4 @@ var menudata={children:[
 {text:"Functions",url:"globals_func.html"},
 {text:"Variables",url:"globals_vars.html"},
 {text:"Macros",url:"globals_defs.html"}]}]},
-{text:"xcode",url:"xcode.html"},
 {text:"changelog",url:"changelog.html"}]}

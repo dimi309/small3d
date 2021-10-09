@@ -8,7 +8,7 @@ var indexSectionsWithContent =
   5: "bcdfijlmnorstvw",
   6: "l",
   7: "l",
-  8: "csx"
+  8: "cstx"
 };
 
 var indexSectionNames =

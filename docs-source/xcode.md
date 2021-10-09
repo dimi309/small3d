@@ -1,4 +1,4 @@
-/*! \page xcode xcode
+/*! \page xcode Xcode
 
 On MacOS, the small3d unit tests and sample game can be built from the command
 line, just like on any other platform. However you might want to create an Xcode 
