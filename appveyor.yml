@@ -64,8 +64,8 @@ for:
   - conan config set general.revisions_enabled=1
 
   test_script:
-  - cd conan_io && conan create . -s cppstd=14 --build=missing && cd ..
-  - cd conan_io && conan create . -s cppstd=14 -o vulkan=True --build=missing && cd ..
+  - cd conan_io && conan create . -s cppstd=14 -o portaudio:with_jack=False --build=missing && cd ..
+  - cd conan_io && conan create . -s cppstd=14 -o portaudio:with_jack=False -o vulkan=True --build=missing && cd ..
   - cd scripts && ./build.sh Debug && cd ..
   - git clean -fdx
   - cd scripts && ./build.sh Release && cd ..
