@@ -57,7 +57,7 @@ for:
 
   install:
   - sudo apt-get update
-  - sudo apt-get -y install libgl-dev libglu1-mesa-dev
+  - sudo apt-get -y install libgl-dev libglu1-mesa-dev glslang-tools
   - source ~/venv3.9.6/bin/activate
   - pip install --upgrade pip
   - pip install conan
