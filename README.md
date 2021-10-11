@@ -70,7 +70,7 @@ If you are using cmake, the modules in `small3d/cmake` can be useful. Check the
 `CMakeLists.txt` and `src/CMakeLists.txt` files for other configuration details 
 (link flags, etc) that may also be required or useful.
 
-## Building and Packaging with conan
+## Building and packaging with conan
 
 To package small3d with [conan.io](https://conan.io), add the [Bincrafters repository](https://bincrafters.readthedocs.io/en/latest/using_packages.html#adding-the-bincrafters-repository-as-a-conan-remote):
 

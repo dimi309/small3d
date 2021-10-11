@@ -124,9 +124,18 @@ Building</h1>
 </ul>
 <p>If you are using cmake, the modules in <code>small3d/cmake</code> can be useful. Check the <code>CMakeLists.txt</code> and <code>src/CMakeLists.txt</code> files for other configuration details (link flags, etc) that may also be required or useful.</p>
 <h1><a class="anchor" id="autotoc_md7"></a>
+Building and packaging with conan</h1>
+<p>To package <a class="el" href="namespacesmall3d.html">small3d</a> with <a href="https://conan.io">conan.io</a>, add the <a href="https://bincrafters.readthedocs.io/en/latest/using_packages.html#adding-the-bincrafters-repository-as-a-conan-remote">Bincrafters repository</a>: </p><pre class="fragment">conan remote add bincrafters https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
+conan config set general.revisions_enabled=1
+</pre><p>Set up the <a class="el" href="namespacesmall3d.html">small3d</a> package locally: </p><pre class="fragment">git clone https://github.com/dimi309/small3d
+cd small3d
+cd conan_io
+conan export .
+</pre><p>The package will be set up as <code>small3d/master</code> in your local conan repository.</p>
+<h1><a class="anchor" id="autotoc_md8"></a>
 small3d on mobile</h1>
 <p>You can build <a class="el" href="namespacesmall3d.html">small3d</a> for mobile platforms by executing either <code>build-android</code> or <code>build-ios</code> from the scripts directory. One sample game, <a href="https://github.com/dimi309/small3d-samples/tree/master/avoidthebug">Avoid the Bug</a> has been ported to both <a href="https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-android">Android</a> and <a href="https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-ios">iOS</a>. I use these projects as a basis for mobile development. Note that, while with the desktop edition of small3dI use GLFW for windowing functionalities and I/O, on mobile I access the native infrastructure directly.</p>
-<h1><a class="anchor" id="autotoc_md8"></a>
+<h1><a class="anchor" id="autotoc_md9"></a>
 Referenced libraries</h1>
 <p>All <a class="el" href="namespacesmall3d.html">small3d</a> dependencies, apart from the Vulkan SDK, are distributed together with its source code. They can be built by executing a single script (see "Building", above).</p>
 <ul>

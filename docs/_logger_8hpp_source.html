@@ -73,12 +73,12 @@ $(function() {
 <a href="_logger_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="_logger_8hpp.html#ae36ea0d604ebf9911ea191aa704a354a">   15</a></span>&#160;<span class="preprocessor">#define LOGERROR(MESSAGE) logger-&gt;append(LogLevel::loggererror, MESSAGE)</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="_logger_8hpp.html#ae36ea0d604ebf9911ea191aa704a354a">   15</a></span>&#160;<span class="preprocessor">#define LOGERROR(MESSAGE) logger-&gt;append(small3d::LogLevel::loggererror, MESSAGE)</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="_logger_8hpp.html#a98d4e4ceb51e0eb8db5abdd2a298fcb2">   20</a></span>&#160;<span class="preprocessor">#define LOGINFO(MESSAGE) logger-&gt;append(LogLevel::loggerinfo, MESSAGE)</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="_logger_8hpp.html#a98d4e4ceb51e0eb8db5abdd2a298fcb2">   20</a></span>&#160;<span class="preprocessor">#define LOGINFO(MESSAGE) logger-&gt;append(small3d::LogLevel::loggerinfo, MESSAGE)</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#if defined(DEBUG) || defined(_DEBUG) || !defined (NDEBUG)</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="_logger_8hpp.html#a0c1596ba4d50786c25ac66a830c90a93">   26</a></span>&#160;<span class="preprocessor">#define LOGDEBUG(MESSAGE) logger-&gt;append(LogLevel::loggerdebug, MESSAGE)</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="_logger_8hpp.html#a0c1596ba4d50786c25ac66a830c90a93">   26</a></span>&#160;<span class="preprocessor">#define LOGDEBUG(MESSAGE) logger-&gt;append(small3d::LogLevel::loggerdebug, MESSAGE)</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define LOGDEBUG(MESSAGE)</span></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#endif</span></div>
