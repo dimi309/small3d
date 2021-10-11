@@ -116,7 +116,7 @@ for:
   
   test_script:
   - cd conan_io && conan create . --build=missing && cd ..
-  - cd conan_io && conan create . -o vulkan=True --build=missing cd ..
+  - cd conan_io && conan create . -o vulkan=True --build=missing && cd ..
   - cd scripts && .\build-vs.bat Debug opengl && cd ..
   - git clean -fdx
   - cd scripts && .\build-vs.bat Release opengl && cd ..
