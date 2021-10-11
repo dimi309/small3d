@@ -70,6 +70,22 @@ If you are using cmake, the modules in `small3d/cmake` can be useful. Check the
 `CMakeLists.txt` and `src/CMakeLists.txt` files for other configuration details 
 (link flags, etc) that may also be required or useful.
 
+## Building and Packaging with conan
+
+To package small3d with [conan.io](https://conan.io), add the [Bincrafters repository](https://bincrafters.readthedocs.io/en/latest/using_packages.html#adding-the-bincrafters-repository-as-a-conan-remote):
+
+    conan remote add bincrafters https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
+    conan config set general.revisions_enabled=1
+ 
+Set up the small3d package locally:
+
+    git clone https://github.com/dimi309/small3d
+    cd small3d
+	cd conan_io
+    conan export .
+	 
+The package will be set up as `small3d/master` in your local conan repository.
+
 ## small3d on mobile
 
 You can build small3d for mobile platforms by executing either `build-android` or 
