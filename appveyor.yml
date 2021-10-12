@@ -38,8 +38,8 @@ for:
   - conan config set general.revisions_enabled=1
   
   test_script:
-  - cd conan_io && conan create . -pr=mingw -s build_type=Release --build=missing && cd ..
-  - cd conan_io && conan create . -pr=mingw -s build_type=Debug --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -pr=mingw -s build_type=Release --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -pr=mingw -s build_type=Debug --build=missing && cd ..
   # Vulkan package build crashes, so no conan Vulkan build here
   - cd scripts && .\build-mingw.bat Debug && cd ..
   - git clean -fdx
@@ -65,10 +65,10 @@ for:
   - conan config set general.revisions_enabled=1
 
   test_script:
-  - cd conan_io && conan create . -s cppstd=14 -s build_type=Release -o portaudio:with_jack=False --build=missing && cd ..
-  - cd conan_io && conan create . -s cppstd=14 -s build_type=Release -o portaudio:with_jack=False -o small3d:vulkan=True --build=missing && cd ..
-  - cd conan_io && conan create . -s cppstd=14 -s build_type=Debug -o portaudio:with_jack=False --build=missing && cd ..
-  - cd conan_io && conan create . -s cppstd=14 -s build_type=Debug -o portaudio:with_jack=False -o small3d:vulkan=True --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Release -o portaudio:with_jack=False --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Release -o portaudio:with_jack=False -o small3d:vulkan=True --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Debug -o portaudio:with_jack=False --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Debug -o portaudio:with_jack=False -o small3d:vulkan=True --build=missing && cd ..
   - cd scripts && ./build.sh Debug && cd ..
   - git clean -fdx
   - cd scripts && ./build.sh Release && cd ..
@@ -93,10 +93,10 @@ for:
   - sudo hdiutil detach /Volumes/vulkansdk-macos-1.2.189.0
   
   test_script:
-  - cd conan_io && conan create . -s cppstd=14 -s build_type=Release --build=missing && cd ..
-  - cd conan_io && conan create . -s cppstd=14 -s build_type=Release -o small3d:vulkan=True --build=missing && cd ..
-  - cd conan_io && conan create . -s cppstd=14 -s build_type=Debug --build=missing && cd ..
-  - cd conan_io && conan create . -s cppstd=14 -s build_type=Debug -o small3d:vulkan=True --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Release --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Release -o small3d:vulkan=True --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Debug --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Debug -o small3d:vulkan=True --build=missing && cd ..
   - cd scripts && ./build.sh Debug && cd ..
   - git clean -fdx
   - cd scripts && ./build.sh Release && cd ..
@@ -120,10 +120,10 @@ for:
   - conan config set general.revisions_enabled=1
   
   test_script:
-  - cd conan_io && conan create . -s build_type=Release --build=missing && cd ..
-  - cd conan_io && conan create . -s build_type=Release -o small3d:vulkan=True --build=missing && cd ..
-  - cd conan_io && conan create . -s build_type=Debug --build=missing && cd ..
-  - cd conan_io && conan create . -s build_type=Debug -o small3d:vulkan=True --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s build_type=Release --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s build_type=Release -o small3d:vulkan=True --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s build_type=Debug --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s build_type=Debug -o small3d:vulkan=True --build=missing && cd ..
   - cd scripts && .\build-vs.bat Debug opengl && cd ..
   - git clean -fdx
   - cd scripts && .\build-vs.bat Release opengl && cd ..

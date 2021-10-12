@@ -82,7 +82,7 @@ Set up the small3d package locally:
     git clone https://github.com/dimi309/small3d
     cd small3d
 	cd conan_io
-    conan export .
+    conan export . small3d/master@
 	 
 The package will be set up as `small3d/master` in your local conan repository.
 

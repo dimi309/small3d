@@ -4,7 +4,6 @@ import shutil
 
 class Small3dConan(ConanFile):
     name = "small3d"
-    version = "master"
     license = "BSD 3-Clause"
     author = "dimi309"
     url = "https://github.com/dimi309/small3d-conan"
