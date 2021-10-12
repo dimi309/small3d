@@ -77,26 +77,18 @@ If you are using cmake, the modules in `small3d/cmake` can be useful. Check the
 
 ## Building and packaging with conan
 
-small3d for [conan.io](https://conan.io), is available on the [Barbarian repository](https://barbarian.bfgroup.xyz).
-
-You can add the barbarian repository using the following commands:
+For building with [conan.io](https://conan.io), first set up the [Barbarian repository](https://barbarian.bfgroup.xyz):
 
 	conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
 	conan config set general.revisions_enabled=1
 
-Then search for small3d, to use as a requirement for your projects:
-
-	conan search -r barbarian-github "small3d*"
-
-If you prefer to set it up locally, use the following commands:
+Then set up small3d:
 
     git clone https://github.com/dimi309/small3d
     cd small3d
 	cd conan_io
     conan export . small3d/master@
 	 
-(you still need to set up the barbarian repository, as mentioned above, because small3d picks up the portaudio requirement from there)
-
 The package will be set up as `small3d/master` in your local conan repository.
 
 ## small3d on mobile
