@@ -149,7 +149,7 @@ AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
   endif()
 
   if(UNIX AND NOT APPLE) # Linux
-    target_link_libraries(unittests PUBLIC m pthread dl rt X11 asound)
+    target_link_libraries(unittests PUBLIC m pthread rt asound X11 dl)
   endif()
 
 endif()
