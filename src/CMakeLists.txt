@@ -116,6 +116,10 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
   if(WIN32) # Windows
     target_link_libraries(small3d PUBLIC winmm)
   endif()
+  
+  if(UNIX AND NOT APPLE) # Linux
+    target_link_libraries(small3d PUBLIC m pthread rt asound X11 dl)
+  endif()
 
   # Unit testing
 
@@ -148,8 +152,5 @@ AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
 -framework IOKit -framework CoreVideo")
   endif()
 
-  if(UNIX AND NOT APPLE) # Linux
-    target_link_libraries(unittests PUBLIC m pthread rt asound X11 dl)
-  endif()
 
 endif()
