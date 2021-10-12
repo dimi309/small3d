@@ -14,6 +14,11 @@ Vulkan and OpenGL support
 - [Frog Remixed](https://github.com/dimi309/small3d-samples/tree/master/frogremixed)
 - [Gloom](https://github.com/dimi309/small3d-samples/tree/master/gloom)
 
+If you prefer building with conan.io, these two repositories contain games that can be built that way:
+
+- [Gloom for conan](https://github.com/dimi309/gloom-game-conan)
+- [Islet Hell](https://github.com/dimi309/islet-hell)
+
 ## Tutorial
 
 https://www.gamedev.net/tutorials/programming/engines-and-middleware/small3d-tutorial-r5655/
@@ -72,18 +77,26 @@ If you are using cmake, the modules in `small3d/cmake` can be useful. Check the
 
 ## Building and packaging with conan
 
-To package small3d with [conan.io](https://conan.io), add the [Bincrafters repository](https://bincrafters.readthedocs.io/en/latest/using_packages.html#adding-the-bincrafters-repository-as-a-conan-remote):
+small3d for [conan.io](https://conan.io), is available on the [Barbarian repository](https://barbarian.bfgroup.xyz).
 
-    conan remote add bincrafters https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
-    conan config set general.revisions_enabled=1
- 
-Set up the small3d package locally:
+You can add the barbarian repository using the following commands:
+
+	conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
+	conan config set general.revisions_enabled=1
+
+Then search for small3d, to use as a requirement for your projects:
+
+	conan search -r barbarian-github "small3d*"
+
+If you prefer to set it up locally, use the following commands:
 
     git clone https://github.com/dimi309/small3d
     cd small3d
 	cd conan_io
     conan export . small3d/master@
 	 
+(you still need to set up the barbarian repository, as mentioned above, because small3d picks up the portaudio requirement from there)
+
 The package will be set up as `small3d/master` in your local conan repository.
 
 ## small3d on mobile
