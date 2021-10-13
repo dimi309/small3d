@@ -41,16 +41,15 @@ class Small3dConan(ConanFile):
         cmake.configure()
         cmake.build()
         if self.options.vulkan:
-            if self.settings.build_type == "Release":
-                if self.settings.os == "Windows":
-                    self.run("cd scripts && compile-shaders.bat Release", "scripts", msys_mingw=False)
-                else:
-                    self.run("cd scripts && chmod +x compile-shaders.sh && ./compile-shaders.sh Release", "scripts", msys_mingw=False)
+            if self.settings.os == "Windows":
+                self.run("cd scripts && compile-shaders.bat " + str(self.settings.build_type), "scripts", msys_mingw=False)
             else:
-                if self.settings.os == "Windows":
-                    self.run("cd scripts && compile-shaders.bat Debug", "scripts", msys_mingw=False)
+                if self.settings.build_type == "Release":
+                    debug_info = "-g0"
                 else:
-                    self.run("cd scripts && chmod +x compile-shaders.sh && ./compile-shaders.sh Debug", "scripts", msys_mingw=False)
+                    debug_info = "-g"
+                self.run("cd resources/shaders && glslangValidator -V perspectiveMatrixLightedShader.vert -o perspectiveMatrixLightedShader.spv "+ debug_info +
+                             " && glslangValidator -V textureShader.frag -o textureShader.spv " + debug_info, "resources/shaders", msys_mingw=False)
 
     def package(self):
         if self.options.vulkan:
