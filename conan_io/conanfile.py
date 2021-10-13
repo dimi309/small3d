@@ -45,12 +45,12 @@ class Small3dConan(ConanFile):
                 if self.settings.os == "Windows":
                     self.run("cd scripts && compile-shaders.bat Release", "scripts", msys_mingw=False)
                 else:
-                    self.run("cd scripts && ./compile-shaders.sh Release", "scripts", msys_mingw=False)
+                    self.run("cd scripts && chmod +x compile-shaders.sh && ./compile-shaders.sh Release", "scripts", msys_mingw=False)
             else:
                 if self.settings.os == "Windows":
                     self.run("cd scripts && compile-shaders.bat Debug", "scripts", msys_mingw=False)
                 else:
-                    self.run("cd scripts && ./compile-shaders.sh Debug", "scripts", msys_mingw=False)
+                    self.run("cd scripts && chmod +x compile-shaders.sh && ./compile-shaders.sh Debug", "scripts", msys_mingw=False)
 
     def package(self):
         if self.options.vulkan:
