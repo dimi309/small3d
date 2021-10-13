@@ -80,16 +80,13 @@ If you are using cmake, the modules in `small3d/cmake` can be useful. Check the
 For building with [conan.io](https://conan.io), first set up the [Barbarian repository](https://barbarian.bfgroup.xyz):
 
 	conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
-	conan config set general.revisions_enabled=1
+	
+You can then reference the small3d library as `small3d/master@dimi309/small3d` 
+in your conanfiles.
 
-Then set up small3d:
-
-    git clone https://github.com/dimi309/small3d
-    cd small3d
-	cd conan_io
-    conan export . small3d/master@
-	 
-The package will be set up as `small3d/master` in your local conan repository.
+If you would like to export and set up the small3d package locally yourself, the 
+conan configuration can be found in the `conan_io` subdirectory of this 
+git repository.
 
 ## small3d on mobile
 
