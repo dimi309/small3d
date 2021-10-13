@@ -26,7 +26,6 @@ for:
   - pip install --upgrade pip
   - pip install conan
   - conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
-  - conan config set general.revisions_enabled=1
 
   test_script:
   - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Release -o portaudio:with_jack=False --build=missing && cd ..
@@ -63,7 +62,6 @@ for:
   - conan profile update settings.compiler.version=8.1 mingw
   - conan profile update settings.compiler.libcxx=libstdc++11 mingw
   - conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
-  - conan config set general.revisions_enabled=1
   
   test_script:
   - cd conan_io && conan create . small3d/master@ -pr=mingw -s build_type=Release --build=missing && cd ..
@@ -86,7 +84,6 @@ for:
   - pip install --upgrade pip
   - pip install conan
   - conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
-  - conan config set general.revisions_enabled=1
   - curl https://sdk.lunarg.com/sdk/download/1.2.189.0/mac/vulkansdk-macos-1.2.189.0.dmg -o vulkansdk-macos-1.2.189.0.dmg
   - sudo hdiutil attach vulkansdk-macos-1.2.189.0.dmg
   - sudo /Volumes/vulkansdk-macos-1.2.189.0/InstallVulkan.app/Contents/MacOS/InstallVulkan --root ~/VulkanSDK/1.2.189.0 --accept-licenses --default-answer --confirm-command install
@@ -117,7 +114,6 @@ for:
   - python -m pip install --upgrade pip
   - pip install conan
   - conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
-  - conan config set general.revisions_enabled=1
   
   test_script:
   - cd conan_io && conan create . small3d/master@ -s build_type=Release --build=missing && cd ..
