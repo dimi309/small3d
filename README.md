@@ -53,7 +53,7 @@ and tools accessible via the command line:
 - 7zip (only on Windows)
 - CMake
 
-## Building
+## Building and deploying
 
 Run the build script which is suitable to your platform from the scripts 
 directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`)
@@ -75,9 +75,9 @@ If you are using cmake, the modules in `small3d/cmake` can be useful. Check the
 `CMakeLists.txt` and `src/CMakeLists.txt` files for other configuration details 
 (link flags, etc) that may also be required or useful.
 
-## Building and packaging with conan
+## Deploying with conan
 
-For building with [conan.io](https://conan.io), first set up the [Barbarian repository](https://barbarian.bfgroup.xyz):
+For deploying small3d with [conan.io](https://conan.io), first add the [Barbarian package index](https://barbarian.bfgroup.xyz):
 
 	conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
 	
