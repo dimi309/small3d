@@ -136,14 +136,14 @@ namespace small3d {
     vertexBuffers[2] = model.uvBuffer;
     vertexBuffers[3] = model.jointBuffer;
     vertexBuffers[4] = model.weightBuffer;
-      
+
     VkDeviceSize offsets[5];
     offsets[0] = 0;
     offsets[1] = 0;
     offsets[2] = 0;
     offsets[3] = 0;
     offsets[4] = 0;
-      
+
     uint32_t bindingCount = 5;
 
     // Vertex buffer
@@ -488,8 +488,19 @@ namespace small3d {
 
   }
 
-  void Renderer::positionNextModel(Model& model, const glm::vec3 offset,
+  void Renderer::transform(Model& model, const glm::vec3 offset,
     const glm::vec3 rotation, uint32_t memIndex) {
+
+    this->transform(model, offset,
+      glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)),
+      memIndex);
+
+  }
+
+  void Renderer::transform(Model& model, const glm::vec3 offset,
+    const glm::mat4x4 rotation, uint32_t memIndex) {
 
     if (memIndex >= maxObjectsPerPass) {
       throw std::runtime_error("Cannot position more than " + std::to_string(maxObjectsPerPass) +
@@ -499,9 +510,7 @@ namespace small3d {
     uboModelPlacementDynamic[memIndex] = {};
 
     uboModelPlacementDynamic[memIndex].modelTransformation =
-      glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+      rotation *
       glm::scale(glm::mat4x4(1.0f), model.scale) *
       glm::translate(glm::mat4x4(1.0f), model.origTranslation) *
       glm::toMat4(model.origRotation) *
@@ -515,12 +524,12 @@ namespace small3d {
 
       uboModelPlacementDynamic[memIndex].jointTransformations[idx] =
 
-        glm::inverse(glm::translate(glm::mat4x4(1.0f), model.origTranslation) * 
-          glm::toMat4(model.origRotation) * 
+        glm::inverse(glm::translate(glm::mat4x4(1.0f), model.origTranslation) *
+          glm::toMat4(model.origRotation) *
           glm::scale(glm::mat4x4(1.0f), model.origScale)) *
 
         model.getJointTransform(idx) *
-        
+
         joint.inverseBindMatrix;
 
       ++idx;
@@ -1226,6 +1235,34 @@ namespace small3d {
     const std::string& textureName,
     const bool perspective) {
 
+    this->render(model, offset,
+      glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)),
+      colour, textureName, 
+      perspective);
+
+  }
+
+  void Renderer::render(Model& model, const glm::vec3& offset,
+    const glm::vec3& rotation,
+    const std::string& textureName) {
+
+    this->render(model, offset, 
+      glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)), 
+      glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
+      textureName);
+
+  }
+
+  void Renderer::render(Model& model, const glm::vec3& offset,
+    const glm::mat4x4& rotation,
+    const glm::vec4& colour,
+    const std::string& textureName,
+    const bool perspective) {
+
 #if defined(DEBUG) || defined(_DEBUG) || !defined (NDEBUG)
     if (model.indexData.size() == 0 ||
       model.indexDataByteSize == 0 ||
@@ -1398,91 +1435,90 @@ namespace small3d {
           " buffer for texture coordinates.");
       }
 
-        auto jointByteSize = model.jointDataByteSize == 0 ? model.vertexDataByteSize / 4  :
+      auto jointByteSize = model.jointDataByteSize == 0 ? model.vertexDataByteSize / 4 :
         model.jointDataByteSize;
 
-        if (!vkz_create_buffer(&model.jointBuffer,
-          VK_BUFFER_USAGE_TRANSFER_DST_BIT |
-          VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-          jointByteSize,
-          &model.jointBufferMemory,
-          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
-          throw std::runtime_error("Failed to create joint buffer.");
-        }
+      if (!vkz_create_buffer(&model.jointBuffer,
+        VK_BUFFER_USAGE_TRANSFER_DST_BIT |
+        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        jointByteSize,
+        &model.jointBufferMemory,
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
+        throw std::runtime_error("Failed to create joint buffer.");
+      }
 
-        if (vkz_create_buffer(&stagingBuffer,
-          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-          jointByteSize,
-          &stagingBufferMemory,
-          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
-          void* jointData;
-          vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
-            VK_WHOLE_SIZE,
-            0, &jointData);
-            
-            if(model.jointDataByteSize > 0) {
+      if (vkz_create_buffer(&stagingBuffer,
+        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+        jointByteSize,
+        &stagingBufferMemory,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
+        void* jointData;
+        vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
+          VK_WHOLE_SIZE,
+          0, &jointData);
+
+        if (model.jointDataByteSize > 0) {
           memcpy(jointData, &model.jointData[0],
             model.jointDataByteSize);
-            }
-            else {
-                memset(jointData, 0, jointByteSize);
-            }
-          vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
-
-          vkz_copy_buffer(stagingBuffer, model.jointBuffer,
-            jointByteSize);
-
-          vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
         }
         else {
-          throw std::runtime_error("Failed to create the staging"
-            " buffer for joints.");
+          memset(jointData, 0, jointByteSize);
         }
+        vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
 
-      
+        vkz_copy_buffer(stagingBuffer, model.jointBuffer,
+          jointByteSize);
 
-        auto weightByteSize = model.weightDataByteSize == 0 ? model.vertexDataByteSize :
+        vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+      }
+      else {
+        throw std::runtime_error("Failed to create the staging"
+          " buffer for joints.");
+      }
+
+      auto weightByteSize = model.weightDataByteSize == 0 ? model.vertexDataByteSize :
         model.weightDataByteSize;
-        if (!vkz_create_buffer(&model.weightBuffer,
-          VK_BUFFER_USAGE_TRANSFER_DST_BIT |
-          VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-          weightByteSize,
-          &model.weightBufferMemory,
-          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
-          throw std::runtime_error("Failed to create weight buffer.");
-        }
+      if (!vkz_create_buffer(&model.weightBuffer,
+        VK_BUFFER_USAGE_TRANSFER_DST_BIT |
+        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        weightByteSize,
+        &model.weightBufferMemory,
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
+        throw std::runtime_error("Failed to create weight buffer.");
+      }
 
-        if (vkz_create_buffer(&stagingBuffer,
-          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-          weightByteSize,
-          &stagingBufferMemory,
-          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
-          void* weightData;
-          vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
-            VK_WHOLE_SIZE,
-            0, &weightData);
-            
-            if (model.weightDataByteSize > 0) {
+      if (vkz_create_buffer(&stagingBuffer,
+        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+        weightByteSize,
+        &stagingBufferMemory,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
+        void* weightData;
+        vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
+          VK_WHOLE_SIZE,
+          0, &weightData);
+
+        if (model.weightDataByteSize > 0) {
           memcpy(weightData, &model.weightData[0],
             model.weightDataByteSize);
-            } else {
-                memset(weightData, 0, weightByteSize);
-            }
-          
-            vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
-
-          vkz_copy_buffer(stagingBuffer, model.weightBuffer,
-            weightByteSize);
-
-          vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
         }
         else {
-          throw std::runtime_error("Failed to create the staging"
-            " buffer for weights.");
+          memset(weightData, 0, weightByteSize);
         }
-      
+
+        vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+
+        vkz_copy_buffer(stagingBuffer, model.weightBuffer,
+          weightByteSize);
+
+        vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+      }
+      else {
+        throw std::runtime_error("Failed to create the staging"
+          " buffer for weights.");
+      }
+
       model.alreadyInGPU = true;
     }
 
@@ -1502,7 +1538,7 @@ namespace small3d {
 
     model.perspective = perspective;
 
-    positionNextModel(model, offset, rotation, modelPlacementMemIndex);
+    transform(model, offset, rotation, modelPlacementMemIndex);
     model.placementMemIndex = modelPlacementMemIndex;
     ++modelPlacementMemIndex;
 
@@ -1510,10 +1546,10 @@ namespace small3d {
 
   }
 
-  void Renderer::render(Model& model, const glm::vec3& offset,
-    const glm::vec3& rotation,
+  void Renderer::render(Model& model, const glm::vec3& position,
+    const glm::mat4x4& rotation,
     const std::string& textureName) {
-    this->render(model, offset, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
+    this->render(model, position, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName);
   }
 
