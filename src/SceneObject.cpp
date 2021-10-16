@@ -49,7 +49,7 @@ namespace small3d {
     const int numFrames,
     const int startFrameIndex,
     const uint32_t boundingBoxSubdivisions) :
-    offset(0, 0, 0), rotation(0, 0, 0) {
+    offset(0, 0, 0) {
 
     wavefront = true;
 
@@ -88,6 +88,27 @@ namespace small3d {
 
   const std::string SceneObject::getName() const {
     return name;
+  }
+
+  void SceneObject::setRotation(const glm::vec3& rotation) {
+
+    this->rotation = glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+  }
+
+  void SceneObject::addRotation(const glm::vec3& rotation) {
+    this->rotation = glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) * this->rotation;
+  }
+
+  void SceneObject::setRotation(const glm::mat4x4& rotation) {
+    this->rotation = rotation;
+  }
+  
+  const glm::mat4x4 SceneObject::getRotation() const {
+    return this->rotation;
   }
 
   void SceneObject::startAnimating() {
@@ -132,7 +153,7 @@ namespace small3d {
         name +
         ", so collision detection is not enabled.");
     }
-    return boundingBoxSet.contains(point, this->offset, this->rotation);
+    return boundingBoxSet.contains(point, this->offset, this->getRotation());
   }
 
   bool SceneObject::containsCorners(SceneObject otherObject) const {

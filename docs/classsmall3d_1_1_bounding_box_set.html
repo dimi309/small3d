@@ -104,12 +104,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_bounding_box_set.html#a60b57cda9c3d783c7d88f306ceda3060">~BoundingBoxSet</a> ()=default</td></tr>
 <tr class="memdesc:a60b57cda9c3d783c7d88f306ceda3060"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br /></td></tr>
 <tr class="separator:a60b57cda9c3d783c7d88f306ceda3060"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b5b507e6dae95b55943ec09d1d2d3bb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_bounding_box_set.html#a4b5b507e6dae95b55943ec09d1d2d3bb">contains</a> (const glm::vec3 point, const glm::vec3 thisOffset, const glm::vec3 thisRotation) const</td></tr>
-<tr class="memdesc:a4b5b507e6dae95b55943ec09d1d2d3bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a point is inside any of the boxes.  <a href="classsmall3d_1_1_bounding_box_set.html#a4b5b507e6dae95b55943ec09d1d2d3bb">More...</a><br /></td></tr>
-<tr class="separator:a4b5b507e6dae95b55943ec09d1d2d3bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f168bc8505d561601e94d9b77c4b07c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_bounding_box_set.html#a3f168bc8505d561601e94d9b77c4b07c">containsCorners</a> (const <a class="el" href="classsmall3d_1_1_bounding_box_set.html">BoundingBoxSet</a> otherBoxSet, const glm::vec3 thisOffset, const glm::vec3 thisRotation, const glm::vec3 otherOffset, const glm::vec3 otherRotation) const</td></tr>
-<tr class="memdesc:a3f168bc8505d561601e94d9b77c4b07c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check any of the corners of another set of bounding boxes is inside any of the boxes of this set.  <a href="classsmall3d_1_1_bounding_box_set.html#a3f168bc8505d561601e94d9b77c4b07c">More...</a><br /></td></tr>
-<tr class="separator:a3f168bc8505d561601e94d9b77c4b07c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9b176c5242ab94a2edba46eb39b57b7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_bounding_box_set.html#aa9b176c5242ab94a2edba46eb39b57b7">contains</a> (const glm::vec3 point, const glm::vec3 thisOffset, const glm::mat4x4 thisRotation) const</td></tr>
+<tr class="memdesc:aa9b176c5242ab94a2edba46eb39b57b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a point is inside any of the boxes.  <a href="classsmall3d_1_1_bounding_box_set.html#aa9b176c5242ab94a2edba46eb39b57b7">More...</a><br /></td></tr>
+<tr class="separator:aa9b176c5242ab94a2edba46eb39b57b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c64a15bd255242e5b1ec9bc4c122aa2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_bounding_box_set.html#a1c64a15bd255242e5b1ec9bc4c122aa2">containsCorners</a> (const <a class="el" href="classsmall3d_1_1_bounding_box_set.html">BoundingBoxSet</a> otherBoxSet, const glm::vec3 thisOffset, const glm::mat4x4 thisRotation, const glm::vec3 otherOffset, const glm::mat4x4 otherRotation) const</td></tr>
+<tr class="memdesc:a1c64a15bd255242e5b1ec9bc4c122aa2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check any of the corners of another set of bounding boxes is inside any of the boxes of this set.  <a href="classsmall3d_1_1_bounding_box_set.html#a1c64a15bd255242e5b1ec9bc4c122aa2">More...</a><br /></td></tr>
+<tr class="separator:a1c64a15bd255242e5b1ec9bc4c122aa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf45f0d5ed515b0d7e5a9b319ba98f62"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classsmall3d_1_1_model.html">Model</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_bounding_box_set.html#abf45f0d5ed515b0d7e5a9b319ba98f62">getModels</a> ()</td></tr>
 <tr class="memdesc:abf45f0d5ed515b0d7e5a9b319ba98f62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the bounding boxes in a set of Models that can be rendered.  <a href="classsmall3d_1_1_bounding_box_set.html#abf45f0d5ed515b0d7e5a9b319ba98f62">More...</a><br /></td></tr>
 <tr class="separator:abf45f0d5ed515b0d7e5a9b319ba98f62"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -174,8 +174,8 @@ std::vector&lt; std::vector&lt; unsigned int &gt; &gt;&#160;</td><td class="memI
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a4b5b507e6dae95b55943ec09d1d2d3bb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4b5b507e6dae95b55943ec09d1d2d3bb">&#9670;&nbsp;</a></span>contains()</h2>
+<a id="aa9b176c5242ab94a2edba46eb39b57b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9b176c5242ab94a2edba46eb39b57b7">&#9670;&nbsp;</a></span>contains()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -195,7 +195,7 @@ std::vector&lt; std::vector&lt; unsigned int &gt; &gt;&#160;</td><td class="memI
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const glm::vec3&#160;</td>
+          <td class="paramtype">const glm::mat4x4&#160;</td>
           <td class="paramname"><em>thisRotation</em>&#160;</td>
         </tr>
         <tr>
@@ -211,7 +211,7 @@ std::vector&lt; std::vector&lt; unsigned int &gt; &gt;&#160;</td><td class="memI
   <table class="params">
     <tr><td class="paramname">point</td><td>The point (as a vector) </td></tr>
     <tr><td class="paramname">thisOffset</td><td>The offset (location) of the box set </td></tr>
-    <tr><td class="paramname">thisRotation</td><td>The rotation of the box set </td></tr>
+    <tr><td class="paramname">thisRotation</td><td>The rotation transformation of the box set </td></tr>
   </table>
   </dd>
 </dl>
@@ -219,8 +219,8 @@ std::vector&lt; std::vector&lt; unsigned int &gt; &gt;&#160;</td><td class="memI
 
 </div>
 </div>
-<a id="a3f168bc8505d561601e94d9b77c4b07c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f168bc8505d561601e94d9b77c4b07c">&#9670;&nbsp;</a></span>containsCorners()</h2>
+<a id="a1c64a15bd255242e5b1ec9bc4c122aa2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c64a15bd255242e5b1ec9bc4c122aa2">&#9670;&nbsp;</a></span>containsCorners()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -240,7 +240,7 @@ std::vector&lt; std::vector&lt; unsigned int &gt; &gt;&#160;</td><td class="memI
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const glm::vec3&#160;</td>
+          <td class="paramtype">const glm::mat4x4&#160;</td>
           <td class="paramname"><em>thisRotation</em>, </td>
         </tr>
         <tr>
@@ -252,7 +252,7 @@ std::vector&lt; std::vector&lt; unsigned int &gt; &gt;&#160;</td><td class="memI
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const glm::vec3&#160;</td>
+          <td class="paramtype">const glm::mat4x4&#160;</td>
           <td class="paramname"><em>otherRotation</em>&#160;</td>
         </tr>
         <tr>
@@ -268,9 +268,9 @@ std::vector&lt; std::vector&lt; unsigned int &gt; &gt;&#160;</td><td class="memI
   <table class="params">
     <tr><td class="paramname">otherBoxSet</td><td>The other box set </td></tr>
     <tr><td class="paramname">thisOffset</td><td>The offset (location) of this box set </td></tr>
-    <tr><td class="paramname">thisRotation</td><td>The rotation of this box set </td></tr>
+    <tr><td class="paramname">thisRotation</td><td>The rotation transformation of this box set </td></tr>
     <tr><td class="paramname">otherOffset</td><td>The offset (location) of the other box set </td></tr>
-    <tr><td class="paramname">otherRotation</td><td>The rotation of the other box set </td></tr>
+    <tr><td class="paramname">otherRotation</td><td>The rotation transformation of the other box set </td></tr>
   </table>
   </dd>
 </dl>

@@ -45,6 +45,7 @@ namespace small3d
     int numFrames;
     std::string name;
     bool wavefront = false;
+    glm::mat4x4 rotation = glm::mat4x4(1);
 
     std::vector<Model> models;
   public:
@@ -126,10 +127,36 @@ namespace small3d
      */
     glm::vec3 offset = glm::vec3(0.0f, 0.0f, 0.0f);
 
+    
     /**
-     * Rotation of the object (on x, y, z axes respectively)
+     * @brief: Set the rotation of the object 
+     * 
+     * @param rotation The rotation (x, y, z)
      */
-    glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+    void setRotation(const glm::vec3& rotation);
+
+    /**
+     * @brief: Modify the rotation of the object
+     *
+     * @param rotation The rotation to modify by (x, y, z)
+     */
+    void addRotation(const glm::vec3 & rotation);
+
+    /**
+     * @brief: Set the rotation of the object
+     *         by transformation matrix
+     * 
+     * @param rotation The rotation tranformation matrix
+     */
+    void setRotation(const glm::mat4x4& rotation);
+
+    /**
+     * @brief: Get the rotation of the object
+     *         by transformation matrix
+     *
+     * @return The rotation tranformation matrix
+     */
+    const glm::mat4x4 getRotation() const;
 
     /**
      * @brief Start animating the object

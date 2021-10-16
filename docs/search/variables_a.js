@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['rotation_271',['rotation',['../classsmall3d_1_1_scene_object.html#a765d692291b6cb49160481f05cbae39b',1,'small3d::SceneObject']]]
+  ['scale_278',['scale',['../classsmall3d_1_1_model.html#a39352fd779afaef6ee5ef398a0481b31',1,'small3d::Model']]]
 ];

@@ -153,7 +153,7 @@ int ScaleAndTransformTest() {
   double seconds = glfwGetTime();
   double prevSeconds = seconds;
   const uint32_t framerate = 30;
-
+  
   constexpr double secondsInterval = 1.0 / framerate;
 
   SceneObject boxes("boxes", "resources/models/boxes.glb", "");
@@ -169,7 +169,7 @@ int ScaleAndTransformTest() {
       renderer->render(boxes, glm::vec4(0.5f, 0.3f, 0.0f, 1.0f));
 
       renderer->swapBuffers();
-      boxes.rotation.y += 0.01f;
+      boxes.addRotation(glm::vec3(0.0f, 0.01f, 0.0f));
     }
   }
 
@@ -209,7 +209,7 @@ int GlbTextureTest() {
       renderer->render(tree, "treeGlbTexture");
 
       renderer->swapBuffers();
-      goat.rotation.y += 0.01f;
+      goat.addRotation(glm::vec3(0.0f, 0.01f, 0.0f));
     }
   }
 
@@ -244,10 +244,10 @@ int BoundingBoxesTest() {
 
       for (auto& m : boundingBoxModels) {
         renderer->render(m, goat.offset,
-          goat.rotation, glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
+          goat.getRotation(), glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
       }
       renderer->swapBuffers();
-      goat.rotation.y += 0.01f;
+      goat.addRotation(glm::vec3(0.0f, 0.01f, 0.0f));
     }
   }
 
@@ -289,7 +289,7 @@ int FPStest() {
 
       for (auto& m : boundingBoxModels) {
         renderer->render(m, goat.offset,
-          goat.rotation, glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
+          goat.getRotation(), glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
       }
 
       renderer->generateTexture("frameRate", std::to_string(framerate) + " FPS",
@@ -301,7 +301,7 @@ int FPStest() {
 
       renderer->swapBuffers();
       ++numFrames;
-      goat.rotation.y += 0.01f;
+      goat.addRotation(glm::vec3(0.0f, 0.01f, 0.0f));
     
   }
 
@@ -311,7 +311,7 @@ int FPStest() {
 int RendererTest() {
   Renderer* renderer = &Renderer::getInstance("test", 640, 480);
 
-  renderer->cameraRotation = glm::vec3(0.4f, 0.1f, 0.1f);
+  renderer->setCameraRotation(glm::vec3(0.4f, 0.1f, 0.1f));
   
   // Here loading the mesh without providing a name is also tested.
   Model modelFromGlb(GlbFile("resources/models/goatUnscaled.glb"), ""); 
@@ -322,7 +322,7 @@ int RendererTest() {
 
   SceneObject object2("texutredCube", "resources/models/Cube/Cube.obj");
   object2.offset = glm::vec3(-2.0f, -1.0f, -7.0f);
-  object2.rotation = glm::vec3(0.3f, 1.3f, 0.0f);
+  object2.setRotation(glm::vec3(0.3f, 1.3f, 0.0f));
 
   Image cubeTexture("resources/models/Cube/cubeTexture.png");
   renderer->generateTexture("cubeTexture", cubeTexture);

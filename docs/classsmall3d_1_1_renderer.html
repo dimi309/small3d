@@ -83,6 +83,15 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a431380a4b28abb9a14c02c4535e49a1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a431380a4b28abb9a14c02c4535e49a1b">setCameraRotation</a> (const glm::vec3 &amp;rotation)</td></tr>
+<tr class="memdesc:a431380a4b28abb9a14c02c4535e49a1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set the rotation of the camera  <a href="classsmall3d_1_1_renderer.html#a431380a4b28abb9a14c02c4535e49a1b">More...</a><br /></td></tr>
+<tr class="separator:a431380a4b28abb9a14c02c4535e49a1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0c6bc937cb52a8183e6626e1cc6d8db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#af0c6bc937cb52a8183e6626e1cc6d8db">addCameraRotation</a> (const glm::vec3 &amp;rotation)</td></tr>
+<tr class="memdesc:af0c6bc937cb52a8183e6626e1cc6d8db"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Modify the rotation of the camera  <a href="classsmall3d_1_1_renderer.html#af0c6bc937cb52a8183e6626e1cc6d8db">More...</a><br /></td></tr>
+<tr class="separator:af0c6bc937cb52a8183e6626e1cc6d8db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfa453846ed1623a8f37d9bf8bc69bb0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#adfa453846ed1623a8f37d9bf8bc69bb0">setCameraRotation</a> (const glm::mat4x4 &amp;rotation)</td></tr>
+<tr class="memdesc:adfa453846ed1623a8f37d9bf8bc69bb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set the rotation of the camera by transformation matrix  <a href="classsmall3d_1_1_renderer.html#adfa453846ed1623a8f37d9bf8bc69bb0">More...</a><br /></td></tr>
+<tr class="separator:adfa453846ed1623a8f37d9bf8bc69bb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc8816c9329595bbe489131cc2bf4495"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#adc8816c9329595bbe489131cc2bf4495">getScreenWidth</a> ()</td></tr>
 <tr class="memdesc:adc8816c9329595bbe489131cc2bf4495"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the real screen width.  <a href="classsmall3d_1_1_renderer.html#adc8816c9329595bbe489131cc2bf4495">More...</a><br /></td></tr>
 <tr class="separator:adc8816c9329595bbe489131cc2bf4495"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -109,12 +118,18 @@ GLFWwindow *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:acaa5ae15a3a21aaf43bbce93b5d3cdd7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#acaa5ae15a3a21aaf43bbce93b5d3cdd7">createRectangle</a> (<a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;rect, const glm::vec3 &amp;topLeft, const glm::vec3 &amp;bottomRight)</td></tr>
 <tr class="memdesc:acaa5ae15a3a21aaf43bbce93b5d3cdd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Populates a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> object with a rectangle stretching between the given coordinates.  <a href="classsmall3d_1_1_renderer.html#acaa5ae15a3a21aaf43bbce93b5d3cdd7">More...</a><br /></td></tr>
 <tr class="separator:acaa5ae15a3a21aaf43bbce93b5d3cdd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a8e5e26295601059897e530698f20f7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a5a8e5e26295601059897e530698f20f7">render</a> (<a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;model, const glm::vec3 &amp;offset, const glm::vec3 &amp;rotation, const glm::vec4 &amp;colour, const std::string &amp;textureName=&quot;&quot;, const bool perspective=true)</td></tr>
-<tr class="memdesc:a5a8e5e26295601059897e530698f20f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Render a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>.  <a href="classsmall3d_1_1_renderer.html#a5a8e5e26295601059897e530698f20f7">More...</a><br /></td></tr>
-<tr class="separator:a5a8e5e26295601059897e530698f20f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ce91f7d1fde411177dd13996108db27"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a3ce91f7d1fde411177dd13996108db27">render</a> (<a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;model, const glm::vec3 &amp;offset, const glm::vec3 &amp;rotation, const std::string &amp;textureName)</td></tr>
-<tr class="memdesc:a3ce91f7d1fde411177dd13996108db27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Render a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>.  <a href="classsmall3d_1_1_renderer.html#a3ce91f7d1fde411177dd13996108db27">More...</a><br /></td></tr>
-<tr class="separator:a3ce91f7d1fde411177dd13996108db27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7e18337a9556fe4f1c069529547de5b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#aa7e18337a9556fe4f1c069529547de5b">render</a> (<a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;model, const glm::vec3 &amp;position, const glm::vec3 &amp;rotation, const glm::vec4 &amp;colour, const std::string &amp;textureName=&quot;&quot;, const bool perspective=true)</td></tr>
+<tr class="memdesc:aa7e18337a9556fe4f1c069529547de5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Render a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>.  <a href="classsmall3d_1_1_renderer.html#aa7e18337a9556fe4f1c069529547de5b">More...</a><br /></td></tr>
+<tr class="separator:aa7e18337a9556fe4f1c069529547de5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbe6cfb0401d41149db64a359245cd2a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#afbe6cfb0401d41149db64a359245cd2a">render</a> (<a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;model, const glm::vec3 &amp;position, const glm::vec3 &amp;rotation, const std::string &amp;textureName)</td></tr>
+<tr class="memdesc:afbe6cfb0401d41149db64a359245cd2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Render a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>.  <a href="classsmall3d_1_1_renderer.html#afbe6cfb0401d41149db64a359245cd2a">More...</a><br /></td></tr>
+<tr class="separator:afbe6cfb0401d41149db64a359245cd2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80251efe4a1a6caf037914b2155215b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a80251efe4a1a6caf037914b2155215b4">render</a> (<a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;model, const glm::vec3 &amp;position, const glm::mat4x4 &amp;rotation, const glm::vec4 &amp;colour, const std::string &amp;textureName=&quot;&quot;, const bool perspective=true)</td></tr>
+<tr class="memdesc:a80251efe4a1a6caf037914b2155215b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Render a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>.  <a href="classsmall3d_1_1_renderer.html#a80251efe4a1a6caf037914b2155215b4">More...</a><br /></td></tr>
+<tr class="separator:a80251efe4a1a6caf037914b2155215b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8450dbd3580f993fd2bdf6465e5d74e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ac8450dbd3580f993fd2bdf6465e5d74e">render</a> (<a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;model, const glm::vec3 &amp;position, const glm::mat4x4 &amp;rotation, const std::string &amp;textureName)</td></tr>
+<tr class="memdesc:ac8450dbd3580f993fd2bdf6465e5d74e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Render a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>.  <a href="classsmall3d_1_1_renderer.html#ac8450dbd3580f993fd2bdf6465e5d74e">More...</a><br /></td></tr>
+<tr class="separator:ac8450dbd3580f993fd2bdf6465e5d74e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5197bb14286d72ded6397ab1f5d1e9be"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a5197bb14286d72ded6397ab1f5d1e9be">render</a> (<a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;model, const std::string &amp;textureName, const bool perspective=true)</td></tr>
 <tr class="memdesc:a5197bb14286d72ded6397ab1f5d1e9be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Render a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>.  <a href="classsmall3d_1_1_renderer.html#a5197bb14286d72ded6397ab1f5d1e9be">More...</a><br /></td></tr>
 <tr class="separator:a5197bb14286d72ded6397ab1f5d1e9be"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -169,10 +184,6 @@ glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=
 glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a98e23bfad9181afafcf6f64655698c35">cameraPosition</a> = glm::vec3(0, 0, 0)</td></tr>
 <tr class="memdesc:a98e23bfad9181afafcf6f64655698c35"><td class="mdescLeft">&#160;</td><td class="mdescRight">The camera position in world space. Ignored for orthographic rendering. <br /></td></tr>
 <tr class="separator:a98e23bfad9181afafcf6f64655698c35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab560a8768b39a18d938f2a2de943c618"><td class="memItemLeft" align="right" valign="top"><a id="ab560a8768b39a18d938f2a2de943c618"></a>
-glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ab560a8768b39a18d938f2a2de943c618">cameraRotation</a> = glm::vec3(0, 0, 0)</td></tr>
-<tr class="memdesc:ab560a8768b39a18d938f2a2de943c618"><td class="mdescLeft">&#160;</td><td class="mdescRight">The camera rotation (around the x, y and z axes). Ignored for orthographic rendering. <br /></td></tr>
-<tr class="separator:ab560a8768b39a18d938f2a2de943c618"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16cad6462cacc418e9d470fa90677c40"><td class="memItemLeft" align="right" valign="top"><a id="a16cad6462cacc418e9d470fa90677c40"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a16cad6462cacc418e9d470fa90677c40">lightIntensity</a> = 1.0f</td></tr>
 <tr class="memdesc:a16cad6462cacc418e9d470fa90677c40"><td class="mdescLeft">&#160;</td><td class="mdescRight">The light intensity (set to -1.0f if no lighting is to be used). <br /></td></tr>
@@ -181,6 +192,32 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The renderer (Vulkan) </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="af0c6bc937cb52a8183e6626e1cc6d8db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0c6bc937cb52a8183e6626e1cc6d8db">&#9670;&nbsp;</a></span>addCameraRotation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void small3d::Renderer::addCameraRotation </td>
+          <td>(</td>
+          <td class="paramtype">const glm::vec3 &amp;&#160;</td>
+          <td class="paramname"><em>rotation</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>: Modify the rotation of the camera </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rotation</td><td>The rotation to modify by (x, y, z) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="acd6b563ad9f26558659cb335b06fc95d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acd6b563ad9f26558659cb335b06fc95d">&#9670;&nbsp;</a></span>clearBuffers() <span class="overload">[1/2]</span></h2>
 
@@ -533,8 +570,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a id="a5a8e5e26295601059897e530698f20f7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5a8e5e26295601059897e530698f20f7">&#9670;&nbsp;</a></span>render() <span class="overload">[1/6]</span></h2>
+<a id="a80251efe4a1a6caf037914b2155215b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80251efe4a1a6caf037914b2155215b4">&#9670;&nbsp;</a></span>render() <span class="overload">[1/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -549,7 +586,123 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const glm::vec3 &amp;&#160;</td>
-          <td class="paramname"><em>offset</em>, </td>
+          <td class="paramname"><em>position</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const glm::mat4x4 &amp;&#160;</td>
+          <td class="paramname"><em>rotation</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const glm::vec4 &amp;&#160;</td>
+          <td class="paramname"><em>colour</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>textureName</em> = <code>&quot;&quot;</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>perspective</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Render a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model</td><td>The model </td></tr>
+    <tr><td class="paramname">position</td><td>The position of the model (x, y, z) </td></tr>
+    <tr><td class="paramname">rotation</td><td>Rotation transformation matrix </td></tr>
+    <tr><td class="paramname">colour</td><td>The colour of the model </td></tr>
+    <tr><td class="paramname">textureName</td><td>The name of the texture to attach to the model (optional). The texture has to have been generated already. If this is set, the colour parameter will be ignored. </td></tr>
+    <tr><td class="paramname">perspective</td><td>If true perform perspective rendering, otherwise orthographic. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac8450dbd3580f993fd2bdf6465e5d74e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8450dbd3580f993fd2bdf6465e5d74e">&#9670;&nbsp;</a></span>render() <span class="overload">[2/8]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void small3d::Renderer::render </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;&#160;</td>
+          <td class="paramname"><em>model</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const glm::vec3 &amp;&#160;</td>
+          <td class="paramname"><em>position</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const glm::mat4x4 &amp;&#160;</td>
+          <td class="paramname"><em>rotation</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>textureName</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Render a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model</td><td>The model </td></tr>
+    <tr><td class="paramname">position</td><td>The position of the model (x, y, z) </td></tr>
+    <tr><td class="paramname">rotation</td><td>Rotation transformation matrix </td></tr>
+    <tr><td class="paramname">textureName</td><td>The name of the texture to attach to the model. The texture has to have been generated already. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa7e18337a9556fe4f1c069529547de5b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7e18337a9556fe4f1c069529547de5b">&#9670;&nbsp;</a></span>render() <span class="overload">[3/8]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void small3d::Renderer::render </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;&#160;</td>
+          <td class="paramname"><em>model</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const glm::vec3 &amp;&#160;</td>
+          <td class="paramname"><em>position</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -587,7 +740,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">model</td><td>The model </td></tr>
-    <tr><td class="paramname">offset</td><td>The offset (position) where to draw the model </td></tr>
+    <tr><td class="paramname">position</td><td>The position of the model (x, y, z) </td></tr>
     <tr><td class="paramname">rotation</td><td>Rotation (x, y, z) </td></tr>
     <tr><td class="paramname">colour</td><td>The colour of the model </td></tr>
     <tr><td class="paramname">textureName</td><td>The name of the texture to attach to the model (optional). The texture has to have been generated already. If this is set, the colour parameter will be ignored. </td></tr>
@@ -598,8 +751,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a id="a3ce91f7d1fde411177dd13996108db27"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ce91f7d1fde411177dd13996108db27">&#9670;&nbsp;</a></span>render() <span class="overload">[2/6]</span></h2>
+<a id="afbe6cfb0401d41149db64a359245cd2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afbe6cfb0401d41149db64a359245cd2a">&#9670;&nbsp;</a></span>render() <span class="overload">[4/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -614,7 +767,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const glm::vec3 &amp;&#160;</td>
-          <td class="paramname"><em>offset</em>, </td>
+          <td class="paramname"><em>position</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -640,7 +793,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">model</td><td>The model </td></tr>
-    <tr><td class="paramname">offset</td><td>The offset (position) where to draw the model </td></tr>
+    <tr><td class="paramname">position</td><td>The position of the model (x, y, z) </td></tr>
     <tr><td class="paramname">rotation</td><td>Rotation (x, y, z) </td></tr>
     <tr><td class="paramname">textureName</td><td>The name of the texture to attach to the model. The texture has to have been generated already. </td></tr>
   </table>
@@ -650,7 +803,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 </div>
 </div>
 <a id="a604f156f1eba38959ec1ef7f0f18b9d7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a604f156f1eba38959ec1ef7f0f18b9d7">&#9670;&nbsp;</a></span>render() <span class="overload">[3/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a604f156f1eba38959ec1ef7f0f18b9d7">&#9670;&nbsp;</a></span>render() <span class="overload">[5/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -694,7 +847,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 </div>
 </div>
 <a id="a5197bb14286d72ded6397ab1f5d1e9be"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5197bb14286d72ded6397ab1f5d1e9be">&#9670;&nbsp;</a></span>render() <span class="overload">[4/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5197bb14286d72ded6397ab1f5d1e9be">&#9670;&nbsp;</a></span>render() <span class="overload">[6/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -738,7 +891,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 </div>
 </div>
 <a id="a3e2369b6490ee51256c2b58490cced0a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3e2369b6490ee51256c2b58490cced0a">&#9670;&nbsp;</a></span>render() <span class="overload">[5/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e2369b6490ee51256c2b58490cced0a">&#9670;&nbsp;</a></span>render() <span class="overload">[7/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -775,7 +928,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 </div>
 </div>
 <a id="a8ad10fd0f0546566c6022931b6b54bed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ad10fd0f0546566c6022931b6b54bed">&#9670;&nbsp;</a></span>render() <span class="overload">[6/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ad10fd0f0546566c6022931b6b54bed">&#9670;&nbsp;</a></span>render() <span class="overload">[8/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -831,6 +984,58 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">colour</td><td>The background colour </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="adfa453846ed1623a8f37d9bf8bc69bb0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfa453846ed1623a8f37d9bf8bc69bb0">&#9670;&nbsp;</a></span>setCameraRotation() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void small3d::Renderer::setCameraRotation </td>
+          <td>(</td>
+          <td class="paramtype">const glm::mat4x4 &amp;&#160;</td>
+          <td class="paramname"><em>rotation</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>: Set the rotation of the camera by transformation matrix </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rotation</td><td>The rotation tranformation matrix </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a431380a4b28abb9a14c02c4535e49a1b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a431380a4b28abb9a14c02c4535e49a1b">&#9670;&nbsp;</a></span>setCameraRotation() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void small3d::Renderer::setCameraRotation </td>
+          <td>(</td>
+          <td class="paramtype">const glm::vec3 &amp;&#160;</td>
+          <td class="paramname"><em>rotation</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>: Set the rotation of the camera </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rotation</td><td>The rotation (x, y, z) </td></tr>
   </table>
   </dd>
 </dl>

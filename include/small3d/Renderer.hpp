@@ -215,6 +215,8 @@ namespace small3d
     void setWorldDetails(bool perspective);
     void setLightIntensity();
 
+    glm::mat4x4 cameraRotation = glm::mat4x4(1);
+
 
     // On Android and iOS, it is useful to be able to destroy and recreate the
     // renderer, so it is not provided only as a singleton for that platform.
@@ -265,10 +267,27 @@ namespace small3d
     glm::vec3 cameraPosition = glm::vec3(0, 0, 0);
 
     /**
-     * @brief The camera rotation (around the x, y and z axes). Ignored for
-     *        orthographic rendering.
+     * @brief: Set the rotation of the camera
+     *
+     * @param rotation The rotation (x, y, z)
      */
-    glm::vec3 cameraRotation = glm::vec3(0, 0, 0);
+    void setCameraRotation(const glm::vec3& rotation);
+
+    /**
+     * @brief: Modify the rotation of the camera
+     *
+     * @param rotation The rotation to modify by (x, y, z)
+     */
+    void addCameraRotation(const glm::vec3& rotation);
+
+    /**
+     * @brief: Set the rotation of the camera
+     *         by transformation matrix
+     *
+     * @param rotation The rotation tranformation matrix
+     */
+    void setCameraRotation(const glm::mat4x4& rotation);
+
 
     /**
      * @brief Get the real screen width

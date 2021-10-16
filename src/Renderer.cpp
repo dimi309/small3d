@@ -858,9 +858,7 @@ namespace small3d {
       cameraPosition : glm::vec3(0.0f, 0.0f, 0.0f);
 
     uboWorldDetailsDynamic[worldDetailsIndex].cameraTransformation = perspective ?
-      glm::rotate(glm::mat4x4(1.0f), -cameraRotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), -cameraRotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), -cameraRotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) :
+      cameraRotation :
       glm::mat4x4(1);
 
   }
@@ -926,6 +924,23 @@ namespace small3d {
     if (ftError != 0) {
       throw std::runtime_error("Unable to initialise font system");
     }
+  }
+
+  void Renderer::setCameraRotation(const glm::vec3& rotation) {
+
+    this->cameraRotation = glm::rotate(glm::mat4x4(1.0f), -rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), -rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), -rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+  }
+
+  void Renderer::addCameraRotation(const glm::vec3& rotation) {
+    this->cameraRotation = glm::rotate(glm::mat4x4(1.0f), -rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), -rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), -rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) * this->cameraRotation;
+  }
+
+  void Renderer::setCameraRotation(const glm::mat4x4& rotation) {
+    this->cameraRotation = rotation;
   }
 
   int Renderer::getScreenWidth() {
