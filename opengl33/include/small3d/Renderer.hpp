@@ -67,6 +67,8 @@ namespace small3d
     std::vector<float> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
 
+    glm::mat4x4 cameraRotation = glm::mat4x4(1);
+
     static void framebufferSizeCallback(GLFWwindow* window, int width,
 					int height);
 
@@ -119,10 +121,26 @@ namespace small3d
     glm::vec3 cameraPosition  = glm::vec3(0, 0, 0);
 
     /**
-     * @brief The camera rotation (around the x, y and z axes). Ignored for
-     *        orthographic rendering.
+     * @brief: Set the rotation of the camera
+     *
+     * @param rotation The rotation (x, y, z)
      */
-    glm::vec3 cameraRotation  = glm::vec3(0, 0, 0);
+    void setCameraRotation(const glm::vec3& rotation);
+
+    /**
+     * @brief: Modify the rotation of the camera
+     *
+     * @param rotation The rotation to modify by (x, y, z)
+     */
+    void rotateCamera(const glm::vec3& rotation);
+
+    /**
+     * @brief: Set the rotation of the camera
+     *         by transformation matrix
+     *
+     * @param rotation The rotation tranformation matrix
+     */
+    void setCameraRotation(const glm::mat4x4& rotation);
 
     /**
      * @brief The light intensity (set to -1.0f if no lighting is to be used).

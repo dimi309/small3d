@@ -97,7 +97,7 @@ namespace small3d {
       glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
   }
 
-  void SceneObject::addRotation(const glm::vec3& rotation) {
+  void SceneObject::rotate(const glm::vec3& rotation) {
     this->rotation = glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) * this->rotation;

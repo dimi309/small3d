@@ -169,7 +169,7 @@ int ScaleAndTransformTest() {
       renderer->render(boxes, glm::vec4(0.5f, 0.3f, 0.0f, 1.0f));
 
       renderer->swapBuffers();
-      boxes.addRotation(glm::vec3(0.0f, 0.01f, 0.0f));
+      boxes.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
     }
   }
 
@@ -209,7 +209,7 @@ int GlbTextureTest() {
       renderer->render(tree, "treeGlbTexture");
 
       renderer->swapBuffers();
-      goat.addRotation(glm::vec3(0.0f, 0.01f, 0.0f));
+      goat.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
     }
   }
 
@@ -247,7 +247,7 @@ int BoundingBoxesTest() {
           goat.getRotation(), glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
       }
       renderer->swapBuffers();
-      goat.addRotation(glm::vec3(0.0f, 0.01f, 0.0f));
+      goat.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
     }
   }
 
@@ -301,7 +301,7 @@ int FPStest() {
 
       renderer->swapBuffers();
       ++numFrames;
-      goat.addRotation(glm::vec3(0.0f, 0.01f, 0.0f));
+      goat.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
     
   }
 

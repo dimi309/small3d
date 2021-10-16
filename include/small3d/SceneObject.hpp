@@ -140,7 +140,7 @@ namespace small3d
      *
      * @param rotation The rotation to modify by (x, y, z)
      */
-    void addRotation(const glm::vec3 & rotation);
+    void rotate(const glm::vec3 & rotation);
 
     /**
      * @brief: Set the rotation of the object
