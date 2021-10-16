@@ -78,8 +78,8 @@ namespace small3d
     void initOpenGL();
     void checkForOpenGLErrors(const std::string& when, const bool abort) const;
 
-    void positionNextModel(Model& model, const glm::vec3& offset,
-      const glm::vec3& rotation) const;
+    void transform(Model& model, const glm::vec3& offset,
+      const glm::mat4x4& rotation) const;
 
     uint32_t getTextureHandle(const std::string& name) const;
     uint32_t generateTexture(const std::string& name, const float* data,
@@ -227,8 +227,36 @@ namespace small3d
     /**
      * @brief Render a Model
      * @param model       The model
-     * @param offset      The offset (position) where to draw the model
+     * @param position    The position of the model (x, y, z)
      * @param rotation    Rotation (x, y, z)
+     * @param colour      The colour of the model
+     * @param textureName The name of the texture to attach to the model
+     *                    (optional). The texture has to have been generated
+     *                    already. If this is set, the colour parameter will
+     *                    be ignored.
+     * @param perspective If true perform perspective rendering, otherwise
+     *                    orthographic.
+     */
+    void render(Model& model, const glm::vec3& position, const glm::vec3& rotation,
+      const glm::vec4& colour, const std::string& textureName = "",
+      const bool perspective = true);
+
+    /**
+     * @brief Render a Model.
+     * @param model       The model
+     * @param position    The position of the model (x, y, z)
+     * @param rotation    Rotation (x, y, z)
+     * @param textureName The name of the texture to attach to the model.
+     *                    The texture has to have been generated already.
+     */
+    void render(Model& model, const glm::vec3& position, const glm::vec3& rotation,
+      const std::string& textureName);
+
+    /**
+     * @brief Render a Model
+     * @param model       The model
+     * @param position    The position of the model (x, y, z)
+     * @param rotation    Rotation transformation matrix
      * @param colour      The colour of the model
      * @param textureName The name of the texture to attach to the model
      *                    (optional). The texture has to have been generated
@@ -237,19 +265,19 @@ namespace small3d
      * @param perspective If true perform perspective rendering, otherwise 
      *                    orthographic.
      */
-    void render(Model& model, const glm::vec3& offset, const glm::vec3& rotation,
+    void render(Model& model, const glm::vec3& position, const glm::mat4x4& rotation,
       const glm::vec4& colour, const std::string& textureName = "",
       const bool perspective = true);
 
     /**
      * @brief Render a Model.
      * @param model       The model
-     * @param offset      The offset (position) where to draw the model
-     * @param rotation    Rotation (x, y, z)
+     * @param position    The position of the model (x, y, z)
+     * @param rotation    Rotation transformation matrix
      * @param textureName The name of the texture to attach to the model.
      *                    The texture has to have been generated already.
      */
-    void render(Model& model, const glm::vec3& offset, const glm::vec3& rotation,
+    void render(Model& model, const glm::vec3& position, const glm::mat4x4& rotation,
       const std::string& textureName);
 
     /**

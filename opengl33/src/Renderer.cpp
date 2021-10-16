@@ -158,16 +158,14 @@ namespace small3d {
     }
   }
 
-  void Renderer::positionNextModel(Model& model, const glm::vec3& offset,
-    const glm::vec3& rotation) const {
+  void Renderer::transform(Model& model, const glm::vec3& offset,
+    const glm::mat4x4& rotation) const {
     
     GLint modelTransformationUniformLocation = glGetUniformLocation(shaderProgram,
       "modelTransformation");
 
     glm::mat4x4 modelTranformation = 
-      glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+      rotation *
       glm::scale(glm::mat4x4(1.0f), model.scale) *
       glm::translate(glm::mat4x4(1.0f), model.origTranslation) *
       glm::toMat4(model.origRotation) *
@@ -175,8 +173,6 @@ namespace small3d {
     
     glUniformMatrix4fv(modelTransformationUniformLocation, 1, GL_FALSE,
       glm::value_ptr(modelTranformation));
-
-    
 
     uint32_t hasJoints = model.joints.size() > 0 ? 1U : 0U;
     GLint hasJointsUniform = glGetUniformLocation(shaderProgram, "hasJoints");
@@ -670,8 +666,29 @@ namespace small3d {
     rect.textureCoordsDataByteSize = 8 * sizeof(float);
   }
 
+  void Renderer::render(Model& model, const glm::vec3& position, const glm::vec3& rotation,
+    const glm::vec4& colour, const std::string& textureName,
+    const bool perspective) {
+
+    this->render(model, position, glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f))*
+      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f))*
+      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)),
+      colour, textureName, perspective);
+
+  }
+
+  void Renderer::render(Model& model, const glm::vec3& position, const glm::vec3& rotation,
+    const std::string& textureName) {
+
+    this->render(model, position, glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)),
+      textureName);
+
+  }
+
   void Renderer::render(Model& model, const glm::vec3& offset,
-    const glm::vec3& rotation,
+    const glm::mat4x4& rotation,
     const glm::vec4& colour,
     const std::string& textureName,
     const bool perspective) {
@@ -792,7 +809,7 @@ namespace small3d {
 
     setWorldDetails(perspective);
 
-    positionNextModel(model, offset, rotation);
+    transform(model, offset, rotation);
 
     // Draw
     glDrawElements(GL_TRIANGLES,
@@ -813,7 +830,7 @@ namespace small3d {
   }
 
   void Renderer::render(Model& model, const glm::vec3& offset,
-    const glm::vec3& rotation,
+    const glm::mat4x4& rotation,
     const std::string& textureName) {
     this->render(model, offset, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName);
