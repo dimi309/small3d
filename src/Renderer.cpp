@@ -489,17 +489,6 @@ namespace small3d {
   }
 
   void Renderer::transform(Model& model, const glm::vec3 offset,
-    const glm::vec3 rotation, uint32_t memIndex) {
-
-    this->transform(model, offset,
-      glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)),
-      memIndex);
-
-  }
-
-  void Renderer::transform(Model& model, const glm::vec3 offset,
     const glm::mat4x4 rotation, uint32_t memIndex) {
 
     if (memIndex >= maxObjectsPerPass) {

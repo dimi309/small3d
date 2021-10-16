@@ -197,10 +197,6 @@ namespace small3d
 
     void setColourBuffer(glm::vec4 colour, uint32_t memIndex);
 
-    void transform(Model &model, const glm::vec3 offset,
-      const glm::vec3 rotation,
-      uint32_t memIndex);
-
     void transform(Model& model, const glm::vec3 offset,
       const glm::mat4x4 rotation,
       uint32_t memIndex);
