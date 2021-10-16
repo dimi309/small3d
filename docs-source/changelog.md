@@ -1,6 +1,11 @@
 /*! \page changelog changes per version
 
-v1.709 (still open)
+v1.800 (still open)
+
+- [BREAKING] Rotations are now stored and managed as transformations. Euler
+  angles (x, y, z rotation) support remains but with a modified interface.
+
+v1.709 2021-10-16
 
 - Default light direction adjusted to match the perspective matrix correction
   of v1.708.
@@ -18,8 +23,6 @@ v1.709 (still open)
 - Upgraded freetype to version 2.11.0.
 - [BREAKING] Removed clearScreen command. Clearing the screen now happens
   automatically when swapBuffers is called.
-- [BREAKING] Rotations are now stored and managed as transformations. Euler
-  angles (x, y, z rotation) support remains but with a modified interface.
 
 v1.708 2020-12-25
 
