@@ -86,12 +86,21 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a431380a4b28abb9a14c02c4535e49a1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a431380a4b28abb9a14c02c4535e49a1b">setCameraRotation</a> (const glm::vec3 &amp;rotation)</td></tr>
 <tr class="memdesc:a431380a4b28abb9a14c02c4535e49a1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set the rotation of the camera  <a href="classsmall3d_1_1_renderer.html#a431380a4b28abb9a14c02c4535e49a1b">More...</a><br /></td></tr>
 <tr class="separator:a431380a4b28abb9a14c02c4535e49a1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af0c6bc937cb52a8183e6626e1cc6d8db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#af0c6bc937cb52a8183e6626e1cc6d8db">addCameraRotation</a> (const glm::vec3 &amp;rotation)</td></tr>
-<tr class="memdesc:af0c6bc937cb52a8183e6626e1cc6d8db"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Modify the rotation of the camera  <a href="classsmall3d_1_1_renderer.html#af0c6bc937cb52a8183e6626e1cc6d8db">More...</a><br /></td></tr>
-<tr class="separator:af0c6bc937cb52a8183e6626e1cc6d8db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88086d55064237f48d33d6366df58eaf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a88086d55064237f48d33d6366df58eaf">rotateCamera</a> (const glm::vec3 &amp;rotation)</td></tr>
+<tr class="memdesc:a88086d55064237f48d33d6366df58eaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Modify the rotation of the camera  <a href="classsmall3d_1_1_renderer.html#a88086d55064237f48d33d6366df58eaf">More...</a><br /></td></tr>
+<tr class="separator:a88086d55064237f48d33d6366df58eaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adfa453846ed1623a8f37d9bf8bc69bb0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#adfa453846ed1623a8f37d9bf8bc69bb0">setCameraRotation</a> (const glm::mat4x4 &amp;rotation)</td></tr>
 <tr class="memdesc:adfa453846ed1623a8f37d9bf8bc69bb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set the rotation of the camera by transformation matrix  <a href="classsmall3d_1_1_renderer.html#adfa453846ed1623a8f37d9bf8bc69bb0">More...</a><br /></td></tr>
 <tr class="separator:adfa453846ed1623a8f37d9bf8bc69bb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82bab1ae42392ae10643c8a55ae04d20"><td class="memItemLeft" align="right" valign="top">const glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a82bab1ae42392ae10643c8a55ae04d20">Renderer::getCameraOrientation</a> () const</td></tr>
+<tr class="memdesc:a82bab1ae42392ae10643c8a55ae04d20"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the orientation of the camera  <a href="classsmall3d_1_1_renderer.html#a82bab1ae42392ae10643c8a55ae04d20">More...</a><br /></td></tr>
+<tr class="separator:a82bab1ae42392ae10643c8a55ae04d20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0fbfbc2ef8b80ec38e073efe2f91916"><td class="memItemLeft" align="right" valign="top">const glm::mat4x4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#af0fbfbc2ef8b80ec38e073efe2f91916">Renderer::getCameraRotation</a> () const</td></tr>
+<tr class="memdesc:af0fbfbc2ef8b80ec38e073efe2f91916"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the rotation of the camera by transformation matrix  <a href="classsmall3d_1_1_renderer.html#af0fbfbc2ef8b80ec38e073efe2f91916">More...</a><br /></td></tr>
+<tr class="separator:af0fbfbc2ef8b80ec38e073efe2f91916"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8456c8b1ecddb8a90e746b6df1abb8a0"><td class="memItemLeft" align="right" valign="top">const glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a8456c8b1ecddb8a90e746b6df1abb8a0">Renderer::getCameraRotationXYZ</a> () const</td></tr>
+<tr class="memdesc:a8456c8b1ecddb8a90e746b6df1abb8a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the rotation of the camera in axis-angle representation. This will NOT work if the rotation was set via the setRotation(mat4x4) function.  <a href="classsmall3d_1_1_renderer.html#a8456c8b1ecddb8a90e746b6df1abb8a0">More...</a><br /></td></tr>
+<tr class="separator:a8456c8b1ecddb8a90e746b6df1abb8a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc8816c9329595bbe489131cc2bf4495"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#adc8816c9329595bbe489131cc2bf4495">getScreenWidth</a> ()</td></tr>
 <tr class="memdesc:adc8816c9329595bbe489131cc2bf4495"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the real screen width.  <a href="classsmall3d_1_1_renderer.html#adc8816c9329595bbe489131cc2bf4495">More...</a><br /></td></tr>
 <tr class="separator:adc8816c9329595bbe489131cc2bf4495"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -192,32 +201,6 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The renderer (Vulkan) </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="af0c6bc937cb52a8183e6626e1cc6d8db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af0c6bc937cb52a8183e6626e1cc6d8db">&#9670;&nbsp;</a></span>addCameraRotation()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void small3d::Renderer::addCameraRotation </td>
-          <td>(</td>
-          <td class="paramtype">const glm::vec3 &amp;&#160;</td>
-          <td class="paramname"><em>rotation</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>: Modify the rotation of the camera </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">rotation</td><td>The rotation to modify by (x, y, z) </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="acd6b563ad9f26558659cb335b06fc95d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acd6b563ad9f26558659cb335b06fc95d">&#9670;&nbsp;</a></span>clearBuffers() <span class="overload">[1/2]</span></h2>
 
@@ -958,6 +941,92 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   <table class="params">
     <tr><td class="paramname">sceneObject</td><td>The object </td></tr>
     <tr><td class="paramname">textureName</td><td>The name of the texture to attach to the object. The texture has to have been generated already. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a82bab1ae42392ae10643c8a55ae04d20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82bab1ae42392ae10643c8a55ae04d20">&#9670;&nbsp;</a></span>Renderer::getCameraOrientation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const glm::vec3 small3d::Renderer::Renderer::getCameraOrientation </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>: Get the orientation of the camera </p>
+<dl class="section return"><dt>Returns</dt><dd>The orientation of the camera </dd></dl>
+
+</div>
+</div>
+<a id="af0fbfbc2ef8b80ec38e073efe2f91916"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0fbfbc2ef8b80ec38e073efe2f91916">&#9670;&nbsp;</a></span>Renderer::getCameraRotation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const glm::mat4x4 small3d::Renderer::Renderer::getCameraRotation </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>: Get the rotation of the camera by transformation matrix </p>
+<dl class="section return"><dt>Returns</dt><dd>The camera tranformation matrix (this is inversed when rendering) </dd></dl>
+
+</div>
+</div>
+<a id="a8456c8b1ecddb8a90e746b6df1abb8a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8456c8b1ecddb8a90e746b6df1abb8a0">&#9670;&nbsp;</a></span>Renderer::getCameraRotationXYZ()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const glm::vec3 small3d::Renderer::Renderer::getCameraRotationXYZ </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>: Get the rotation of the camera in axis-angle representation. This will NOT work if the rotation was set via the setRotation(mat4x4) function. </p>
+<dl class="section return"><dt>Returns</dt><dd>The rotation in axis-angle representation (this is negated when rendering) </dd></dl>
+
+</div>
+</div>
+<a id="a88086d55064237f48d33d6366df58eaf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88086d55064237f48d33d6366df58eaf">&#9670;&nbsp;</a></span>rotateCamera()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void small3d::Renderer::rotateCamera </td>
+          <td>(</td>
+          <td class="paramtype">const glm::vec3 &amp;&#160;</td>
+          <td class="paramname"><em>rotation</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>: Modify the rotation of the camera </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rotation</td><td>The rotation to modify by (x, y, z) </td></tr>
   </table>
   </dd>
 </dl>
