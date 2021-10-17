@@ -46,7 +46,8 @@ namespace small3d
     std::string name;
     bool wavefront = false;
     glm::mat4x4 rotation = glm::mat4x4(1);
-
+    glm::vec3 rotationXYZ = glm::vec3(0.0f);
+    bool rotationByMatrix = false;
     std::vector<Model> models;
   public:
 
@@ -164,6 +165,15 @@ namespace small3d
      * @return The rotation tranformation matrix
      */
     const glm::mat4x4 getRotation() const;
+
+    /**
+     * @brief: Get the rotation of the object in axis-angle representation.
+     *         This will NOT work if the rotation was set via the
+     *         setRotation(mat4x4) function.
+     *
+     * @return The rotation tranformation matrix
+     */
+    const glm::vec3 getRotationXYZ() const;
 
     /**
      * @brief Start animating the object

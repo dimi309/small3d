@@ -91,13 +91,15 @@ namespace small3d {
   }
 
   void SceneObject::setRotation(const glm::vec3& rotation) {
-
+    rotationByMatrix = false;
+    this->rotationXYZ = rotation;
     this->rotation = glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
   }
 
   void SceneObject::rotate(const glm::vec3& rotation) {
+    this->rotationXYZ += rotation;
     this->rotation = glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) * this->rotation;
@@ -105,6 +107,8 @@ namespace small3d {
 
   void SceneObject::setRotation(const glm::mat4x4& rotation) {
     this->rotation = rotation;
+    rotationByMatrix = true;
+    this->rotationXYZ = glm::vec3(0.0f);
   }
 
   const glm::vec3 SceneObject::getOrientation() {
@@ -114,6 +118,13 @@ namespace small3d {
   
   const glm::mat4x4 SceneObject::getRotation() const {
     return this->rotation;
+  }
+
+  const glm::vec3 SceneObject::getRotationXYZ() const {
+    if (rotationByMatrix) {
+      throw std::runtime_error("Attempted axis-angle representation rotation retrieval, while having set the rotation by matrix.");
+    }
+    return this->rotationXYZ;
   }
 
   void SceneObject::startAnimating() {
