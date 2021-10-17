@@ -294,7 +294,7 @@ namespace small3d
      *
      * @return The orientation of the camera
      */
-    const glm::vec3 Renderer::getCameraOrientation() const;
+    const glm::vec3 getCameraOrientation() const;
 
     /**
      * @brief: Get the rotation of the camera
@@ -303,7 +303,7 @@ namespace small3d
      * @return The camera tranformation matrix (this is inversed
      *         when rendering)
      */
-    const glm::mat4x4 Renderer::getCameraRotation() const;
+    const glm::mat4x4 getCameraRotation() const;
 
     /**
      * @brief: Get the rotation of the camera in axis-angle representation.
@@ -313,7 +313,7 @@ namespace small3d
      * @return The rotation in axis-angle representation (this is negated
      *         when rendering)
      */
-    const glm::vec3 Renderer::getCameraRotationXYZ() const;
+    const glm::vec3 getCameraRotationXYZ() const;
 
     /**
      * @brief Get the real screen width
