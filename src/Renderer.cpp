@@ -940,7 +940,7 @@ namespace small3d {
   }
 
   void Renderer::setCameraRotation(const glm::mat4x4& rotation) {
-    this->cameraRotation = rotation;
+    this->cameraRotation = glm::inverse(rotation);
   }
 
   int Renderer::getScreenWidth() {
