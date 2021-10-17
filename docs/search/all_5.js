@@ -13,11 +13,12 @@ var searchData=
   ['getmodels_31',['getModels',['../classsmall3d_1_1_bounding_box_set.html#abf45f0d5ed515b0d7e5a9b319ba98f62',1,'small3d::BoundingBoxSet']]],
   ['getname_32',['getName',['../classsmall3d_1_1_scene_object.html#ae18cf681f49f719fa77f9b83bdb88da8',1,'small3d::SceneObject']]],
   ['getnumboxes_33',['getNumBoxes',['../classsmall3d_1_1_bounding_box_set.html#a0d8a4eac5d06e723ae60aef2bc2b0a83',1,'small3d::BoundingBoxSet']]],
-  ['getrotation_34',['getRotation',['../classsmall3d_1_1_scene_object.html#a37844cfa400f8ece266c8cc2b6be6bc3',1,'small3d::SceneObject']]],
-  ['getscreenheight_35',['getScreenHeight',['../classsmall3d_1_1_renderer.html#aed406b218be5e972d7566a321f893e82',1,'small3d::Renderer']]],
-  ['getscreenwidth_36',['getScreenWidth',['../classsmall3d_1_1_renderer.html#adc8816c9329595bbe489131cc2bf4495',1,'small3d::Renderer']]],
-  ['getwidth_37',['getWidth',['../classsmall3d_1_1_image.html#a335588f99053b1f55c15c60c76c26624',1,'small3d::Image']]],
-  ['getwindow_38',['getWindow',['../classsmall3d_1_1_renderer.html#a2065e4645034d538e5bbd40cd5fa3a50',1,'small3d::Renderer']]],
-  ['glbfile_39',['GlbFile',['../classsmall3d_1_1_glb_file.html',1,'small3d::GlbFile'],['../classsmall3d_1_1_glb_file.html#a864e3d5ca31cd99f5fd87f8533aa5260',1,'small3d::GlbFile::GlbFile()']]],
-  ['glbfile_2ehpp_40',['GlbFile.hpp',['../_glb_file_8hpp.html',1,'']]]
+  ['getorientation_34',['getOrientation',['../classsmall3d_1_1_scene_object.html#aa8e2a1b8a3a5c419c9805f3f7931caad',1,'small3d::SceneObject']]],
+  ['getrotation_35',['getRotation',['../classsmall3d_1_1_scene_object.html#a37844cfa400f8ece266c8cc2b6be6bc3',1,'small3d::SceneObject']]],
+  ['getscreenheight_36',['getScreenHeight',['../classsmall3d_1_1_renderer.html#aed406b218be5e972d7566a321f893e82',1,'small3d::Renderer']]],
+  ['getscreenwidth_37',['getScreenWidth',['../classsmall3d_1_1_renderer.html#adc8816c9329595bbe489131cc2bf4495',1,'small3d::Renderer']]],
+  ['getwidth_38',['getWidth',['../classsmall3d_1_1_image.html#a335588f99053b1f55c15c60c76c26624',1,'small3d::Image']]],
+  ['getwindow_39',['getWindow',['../classsmall3d_1_1_renderer.html#a2065e4645034d538e5bbd40cd5fa3a50',1,'small3d::Renderer']]],
+  ['glbfile_40',['GlbFile',['../classsmall3d_1_1_glb_file.html',1,'small3d::GlbFile'],['../classsmall3d_1_1_glb_file.html#a864e3d5ca31cd99f5fd87f8533aa5260',1,'small3d::GlbFile::GlbFile()']]],
+  ['glbfile_2ehpp_41',['GlbFile.hpp',['../_glb_file_8hpp.html',1,'']]]
 ];

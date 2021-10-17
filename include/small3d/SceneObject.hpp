@@ -151,6 +151,13 @@ namespace small3d
     void setRotation(const glm::mat4x4& rotation);
 
     /**
+     * @brief: Get the orientation of the object
+     *
+     * @return The orientation of the object
+     */
+    const glm::vec3 getOrientation();
+
+    /**
      * @brief: Get the rotation of the object
      *         by transformation matrix
      *

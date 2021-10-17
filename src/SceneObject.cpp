@@ -106,6 +106,11 @@ namespace small3d {
   void SceneObject::setRotation(const glm::mat4x4& rotation) {
     this->rotation = rotation;
   }
+
+  const glm::vec3 SceneObject::getOrientation() {
+    auto orientationVec4 = this->rotation * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
+    return glm::vec3(orientationVec4.x, orientationVec4.y, orientationVec4.z);
+  }
   
   const glm::mat4x4 SceneObject::getRotation() const {
     return this->rotation;
