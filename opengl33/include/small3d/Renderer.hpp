@@ -67,7 +67,9 @@ namespace small3d
     std::vector<float> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
 
-    glm::mat4x4 cameraRotation = glm::mat4x4(1);
+    glm::mat4x4 cameraRotation = glm::mat4x4(1.0f);
+    glm::vec3 cameraRotationXYZ = glm::vec3(0.0f);
+    bool cameraRotationByMatrix = false;
 
     static void framebufferSizeCallback(GLFWwindow* window, int width,
 					int height);
@@ -141,6 +143,32 @@ namespace small3d
      * @param rotation The rotation tranformation matrix
      */
     void setCameraRotation(const glm::mat4x4& rotation);
+
+    /**
+     * @brief: Get the orientation of the camera
+     *
+     * @return The orientation of the camera
+     */
+    const glm::vec3 Renderer::getCameraOrientation() const;
+
+    /**
+     * @brief: Get the rotation of the camera
+     *         by transformation matrix
+     *
+     * @return The camera tranformation matrix (this is inversed
+     *         when rendering)
+     */
+    const glm::mat4x4 Renderer::getCameraRotation() const;
+
+    /**
+     * @brief: Get the rotation of the camera in axis-angle representation.
+     *         This will NOT work if the rotation was set via the
+     *         setRotation(mat4x4) function.
+     *
+     * @return The rotation in axis-angle representation (this is negated
+     *         when rendering)
+     */
+    const glm::vec3 Renderer::getCameraRotationXYZ() const;
 
     /**
      * @brief The light intensity (set to -1.0f if no lighting is to be used).

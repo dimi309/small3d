@@ -216,7 +216,8 @@ namespace small3d
     void setLightIntensity();
 
     glm::mat4x4 cameraRotation = glm::mat4x4(1);
-
+    glm::vec3 cameraRotationXYZ = glm::vec3(0);
+    bool cameraRotationByMatrix = false;
 
     // On Android and iOS, it is useful to be able to destroy and recreate the
     // renderer, so it is not provided only as a singleton for that platform.
@@ -278,7 +279,7 @@ namespace small3d
      *
      * @param rotation The rotation to modify by (x, y, z)
      */
-    void addCameraRotation(const glm::vec3& rotation);
+    void rotateCamera(const glm::vec3& rotation);
 
     /**
      * @brief: Set the rotation of the camera
@@ -288,6 +289,31 @@ namespace small3d
      */
     void setCameraRotation(const glm::mat4x4& rotation);
 
+    /**
+     * @brief: Get the orientation of the camera
+     *
+     * @return The orientation of the camera
+     */
+    const glm::vec3 Renderer::getCameraOrientation() const;
+
+    /**
+     * @brief: Get the rotation of the camera
+     *         by transformation matrix
+     *
+     * @return The camera tranformation matrix (this is inversed
+     *         when rendering)
+     */
+    const glm::mat4x4 Renderer::getCameraRotation() const;
+
+    /**
+     * @brief: Get the rotation of the camera in axis-angle representation.
+     *         This will NOT work if the rotation was set via the
+     *         setRotation(mat4x4) function.
+     *
+     * @return The rotation in axis-angle representation (this is negated
+     *         when rendering)
+     */
+    const glm::vec3 Renderer::getCameraRotationXYZ() const;
 
     /**
      * @brief Get the real screen width

@@ -99,7 +99,9 @@ namespace small3d {
   }
 
   void SceneObject::rotate(const glm::vec3& rotation) {
-    this->rotationXYZ += rotation;
+    if (!rotationByMatrix) {
+      this->rotationXYZ += rotation;
+    }
     this->rotation = glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) * this->rotation;
@@ -111,7 +113,7 @@ namespace small3d {
     this->rotationXYZ = glm::vec3(0.0f);
   }
 
-  const glm::vec3 SceneObject::getOrientation() {
+  const glm::vec3 SceneObject::getOrientation() const {
     auto orientationVec4 = this->rotation * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
     return glm::vec3(orientationVec4.x, orientationVec4.y, orientationVec4.z);
   }

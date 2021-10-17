@@ -481,23 +481,42 @@ namespace small3d {
   }
 
   void Renderer::setCameraRotation(const glm::vec3& rotation) {
-
+    cameraRotationByMatrix = false;
     this->cameraRotation = glm::rotate(glm::mat4x4(1.0f), -rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
       glm::rotate(glm::mat4x4(1.0f), -rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), -rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
   }
 
   void Renderer::rotateCamera(const glm::vec3& rotation) {
+    if (!cameraRotationByMatrix) {
+      cameraRotationXYZ += rotation;
+    }
     this->cameraRotation = glm::rotate(glm::mat4x4(1.0f), -rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
       glm::rotate(glm::mat4x4(1.0f), -rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), -rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) * this->cameraRotation;
   }
 
   void Renderer::setCameraRotation(const glm::mat4x4& rotation) {
-    this->cameraRotation = rotation;
+    this->cameraRotation = glm::inverse(rotation);
+    cameraRotationByMatrix = true;
+    cameraRotationXYZ = glm::vec3(0.0f);
   }
 
+  const glm::vec3 Renderer::getCameraOrientation() const {
+    auto orientationVec4 = this->cameraRotation * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
+    return glm::vec3(orientationVec4.x, orientationVec4.y, orientationVec4.z);
+  }
 
+  const glm::mat4x4 Renderer::getCameraRotation() const {
+    return this->cameraRotation;
+  }
+
+  const glm::vec3 Renderer::getCameraRotationXYZ() const {
+    if (cameraRotationByMatrix) {
+      throw std::runtime_error("Attempted axis-angle representation camera rotation retrieval, while having set the rotation by matrix.");
+    }
+    return this->cameraRotationXYZ;
+  }
 
   Renderer& Renderer::getInstance(const std::string& windowTitle,
     const int width, const int height,
