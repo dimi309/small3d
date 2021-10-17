@@ -45,6 +45,7 @@ if(SMALL3D_OPENGL)
   file(GLOB VULKAN_SHADERS "${PROJECT_BINARY_DIR}/bin/resources/shaders/*")
   file(REMOVE ${VULKAN_SHADERS})
   file(COPY "opengl33/resources/shaders" DESTINATION "./bin/resources")
+  file(COPY "opengl33/resources/shaders" DESTINATION ".")
 endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")

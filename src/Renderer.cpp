@@ -949,12 +949,12 @@ namespace small3d {
   }
 
   const glm::vec3 Renderer::getCameraOrientation() const {
-    auto orientationVec4 = this->cameraRotation * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
+    auto orientationVec4 = glm::inverse(this->cameraRotation) * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
     return glm::vec3(orientationVec4.x, orientationVec4.y, orientationVec4.z);
   }
 
   const glm::mat4x4 Renderer::getCameraRotation() const {
-    return this->cameraRotation;
+    return glm::inverse(this->cameraRotation);
   }
 
   const glm::vec3 Renderer::getCameraRotationXYZ() const {
