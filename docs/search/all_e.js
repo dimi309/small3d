@@ -14,5 +14,7 @@ var searchData=
   ['startanimating_92',['startAnimating',['../classsmall3d_1_1_scene_object.html#a21bd126617420837019165e892b1ff6b',1,'small3d::SceneObject']]],
   ['stop_93',['stop',['../classsmall3d_1_1_sound.html#a3b239ef468eae9e89c48351127b329f3',1,'small3d::Sound']]],
   ['stopanimating_94',['stopAnimating',['../classsmall3d_1_1_scene_object.html#a005d922b169d1922f2f28402cd7a0cf6',1,'small3d::SceneObject']]],
-  ['swapbuffers_95',['swapBuffers',['../classsmall3d_1_1_renderer.html#acdc83f2aaaf3f41f35e99c1eabc6ac98',1,'small3d::Renderer']]]
+  ['swapbuffers_95',['swapBuffers',['../classsmall3d_1_1_renderer.html#acdc83f2aaaf3f41f35e99c1eabc6ac98',1,'small3d::Renderer']]],
+  ['setting_20up_20small3d_20with_20visual_20studio_96',['Setting up small3d with Visual Studio',['../vs.html',1,'']]],
+  ['setting_20up_20small3d_20with_20xcode_97',['Setting up small3d with Xcode',['../xcode.html',1,'']]]
 ];

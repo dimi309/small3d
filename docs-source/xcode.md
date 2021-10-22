@@ -1,18 +1,24 @@
-/*! \page xcode Xcode
+/*! \page xcode Setting up small3d with Xcode
 
 On MacOS, the small3d unit tests and sample game can be built from the command
 line, just like on any other platform. However you might want to create an Xcode 
 project, in order to use the Xcode debugger for example.
 
-First of all, after the dependency preparation script (`deps/prapare.sh` in 
-this case) has been executed, small3d together with its unit tests can be 
-configured and built for Xcode as follows (execute from the main directory):
+In this case, as a first step, instead of the `scripts/build.sh` script, 
+the `deps/prapare.sh` has to be launched. Then, small3d together with its 
+unit tests can be configured and built for Xcode as follows (execute from the 
+main directory):
 
 	mkdir build
 	cd build
 	cmake .. -G"Xcode"
 	cmake --build .
 
+In order to set up small3d with OpenGL, instead of the third line above,
+execute:
+
+	cmake .. -G"Xcode" -DSMALL3D_OPENGL=ON
+	
 The created project, `build/small3d.xcodeproj` can then be opened in Xcode.
 
 There are two things that need to be taken care of before proceeding to run
@@ -38,3 +44,4 @@ path locations may vary):
 	DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/Users/user/Software/vulkansdk-macos-1.2.154.0/macOS/lib
 	VK_LAYER_PATH=/Users/user/Software/vulkansdk-macos-1.2.154.0/macOS/share/vulkan/explicit_layer.d
 	VK_ICD_FILENAMES=/Users/user/Software/vulkansdk-macos-1.2.154.0/MoltenVK/dylib/macOS/MoltenVK_icd.json
+
