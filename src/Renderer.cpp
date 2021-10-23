@@ -847,7 +847,7 @@ namespace small3d {
 
     uboWorldDetailsDynamic[worldDetailsIndex] = {};
 
-    uboWorldDetailsDynamic[worldDetailsIndex].perspectiveMatrix = perspective ?
+    uboWorldDetailsDynamic[worldDetailsIndex].perspectiveMatrix = perspective && realScreenHeight != 0 ?
       glm::perspective(fieldOfView, static_cast<float>(realScreenWidth / realScreenHeight), zNear, zFar) :
       glm::mat4x4(1);
 

@@ -380,7 +380,7 @@ namespace small3d {
     GLint perspectiveMatrixUniform =
       glGetUniformLocation(shaderProgram, "perspectiveMatrix");
 
-    glm::mat4x4 perspectiveMatrix = perspective ?
+    glm::mat4x4 perspectiveMatrix = perspective && realScreenHeight != 0 ?
       glm::perspective(fieldOfView, static_cast<float>(realScreenWidth / realScreenHeight), zNear, zFar) :
       glm::mat4x4(1);
 
