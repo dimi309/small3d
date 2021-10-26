@@ -99,7 +99,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a9c8a29f7eb8e71597aac9f4ccfbb06f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the rotation of the camera by transformation matrix  <a href="classsmall3d_1_1_renderer.html#a9c8a29f7eb8e71597aac9f4ccfbb06f8">More...</a><br /></td></tr>
 <tr class="separator:a9c8a29f7eb8e71597aac9f4ccfbb06f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a657c6be0841a2f8b938c1fc9ef857a84"><td class="memItemLeft" align="right" valign="top">const glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a657c6be0841a2f8b938c1fc9ef857a84">getCameraRotationXYZ</a> () const</td></tr>
-<tr class="memdesc:a657c6be0841a2f8b938c1fc9ef857a84"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the rotation of the camera in axis-angle representation. This will NOT work if the rotation was set via the setRotation(mat4x4) function.  <a href="classsmall3d_1_1_renderer.html#a657c6be0841a2f8b938c1fc9ef857a84">More...</a><br /></td></tr>
+<tr class="memdesc:a657c6be0841a2f8b938c1fc9ef857a84"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the rotation of the camera in x, y, z representation. This will NOT work if the rotation was set via the setRotation(mat4x4) function.  <a href="classsmall3d_1_1_renderer.html#a657c6be0841a2f8b938c1fc9ef857a84">More...</a><br /></td></tr>
 <tr class="separator:a657c6be0841a2f8b938c1fc9ef857a84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc8816c9329595bbe489131cc2bf4495"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#adc8816c9329595bbe489131cc2bf4495">getScreenWidth</a> ()</td></tr>
 <tr class="memdesc:adc8816c9329595bbe489131cc2bf4495"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the real screen width.  <a href="classsmall3d_1_1_renderer.html#adc8816c9329595bbe489131cc2bf4495">More...</a><br /></td></tr>
@@ -480,8 +480,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
       </table>
 </div><div class="memdoc">
 
-<p>: Get the rotation of the camera in axis-angle representation. This will NOT work if the rotation was set via the setRotation(mat4x4) function. </p>
-<dl class="section return"><dt>Returns</dt><dd>The rotation in axis-angle representation (this is negated when rendering) </dd></dl>
+<p>: Get the rotation of the camera in x, y, z representation. This will NOT work if the rotation was set via the setRotation(mat4x4) function. </p>
+<dl class="section return"><dt>Returns</dt><dd>The rotation in x, y, z representation (this is negated when rendering) </dd></dl>
 
 </div>
 </div>
