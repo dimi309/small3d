@@ -306,11 +306,11 @@ namespace small3d
     const glm::mat4x4 getCameraRotation() const;
 
     /**
-     * @brief: Get the rotation of the camera in axis-angle representation.
+     * @brief: Get the rotation of the camera in x, y, z representation.
      *         This will NOT work if the rotation was set via the
      *         setRotation(mat4x4) function.
      *
-     * @return The rotation in axis-angle representation (this is negated
+     * @return The rotation in x, y, z representation (this is negated
      *         when rendering)
      */
     const glm::vec3 getCameraRotationXYZ() const;

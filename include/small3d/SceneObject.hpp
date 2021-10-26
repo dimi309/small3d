@@ -167,11 +167,11 @@ namespace small3d
     const glm::mat4x4 getRotation() const;
 
     /**
-     * @brief: Get the rotation of the object in axis-angle representation.
+     * @brief: Get the rotation of the object in x, y, z representation.
      *         This will NOT work if the rotation was set via the
      *         setRotation(mat4x4) function.
      *
-     * @return The rotation in axis-angle representation
+     * @return The rotation in x, y, z representation
      */
     const glm::vec3 getRotationXYZ() const;
 

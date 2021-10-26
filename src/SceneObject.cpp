@@ -100,7 +100,7 @@ namespace small3d {
 
   void SceneObject::rotate(const glm::vec3& rotation) {
     if (rotationByMatrix) {
-      throw std::runtime_error("Attempted axis-angle representation rotation, while having set the initial rotation by matrix.");
+      throw std::runtime_error("Attempted x, y, z representation rotation, while having set the initial rotation by matrix.");
     }
     else {
       this->rotationXYZ += rotation;
@@ -127,7 +127,7 @@ namespace small3d {
 
   const glm::vec3 SceneObject::getRotationXYZ() const {
     if (rotationByMatrix) {
-      throw std::runtime_error("Attempted axis-angle representation rotation retrieval, while having set the initial rotation by matrix.");
+      throw std::runtime_error("Attempted x, y, z representation rotation retrieval, while having set the initial rotation by matrix.");
     }
     return this->rotationXYZ;
   }

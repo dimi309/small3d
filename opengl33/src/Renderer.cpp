@@ -490,7 +490,7 @@ namespace small3d {
 
   void Renderer::rotateCamera(const glm::vec3& rotation) {
     if (cameraRotationByMatrix) {
-      throw std::runtime_error("Attempted axis-angle representation camera rotation, while having set the initial rotation by matrix.");
+      throw std::runtime_error("Attempted x, y, z representation camera rotation, while having set the initial rotation by matrix.");
     }
     else {
       this->cameraRotationXYZ += rotation;
@@ -517,7 +517,7 @@ namespace small3d {
 
   const glm::vec3 Renderer::getCameraRotationXYZ() const {
     if (cameraRotationByMatrix) {
-      throw std::runtime_error("Attempted axis-angle representation camera rotation retrieval, while having set the rotation by matrix.");
+      throw std::runtime_error("Attempted x, y, z representation camera rotation retrieval, while having set the rotation by matrix.");
     }
     return this->cameraRotationXYZ;
   }
