@@ -35,7 +35,7 @@ variables in bash / zsh, Xcode is not aware of them. Select the `unittests`
 target and then select Edit Scheme. Then select Run Debug, Arguments and add 
 the necessary Environment Variables. They cannot be exactly the same as in 
 `.zprofile` or `.bash_profile`. For example `VULKAN_SDK` does not need to be
-defined in this case and its value cannot be reused as `$VULKAN_SDK`anyway.
+defined in this case and its value cannot be reused as `$VULKAN_SDK` anyway.
 They should look somewhat like these (note that, in my case, I do not install
 the Vulkan SDK. I just unzip it in my `Software` directory. So your specific
 path locations may vary):
