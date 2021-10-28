@@ -322,8 +322,11 @@ namespace small3d {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-    // Workaround for rendering on Mojave
-    glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
+    // This was used as a workaround for an issue I cannot remember
+    // on Mojave but on Monterey it was making the window transparent
+    // when the colour of a rendered mesh was transparent so I have
+    // commented it out.
+    // glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
 #else
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
