@@ -63,7 +63,7 @@ namespace small3d
      *                        bounding box, getting more accurate collision detection
      *                        at the expense of performance.
      */
-    SceneObject(const std::string name, const std::string modelPath,
+    SceneObject(const std::string& name, const std::string& modelPath,
       const std::string& modelMeshName, const uint32_t boundingBoxSubdivisions = 0);
 
     /**
@@ -102,7 +102,7 @@ namespace small3d
      *                        bounding box, getting more accurate collision detection
      *                        at the expense of performance.
      */
-    SceneObject(const std::string name, const std::string modelPath,
+    SceneObject(const std::string& name, const std::string& modelPath,
       const int numFrames = 1, const int startFrameIndex = 1, 
       const uint32_t boundingBoxSubdivisions = 0);
 
@@ -141,7 +141,7 @@ namespace small3d
      *
      * @param rotation The rotation to modify by (x, y, z)
      */
-    void rotate(const glm::vec3 & rotation);
+    void rotate(const glm::vec3& rotation);
 
     /**
      * @brief: Set the rotation of the object
@@ -215,7 +215,7 @@ namespace small3d
      *         of the object, False otherwise.
      */
 
-    bool contains(const glm::vec3 point) const;
+    bool contains(const glm::vec3& point) const;
 
     /**
      *
@@ -227,7 +227,7 @@ namespace small3d
      *         False otherwise.
      */
 
-    bool containsCorners(SceneObject otherObject) const;
+    bool containsCorners(const SceneObject& otherObject) const;
 
     friend class Renderer;
 

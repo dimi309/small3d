@@ -13,7 +13,7 @@
 
 namespace small3d {
 
-  SceneObject::SceneObject(const std::string name, const std::string modelPath,
+  SceneObject::SceneObject(const std::string& name, const std::string& modelPath,
     const std::string& modelMeshName, const uint32_t boundingBoxSubdivisions) {
     initLogger();
     this->name = name;
@@ -45,7 +45,7 @@ namespace small3d {
     }
   }
 
-  SceneObject::SceneObject(const std::string name, const std::string modelPath,
+  SceneObject::SceneObject(const std::string& name, const std::string& modelPath,
     const int numFrames,
     const int startFrameIndex,
     const uint32_t boundingBoxSubdivisions) :
@@ -168,7 +168,7 @@ namespace small3d {
     }
   }
 
-  bool SceneObject::contains(const glm::vec3 point) const {
+  bool SceneObject::contains(const glm::vec3& point) const {
     if (boundingBoxSet.vertices.size() == 0) {
       throw std::runtime_error("No bounding boxes have been provided for " +
         name +
@@ -177,7 +177,7 @@ namespace small3d {
     return boundingBoxSet.contains(point, this->offset, this->getRotation());
   }
 
-  bool SceneObject::containsCorners(SceneObject otherObject) const {
+  bool SceneObject::containsCorners(const SceneObject& otherObject) const {
     if (boundingBoxSet.vertices.size() == 0) {
       throw std::runtime_error("No bounding boxes have been provided for " +
         name +
