@@ -1597,13 +1597,13 @@ namespace small3d {
 
   void Renderer::render(SceneObject& sceneObject,
     const glm::vec4& colour) {
-    this->render(sceneObject.getModel(), sceneObject.offset,
+    this->render(sceneObject.getModel(), sceneObject.position,
       sceneObject.rotation, colour, "");
   }
 
   void Renderer::render(SceneObject& sceneObject,
     const std::string& textureName) {
-    this->render(sceneObject.getModel(), sceneObject.offset,
+    this->render(sceneObject.getModel(), sceneObject.position,
       sceneObject.rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName);
   }
@@ -1623,7 +1623,7 @@ namespace small3d {
   }
 
   void Renderer::clearBuffers(SceneObject& sceneObject) const {
-    for (auto& model : sceneObject.models) {
+    for (auto& model : *sceneObject.models) {
       clearBuffers(model);
     }
   }

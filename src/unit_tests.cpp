@@ -158,7 +158,7 @@ int ScaleAndTransformTest() {
 
   SceneObject boxes("boxes", "resources/models/boxes.glb", "");
 
-  boxes.offset = glm::vec3(0.0f, 0.0f, -3.0f);
+  boxes.position = glm::vec3(0.0f, 0.0f, -3.0f);
   
   while (seconds - startSeconds < 5.0) {
     glfwPollEvents();
@@ -194,9 +194,9 @@ int GlbTextureTest() {
 
   renderer->generateTexture("treeGlbTexture", *tree.getModel().defaultTextureImage);
 
-  goat.offset = glm::vec3(0.0f, 0.0f, -3.0f);
+  goat.position = glm::vec3(0.0f, 0.0f, -3.0f);
   goat.startAnimating();
-  tree.offset = glm::vec3(0.0f, 0.0f, -4.0f);
+  tree.position = glm::vec3(0.0f, 0.0f, -4.0f);
 
   while (seconds - startSeconds < 5.0) {
     glfwPollEvents();
@@ -228,8 +228,8 @@ int BoundingBoxesTest() {
   constexpr double secondsInterval = 1.0 / framerate;
 
   SceneObject goat("goat", "resources/models/goatUnscaled.glb", "Cube", 3);
-  auto boundingBoxModels = goat.boundingBoxSet.getModels();
-  goat.offset = glm::vec3(0.0f, 0.0f, -3.0f);
+  auto boundingBoxModels = goat.getBoundingBoxSetModels();
+  goat.position = glm::vec3(0.0f, 0.0f, -3.0f);
   goat.startAnimating();
 
   while (seconds - startSeconds < 5.0) {
@@ -243,7 +243,7 @@ int BoundingBoxesTest() {
       renderer->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
       for (auto& m : boundingBoxModels) {
-        renderer->render(m, goat.offset,
+        renderer->render(m, goat.position,
           goat.getRotation(), glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
       }
       renderer->swapBuffers();
@@ -265,8 +265,8 @@ int FPStest() {
   uint32_t numFrames = 0;
 
   SceneObject goat("goat", "resources/models/goatUnscaled.glb", "Cube", 3);
-  auto boundingBoxModels = goat.boundingBoxSet.getModels();
-  goat.offset = glm::vec3(0.0f, 0.0f, -3.0f);
+  auto boundingBoxModels = goat.getBoundingBoxSetModels();
+  goat.position = glm::vec3(0.0f, 0.0f, -3.0f);
   goat.startAnimating();
 
   Model texturedRect;
@@ -288,7 +288,7 @@ int FPStest() {
       renderer->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
       for (auto& m : boundingBoxModels) {
-        renderer->render(m, goat.offset,
+        renderer->render(m, goat.position,
           goat.getRotation(), glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
       }
 
@@ -317,11 +317,11 @@ int RendererTest() {
   Model modelFromGlb(GlbFile("resources/models/goatUnscaled.glb"), ""); 
 
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
-  object.offset = glm::vec3(0.0f, -1.0f, -8.0f);
+  object.position = glm::vec3(0.0f, -1.0f, -8.0f);
   renderer->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
   SceneObject object2("texutredCube", "resources/models/Cube/Cube.obj");
-  object2.offset = glm::vec3(-2.0f, -1.0f, -7.0f);
+  object2.position = glm::vec3(-2.0f, -1.0f, -7.0f);
   object2.setRotation(glm::vec3(0.3f, 1.3f, 0.0f));
 
   Image cubeTexture("resources/models/Cube/cubeTexture.png");

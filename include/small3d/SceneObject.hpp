@@ -48,7 +48,8 @@ namespace small3d
     glm::mat4x4 rotation = glm::mat4x4(1);
     glm::vec3 rotationXYZ = glm::vec3(0.0f);
     bool rotationByMatrix = false;
-    std::vector<Model> models;
+    std::shared_ptr<std::vector<Model>> models = std::shared_ptr<std::vector<Model>>(new std::vector<Model>());
+    std::shared_ptr<BoundingBoxSet> boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet());
   public:
 
     /**
@@ -117,6 +118,13 @@ namespace small3d
      */
     Model& getModel();
 
+
+    /**
+     * @brief Get the bounding box set as models (for debug-rendering)
+     * @return The bounding box set models
+     */
+    std::vector<Model> getBoundingBoxSetModels();
+
     /**
      * @brief Get the name of the object
      * @return The name of the object
@@ -124,10 +132,9 @@ namespace small3d
     const std::string getName() const;
 
     /**
-     * Offset (position) of the object
+     * Position of the object
      */
-    glm::vec3 offset = glm::vec3(0.0f, 0.0f, 0.0f);
-
+    glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
     
     /**
      * @brief: Set the rotation of the object 
@@ -201,11 +208,6 @@ namespace small3d
      * @brief Process animation (progress current frame if necessary)
      */
     void animate();
-
-    /**
-     * @brief The bounding boxes for the object, used for collision detection.
-     */
-    BoundingBoxSet boundingBoxSet;
 
     /**
      * @brief  Check if the bounding boxes of this object contain

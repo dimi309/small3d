@@ -25,16 +25,16 @@ namespace small3d {
     LOGDEBUG("Trying to load " + modelPath + " as glTF.");
     try {
       Model model1(GlbFile(modelPath), modelMeshName);
-      models.push_back(model1);
-      boundingBoxSet = BoundingBoxSet(model1.vertexData, boundingBoxSubdivisions);
+      models->push_back(model1);
+      boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet(model1.vertexData, boundingBoxSubdivisions));
     }
     catch (std::runtime_error& e) {
       if (std::string(e.what()).find(GlbFile::NOTGLTF)) {
         LOGDEBUG("Trying to load " + modelPath + " as Wavefront.");
         try {
           Model model1(WavefrontFile(modelPath), modelMeshName);
-          models.push_back(model1);
-          boundingBoxSet = BoundingBoxSet(model1.vertexData, boundingBoxSubdivisions);
+          models->push_back(model1);
+          boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet(model1.vertexData, boundingBoxSubdivisions));
         }
         catch (std::runtime_error& e2) {
           LOGERROR(e2.what());
@@ -49,7 +49,7 @@ namespace small3d {
     const int numFrames,
     const int startFrameIndex,
     const uint32_t boundingBoxSubdivisions) :
-    offset(0, 0, 0) {
+    position(0, 0, 0) {
 
     wavefront = true;
 
@@ -71,19 +71,21 @@ namespace small3d {
         ss << std::setfill('0') << std::setw(6) << idx + startFrameIndex;
         std::string frameNum = ss.str();
         Model model1(WavefrontFile(modelPath + "_" + frameNum + ".obj"), "");
-        models.push_back(model1);
+        models->push_back(model1);
       }
     }
     else {
-      WavefrontFile w(modelPath);
-      Model model1(w, "");
-      models.push_back(model1);
+      models->push_back(Model(WavefrontFile(modelPath), ""));
     }
-    boundingBoxSet = BoundingBoxSet(getModel().vertexData, boundingBoxSubdivisions);
+    boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet(getModel().vertexData, boundingBoxSubdivisions));
   }
 
   Model& SceneObject::getModel() {
-    return models[currentFrame];
+    return (*models)[currentFrame];
+  }
+
+  std::vector<Model> SceneObject::getBoundingBoxSetModels() {
+    return boundingBoxSet->getModels();
   }
 
   const std::string SceneObject::getName() const {
@@ -162,36 +164,36 @@ namespace small3d {
           }
         }
         else {
-          models[0].animate();
+          (*models)[0].animate();
         }
       }
     }
   }
 
   bool SceneObject::contains(const glm::vec3& point) const {
-    if (boundingBoxSet.vertices.size() == 0) {
+    if (boundingBoxSet->vertices.size() == 0) {
       throw std::runtime_error("No bounding boxes have been provided for " +
         name +
         ", so collision detection is not enabled.");
     }
-    return boundingBoxSet.contains(point, this->offset, this->getRotation());
+    return boundingBoxSet->contains(point, this->position, this->getRotation());
   }
 
   bool SceneObject::containsCorners(const SceneObject& otherObject) const {
-    if (boundingBoxSet.vertices.size() == 0) {
+    if (boundingBoxSet->vertices.size() == 0) {
       throw std::runtime_error("No bounding boxes have been provided for " +
         name +
         ", so collision detection is not enabled.");
     }
 
-    if (otherObject.boundingBoxSet.vertices.size() == 0) {
+    if (otherObject.boundingBoxSet->vertices.size() == 0) {
       throw std::runtime_error("No bounding boxes have been provided for " +
         otherObject.name +
         ", so collision detection is not enabled.");
     }
 
-    return boundingBoxSet.containsCorners(otherObject.boundingBoxSet, this->offset,
-      this->rotation, otherObject.offset,
+    return boundingBoxSet->containsCorners(*otherObject.boundingBoxSet, this->position,
+      this->rotation, otherObject.position,
       otherObject.rotation);
   }
 
