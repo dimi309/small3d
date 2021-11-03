@@ -69,6 +69,9 @@ $(function() {
 <div class="textblock"><p>v1.800 (still open)</p>
 <ul>
 <li>[BREAKING] Rotations are now stored and managed as transformations. Euler angles (x, y, z rotation) support remains but with a modified interface.</li>
+<li>[BREAKING] SceneObject.offset has been renamed to SceneObject.position.</li>
+<li>[BREAKING] SceneObject.boundingBoxSet is now private. It is still possible to retrieve the bounding boxes as Models, using SceneObject.getBoundingBoxSetModels.</li>
+<li>SceneObject.boundingBoxSet and SceneObject.models have been converted to smart pointers to allow for the copy constructor to create scene objects that reuse existing models.</li>
 </ul>
 <p>v1.709 2021-10-16</p>
 <ul>
