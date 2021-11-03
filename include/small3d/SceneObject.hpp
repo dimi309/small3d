@@ -126,6 +126,12 @@ namespace small3d
     std::vector<Model> getBoundingBoxSetModels();
 
     /**
+     * @brief Get the bounding box set extremes (min and max coords)
+     * @return The bounding box set extremes
+     */
+    std::vector<BoundingBoxSet::extremes> getBoundingBoxSetExtremes();
+
+    /**
      * @brief Get the name of the object
      * @return The name of the object
      */

@@ -6,7 +6,8 @@ v1.800 (still open)
   angles (x, y, z rotation) support remains but with a modified interface.
 - [BREAKING] SceneObject.offset has been renamed to SceneObject.position.
 - [BREAKING] SceneObject.boundingBoxSet is now private. It is still possible
-  to retrieve the bounding boxes as Models, using SceneObject.getBoundingBoxSetModels.
+  to retrieve the bounding boxes as Models, using SceneObject.getBoundingBoxSetModels,
+  and the bounding box set extremes using SceneObject.getBoundingBoxSetExtremes.
 - SceneObject.boundingBoxSet and SceneObject.models have been converted
   to smart pointers to allow for the copy constructor to create scene
   objects that reuse existing models.

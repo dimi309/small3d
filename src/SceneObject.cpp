@@ -88,6 +88,10 @@ namespace small3d {
     return boundingBoxSet->getModels();
   }
 
+  std::vector<BoundingBoxSet::extremes> SceneObject::getBoundingBoxSetExtremes() {
+    return boundingBoxSet->boxExtremes;
+  }
+
   const std::string SceneObject::getName() const {
     return name;
   }
