@@ -31,8 +31,8 @@ namespace small3d {
     void triangulate();
     void calcExtremes();
     void generateBoxesFromExtremes();
-    void generateExtremes(std::vector<float>& vertexData, uint32_t subdivisions);
-    void generateSubExtremes(std::vector<float>& vertexData);
+    void generateExtremes(std::vector<float>& vertexData, const glm::vec3& scale, uint32_t subdivisions);
+    void generateSubExtremes(std::vector<float>& vertexData, const glm::vec3& scale);
 
   public:
 
@@ -67,12 +67,13 @@ namespace small3d {
      *        data that can be found in a Model.
      * @param vertexData  The vertex data. Array of floats to be interpreted as
      *                    an array of 4 component vertex coordinates.
+     * @param scale        Scale applied to the vertexData before calculating boxes.
      * @param subdivisions How many times to subdivide the initially one created
      *                     bounding box, getting more accurate collision detection
      *                     at the expense of performance.
      */
 
-    BoundingBoxSet(std::vector<float>& vertexData, uint32_t subdivisions);
+    BoundingBoxSet(std::vector<float>& vertexData, const glm::vec3& scale, uint32_t subdivisions);
 
     /**
      * @brief Destructor

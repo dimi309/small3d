@@ -11,6 +11,9 @@ v1.800 (still open)
 - SceneObject.boundingBoxSet and SceneObject.models have been converted
   to smart pointers to allow for the copy constructor to create scene
   objects that reuse existing models.
+- Bounding boxes now take a scaling parameter, and the SceneObject
+  scales the automatically generated bounding boxes to a Model's 
+  initial scale.
 
 v1.709 2021-10-16
 

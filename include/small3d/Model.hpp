@@ -77,9 +77,6 @@ namespace small3d {
     // file (in quaternion form)
     glm::quat origRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 
-    // Original scale, as read from a file
-    glm::vec3 origScale = glm::vec3(1.0f, 1.0f, 1.0f);
-
     // brief Original translation, as read from a file
     glm::vec3 origTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
 
@@ -103,6 +100,11 @@ namespace small3d {
       std::vector<glm::vec3> scaleAnimation;
       std::vector<float> animTime;
     };
+
+    /**
+     * @brief Original scale, as read from a file
+     */
+    glm::vec3 origScale = glm::vec3(1.0f, 1.0f, 1.0f);
 
     /**
      * @brief Use this to scale the model and not origScale

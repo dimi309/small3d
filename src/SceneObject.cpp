@@ -26,7 +26,7 @@ namespace small3d {
     try {
       Model model1(GlbFile(modelPath), modelMeshName);
       models->push_back(model1);
-      boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet(model1.vertexData, boundingBoxSubdivisions));
+      boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet(model1.vertexData, model1.origScale, boundingBoxSubdivisions));
     }
     catch (std::runtime_error& e) {
       if (std::string(e.what()).find(GlbFile::NOTGLTF)) {
@@ -34,7 +34,7 @@ namespace small3d {
         try {
           Model model1(WavefrontFile(modelPath), modelMeshName);
           models->push_back(model1);
-          boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet(model1.vertexData, boundingBoxSubdivisions));
+          boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet(model1.vertexData, model1.origScale, boundingBoxSubdivisions));
         }
         catch (std::runtime_error& e2) {
           LOGERROR(e2.what());
@@ -77,7 +77,7 @@ namespace small3d {
     else {
       models->push_back(Model(WavefrontFile(modelPath), ""));
     }
-    boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet(getModel().vertexData, boundingBoxSubdivisions));
+    boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet(getModel().vertexData, getModel().origScale, boundingBoxSubdivisions));
   }
 
   Model& SceneObject::getModel() {

@@ -25,8 +25,9 @@ namespace small3d {
 
   }
 
-  BoundingBoxSet::BoundingBoxSet(std::vector<float>& vertexData, uint32_t subdivisions) {
-    generateExtremes(vertexData, subdivisions);
+  BoundingBoxSet::BoundingBoxSet(std::vector<float>& vertexData,
+    const glm::vec3& scale, uint32_t subdivisions) {
+    generateExtremes(vertexData, scale, subdivisions);
 
   }
 
@@ -187,37 +188,49 @@ namespace small3d {
     triangulate();
   }
 
-  void BoundingBoxSet::generateExtremes(std::vector<float>& vertexData, uint32_t subdivisions) {
+  void BoundingBoxSet::generateExtremes(std::vector<float>& vertexData, const glm::vec3& scale, uint32_t subdivisions) {
     vertices.clear();
     facesVertexIndexes.clear();
     facesVertexIndexesTriangulated.clear();
     boxExtremes.clear();
     extremes ex;
 
+    glm::vec4 vertex(0.0f, 0.0f, 0.0f, 0.0f);
+
     for (uint32_t idx = 0; idx < vertexData.size(); ++idx) {
       if (idx % 4 == 0) {
-        if (vertexData[idx] < ex.minX) ex.minX = vertexData[idx];
-        else if (vertexData[idx] > ex.maxX) ex.maxX = vertexData[idx];
+        vertex.x = vertexData[idx];
       }
       else if (idx % 4 == 1) {
-        if (vertexData[idx] < ex.minY) ex.minY = vertexData[idx];
-        else if (vertexData[idx] > ex.maxY) ex.maxY = vertexData[idx];
+        vertex.y = vertexData[idx];
       }
       else if (idx % 4 == 2) {
-        if (vertexData[idx] < ex.minZ) ex.minZ = vertexData[idx];
-        else if (vertexData[idx] > ex.maxZ) ex.maxZ = vertexData[idx];
+        vertex.z = vertexData[idx];
+      }
+      else if (idx % 4 == 3) {
+        vertex.w = vertexData[idx];
+        vertex = glm::scale(glm::mat4x4(1.0f), scale) * vertex;
+
+        if (vertex.x < ex.minX) ex.minX = vertex.x;
+        else if (vertex.x > ex.maxX) ex.maxX = vertex.x;
+
+        if (vertex.y < ex.minY) ex.minY = vertex.y;
+        else if (vertex.y > ex.maxY) ex.maxY = vertex.y;
+
+        if (vertex.z < ex.minZ) ex.minZ = vertex.z;
+        else if (vertex.z > ex.maxZ) ex.maxZ = vertex.z;
       }
     }
 
     boxExtremes.push_back(ex);
 
     for (uint32_t idx = 0; idx < subdivisions; ++idx) {
-      generateSubExtremes(vertexData);
+      generateSubExtremes(vertexData, scale);
     }
     generateBoxesFromExtremes();
   }
 
-  void BoundingBoxSet::generateSubExtremes(std::vector<float>& vertexData) {
+  void BoundingBoxSet::generateSubExtremes(std::vector<float>& vertexData, const glm::vec3& scale) {
 
     // Move all extremes to a temporary buffer
     std::vector<extremes> extBuffer;
@@ -307,6 +320,9 @@ namespace small3d {
         }
         else if (idx % 4 == 3) {
           point.w = vertexData[idx];
+
+          point = glm::scale(glm::mat4x4(1.0f), scale) * point;
+
           for (auto& ex : newExtremes) {
 
             if (point.x > ex.minX && point.x < ex.maxX &&
