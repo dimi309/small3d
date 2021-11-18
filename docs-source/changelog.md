@@ -14,6 +14,7 @@ v1.800 (still open)
 - Bounding boxes now take a scaling parameter, and the SceneObject
   scales the automatically generated bounding boxes to a Model's 
   initial scale.
+- Added Model-based SceneObject constructor.
 
 v1.709 2021-10-16
 
