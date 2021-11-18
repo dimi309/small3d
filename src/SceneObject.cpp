@@ -26,7 +26,7 @@ namespace small3d {
     try {
       Model model1(GlbFile(modelPath), modelMeshName);
       models->push_back(model1);
-      boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet(model1.vertexData, model1.origScale, boundingBoxSubdivisions));
+      boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet(model1.vertexData, model1.getOriginalScale(), boundingBoxSubdivisions));
     }
     catch (std::runtime_error& e) {
       if (std::string(e.what()).find(GlbFile::NOTGLTF)) {
@@ -34,7 +34,7 @@ namespace small3d {
         try {
           Model model1(WavefrontFile(modelPath), modelMeshName);
           models->push_back(model1);
-          boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet(model1.vertexData, model1.origScale, boundingBoxSubdivisions));
+          boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet(model1.vertexData, model1.getOriginalScale(), boundingBoxSubdivisions));
         }
         catch (std::runtime_error& e2) {
           LOGERROR(e2.what());
@@ -77,7 +77,19 @@ namespace small3d {
     else {
       models->push_back(Model(WavefrontFile(modelPath), ""));
     }
-    boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet(getModel().vertexData, getModel().origScale, boundingBoxSubdivisions));
+    boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet(getModel().vertexData, getModel().getOriginalScale(), boundingBoxSubdivisions));
+  }
+
+  SceneObject::SceneObject(const std::string& name, const Model& model, const uint32_t boundingBoxSubdivisions) {
+    initLogger();
+    this->name = name;
+    animating = false;
+    framesWaited = 0;
+    frameDelay = 1;
+    currentFrame = 0;
+    this->numFrames = 1;
+    models->push_back(model);
+    boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet(getModel().vertexData, getModel().getOriginalScale(), boundingBoxSubdivisions));
   }
 
   Model& SceneObject::getModel() {
@@ -111,8 +123,8 @@ namespace small3d {
     else {
       this->rotationXYZ += rotation;
       this->rotation = glm::rotate(glm::mat4x4(1.0f), this->rotationXYZ.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
-	glm::rotate(glm::mat4x4(1.0f), this->rotationXYZ.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-	glm::rotate(glm::mat4x4(1.0f), this->rotationXYZ.z, glm::vec3(0.0f, 0.0f, 1.0f));
+        glm::rotate(glm::mat4x4(1.0f), this->rotationXYZ.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+        glm::rotate(glm::mat4x4(1.0f), this->rotationXYZ.z, glm::vec3(0.0f, 0.0f, 1.0f));
     }
   }
 
@@ -126,7 +138,7 @@ namespace small3d {
     auto orientationVec4 = this->rotation * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
     return glm::vec3(orientationVec4.x, orientationVec4.y, orientationVec4.z);
   }
-  
+
   const glm::mat4x4 SceneObject::getRotation() const {
     return this->rotation;
   }

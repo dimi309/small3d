@@ -86,4 +86,11 @@ namespace small3d {
 
     return parentTransform * transform;
   }
+
+  glm::vec3 Model::getOriginalScale() {
+    return origScale;
+  }
+
 }
+
+

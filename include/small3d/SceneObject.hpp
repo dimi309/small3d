@@ -108,6 +108,17 @@ namespace small3d
       const uint32_t boundingBoxSubdivisions = 0);
 
     /**
+     * @brief Model-based constructor
+     * 
+     * @param name  The name of the object
+     * @param model The Model for which to create the object
+     * @param boundingBoxSubdivisions How many times to subdivide the initially created
+     *              bounding box, getting more accurate collision detection
+     *              at the expense of performance.
+     */
+    SceneObject(const std::string& name, const Model& model, const uint32_t boundingBoxSubdivisions = 0);
+
+    /**
      * @brief Destructor
      */
     ~SceneObject() = default;
