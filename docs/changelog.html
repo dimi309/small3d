@@ -72,6 +72,8 @@ $(function() {
 <li>[BREAKING] SceneObject.offset has been renamed to SceneObject.position.</li>
 <li>[BREAKING] SceneObject.boundingBoxSet is now private. It is still possible to retrieve the bounding boxes as Models, using SceneObject.getBoundingBoxSetModels, and the bounding box set extremes using SceneObject.getBoundingBoxSetExtremes.</li>
 <li>SceneObject.boundingBoxSet and SceneObject.models have been converted to smart pointers to allow for the copy constructor to create scene objects that reuse existing models.</li>
+<li>Bounding boxes now take a scaling parameter, and the SceneObject scales the automatically generated bounding boxes to a Model's initial scale.</li>
+<li>Added Model-based SceneObject constructor.</li>
 </ul>
 <p>v1.709 2021-10-16</p>
 <ul>
