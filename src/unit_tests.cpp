@@ -16,6 +16,7 @@
 #include <small3d/BoundingBoxSet.hpp>
 #include <small3d/GlbFile.hpp>
 #include <small3d/WavefrontFile.hpp>
+#include "OctPyramid.hpp"
 
 using namespace small3d;
 using namespace std;
@@ -249,6 +250,31 @@ int BoundingBoxesTest() {
       renderer->swapBuffers();
       goat.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
     }
+  }
+
+  SceneObject goat2("goat2", goat.getModel());
+  if (goat2.getBoundingBoxSetExtremes().size() == 0) {
+    LOGERROR("Bounding boxes not created for goat2");
+    return 0;
+  }
+
+  SceneObject goat3("goat3", goat.getModel(), 2);
+  if (goat3.getBoundingBoxSetExtremes().size() == 0) {
+    LOGERROR("Bounding boxes not created for goat3");
+    return 0;
+  }
+
+  OctPyramid op(4.4f, 7.5f);
+  SceneObject opobj("op", op);
+  if (opobj.getBoundingBoxSetExtremes().size() == 0) {
+    LOGERROR("Bounding boxes not created for op");
+    return 0;
+  }
+
+  SceneObject op1obj("op1", op, 2);
+  if (op1obj.getBoundingBoxSetExtremes().size() == 0) {
+    LOGERROR("Bounding boxes not created for op1");
+    return 0;
   }
 
   return 1;
@@ -488,12 +514,12 @@ int main(int argc, char** argv) {
       printf("*** Failing GlbTextureText.\n\r");
       return 1;
     }
-
+    
     if (!BoundingBoxesTest()) {
       printf("*** Failing BoundingBoxesTest.\n\r");
       return 1;
     }
-
+    
     if (!FPStest()) {
       printf("*** Failing FPStest.\n\r");
       return 1;

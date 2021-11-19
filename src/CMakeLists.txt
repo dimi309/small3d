@@ -1,5 +1,6 @@
 file(GLOB SOURCE_FILES *.cpp)
 list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/unit_tests.cpp)
+list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/OctPyramid.cpp)
 
 file(GLOB HEADER_FILES ${CMAKE_SOURCE_DIR}/include/small3d/*.hpp)
 
@@ -123,7 +124,7 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
 
   # Unit testing
 
-  add_executable(unittests unit_tests.cpp)
+  add_executable(unittests unit_tests.cpp OctPyramid.hpp OctPyramid.cpp)
 
   # When using OpenGL include the OpenGL Renderer.hpp directory first
   # so that OpenGL Renderer.hpp takes precedence over Vulkan Renderer.hpp

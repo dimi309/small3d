@@ -306,7 +306,7 @@ namespace small3d {
       glm::vec4 point;
 
       // From the newly formed extremes keep only the ones that
-      // contain one of the model's ponts
+      // contain one of the model's vertices
 
       for (uint32_t idx = 0; idx < vertexData.size(); ++idx) {
         if (idx % 4 == 0) {
@@ -325,9 +325,9 @@ namespace small3d {
 
           for (auto& ex : newExtremes) {
 
-            if (point.x > ex.minX && point.x < ex.maxX &&
-              point.y > ex.minY && point.y < ex.maxY &&
-              point.z > ex.minZ && point.z < ex.maxZ) ex.tagged = true;
+            if (point.x >= ex.minX && point.x <= ex.maxX &&
+              point.y >= ex.minY && point.y <= ex.maxY &&
+              point.z >= ex.minZ && point.z <= ex.maxZ) ex.tagged = true;
 
           }
         }
