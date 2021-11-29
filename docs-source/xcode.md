@@ -23,8 +23,8 @@ The created project, `build/small3d.xcodeproj` can then be opened in Xcode.
 
 There are two things that need to be taken care of before proceeding to run
 and debug the unit tests though. First of all, from the Project Navigator,
-click on `small3d`, and then on the `unittests` target. Select Build Settings
-and scroll down to User-Defined. There, the `CONFIGURATION_BUILD_DIR` variable
+click on `small3d`, and then on the `unittests` target. Select `Build Settings`
+and scroll down to `User-Defined`. There, the `CONFIGURATION_BUILD_DIR` variable
 needs to be set to the `bin` directory in all cases,
 for example `/Users/me/Source/small3d/build/bin/`, rather than the
 differentiated directories it is set to by default, e.g. `bin/Debug`, 
@@ -32,7 +32,7 @@ differentiated directories it is set to by default, e.g. `bin/Debug`,
 
 The other problem is that, if you have set some Vulkan-related environment 
 variables in bash / zsh, Xcode is not aware of them. Select the `unittests` 
-target and then select Edit Scheme. Then select Run Debug, Arguments and add 
+target and then select `Edit Scheme`. Then select `Run Debug`, `Arguments` and add 
 the necessary Environment Variables. They cannot be exactly the same as in 
 `.zprofile` or `.bash_profile`. For example `VULKAN_SDK` does not need to be
 defined in this case and its value cannot be reused as `$VULKAN_SDK` anyway.
@@ -44,4 +44,3 @@ path locations may vary):
 	DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/Users/user/Software/vulkansdk-macos-1.2.154.0/macOS/lib
 	VK_LAYER_PATH=/Users/user/Software/vulkansdk-macos-1.2.154.0/macOS/share/vulkan/explicit_layer.d
 	VK_ICD_FILENAMES=/Users/user/Software/vulkansdk-macos-1.2.154.0/MoltenVK/dylib/macOS/MoltenVK_icd.json
-
