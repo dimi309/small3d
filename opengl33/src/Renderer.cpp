@@ -777,14 +777,27 @@ namespace small3d {
     glVertexAttribPointer(attrib_position, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
     // Normals
+    
     glBindBuffer(GL_ARRAY_BUFFER, model.normalsBufferObjectId);
     if (perspective) {
       
       if (!alreadyInGPU) {
-        glBufferData(GL_ARRAY_BUFFER,
-          model.normalsDataByteSize,
-          model.normalsData.data(),
-          GL_STATIC_DRAW);
+	if (model.normalsDataByteSize > 0) {
+	  glBufferData(GL_ARRAY_BUFFER,
+		       model.normalsDataByteSize,
+		       model.normalsData.data(),
+		       GL_STATIC_DRAW);
+	} else {
+	  // The normals buffer is created with 0 values if the corresponding
+          // data does not exist, otherwise there can be a EXC_BAD_ACCESS
+          // when running glDrawElements on MacOS.
+	  size_t ns = (model.vertexDataByteSize / 4) * 3;
+	  std::unique_ptr<char[]> data = std::make_unique<char[]>(ns);
+	  glBufferData(GL_ARRAY_BUFFER,
+		       ns,
+		       &data[0],
+		       GL_STATIC_DRAW);
+	}
       }
       
       glEnableVertexAttribArray(attrib_normal);
@@ -995,3 +1008,4 @@ namespace small3d {
   }
 
 }
+
