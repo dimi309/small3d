@@ -8,6 +8,11 @@
  */
 
 #pragma once
+#include <iostream> // Included to construct ios_base::Init
+                    // and avoid segmentation fault on Linux
+                    // see https://coderedirect.com/questions/572522/c-segmentation-fault-when-using-cout-in-static-variable-initialization
+#include <ostream>
+#include <memory>
 
 /**
  *  Log an error
@@ -27,9 +32,6 @@
 #else
 #define LOGDEBUG(MESSAGE)
 #endif
-
-#include <ostream>
-#include <memory>
 
 namespace small3d {
 
