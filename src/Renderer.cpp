@@ -315,6 +315,12 @@ namespace small3d {
     }
   }
 
+  void Renderer::destroyDescriptorPool() {
+    if (descriptorPoolCreated) {
+      vkDestroyDescriptorPool(vkz_logical_device, descriptorPool, NULL);
+    }
+  }
+
   void Renderer::allocateDescriptorSets() {
 
     VkDescriptorSetLayoutBinding dslb[4];
@@ -473,6 +479,15 @@ namespace small3d {
     wds[3].pTexelBufferView = NULL;
 
     vkUpdateDescriptorSets(vkz_logical_device, 4, &wds[0], 0, NULL);
+  }
+
+  void Renderer::destroyDescriptorSets() {
+    vkDestroyDescriptorSetLayout(vkz_logical_device,
+      descriptorSetLayout, NULL);
+
+    vkDestroyDescriptorSetLayout(vkz_logical_device,
+      textureDescriptorSetLayout, NULL);
+
   }
 
   void Renderer::setColourBuffer(glm::vec4 colour, uint32_t memIndex) {
@@ -703,8 +718,11 @@ namespace small3d {
     }
 
     vkz_create_sync_objects();
+    allocateDynamicBuffers();
 
-    // Allocate memory & vulkan dynamic buffers for object positioning
+  }
+
+  void Renderer::allocateDynamicBuffers() {
     VkPhysicalDeviceProperties pdp = {};
     vkGetPhysicalDeviceProperties(vkz_physical_device, &pdp);
     VkDeviceSize minAlignment = pdp.limits.minUniformBufferOffsetAlignment;
@@ -781,8 +799,45 @@ namespace small3d {
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
     }
-    // end of memory allocation for object positioning
+  }
 
+  void Renderer::destroyDynamicBuffers() {
+    if (uboModelPlacementDynamic) {
+      alloc.deallocate(reinterpret_cast<char*>(uboModelPlacementDynamic),
+        uboModelPlacementDynamicSize);
+    }
+
+    if (uboWorldDetailsDynamic) {
+      alloc.deallocate(reinterpret_cast<char*>(uboWorldDetailsDynamic),
+        uboWorldDetailsDynamicSize);
+    }
+
+    if (uboColourDynamic) {
+      alloc.deallocate(reinterpret_cast<char*>(uboColourDynamic),
+        uboColourDynamicSize);
+    }
+
+    for (uint32_t i = 0; i < vkz_swapchain_image_count; ++i) {
+
+      if (i < renderModelPlacementBuffersDynamic.size()) {
+        vkz_destroy_buffer(renderModelPlacementBuffersDynamic[i],
+          renderModelPlacementBuffersDynamicMemory[i]);
+      }
+
+      if (i < worldDetailsBuffersDynamic.size()) {
+        vkz_destroy_buffer(worldDetailsBuffersDynamic[i],
+          worldDetailsBuffersDynamicMemory[i]);
+      }
+
+      if (i < lightIntensityBuffers.size()) {
+        vkz_destroy_buffer(lightIntensityBuffers[i],
+          lightIntensityBufferMemories[i]);
+      }
+      if (i < colourBuffersDynamic.size()) {
+        vkz_destroy_buffer(colourBuffersDynamic[i],
+          colourBuffersDynamicMemory[i]);
+      }
+    }
   }
 
   void Renderer::initWindow(int& width, int& height) {
@@ -941,8 +996,8 @@ namespace small3d {
     else {
       this->cameraRotationXYZ += rotation;
       this->cameraRotation = glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-	glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-	glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.y, glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+        glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.y, glm::vec3(0.0f, 1.0f, 0.0f));
     }
   }
 
@@ -1023,52 +1078,11 @@ namespace small3d {
 
     vkz_destroy_sync_objects();
 
-    vkDestroyDescriptorSetLayout(vkz_logical_device,
-      descriptorSetLayout, NULL);
+    destroyDescriptorSets();
 
-    vkDestroyDescriptorSetLayout(vkz_logical_device,
-      textureDescriptorSetLayout, NULL);
+    destroyDescriptorPool();
 
-    if (descriptorPoolCreated) {
-      vkDestroyDescriptorPool(vkz_logical_device, descriptorPool, NULL);
-    }
-
-    if (uboModelPlacementDynamic) {
-      alloc.deallocate(reinterpret_cast<char*>(uboModelPlacementDynamic),
-        uboModelPlacementDynamicSize);
-    }
-
-    if (uboWorldDetailsDynamic) {
-      alloc.deallocate(reinterpret_cast<char*>(uboWorldDetailsDynamic),
-        uboWorldDetailsDynamicSize);
-    }
-
-    if (uboColourDynamic) {
-      alloc.deallocate(reinterpret_cast<char*>(uboColourDynamic),
-        uboColourDynamicSize);
-    }
-
-    for (uint32_t i = 0; i < vkz_swapchain_image_count; ++i) {
-
-      if (i < renderModelPlacementBuffersDynamic.size()) {
-        vkz_destroy_buffer(renderModelPlacementBuffersDynamic[i],
-          renderModelPlacementBuffersDynamicMemory[i]);
-      }
-
-      if (i < worldDetailsBuffersDynamic.size()) {
-        vkz_destroy_buffer(worldDetailsBuffersDynamic[i],
-          worldDetailsBuffersDynamicMemory[i]);
-      }
-
-      if (i < lightIntensityBuffers.size()) {
-        vkz_destroy_buffer(lightIntensityBuffers[i],
-          lightIntensityBufferMemories[i]);
-      }
-      if (i < colourBuffersDynamic.size()) {
-        vkz_destroy_buffer(colourBuffersDynamic[i],
-          colourBuffersDynamicMemory[i]);
-      }
-    }
+    destroyDynamicBuffers();
 
     vkDestroySampler(vkz_logical_device, textureSampler, NULL);
 
@@ -1268,7 +1282,7 @@ namespace small3d {
       glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)),
-      colour, textureName, 
+      colour, textureName,
       perspective);
 
   }
@@ -1277,10 +1291,10 @@ namespace small3d {
     const glm::vec3& rotation,
     const std::string& textureName) {
 
-    this->render(model, offset, 
+    this->render(model, offset,
       glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)), 
+      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)),
       glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName);
 
@@ -1301,7 +1315,7 @@ namespace small3d {
     }
 #endif
 
-    if (!model.alreadyInGPU) {
+    if (!model.alreadyInGPU || modelReset) {
 
       // Send vertex data to GPU
 
@@ -1703,6 +1717,21 @@ namespace small3d {
       clearBuffers(model);
     }
     garbageModels.clear();
+
+    if (colourMemIndex > maxObjectsPerPass || modelPlacementMemIndex > maxObjectsPerPass) {
+      maxObjectsPerPass += 100;
+      modelReset = true;
+      destroyDynamicBuffers();
+      destroyDescriptorSets();
+      destroyDescriptorPool();
+      createDescriptorPool();
+      allocateDescriptorSets();
+      allocateDynamicBuffers();
+      vkz_recreate_pipelines_and_swapchain();
+    }
+    else {
+      modelReset = false;
+    }
 
   }
 

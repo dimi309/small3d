@@ -98,6 +98,7 @@ namespace small3d
     static const uint32_t defaultMaxObjectsPerPass = 20;
 
     uint32_t maxObjectsPerPass = 0;
+    bool modelReset = false;
 
     uint32_t perspectivePipelineIndex = 100;
 
@@ -187,6 +188,7 @@ namespace small3d
     VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
     bool descriptorPoolCreated = false;
     void createDescriptorPool();
+    void destroyDescriptorPool();
 
     VkCommandBuffer nextCommandBuffer = VK_NULL_HANDLE;
 
@@ -194,6 +196,7 @@ namespace small3d
 
     void allocateDescriptorSets();
     void updateDescriptorSets();
+    void destroyDescriptorSets();
 
     void setColourBuffer(glm::vec4 colour, uint32_t memIndex);
 
@@ -210,6 +213,8 @@ namespace small3d
 
     void init(const int width, const int height,
       const std::string shadersPath);
+    void allocateDynamicBuffers();
+    void destroyDynamicBuffers();
     void initWindow(int& width, int& height);
 
     void setWorldDetails(bool perspective);
