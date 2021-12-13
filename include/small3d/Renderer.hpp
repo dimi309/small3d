@@ -98,8 +98,7 @@ namespace small3d
     static const uint32_t defaultMaxObjectsPerPass = 20;
 
     uint32_t maxObjectsPerPass = 0;
-    bool modelReset = false;
-
+   
     uint32_t perspectivePipelineIndex = 100;
 
     uint32_t currentSwapchainImageIndex = 0;

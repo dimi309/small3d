@@ -477,7 +477,7 @@ namespace small3d {
     wds[3].pBufferInfo = &dbiLight;
     wds[3].pImageInfo = NULL;
     wds[3].pTexelBufferView = NULL;
-
+    
     vkUpdateDescriptorSets(vkz_logical_device, 4, &wds[0], 0, NULL);
   }
 
@@ -487,14 +487,13 @@ namespace small3d {
 
     vkDestroyDescriptorSetLayout(vkz_logical_device,
       textureDescriptorSetLayout, NULL);
-
   }
 
   void Renderer::setColourBuffer(glm::vec4 colour, uint32_t memIndex) {
 
     if (memIndex >= maxObjectsPerPass) {
-      throw std::runtime_error("Object colour buffer max index (" +
-        std::to_string(maxObjectsPerPass - 1) + ") exceeded.");
+      LOGERROR("Max objects per pass number (" + std::to_string(maxObjectsPerPass) +
+        ") exceeded.");
     }
 
     uboColourDynamic[memIndex] = {};
@@ -507,8 +506,8 @@ namespace small3d {
     const glm::mat4x4 rotation, uint32_t memIndex) {
 
     if (memIndex >= maxObjectsPerPass) {
-      throw std::runtime_error("Cannot position more than " + std::to_string(maxObjectsPerPass) +
-        " on the scene.");
+      LOGERROR("Max objects per pass number (" + std::to_string(maxObjectsPerPass) +
+        ") exceeded.");
     }
 
     uboModelPlacementDynamic[memIndex] = {};
@@ -805,16 +804,19 @@ namespace small3d {
     if (uboModelPlacementDynamic) {
       alloc.deallocate(reinterpret_cast<char*>(uboModelPlacementDynamic),
         uboModelPlacementDynamicSize);
+      uboModelPlacementDynamic = nullptr;
     }
 
     if (uboWorldDetailsDynamic) {
       alloc.deallocate(reinterpret_cast<char*>(uboWorldDetailsDynamic),
         uboWorldDetailsDynamicSize);
+      uboWorldDetailsDynamic = nullptr;
     }
 
     if (uboColourDynamic) {
       alloc.deallocate(reinterpret_cast<char*>(uboColourDynamic),
         uboColourDynamicSize);
+      uboColourDynamic = nullptr;
     }
 
     for (uint32_t i = 0; i < vkz_swapchain_image_count; ++i) {
@@ -838,6 +840,18 @@ namespace small3d {
           colourBuffersDynamicMemory[i]);
       }
     }
+
+    renderModelPlacementBuffersDynamic.clear();
+    renderModelPlacementBuffersDynamicMemory.clear();
+
+    worldDetailsBuffersDynamic.clear();
+    worldDetailsBuffersDynamicMemory.clear();
+
+    lightIntensityBuffers.clear();
+    lightIntensityBufferMemories.clear();
+
+    colourBuffersDynamic.clear();
+    colourBuffersDynamicMemory.clear();
   }
 
   void Renderer::initWindow(int& width, int& height) {
@@ -1315,7 +1329,14 @@ namespace small3d {
     }
 #endif
 
-    if (!model.alreadyInGPU || modelReset) {
+    if (!(colourMemIndex < maxObjectsPerPass && modelPlacementMemIndex < maxObjectsPerPass)) {
+      auto error = "Max objects per pass number (" + std::to_string(maxObjectsPerPass) +
+        ") exceeded.";
+      throw std::runtime_error(error);
+      return;
+    }
+
+    if (!model.alreadyInGPU) {
 
       // Send vertex data to GPU
 
@@ -1717,21 +1738,6 @@ namespace small3d {
       clearBuffers(model);
     }
     garbageModels.clear();
-
-    if (colourMemIndex > maxObjectsPerPass || modelPlacementMemIndex > maxObjectsPerPass) {
-      maxObjectsPerPass += 100;
-      modelReset = true;
-      destroyDynamicBuffers();
-      destroyDescriptorSets();
-      destroyDescriptorPool();
-      createDescriptorPool();
-      allocateDescriptorSets();
-      allocateDynamicBuffers();
-      vkz_recreate_pipelines_and_swapchain();
-    }
-    else {
-      modelReset = false;
-    }
 
   }
 
