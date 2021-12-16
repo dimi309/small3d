@@ -179,9 +179,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a cla
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aa5f473f60796983875a8034514f271ed"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classsmall3d_1_1_renderer.html">Renderer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#aa5f473f60796983875a8034514f271ed">getInstance</a> (const std::string &amp;windowTitle=&quot;&quot;, const int width=0, const int height=0, const float fieldOfView=0.785f, const float zNear=1.0f, const float zFar=24.0f, const std::string &amp;shadersPath=&quot;resources/shaders/&quot;, const uint32_t maxObjectsPerPass=defaultMaxObjectsPerPass)</td></tr>
-<tr class="memdesc:aa5f473f60796983875a8034514f271ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the instance of the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> (the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> is a singleton).  <a href="classsmall3d_1_1_renderer.html#aa5f473f60796983875a8034514f271ed">More...</a><br /></td></tr>
-<tr class="separator:aa5f473f60796983875a8034514f271ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93f07b4a326dbfed801ac90a41efc2c7"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classsmall3d_1_1_renderer.html">Renderer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a93f07b4a326dbfed801ac90a41efc2c7">getInstance</a> (const std::string &amp;windowTitle=&quot;&quot;, const int width=0, const int height=0, const float fieldOfView=0.785f, const float zNear=1.0f, const float zFar=24.0f, const std::string &amp;shadersPath=&quot;resources/shaders/&quot;, const uint32_t objectsPerFrame=defaultObjectsPerFrame, const uint32_t objectsPerFrameInc=defaultObjectsPerFrameInc)</td></tr>
+<tr class="memdesc:a93f07b4a326dbfed801ac90a41efc2c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the instance of the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> (the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> is a singleton).  <a href="classsmall3d_1_1_renderer.html#a93f07b4a326dbfed801ac90a41efc2c7">More...</a><br /></td></tr>
+<tr class="separator:a93f07b4a326dbfed801ac90a41efc2c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -485,8 +485,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a id="aa5f473f60796983875a8034514f271ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5f473f60796983875a8034514f271ed">&#9670;&nbsp;</a></span>getInstance()</h2>
+<a id="a93f07b4a326dbfed801ac90a41efc2c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93f07b4a326dbfed801ac90a41efc2c7">&#9670;&nbsp;</a></span>getInstance()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -540,7 +540,13 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const uint32_t&#160;</td>
-          <td class="paramname"><em>maxObjectsPerPass</em> = <code>defaultMaxObjectsPerPass</code>&#160;</td>
+          <td class="paramname"><em>objectsPerFrame</em> = <code>defaultObjectsPerFrame</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t&#160;</td>
+          <td class="paramname"><em>objectsPerFrameInc</em> = <code>defaultObjectsPerFrameInc</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -565,7 +571,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
     <tr><td class="paramname">zNear</td><td>Projection plane z coordinate (use positive value) </td></tr>
     <tr><td class="paramname">zFar</td><td>Far end of frustum z coordinate (use positive value) </td></tr>
     <tr><td class="paramname">shadersPath</td><td>The path where the shaders will be stored, relative to the application's executing directory. It defaults to the path provided by the engine, but it can be changed, so as to accommodate for executables which are going to be using it. Even though the path to the folder can be changed, the folder structure within it and the names of the shaders must remain as provided. The shader code can be changed, provided that their inputs and outputs are maintained the same. </td></tr>
-    <tr><td class="paramname">maxObjectsPerPass</td><td>Maximum number of Models and / or SceneObjects that will be rendered on the screen during a render pass at the same time. This is used to pre-allocate the needed memory buffers. </td></tr>
+    <tr><td class="paramname">objectsPerFrame</td><td>Maximum number of Models and / or SceneObjects foreseen to be rendered per frame. This is used to pre-allocate the needed memory buffers. </td></tr>
+    <tr><td class="paramname">objectsPerFrameInc</td><td>Number of objects to increase number of objects per frame by, each time the latter is exceeded. </td></tr>
   </table>
   </dd>
 </dl>

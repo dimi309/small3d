@@ -11,7 +11,7 @@ var searchData=
   ['getcurrentposeidx_28',['getCurrentPoseIdx',['../classsmall3d_1_1_model.html#a5d501a1d394c08b7666a48d55736a5ab',1,'small3d::Model']]],
   ['getdata_29',['getData',['../classsmall3d_1_1_image.html#ab26bc22464edb7aefbcd4a2b95d788a2',1,'small3d::Image']]],
   ['getheight_30',['getHeight',['../classsmall3d_1_1_image.html#adf097899bb8212b43a6e620ff0d15007',1,'small3d::Image']]],
-  ['getinstance_31',['getInstance',['../classsmall3d_1_1_renderer.html#aa5f473f60796983875a8034514f271ed',1,'small3d::Renderer']]],
+  ['getinstance_31',['getInstance',['../classsmall3d_1_1_renderer.html#a93f07b4a326dbfed801ac90a41efc2c7',1,'small3d::Renderer']]],
   ['getjointtransform_32',['getJointTransform',['../classsmall3d_1_1_model.html#a7a80b1e60717a21ef51034f7f95751df',1,'small3d::Model']]],
   ['getmeshnames_33',['getMeshNames',['../classsmall3d_1_1_file.html#a1fa8b53546f047cf51793672d1c33bbc',1,'small3d::File::getMeshNames()'],['../classsmall3d_1_1_glb_file.html#a5eaf966354dcdc6f122e295a6a4f65af',1,'small3d::GlbFile::getMeshNames()'],['../classsmall3d_1_1_wavefront_file.html#a2c725a671f6616a479828113188f5691',1,'small3d::WavefrontFile::getMeshNames()']]],
   ['getmodel_34',['getModel',['../classsmall3d_1_1_scene_object.html#a990a1b6f6f3ab08fd71f5c4a220afc4c',1,'small3d::SceneObject']]],
