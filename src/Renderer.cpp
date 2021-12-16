@@ -183,142 +183,48 @@ namespace small3d {
       1, 0, 0, 0);
   }
 
-  void Renderer::initVulkan() {
-#if defined(__ANDROID__)
-    const char* exts[2];
-
-    exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
-    exts[1] = VK_KHR_ANDROID_SURFACE_EXTENSION_NAME;
-
-    uint32_t num = 2;
-
-    LOGDEBUG("Creating Vulkan instance...");
-
-    if (!vkz_create_instance(windowTitle.c_str(), exts, num)) {
-      throw std::runtime_error("Failed to create Vulkan instance.");
-    }
-
-    VkAndroidSurfaceCreateInfoKHR sci;
-    sci.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
-    sci.pNext = nullptr;
-    sci.flags = 0;
-    sci.window = vkz_android_app->window;
-    LOGDEBUG("Creating surface...");
-    if (vkCreateAndroidSurfaceKHR(vkz_instance, &sci, nullptr, &vkz_surface) !=
-      VK_SUCCESS) {
-      throw std::runtime_error("Could not create surface.");
-    }
-#elif defined(SMALL3D_IOS)
-
-    const char* exts[2];
-
-    exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
-    exts[1] = VK_MVK_IOS_SURFACE_EXTENSION_NAME;
-
-    uint32_t num = 2;
-
-    LOGDEBUG("Creating Vulkan instance...");
-
-    if (!vkz_create_instance(windowTitle.c_str(), exts, num)) {
-      throw std::runtime_error("Failed to create Vulkan instance.");
-    }
-
-    if (!create_ios_surface(vkz_instance, &vkz_surface)) {
-      throw std::runtime_error("Could not create surface.");
-    }
-
-#else
-    uint32_t glfwExtensionCount = 0;
-    const char** glfwExtensions;
-
-    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-    std::string requiredExtensions = "GLFW required extensions (";
-    requiredExtensions += std::to_string(glfwExtensionCount) + ")";
-    LOGDEBUG(requiredExtensions);
-
-    for (uint32_t n = 0; n < glfwExtensionCount; n++) {
-      LOGDEBUG(glfwExtensions[n]);
-    }
-    printf("\n\r");
-
-    if (!vkz_create_instance(windowTitle.c_str(), glfwExtensions,
-      glfwExtensionCount)) {
-      throw std::runtime_error("Failed to create Vulkan instance.");
-    }
-
-    if (glfwCreateWindowSurface(vkz_instance, window, NULL, &vkz_surface) !=
-      VK_SUCCESS) {
-      throw std::runtime_error("Could not create surface.");
-    }
-#endif
-
-    LOGDEBUG("Completing Vulkan initialisation...");
-
-    if (!vkz_init()) {
-      throw std::runtime_error("Could not initialise Vulkan.");
-    }
-
-    vkz_set_width_height(realScreenWidth, realScreenHeight);
-
-    LOGDEBUG("Creating swapchain...");
-
-    if (!vkz_create_swapchain(1)) {
-      throw std::runtime_error("Failed to create swapchain.");
-    }
-
-    LOGDEBUG("Creating descriptor pool...");
-
-    createDescriptorPool();
-    allocateDescriptorSets();
-
-  }
-
   void Renderer::createDescriptorPool() {
-    if (!descriptorPoolCreated) {
 
-      VkDescriptorPoolSize ps[5];
+    VkDescriptorPoolSize ps[5];
 
-      memset(ps, 0, 5 * sizeof(VkDescriptorPoolSize));
+    memset(ps, 0, 5 * sizeof(VkDescriptorPoolSize));
 
-      ps[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-      ps[0].descriptorCount = vkz_swapchain_image_count;
+    ps[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+    ps[0].descriptorCount = vkz_swapchain_image_count;
 
-      ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-      ps[1].descriptorCount = vkz_swapchain_image_count;
+    ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+    ps[1].descriptorCount = vkz_swapchain_image_count;
 
-      ps[2].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-      ps[2].descriptorCount = vkz_swapchain_image_count * maxObjectsPerPass;
+    ps[2].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    ps[2].descriptorCount = vkz_swapchain_image_count * objectsPerFrame;
 
-      ps[3].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-      ps[3].descriptorCount = vkz_swapchain_image_count;
+    ps[3].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+    ps[3].descriptorCount = vkz_swapchain_image_count;
 
-      ps[4].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-      ps[4].descriptorCount = vkz_swapchain_image_count;
+    ps[4].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    ps[4].descriptorCount = vkz_swapchain_image_count;
 
-      VkDescriptorPoolCreateInfo dpci;
-      memset(&dpci, 0, sizeof(VkDescriptorPoolCreateInfo));
-      dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-      dpci.poolSizeCount = 5;
-      dpci.pPoolSizes = ps;
+    VkDescriptorPoolCreateInfo dpci;
+    memset(&dpci, 0, sizeof(VkDescriptorPoolCreateInfo));
+    dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    dpci.poolSizeCount = 5;
+    dpci.pPoolSizes = ps;
 
-      dpci.maxSets = vkz_swapchain_image_count * maxObjectsPerPass;
+    dpci.maxSets = vkz_swapchain_image_count * objectsPerFrame;
 
-      if (vkCreateDescriptorPool(vkz_logical_device, &dpci, NULL,
-        &descriptorPool) != VK_SUCCESS) {
-        LOGDEBUG("Failed to create descriptor pool.");
-      }
-      else {
-        descriptorPoolCreated = true;
-        LOGDEBUG("Created descriptor pool.");
-      }
+    if (vkCreateDescriptorPool(vkz_logical_device, &dpci, NULL,
+      &descriptorPool) != VK_SUCCESS) {
+      LOGDEBUG("Failed to create descriptor pool.");
     }
+    else {
+      LOGDEBUG("Created descriptor pool.");
+    }
+
   }
 
   void Renderer::destroyDescriptorPool() {
-    if (descriptorPoolCreated) {
-      vkDestroyDescriptorPool(vkz_logical_device, descriptorPool, NULL);
-    }
+    vkDestroyDescriptorPool(vkz_logical_device, descriptorPool, NULL);
+    descriptorPool = VK_NULL_HANDLE;
   }
 
   void Renderer::allocateDescriptorSets() {
@@ -380,8 +286,7 @@ namespace small3d {
 
     if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
       &descriptorSet) != VK_SUCCESS) {
-      std::string errortxt = "Failed to allocate descriptor sets.";
-      throw std::runtime_error(errortxt);
+      throw std::runtime_error("Failed to allocate descriptor sets.");
     }
 
     memset(dslb, 0, 4 * sizeof(VkDescriptorSetLayoutBinding));
@@ -477,11 +382,18 @@ namespace small3d {
     wds[3].pBufferInfo = &dbiLight;
     wds[3].pImageInfo = NULL;
     wds[3].pTexelBufferView = NULL;
-    
+
     vkUpdateDescriptorSets(vkz_logical_device, 4, &wds[0], 0, NULL);
   }
 
   void Renderer::destroyDescriptorSets() {
+
+    if (vkFreeDescriptorSets(vkz_logical_device, descriptorPool, 1,
+      &descriptorSet) != VK_SUCCESS) {
+      throw std::runtime_error("Failed to free descriptor sets.");
+    }
+    descriptorSet = VK_NULL_HANDLE;
+
     vkDestroyDescriptorSetLayout(vkz_logical_device,
       descriptorSetLayout, NULL);
 
@@ -491,8 +403,8 @@ namespace small3d {
 
   void Renderer::setColourBuffer(glm::vec4 colour, uint32_t memIndex) {
 
-    if (memIndex >= maxObjectsPerPass) {
-      LOGERROR("Max objects per pass number (" + std::to_string(maxObjectsPerPass) +
+    if (memIndex >= objectsPerFrame) {
+      LOGERROR("Max objects per pass number (" + std::to_string(objectsPerFrame) +
         ") exceeded.");
     }
 
@@ -505,8 +417,8 @@ namespace small3d {
   void Renderer::transform(Model& model, const glm::vec3 offset,
     const glm::mat4x4 rotation, uint32_t memIndex) {
 
-    if (memIndex >= maxObjectsPerPass) {
-      LOGERROR("Max objects per pass number (" + std::to_string(maxObjectsPerPass) +
+    if (memIndex >= objectsPerFrame) {
+      LOGERROR("Max objects per pass number (" + std::to_string(objectsPerFrame) +
         ") exceeded.");
     }
 
@@ -552,7 +464,7 @@ namespace small3d {
     return handle;
   }
 
-  VulkanImage Renderer::generateTexture(const std::string name,
+  void Renderer::generateTexture(const std::string name,
     const float* data,
     const unsigned long width,
     const unsigned long height,
@@ -560,31 +472,53 @@ namespace small3d {
 
     bool found = false;
 
-    VulkanImage textureHandle = {};
+    VulkanImage textureHandleLocal;
+    VulkanImage* textureHandlePtr;
 
     for (auto& nameTexturePair : textures) {
       if (nameTexturePair.first == name) {
-        if (!replace) {
-          throw std::runtime_error("Texture with name " + name +
-            " already exists and replace flag not set.");
+        if (data && !replace) { // if found it must either be replaced or 
+                                // just recopied to the GPU from previously
+                                // given data (when data == null)
+          throw std::runtime_error("Texture '" + name +
+            "' already exists, data was given and the replace flag is not set.");
         }
-        textureHandle = nameTexturePair.second;
+        textureHandlePtr = &nameTexturePair.second;
         found = true;
         break;
       }
     }
 
-    if (found) {
-      deleteTexture(name);
-      textureHandle.image = VK_NULL_HANDLE;
-      textureHandle.imageView = VK_NULL_HANDLE;
-      textureHandle.imageMemory = VK_NULL_HANDLE;
+    if (!found) {
+      textureHandlePtr = &textureHandleLocal;
+    }
+
+    if (found && replace) {
+      if (data && width && height) {
+        textureHandlePtr = &textureHandleLocal;
+        deleteTexture(name);
+      }
+      else {
+        throw std::runtime_error("No data or no dimensions given to replace texture '" + name + "'.");
+      }
+    }
+
+    uint32_t imageByteSize = 0; 
+
+    if ((!found && data) /*new texture*/ || 
+      (found && replace) /*texture to be replaced*/) {
+      textureHandlePtr->width = width;
+      textureHandlePtr->height = height;
+      textureHandlePtr->data.resize(width * height * 4);
+      imageByteSize = static_cast<uint32_t>(width * height * 4 * sizeof(float));
+      memcpy(&textureHandlePtr->data[0], data, imageByteSize);
+    } // Otherwise these values are kept and we are just recopying to the GPU
+    else {
+      imageByteSize = static_cast<uint32_t>(textureHandlePtr->width * textureHandlePtr->height * 4 * sizeof(float));
     }
 
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
-
-    uint32_t imageByteSize = static_cast<uint32_t>(width * height * 4 * sizeof(float));
 
     if (!vkz_create_buffer(&stagingBuffer, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
       imageByteSize, &stagingBufferMemory, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
@@ -595,59 +529,55 @@ namespace small3d {
     void* imgData;
     vkMapMemory(vkz_logical_device, stagingBufferMemory, 0, VK_WHOLE_SIZE,
       0, &imgData);
-    memcpy(imgData, data, imageByteSize);
+    memcpy(imgData, &textureHandlePtr->data[0], imageByteSize);
     vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
 
-    if (!vkz_create_image(&textureHandle.image, static_cast<uint32_t>(width),
-      static_cast<uint32_t>(height),
+    if (!vkz_create_image(&textureHandlePtr->image, static_cast<uint32_t>(textureHandlePtr->width),
+      static_cast<uint32_t>(textureHandlePtr->height),
       VK_FORMAT_R32G32B32A32_SFLOAT, VK_IMAGE_TILING_OPTIMAL,
       VK_IMAGE_USAGE_TRANSFER_DST_BIT |
       VK_IMAGE_USAGE_SAMPLED_BIT,
-      &textureHandle.imageMemory,
+      &textureHandlePtr->imageMemory,
       VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
       throw std::runtime_error("Failed to create image to be used"
         " as a texture.");
     }
 
-    vkz_transition_image_layout(textureHandle.image,
+    vkz_transition_image_layout(textureHandlePtr->image,
       VK_FORMAT_R32G32B32A32_SFLOAT,
       VK_IMAGE_LAYOUT_UNDEFINED,
       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
-    vkz_copy_buffer_to_image(stagingBuffer, textureHandle.image,
-      (uint32_t)width, (uint32_t)height);
+    vkz_copy_buffer_to_image(stagingBuffer, textureHandlePtr->image,
+      (uint32_t)textureHandlePtr->width, (uint32_t)textureHandlePtr->height);
 
     vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
 
-    vkz_transition_image_layout(textureHandle.image,
+    vkz_transition_image_layout(textureHandlePtr->image,
       VK_FORMAT_R32G32B32A32_SFLOAT,
       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
       VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-    if (!vkz_create_image_view(&textureHandle.imageView, textureHandle.image,
+    if (!vkz_create_image_view(&textureHandlePtr->imageView, textureHandlePtr->image,
       VK_FORMAT_R32G32B32A32_SFLOAT,
       VK_IMAGE_ASPECT_COLOR_BIT)) {
       throw std::runtime_error("Failed to create texture image view!\n\r");
     };
 
-    if (!found) {
+    // Allocate perspective texture descriptor set
 
-      // Allocate perspective texture descriptor set
+    VkDescriptorSetAllocateInfo dsai = {};
 
-      VkDescriptorSetAllocateInfo dsai = {};
+    dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    dsai.descriptorPool = descriptorPool;
+    dsai.descriptorSetCount = 1;
+    dsai.pSetLayouts = &textureDescriptorSetLayout;
 
-      dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-      dsai.descriptorPool = descriptorPool;
-      dsai.descriptorSetCount = 1;
-      dsai.pSetLayouts = &textureDescriptorSetLayout;
+    textureHandlePtr->descriptorSet = {};
 
-      textureHandle.descriptorSet = {};
-
-      if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
-        &textureHandle.descriptorSet) != VK_SUCCESS) {
-        std::string errortxt = "Failed to allocate texture descriptor set.";
-        throw std::runtime_error(errortxt);
-      }
+    if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
+      &textureHandlePtr->descriptorSet) != VK_SUCCESS) {
+      throw std::runtime_error("Failed to allocate texture descriptor set.");
     }
 
     // Write texture descriptor set
@@ -655,13 +585,13 @@ namespace small3d {
     VkDescriptorImageInfo diiTexture = {};
 
     diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    diiTexture.imageView = textureHandle.imageView;
+    diiTexture.imageView = textureHandlePtr->imageView;
     diiTexture.sampler = textureSampler;
 
     VkWriteDescriptorSet wds = {};
 
     wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds.dstSet = textureHandle.descriptorSet;
+    wds.dstSet = textureHandlePtr->descriptorSet;
     wds.dstBinding = textureDescBinding;
     wds.dstArrayElement = 0;
     wds.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -672,9 +602,9 @@ namespace small3d {
 
     vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
 
-    textures.insert(make_pair(name, textureHandle));
-
-    return textureHandle;
+    if (!found || replace) {
+      textures.insert(make_pair(name, *textureHandlePtr));
+    }
   }
 
   void Renderer::init(const int width, const int height,
@@ -690,7 +620,96 @@ namespace small3d {
     LOGDEBUG("Detected back width " + std::to_string(realScreenWidth) +
       " height " + std::to_string(realScreenHeight));
 
-    this->initVulkan();
+#if defined(__ANDROID__)
+    const char* exts[2];
+
+    exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
+    exts[1] = VK_KHR_ANDROID_SURFACE_EXTENSION_NAME;
+
+    uint32_t num = 2;
+
+    LOGDEBUG("Creating Vulkan instance...");
+
+    if (!vkz_create_instance(windowTitle.c_str(), exts, num)) {
+      throw std::runtime_error("Failed to create Vulkan instance.");
+    }
+
+    VkAndroidSurfaceCreateInfoKHR sci;
+    sci.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
+    sci.pNext = nullptr;
+    sci.flags = 0;
+    sci.window = vkz_android_app->window;
+    LOGDEBUG("Creating surface...");
+    if (vkCreateAndroidSurfaceKHR(vkz_instance, &sci, nullptr, &vkz_surface) !=
+      VK_SUCCESS) {
+      throw std::runtime_error("Could not create surface.");
+    }
+#elif defined(SMALL3D_IOS)
+
+    const char* exts[2];
+
+    exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
+    exts[1] = VK_MVK_IOS_SURFACE_EXTENSION_NAME;
+
+    uint32_t num = 2;
+
+    LOGDEBUG("Creating Vulkan instance...");
+
+    if (!vkz_create_instance(windowTitle.c_str(), exts, num)) {
+      throw std::runtime_error("Failed to create Vulkan instance.");
+    }
+
+    if (!create_ios_surface(vkz_instance, &vkz_surface)) {
+      throw std::runtime_error("Could not create surface.");
+    }
+
+#else
+    uint32_t glfwExtensionCount = 0;
+    const char** glfwExtensions;
+
+    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+    std::string requiredExtensions = "GLFW required extensions (";
+    requiredExtensions += std::to_string(glfwExtensionCount) + ")";
+    LOGDEBUG(requiredExtensions);
+
+    for (uint32_t n = 0; n < glfwExtensionCount; n++) {
+      LOGDEBUG(glfwExtensions[n]);
+    }
+    printf("\n\r");
+
+    if (!vkz_create_instance(windowTitle.c_str(), glfwExtensions,
+      glfwExtensionCount)) {
+      throw std::runtime_error("Failed to create Vulkan instance.");
+    }
+
+    if (glfwCreateWindowSurface(vkz_instance, window, NULL, &vkz_surface) !=
+      VK_SUCCESS) {
+      throw std::runtime_error("Could not create surface.");
+    }
+#endif
+
+    if (!vkz_init()) {
+      throw std::runtime_error("Could not initialise Vulkan.");
+    }
+
+    vkz_set_width_height(realScreenWidth, realScreenHeight);
+
+    setupPipelineAndBuffers();
+
+  }
+
+  void Renderer::setupPipelineAndBuffers(bool withBlankTexture) {
+    LOGDEBUG("Creating swapchain...");
+
+    if (!vkz_create_swapchain()) {
+      throw std::runtime_error("Failed to create swapchain.");
+    }
+
+    LOGDEBUG("Creating descriptor pool...");
+
+    createDescriptorPool();
+    allocateDescriptorSets();
 
     std::string vertexShaderPath = this->shadersPath +
       "perspectiveMatrixLightedShader.spv";
@@ -703,22 +722,69 @@ namespace small3d {
 
     if (!vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
       setInputStateCallback, setPipelineLayoutCallback,
-      &perspectivePipelineIndex)) {
+      &pipelineIndex)) {
       throw std::runtime_error("Could not create the Vulkan pipeline!");
     }
 
-    boundTextureViews.resize(vkz_swapchain_image_count);
-
-    Image blankImage("");
-    blankImage.toColour(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
-    generateTexture("blank", blankImage);
-    for (int i = 0; i < boundTextureViews.size(); ++i) {
-      boundTextureViews[i] = getTextureHandle("blank").imageView;
+    if (withBlankTexture) { // without this when recreating the pipeline and
+                            // buffers with increased memory size
+      Image blankImage("");
+      blankImage.toColour(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+      generateTexture("blank", blankImage);
     }
 
     vkz_create_sync_objects();
     allocateDynamicBuffers();
 
+  }
+  void Renderer::destroyPipelineAndBuffers() {
+    vkDeviceWaitIdle(vkz_logical_device);
+
+    for (auto& model : garbageModels) {
+      clearBuffers(model);
+    }
+    garbageModels.clear();
+
+    for (auto &t: textures) {
+      LOGDEBUG("Deleting texture " + t.first);
+
+      if (vkFreeDescriptorSets(vkz_logical_device, descriptorPool, 1,
+        &t.second.descriptorSet) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to free texture descriptor set.");
+      }
+
+      vkDestroyImageView(vkz_logical_device, t.second.imageView, NULL);
+      vkz_destroy_image(t.second.image, t.second.imageMemory);
+    }
+
+
+    vkz_destroy_pipeline(pipelineIndex);
+
+    vkDestroySampler(vkz_logical_device, textureSampler, NULL);
+
+    vkz_destroy_sync_objects();
+
+    destroyDescriptorSets();
+
+    destroyDescriptorPool();
+
+    destroyDynamicBuffers();
+
+    vkz_destroy_swapchain();
+
+  }
+
+  void Renderer::increaseObjectsPerFrame(const uint32_t additionalObjects) {
+    destroyPipelineAndBuffers();
+    objectsPerFrame += additionalObjects;
+    setupPipelineAndBuffers(false);
+
+    for (auto& t : textures) {
+      generateTexture(t.first, nullptr, 0, 0, false);
+    }
+
+    memoryResetModelRenderIndex = nextModelRenderIndex;
+    currentSwapchainImageIndex = 0;
   }
 
   void Renderer::allocateDynamicBuffers() {
@@ -732,7 +798,7 @@ namespace small3d {
         minAlignment - 1) & ~(minAlignment - 1);
     }
 
-    uboModelPlacementDynamicSize = maxObjectsPerPass * dynamicModelPlacementAlignment;
+    uboModelPlacementDynamicSize = objectsPerFrame * dynamicModelPlacementAlignment;
     char* mem = alloc.allocate(uboModelPlacementDynamicSize);
     std::fill(mem, &mem[uboModelPlacementDynamicSize], 0);
     uboModelPlacementDynamic = (UboModelPlacement*)mem;
@@ -780,7 +846,7 @@ namespace small3d {
         ~(minAlignment - 1);
     }
 
-    uboColourDynamicSize = maxObjectsPerPass * dynamicColourAlignment;
+    uboColourDynamicSize = objectsPerFrame * dynamicColourAlignment;
     mem = alloc.allocate(uboColourDynamicSize);
     std::fill(mem, &mem[uboColourDynamicSize], 0);
     uboColourDynamic = (UboColour*)mem;
@@ -974,13 +1040,15 @@ namespace small3d {
     const int height, const float fieldOfView,
     const float zNear, const float zFar,
     const std::string& shadersPath,
-    const uint32_t maxObjectsPerPass) {
+    const uint32_t objectsPerFrame,
+    const uint32_t objectsPerFrameInc) {
 
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     window = 0;
 #endif
 
-    this->maxObjectsPerPass = maxObjectsPerPass;
+    this->objectsPerFrame = objectsPerFrame;
+    this->objectsPerFrameInc = objectsPerFrameInc;
     this->zNear = zNear;
     this->zFar = zFar;
     this->fieldOfView = fieldOfView;
@@ -1050,11 +1118,12 @@ namespace small3d {
     const float fieldOfView,
     const float zNear, const float zFar,
     const std::string& shadersPath,
-    const uint32_t maxObjectsPerPass) {
+    const uint32_t objectsPerFrame,
+    const uint32_t objectsPerFrameInc) {
 
     static Renderer instance(windowTitle, width, height, fieldOfView, zNear,
-      zFar, shadersPath,
-      maxObjectsPerPass);
+      zFar, shadersPath, objectsPerFrame, objectsPerFrameInc);
+
     return instance;
   }
 
@@ -1062,21 +1131,13 @@ namespace small3d {
 
     LOGDEBUG("Renderer destructor running");
 
-    vkDeviceWaitIdle(vkz_logical_device);
+    destroyPipelineAndBuffers();
 
-    for (auto& model : garbageModels) {
-      clearBuffers(model);
-    }
-    garbageModels.clear();
+    LOGDEBUG("Destroying surface.\n\r");
 
-    for (auto it = textures.begin();
-      it != textures.end(); ++it) {
-      LOGDEBUG("Deleting texture " + it->first);
+    vkDestroySurfaceKHR(vkz_instance, vkz_surface, NULL);
 
-      vkDestroyImageView(vkz_logical_device, it->second.imageView, NULL);
-      vkz_destroy_image(it->second.image, it->second.imageMemory);
-
-    }
+    vkz_shutdown();
 
     for (auto& idFacePair : fontFaces) {
       FT_Done_Face(idFacePair.second);
@@ -1089,24 +1150,6 @@ namespace small3d {
 #endif
 
     FT_Done_FreeType(library);
-
-    vkz_destroy_sync_objects();
-
-    destroyDescriptorSets();
-
-    destroyDescriptorPool();
-
-    destroyDynamicBuffers();
-
-    vkDestroySampler(vkz_logical_device, textureSampler, NULL);
-
-    vkz_destroy_swapchain();
-
-    LOGDEBUG("Destroying surface.\n\r");
-
-    vkDestroySurfaceKHR(vkz_instance, vkz_surface, NULL);
-
-    vkz_shutdown();
 
     // The following causes an EXC_BAD_ACCESS,
     // or a "Thread 1: signal SIABRT" exception on MacOS. In
@@ -1245,6 +1288,11 @@ namespace small3d {
 
     if (nameTexturePair != textures.end()) {
 
+      if (vkFreeDescriptorSets(vkz_logical_device, descriptorPool, 1,
+        &nameTexturePair->second.descriptorSet) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to free texture descriptor set.");
+      }
+
       vkDestroyImageView(vkz_logical_device,
         nameTexturePair->second.imageView, NULL);
       vkz_destroy_image(nameTexturePair->second.image,
@@ -1329,14 +1377,22 @@ namespace small3d {
     }
 #endif
 
-    if (!(colourMemIndex < maxObjectsPerPass && modelPlacementMemIndex < maxObjectsPerPass)) {
-      auto error = "Max objects per pass number (" + std::to_string(maxObjectsPerPass) +
-        ") exceeded.";
-      throw std::runtime_error(error);
+    if (!(colourMemIndex < objectsPerFrame && modelPlacementMemIndex < objectsPerFrame)) {
+
+      LOGDEBUG("Max objects per pass number(" + std::to_string(objectsPerFrame) +
+        ") exceeded. Increasing number...");
+      increaseObjectsPerFrame(objectsPerFrameInc);
       return;
+
+    }
+
+    if (model.renderIndex < memoryResetModelRenderIndex) {
+      model.alreadyInGPU = false;
     }
 
     if (!model.alreadyInGPU) {
+      model.renderIndex = nextModelRenderIndex;
+      ++nextModelRenderIndex;
 
       // Send vertex data to GPU
 
@@ -1673,7 +1729,7 @@ namespace small3d {
 
   void Renderer::swapBuffers() {
 
-    vkz_acquire_next_image(perspectivePipelineIndex,
+    vkz_acquire_next_image(pipelineIndex,
       &currentSwapchainImageIndex);
 
     modelPlacementMemIndex = 0;
@@ -1716,11 +1772,11 @@ namespace small3d {
     vkz_begin_draw_command_buffer(&nextCommandBuffer);
 
     for (auto& model : nextModelsToDraw) {
-      vkz_bind_pipeline_to_command_buffer(perspectivePipelineIndex,
+      vkz_bind_pipeline_to_command_buffer(pipelineIndex,
         &nextCommandBuffer);
       bindBuffers(nextCommandBuffer, model);
       recordDrawCommand(nextCommandBuffer,
-        vkz_pipeline_layout[perspectivePipelineIndex],
+        vkz_pipeline_layout[pipelineIndex],
         model, currentSwapchainImageIndex, model.perspective);
     }
 

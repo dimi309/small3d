@@ -86,10 +86,9 @@ int vkz_set_width_height(const uint32_t width, const uint32_t height);
 /**
  * @brief Create the swapchain that will be used. This will also create
  * the associated image views.
- * @param with_image_sampler 1 If an image sampler will be used, 0 otherwise.
  * @return 1 if successful, 0 otherwise
  */
-int vkz_create_swapchain(int with_image_sampler);
+int vkz_create_swapchain();
 
 /**
  * @brief Destroy the swapchain.
@@ -140,6 +139,12 @@ int vkz_destroy_depth_image(void);
 int vkz_create_pipeline(const char* vertex_shader_path, const char* fragment_shader_path,
   int (*set_input_state)(VkPipelineVertexInputStateCreateInfo*),
   int (*set_pipeline_layout)(VkPipelineLayoutCreateInfo*), uint32_t* index);
+
+/**
+ * @brief Destroy a pipeline
+ * @param index The index of the pipeline to destroy
+ */
+int vkz_destroy_pipeline(uint32_t index);
 
 /**
  * @brief Begin creating a drawing command buffer 

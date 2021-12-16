@@ -40,6 +40,9 @@ namespace small3d
     VkImage image = VK_NULL_HANDLE;
     VkDeviceMemory imageMemory = VK_NULL_HANDLE;
     VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
+    std::vector<float> data;
+    unsigned long width;
+    unsigned long height;
   };
 
   /**
@@ -95,11 +98,13 @@ namespace small3d
 
     std::string shadersPath = "";
 
-    static const uint32_t defaultMaxObjectsPerPass = 20;
+    static const uint32_t defaultObjectsPerFrame = 200;
+    static const uint32_t defaultObjectsPerFrameInc = 1000;
 
-    uint32_t maxObjectsPerPass = 0;
+    uint32_t objectsPerFrame = 0;
+    uint32_t objectsPerFrameInc = 0;
    
-    uint32_t perspectivePipelineIndex = 100;
+    uint32_t pipelineIndex = 100;
 
     uint32_t currentSwapchainImageIndex = 0;
 
@@ -130,8 +135,6 @@ namespace small3d
     size_t uboColourDynamicSize = 0;
 
     VkSampler textureSampler = VK_NULL_HANDLE;
-
-    std::vector<VkImageView> boundTextureViews;
 
     std::allocator<char> alloc;
 
@@ -181,11 +184,7 @@ namespace small3d
       VkPipelineLayout pipelineLayout, const Model& model,
       uint32_t swapchainImageIndex, bool perspective);
 
-
-    void initVulkan();
-
     VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
-    bool descriptorPoolCreated = false;
     void createDescriptorPool();
     void destroyDescriptorPool();
 
@@ -204,7 +203,7 @@ namespace small3d
       uint32_t memIndex);
 
     VulkanImage getTextureHandle(const std::string name) const;
-    VulkanImage generateTexture(const std::string name,
+    void generateTexture(const std::string name,
       const float* data,
       const unsigned long width,
       const unsigned long height,
@@ -212,6 +211,12 @@ namespace small3d
 
     void init(const int width, const int height,
       const std::string shadersPath);
+
+    void setupPipelineAndBuffers(bool withBlankTexture = true);
+    void destroyPipelineAndBuffers();
+    
+    void increaseObjectsPerFrame(const uint32_t additionalObjects);
+    
     void allocateDynamicBuffers();
     void destroyDynamicBuffers();
     void initWindow(int& width, int& height);
@@ -222,6 +227,9 @@ namespace small3d
     glm::mat4x4 cameraRotation = glm::mat4x4(1);
     glm::vec3 cameraRotationXYZ = glm::vec3(0);
     bool cameraRotationByMatrix = false;
+
+    uint32_t nextModelRenderIndex = 1;
+    uint32_t memoryResetModelRenderIndex = 0;
 
     // On Android and iOS, it is useful to be able to destroy and recreate the
     // renderer, so it is not provided only as a singleton for that platform.
@@ -246,12 +254,14 @@ namespace small3d
       // used for small3d resources.
       "resources1/shaders/",
 #endif
-      const uint32_t maxObjectsPerPass = defaultMaxObjectsPerPass);
+      const uint32_t objectsPerFrame = defaultObjectsPerFrame,
+      const uint32_t objectsPerFrameInc = defaultObjectsPerFrameInc);
 #else
     Renderer(const std::string& windowTitle, const int width,
       const int height, const float fieldOfView, const float zNear,
       const float zFar, 
-      const std::string& shadersPath, const uint32_t maxObjectsPerPass);
+      const std::string& shadersPath, const uint32_t objectsPerFrame,
+      const uint32_t objectsPerFrameInc);
 #endif
 
     Renderer();
@@ -338,38 +348,39 @@ namespace small3d
 
     /**
      * @brief Get the instance of the Renderer (the Renderer is a singleton).
-     * @param windowTitle       The title of the game's window
-     * @param width             The width of the window. If width and height are
-     *                          not set or set to 0, the game will run in full
-     *                          screen mode.
-     * @param height            The height of the window
-     * @param fieldOfView       Field of view in radians (angle between the top and the bottom plane
-     *                          of the view frustum).
-     * @param zNear             Projection plane z coordinate (use positive
-     *                          value)
-     * @param zFar              Far end of frustum z coordinate (use positive
-     *                          value)
-     * @param shadersPath       The path where the shaders will be stored,
-     *                          relative to the application's executing
-     *                          directory. It defaults to the path provided by
-     *                          the engine, but	it can be changed, so as to
-     *                          accommodate for executables which are going to
-     *                          be using it. Even though the path to the folder
-     *                          can be changed, the folder structure within it
-     *                          and the names of the shaders must remain as
-     *                          provided. The shader code can be changed,
-     *                          provided that their inputs and outputs are
-     *                          maintained the same.
-     * @param maxObjectsPerPass Maximum number of Models and / or SceneObjects
-     *                          that will be rendered on the screen during a render
-     *                          pass at the same time. This is used to pre-allocate
-     *                          the needed memory buffers.
-     * @return                  The Renderer object. It can only be assigned to
-     *                          a pointer by its address (Renderer *r =
-     *                          &Renderer::getInstance(...), since declaring
-     *                          another Renderer variable and assigning to it
-     *                          would invoke the default constructor, which has
-     *                          been deleted.
+     * @param windowTitle        The title of the game's window
+     * @param width              The width of the window. If width and height are
+     *                           not set or set to 0, the game will run in full
+     *                           screen mode.
+     * @param height             The height of the window
+     * @param fieldOfView        Field of view in radians (angle between the top and the bottom plane
+     *                           of the view frustum).
+     * @param zNear              Projection plane z coordinate (use positive
+     *                           value)
+     * @param zFar               Far end of frustum z coordinate (use positive
+     *                           value)
+     * @param shadersPath        The path where the shaders will be stored,
+     *                           relative to the application's executing
+     *                           directory. It defaults to the path provided by
+     *                           the engine, but	it can be changed, so as to
+     *                           accommodate for executables which are going to
+     *                           be using it. Even though the path to the folder
+     *                           can be changed, the folder structure within it
+     *                           and the names of the shaders must remain as
+     *                           provided. The shader code can be changed,
+     *                           provided that their inputs and outputs are
+     *                           maintained the same.
+     * @param objectsPerFrame    Maximum number of Models and / or SceneObjects
+     *                           foreseen to be rendered per frame. This is used 
+     *                           to pre-allocate the needed memory buffers.
+     * @param objectsPerFrameInc Number of objects to increase number of objects per
+     *                           frame by, each time the latter is exceeded.
+     * @return                   The Renderer object. It can only be assigned to
+     *                           a pointer by its address (Renderer *r =
+     *                           &Renderer::getInstance(...), since declaring
+     *                           another Renderer variable and assigning to it
+     *                           would invoke the default constructor, which has
+     *                           been deleted.
      */
     static Renderer& getInstance(const std::string& windowTitle = "",
       const int width = 0,
@@ -379,7 +390,8 @@ namespace small3d
       const float zFar = 24.0f,
       const std::string& shadersPath =
       "resources/shaders/",
-      const uint32_t maxObjectsPerPass = defaultMaxObjectsPerPass);
+      const uint32_t objectsPerFrame = defaultObjectsPerFrame,
+      const uint32_t objectsPerFrameInc = defaultObjectsPerFrameInc);
 
     /**
      * @brief Destructor

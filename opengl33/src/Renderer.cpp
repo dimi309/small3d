@@ -459,7 +459,8 @@ namespace small3d {
     const int height, const float fieldOfView,
     const float zNear, const float zFar,
     const std::string& shadersPath,
-    const uint32_t maxObjectsPerPass) {
+    const uint32_t objectsPerFrame,
+    const uint32_t objectsPerFrameInc) {
 
     window = 0;
     shaderProgram = 0;
@@ -530,11 +531,11 @@ namespace small3d {
     const float fieldOfView,
     const float zNear, const float zFar,
     const std::string& shadersPath,
-    const uint32_t maxObjectsPerPass) {
+    const uint32_t objectsPerFrame,
+    const uint32_t objectsPerFrameInc) {
 
     static Renderer instance(windowTitle, width, height, fieldOfView, zNear,
-      zFar, shadersPath,
-      maxObjectsPerPass);
+      zFar, shadersPath, objectsPerFrame, objectsPerFrameInc);
     return instance;
   }
 

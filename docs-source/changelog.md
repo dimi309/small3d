@@ -15,6 +15,8 @@ v1.800 (still open)
   scales the automatically generated bounding boxes to a Model's 
   initial scale.
 - Added Model-based SceneObject constructor.
+- Maximum number of objects that can be rendered per frame is now
+  increased automatically each time that number is exceeded.
 
 v1.709 2021-10-16
 

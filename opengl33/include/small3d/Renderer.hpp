@@ -105,7 +105,8 @@ namespace small3d
     Renderer(const std::string& windowTitle, const int width, const int height,
       const float fieldOfView, const float zNear, const float zFar,
       const std::string& shadersPath,
-      const uint32_t maxObjectsPerPass);
+      const uint32_t objectsPerFrame,
+      const uint32_t objectsPerFrameInc);
 
     Renderer();
 
@@ -177,35 +178,37 @@ namespace small3d
 
     /**
      * @brief Get the instance of the Renderer (the Renderer is a singleton).
-     * @param windowTitle       The title of the game's window
-     * @param width             The width of the window. If width and height are
-     *                          not set or set to 0, the game will run in full
-     *                          screen mode.
-     * @param height            The height of the window
-     * @param fieldOfView       Field of view in radians (angle between the top and the bottom plane
-     * @param zNear             Projection plane z coordinate (use positive
-     *                          value)
-     * @param zFar              Far end of frustum z coordinate (use positive
-     *                          value)
-     * @param shadersPath       The path where the shaders will be stored,
-     *                          relative to the application's executing
-     *                          directory. It defaults to the path provided by
-     *                          the engine, but	it can be changed, so as to
-     *                          accommodate for executables which are going to
-     *                          be using it. Even though the path to the folder
-     *                          can be changed, the folder structure within it
-     *                          and the names of the shaders must remain as
-     *                          provided. The shader code can be changed,
-     *                          provided that their inputs and outputs are
-     *                          maintained the same.
-     * @param maxObjectsPerPass Ignored parameter (used for compatibility with
-     *                          Vulkan edition).
-     * @return                  The Renderer object. It can only be assigned to
-     *                          a pointer by its address (Renderer *r =
-     *                          &Renderer::getInstance(...), since declaring
-     *                          another Renderer variable and assigning to it
-     *                          would invoke the default constructor, which has
-     *                          been deleted.
+     * @param windowTitle        The title of the game's window
+     * @param width              The width of the window. If width and height are
+     *                           not set or set to 0, the game will run in full
+     *                           screen mode.
+     * @param height             The height of the window
+     * @param fieldOfView        Field of view in radians (angle between the top and the bottom plane
+     * @param zNear              Projection plane z coordinate (use positive
+     *                           value)
+     * @param zFar               Far end of frustum z coordinate (use positive
+     *                           value)
+     * @param shadersPath        The path where the shaders will be stored,
+     *                           relative to the application's executing
+     *                           directory. It defaults to the path provided by
+     *                           the engine, but it can be changed, so as to
+     *                           accommodate for executables which are going to
+     *                           be using it. Even though the path to the folder
+     *                           can be changed, the folder structure within it
+     *                           and the names of the shaders must remain as
+     *                           provided. The shader code can be changed,
+     *                           provided that their inputs and outputs are
+     *                           maintained the same.
+     * @param objectsPerFrame    Ignored parameter (used for compatibility with
+     *                           Vulkan edition).
+     * @param objectsPerFrameInc Ignored parameter (used for compatibility with
+     *                           Vulkan edition).
+     * @return                   The Renderer object. It can only be assigned to
+     *                           a pointer by its address (Renderer *r =
+     *                           &Renderer::getInstance(...), since declaring
+     *                           another Renderer variable and assigning to it
+     *                           would invoke the default constructor, which has
+     *                           been deleted.
      */
     static Renderer& getInstance(const std::string& windowTitle = "",
       const int width = 0,
@@ -215,7 +218,8 @@ namespace small3d
       const float zFar = 24.0f,
       const std::string& shadersPath =
       "resources/shaders/",
-      const uint32_t maxObjectsPerPass = 20);
+      const uint32_t objectsPerFrame = 200,
+      const uint32_t objectsPerFrameInc = 1000);
 
     /**
      * @brief Destructor
