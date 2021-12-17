@@ -509,9 +509,9 @@ namespace small3d {
       (found && replace) /*texture to be replaced*/) {
       textureHandlePtr->width = width;
       textureHandlePtr->height = height;
-      textureHandlePtr->data.resize(width * height * 4);
+      textureHandlePtr->data->resize(width * height * 4);
       imageByteSize = static_cast<uint32_t>(width * height * 4 * sizeof(float));
-      memcpy(&textureHandlePtr->data[0], data, imageByteSize);
+      memcpy(&(*textureHandlePtr->data)[0], data, imageByteSize);
     } // Otherwise these values are kept and we are just recopying to the GPU
     else {
       imageByteSize = static_cast<uint32_t>(textureHandlePtr->width * textureHandlePtr->height * 4 * sizeof(float));
@@ -529,7 +529,7 @@ namespace small3d {
     void* imgData;
     vkMapMemory(vkz_logical_device, stagingBufferMemory, 0, VK_WHOLE_SIZE,
       0, &imgData);
-    memcpy(imgData, &textureHandlePtr->data[0], imageByteSize);
+    memcpy(imgData, &(*textureHandlePtr->data)[0], imageByteSize);
     vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
 
     if (!vkz_create_image(&textureHandlePtr->image, static_cast<uint32_t>(textureHandlePtr->width),

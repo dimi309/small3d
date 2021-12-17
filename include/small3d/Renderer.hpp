@@ -40,9 +40,15 @@ namespace small3d
     VkImage image = VK_NULL_HANDLE;
     VkDeviceMemory imageMemory = VK_NULL_HANDLE;
     VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-    std::vector<float> data;
-    unsigned long width;
-    unsigned long height;
+    std::shared_ptr<std::vector<float>> data; // Using a pointer here to avoid
+                                              // copying data when manipulating this
+                                              // structure.
+    unsigned long width = 0; 
+    unsigned long height = 0;
+
+    VulkanImage() {
+      data = std::make_shared<std::vector<float>>();
+    }
   };
 
   /**
