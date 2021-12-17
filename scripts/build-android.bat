@@ -23,11 +23,13 @@ if /I "%~1" == "Release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
 set sourcepath=%cd%
 set platformstr=android-26
 
+if /I not "%~2" == "skipdeps" (
 cd ..\deps\scripts
 if exist include rmdir /Q /S include
 if exist lib rmdir /Q /S lib
-call prepare-android.bat %1 %2
+call prepare-android.bat %1
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+)
 cd ..
 if exist build rmdir /Q /S build
 
