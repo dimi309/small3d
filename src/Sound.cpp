@@ -453,6 +453,7 @@ namespace small3d {
     if (!noOutputDevice && this->soundData.size > 0) {
       
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
+      if (Pa_IsStreamActive(stream)) return;
 
       PaError error;
 
@@ -463,7 +464,7 @@ namespace small3d {
 				   std::string(Pa_GetErrorText(error)));
         }
       }
-
+      
 #elif defined(__ANDROID__)
       aaudio_stream_state_t s = AAudioStream_getState(stream);
       if (s != AAUDIO_STREAM_STATE_STOPPED && s != AAUDIO_STREAM_STATE_STOPPING) {
@@ -473,10 +474,11 @@ namespace small3d {
       alSourcei(openalSource, AL_LOOPING, repeat);
       alSourcePlay(openalSource);
 #endif
-
-      this->soundData.currentFrame = 0;
-      this->soundData.startTime = 0;
-      this->soundData.repeat = repeat;
+      
+        this->soundData.currentFrame = 0;
+        this->soundData.startTime = 0;
+        this->soundData.repeat = repeat;
+      
 
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
       error = Pa_StartStream(stream);
@@ -493,6 +495,7 @@ namespace small3d {
   void Sound::stop() {
     
 #if !defined(SMALL3D_IOS)
+    if (Pa_IsStreamStopped(stream)) return;
     if (this->stream != nullptr) {
 #else
       if(true) {
