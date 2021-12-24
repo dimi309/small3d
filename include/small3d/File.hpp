@@ -34,7 +34,7 @@ namespace small3d {
     /**
      * @brief The path to the file being parsed
      */
-    std::string fileLocation = "";
+    std::string fullPath = "";
 
   public:
     /**

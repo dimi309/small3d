@@ -9,7 +9,6 @@
 #include "WavefrontFile.hpp"
 #include <stdexcept>
 #include <unordered_map>
-#include "BasePath.hpp"
 #include <fstream>
 
 #ifdef __ANDROID__
@@ -74,7 +73,7 @@ namespace small3d {
   void WavefrontFile::loadIndexData(std::vector<uint32_t>& indexData) {
 
     if (!onlyTriangles) {
-      throw std::runtime_error("Cannot load indices from " + fileLocation + " because"
+      throw std::runtime_error("Cannot load indices from " + fullPath + " because"
       " it does not only contain triangles.");
     }
 
@@ -213,9 +212,9 @@ namespace small3d {
    
 #ifdef __ANDROID__
     AAsset* asset = AAssetManager_open(vkz_android_app->activity->assetManager,
-      fileLocation.c_str(),
+      fullPath.c_str(),
       AASSET_MODE_STREAMING);
-    if (!asset) throw std::runtime_error("Opening asset " + fileLocation +
+    if (!asset) throw std::runtime_error("Opening asset " + fullPath +
       " has failed!");
     off_t length;
     length = AAsset_getLength(asset);
@@ -225,7 +224,6 @@ namespace small3d {
     if (in) {
       while (std::getline(in, line)) {
 #else
-    std::string fullPath = getBasePath() + fileLocation;
 
     std::ifstream file(fullPath.c_str());
 
@@ -374,7 +372,7 @@ namespace small3d {
       
     }
     else
-      throw std::runtime_error("Could not open file " + fileLocation);
+      throw std::runtime_error("Could not open file " + fullPath);
   }
 
   void WavefrontFile::load(Model& model, const std::string& meshName) {
@@ -399,7 +397,7 @@ namespace small3d {
             break;
           }
         }
-        if (!found) throw std::runtime_error("Mesh " + meshName + " not found in " + fileLocation + ".");
+        if (!found) throw std::runtime_error("Mesh " + meshName + " not found in " + fullPath + ".");
       }
       else if (objectNames.size() > 1) {
         // Will just load the first mesh (object in Wavefront)
@@ -434,7 +432,7 @@ namespace small3d {
     model.normalsDataByteSize = static_cast<uint32_t>(model.normalsData.size() * sizeof(float));
     model.textureCoordsDataByteSize = static_cast<uint32_t>(model.textureCoordsData.size() * sizeof(float));
 
-    LOGDEBUG("Loaded mesh " + meshName + " from " + fileLocation);
+    LOGDEBUG("Loaded mesh " + meshName + " from " + fullPath);
     
   }
 

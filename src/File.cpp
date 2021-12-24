@@ -7,10 +7,11 @@
  */
 
 #include "File.hpp"
+#include "BasePath.hpp"
 
 namespace small3d {
   File::File(const std::string& fileLocation) {
-    this->fileLocation = fileLocation;
+    this->fullPath = getBasePath() + fileLocation;
   }
 
  

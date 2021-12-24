@@ -269,9 +269,9 @@ namespace small3d {
 
 #ifdef __ANDROID__
     AAsset* asset = AAssetManager_open(vkz_android_app->activity->assetManager,
-      fileLocation.c_str(),
+      fullPath.c_str(),
       AASSET_MODE_STREAMING);
-    if (!asset) throw std::runtime_error("Opening asset " + fileLocation +
+    if (!asset) throw std::runtime_error("Opening asset " + fullPath +
       " has failed!");
     off_t assetLength;
     assetLength = AAsset_getLength(asset);
@@ -279,14 +279,14 @@ namespace small3d {
     membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * assetLength);
     std::istream fileOnDisk(&sbuf);
     if (!fileOnDisk) {
-      throw std::runtime_error("Reading file " + fileLocation +
+      throw std::runtime_error("Reading file " + fullPath +
         " has failed!");
     }
 #else
     std::ifstream fileOnDisk;
-    fileOnDisk.open(fileLocation, std::ios::binary);
+    fileOnDisk.open(fullPath, std::ios::binary);
     if (!fileOnDisk.is_open()) {
-      throw std::runtime_error("Could not open .glb file " + fileLocation);
+      throw std::runtime_error("Could not open .glb file " + fullPath);
     }
 #endif
 
@@ -302,7 +302,7 @@ namespace small3d {
       fileOnDisk.close();
 #endif
       LOGDEBUG("Magic number found in .glb: " + magic);
-      throw std::runtime_error(fileLocation + NOTGLTF);
+      throw std::runtime_error(fullPath + NOTGLTF);
     }
 
     fileOnDisk.read(reinterpret_cast<char*>(&length), 4);
@@ -923,9 +923,9 @@ namespace small3d {
       ++meshIndex;
     }
 
-    if (!loaded) throw std::runtime_error("Could not load mesh " + meshName + " from " + fileLocation);
+    if (!loaded) throw std::runtime_error("Could not load mesh " + meshName + " from " + fullPath);
 
-    LOGDEBUG("Loaded mesh " + actualName + " from " + fileLocation);
+    LOGDEBUG("Loaded mesh " + actualName + " from " + fullPath);
 
     bool animAbort = false;
 
