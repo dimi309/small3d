@@ -940,6 +940,7 @@ namespace small3d {
 
     GLFWmonitor* monitor = nullptr; // If NOT null, a full-screen window will
     // be created.
+    bool fullScreen = false;
 
     if ((width == 0 && height != 0) || (width != 0 && height == 0)) {
       throw std::runtime_error("Screen width and height both have to be equal "
@@ -956,12 +957,17 @@ namespace small3d {
 
       LOGINFO("Detected screen width " + std::to_string(width) + " and height " +
         std::to_string(height));
+      fullScreen = true;
     }
 
     window = glfwCreateWindow(width, height, windowTitle.c_str(), monitor,
       nullptr);
     if (!window) {
       throw std::runtime_error("Unable to create GLFW window");
+    }
+
+    if (fullScreen) {
+      glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     }
 
     width = 0;

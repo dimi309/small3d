@@ -334,20 +334,18 @@ namespace small3d {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    bool fullScreen = false;
-
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     GLFWmonitor* monitor = nullptr; // If NOT null, a full-screen window will
     // be created.
+
+    bool fullScreen = false;
 
     if ((width == 0 && height != 0) || (width != 0 && height == 0)) {
       throw std::runtime_error("Screen width and height both have to be equal "
         "or not equal to zero at the same time.");
     }
     else if (width == 0) {
-
-      fullScreen = true;
 
       monitor = glfwGetPrimaryMonitor();
 
@@ -357,12 +355,19 @@ namespace small3d {
 
       LOGINFO("Detected screen width " + std::to_string(width) + " and height " +
         std::to_string(height));
+
+      fullScreen = true;
     }
 
     window = glfwCreateWindow(width, height, windowTitle.c_str(), monitor,
       nullptr);
+
     if (!window) {
       throw std::runtime_error("Unable to create GLFW window");
+    }
+
+    if (fullScreen) {
+      glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     }
 
     glfwMakeContextCurrent(window);
