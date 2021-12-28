@@ -494,8 +494,11 @@ namespace small3d {
 
   void Sound::stop() {
     
-#if !defined(SMALL3D_IOS)
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     if (Pa_IsStreamStopped(stream)) return;
+#endif
+    
+#if !defined(SMALL3D_IOS)
     if (this->stream != nullptr) {
 #else
       if(true) {
