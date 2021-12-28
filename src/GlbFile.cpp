@@ -106,22 +106,22 @@ namespace small3d {
       switch (c) {
       case '{': // begin map
 
-        current->next = createToken(GlbFile::ValueType::character, &c);
+        current->next = createToken(GlbFile::ValueType::character, std::string(1, c));
         current = current->next;
 
         break;
       case '}': // end map
-        current->next = createToken(GlbFile::ValueType::character, &c);
+        current->next = createToken(GlbFile::ValueType::character, std::string(1, c));
         current = current->next;
 
         break;
       case '[': // begin list
-        current->next = createToken(GlbFile::ValueType::character, &c);
+        current->next = createToken(GlbFile::ValueType::character, std::string(1, c));
         current = current->next;
 
         break;
       case ']': // end list
-        current->next = createToken(GlbFile::ValueType::character, &c);
+        current->next = createToken(GlbFile::ValueType::character, std::string(1, c));
         current = current->next;
 
         break;
@@ -155,13 +155,13 @@ namespace small3d {
       }
 
       if (c == ':') {
-        current->next = createToken(GlbFile::ValueType::character, &c);
+        current->next = createToken(GlbFile::ValueType::character, std::string(1, c));
         current = current->next;
 
       }
 
       if (c == ',') {
-        current->next = createToken(GlbFile::ValueType::character, &c);
+        current->next = createToken(GlbFile::ValueType::character, std::string(1, c));
         current = current->next;
 
       }
