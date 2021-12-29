@@ -38,7 +38,6 @@ namespace small3d {
       else {
         currenttoken = currenttoken->next;
       }
-      if (foundToken != nullptr) break;
     } while (currenttoken != nullptr);
 
     return foundToken;
