@@ -1867,8 +1867,17 @@ int vkz_create_image(VkImage* image,
 }
 
 int vkz_destroy_image(VkImage image, VkDeviceMemory image_memory) {
-  vkDestroyImage(vkz_logical_device, image, NULL);
-  vkFreeMemory(vkz_logical_device, image_memory, NULL);
+  
+  if (image != VK_NULL_HANDLE) {
+    vkDestroyImage(vkz_logical_device, image, NULL);
+    image = VK_NULL_HANDLE;
+  }
+  
+  if (image_memory != VK_NULL_HANDLE) {
+    vkFreeMemory(vkz_logical_device, image_memory, NULL);
+    image_memory = VK_NULL_HANDLE;
+  }
+  
   return 1;
 }
 
