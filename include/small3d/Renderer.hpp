@@ -230,6 +230,8 @@ namespace small3d
     void setWorldDetails(bool perspective);
     void setLightIntensity();
 
+    void deleteImageFromGPU(VulkanImage &gpuImage);
+
     glm::mat4x4 cameraRotation = glm::mat4x4(1);
     glm::vec3 cameraRotationXYZ = glm::vec3(0);
     bool cameraRotationByMatrix = false;

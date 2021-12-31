@@ -750,14 +750,7 @@ namespace small3d {
     
     for (auto &t: textures) {
       LOGDEBUG("Deleting texture " + t.first);
-
-      if (vkFreeDescriptorSets(vkz_logical_device, descriptorPool, 1,
-        &t.second.descriptorSet) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to free texture descriptor set.");
-      }
-
-      vkDestroyImageView(vkz_logical_device, t.second.imageView, NULL);
-      vkz_destroy_image(t.second.image, t.second.imageMemory);
+      deleteImageFromGPU(t.second);
     }
 
 
@@ -1039,6 +1032,18 @@ namespace small3d {
       lightIntensityBufferMemories[currentSwapchainImageIndex]);
   }
 
+  void Renderer::deleteImageFromGPU(VulkanImage &gpuImage) {
+    if (vkFreeDescriptorSets(vkz_logical_device, descriptorPool, 1,
+        &gpuImage.descriptorSet) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to free texture descriptor set.");
+      }
+
+      vkDestroyImageView(vkz_logical_device,
+        gpuImage.imageView, NULL);
+      vkz_destroy_image(gpuImage.image,
+        gpuImage.imageMemory);
+  }
+
   Renderer::Renderer() {
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     window = 0;
@@ -1298,15 +1303,7 @@ namespace small3d {
 
     if (nameTexturePair != textures.end()) {
 
-      if (vkFreeDescriptorSets(vkz_logical_device, descriptorPool, 1,
-        &nameTexturePair->second.descriptorSet) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to free texture descriptor set.");
-      }
-
-      vkDestroyImageView(vkz_logical_device,
-        nameTexturePair->second.imageView, NULL);
-      vkz_destroy_image(nameTexturePair->second.image,
-        nameTexturePair->second.imageMemory);
+      deleteImageFromGPU(nameTexturePair->second);
 
       textures.erase(name);
     }
