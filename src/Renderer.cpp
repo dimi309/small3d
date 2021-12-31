@@ -700,6 +700,9 @@ namespace small3d {
   }
 
   void Renderer::setupPipelineAndBuffers(bool withBlankTexture) {
+
+    vkz_create_sync_objects();
+    
     LOGDEBUG("Creating swapchain...");
 
     if (!vkz_create_swapchain()) {
@@ -733,18 +736,18 @@ namespace small3d {
       generateTexture("blank", blankImage);
     }
 
-    vkz_create_sync_objects();
     allocateDynamicBuffers();
 
   }
   void Renderer::destroyPipelineAndBuffers() {
-    vkDeviceWaitIdle(vkz_logical_device);
 
+    
+    
     for (auto& model : garbageModels) {
       clearBuffers(model);
     }
     garbageModels.clear();
-
+    
     for (auto &t: textures) {
       LOGDEBUG("Deleting texture " + t.first);
 
@@ -762,8 +765,6 @@ namespace small3d {
 
     vkDestroySampler(vkz_logical_device, textureSampler, NULL);
 
-    vkz_destroy_sync_objects();
-
     destroyDescriptorSets();
 
     destroyDescriptorPool();
@@ -772,6 +773,7 @@ namespace small3d {
 
     vkz_destroy_swapchain();
 
+    vkz_destroy_sync_objects();
   }
 
   void Renderer::increaseObjectsPerFrame(const uint32_t additionalObjects) {
@@ -864,9 +866,11 @@ namespace small3d {
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
     }
+    
   }
 
   void Renderer::destroyDynamicBuffers() {
+    
     if (uboModelPlacementDynamic) {
       alloc.deallocate(reinterpret_cast<char*>(uboModelPlacementDynamic),
         uboModelPlacementDynamicSize);

@@ -145,8 +145,21 @@ typedef struct {
 uint32_t pipeline_system_count = 0;
 pipeline_system_struct* pipeline_systems = NULL;
 
-static VkFence gpu_cpu_fence;
-static VkSemaphore draw_semaphore, acquire_semaphore;
+static VkFence gpu_cpu_fence = VK_NULL_HANDLE;
+static VkSemaphore draw_semaphore = VK_NULL_HANDLE, acquire_semaphore = VK_NULL_HANDLE;
+
+
+void wait_gpu_cpu_fence() {
+  if (gpu_cpu_fence == VK_NULL_HANDLE) {
+    LOGDEBUG0("Waiting on gpu_cpu_fence that is null!");
+  }
+  VkResult rwait;
+  do {
+    rwait = vkWaitForFences(vkz_logical_device, 1,
+			    &gpu_cpu_fence,
+			    VK_TRUE, UINT64_MAX);
+  } while (rwait == VK_TIMEOUT);
+}
 
 int vkz_create_instance(const char* application_name,
   const char** enabled_extension_names,
@@ -632,7 +645,7 @@ int create_logical_device() {
   return logical_device_created;
 }
 
-int vkz_create_depth_image(void) {
+int create_depth_image(void) {
 
   VkFormat candidate_formats[3];
   candidate_formats[0] = VK_FORMAT_D32_SFLOAT;
@@ -675,7 +688,7 @@ int vkz_create_depth_image(void) {
     VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 }
 
-int vkz_destroy_depth_image(void) {
+int destroy_depth_image(void) {
   vkDestroyImageView(vkz_logical_device, depth_image_view, NULL);
   vkDestroyImage(vkz_logical_device, depth_image, NULL);
   vkFreeMemory(vkz_logical_device, depth_image_memory, NULL);
@@ -979,17 +992,11 @@ int vkz_create_swapchain() {
     &vkz_swapchain_image_count,
     vkz_swapchain_images);
 
-  return create_swapchain_image_views() && vkz_create_depth_image() &&
+  return create_swapchain_image_views() && create_depth_image() &&
     create_render_pass() && create_framebuffers(render_pass);
 }
 
 int vkz_destroy_swapchain(void) {
-
-  // This function sometimes produced the error
-  // "Thread 1: EXC_BAD_ACCESS (code=1, address=0x150)"
-  // during the execution of the command vkDestroySwapchainKHR
-  // on MacOS. Adding the vkDeviceWaitIdle command seems to have
-  // fixed it.
 
   vkDeviceWaitIdle(vkz_logical_device);
 
@@ -999,7 +1006,7 @@ int vkz_destroy_swapchain(void) {
   }
   free(framebuffers);
 
-  vkz_destroy_depth_image();
+  destroy_depth_image();
 
   vkDestroyRenderPass(vkz_logical_device,
     render_pass, NULL);
@@ -1538,13 +1545,6 @@ int vkz_end_draw_command_buffer(VkCommandBuffer* command_buffer) {
 
 int vkz_destroy_draw_command_buffer(VkCommandBuffer* command_buffer) {
 
-  VkResult rwait;
-  do {
-    rwait = vkWaitForFences(vkz_logical_device, 1,
-      &gpu_cpu_fence,
-      VK_TRUE, UINT64_MAX);
-  } while (rwait == VK_TIMEOUT);
-
   vkFreeCommandBuffers(vkz_logical_device, command_pool, 1, command_buffer);
 
   return 1;
@@ -1589,21 +1589,16 @@ int vkz_create_sync_objects(void) {
 }
 
 int vkz_destroy_sync_objects(void) {
-
-  VkResult rwait;
-  do {
-    rwait = vkWaitForFences(vkz_logical_device, 1,
-      &gpu_cpu_fence,
-      VK_TRUE, UINT64_MAX);
-  } while (rwait == VK_TIMEOUT);
-
+  
   vkDestroyFence(vkz_logical_device,
     gpu_cpu_fence, NULL);
-
+  gpu_cpu_fence = VK_NULL_HANDLE;
   vkDestroySemaphore(vkz_logical_device,
     draw_semaphore, NULL);
+  draw_semaphore = VK_NULL_HANDLE;
   vkDestroySemaphore(vkz_logical_device,
     acquire_semaphore, NULL);
+  acquire_semaphore = VK_NULL_HANDLE;
 
   return 1;
 }
@@ -1695,6 +1690,8 @@ int vkz_draw(VkCommandBuffer* command_buffer) {
     gpu_cpu_fence) != VK_SUCCESS) {
     LOGDEBUG0("Could not submit draw command buffer!");
   }
+
+  wait_gpu_cpu_fence();
 
   return 1;
 }
@@ -1791,14 +1788,17 @@ int end_single_time_commands(VkCommandBuffer command_buffer) {
   si.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
   si.commandBufferCount = 1;
   si.pCommandBuffers = &command_buffer;
-  vkQueueSubmit(vkz_graphics_queue, 1, &si, VK_NULL_HANDLE);
 
-  vkQueueWaitIdle(vkz_graphics_queue);
+  vkResetFences(vkz_logical_device, 1,
+		&gpu_cpu_fence);
+  vkQueueSubmit(vkz_graphics_queue, 1, &si, gpu_cpu_fence);
 
+  wait_gpu_cpu_fence();
+  
   vkFreeCommandBuffers(vkz_logical_device,
-    command_pool,
-    1,
-    &command_buffer);
+		       command_pool,
+		       1,
+		       &command_buffer);
   return 1;
 }
 

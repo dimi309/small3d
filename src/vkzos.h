@@ -97,19 +97,6 @@ int vkz_create_swapchain();
 int vkz_destroy_swapchain(void);
 
 /**
- * @brief Create the image used for depth testing. This function must be called
- *        right after vkz_create_swapchain(). 
- * @return 1 if successful, 0 otherwise
- */
-int vkz_create_depth_image(void);
-
-/**
- * @brief Destroy the image used for depth testing.
- * @return 1 if successful, 0 otherwise
- */
-int vkz_destroy_depth_image(void);
-
-/**
  * @brief Create a pipeline. This will also create associated Vulkan
  *        objects.
  *
