@@ -1,6 +1,6 @@
 /*! \page changelog changes per version
 
-v1.800 (still open)
+v1.800 2022-01-03
 
 - [BREAKING] Rotations are now stored and managed as transformations. Euler
   angles (x, y, z rotation) support remains but with a modified interface.
