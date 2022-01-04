@@ -9,8 +9,8 @@ environment:
     - job_name: MacOS build (OpenGL & Vulkan)
       appveyor_build_worker_image: macos-bigsur
       
-    - job_name: Windows VS 2019 build (OpenGL & Vulkan)
-      appveyor_build_worker_image: Visual Studio 2019
+    - job_name: Windows VS 2022 build (OpenGL & Vulkan)
+      appveyor_build_worker_image: Visual Studio 2022
       
 for:
 
@@ -105,7 +105,7 @@ for:
 -
   matrix:
     only:
-      - job_name: Windows VS 2019 build (OpenGL & Vulkan)
+      - job_name: Windows VS 2022 build (OpenGL & Vulkan)
 
   install:
   - choco install vulkan-sdk

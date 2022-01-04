@@ -1,5 +1,11 @@
 /*! \page changelog changes per version
 
+v1.801 (still open)
+
+- VS build scripts switched to build with VS 2022 by default to go back to 
+  VS 2019 just change the VSCONFIG variables in srcipts/build-vs.bat and 
+  deps/scripts/prepare-vs.bat to "Visual Studio 16 2019".
+
 v1.800 2022-01-03
 
 - [BREAKING] Rotations are now stored and managed as transformations. Euler

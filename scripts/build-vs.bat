@@ -20,7 +20,7 @@ if /I "%~1" == "release" set BUILDTYPE=Release
 set CMAKE_DEFINITIONS=
 if /I "%~2" == "opengl" set CMAKE_DEFINITIONS=%CMAKE_DEFINITIONS% -DSMALL3D_OPENGL=ON
 
-set VSCONFIG=-G"Visual Studio 16 2019" -A x64
+set VSCONFIG=-G"Visual Studio 17 2022" -A x64
 
 cd ..\deps\scripts
 if exist include rmdir /Q /S include

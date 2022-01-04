@@ -66,7 +66,11 @@ $(function() {
 <div class="title">changes per version </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>v1.800 2022-01-03</p>
+<div class="textblock"><p>v1.801 (still open)</p>
+<ul>
+<li>VS build scripts switched to build with VS 2022 by default to go back to VS 2019 just change the VSCONFIG variables in srcipts/build-vs.bat and deps/scripts/prepare-vs.bat to "Visual Studio 16 2019".</li>
+</ul>
+<p>v1.800 2022-01-03</p>
 <ul>
 <li>[BREAKING] Rotations are now stored and managed as transformations. Euler angles (x, y, z rotation) support remains but with a modified interface.</li>
 <li>[BREAKING] SceneObject.offset has been renamed to SceneObject.position.</li>

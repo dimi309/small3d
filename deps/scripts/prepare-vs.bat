@@ -22,7 +22,7 @@ if /I "%~1" == "release" set BUILDTYPE=Release
 
 @echo on
 
-set VSCONFIG=-G"Visual Studio 16 2019" -A x64
+set VSCONFIG=-G"Visual Studio 17 2022" -A x64
 
 mkdir include
 mkdir lib
