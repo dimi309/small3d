@@ -1,5 +1,8 @@
 environment:
   matrix:
+    - job_name: Windows VS 2022 build (OpenGL & Vulkan)
+      appveyor_build_worker_image: Visual Studio 2022
+      
     - job_name: Ubuntu Linux build (OpenGL & Vulkan)
       appveyor_build_worker_image: Ubuntu2004
       
@@ -9,10 +12,36 @@ environment:
     - job_name: MacOS build (OpenGL & Vulkan)
       appveyor_build_worker_image: macos-bigsur
       
-    - job_name: Windows VS 2022 build (OpenGL & Vulkan)
-      appveyor_build_worker_image: Visual Studio 2022
-      
 for:
+
+-
+  matrix:
+    only:
+      - job_name: Windows VS 2022 build (OpenGL & Vulkan)
+
+  install:
+  - choco install vulkan-sdk
+  - refreshenv
+  - set PATH=C:\Python38-x64;C:\Python38-x64\scripts;%PATH%
+  - python -m pip install --upgrade pip
+  - pip install conan
+  - conan profile new default --detect
+  - conan profile update settings.compiler="Visual Studio" default
+  - conan profile update settings.compiler.version=17 default
+  - conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
+  
+  test_script:
+  - cd conan_io && conan create . small3d/master@ -s build_type=Release --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s build_type=Release -o small3d:vulkan=True --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s build_type=Debug --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s build_type=Debug -o small3d:vulkan=True --build=missing && cd ..
+  - cd scripts && .\build-vs.bat Debug opengl && cd ..
+  - git clean -fdx
+  - cd scripts && .\build-vs.bat Release opengl && cd ..
+  - git clean -fdx
+  - cd scripts && .\build-vs.bat Debug opengl && cd ..
+  - git clean -fdx
+  - cd scripts && .\build-vs.bat Release opengl && cd ..
 
 -
   matrix:
@@ -101,31 +130,5 @@ for:
   - cd scripts && ./build.sh Debug opengl && cd ..
   - git clean -fdx
   - cd scripts && ./build.sh Release opengl
-  
--
-  matrix:
-    only:
-      - job_name: Windows VS 2022 build (OpenGL & Vulkan)
-
-  install:
-  - choco install vulkan-sdk
-  - refreshenv
-  - set PATH=C:\Python38-x64;C:\Python38-x64\scripts;%PATH%
-  - python -m pip install --upgrade pip
-  - pip install conan
-  - conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
-  
-  test_script:
-  - cd conan_io && conan create . small3d/master@ -s build_type=Release --build=missing && cd ..
-  - cd conan_io && conan create . small3d/master@ -s build_type=Release -o small3d:vulkan=True --build=missing && cd ..
-  - cd conan_io && conan create . small3d/master@ -s build_type=Debug --build=missing && cd ..
-  - cd conan_io && conan create . small3d/master@ -s build_type=Debug -o small3d:vulkan=True --build=missing && cd ..
-  - cd scripts && .\build-vs.bat Debug opengl && cd ..
-  - git clean -fdx
-  - cd scripts && .\build-vs.bat Release opengl && cd ..
-  - git clean -fdx
-  - cd scripts && .\build-vs.bat Debug opengl && cd ..
-  - git clean -fdx
-  - cd scripts && .\build-vs.bat Release opengl && cd ..
 
 build: off
