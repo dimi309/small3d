@@ -2,9 +2,9 @@
 
 v1.801 (still open)
 
-- VS build scripts switched to build with VS 2022 by default to go back to 
-  VS 2019 just change the VSCONFIG variables in srcipts/build-vs.bat and 
-  deps/scripts/prepare-vs.bat to "Visual Studio 16 2019".
+- VS build scripts switched to build with VS 2022 by default. In to go back to 
+  VS 2019 just change the VSCONFIG variables in `srcipts/build-vs.bat` and 
+  `deps/scripts/prepare-vs.bat` to "Visual Studio 16 2019".
 
 v1.800 2022-01-03
 
@@ -12,8 +12,9 @@ v1.800 2022-01-03
   angles (x, y, z rotation) support remains but with a modified interface.
 - [BREAKING] SceneObject.offset has been renamed to SceneObject.position.
 - [BREAKING] SceneObject.boundingBoxSet is now private. It is still possible
-  to retrieve the bounding boxes as Models, using SceneObject.getBoundingBoxSetModels,
-  and the bounding box set extremes using SceneObject.getBoundingBoxSetExtremes.
+  to retrieve the bounding boxes as Models, using 
+  SceneObject.getBoundingBoxSetModels, and the bounding box set extremes using 
+  SceneObject.getBoundingBoxSetExtremes.
 - SceneObject.boundingBoxSet and SceneObject.models have been converted
   to smart pointers to allow for the copy constructor to create scene
   objects that reuse existing models.
