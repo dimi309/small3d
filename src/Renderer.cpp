@@ -620,76 +620,11 @@ namespace small3d {
     LOGDEBUG("Detected back width " + std::to_string(realScreenWidth) +
       " height " + std::to_string(realScreenHeight));
 
-#if defined(__ANDROID__)
-    const char* exts[2];
-
-    exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
-    exts[1] = VK_KHR_ANDROID_SURFACE_EXTENSION_NAME;
-
-    uint32_t num = 2;
-
-    LOGDEBUG("Creating Vulkan instance...");
-
-    if (!vkz_create_instance(windowTitle.c_str(), exts, num)) {
-      throw std::runtime_error("Failed to create Vulkan instance.");
-    }
-
-    VkAndroidSurfaceCreateInfoKHR sci;
-    sci.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
-    sci.pNext = nullptr;
-    sci.flags = 0;
-    sci.window = vkz_android_app->window;
-    LOGDEBUG("Creating surface...");
-    if (vkCreateAndroidSurfaceKHR(vkz_instance, &sci, nullptr, &vkz_surface) !=
-      VK_SUCCESS) {
-      throw std::runtime_error("Could not create surface.");
-    }
-#elif defined(SMALL3D_IOS)
-
-    const char* exts[2];
-
-    exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
-    exts[1] = VK_MVK_IOS_SURFACE_EXTENSION_NAME;
-
-    uint32_t num = 2;
-
-    LOGDEBUG("Creating Vulkan instance...");
-
-    if (!vkz_create_instance(windowTitle.c_str(), exts, num)) {
-      throw std::runtime_error("Failed to create Vulkan instance.");
-    }
-
-    if (!create_ios_surface(vkz_instance, &vkz_surface)) {
-      throw std::runtime_error("Could not create surface.");
-    }
-
-#else
-    uint32_t glfwExtensionCount = 0;
-    const char** glfwExtensions;
-
-    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-    std::string requiredExtensions = "GLFW required extensions (";
-    requiredExtensions += std::to_string(glfwExtensionCount) + ")";
-    LOGDEBUG(requiredExtensions);
-
-    for (uint32_t n = 0; n < glfwExtensionCount; n++) {
-      LOGDEBUG(glfwExtensions[n]);
-    }
-    printf("\n\r");
-
-    if (!vkz_create_instance(windowTitle.c_str(), glfwExtensions,
-      glfwExtensionCount)) {
-      throw std::runtime_error("Failed to create Vulkan instance.");
-    }
-
-    if (glfwCreateWindowSurface(vkz_instance, window, NULL, &vkz_surface) !=
-      VK_SUCCESS) {
-      throw std::runtime_error("Could not create surface.");
-    }
-#endif
-
     setupVulkan();
+
+    Image blankImage("");
+    blankImage.toColour(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+    generateTexture("blank", blankImage);
 
   }
 
@@ -697,13 +632,6 @@ namespace small3d {
     destroyVulkan();
     objectsPerFrame += additionalObjects;
     setupVulkan();
-
-    for (auto& t : textures) {
-      generateTexture(t.first, nullptr, 0, 0, false);
-    }
-
-    memoryResetModelRenderIndex = nextModelRenderIndex;
-    currentSwapchainImageIndex = 0;
   }
 
   void Renderer::allocateDynamicBuffers() {
@@ -1724,6 +1652,76 @@ namespace small3d {
 
   void Renderer::setupVulkan() {
 
+
+#if defined(__ANDROID__)
+    const char* exts[2];
+
+    exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
+    exts[1] = VK_KHR_ANDROID_SURFACE_EXTENSION_NAME;
+
+    uint32_t num = 2;
+
+    LOGDEBUG("Creating Vulkan instance...");
+
+    if (!vkz_create_instance(windowTitle.c_str(), exts, num)) {
+      throw std::runtime_error("Failed to create Vulkan instance.");
+    }
+
+    VkAndroidSurfaceCreateInfoKHR sci;
+    sci.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
+    sci.pNext = nullptr;
+    sci.flags = 0;
+    sci.window = vkz_android_app->window;
+    LOGDEBUG("Creating surface...");
+    if (vkCreateAndroidSurfaceKHR(vkz_instance, &sci, nullptr, &vkz_surface) !=
+      VK_SUCCESS) {
+      throw std::runtime_error("Could not create surface.");
+    }
+#elif defined(SMALL3D_IOS)
+
+    const char* exts[2];
+
+    exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
+    exts[1] = VK_MVK_IOS_SURFACE_EXTENSION_NAME;
+
+    uint32_t num = 2;
+
+    LOGDEBUG("Creating Vulkan instance...");
+
+    if (!vkz_create_instance(windowTitle.c_str(), exts, num)) {
+      throw std::runtime_error("Failed to create Vulkan instance.");
+    }
+
+    if (!create_ios_surface(vkz_instance, &vkz_surface)) {
+      throw std::runtime_error("Could not create surface.");
+    }
+
+#else
+    uint32_t glfwExtensionCount = 0;
+    const char** glfwExtensions;
+
+    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+    std::string requiredExtensions = "GLFW required extensions (";
+    requiredExtensions += std::to_string(glfwExtensionCount) + ")";
+    LOGDEBUG(requiredExtensions);
+
+    for (uint32_t n = 0; n < glfwExtensionCount; n++) {
+      LOGDEBUG(glfwExtensions[n]);
+    }
+    printf("\n\r");
+
+    if (!vkz_create_instance(windowTitle.c_str(), glfwExtensions,
+      glfwExtensionCount)) {
+      throw std::runtime_error("Failed to create Vulkan instance.");
+    }
+
+    if (glfwCreateWindowSurface(vkz_instance, window, NULL, &vkz_surface) !=
+      VK_SUCCESS) {
+      throw std::runtime_error("Could not create surface.");
+    }
+#endif
+
     if (!vkz_init()) {
       throw std::runtime_error("Could not initialise Vulkan.");
     }
@@ -1758,15 +1756,17 @@ namespace small3d {
       throw std::runtime_error("Could not create the Vulkan pipeline!");
     }
 
-    // This will already exist if the pipeline and buffers are being re-created
-    auto nameTexturePair = textures.find("blank");
-    if (nameTexturePair == textures.end()) {
-      Image blankImage("");
-      blankImage.toColour(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
-      generateTexture("blank", blankImage);
+    allocateDynamicBuffers();
+
+    // Re-generate textures if this is a re-creation of the pipeline
+    for (auto& t : textures) {
+      generateTexture(t.first, nullptr, 0, 0, false);
     }
 
-    allocateDynamicBuffers();
+    // If this is a re-creation of the pipeline, models have to be put
+    // back into memory.
+    memoryResetModelRenderIndex = nextModelRenderIndex;
+    currentSwapchainImageIndex = 0;
 
   }
 
@@ -1801,6 +1801,8 @@ namespace small3d {
     vkDestroySurfaceKHR(vkz_instance, vkz_surface, NULL);
 
     vkz_shutdown();
+
+    pipelineIndex = 100;
   }
 
 }

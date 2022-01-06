@@ -550,23 +550,19 @@ namespace small3d
     void swapBuffers();
 
     /**
-     * @brief Set up the pipeline and buffers. This is called by the constructor
-     *        and also used internally after destroyVulkan is called
-     *        in order to increase the number of models that can be rendered in
-     *        one frame. Normally there is no need to invoke it, appart from when
+     * @brief Set up the Vulkan. This is called by the constructor and used internally. 
+     *        Normally there is no need to invoke it, appart from when
      *        an application runs on a mobile platform, in which case it can be useful
-     *        to call destroyPupelineAndBuffers when the app loses focus and then 
+     *        to call destroyVulkan when the app loses focus and then 
      *        setupVulkan when it regains it.
      */
     void setupVulkan();
 
     /**
-     * @brief Destroy the pipeline and buffers. This is is called internally
-     *        in order to increase the number of models that can be rendered in
-     *        one frame, following which setupVulkan is also called,
-     *        again internally. Normally there is no need to invoke it, appart
+     * @brief Destroy Vulkan. This is is called by the destructor and used internally. 
+     *        Normally there is no need to invoke it, appart
      *        from when an application runs on a mobile platform, in which case it 
-     *        can be useful to call destroyPupelineAndBuffers when the app loses
+     *        can be useful to call destroyVulkan when the app loses
      *        focus and then setupVulkan when it regains it.
      */
     void destroyVulkan();
