@@ -689,20 +689,14 @@ namespace small3d {
     }
 #endif
 
-    if (!vkz_init()) {
-      throw std::runtime_error("Could not initialise Vulkan.");
-    }
-
-    vkz_set_width_height(realScreenWidth, realScreenHeight);
-
-    setupPipelineAndBuffers();
+    setupVulkan();
 
   }
 
   void Renderer::increaseObjectsPerFrame(const uint32_t additionalObjects) {
-    destroyPipelineAndBuffers();
+    destroyVulkan();
     objectsPerFrame += additionalObjects;
-    setupPipelineAndBuffers();
+    setupVulkan();
 
     for (auto& t : textures) {
       generateTexture(t.first, nullptr, 0, 0, false);
@@ -1076,13 +1070,7 @@ namespace small3d {
 
     LOGDEBUG("Renderer destructor running");
 
-    destroyPipelineAndBuffers();
-
-    LOGDEBUG("Destroying surface.\n\r");
-
-    vkDestroySurfaceKHR(vkz_instance, vkz_surface, NULL);
-
-    vkz_shutdown();
+    destroyVulkan();
 
     for (auto& idFacePair : fontFaces) {
       FT_Done_Face(idFacePair.second);
@@ -1734,7 +1722,13 @@ namespace small3d {
 
   }
 
-  void Renderer::setupPipelineAndBuffers() {
+  void Renderer::setupVulkan() {
+
+    if (!vkz_init()) {
+      throw std::runtime_error("Could not initialise Vulkan.");
+    }
+
+    vkz_set_width_height(realScreenWidth, realScreenHeight);
 
     vkz_create_sync_objects();
 
@@ -1776,7 +1770,7 @@ namespace small3d {
 
   }
 
-  void Renderer::destroyPipelineAndBuffers() {
+  void Renderer::destroyVulkan() {
 
     for (auto& model : garbageModels) {
       clearBuffers(model);
@@ -1801,6 +1795,12 @@ namespace small3d {
     vkz_destroy_swapchain();
 
     vkz_destroy_sync_objects();
+
+    LOGDEBUG("Destroying surface.\n\r");
+
+    vkDestroySurfaceKHR(vkz_instance, vkz_surface, NULL);
+
+    vkz_shutdown();
   }
 
 }

@@ -118,9 +118,9 @@ GLFWwindow *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:aa3fc446b4ee64fbb831aa8f08a54dbdc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#aa3fc446b4ee64fbb831aa8f08a54dbdc">generateTexture</a> (const std::string &amp;name, const <a class="el" href="classsmall3d_1_1_image.html">Image</a> &amp;image)</td></tr>
 <tr class="memdesc:aa3fc446b4ee64fbb831aa8f08a54dbdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a texture on the GPU from the given image.  <a href="classsmall3d_1_1_renderer.html#aa3fc446b4ee64fbb831aa8f08a54dbdc">More...</a><br /></td></tr>
 <tr class="separator:aa3fc446b4ee64fbb831aa8f08a54dbdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a071ed4cfc38f7553d2e16a058ebd992b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a071ed4cfc38f7553d2e16a058ebd992b">generateTexture</a> (const std::string &amp;name, const std::string &amp;text, const glm::vec3 &amp;colour, const int fontSize=48, const std::string &amp;fontPath=&quot;resources/fonts/CrusoeText/CrusoeText-Regular.ttf&quot;, const bool replace=true)</td></tr>
-<tr class="memdesc:a071ed4cfc38f7553d2e16a058ebd992b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a texture on the GPU that contains the given text.  <a href="classsmall3d_1_1_renderer.html#a071ed4cfc38f7553d2e16a058ebd992b">More...</a><br /></td></tr>
-<tr class="separator:a071ed4cfc38f7553d2e16a058ebd992b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e6b2ba40d5f89691d03ebebd52aaabb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a9e6b2ba40d5f89691d03ebebd52aaabb">generateTexture</a> (const std::string &amp;name, const std::string &amp;text, const glm::vec3 &amp;colour, const int fontSize=48, const std::string &amp;fontPath=DEFAULT_FONT_PATH, const bool replace=true)</td></tr>
+<tr class="memdesc:a9e6b2ba40d5f89691d03ebebd52aaabb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a texture on the GPU that contains the given text.  <a href="classsmall3d_1_1_renderer.html#a9e6b2ba40d5f89691d03ebebd52aaabb">More...</a><br /></td></tr>
+<tr class="separator:a9e6b2ba40d5f89691d03ebebd52aaabb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3edaca7521e526b5cf311ed4c541452"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#aa3edaca7521e526b5cf311ed4c541452">deleteTexture</a> (const std::string &amp;name)</td></tr>
 <tr class="memdesc:aa3edaca7521e526b5cf311ed4c541452"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes the texture indicated by the given name.  <a href="classsmall3d_1_1_renderer.html#aa3edaca7521e526b5cf311ed4c541452">More...</a><br /></td></tr>
 <tr class="separator:aa3edaca7521e526b5cf311ed4c541452"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -164,6 +164,14 @@ GLFWwindow *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#acdc83f2aaaf3f41f35e99c1eabc6ac98">swapBuffers</a> ()</td></tr>
 <tr class="memdesc:acdc83f2aaaf3f41f35e99c1eabc6ac98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swap the buffers. <br /></td></tr>
 <tr class="separator:acdc83f2aaaf3f41f35e99c1eabc6ac98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adeade4469aab5489c7a7a1c5755653f8"><td class="memItemLeft" align="right" valign="top"><a id="adeade4469aab5489c7a7a1c5755653f8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#adeade4469aab5489c7a7a1c5755653f8">setupVulkan</a> ()</td></tr>
+<tr class="memdesc:adeade4469aab5489c7a7a1c5755653f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set up the pipeline and buffers. This is called by the constructor and also used internally after destroyVulkan is called in order to increase the number of models that can be rendered in one frame. Normally there is no need to invoke it, appart from when an application runs on a mobile platform, in which case it can be useful to call destroyPupelineAndBuffers when the app loses focus and then setupVulkan when it regains it. <br /></td></tr>
+<tr class="separator:adeade4469aab5489c7a7a1c5755653f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a5de0802d1fd020a118db1852ea6e6b"><td class="memItemLeft" align="right" valign="top"><a id="a5a5de0802d1fd020a118db1852ea6e6b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a5a5de0802d1fd020a118db1852ea6e6b">destroyVulkan</a> ()</td></tr>
+<tr class="memdesc:a5a5de0802d1fd020a118db1852ea6e6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy the pipeline and buffers. This is is called internally in order to increase the number of models that can be rendered in one frame, following which setupVulkan is also called, again internally. Normally there is no need to invoke it, appart from when an application runs on a mobile platform, in which case it can be useful to call destroyPupelineAndBuffers when the app loses focus and then setupVulkan when it regains it. <br /></td></tr>
+<tr class="separator:a5a5de0802d1fd020a118db1852ea6e6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbe22353fdbf54f36f8dedb607ab9c74"><td class="memItemLeft" align="right" valign="top"><a id="afbe22353fdbf54f36f8dedb607ab9c74"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b> (<a class="el" href="classsmall3d_1_1_renderer.html">Renderer</a> const &amp;)=delete</td></tr>
 <tr class="separator:afbe22353fdbf54f36f8dedb607ab9c74"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -179,9 +187,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a cla
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a93f07b4a326dbfed801ac90a41efc2c7"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classsmall3d_1_1_renderer.html">Renderer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a93f07b4a326dbfed801ac90a41efc2c7">getInstance</a> (const std::string &amp;windowTitle=&quot;&quot;, const int width=0, const int height=0, const float fieldOfView=0.785f, const float zNear=1.0f, const float zFar=24.0f, const std::string &amp;shadersPath=&quot;resources/shaders/&quot;, const uint32_t objectsPerFrame=defaultObjectsPerFrame, const uint32_t objectsPerFrameInc=defaultObjectsPerFrameInc)</td></tr>
-<tr class="memdesc:a93f07b4a326dbfed801ac90a41efc2c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the instance of the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> (the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> is a singleton).  <a href="classsmall3d_1_1_renderer.html#a93f07b4a326dbfed801ac90a41efc2c7">More...</a><br /></td></tr>
-<tr class="separator:a93f07b4a326dbfed801ac90a41efc2c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c081b92ef1a16188a4eaee9b689982a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classsmall3d_1_1_renderer.html">Renderer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a0c081b92ef1a16188a4eaee9b689982a">getInstance</a> (const std::string &amp;windowTitle=&quot;&quot;, const int width=0, const int height=0, const float fieldOfView=0.785f, const float zNear=1.0f, const float zFar=24.0f, const std::string &amp;shadersPath=DEFAULT_SHADERS_DIR, const uint32_t objectsPerFrame=defaultObjectsPerFrame, const uint32_t objectsPerFrameInc=defaultObjectsPerFrameInc)</td></tr>
+<tr class="memdesc:a0c081b92ef1a16188a4eaee9b689982a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the instance of the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> (the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> is a singleton).  <a href="classsmall3d_1_1_renderer.html#a0c081b92ef1a16188a4eaee9b689982a">More...</a><br /></td></tr>
+<tr class="separator:a0c081b92ef1a16188a4eaee9b689982a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -360,8 +368,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a id="a071ed4cfc38f7553d2e16a058ebd992b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a071ed4cfc38f7553d2e16a058ebd992b">&#9670;&nbsp;</a></span>generateTexture() <span class="overload">[2/2]</span></h2>
+<a id="a9e6b2ba40d5f89691d03ebebd52aaabb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e6b2ba40d5f89691d03ebebd52aaabb">&#9670;&nbsp;</a></span>generateTexture() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -394,7 +402,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>fontPath</em> = <code>&quot;resources/fonts/CrusoeText/CrusoeText-Regular.ttf&quot;</code>, </td>
+          <td class="paramname"><em>fontPath</em> = <code>DEFAULT_FONT_PATH</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -485,8 +493,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a id="a93f07b4a326dbfed801ac90a41efc2c7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a93f07b4a326dbfed801ac90a41efc2c7">&#9670;&nbsp;</a></span>getInstance()</h2>
+<a id="a0c081b92ef1a16188a4eaee9b689982a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c081b92ef1a16188a4eaee9b689982a">&#9670;&nbsp;</a></span>getInstance()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -534,7 +542,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>shadersPath</em> = <code>&quot;resources/shaders/&quot;</code>, </td>
+          <td class="paramname"><em>shadersPath</em> = <code>DEFAULT_SHADERS_DIR</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
