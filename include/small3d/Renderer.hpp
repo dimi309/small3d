@@ -29,6 +29,15 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#ifndef SMALL3D_IOS
+#define DEFAULT_SHADERS_DIR "resources/shaders/"
+#define DEFAULT_FONT_PATH "resources/fonts/CrusoeText/CrusoeText-Regular.ttf"
+#else // On iOS "resources" is the name of a special folder, so it cannot be
+      // used for small3d resources.
+#define DEFAULT_SHADERS_DIR "resources1/shaders/"
+#define DEFAULT_FONT_PATH "resources1/fonts/CrusoeText/CrusoeText-Regular.ttf"
+#endif
+
 namespace small3d
 {
   /**
@@ -239,44 +248,16 @@ namespace small3d
     uint32_t nextModelRenderIndex = 1;
     uint32_t memoryResetModelRenderIndex = 0;
 
-    // On Android and iOS, it is useful to be able to destroy and recreate the
-    // renderer, so it is not provided only as a singleton for that platform.
-    // By the way, do NOT create a renderer using getInstance and then
-    // try to delete it in code. That will make an app crash. Either
-    // create it with getInstance and assume it is a singleton which
-    // will be destroyed automatically when the program terminates,
-    // or instantiate it with "new" if you would like to delete it
-    // later.
-#if defined(__ANDROID__) || defined(SMALL3D_IOS)
-  public:
-    Renderer(const std::string& windowTitle = "",
-      const int width = 0,
-      const int height = 0,
-      const float fieldOfView = 0.785f,
-      const float zNear = 1.0f,
-      const float zFar = 24.0f,
-      const std::string& shadersPath =
-#ifndef SMALL3D_IOS
-      "resources/shaders/",
-#else // On iOS "resources" is the name of a special folder, so it cannot be
-      // used for small3d resources.
-      "resources1/shaders/",
-#endif
-      const uint32_t objectsPerFrame = defaultObjectsPerFrame,
-      const uint32_t objectsPerFrameInc = defaultObjectsPerFrameInc);
-#else
     Renderer(const std::string& windowTitle, const int width,
       const int height, const float fieldOfView, const float zNear,
       const float zFar, 
       const std::string& shadersPath, const uint32_t objectsPerFrame,
       const uint32_t objectsPerFrameInc);
-#endif
 
     Renderer();
 
-#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
   public:
-#endif
+
     /**
      * @brief Vector, indicating the direction of the light in the scene.
      *        It points towards a directional light source.
@@ -397,7 +378,7 @@ namespace small3d
       const float zNear = 1.0f,
       const float zFar = 24.0f,
       const std::string& shadersPath =
-      "resources/shaders/",
+      DEFAULT_SHADERS_DIR,
       const uint32_t objectsPerFrame = defaultObjectsPerFrame,
       const uint32_t objectsPerFrameInc = defaultObjectsPerFrameInc);
 
@@ -434,12 +415,7 @@ namespace small3d
     void generateTexture(const std::string& name, const std::string& text,
       const glm::vec3& colour,
       const int fontSize = 48,
-      const std::string& fontPath =
-#ifndef SMALL3D_IOS
-      "resources/fonts/CrusoeText/CrusoeText-Regular.ttf",
-#else
-      "resources1/fonts/CrusoeText/CrusoeText-Regular.ttf",
-#endif
+      const std::string& fontPath = DEFAULT_FONT_PATH,
       const bool replace = true);
 
     /**
