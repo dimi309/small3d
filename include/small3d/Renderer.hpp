@@ -226,9 +226,6 @@ namespace small3d
 
     void init(const int width, const int height,
       const std::string shadersPath);
-
-    void setupPipelineAndBuffers(bool withBlankTexture = true);
-    void destroyPipelineAndBuffers();
     
     void increaseObjectsPerFrame(const uint32_t additionalObjects);
     
@@ -551,6 +548,28 @@ namespace small3d
      * @brief Swap the buffers.
      */
     void swapBuffers();
+
+    /**
+     * @brief Set up the pipeline and buffers. This is called by the constructor
+     *        and also used internally after destroyPipelineAndBuffers is called
+     *        in order to increase the number of models that can be rendered in
+     *        one frame. Normally there is no need to invoke it, appart from when
+     *        an application runs on a mobile platform, in which case it can be useful
+     *        to call destroyPupelineAndBuffers when the app loses focus and then 
+     *        setupPipelineAndBuffers when it regains it.
+     */
+    void setupPipelineAndBuffers();
+
+    /**
+     * @brief Destroy the pipeline and buffers. This is is called internally
+     *        in order to increase the number of models that can be rendered in
+     *        one frame, following which setupPipelineAndBuffers is also called,
+     *        again internally. Normally there is no need to invoke it, appart
+     *        from when an application runs on a mobile platform, in which case it 
+     *        can be useful to call destroyPupelineAndBuffers when the app loses
+     *        focus and then setupPipelineAndBuffers when it regains it.
+     */
+    void destroyPipelineAndBuffers();
 
     Renderer(Renderer const&) = delete;
     void operator=(Renderer const&) = delete;

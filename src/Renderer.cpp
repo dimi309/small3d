@@ -699,80 +699,10 @@ namespace small3d {
 
   }
 
-  void Renderer::setupPipelineAndBuffers(bool withBlankTexture) {
-
-    vkz_create_sync_objects();
-    
-    LOGDEBUG("Creating swapchain...");
-
-    if (!vkz_create_swapchain()) {
-      throw std::runtime_error("Failed to create swapchain.");
-    }
-
-    LOGDEBUG("Creating descriptor pool...");
-
-    createDescriptorPool();
-    allocateDescriptorSets();
-
-    std::string vertexShaderPath = this->shadersPath +
-      "perspectiveMatrixLightedShader.spv";
-    std::string fragmentShaderPath = this->shadersPath +
-      "textureShader.spv";
-
-    if (!vkz_create_sampler(&textureSampler)) {
-      throw std::runtime_error("Failed to create the sampler!");
-    }
-
-    if (!vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
-      setInputStateCallback, setPipelineLayoutCallback,
-      &pipelineIndex)) {
-      throw std::runtime_error("Could not create the Vulkan pipeline!");
-    }
-
-    if (withBlankTexture) { // without this when recreating the pipeline and
-                            // buffers with increased memory size
-      Image blankImage("");
-      blankImage.toColour(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
-      generateTexture("blank", blankImage);
-    }
-
-    allocateDynamicBuffers();
-
-  }
-  void Renderer::destroyPipelineAndBuffers() {
-
-    
-    
-    for (auto& model : garbageModels) {
-      clearBuffers(model);
-    }
-    garbageModels.clear();
-    
-    for (auto &t: textures) {
-      LOGDEBUG("Deleting texture " + t.first);
-      deleteImageFromGPU(t.second);
-    }
-
-
-    vkz_destroy_pipeline(pipelineIndex);
-
-    vkDestroySampler(vkz_logical_device, textureSampler, NULL);
-
-    destroyDescriptorSets();
-
-    destroyDescriptorPool();
-
-    destroyDynamicBuffers();
-
-    vkz_destroy_swapchain();
-
-    vkz_destroy_sync_objects();
-  }
-
   void Renderer::increaseObjectsPerFrame(const uint32_t additionalObjects) {
     destroyPipelineAndBuffers();
     objectsPerFrame += additionalObjects;
-    setupPipelineAndBuffers(false);
+    setupPipelineAndBuffers();
 
     for (auto& t : textures) {
       generateTexture(t.first, nullptr, 0, 0, false);
@@ -1802,6 +1732,75 @@ namespace small3d {
     }
     garbageModels.clear();
 
+  }
+
+  void Renderer::setupPipelineAndBuffers() {
+
+    vkz_create_sync_objects();
+
+    LOGDEBUG("Creating swapchain...");
+
+    if (!vkz_create_swapchain()) {
+      throw std::runtime_error("Failed to create swapchain.");
+    }
+
+    LOGDEBUG("Creating descriptor pool...");
+
+    createDescriptorPool();
+    allocateDescriptorSets();
+
+    std::string vertexShaderPath = this->shadersPath +
+      "perspectiveMatrixLightedShader.spv";
+    std::string fragmentShaderPath = this->shadersPath +
+      "textureShader.spv";
+
+    if (!vkz_create_sampler(&textureSampler)) {
+      throw std::runtime_error("Failed to create the sampler!");
+    }
+
+    if (!vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
+      setInputStateCallback, setPipelineLayoutCallback,
+      &pipelineIndex)) {
+      throw std::runtime_error("Could not create the Vulkan pipeline!");
+    }
+
+    // This will already exist if the pipeline and buffers are being re-created
+    auto nameTexturePair = textures.find("blank");
+    if (nameTexturePair == textures.end()) {
+      Image blankImage("");
+      blankImage.toColour(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+      generateTexture("blank", blankImage);
+    }
+
+    allocateDynamicBuffers();
+
+  }
+
+  void Renderer::destroyPipelineAndBuffers() {
+
+    for (auto& model : garbageModels) {
+      clearBuffers(model);
+    }
+    garbageModels.clear();
+
+    for (auto& t : textures) {
+      LOGDEBUG("Deleting texture " + t.first);
+      deleteImageFromGPU(t.second);
+    }
+
+    vkz_destroy_pipeline(pipelineIndex);
+
+    vkDestroySampler(vkz_logical_device, textureSampler, NULL);
+
+    destroyDescriptorSets();
+
+    destroyDescriptorPool();
+
+    destroyDynamicBuffers();
+
+    vkz_destroy_swapchain();
+
+    vkz_destroy_sync_objects();
   }
 
 }
