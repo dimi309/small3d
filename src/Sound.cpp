@@ -473,8 +473,6 @@ namespace small3d {
       }
 
       if (s != AAUDIO_STREAM_STATE_STOPPED && s != AAUDIO_STREAM_STATE_STOPPING) {
-	AAudioStream_requestPause(stream);
-	AAudioStream_requestFlush(stream);
 	AAudioStream_requestStop(stream);
 	
       }
@@ -520,8 +518,6 @@ namespace small3d {
           AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTING ||
           AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSED ||
           AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSING) {
-        AAudioStream_requestPause(stream);
-	AAudioStream_requestFlush(stream);
 	AAudioStream_requestStop(stream);
       }
 #elif defined(SMALL3D_IOS)
