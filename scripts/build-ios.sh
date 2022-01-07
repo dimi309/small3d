@@ -23,13 +23,17 @@ if [ "$2" != "Debug" ] && [ "$2" != "Release" ]; then
 fi
 
 cd ..
-git clean -fdx
+
 
 if [ "$3" != "skipdeps" ]
+then
+git clean -fdx
 cd deps/scripts
 ./prepare-ios.sh $1 $2
 cd ..
 cd ..
+else
+rm -rf build
 fi
 
 mkdir build
