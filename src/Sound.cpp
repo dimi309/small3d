@@ -479,7 +479,10 @@ namespace small3d {
 	
       }
 #elif defined(SMALL3D_IOS)
-      alSourcei(openalSource, AL_LOOPING, repeat);
+      int state = 0;
+      alGetSourcei(openalSource, AL_SOURCE_STATE, &state);
+      if (state == AL_PLAYING) return;
+      alSourcei(openalSource, AL_LOOPING, repeat);      
       alSourcePlay(openalSource);
 #endif
       
