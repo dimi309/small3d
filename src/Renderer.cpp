@@ -1573,7 +1573,7 @@ namespace small3d {
   }
 
   void Renderer::setBackgroundColour(const glm::vec4& colour) {
-
+    backgroundColour = colour;
     vkz_clear_colour.float32[0] = colour.r;
     vkz_clear_colour.float32[1] = colour.g;
     vkz_clear_colour.float32[2] = colour.b;
@@ -1768,6 +1768,10 @@ namespace small3d {
     memoryResetModelRenderIndex = nextModelRenderIndex;
     currentSwapchainImageIndex = 0;
 
+    vkz_clear_colour.float32[0] = backgroundColour.r;
+    vkz_clear_colour.float32[1] = backgroundColour.g;
+    vkz_clear_colour.float32[2] = backgroundColour.b;
+    vkz_clear_colour.float32[3] = backgroundColour.a;
   }
 
   void Renderer::destroyVulkan() {

@@ -108,6 +108,7 @@ namespace small3d
 #endif
 
     std::string windowTitle = "";
+    glm::vec4 backgroundColour = glm::vec4(0.0f);
 
     static int realScreenWidth, realScreenHeight;
 
