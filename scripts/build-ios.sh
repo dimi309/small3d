@@ -25,10 +25,12 @@ fi
 cd ..
 git clean -fdx
 
+if [ "$3" != "skipdeps" ]
 cd deps/scripts
 ./prepare-ios.sh $1 $2
 cd ..
 cd ..
+fi
 
 mkdir build
 cd build
