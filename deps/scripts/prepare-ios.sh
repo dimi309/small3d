@@ -188,7 +188,7 @@ then
     cp $VULKAN_SDK/../MoltenVK/MoltenVK.xcframework/ios-arm64/libMoltenVK.a lib/
 elif [ $1 = "simulator" ]
 then
-    cp cp $VULKAN_SDK/../MoltenVK/MoltenVK.xcframework/ios-arm64_x86_64-simulator/libMoltenVK.a lib/
+    cp $VULKAN_SDK/../MoltenVK/MoltenVK.xcframework/ios-arm64_x86_64-simulator/libMoltenVK.a lib/
 fi
 
 cp -rf $VULKAN_SDK/../MoltenVK/include/* include/
