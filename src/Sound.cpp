@@ -467,8 +467,16 @@ namespace small3d {
       
 #elif defined(__ANDROID__)
       aaudio_stream_state_t s = AAudioStream_getState(stream);
+      if (s == AAUDIO_STREAM_STATE_STARTED || s == AAUDIO_STREAM_STATE_STARTING &&
+	  AAudioStream_getXRunCount(stream) == 0) {
+        return;
+      }
+
       if (s != AAUDIO_STREAM_STATE_STOPPED && s != AAUDIO_STREAM_STATE_STOPPING) {
-        AAudioStream_requestStop(stream);
+	AAudioStream_requestPause(stream);
+	AAudioStream_requestFlush(stream);
+	AAudioStream_requestStop(stream);
+	
       }
 #elif defined(SMALL3D_IOS)
       alSourcei(openalSource, AL_LOOPING, repeat);
@@ -509,7 +517,9 @@ namespace small3d {
           AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTING ||
           AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSED ||
           AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSING) {
-        AAudioStream_requestStop(stream);
+        AAudioStream_requestPause(stream);
+	AAudioStream_requestFlush(stream);
+	AAudioStream_requestStop(stream);
       }
 #elif defined(SMALL3D_IOS)
         alSourceStop(openalSource);
