@@ -209,7 +209,7 @@ namespace small3d {
     dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
     dpci.poolSizeCount = 5;
     dpci.pPoolSizes = ps;
-
+    dpci.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
     dpci.maxSets = vkz_swapchain_image_count * objectsPerFrame;
 
     if (vkCreateDescriptorPool(vkz_logical_device, &dpci, NULL,
