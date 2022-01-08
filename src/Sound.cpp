@@ -467,15 +467,10 @@ namespace small3d {
       
 #elif defined(__ANDROID__)
       aaudio_stream_state_t s = AAudioStream_getState(stream);
-      if (s == AAUDIO_STREAM_STATE_STARTED || s == AAUDIO_STREAM_STATE_STARTING &&
-	  AAudioStream_getXRunCount(stream) == 0) {
+      if (s == AAUDIO_STREAM_STATE_STARTED || s == AAUDIO_STREAM_STATE_STARTING) {
         return;
       }
 
-      if (s != AAUDIO_STREAM_STATE_STOPPED && s != AAUDIO_STREAM_STATE_STOPPING) {
-	AAudioStream_requestStop(stream);
-	
-      }
 #elif defined(SMALL3D_IOS)
       int state = 0;
       alGetSourcei(openalSource, AL_SOURCE_STATE, &state);
@@ -484,10 +479,9 @@ namespace small3d {
       alSourcePlay(openalSource);
 #endif
       
-        this->soundData.currentFrame = 0;
-        this->soundData.startTime = 0;
-        this->soundData.repeat = repeat;
-      
+      this->soundData.currentFrame = 0;
+      this->soundData.startTime = 0;
+      this->soundData.repeat = repeat;
 
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
       error = Pa_StartStream(stream);
