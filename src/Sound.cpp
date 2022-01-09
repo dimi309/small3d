@@ -187,6 +187,8 @@ namespace small3d {
        if (soundData->repeat) {
          soundData->currentFrame = 0;
        } else {
+	 // Always need to write something to the buffer
+	 memset(out, 0, WORD_SIZE * numFrames * SAMPLES_PER_FRAME * soundData->channels);
          return AAUDIO_CALLBACK_RESULT_STOP;
        }
      }
@@ -199,6 +201,7 @@ namespace small3d {
 
      return AAUDIO_CALLBACK_RESULT_CONTINUE;
   }
+
 #endif
 
 
@@ -434,9 +437,8 @@ namespace small3d {
     AAudioStreamBuilder_setFormat(streamBuilder, AAUDIO_FORMAT_PCM_I16);
     AAudioStreamBuilder_setSharingMode(streamBuilder, AAUDIO_SHARING_MODE_SHARED);
     AAudioStreamBuilder_setSamplesPerFrame(streamBuilder, SAMPLES_PER_FRAME);
-    // Used to call AAudioStreamBuilder_setBufferCapacityInFrames but then I read that
-    // it is not guaranteed that the capacity will be the one requested, so I left it
-    // unspecified.
+    // Leaving this as unspecified for now
+    //AAudioStreamBuilder_setBufferCapacityInFrames(streamBuilder, 100);
     AAudioStreamBuilder_setDataCallback(streamBuilder, Sound::audioCallback, &soundData);
 
     AAudioStreamBuilder_openStream(streamBuilder, &stream);
@@ -490,7 +492,9 @@ namespace small3d {
 				 std::string(Pa_GetErrorText(error)));
       }
 #elif defined(__ANDROID__)
-      AAudioStream_requestStart(stream);
+      if (AAudioStream_requestStart(stream) != AAUDIO_OK) {
+	LOGDEBUG("Failed to request start of sound stream.");
+      }
 #endif
   }
 }
