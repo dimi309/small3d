@@ -31,6 +31,8 @@
 #else
 #define SAMPLE_DATATYPE uint8_t
 #define SAMPLES_PER_FRAME 1
+#include <thread>
+#include <chrono>
 #endif
 
 #define SOUND_ID(name, handle) name + "/" + handle
@@ -111,6 +113,23 @@ static ov_callbacks OV_SMALL3D_ANDROID_MEMORY_NOCLOSE = {
 
 };
 
+void small3d::Sound::asyncAndroidStopOnceFinished(AAudioStream *stream, long samples) {
+  // Necessary to stop sound via a thread for older Android APIs:
+  // https://github.com/google/oboe/issues/1230#issuecomment-881587838
+  initLogger();
+  while(true) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    if (AAudioStream_getFramesWritten(stream) / SAMPLES_PER_FRAME > samples) {
+      auto state = AAudioStream_getState(stream);
+      if (state == AAUDIO_STREAM_STATE_STARTED || state == AAUDIO_STREAM_STATE_STARTING) {
+	AAudioStream_requestStop(stream);
+	LOGDEBUG("Stream stopped by small3d::Sound::asyncAndroidStopOnceFinished");
+      }
+      break;
+    }
+  }
+}
+
 #endif
 
 namespace small3d {
@@ -184,21 +203,19 @@ namespace small3d {
      SAMPLE_DATATYPE *out = static_cast<SAMPLE_DATATYPE *>(audioData);
 
      if (soundData->currentFrame * SAMPLES_PER_FRAME >= soundData->samples) {
-       if (soundData->repeat) {
-         soundData->currentFrame = 0;
-       } else {
-	 // Always need to write something to the buffer
-	 memset(out, 0, WORD_SIZE * numFrames * SAMPLES_PER_FRAME * soundData->channels);
-         return AAUDIO_CALLBACK_RESULT_STOP;
-       }
+       
+       soundData->currentFrame = 0;
+       memset(out, 0, WORD_SIZE * numFrames * SAMPLES_PER_FRAME * soundData->channels);
+       // Not stopping the stream. It will be stopped by asyncAndroidStopOnceFinished
      }
+     else {
 
-     memcpy(out, &soundData->data.data()[WORD_SIZE * soundData->currentFrame *
-                                         SAMPLES_PER_FRAME * soundData->channels],
-            WORD_SIZE * numFrames * SAMPLES_PER_FRAME * soundData->channels);
+       memcpy(out, &soundData->data.data()[WORD_SIZE * soundData->currentFrame *
+					   SAMPLES_PER_FRAME * soundData->channels],
+	      WORD_SIZE * numFrames * SAMPLES_PER_FRAME * soundData->channels);
 
-     soundData->currentFrame += numFrames;
-
+       soundData->currentFrame += numFrames;
+     }
      return AAUDIO_CALLBACK_RESULT_CONTINUE;
   }
 
@@ -468,6 +485,7 @@ namespace small3d {
       }
       
 #elif defined(__ANDROID__)
+
       aaudio_stream_state_t s = AAudioStream_getState(stream);
       if (s == AAUDIO_STREAM_STATE_STARTED || s == AAUDIO_STREAM_STATE_STARTING) {
         return;
@@ -495,6 +513,12 @@ namespace small3d {
       if (AAudioStream_requestStart(stream) != AAUDIO_OK) {
 	LOGDEBUG("Failed to request start of sound stream.");
       }
+      else if (!repeat) {
+	  // Necessary to stop sound via a thread for older Android APIs:
+	  // https://github.com/google/oboe/issues/1230#issuecomment-881587838
+	  std::thread t(asyncAndroidStopOnceFinished, stream, soundData.samples);
+	  t.join();
+      }
 #endif
   }
 }
@@ -512,12 +536,17 @@ namespace small3d {
 #endif
 
 #if defined(__ANDROID__)
-      if (AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTED ||
-          AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTING ||
-          AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSED ||
-          AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSING) {
-	AAudioStream_requestStop(stream);
-      }
+	if (AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTED ||
+	    AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTING ||
+	    AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSED ||
+	    AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSING) {
+	  if (!this->soundData.repeat) {
+	    LOGDEBUG("Cannot stop Android stream that is not repeated using the stop() function.");
+	    // The asyncAndroidStopOnceFinished will be running asynchronously, so we let it terminate the sound.
+	    return;
+	  }
+	  AAudioStream_requestStop(stream);
+	}
 #elif defined(SMALL3D_IOS)
         alSourceStop(openalSource);
 #else
