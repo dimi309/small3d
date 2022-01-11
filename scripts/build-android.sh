@@ -19,16 +19,15 @@ cd ..
 sourcepath=$(pwd)
 platformstr=android-26
 
-if [ -d "build" ]
+if [ "$2" != "skipdeps" ]
 then
-    echo "Build directory exists!"
-    exit 1
-fi
-
+git clean -fdx
 cd deps/scripts
 ./prepare-android.sh $1
-cd ..
-cd ..
+cd ../..
+else
+rm -rf build
+fi
 
 mkdir build
 cd build
