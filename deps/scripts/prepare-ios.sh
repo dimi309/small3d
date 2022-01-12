@@ -117,6 +117,8 @@ tar xvf libpng-1.6.37.tar.gz
 cd libpng-1.6.37
 mkdir build
 cd build
+# Disabling PNG_ARM_NEON because on macOS arm64 it produces the error
+# "PNG_ARM_NEON_FILE undefined: no support for run-time ARM NEON checks
 cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DPNG_ARM_NEON=off $CMAKE_DEFINITIONS
 cmake --build . --config $2
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi

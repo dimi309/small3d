@@ -92,7 +92,9 @@ tar xvf libpng-1.6.37.tar.gz
 cd libpng-1.6.37
 mkdir build
 cd build
-cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=$(pwd)/../../lib/libza -DZLIB_INCLUDE_DIR=$(pwd)/../../include $CMAKE_DEFINITIONS
+# Disabling PNG_ARM_NEON because on macOS arm64 it produces the error
+# "PNG_ARM_NEON_FILE undefined: no support for run-time ARM NEON checks
+cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DPNG_ARM_NEON=off -DZLIB_LIBRARY=$(pwd)/../../lib/libza -DZLIB_INCLUDE_DIR=$(pwd)/../../include $CMAKE_DEFINITIONS
 cmake --build .
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp ../*.h ../../include/
