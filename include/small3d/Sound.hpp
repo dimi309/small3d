@@ -77,7 +77,9 @@ static ALCcontext *openalContext;
       void *userData,
       void *audioData,
       int32_t numFrames);
+    static void errorCallback(AAudioStream *stream, void *userData, aaudio_result_t error);
     static void asyncAndroidStopOnceFinished(AAudioStream *stream, long samples);
+    static void asyncAndroidStopImmediately(AAudioStream *stream);
 
 #endif
 
