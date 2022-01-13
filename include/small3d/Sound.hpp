@@ -44,6 +44,7 @@ namespace small3d {
       bool repeat = false;
       unsigned long currentFrame = 0;
       std::vector<char> data;
+      bool playingRepeat = false;
     };
 
     SoundData soundData;

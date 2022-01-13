@@ -232,7 +232,7 @@ namespace small3d {
     initLogger();
     LOGDEBUG("Error callback called. Stopping stream...");
     std::thread t(asyncAndroidStopImmediately, stream);
-    t.join();
+    t.detach();
   }
 
 #endif
@@ -487,6 +487,11 @@ namespace small3d {
   }
 
   void Sound::play(const bool repeat) {
+    if (repeat) {
+      if (soundData.playingRepeat) return;
+      soundData.playingRepeat = true;
+    }
+    
     if (!noOutputDevice && this->soundData.size > 0) {
       
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
@@ -538,7 +543,7 @@ namespace small3d {
 	// https://github.com/google/oboe/issues/1230#issuecomment-881587838
 	if (!soundData.repeat) {
 	  std::thread t(asyncAndroidStopOnceFinished, stream, soundData.samples);
-	  t.join();
+	  t.detach();
 	}
       }
 #endif
@@ -546,7 +551,10 @@ namespace small3d {
 }
 
   void Sound::stop() {
-    
+    if (soundData.repeat) {
+      if (!soundData.playingRepeat) return;
+      soundData.playingRepeat = false;
+    }
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     if (Pa_IsStreamStopped(stream)) return;
 #endif
