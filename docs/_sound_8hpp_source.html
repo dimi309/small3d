@@ -103,74 +103,79 @@ $(function() {
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;      <span class="keywordtype">bool</span> repeat = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;      <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> currentFrame = 0;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;      std::vector&lt;char&gt; data;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    };</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    SoundData soundData;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#if !defined(__ANDROID__) &amp;&amp; !defined(SMALL3D_IOS)</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    PaStream *stream;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#elif defined(__ANDROID__)</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    AAudioStreamBuilder *streamBuilder;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    AAudioStream *stream;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#elif defined(SMALL3D_IOS)</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">static</span> ALCdevice *openalDevice;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">static</span> ALCcontext *openalContext;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    ALuint openalSource;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    ALuint openalBuffer;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> noOutputDevice;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> numInstances;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#if !defined(SMALL3D_IOS) &amp;&amp; !defined(__ANDROID__)</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">static</span> PaDeviceIndex defaultOutput;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> audioCallback(<span class="keyword">const</span> <span class="keywordtype">void</span> *inputBuffer, <span class="keywordtype">void</span> *outputBuffer,</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                 <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> framesPerBuffer,</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                 <span class="keyword">const</span> PaStreamCallbackTimeInfo *timeInfo,</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                 PaStreamCallbackFlags statusFlags,</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                 <span class="keywordtype">void</span> *userData);</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">#elif defined(__ANDROID__)</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keyword">static</span> aaudio_data_callback_result_t audioCallback (</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;      AAudioStream *stream,</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;      <span class="keywordtype">void</span> *userData,</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;      <span class="keywordtype">void</span> *audioData,</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;      int32_t numFrames);</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordtype">void</span> load(<span class="keyword">const</span> std::string soundFilePath);</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keywordtype">void</span> openStream();</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;      <span class="keywordtype">bool</span> playingRepeat = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    };</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    SoundData soundData;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#if !defined(__ANDROID__) &amp;&amp; !defined(SMALL3D_IOS)</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    PaStream *stream;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#elif defined(__ANDROID__)</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    AAudioStreamBuilder *streamBuilder;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    AAudioStream *stream;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#elif defined(SMALL3D_IOS)</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">static</span> ALCdevice *openalDevice;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keyword">static</span> ALCcontext *openalContext;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    ALuint openalSource;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    ALuint openalBuffer;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> noOutputDevice;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> numInstances;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor">#if !defined(SMALL3D_IOS) &amp;&amp; !defined(__ANDROID__)</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keyword">static</span> PaDeviceIndex defaultOutput;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> audioCallback(<span class="keyword">const</span> <span class="keywordtype">void</span> *inputBuffer, <span class="keywordtype">void</span> *outputBuffer,</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                 <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> framesPerBuffer,</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                 <span class="keyword">const</span> PaStreamCallbackTimeInfo *timeInfo,</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                 PaStreamCallbackFlags statusFlags,</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                 <span class="keywordtype">void</span> *userData);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="preprocessor">#elif defined(__ANDROID__)</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keyword">static</span> aaudio_data_callback_result_t audioCallback (</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;      AAudioStream *stream,</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;      <span class="keywordtype">void</span> *userData,</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;      <span class="keywordtype">void</span> *audioData,</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;      int32_t numFrames);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> errorCallback(AAudioStream *stream, <span class="keywordtype">void</span> *userData, aaudio_result_t error);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> asyncAndroidStopOnceFinished(AAudioStream *stream, <span class="keywordtype">long</span> samples);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> asyncAndroidStopImmediately(AAudioStream *stream);</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <a class="code" href="classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219">Sound</a>();</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <a class="code" href="classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219">Sound</a>(<span class="keyword">const</span> std::string soundFilePath);</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <a class="code" href="classsmall3d_1_1_sound.html#ad099eea274cd698016aa32e40abc1b00">~Sound</a>();</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">void</span> load(<span class="keyword">const</span> std::string soundFilePath);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordtype">void</span> openStream();</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <a class="code" href="classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219">Sound</a>();</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <a class="code" href="classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219">Sound</a>(<span class="keyword">const</span> std::string soundFilePath);</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_sound.html#a24b61d06b9c695f5686846fb59c78676">play</a>(<span class="keyword">const</span> <span class="keywordtype">bool</span> repeat=<span class="keyword">false</span>);</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_sound.html#a3b239ef468eae9e89c48351127b329f3">stop</a>();</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <a class="code" href="classsmall3d_1_1_sound.html#ad099eea274cd698016aa32e40abc1b00">~Sound</a>();</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_sound.html#a24b61d06b9c695f5686846fb59c78676">play</a>(<span class="keyword">const</span> <span class="keywordtype">bool</span> repeat=<span class="keyword">false</span>);</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <a class="code" href="classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219">Sound</a>(<span class="keyword">const</span> <a class="code" href="classsmall3d_1_1_sound.html">Sound</a>&amp; other) noexcept;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_sound.html#a3b239ef468eae9e89c48351127b329f3">stop</a>();</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <a class="code" href="classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219">Sound</a>(<span class="keyword">const</span> <a class="code" href="classsmall3d_1_1_sound.html">Sound</a>&amp;&amp; other) noexcept;</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <a class="code" href="classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219">Sound</a>(<span class="keyword">const</span> <a class="code" href="classsmall3d_1_1_sound.html">Sound</a>&amp; other) noexcept;</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <a class="code" href="classsmall3d_1_1_sound.html">Sound</a>&amp; <a class="code" href="classsmall3d_1_1_sound.html#a018a0b62cd18522e106dee4882e09538">operator=</a>(<span class="keyword">const</span> <a class="code" href="classsmall3d_1_1_sound.html">Sound</a>&amp; other) noexcept;</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <a class="code" href="classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219">Sound</a>(<span class="keyword">const</span> <a class="code" href="classsmall3d_1_1_sound.html">Sound</a>&amp;&amp; other) noexcept;</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <a class="code" href="classsmall3d_1_1_sound.html">Sound</a>&amp; <a class="code" href="classsmall3d_1_1_sound.html#a018a0b62cd18522e106dee4882e09538">operator=</a>(<span class="keyword">const</span> <a class="code" href="classsmall3d_1_1_sound.html">Sound</a>&amp;&amp; other) noexcept;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    </div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;  };</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;}</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <a class="code" href="classsmall3d_1_1_sound.html">Sound</a>&amp; <a class="code" href="classsmall3d_1_1_sound.html#a018a0b62cd18522e106dee4882e09538">operator=</a>(<span class="keyword">const</span> <a class="code" href="classsmall3d_1_1_sound.html">Sound</a>&amp; other) noexcept;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <a class="code" href="classsmall3d_1_1_sound.html">Sound</a>&amp; <a class="code" href="classsmall3d_1_1_sound.html#a018a0b62cd18522e106dee4882e09538">operator=</a>(<span class="keyword">const</span> <a class="code" href="classsmall3d_1_1_sound.html">Sound</a>&amp;&amp; other) noexcept;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    </div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;  };</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclasssmall3d_1_1_sound_html_a018a0b62cd18522e106dee4882e09538"><div class="ttname"><a href="classsmall3d_1_1_sound.html#a018a0b62cd18522e106dee4882e09538">small3d::Sound::operator=</a></div><div class="ttdeci">Sound &amp; operator=(const Sound &amp;other) noexcept</div><div class="ttdoc">Copy assignment.</div><div class="ttdef"><b>Definition:</b> Sound.cpp:543</div></div>
+<div class="ttc" id="aclasssmall3d_1_1_sound_html_a018a0b62cd18522e106dee4882e09538"><div class="ttname"><a href="classsmall3d_1_1_sound.html#a018a0b62cd18522e106dee4882e09538">small3d::Sound::operator=</a></div><div class="ttdeci">Sound &amp; operator=(const Sound &amp;other) noexcept</div><div class="ttdoc">Copy assignment.</div><div class="ttdef"><b>Definition:</b> Sound.cpp:604</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_sound_html"><div class="ttname"><a href="classsmall3d_1_1_sound.html">small3d::Sound</a></div><div class="ttdoc">Class that loads and plays a sound from an ogg file.</div><div class="ttdef"><b>Definition:</b> Sound.hpp:33</div></div>
-<div class="ttc" id="aclasssmall3d_1_1_sound_html_a24b61d06b9c695f5686846fb59c78676"><div class="ttname"><a href="classsmall3d_1_1_sound.html#a24b61d06b9c695f5686846fb59c78676">small3d::Sound::play</a></div><div class="ttdeci">void play(const bool repeat=false)</div><div class="ttdoc">Play the sound.</div><div class="ttdef"><b>Definition:</b> Sound.cpp:452</div></div>
-<div class="ttc" id="aclasssmall3d_1_1_sound_html_ad099eea274cd698016aa32e40abc1b00"><div class="ttname"><a href="classsmall3d_1_1_sound.html#ad099eea274cd698016aa32e40abc1b00">small3d::Sound::~Sound</a></div><div class="ttdeci">~Sound()</div><div class="ttdoc">Destructor.</div><div class="ttdef"><b>Definition:</b> Sound.cpp:269</div></div>
+<div class="ttc" id="aclasssmall3d_1_1_sound_html_a24b61d06b9c695f5686846fb59c78676"><div class="ttname"><a href="classsmall3d_1_1_sound.html#a24b61d06b9c695f5686846fb59c78676">small3d::Sound::play</a></div><div class="ttdeci">void play(const bool repeat=false)</div><div class="ttdoc">Play the sound.</div><div class="ttdef"><b>Definition:</b> Sound.cpp:489</div></div>
+<div class="ttc" id="aclasssmall3d_1_1_sound_html_ad099eea274cd698016aa32e40abc1b00"><div class="ttname"><a href="classsmall3d_1_1_sound.html#ad099eea274cd698016aa32e40abc1b00">small3d::Sound::~Sound</a></div><div class="ttdeci">~Sound()</div><div class="ttdoc">Destructor.</div><div class="ttdef"><b>Definition:</b> Sound.cpp:304</div></div>
 <div class="ttc" id="anamespacesmall3d_html"><div class="ttname"><a href="namespacesmall3d.html">small3d</a></div><div class="ttdef"><b>Definition:</b> BoundingBoxSet.hpp:19</div></div>
-<div class="ttc" id="aclasssmall3d_1_1_sound_html_a3b239ef468eae9e89c48351127b329f3"><div class="ttname"><a href="classsmall3d_1_1_sound.html#a3b239ef468eae9e89c48351127b329f3">small3d::Sound::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">Stop playing the sound.</div><div class="ttdef"><b>Definition:</b> Sound.cpp:495</div></div>
-<div class="ttc" id="aclasssmall3d_1_1_sound_html_a3bf41af25f517dc9489d795402b18219"><div class="ttname"><a href="classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219">small3d::Sound::Sound</a></div><div class="ttdeci">Sound()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition:</b> Sound.cpp:205</div></div>
+<div class="ttc" id="aclasssmall3d_1_1_sound_html_a3b239ef468eae9e89c48351127b329f3"><div class="ttname"><a href="classsmall3d_1_1_sound.html#a3b239ef468eae9e89c48351127b329f3">small3d::Sound::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">Stop playing the sound.</div><div class="ttdef"><b>Definition:</b> Sound.cpp:553</div></div>
+<div class="ttc" id="aclasssmall3d_1_1_sound_html_a3bf41af25f517dc9489d795402b18219"><div class="ttname"><a href="classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219">small3d::Sound::Sound</a></div><div class="ttdeci">Sound()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition:</b> Sound.cpp:240</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20

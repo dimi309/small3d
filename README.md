@@ -91,9 +91,19 @@ git repository.
 ## small3d on mobile
 
 You can build small3d for mobile platforms by executing either `build-android` or 
-`build-ios` from the scripts directory. One sample game, [Avoid the Bug](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug)
-has been ported to both [Android](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-android) 
-and [iOS](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-ios). 
+`build-ios` from the scripts directory. Two sample games have been ported to
+Android and iOS:
+
+[Avoid the Bug](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug)
+
+- [Android](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-android) 
+- [iOS](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-ios). 
+
+[Islet Hell](https://github.com/dimi309/islet-hell)
+
+- [Android](https://github.com/dimi309/small3d-samples/tree/master/islet-hell-android)
+- [iOS](https://github.com/dimi309/small3d-samples/tree/master/islet-hell-ios)
+
 I use these projects as a basis for mobile development. Note that, while with 
 the desktop edition of small3dI use GLFW for windowing functionalities and I/O,
 on mobile I access the native infrastructure directly.
