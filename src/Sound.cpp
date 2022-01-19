@@ -323,10 +323,8 @@ namespace small3d {
     }
     --numInstances;
     if(numInstances == 0) {
-      // This was causing a segmentation fault on MacOS when a Sound object was
-      // declared as a global.
-      //LOGDEBUG("Last Sound instance destroyed. Terminating PortAudio.");
-      //Pa_Terminate();
+      LOGDEBUG("Last Sound instance destroyed. Terminating PortAudio.");
+      Pa_Terminate();
 #ifdef SMALL3D_IOS
       alcMakeContextCurrent(nullptr);
       alcDestroyContext(openalContext);

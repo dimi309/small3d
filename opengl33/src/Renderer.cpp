@@ -247,6 +247,7 @@ namespace small3d {
       GL_FLOAT, data);
 
     textures.insert(make_pair(name, textureHandle));
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     return textureHandle;
   }
@@ -308,6 +309,10 @@ namespace small3d {
     glClearDepth(1.0f);
 
     glUseProgram(0);
+
+    Image blankImage("");
+    blankImage.toColour(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+    generateTexture("blank", blankImage);
   }
 
   void Renderer::initWindow(int& width, int& height,
@@ -546,6 +551,7 @@ namespace small3d {
 
   Renderer::~Renderer() {
     LOGDEBUG("Renderer destructor running");
+    glBindTexture(GL_TEXTURE_2D, 0);
     for (auto it = textures.begin();
       it != textures.end(); ++it) {
       LOGDEBUG("Deleting texture " + it->first);
@@ -678,6 +684,7 @@ namespace small3d {
     auto nameTexturePair = textures.find(name);
 
     if (nameTexturePair != textures.end()) {
+      glBindTexture(GL_TEXTURE_2D, 0);
       glDeleteTextures(1, &(nameTexturePair->second));
       textures.erase(name);
     }
@@ -809,9 +816,8 @@ namespace small3d {
     glEnableVertexAttribArray(attrib_normal);
     glVertexAttribPointer(attrib_normal, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
     
-
-    glBindBuffer(GL_ARRAY_BUFFER, model.jointBufferObjectId);
     if (model.jointDataByteSize != 0) {
+      glBindBuffer(GL_ARRAY_BUFFER, model.jointBufferObjectId);
       if (!alreadyInGPU) {
         glBufferData(GL_ARRAY_BUFFER,
           model.jointDataByteSize,
@@ -823,8 +829,8 @@ namespace small3d {
         glVertexAttribIPointer(attrib_joint, 4, GL_UNSIGNED_BYTE, 0, 0);
     }
 
-    glBindBuffer(GL_ARRAY_BUFFER, model.weightBufferObjectId);
     if (model.weightDataByteSize != 0) {
+      glBindBuffer(GL_ARRAY_BUFFER, model.weightBufferObjectId);
       if (!alreadyInGPU) {
         glBufferData(GL_ARRAY_BUFFER,
           model.weightDataByteSize,
@@ -867,6 +873,7 @@ namespace small3d {
     else {
       // If there is no texture, use the given colour
       glUniform4fv(colourUniform, 1, glm::value_ptr(colour));
+      bindTexture("blank");
     }
 
     setWorldDetails(perspective);
