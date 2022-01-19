@@ -241,9 +241,7 @@ namespace small3d {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
-    GLint internalFormat = GL_RGBA32F;
-
-    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, GL_RGBA,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA,
       GL_FLOAT, data);
 
     textures.insert(make_pair(name, textureHandle));
@@ -552,12 +550,15 @@ namespace small3d {
   Renderer::~Renderer() {
     LOGDEBUG("Renderer destructor running");
     glBindTexture(GL_TEXTURE_2D, 0);
+    //For some strange reason this can crash on MacOS
+#ifndef __APPLE__
     for (auto it = textures.begin();
       it != textures.end(); ++it) {
       LOGDEBUG("Deleting texture " + it->first);
       glDeleteTextures(1, &it->second);
     }
-
+#endif
+    
     for (auto idFacePair : fontFaces) {
       FT_Done_Face(idFacePair.second);
     }
@@ -575,8 +576,8 @@ namespace small3d {
     if (shaderProgram != 0) {
       glDeleteProgram(shaderProgram);
     }
-
-    glfwTerminate();
+      //This was causing crashes on MacOS
+      //glfwTerminate();
   }
 
   GLFWwindow* Renderer::getWindow() const {
@@ -584,6 +585,8 @@ namespace small3d {
   }
 
   void Renderer::generateTexture(const std::string& name, const Image& image) {
+    LOGDEBUG("Sending image to GPU, dimensions " + std::to_string(image.getWidth()) +
+	     ", " + std::to_string(image.getHeight()));
     this->generateTexture(name, image.getData(), image.getWidth(),
       image.getHeight(), true);
   }

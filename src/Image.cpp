@@ -227,6 +227,9 @@ namespace small3d {
 
     imageDataSize = 4 * width * height;
 
+    LOGDEBUG("Reading " + std::to_string(imageDataSize * sizeof(float)) + " bytes of image data. Float size " +
+	     std::to_string(sizeof(float)) + ", dimensions " + std::to_string(width) + ", " + std::to_string(height));
+
     imageData.resize(imageDataSize);
 
     for (uint64_t y = 0; y < height; y++) {

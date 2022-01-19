@@ -323,8 +323,10 @@ namespace small3d {
     }
     --numInstances;
     if(numInstances == 0) {
-      LOGDEBUG("Last Sound instance destroyed. Terminating PortAudio.");
-      Pa_Terminate();
+
+      //This was causing crashes on MacOS
+      //Pa_Terminate();
+
 #ifdef SMALL3D_IOS
       alcMakeContextCurrent(nullptr);
       alcDestroyContext(openalContext);
