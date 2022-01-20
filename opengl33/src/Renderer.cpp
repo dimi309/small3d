@@ -43,7 +43,6 @@ namespace small3d {
 
   std::string Renderer::loadShaderFromFile(const std::string& fileLocation)
     const {
-    initLogger();
     std::string shaderSource = "";
     std::string fullPath = getBasePath() + fileLocation;
     std::ifstream file(fullPath.c_str());
@@ -139,6 +138,17 @@ namespace small3d {
     LOGINFO("OpenGL version: " +
       std::string(reinterpret_cast<char*>
       (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
+
+#ifdef __APPLE__
+    GLboolean clientStorage = 0;
+    glGetBooleanv(GL_APPLE_client_storage, &clientStorage);
+    if (clientStorage == GL_TRUE) {
+      LOGDEBUG("GL_APPLE_client_storage is activated.");
+    }
+    else {
+      LOGDEBUG("GL_APPLE_client_storage is not activated.");
+    }
+#endif
 
   }
 
@@ -542,6 +552,8 @@ namespace small3d {
     const uint32_t objectsPerFrame,
     const uint32_t objectsPerFrameInc) {
 
+    initLogger();
+
     static Renderer instance(windowTitle, width, height, fieldOfView, zNear,
       zFar, shadersPath, objectsPerFrame, objectsPerFrameInc);
     return instance;
@@ -841,7 +853,6 @@ namespace small3d {
           GL_STATIC_DRAW);
       }
 
-      
       glEnableVertexAttribArray(attrib_weight);
       glVertexAttribPointer(attrib_weight, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
@@ -868,10 +879,9 @@ namespace small3d {
           model.textureCoordsData.data(),
           GL_STATIC_DRAW);
       }
-
+      
       glEnableVertexAttribArray(attrib_uv);
       glVertexAttribPointer(attrib_uv, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
     }
     else {
       // If there is no texture, use the given colour
@@ -884,6 +894,7 @@ namespace small3d {
     transform(model, offset, rotation);
 
     // Draw
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glDrawElements(GL_TRIANGLES,
       static_cast<GLsizei>(model.indexData.size()),
       GL_UNSIGNED_INT, 0);
@@ -894,11 +905,9 @@ namespace small3d {
     if (model.weightDataByteSize != 0) glDisableVertexAttribArray(attrib_weight);
     if (textureName != "") glDisableVertexAttribArray(attrib_uv);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
+    
     glUseProgram(0);
-
   }
 
   void Renderer::render(Model& model, const glm::vec3& offset,
