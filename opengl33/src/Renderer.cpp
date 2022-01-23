@@ -562,14 +562,13 @@ namespace small3d {
   Renderer::~Renderer() {
     LOGDEBUG("Renderer destructor running");
     glBindTexture(GL_TEXTURE_2D, 0);
-    //For some strange reason this can crash on MacOS
-#ifndef __APPLE__
+
+    //At times, this has caused crashes on MacOS
     for (auto it = textures.begin();
       it != textures.end(); ++it) {
       LOGDEBUG("Deleting texture " + it->first);
       glDeleteTextures(1, &it->second);
     }
-#endif
     
     for (auto idFacePair : fontFaces) {
       FT_Done_Face(idFacePair.second);

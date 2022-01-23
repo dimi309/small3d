@@ -324,8 +324,10 @@ namespace small3d {
     --numInstances;
     if(numInstances == 0) {
 
-      //This was causing crashes on MacOS
-      //Pa_Terminate();
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
+      //At times, this has caused crashes on MacOS
+      Pa_Terminate();
+#endif
 
 #ifdef SMALL3D_IOS
       alcMakeContextCurrent(nullptr);
