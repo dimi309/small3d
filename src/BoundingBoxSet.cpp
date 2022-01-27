@@ -47,7 +47,7 @@ namespace small3d {
       // Very strange behaviour when trying to do this with a function
       // declared in the struct on VS 2019. The function would not accept
       // ex as a parameter, even though the parameter was declared to be
-      // glm::vec4 and even though, when the same funchion was used in 
+      // glm::vec4 and even though, when the same function was used in 
       // generateSubExtremes it worked.
       if (pointInBoxSpace.x > ex.minX && pointInBoxSpace.x < ex.maxX &&
         pointInBoxSpace.y > ex.minY && pointInBoxSpace.y < ex.maxY &&
