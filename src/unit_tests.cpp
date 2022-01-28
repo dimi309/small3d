@@ -421,13 +421,6 @@ int RendererTest() {
   return 1;
 }
 
-int DestroyAndSetupTest() {
-  Renderer* renderer = &Renderer::getInstance("test", 640, 480);
-  renderer->destroyVulkan();
-  renderer->setupVulkan();
-  return 1;
-}
-
 int SoundTest() {
   Sound snd("resources/sounds/bah.ogg");
   snd.play();
@@ -534,11 +527,6 @@ int main(int argc, char** argv) {
 
     if (!GenericSceneObjectConstructorTest()) {
       printf("*** Failing GenericSceneObjectConstructorTest.\n\r");
-      return 1;
-    }
-
-    if (!(DestroyAndSetupTest())) {
-      printf("*** Failing DestroyAndSetupTest.\n\r");
       return 1;
     }
 

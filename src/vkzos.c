@@ -41,8 +41,13 @@ const char* vl[5] = {
 #define LOGDEBUG1(x, y) printf(x, y); printf("\n\r")
 #define LOGDEBUG2(x, y, z) printf(x, y, z); printf("\n\r")
 
-uint32_t numValidationLayers = 1;
-const char* vl[1] = { "VK_LAYER_LUNARG_standard_validation" };
+uint32_t numValidationLayers = 3; // Set to 4 to enable VK_LAYER_MESA_overlay
+const char* vl[4] = {
+  "VK_LAYER_LUNARG_standard_validation",
+  "VK_LAYER_MESA_device_select",
+  "VK_LAYER_KHRONOS_validation",
+  "VK_LAYER_MESA_overlay"
+};
 
 #endif
 
@@ -73,7 +78,6 @@ debugCallback(VkDebugReportFlagsEXT flags,
 static VkDebugReportCallbackEXT callback;
 
 static BOOL debug_callback_created = FALSE;
-static BOOL validation_layer_ok = FALSE;
 static BOOL instance_created = FALSE;
 static BOOL logical_device_created = FALSE;
 
@@ -194,8 +198,10 @@ int vkz_create_instance(const char* application_name,
   if (lp) {
     memset(lp, 0, sizeof(VkLayerProperties) * lc);
     vkEnumerateInstanceLayerProperties(&lc, lp);
-    for (uint32_t i = 0; i < numValidationLayers; i++) {
-      for (uint32_t n = 0; n < lc; ++n) {
+    LOGDEBUG0("Looking for predefined validation layers.");
+    for (uint32_t n = 0; n < lc; ++n) {
+      BOOL found = FALSE;
+      for (uint32_t i = 0; i < numValidationLayers; i++) {
         // Disable C6385 warning in Visual Studio as it probably gives a false positive here.
         // see https://stackoverflow.com/questions/59649678/warning-c6385-in-visual-studio
 #pragma warning(push)
@@ -204,11 +210,16 @@ int vkz_create_instance(const char* application_name,
           LOGDEBUG1("Layer %s exists! Will enable...\n", vl[i]);
           validation_layers[validation_layer_count] = vl[i];
           ++validation_layer_count;
-        }
+	  found = TRUE;
+        } 
 #pragma warning(pop)
+      }
+      if (!found) {
+	LOGDEBUG1("Not interested in %s", lp[n].layerName);
       }
     }
   }
+  LOGDEBUG0("No validation layers found.");
 
   ci.enabledExtensionCount = (uint32_t)enabled_extension_count;
   ci.ppEnabledExtensionNames = enabled_extension_names;
@@ -610,7 +621,7 @@ int create_logical_device() {
 
 #ifndef NDEBUG
 
-  if (validation_layer_ok) {
+  if (validation_layer_count > 0) {
     dci.enabledLayerCount = validation_layer_count;
     dci.ppEnabledLayerNames = validation_layers;
   }
