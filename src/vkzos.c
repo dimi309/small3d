@@ -219,8 +219,10 @@ int vkz_create_instance(const char* application_name,
       }
     }
   }
-  LOGDEBUG0("No validation layers found.");
-
+  if (validation_layer_count == 0) {
+    LOGDEBUG0("No validation layers found.");
+  }
+  
   ci.enabledExtensionCount = (uint32_t)enabled_extension_count;
   ci.ppEnabledExtensionNames = enabled_extension_names;
 
@@ -265,6 +267,7 @@ int vkz_create_instance(const char* application_name,
       dcci.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT |
         VK_DEBUG_REPORT_WARNING_BIT_EXT;
       dcci.pfnCallback = debugCallback;
+      dcci.pNext = NULL;
 
       PFN_vkCreateDebugReportCallbackEXT dcCreate =
         (PFN_vkCreateDebugReportCallbackEXT)
@@ -739,6 +742,17 @@ int select_swap_extent() {
 
   vkz_swap_extent.width = vkz_width;
   vkz_swap_extent.height = vkz_height;
+
+  if (vkz_swap_extent.width < vkz_swapchain_support_details.capabilities.minImageExtent.width)
+    vkz_swap_extent.width = vkz_swapchain_support_details.capabilities.minImageExtent.width;
+  if (vkz_swap_extent.width > vkz_swapchain_support_details.capabilities.maxImageExtent.width)
+    vkz_swap_extent.width = vkz_swapchain_support_details.capabilities.maxImageExtent.width;
+
+  if (vkz_swap_extent.height < vkz_swapchain_support_details.capabilities.minImageExtent.height)
+    vkz_swap_extent.height = vkz_swapchain_support_details.capabilities.minImageExtent.height;
+  if (vkz_swap_extent.height > vkz_swapchain_support_details.capabilities.maxImageExtent.height)
+    vkz_swap_extent.height = vkz_swapchain_support_details.capabilities.maxImageExtent.height;
+
 
   return 1;
 }

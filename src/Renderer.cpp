@@ -1793,6 +1793,8 @@ namespace small3d {
 
   void Renderer::destroyVulkan() {
 
+    LOGDEBUG("Destroying buffers...");
+
     for (auto &b : allocatedBufferMemory) {
       vkz_destroy_buffer(b.first, b.second);
     }
