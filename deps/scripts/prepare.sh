@@ -14,16 +14,18 @@ fi
 
 if [ $(uname) == 'Linux' ]; then
 
+    export CMAKE_PORTAUDIO_DEFINITIONS="-DPA_USE_JACK=OFF"
+
     if type -p "apt" > /dev/null ; then
 	sudo apt update
 	# Without Install-Recommends libvulkan-dev does not get installed on travis-ci...
 	sudo apt install -y -o APT::Install-Recommends=1 libgl1-mesa-dev libglfw3-dev libxinerama-dev glslang-tools libvulkan-dev libxcursor-dev libxi-dev
 	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     elif type -p "dnf" > /dev/null ; then
-	sudo dnf install -y mesa-libGL-devel glfw-devel portaudio-devel
+	sudo dnf install -y mesa-libGL-devel glfw-devel
 	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     elif type -p "yum" > /dev/null ; then
-	sudo yum install -y mesa-libGL-devel glfw-devel portaudio-devel
+	sudo yum install -y mesa-libGL-devel glfw-devel
 	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     else
 	echo "No package manager found! Cannot install preprequisites."
@@ -140,7 +142,7 @@ tar xvf pa_stable_v190700_20210406.tgz
 cd portaudio
 mkdir build1
 cd build1
-cmake .. $CMAKE_DEFINITIONS
+cmake .. $CMAKE_DEFINITIONS $CMAKE_PORTAUDIO_DEFINITIONS
 cmake --build .
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp ../include/* ../../include/
