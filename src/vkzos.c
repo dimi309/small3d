@@ -77,6 +77,10 @@ debugCallback(VkDebugReportFlagsEXT flags,
 
 static VkDebugReportCallbackEXT callback;
 
+static BOOL VK_KHR_get_physical_device_properties2_supported = FALSE;
+
+static BOOL VK_KHR_portability_subset_supported = FALSE;
+
 static BOOL debug_callback_created = FALSE;
 static BOOL instance_created = FALSE;
 static BOOL logical_device_created = FALSE;
@@ -174,6 +178,28 @@ int vkz_create_instance(const char* application_name,
     LOGDEBUG1("%s", enabled_extension_names[i]);
   }
 
+  uint32_t property_count = 0;
+  
+  vkEnumerateInstanceExtensionProperties(NULL, &property_count,
+					 NULL);
+  if (property_count > 0) {
+    VkExtensionProperties *extension_properties = malloc(sizeof(VkExtensionProperties) * property_count);
+
+    vkEnumerateInstanceExtensionProperties(NULL, &property_count,
+					   extension_properties);
+
+    VK_KHR_get_physical_device_properties2_supported = FALSE;
+    LOGDEBUG0("Instance supported extensions:");
+    for (int i = 0; i < property_count; ++i) {
+      if (strcmp("VK_KHR_get_physical_device_properties2", extension_properties[i].extensionName) == 0) {
+	VK_KHR_get_physical_device_properties2_supported = TRUE;
+      }
+      LOGDEBUG1("%s", extension_properties[i].extensionName);
+    }
+    free(extension_properties);
+  }
+					 
+
   VkApplicationInfo ai;
   memset(&ai, 0, sizeof(VkApplicationInfo));
   ai.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -228,23 +254,31 @@ int vkz_create_instance(const char* application_name,
 
   // This would normally be enabled_extension_count + 1 but Visual
   // Studio doesn't like such qualifiers
-  const char* allExtensionNames[5];
+  const char* allExtensionNames[10];
+  uint32_t allExtensionCount = (uint32_t)enabled_extension_count;
+  
+  for (uint32_t n = 0; n < enabled_extension_count; n++) {
+    allExtensionNames[n] = enabled_extension_names[n];
+  }
 
+  if (VK_KHR_get_physical_device_properties2_supported) {
+    allExtensionNames[allExtensionCount] = "VK_KHR_get_physical_device_properties2";
+    ++allExtensionCount;
+  }
+  
   if (validation_layer_count > 0) {
 
     ci.enabledLayerCount = validation_layer_count;
     ci.ppEnabledLayerNames = validation_layers;
 
-    for (uint32_t n = 0; n < enabled_extension_count; n++) {
-      allExtensionNames[n] = enabled_extension_names[n];
-    }
-
-    allExtensionNames[enabled_extension_count] =
+    allExtensionNames[allExtensionCount] =
       VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
-    uint32_t allExtensionCount = (uint32_t)enabled_extension_count + 1;
-    ci.enabledExtensionCount = allExtensionCount;
-    ci.ppEnabledExtensionNames = allExtensionNames;
+    ++allExtensionCount;
+    
   }
+  
+  ci.enabledExtensionCount = allExtensionCount;
+  ci.ppEnabledExtensionNames = allExtensionNames;
 
 #else
   ci.enabledExtensionCount = enabled_extension_count;
@@ -504,6 +538,19 @@ int select_physical_device() {
 
         success = select_surface_format() && select_present_mode();
 
+	VK_KHR_portability_subset_supported = FALSE;
+	
+	for (uint32_t n1 = 0; n1 < deviceExtensionCount; n1++) {
+	  LOGDEBUG1("Found %s", deviceExtensions[n1].extensionName);
+          VK_KHR_portability_subset_supported = strcmp("VK_KHR_portability_subset",
+						       deviceExtensions[n1].extensionName) == 0;
+          if (VK_KHR_portability_subset_supported) {
+            LOGDEBUG0("The device supports the VK_KHR_portability_subset extension. It will be enabled.");
+      
+            break;
+          }
+        }
+
         break;
       }
 
@@ -618,10 +665,19 @@ int create_logical_device() {
   dci.queueCreateInfoCount = vkz_graphics_family_index ==
     vkz_present_family_index ? 1 : 2;
   dci.pEnabledFeatures = &pdf;
-  dci.enabledExtensionCount = 1;
-  const char* device_extensions[] = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-  dci.ppEnabledExtensionNames = (const char* const*)device_extensions;
 
+  const char* device_extensions1[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+  const char* device_extensions2[] = {"VK_KHR_portability_subset", VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+  
+  if (VK_KHR_portability_subset_supported) {
+    LOGDEBUG0("Enabling VK_KHR_portability_subset");
+    dci.ppEnabledExtensionNames = (const char* const *)device_extensions2;
+    dci.enabledExtensionCount = 3;
+  } else {
+    dci.ppEnabledExtensionNames = (const char* const *)device_extensions1;
+    dci.enabledExtensionCount = 1;
+  }
+  
 #ifndef NDEBUG
 
   if (validation_layer_count > 0) {
