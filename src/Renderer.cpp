@@ -1234,7 +1234,7 @@ namespace small3d {
 
       LOGDEBUG("Max objects per pass number(" + std::to_string(objectsPerFrame) +
         ") exceeded. Increasing number...");
-      swapBuffers();
+
       increaseObjectsPerFrame(objectsPerFrameInc);
       return;
 
@@ -1800,6 +1800,8 @@ namespace small3d {
     }
 
     allocatedBufferMemory.clear();
+
+    nextModelsToDraw.clear();
 
     garbageModels.clear();
 
