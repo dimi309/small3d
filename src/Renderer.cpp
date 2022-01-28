@@ -998,7 +998,8 @@ namespace small3d {
 
     LOGDEBUG("Renderer destructor running");
 
-    destroyVulkan();
+    //With the following there is a crash sometimes when exiting the application.
+    //destroyVulkan();
 
     for (auto& idFacePair : fontFaces) {
       FT_Done_Face(idFacePair.second);
