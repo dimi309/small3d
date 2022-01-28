@@ -159,6 +159,7 @@ namespace small3d
     float zFar = 0.0f;
 
     std::unordered_map<std::string, VulkanImage> textures;
+    std::unordered_map<VkBuffer, VkDeviceMemory> allocatedBufferMemory;
 
     FT_Library library = 0;
     std::vector<float> textMemory;
@@ -530,14 +531,14 @@ namespace small3d
      *        intact).
      * @param model The model
      */
-    void clearBuffers(Model& model) const;
+    void clearBuffers(Model& model);
 
     /**
      * @brief Clear an SceneObject (multiple models) from the GPU buffers
      *        (the SceneObject itself remains intact).
      * @param sceneObject The scene object
      */
-    void clearBuffers(SceneObject& sceneObject) const;
+    void clearBuffers(SceneObject& sceneObject);
 
     /**
      * @brief Set the background colour of the screen.

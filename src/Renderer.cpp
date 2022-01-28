@@ -1259,6 +1259,8 @@ namespace small3d {
         throw std::runtime_error("Failed to create vertex buffer.");
       }
 
+      allocatedBufferMemory.insert(std::make_pair(model.positionBuffer, model.positionBufferMemory));
+
       VkBuffer stagingBuffer;
       VkDeviceMemory stagingBufferMemory;
 
@@ -1295,6 +1297,8 @@ namespace small3d {
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
         throw std::runtime_error("Failed to create index buffer.");
       }
+
+      allocatedBufferMemory.insert(std::make_pair(model.indexBuffer, model.indexBufferMemory));
 
       if (vkz_create_buffer(&stagingBuffer,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
@@ -1335,6 +1339,8 @@ namespace small3d {
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
         throw std::runtime_error("Failed to create normals buffer.");
       }
+
+      allocatedBufferMemory.insert(std::make_pair(model.normalsBuffer, model.normalsBufferMemory));
 
       if (vkz_create_buffer(&stagingBuffer,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
@@ -1377,6 +1383,8 @@ namespace small3d {
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
         throw std::runtime_error("Failed to create uv buffer.");
       }
+
+      allocatedBufferMemory.insert(std::make_pair(model.uvBuffer, model.uvBufferMemory));
 
       if (vkz_create_buffer(&stagingBuffer,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
@@ -1421,6 +1429,8 @@ namespace small3d {
         throw std::runtime_error("Failed to create joint buffer.");
       }
 
+      allocatedBufferMemory.insert(std::make_pair(model.jointBuffer, model.jointBufferMemory));
+
       if (vkz_create_buffer(&stagingBuffer,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         jointByteSize,
@@ -1461,6 +1471,8 @@ namespace small3d {
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
         throw std::runtime_error("Failed to create weight buffer.");
       }
+
+      allocatedBufferMemory.insert(std::make_pair(model.weightBuffer, model.weightBufferMemory));
 
       if (vkz_create_buffer(&stagingBuffer,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
@@ -1553,21 +1565,25 @@ namespace small3d {
       textureName);
   }
 
-  void Renderer::clearBuffers(Model& model) const {
+  void Renderer::clearBuffers(Model& model) {
     if (model.alreadyInGPU) {
       vkz_destroy_buffer(model.positionBuffer, model.positionBufferMemory);
+      allocatedBufferMemory.erase(model.positionBuffer);
       vkz_destroy_buffer(model.indexBuffer, model.indexBufferMemory);
+      allocatedBufferMemory.erase(model.indexBuffer);
       vkz_destroy_buffer(model.normalsBuffer, model.normalsBufferMemory);
+      allocatedBufferMemory.erase(model.normalsBuffer);
       vkz_destroy_buffer(model.uvBuffer, model.uvBufferMemory);
-      if (model.jointDataByteSize > 0)
-        vkz_destroy_buffer(model.jointBuffer, model.jointBufferMemory);
-      if (model.weightDataByteSize > 0)
-        vkz_destroy_buffer(model.weightBuffer, model.weightBufferMemory);
+      allocatedBufferMemory.erase(model.uvBuffer);
+      vkz_destroy_buffer(model.jointBuffer, model.jointBufferMemory);
+      allocatedBufferMemory.erase(model.jointBuffer);
+      vkz_destroy_buffer(model.weightBuffer, model.weightBufferMemory);
+      allocatedBufferMemory.erase(model.weightBuffer);
       model.alreadyInGPU = false;
     }
   }
 
-  void Renderer::clearBuffers(SceneObject& sceneObject) const {
+  void Renderer::clearBuffers(SceneObject& sceneObject) {
     for (auto& model : *sceneObject.models) {
       clearBuffers(model);
     }
@@ -1777,9 +1793,12 @@ namespace small3d {
 
   void Renderer::destroyVulkan() {
 
-    for (auto& model : garbageModels) {
-      clearBuffers(model);
+    for (auto &b : allocatedBufferMemory) {
+      vkz_destroy_buffer(b.first, b.second);
     }
+
+    allocatedBufferMemory.clear();
+
     garbageModels.clear();
 
     for (auto& t : textures) {
