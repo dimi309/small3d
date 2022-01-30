@@ -187,10 +187,23 @@ int vkz_create_instance(const char* application_name,
 
     vkEnumerateInstanceExtensionProperties(NULL, &property_count,
 					   extension_properties);
+    LOGDEBUG0("Checking for requested extension support...");
+    for (uint32_t i1 = 0; i1 < enabled_extension_count; ++i1) {
+      BOOL ext_found = FALSE;
+      for (uint32_t i = 0; i < property_count; ++i) {
+        if (strcmp(enabled_extension_names[i1], extension_properties[i].extensionName) == 0) {
+          ext_found = TRUE;
+        }
+      }
+      if (!ext_found) {
+        LOGDEBUG1("%s not supported! Cannot create Vulkan instance.", enabled_extension_names[i1]);
+        return 0;
+      }
+    }
 
     VK_KHR_get_physical_device_properties2_supported = FALSE;
     LOGDEBUG0("Instance supported extensions:");
-    for (int i = 0; i < property_count; ++i) {
+    for (uint32_t i = 0; i < property_count; ++i) {
       if (strcmp("VK_KHR_get_physical_device_properties2", extension_properties[i].extensionName) == 0) {
 	VK_KHR_get_physical_device_properties2_supported = TRUE;
       }
@@ -539,18 +552,14 @@ int select_physical_device() {
         success = select_surface_format() && select_present_mode();
 
 	VK_KHR_portability_subset_supported = FALSE;
-	
+	LOGDEBUG0("Looking through extensions supported by physical device...");
 	for (uint32_t n1 = 0; n1 < deviceExtensionCount; n1++) {
-	  LOGDEBUG1("Found %s", deviceExtensions[n1].extensionName);
-          VK_KHR_portability_subset_supported = strcmp("VK_KHR_portability_subset",
-						       deviceExtensions[n1].extensionName) == 0;
-          if (VK_KHR_portability_subset_supported) {
+	  LOGDEBUG1("%s", deviceExtensions[n1].extensionName);
+          if (strcmp("VK_KHR_portability_subset", deviceExtensions[n1].extensionName) == 0) {
+	    VK_KHR_portability_subset_supported = TRUE; 
             LOGDEBUG0("The device supports the VK_KHR_portability_subset extension. It will be enabled.");
-      
-            break;
           }
         }
-
         break;
       }
 
