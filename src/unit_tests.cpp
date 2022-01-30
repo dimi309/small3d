@@ -21,6 +21,10 @@
 using namespace small3d;
 using namespace std;
 
+Renderer& initRenderer() {
+  return Renderer::getInstance("test", 800, 600);
+}
+
 int LoggerTest() {
   deleteLogger();
   ostringstream oss;
@@ -119,7 +123,7 @@ int WavefrontModelTest() {
   Model model3(w2, "Cube");
   Model model4(w2, "");
 
-  Renderer* renderer = &Renderer::getInstance("test", 640, 480);
+  Renderer* renderer = &initRenderer();
 
   double startSeconds = glfwGetTime();
   double seconds = glfwGetTime();
@@ -148,7 +152,7 @@ int WavefrontModelTest() {
 }
 
 int ScaleAndTransformTest() {
-  Renderer* renderer = &Renderer::getInstance("test", 640, 480);
+  Renderer* renderer = &initRenderer();
 
   double startSeconds = glfwGetTime();
   double seconds = glfwGetTime();
@@ -178,7 +182,7 @@ int ScaleAndTransformTest() {
 }
 
 int GlbTextureTest() {
-  Renderer* renderer = &Renderer::getInstance("test", 640, 480);
+  Renderer* renderer = &initRenderer();
 
   double startSeconds = glfwGetTime();
   double seconds = glfwGetTime();
@@ -219,7 +223,7 @@ int GlbTextureTest() {
 
 int BoundingBoxesTest() {
 
-  Renderer* renderer = &Renderer::getInstance("test", 640, 480);
+  Renderer* renderer = &initRenderer();
 
   double startSeconds = glfwGetTime();
   double seconds = glfwGetTime();
@@ -282,7 +286,7 @@ int BoundingBoxesTest() {
 
 int FPStest() {
 
-  Renderer* renderer = &Renderer::getInstance("test", 640, 480);
+  Renderer* renderer = &initRenderer();
 
   double startSeconds = glfwGetTime();
   double seconds = glfwGetTime();
@@ -335,7 +339,7 @@ int FPStest() {
 }
 
 int RendererTest() {
-  Renderer* renderer = &Renderer::getInstance("test", 640, 480);
+  Renderer* renderer = &initRenderer();
 
   renderer->setCameraRotation(glm::vec3(0.4f, 0.1f, 0.1f));
   
