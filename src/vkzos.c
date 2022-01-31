@@ -808,17 +808,6 @@ int select_swap_extent() {
   vkz_swap_extent.width = vkz_width;
   vkz_swap_extent.height = vkz_height;
 
-  if (vkz_swap_extent.width < vkz_swapchain_support_details.capabilities.minImageExtent.width)
-    vkz_swap_extent.width = vkz_swapchain_support_details.capabilities.minImageExtent.width;
-  if (vkz_swap_extent.width > vkz_swapchain_support_details.capabilities.maxImageExtent.width)
-    vkz_swap_extent.width = vkz_swapchain_support_details.capabilities.maxImageExtent.width;
-
-  if (vkz_swap_extent.height < vkz_swapchain_support_details.capabilities.minImageExtent.height)
-    vkz_swap_extent.height = vkz_swapchain_support_details.capabilities.minImageExtent.height;
-  if (vkz_swap_extent.height > vkz_swapchain_support_details.capabilities.maxImageExtent.height)
-    vkz_swap_extent.height = vkz_swapchain_support_details.capabilities.maxImageExtent.height;
-
-
   return 1;
 }
 
