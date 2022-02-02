@@ -164,8 +164,8 @@ void wait_gpu_cpu_fence() {
   VkResult rwait;
   do {
     rwait = vkWaitForFences(vkz_logical_device, 1,
-			    &gpu_cpu_fence,
-			    VK_TRUE, UINT64_MAX);
+      &gpu_cpu_fence,
+      VK_TRUE, UINT64_MAX);
   } while (rwait == VK_TIMEOUT);
 }
 
@@ -179,14 +179,14 @@ int vkz_create_instance(const char* application_name,
   }
 
   uint32_t property_count = 0;
-  
+
   vkEnumerateInstanceExtensionProperties(NULL, &property_count,
-					 NULL);
+    NULL);
   if (property_count > 0) {
-    VkExtensionProperties *extension_properties = malloc(sizeof(VkExtensionProperties) * property_count);
+    VkExtensionProperties* extension_properties = malloc(sizeof(VkExtensionProperties) * property_count);
 
     vkEnumerateInstanceExtensionProperties(NULL, &property_count,
-					   extension_properties);
+      extension_properties);
     LOGDEBUG0("Checking for requested extension support...");
     for (uint32_t i1 = 0; i1 < enabled_extension_count; ++i1) {
       BOOL ext_found = FALSE;
@@ -202,16 +202,15 @@ int vkz_create_instance(const char* application_name,
     }
 
     VK_KHR_get_physical_device_properties2_supported = FALSE;
-    LOGDEBUG0("Instance supported extensions:");
+    LOGDEBUG0("Searching through instance supported extensions...");
     for (uint32_t i = 0; i < property_count; ++i) {
       if (strcmp("VK_KHR_get_physical_device_properties2", extension_properties[i].extensionName) == 0) {
-	VK_KHR_get_physical_device_properties2_supported = TRUE;
+        VK_KHR_get_physical_device_properties2_supported = TRUE;
       }
-      LOGDEBUG1("%s", extension_properties[i].extensionName);
     }
     free(extension_properties);
   }
-					 
+
 
   VkApplicationInfo ai;
   memset(&ai, 0, sizeof(VkApplicationInfo));
@@ -249,19 +248,16 @@ int vkz_create_instance(const char* application_name,
           LOGDEBUG1("Layer %s exists! Will enable...\n", vl[i]);
           validation_layers[validation_layer_count] = vl[i];
           ++validation_layer_count;
-	  found = TRUE;
-        } 
+          found = TRUE;
+        }
 #pragma warning(pop)
-      }
-      if (!found) {
-	LOGDEBUG1("Not interested in %s", lp[n].layerName);
       }
     }
   }
   if (validation_layer_count == 0) {
     LOGDEBUG0("No validation layers found.");
   }
-  
+
   ci.enabledExtensionCount = (uint32_t)enabled_extension_count;
   ci.ppEnabledExtensionNames = enabled_extension_names;
 
@@ -269,7 +265,7 @@ int vkz_create_instance(const char* application_name,
   // Studio doesn't like such qualifiers
   const char* allExtensionNames[10];
   uint32_t allExtensionCount = (uint32_t)enabled_extension_count;
-  
+
   for (uint32_t n = 0; n < enabled_extension_count; n++) {
     allExtensionNames[n] = enabled_extension_names[n];
   }
@@ -278,7 +274,7 @@ int vkz_create_instance(const char* application_name,
     allExtensionNames[allExtensionCount] = "VK_KHR_get_physical_device_properties2";
     ++allExtensionCount;
   }
-  
+
   if (validation_layer_count > 0) {
 
     ci.enabledLayerCount = validation_layer_count;
@@ -287,9 +283,9 @@ int vkz_create_instance(const char* application_name,
     allExtensionNames[allExtensionCount] =
       VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
     ++allExtensionCount;
-    
+
   }
-  
+
   ci.enabledExtensionCount = allExtensionCount;
   ci.ppEnabledExtensionNames = allExtensionNames;
 
@@ -551,18 +547,16 @@ int select_physical_device() {
 
         success = select_surface_format() && select_present_mode();
 
-	VK_KHR_portability_subset_supported = FALSE;
-	LOGDEBUG0("Looking through extensions supported by physical device...");
-	for (uint32_t n1 = 0; n1 < deviceExtensionCount; n1++) {
-	  LOGDEBUG1("%s", deviceExtensions[n1].extensionName);
+        VK_KHR_portability_subset_supported = FALSE;
+        LOGDEBUG0("Searching through extensions supported by physical device...");
+        for (uint32_t n1 = 0; n1 < deviceExtensionCount; n1++) {
           if (strcmp("VK_KHR_portability_subset", deviceExtensions[n1].extensionName) == 0) {
-	    VK_KHR_portability_subset_supported = TRUE; 
+            VK_KHR_portability_subset_supported = TRUE;
             LOGDEBUG0("The device supports the VK_KHR_portability_subset extension. It will be enabled.");
           }
         }
         break;
       }
-
     }
   }
 
@@ -675,18 +669,19 @@ int create_logical_device() {
     vkz_present_family_index ? 1 : 2;
   dci.pEnabledFeatures = &pdf;
 
-  const char* device_extensions1[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-  const char* device_extensions2[] = {"VK_KHR_portability_subset", VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-  
+  const char* device_extensions1[] = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+  const char* device_extensions2[] = { "VK_KHR_portability_subset", VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+
   if (VK_KHR_portability_subset_supported) {
     LOGDEBUG0("Enabling VK_KHR_portability_subset");
-    dci.ppEnabledExtensionNames = (const char* const *)device_extensions2;
+    dci.ppEnabledExtensionNames = (const char* const*)device_extensions2;
     dci.enabledExtensionCount = 3;
-  } else {
-    dci.ppEnabledExtensionNames = (const char* const *)device_extensions1;
+  }
+  else {
+    dci.ppEnabledExtensionNames = (const char* const*)device_extensions1;
     dci.enabledExtensionCount = 1;
   }
-  
+
 #ifndef NDEBUG
 
   if (validation_layer_count > 0) {
@@ -1038,7 +1033,7 @@ int vkz_create_swapchain() {
     VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR,
     VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR,
     VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR,
-  };
+};
 
   for (uint32_t i = 0; i < sizeof(af); i++) {
     if (vkz_swapchain_support_details.capabilities.supportedCompositeAlpha &
@@ -1668,7 +1663,7 @@ int vkz_create_sync_objects(void) {
 }
 
 int vkz_destroy_sync_objects(void) {
-  
+
   vkDestroyFence(vkz_logical_device,
     gpu_cpu_fence, NULL);
   gpu_cpu_fence = VK_NULL_HANDLE;
@@ -1769,7 +1764,8 @@ int vkz_draw(VkCommandBuffer* command_buffer) {
     gpu_cpu_fence) != VK_SUCCESS) {
     LOGDEBUG0("Could not submit draw command buffer!");
   }
-
+  // That's right, we're waiting for the gpu :/ - sacrificing performance (sometimes)
+  // for writing less code :)
   wait_gpu_cpu_fence();
 
   return 1;
@@ -1869,15 +1865,15 @@ int end_single_time_commands(VkCommandBuffer command_buffer) {
   si.pCommandBuffers = &command_buffer;
 
   vkResetFences(vkz_logical_device, 1,
-		&gpu_cpu_fence);
+    &gpu_cpu_fence);
   vkQueueSubmit(vkz_graphics_queue, 1, &si, gpu_cpu_fence);
 
   wait_gpu_cpu_fence();
-  
+
   vkFreeCommandBuffers(vkz_logical_device,
-		       command_pool,
-		       1,
-		       &command_buffer);
+    command_pool,
+    1,
+    &command_buffer);
   return 1;
 }
 
@@ -1946,17 +1942,17 @@ int vkz_create_image(VkImage* image,
 }
 
 int vkz_destroy_image(VkImage image, VkDeviceMemory image_memory) {
-  
+
   if (image != VK_NULL_HANDLE) {
     vkDestroyImage(vkz_logical_device, image, NULL);
     image = VK_NULL_HANDLE;
   }
-  
+
   if (image_memory != VK_NULL_HANDLE) {
     vkFreeMemory(vkz_logical_device, image_memory, NULL);
     image_memory = VK_NULL_HANDLE;
   }
-  
+
   return 1;
 }
 
