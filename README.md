@@ -9,14 +9,7 @@ Vulkan and OpenGL support
 
 ## Sample games
 
-- [Avoid the Bug](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug)
-- [Chase the Goat](https://github.com/dimi309/small3d-samples/tree/master/chasethegoat)
-- [Frog Remixed](https://github.com/dimi309/small3d-samples/tree/master/frogremixed)
-- [Gloom](https://github.com/dimi309/small3d-samples/tree/master/gloom)
-
-If you prefer building with conan.io, these two repositories contain games that can be built that way:
-
-- [Gloom for conan](https://github.com/dimi309/gloom-game-conan)
+- [Gloom](https://github.com/dimi309/gloom)
 - [Islet Hell](https://github.com/dimi309/islet-hell)
 
 ## Tutorial
@@ -92,21 +85,10 @@ git repository.
 
 You can build small3d for mobile platforms by executing either `build-android` or 
 `build-ios` from the scripts directory. Two sample games have been ported to
-Android and iOS:
-
-[Avoid the Bug](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug)
-
-- [Android](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-android) 
-- [iOS](https://github.com/dimi309/small3d-samples/tree/master/avoidthebug-ios). 
-
-[Islet Hell](https://github.com/dimi309/islet-hell)
-
-- [Android](https://github.com/dimi309/small3d-samples/tree/master/islet-hell-android)
-- [iOS](https://github.com/dimi309/small3d-samples/tree/master/islet-hell-ios)
-
-I use these projects as a basis for mobile development. Note that, while with 
-the desktop edition of small3dI use GLFW for windowing functionalities and I/O,
-on mobile I access the native infrastructure directly.
+Android and iOS. The [Islet Hell](https://github.com/dimi309/islet-hell) repository
+contains ports of the game to Android and iOS, which can be used as examples.
+Note that, while with the desktop edition of small3d I use GLFW for windowing functionalities 
+and I/O, on mobile I access the native infrastructure directly.
 
 ## Referenced libraries
 
