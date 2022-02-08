@@ -26,20 +26,13 @@ struct android_app* vkz_android_app;
 #define LOGDEBUG1(x, y) __android_log_print(ANDROID_LOG_DEBUG, "vkzos", x, y)
 #define LOGDEBUG2(x, y, z) __android_log_print(ANDROID_LOG_DEBUG, "vkzos", x, y, z)
 
-uint32_t numValidationLayers = 5;
-const char* vl[5] = {
-  "VK_LAYER_GOOGLE_threading",
-  "VK_LAYER_LUNARG_parameter_validation",
-  "VK_LAYER_LUNARG_object_tracker",
-  "VK_LAYER_LUNARG_core_validation",
-  "VK_LAYER_GOOGLE_unique_objects"
-};
-
 #else
 
 #define LOGDEBUG0(x) printf(x); printf("\n\r")
 #define LOGDEBUG1(x, y) printf(x, y); printf("\n\r")
 #define LOGDEBUG2(x, y, z) printf(x, y, z); printf("\n\r")
+
+#endif
 
 uint32_t numValidationLayers = 3; // Set to 4 to enable VK_LAYER_MESA_overlay
 const char* vl[4] = {
@@ -48,8 +41,6 @@ const char* vl[4] = {
   "VK_LAYER_KHRONOS_validation",
   "VK_LAYER_MESA_overlay"
 };
-
-#endif
 
 #else
 #define LOGDEBUG0(x)
@@ -236,10 +227,9 @@ int vkz_create_instance(const char* application_name,
   if (lp) {
     memset(lp, 0, sizeof(VkLayerProperties) * lc);
     vkEnumerateInstanceLayerProperties(&lc, lp);
-    LOGDEBUG0("Looking for predefined validation layers.");
-    for (uint32_t n = 0; n < lc; ++n) {
-      BOOL found = FALSE;
-      for (uint32_t i = 0; i < numValidationLayers; i++) {
+    for (uint32_t i = 0; i < numValidationLayers; i++) {
+      LOGDEBUG1("Looking for %s", vl[i]);
+      for (uint32_t n = 0; n < lc; ++n) {      
         // Disable C6385 warning in Visual Studio as it probably gives a false positive here.
         // see https://stackoverflow.com/questions/59649678/warning-c6385-in-visual-studio
 #pragma warning(push)
@@ -248,7 +238,6 @@ int vkz_create_instance(const char* application_name,
           LOGDEBUG1("Layer %s exists! Will enable...\n", vl[i]);
           validation_layers[validation_layer_count] = vl[i];
           ++validation_layer_count;
-          found = TRUE;
         }
 #pragma warning(pop)
       }
@@ -2073,6 +2062,7 @@ int vkz_create_sampler(VkSampler* sampler) {
   sci.mipLodBias = 0.0f;
   sci.minLod = 0.0f;
   sci.maxLod = 0.0f;
+  sci.compareEnable = VK_TRUE;
   if (vkCreateSampler(vkz_logical_device, &sci, NULL, sampler) != VK_SUCCESS) {
     return 0;
   }
