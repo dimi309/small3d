@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['octpyramid_165',['OctPyramid',['../class_oct_pyramid.html',1,'']]]
+  ['renderer_164',['Renderer',['../classsmall3d_1_1_renderer.html',1,'small3d']]]
 ];
