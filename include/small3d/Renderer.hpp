@@ -8,7 +8,7 @@
  */
 
 #pragma once
-
+#define MAX_FRAMES_PREPARED_FIX_SOON 3
 #if defined(__ANDROID__)
 #include <android/asset_manager.h>
 #elif !defined(SMALL3D_IOS)
@@ -48,7 +48,7 @@ namespace small3d
     VkImageView imageView = VK_NULL_HANDLE;
     VkImage image = VK_NULL_HANDLE;
     VkDeviceMemory imageMemory = VK_NULL_HANDLE;
-    VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
+    VkDescriptorSet descriptorSet[MAX_FRAMES_PREPARED_FIX_SOON] = {};
     std::shared_ptr<std::vector<float>> data; // Using a pointer here to avoid
                                               // copying data when manipulating this
                                               // structure.
@@ -123,6 +123,7 @@ namespace small3d
     uint32_t pipelineIndex = 100;
 
     uint32_t currentSwapchainImageIndex = 0;
+    uint32_t currentFrameIndex = 0;
 
     std::vector<VkBuffer> renderModelPlacementBuffersDynamic;
     std::vector<VkDeviceMemory> renderModelPlacementBuffersDynamicMemory;
@@ -175,7 +176,7 @@ namespace small3d
     static VkVertexInputAttributeDescription ad[5];
 
     static VkDescriptorSetLayout descriptorSetLayout;
-    static VkDescriptorSet descriptorSet;
+    static VkDescriptorSet descriptorSet[MAX_FRAMES_PREPARED_FIX_SOON];
     static VkDescriptorSetLayout textureDescriptorSetLayout;
     static VkDescriptorSetLayout perspectiveLayouts[2];
 
@@ -205,7 +206,7 @@ namespace small3d
     void createDescriptorPool();
     void destroyDescriptorPool();
 
-    VkCommandBuffer nextCommandBuffer = VK_NULL_HANDLE;
+    VkCommandBuffer commandBuffer[MAX_FRAMES_PREPARED_FIX_SOON] = {};
 
     std::vector<Model> garbageModels;
 

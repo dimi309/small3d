@@ -144,18 +144,18 @@ typedef struct {
 uint32_t pipeline_system_count = 0;
 pipeline_system_struct* pipeline_systems = NULL;
 
-static VkFence gpu_cpu_fence = VK_NULL_HANDLE;
-static VkSemaphore draw_semaphore = VK_NULL_HANDLE, acquire_semaphore = VK_NULL_HANDLE;
+static VkFence gpu_cpu_fence[MAX_FRAMES_PREPARED];
+static VkSemaphore draw_semaphore[MAX_FRAMES_PREPARED], acquire_semaphore[MAX_FRAMES_PREPARED];
+static uint32_t frame_index = 0;
 
-
-void wait_gpu_cpu_fence() {
-  if (gpu_cpu_fence == VK_NULL_HANDLE) {
+void vkz_wait_gpu_cpu_fence(uint32_t idx) {
+  if (gpu_cpu_fence[idx] == VK_NULL_HANDLE) {
     LOGDEBUG0("Waiting on gpu_cpu_fence that is null!");
   }
   VkResult rwait;
   do {
     rwait = vkWaitForFences(vkz_logical_device, 1,
-      &gpu_cpu_fence,
+      &gpu_cpu_fence[idx],
       VK_TRUE, UINT64_MAX);
   } while (rwait == VK_TIMEOUT);
 }
@@ -760,6 +760,12 @@ int destroy_depth_image(void) {
 
 int vkz_init(void) {
 
+  for (uint32_t idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
+    gpu_cpu_fence[idx] = VK_NULL_HANDLE;
+    acquire_semaphore[idx] = VK_NULL_HANDLE;
+    draw_semaphore[idx] = VK_NULL_HANDLE;
+  }
+
   vkz_clear_colour.float32[0] = 0.0f;
   vkz_clear_colour.float32[1] = 0.0f;
   vkz_clear_colour.float32[2] = 0.0f;
@@ -1048,7 +1054,7 @@ int vkz_create_swapchain() {
 
   vkGetSwapchainImagesKHR(vkz_logical_device, vkz_swapchain,
     &vkz_swapchain_image_count, NULL);
-  LOGDEBUG1("Number of swapchain images retrieved via API: %d",
+  LOGDEBUG1("Number of presentable images in swapchain: %d",
     vkz_swapchain_image_count);
   vkz_swapchain_images = malloc(vkz_swapchain_image_count * sizeof(VkImage));
   vkGetSwapchainImagesKHR(vkz_logical_device, vkz_swapchain,
@@ -1620,13 +1626,6 @@ int vkz_create_sync_objects(void) {
   fence_ci.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
   fence_ci.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-  if (vkCreateFence(vkz_logical_device, &fence_ci, NULL,
-    &gpu_cpu_fence) !=
-    VK_SUCCESS) {
-    LOGDEBUG0("Could not create cpu gpu fence!");
-    return 0;
-  }
-
   VkSemaphoreCreateInfo sci;
   memset(&sci, 0, sizeof(VkSemaphoreCreateInfo));
 
@@ -1634,16 +1633,25 @@ int vkz_create_sync_objects(void) {
   sci.pNext = NULL;
   sci.flags = 0;
 
-  if (vkCreateSemaphore(vkz_logical_device, &sci, NULL,
-    &draw_semaphore) != VK_SUCCESS) {
-    LOGDEBUG0("Could not create draw semaphore!");
-    return 0;
-  }
+  for (uint32_t idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
+    if (vkCreateFence(vkz_logical_device, &fence_ci, NULL,
+      &gpu_cpu_fence[idx]) !=
+      VK_SUCCESS) {
+      LOGDEBUG1("Could not create cpu gpu fence %d !", idx);
+      return 0;
+    }
 
-  if (vkCreateSemaphore(vkz_logical_device, &sci, NULL,
-    &acquire_semaphore) != VK_SUCCESS) {
-    LOGDEBUG0("Could not create acquire semaphore!");
-    return 0;
+    if (vkCreateSemaphore(vkz_logical_device, &sci, NULL,
+      &draw_semaphore[idx]) != VK_SUCCESS) {
+      LOGDEBUG1("Could not create draw semaphore %d !", idx);
+      return 0;
+    }
+
+    if (vkCreateSemaphore(vkz_logical_device, &sci, NULL,
+      &acquire_semaphore[idx]) != VK_SUCCESS) {
+      LOGDEBUG1("Could not create acquire semaphore %d !", idx);
+      return 0;
+    }
   }
 
   LOGDEBUG0("Created sync objects.");
@@ -1652,16 +1660,18 @@ int vkz_create_sync_objects(void) {
 }
 
 int vkz_destroy_sync_objects(void) {
-
-  vkDestroyFence(vkz_logical_device,
-    gpu_cpu_fence, NULL);
-  gpu_cpu_fence = VK_NULL_HANDLE;
-  vkDestroySemaphore(vkz_logical_device,
-    draw_semaphore, NULL);
-  draw_semaphore = VK_NULL_HANDLE;
-  vkDestroySemaphore(vkz_logical_device,
-    acquire_semaphore, NULL);
-  acquire_semaphore = VK_NULL_HANDLE;
+  vkDeviceWaitIdle(vkz_logical_device);
+  for (uint32_t idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
+    vkDestroyFence(vkz_logical_device,
+      gpu_cpu_fence[idx], NULL);
+    gpu_cpu_fence[idx] = VK_NULL_HANDLE;
+    vkDestroySemaphore(vkz_logical_device,
+      draw_semaphore[idx], NULL);
+    draw_semaphore[idx] = VK_NULL_HANDLE;
+    vkDestroySemaphore(vkz_logical_device,
+      acquire_semaphore[idx], NULL);
+    acquire_semaphore[idx] = VK_NULL_HANDLE;
+  }
 
   return 1;
 }
@@ -1682,12 +1692,15 @@ int vkz_recreate_pipelines_and_swapchain(void) {
   return 1;
 }
 
-int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index) {
+int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index, uint32_t *frame_index_out) {
+
+  frame_index = (frame_index + 1) % MAX_FRAMES_PREPARED;
+  *frame_index_out = frame_index;
 
   VkResult r =
     vkAcquireNextImageKHR(vkz_logical_device, vkz_swapchain,
       UINT64_MAX,
-      acquire_semaphore,
+      acquire_semaphore[frame_index],
       VK_NULL_HANDLE, &next_image_index);
 
   if (r == VK_ERROR_OUT_OF_DATE_KHR) {
@@ -1715,7 +1728,7 @@ int vkz_present_next_image(void) {
   pinf.pSwapchains = swap_chains;
   pinf.pImageIndices = &next_image_index;
   pinf.pResults = NULL;
-  pinf.pWaitSemaphores = &draw_semaphore;
+  pinf.pWaitSemaphores = &draw_semaphore[frame_index];
   pinf.waitSemaphoreCount = 1;
 
   VkResult r = vkQueuePresentKHR(vkz_present_queue, &pinf);
@@ -1738,24 +1751,23 @@ int vkz_draw(VkCommandBuffer* command_buffer) {
 
   si.commandBufferCount = 1;
   si.pCommandBuffers = command_buffer;
-  si.pSignalSemaphores = &draw_semaphore;
+  si.pSignalSemaphores = &draw_semaphore[frame_index];
   si.signalSemaphoreCount = 1;
-  si.pWaitSemaphores = &acquire_semaphore;
+  si.pWaitSemaphores = &acquire_semaphore[frame_index];
   si.waitSemaphoreCount = 1;
 
   VkPipelineStageFlags wait_stages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
   si.pWaitDstStageMask = wait_stages;
 
+  vkz_wait_gpu_cpu_fence(frame_index);
+
   vkResetFences(vkz_logical_device, 1,
-    &gpu_cpu_fence);
+    &gpu_cpu_fence[frame_index]);
 
   if (vkQueueSubmit(vkz_graphics_queue, 1, &si,
-    gpu_cpu_fence) != VK_SUCCESS) {
+    gpu_cpu_fence[frame_index]) != VK_SUCCESS) {
     LOGDEBUG0("Could not submit draw command buffer!");
   }
-  // That's right, we're waiting for the gpu :/ - sacrificing performance (sometimes)
-  // for writing less code :)
-  wait_gpu_cpu_fence();
 
   return 1;
 }
@@ -1854,10 +1866,10 @@ int end_single_time_commands(VkCommandBuffer command_buffer) {
   si.pCommandBuffers = &command_buffer;
 
   vkResetFences(vkz_logical_device, 1,
-    &gpu_cpu_fence);
-  vkQueueSubmit(vkz_graphics_queue, 1, &si, gpu_cpu_fence);
+    &gpu_cpu_fence[frame_index]);
+  vkQueueSubmit(vkz_graphics_queue, 1, &si, gpu_cpu_fence[frame_index]);
 
-  wait_gpu_cpu_fence();
+  vkz_wait_gpu_cpu_fence(frame_index);
 
   vkFreeCommandBuffers(vkz_logical_device,
     command_pool,

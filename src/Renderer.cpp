@@ -44,7 +44,7 @@ namespace small3d {
   VkVertexInputBindingDescription Renderer::bd[5];
   VkVertexInputAttributeDescription Renderer::ad[5];
   VkDescriptorSetLayout Renderer::descriptorSetLayout;
-  VkDescriptorSet Renderer::descriptorSet;
+  VkDescriptorSet Renderer::descriptorSet[MAX_FRAMES_PREPARED_FIX_SOON];
   VkDescriptorSetLayout Renderer::textureDescriptorSetLayout;
   VkDescriptorSetLayout Renderer::perspectiveLayouts[2];
 
@@ -173,7 +173,7 @@ namespace small3d {
       dynamicColourOffset };
 
     const VkDescriptorSet descriptorSets[2] =
-    { descriptorSet, getTextureHandle(model.textureName).descriptorSet };
+    { descriptorSet[currentFrameIndex], getTextureHandle(model.textureName).descriptorSet[currentFrameIndex] };
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
       pipelineLayout, 0, 2,
@@ -282,11 +282,13 @@ namespace small3d {
     dsai.descriptorSetCount = 1;
     dsai.pSetLayouts = &descriptorSetLayout;
 
-    descriptorSet = {};
+    for (uint32_t idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
+      descriptorSet[idx] = {};
 
-    if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
-      &descriptorSet) != VK_SUCCESS) {
-      throw std::runtime_error("Failed to allocate descriptor sets.");
+      if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
+        &descriptorSet[idx]) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to allocate descriptor sets.");
+      }
     }
 
     memset(dslb, 0, 4 * sizeof(VkDescriptorSetLayoutBinding));
@@ -344,7 +346,7 @@ namespace small3d {
     std::vector<VkWriteDescriptorSet> wds(4);
 
     wds[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[0].dstSet = descriptorSet;
+    wds[0].dstSet = descriptorSet[currentFrameIndex];
     wds[0].dstBinding = worldDescBinding;
     wds[0].dstArrayElement = 0;
     wds[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
@@ -354,7 +356,7 @@ namespace small3d {
     wds[0].pTexelBufferView = NULL;
 
     wds[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[1].dstSet = descriptorSet;
+    wds[1].dstSet = descriptorSet[currentFrameIndex];
     wds[1].dstBinding = modelPlacementDescBinding;
     wds[1].dstArrayElement = 0;
     wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
@@ -364,7 +366,7 @@ namespace small3d {
     wds[1].pTexelBufferView = NULL;
 
     wds[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[2].dstSet = descriptorSet;
+    wds[2].dstSet = descriptorSet[currentFrameIndex];
     wds[2].dstBinding = colourDescBinding;
     wds[2].dstArrayElement = 0;
     wds[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
@@ -374,7 +376,7 @@ namespace small3d {
     wds[2].pTexelBufferView = NULL;
 
     wds[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[3].dstSet = descriptorSet;
+    wds[3].dstSet = descriptorSet[currentFrameIndex];
     wds[3].dstBinding = lightDescBinding;
     wds[3].dstArrayElement = 0;
     wds[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -387,12 +389,13 @@ namespace small3d {
   }
 
   void Renderer::destroyDescriptorSets() {
-
-    if (vkFreeDescriptorSets(vkz_logical_device, descriptorPool, 1,
-      &descriptorSet) != VK_SUCCESS) {
-      throw std::runtime_error("Failed to free descriptor sets.");
+    for (uint32_t idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
+      if (vkFreeDescriptorSets(vkz_logical_device, descriptorPool, 1,
+        &descriptorSet[idx]) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to free descriptor sets.");
+      }
+      descriptorSet[idx] = VK_NULL_HANDLE;
     }
-    descriptorSet = VK_NULL_HANDLE;
 
     vkDestroyDescriptorSetLayout(vkz_logical_device,
       descriptorSetLayout, NULL);
@@ -503,9 +506,9 @@ namespace small3d {
       }
     }
 
-    uint32_t imageByteSize = 0; 
+    uint32_t imageByteSize = 0;
 
-    if ((!found && data) /*new texture*/ || 
+    if ((!found && data) /*new texture*/ ||
       (found && replace) /*texture to be replaced*/) {
       textureHandlePtr->width = width;
       textureHandlePtr->height = height;
@@ -573,34 +576,37 @@ namespace small3d {
     dsai.descriptorSetCount = 1;
     dsai.pSetLayouts = &textureDescriptorSetLayout;
 
-    textureHandlePtr->descriptorSet = {};
+    for (int idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
+      textureHandlePtr->descriptorSet[idx] = {};
+      if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
+        &textureHandlePtr->descriptorSet[idx]) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to allocate texture descriptor set.");
+      }
 
-    if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
-      &textureHandlePtr->descriptorSet) != VK_SUCCESS) {
-      throw std::runtime_error("Failed to allocate texture descriptor set.");
+      // Write texture descriptor set
+
+      VkDescriptorImageInfo diiTexture = {};
+
+      diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+      diiTexture.imageView = textureHandlePtr->imageView;
+      diiTexture.sampler = textureSampler;
+
+      VkWriteDescriptorSet wds = {};
+
+      wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+      wds.dstSet = textureHandlePtr->descriptorSet[idx];
+      wds.dstBinding = textureDescBinding;
+      wds.dstArrayElement = 0;
+      wds.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+      wds.descriptorCount = 1;
+      wds.pBufferInfo = NULL;
+      wds.pImageInfo = &diiTexture;
+      wds.pTexelBufferView = NULL;
+
+      vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
     }
 
-    // Write texture descriptor set
 
-    VkDescriptorImageInfo diiTexture = {};
-
-    diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    diiTexture.imageView = textureHandlePtr->imageView;
-    diiTexture.sampler = textureSampler;
-
-    VkWriteDescriptorSet wds = {};
-
-    wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds.dstSet = textureHandlePtr->descriptorSet;
-    wds.dstBinding = textureDescBinding;
-    wds.dstArrayElement = 0;
-    wds.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    wds.descriptorCount = 1;
-    wds.pBufferInfo = NULL;
-    wds.pImageInfo = &diiTexture;
-    wds.pTexelBufferView = NULL;
-
-    vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
 
     if (!found || replace) {
       textures.insert(make_pair(name, *textureHandlePtr));
@@ -711,11 +717,11 @@ namespace small3d {
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
     }
-    
+
   }
 
   void Renderer::destroyDynamicBuffers() {
-    
+
     if (uboModelPlacementDynamic) {
       alloc.deallocate(reinterpret_cast<char*>(uboModelPlacementDynamic),
         uboModelPlacementDynamicSize);
@@ -829,7 +835,7 @@ namespace small3d {
       std::to_string(height));
 
 #endif
-  }
+}
 
   void Renderer::setWorldDetails(bool perspective) {
 
@@ -884,16 +890,19 @@ namespace small3d {
       lightIntensityBufferMemories[currentSwapchainImageIndex]);
   }
 
-  void Renderer::deleteImageFromGPU(VulkanImage &gpuImage) {
-    if (vkFreeDescriptorSets(vkz_logical_device, descriptorPool, 1,
-        &gpuImage.descriptorSet) != VK_SUCCESS) {
+  void Renderer::deleteImageFromGPU(VulkanImage& gpuImage) {
+    vkDeviceWaitIdle(vkz_logical_device);
+    for (int idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
+      if (vkFreeDescriptorSets(vkz_logical_device, descriptorPool, 1,
+        &gpuImage.descriptorSet[idx]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to free texture descriptor set.");
       }
+    }
 
-      vkDestroyImageView(vkz_logical_device,
-        gpuImage.imageView, NULL);
-      vkz_destroy_image(gpuImage.image,
-        gpuImage.imageMemory);
+    vkDestroyImageView(vkz_logical_device,
+      gpuImage.imageView, NULL);
+    vkz_destroy_image(gpuImage.image,
+      gpuImage.imageMemory);
   }
 
   Renderer::Renderer() {
@@ -1008,7 +1017,7 @@ namespace small3d {
 #ifdef __ANDROID__
     for (auto& asset : fontAssets) {
       AAsset_close(asset);
-    }
+  }
 #endif
 
     FT_Done_FreeType(library);
@@ -1567,6 +1576,7 @@ namespace small3d {
   }
 
   void Renderer::clearBuffers(Model& model) {
+    vkDeviceWaitIdle(vkz_logical_device);
     if (model.alreadyInGPU) {
       vkz_destroy_buffer(model.positionBuffer, model.positionBufferMemory);
       allocatedBufferMemory.erase(model.positionBuffer);
@@ -1601,7 +1611,10 @@ namespace small3d {
   void Renderer::swapBuffers() {
 
     vkz_acquire_next_image(pipelineIndex,
-      &currentSwapchainImageIndex);
+      &currentSwapchainImageIndex, &currentFrameIndex);
+    
+    vkz_wait_gpu_cpu_fence(currentFrameIndex);
+    vkz_destroy_draw_command_buffer(&commandBuffer[currentFrameIndex]);
 
     modelPlacementMemIndex = 0;
     colourMemIndex = 0;
@@ -1640,22 +1653,20 @@ namespace small3d {
     // All of the above is bound here.
     updateDescriptorSets();
 
-    vkz_begin_draw_command_buffer(&nextCommandBuffer);
+    vkz_begin_draw_command_buffer(&commandBuffer[currentFrameIndex]);
 
     for (auto& model : nextModelsToDraw) {
       vkz_bind_pipeline_to_command_buffer(pipelineIndex,
-        &nextCommandBuffer);
-      bindBuffers(nextCommandBuffer, model);
-      recordDrawCommand(nextCommandBuffer,
+        &commandBuffer[currentFrameIndex]);
+      bindBuffers(commandBuffer[currentFrameIndex], model);
+      recordDrawCommand(commandBuffer[currentFrameIndex],
         vkz_pipeline_layout[pipelineIndex],
         model, currentSwapchainImageIndex, model.perspective);
     }
 
-    vkz_end_draw_command_buffer(&nextCommandBuffer);
+    vkz_end_draw_command_buffer(&commandBuffer[currentFrameIndex]);
 
-    vkz_draw(&nextCommandBuffer);
-
-    vkz_destroy_draw_command_buffer(&nextCommandBuffer);
+    vkz_draw(&commandBuffer[currentFrameIndex]);
 
     vkz_present_next_image();
 
@@ -1796,7 +1807,7 @@ namespace small3d {
 
     LOGDEBUG("Destroying buffers...");
 
-    for (auto &b : allocatedBufferMemory) {
+    for (auto& b : allocatedBufferMemory) {
       vkz_destroy_buffer(b.first, b.second);
     }
 

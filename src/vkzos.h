@@ -9,6 +9,8 @@
 #ifndef VKZOS_H
 #define VKZOS_H
 
+#define MAX_FRAMES_PREPARED 3
+
 #ifdef __ANDROID__
 #include <android_native_app_glue.h>
 #include <android/asset_manager.h>
@@ -21,6 +23,8 @@ extern struct android_app *vkz_android_app;
 #else
 #include <vulkan/vulkan.h>
 #endif
+
+void vkz_wait_gpu_cpu_fence(uint32_t idx);
 
 /**
  * @brief The Vulkan instance
@@ -190,9 +194,10 @@ int vkz_recreate_pipelines_and_swapchain(void);
  *
  * @param pipeline_index The index of the pipeline
  * @param image_index    The index of the acquired swapchain image
+ * @param frame_index_out [out] The frame index (used for async rendering - different from image_index)
  * @return 1 if successful, 0 otherwise
  */
-int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index);
+int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index, uint32_t* frame_index_out);
 
 /**
  * @brief Present next swapchain image (the one acquired by
