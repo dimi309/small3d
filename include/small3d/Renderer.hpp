@@ -122,7 +122,6 @@ namespace small3d
    
     uint32_t pipelineIndex = 100;
 
-    uint32_t currentSwapchainImageIndex = 0;
     uint32_t currentFrameIndex = 0;
 
     std::vector<VkBuffer> renderModelPlacementBuffersDynamic;

@@ -190,19 +190,19 @@ namespace small3d {
     memset(ps, 0, 5 * sizeof(VkDescriptorPoolSize));
 
     ps[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    ps[0].descriptorCount = vkz_swapchain_image_count;
+    ps[0].descriptorCount = MAX_FRAMES_PREPARED;
 
     ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    ps[1].descriptorCount = vkz_swapchain_image_count;
+    ps[1].descriptorCount = MAX_FRAMES_PREPARED;
 
     ps[2].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    ps[2].descriptorCount = vkz_swapchain_image_count * objectsPerFrame;
+    ps[2].descriptorCount = MAX_FRAMES_PREPARED * objectsPerFrame;
 
     ps[3].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    ps[3].descriptorCount = vkz_swapchain_image_count;
+    ps[3].descriptorCount = MAX_FRAMES_PREPARED;
 
     ps[4].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    ps[4].descriptorCount = vkz_swapchain_image_count;
+    ps[4].descriptorCount = MAX_FRAMES_PREPARED;
 
     VkDescriptorPoolCreateInfo dpci;
     memset(&dpci, 0, sizeof(VkDescriptorPoolCreateInfo));
@@ -210,7 +210,7 @@ namespace small3d {
     dpci.poolSizeCount = 5;
     dpci.pPoolSizes = ps;
     dpci.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-    dpci.maxSets = vkz_swapchain_image_count * objectsPerFrame;
+    dpci.maxSets = MAX_FRAMES_PREPARED * objectsPerFrame;
 
     if (vkCreateDescriptorPool(vkz_logical_device, &dpci, NULL,
       &descriptorPool) != VK_SUCCESS) {
@@ -320,26 +320,26 @@ namespace small3d {
   void Renderer::updateDescriptorSets() {
 
     VkDescriptorBufferInfo dbiWorld = {};
-    dbiWorld.buffer = worldDetailsBuffersDynamic[currentSwapchainImageIndex];
+    dbiWorld.buffer = worldDetailsBuffersDynamic[currentFrameIndex];
     dbiWorld.offset = 0;
     dbiWorld.range = sizeof(UboWorldDetails);
 
     VkDescriptorBufferInfo dbiModelPlacement = {};
 
     dbiModelPlacement.buffer =
-      renderModelPlacementBuffersDynamic[currentSwapchainImageIndex];
+      renderModelPlacementBuffersDynamic[currentFrameIndex];
     dbiModelPlacement.offset = 0;
     dbiModelPlacement.range = sizeof(UboModelPlacement);
 
     VkDescriptorBufferInfo dbiColour = {};
 
-    dbiColour.buffer = colourBuffersDynamic[currentSwapchainImageIndex];
+    dbiColour.buffer = colourBuffersDynamic[currentFrameIndex];
     dbiColour.offset = 0;
     dbiColour.range = sizeof(UboColour);
 
     VkDescriptorBufferInfo dbiLight = {};
 
-    dbiLight.buffer = lightIntensityBuffers[currentSwapchainImageIndex];
+    dbiLight.buffer = lightIntensityBuffers[currentFrameIndex];
     dbiLight.offset = 0;
     dbiLight.range = sizeof(UboLight);
 
@@ -656,10 +656,10 @@ namespace small3d {
     std::fill(mem, &mem[uboModelPlacementDynamicSize], 0);
     uboModelPlacementDynamic = (UboModelPlacement*)mem;
 
-    renderModelPlacementBuffersDynamic.resize(vkz_swapchain_image_count);
-    renderModelPlacementBuffersDynamicMemory.resize(vkz_swapchain_image_count);
+    renderModelPlacementBuffersDynamic.resize(MAX_FRAMES_PREPARED);
+    renderModelPlacementBuffersDynamicMemory.resize(MAX_FRAMES_PREPARED);
 
-    for (size_t i = 0; i < vkz_swapchain_image_count; ++i) {
+    for (size_t i = 0; i < MAX_FRAMES_PREPARED; ++i) {
       vkz_create_buffer(&renderModelPlacementBuffersDynamic[i],
         VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
         (uint32_t)uboModelPlacementDynamicSize,
@@ -680,10 +680,10 @@ namespace small3d {
     mem = alloc.allocate(uboWorldDetailsDynamicSize);
     std::fill(mem, &mem[uboWorldDetailsDynamicSize], 0);
     uboWorldDetailsDynamic = (UboWorldDetails*)mem;
-    worldDetailsBuffersDynamic.resize(vkz_swapchain_image_count);
-    worldDetailsBuffersDynamicMemory.resize(vkz_swapchain_image_count);
+    worldDetailsBuffersDynamic.resize(MAX_FRAMES_PREPARED);
+    worldDetailsBuffersDynamicMemory.resize(MAX_FRAMES_PREPARED);
 
-    for (size_t i = 0; i < vkz_swapchain_image_count; ++i) {
+    for (size_t i = 0; i < MAX_FRAMES_PREPARED; ++i) {
       vkz_create_buffer(&worldDetailsBuffersDynamic[i],
         VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
         (uint32_t)uboWorldDetailsDynamicSize,
@@ -705,11 +705,11 @@ namespace small3d {
     uboColourDynamic = (UboColour*)mem;
 
 
-    colourBuffersDynamic.resize(vkz_swapchain_image_count);
-    colourBuffersDynamicMemory.resize(vkz_swapchain_image_count);
+    colourBuffersDynamic.resize(MAX_FRAMES_PREPARED);
+    colourBuffersDynamicMemory.resize(MAX_FRAMES_PREPARED);
 
 
-    for (size_t i = 0; i < vkz_swapchain_image_count; ++i) {
+    for (size_t i = 0; i < MAX_FRAMES_PREPARED; ++i) {
       vkz_create_buffer(&colourBuffersDynamic[i],
         VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
         (uint32_t)uboColourDynamicSize,
@@ -740,7 +740,7 @@ namespace small3d {
       uboColourDynamic = nullptr;
     }
 
-    for (uint32_t i = 0; i < vkz_swapchain_image_count; ++i) {
+    for (uint32_t i = 0; i < MAX_FRAMES_PREPARED; ++i) {
 
       if (i < renderModelPlacementBuffersDynamic.size()) {
         vkz_destroy_buffer(renderModelPlacementBuffersDynamic[i],
@@ -867,11 +867,11 @@ namespace small3d {
     uint32_t lightIntensitySize = sizeof(UboLight);
 
     if (lightIntensityBuffers.size() == 0) {
-      lightIntensityBuffers = std::vector<VkBuffer>(vkz_swapchain_image_count);
+      lightIntensityBuffers = std::vector<VkBuffer>(MAX_FRAMES_PREPARED);
       lightIntensityBufferMemories =
-        std::vector<VkDeviceMemory>(vkz_swapchain_image_count);
+        std::vector<VkDeviceMemory>(MAX_FRAMES_PREPARED);
 
-      for (size_t i = 0; i < vkz_swapchain_image_count; i++) {
+      for (size_t i = 0; i < MAX_FRAMES_PREPARED; i++) {
         vkz_create_buffer(&lightIntensityBuffers[i],
           VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
           lightIntensitySize,
@@ -883,11 +883,11 @@ namespace small3d {
 
     void* lightIntensityData;
     vkMapMemory(vkz_logical_device,
-      lightIntensityBufferMemories[currentSwapchainImageIndex],
+      lightIntensityBufferMemories[currentFrameIndex],
       0, lightIntensitySize, 0, &lightIntensityData);
     memcpy(lightIntensityData, &light, lightIntensitySize);
     vkUnmapMemory(vkz_logical_device,
-      lightIntensityBufferMemories[currentSwapchainImageIndex]);
+      lightIntensityBufferMemories[currentFrameIndex]);
   }
 
   void Renderer::deleteImageFromGPU(VulkanImage& gpuImage) {
@@ -1611,7 +1611,7 @@ namespace small3d {
   void Renderer::swapBuffers() {
 
     vkz_acquire_next_image(pipelineIndex,
-      &currentSwapchainImageIndex, &currentFrameIndex);
+      &currentFrameIndex, &currentFrameIndex);
     
     vkz_wait_gpu_cpu_fence(currentFrameIndex);
     vkz_destroy_draw_command_buffer(&commandBuffer[currentFrameIndex]);
@@ -1626,29 +1626,29 @@ namespace small3d {
     // Updating object positioning 
     void* modelPlacementData;
     vkMapMemory(vkz_logical_device,
-      renderModelPlacementBuffersDynamicMemory[currentSwapchainImageIndex],
+      renderModelPlacementBuffersDynamicMemory[currentFrameIndex],
       0, uboModelPlacementDynamicSize, 0, &modelPlacementData);
     memcpy(modelPlacementData, uboModelPlacementDynamic, uboModelPlacementDynamicSize);
     vkUnmapMemory(vkz_logical_device,
-      renderModelPlacementBuffersDynamicMemory[currentSwapchainImageIndex]);
+      renderModelPlacementBuffersDynamicMemory[currentFrameIndex]);
 
     // Updating world details
     void* worldDetailsData;
     vkMapMemory(vkz_logical_device,
-      worldDetailsBuffersDynamicMemory[currentSwapchainImageIndex],
+      worldDetailsBuffersDynamicMemory[currentFrameIndex],
       0, uboWorldDetailsDynamicSize, 0, &worldDetailsData);
     memcpy(worldDetailsData, uboWorldDetailsDynamic, uboWorldDetailsDynamicSize);
     vkUnmapMemory(vkz_logical_device,
-      worldDetailsBuffersDynamicMemory[currentSwapchainImageIndex]);
+      worldDetailsBuffersDynamicMemory[currentFrameIndex]);
 
     // Updating colour
     void* colourData;
     vkMapMemory(vkz_logical_device,
-      colourBuffersDynamicMemory[currentSwapchainImageIndex],
+      colourBuffersDynamicMemory[currentFrameIndex],
       0, uboColourDynamicSize, 0, &colourData);
     memcpy(colourData, uboColourDynamic, uboColourDynamicSize);
     vkUnmapMemory(vkz_logical_device,
-      colourBuffersDynamicMemory[currentSwapchainImageIndex]);
+      colourBuffersDynamicMemory[currentFrameIndex]);
 
     // All of the above is bound here.
     updateDescriptorSets();
@@ -1661,7 +1661,7 @@ namespace small3d {
       bindBuffers(commandBuffer[currentFrameIndex], model);
       recordDrawCommand(commandBuffer[currentFrameIndex],
         vkz_pipeline_layout[pipelineIndex],
-        model, currentSwapchainImageIndex, model.perspective);
+        model, currentFrameIndex, model.perspective);
     }
 
     vkz_end_draw_command_buffer(&commandBuffer[currentFrameIndex]);
@@ -1795,7 +1795,7 @@ namespace small3d {
     // If this is a re-creation of the pipeline, models have to be put
     // back into memory.
     memoryResetModelRenderIndex = nextModelRenderIndex;
-    currentSwapchainImageIndex = 0;
+    currentFrameIndex = 0;
 
     vkz_clear_colour.float32[0] = backgroundColour.r;
     vkz_clear_colour.float32[1] = backgroundColour.g;
