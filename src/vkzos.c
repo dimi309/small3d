@@ -2087,7 +2087,7 @@ int vkz_create_sampler(VkSampler* sampler) {
   sci.mipLodBias = 0.0f;
   sci.minLod = 0.0f;
   sci.maxLod = 0.0f;
-  sci.compareEnable = VK_TRUE;
+  sci.compareEnable = VK_KHR_portability_subset_supported ? VK_FALSE : VK_TRUE;
   if (vkCreateSampler(vkz_logical_device, &sci, NULL, sampler) != VK_SUCCESS) {
     return 0;
   }
