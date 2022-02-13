@@ -147,7 +147,7 @@ int WavefrontModelTest() {
       renderer->swapBuffers();
     }
   }
-
+  
   return 1;
 }
 

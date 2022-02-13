@@ -44,7 +44,7 @@ namespace small3d {
   VkVertexInputBindingDescription Renderer::bd[5];
   VkVertexInputAttributeDescription Renderer::ad[5];
   VkDescriptorSetLayout Renderer::descriptorSetLayout;
-  VkDescriptorSet Renderer::descriptorSet[MAX_FRAMES_PREPARED_FIX_SOON];
+  VkDescriptorSet Renderer::descriptorSet[MAX_FRAMES_PREPARED];
   VkDescriptorSetLayout Renderer::textureDescriptorSetLayout;
   VkDescriptorSetLayout Renderer::perspectiveLayouts[2];
 
@@ -1751,7 +1751,7 @@ namespace small3d {
     }
 #endif
 
-    if (!vkz_init()) {
+    if (!vkz_init(MAX_FRAMES_PREPARED)) {
       throw std::runtime_error("Could not initialise Vulkan.");
     }
 

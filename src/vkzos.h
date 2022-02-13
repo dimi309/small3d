@@ -9,8 +9,6 @@
 #ifndef VKZOS_H
 #define VKZOS_H
 
-#define MAX_FRAMES_PREPARED 3
-
 #ifdef __ANDROID__
 #include <android_native_app_glue.h>
 #include <android/asset_manager.h>
@@ -75,9 +73,10 @@ int vkz_create_instance(const char* application_name,
 /**
  * @brief  Initialise. Internally this means create physical device, select queue
  *         families and create logical device.
+ * @param  max_frames Maximum number of frames to be rendering to asynchronously
  * @return 1 if successful, 0 otherwise
  */
-int vkz_init(void);
+int vkz_init(uint32_t max_frames);
 
 /**
  * @brief Set width and height for all rendering calculations.

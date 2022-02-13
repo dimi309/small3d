@@ -8,7 +8,7 @@
  */
 
 #pragma once
-#define MAX_FRAMES_PREPARED_FIX_SOON 3
+#define MAX_FRAMES_PREPARED 3
 #if defined(__ANDROID__)
 #include <android/asset_manager.h>
 #elif !defined(SMALL3D_IOS)
@@ -48,7 +48,7 @@ namespace small3d
     VkImageView imageView = VK_NULL_HANDLE;
     VkImage image = VK_NULL_HANDLE;
     VkDeviceMemory imageMemory = VK_NULL_HANDLE;
-    VkDescriptorSet descriptorSet[MAX_FRAMES_PREPARED_FIX_SOON] = {};
+    VkDescriptorSet descriptorSet[MAX_FRAMES_PREPARED] = {};
     std::shared_ptr<std::vector<float>> data; // Using a pointer here to avoid
                                               // copying data when manipulating this
                                               // structure.
@@ -176,7 +176,7 @@ namespace small3d
     static VkVertexInputAttributeDescription ad[5];
 
     static VkDescriptorSetLayout descriptorSetLayout;
-    static VkDescriptorSet descriptorSet[MAX_FRAMES_PREPARED_FIX_SOON];
+    static VkDescriptorSet descriptorSet[MAX_FRAMES_PREPARED];
     static VkDescriptorSetLayout textureDescriptorSetLayout;
     static VkDescriptorSetLayout perspectiveLayouts[2];
 
@@ -206,7 +206,7 @@ namespace small3d
     void createDescriptorPool();
     void destroyDescriptorPool();
 
-    VkCommandBuffer commandBuffer[MAX_FRAMES_PREPARED_FIX_SOON] = {};
+    VkCommandBuffer commandBuffer[MAX_FRAMES_PREPARED] = {};
 
     std::vector<Model> garbageModels;
 

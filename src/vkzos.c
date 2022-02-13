@@ -66,6 +66,8 @@ debugCallback(VkDebugReportFlagsEXT flags,
   return VK_FALSE;
 }
 
+static uint32_t max_frames_prepared;
+
 static VkDebugReportCallbackEXT callback;
 
 static BOOL VK_KHR_get_physical_device_properties2_supported = FALSE;
@@ -144,8 +146,8 @@ typedef struct {
 uint32_t pipeline_system_count = 0;
 pipeline_system_struct* pipeline_systems = NULL;
 
-static VkFence gpu_cpu_fence[MAX_FRAMES_PREPARED];
-static VkSemaphore draw_semaphore[MAX_FRAMES_PREPARED], acquire_semaphore[MAX_FRAMES_PREPARED];
+static VkFence* gpu_cpu_fence;
+static VkSemaphore *draw_semaphore, *acquire_semaphore;
 static uint32_t frame_index = 0;
 
 void vkz_wait_gpu_cpu_fence(uint32_t idx) {
@@ -758,13 +760,9 @@ int destroy_depth_image(void) {
   return 1;
 }
 
-int vkz_init(void) {
+int vkz_init(uint32_t max_frames) {
 
-  for (uint32_t idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
-    gpu_cpu_fence[idx] = VK_NULL_HANDLE;
-    acquire_semaphore[idx] = VK_NULL_HANDLE;
-    draw_semaphore[idx] = VK_NULL_HANDLE;
-  }
+  max_frames_prepared = max_frames;
 
   vkz_clear_colour.float32[0] = 0.0f;
   vkz_clear_colour.float32[1] = 0.0f;
@@ -1621,6 +1619,16 @@ int vkz_destroy_draw_command_buffer(VkCommandBuffer* command_buffer) {
 
 int vkz_create_sync_objects(void) {
 
+  gpu_cpu_fence = malloc(max_frames_prepared * sizeof(VkFence));
+  acquire_semaphore = malloc(max_frames_prepared * sizeof(VkSemaphore));
+  draw_semaphore = malloc(max_frames_prepared * sizeof(VkSemaphore));
+
+  for (uint32_t idx = 0; idx < max_frames_prepared; ++idx) {
+    gpu_cpu_fence[idx] = VK_NULL_HANDLE;
+    acquire_semaphore[idx] = VK_NULL_HANDLE;
+    draw_semaphore[idx] = VK_NULL_HANDLE;
+  }
+
   VkFenceCreateInfo fence_ci;
   memset(&fence_ci, 0, sizeof(VkFenceCreateInfo));
   fence_ci.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
@@ -1633,7 +1641,7 @@ int vkz_create_sync_objects(void) {
   sci.pNext = NULL;
   sci.flags = 0;
 
-  for (uint32_t idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
+  for (uint32_t idx = 0; idx < max_frames_prepared; ++idx) {
     if (vkCreateFence(vkz_logical_device, &fence_ci, NULL,
       &gpu_cpu_fence[idx]) !=
       VK_SUCCESS) {
@@ -1661,7 +1669,7 @@ int vkz_create_sync_objects(void) {
 
 int vkz_destroy_sync_objects(void) {
   vkDeviceWaitIdle(vkz_logical_device);
-  for (uint32_t idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
+  for (uint32_t idx = 0; idx < max_frames_prepared; ++idx) {
     vkDestroyFence(vkz_logical_device,
       gpu_cpu_fence[idx], NULL);
     gpu_cpu_fence[idx] = VK_NULL_HANDLE;
@@ -1672,6 +1680,11 @@ int vkz_destroy_sync_objects(void) {
       acquire_semaphore[idx], NULL);
     acquire_semaphore[idx] = VK_NULL_HANDLE;
   }
+
+  free(gpu_cpu_fence);
+  free(acquire_semaphore);
+  free(draw_semaphore);
+
 
   return 1;
 }
@@ -1694,7 +1707,7 @@ int vkz_recreate_pipelines_and_swapchain(void) {
 
 int vkz_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index, uint32_t *frame_index_out) {
 
-  frame_index = (frame_index + 1) % MAX_FRAMES_PREPARED;
+  frame_index = (frame_index + 1) % max_frames_prepared;
   *frame_index_out = frame_index;
 
   VkResult r =
