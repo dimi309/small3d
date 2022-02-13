@@ -1612,8 +1612,9 @@ int vkz_end_draw_command_buffer(VkCommandBuffer* command_buffer) {
 
 int vkz_destroy_draw_command_buffer(VkCommandBuffer* command_buffer) {
 
-  vkFreeCommandBuffers(vkz_logical_device, command_pool, 1, command_buffer);
-
+  if (*command_buffer != VK_NULL_HANDLE) {
+    vkFreeCommandBuffers(vkz_logical_device, command_pool, 1, command_buffer);
+  }
   return 1;
 }
 
@@ -1668,8 +1669,8 @@ int vkz_create_sync_objects(void) {
 }
 
 int vkz_destroy_sync_objects(void) {
-  vkDeviceWaitIdle(vkz_logical_device);
   for (uint32_t idx = 0; idx < max_frames_prepared; ++idx) {
+    vkz_wait_gpu_cpu_fence(idx);
     vkDestroyFence(vkz_logical_device,
       gpu_cpu_fence[idx], NULL);
     gpu_cpu_fence[idx] = VK_NULL_HANDLE;
@@ -1878,11 +1879,10 @@ int end_single_time_commands(VkCommandBuffer command_buffer) {
   si.commandBufferCount = 1;
   si.pCommandBuffers = &command_buffer;
 
-  vkResetFences(vkz_logical_device, 1,
-    &gpu_cpu_fence[frame_index]);
-  vkQueueSubmit(vkz_graphics_queue, 1, &si, gpu_cpu_fence[frame_index]);
+  
+  vkQueueSubmit(vkz_graphics_queue, 1, &si, VK_NULL_HANDLE);
 
-  vkz_wait_gpu_cpu_fence(frame_index);
+  vkDeviceWaitIdle(vkz_logical_device);
 
   vkFreeCommandBuffers(vkz_logical_device,
     command_pool,

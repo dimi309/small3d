@@ -56,9 +56,11 @@ namespace small3d {
     int height) {
     realScreenWidth = width;
     realScreenHeight = height;
+    if (realScreenWidth == 0) realScreenWidth = 1;
+    if (realScreenHeight == 0) realScreenHeight = 1;
     vkz_set_width_height(width, height);
-    LOGDEBUG("New framebuffer dimensions " + std::to_string(width) + " x " +
-      std::to_string(height));
+    LOGDEBUG("New framebuffer dimensions " + std::to_string(realScreenWidth) + " x " +
+      std::to_string(realScreenWidth));
     vkz_recreate_pipelines_and_swapchain();
   }
 #endif
@@ -1755,6 +1757,8 @@ namespace small3d {
       throw std::runtime_error("Could not initialise Vulkan.");
     }
 
+    if (realScreenWidth == 0) realScreenWidth = 1;
+    if (realScreenHeight == 0) realScreenHeight = 1;
     vkz_set_width_height(realScreenWidth, realScreenHeight);
 
     vkz_create_sync_objects();
@@ -1804,6 +1808,13 @@ namespace small3d {
   }
 
   void Renderer::destroyVulkan() {
+
+    vkDeviceWaitIdle(vkz_logical_device);
+    
+    for (uint32_t idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
+      vkz_destroy_draw_command_buffer(&commandBuffer[idx]);
+      commandBuffer[idx] = VK_NULL_HANDLE;
+    }
 
     LOGDEBUG("Destroying buffers...");
 
