@@ -68,7 +68,7 @@ namespace small3d {
   int Renderer::setInputStateCallback(VkPipelineVertexInputStateCreateInfo*
     inputStateCreateInfo) {
 
-    memset(bd, 0, 3 * sizeof(VkVertexInputBindingDescription));
+    memset(bd, 0, 5 * sizeof(VkVertexInputBindingDescription));
 
     bd[0].binding = 0;
     bd[0].stride = 4 * sizeof(float);
@@ -1612,8 +1612,10 @@ namespace small3d {
 
   void Renderer::swapBuffers() {
 
+    uint32_t imageIndexNotNeeded = 0;
+
     vkz_acquire_next_image(pipelineIndex,
-      &currentFrameIndex, &currentFrameIndex);
+      &imageIndexNotNeeded, &currentFrameIndex);
     
     vkz_wait_gpu_cpu_fence(currentFrameIndex);
     vkz_destroy_draw_command_buffer(&commandBuffer[currentFrameIndex]);

@@ -1669,8 +1669,8 @@ int vkz_create_sync_objects(void) {
 }
 
 int vkz_destroy_sync_objects(void) {
+  vkDeviceWaitIdle(vkz_logical_device);
   for (uint32_t idx = 0; idx < max_frames_prepared; ++idx) {
-    vkz_wait_gpu_cpu_fence(idx);
     vkDestroyFence(vkz_logical_device,
       gpu_cpu_fence[idx], NULL);
     gpu_cpu_fence[idx] = VK_NULL_HANDLE;
@@ -1692,7 +1692,7 @@ int vkz_destroy_sync_objects(void) {
 
 int vkz_recreate_pipelines_and_swapchain(void) {
   LOGDEBUG0("Recreating pipelines and swapchain.");
-
+  vkDeviceWaitIdle(vkz_logical_device);
   for (uint32_t i = 0; i < pipeline_system_count; ++i) {
     destroy_pipeline(i, FALSE);
   }
@@ -1744,6 +1744,7 @@ int vkz_present_next_image(void) {
   pinf.pResults = NULL;
   pinf.pWaitSemaphores = &draw_semaphore[frame_index];
   pinf.waitSemaphoreCount = 1;
+  
 
   VkResult r = vkQueuePresentKHR(vkz_present_queue, &pinf);
   if (r == VK_ERROR_OUT_OF_DATE_KHR || r == VK_SUBOPTIMAL_KHR) {
