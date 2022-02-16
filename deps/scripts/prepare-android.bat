@@ -49,7 +49,7 @@ cmake .. -G"MinGW Makefiles" -DVKZOS_TESTS=OFF^
  %CMAKE_DEFINITIONS%
 cmake --build .
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-xcopy ..\include ..\..\include /i /s
+xcopy ..\include ..\..\include /i /s /y
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy .\lib\libvkzos.a ..\..\lib\%%A
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
