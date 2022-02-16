@@ -53,12 +53,28 @@ rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cd ../..
 rm -rf glfw-3.3.2
 
+# Only needed for Vulkan build
+if [ "$2" != "opengl" ]; then
+    tar xvf vkzos-0.0.1.tar.gz
+    cd vkzos-0.0.1
+    mkdir build
+    cd build
+    cmake .. -DVKZOS_TESTS=OFF $CMAKE_DEFINITIONS
+    cmake --build .
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    cp -rf ../include/* ../../include/ 
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    cp lib/libvkzos.a ../../lib/
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    cd ../..
+    rm -rf vkzos-0.0.1
+fi
 
 # Only needed for OpenGL build
 if [ "$2" == "opengl" ]; then
     tar xvf glew-20190928.tgz
     cd glew-2.2.0
-    cmake build/cmake -DBUILD_UTILS=OFF
+    cmake build/cmake -DBUILD_UTILS=OFF $CMAKE_DEFINITIONS
     cmake --build .
     rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp -rf include/GL ../include/
