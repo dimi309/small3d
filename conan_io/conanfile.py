@@ -26,8 +26,7 @@ class Small3dConan(ConanFile):
 
     def requirements(self):
         if self.options.vulkan:
-            self.requires("vulkan-loader/1.2.190")
-            self.requires("vulkan-headers/1.2.190")
+            self.requires("vkzos/0.0.1@dimi309/vkzos")
         else:
             self.requires("glew/2.2.0")
 
@@ -71,4 +70,3 @@ class Small3dConan(ConanFile):
             self.cpp_info.defines = ["SMALL3D_OPENGL"]
         if self.settings.os == "Windows" and self.settings.compiler == "gcc" and not self.options.shared:
             self.cpp_info.system_libs.append("setupapi") # This should normally be in the portaudio package
-
