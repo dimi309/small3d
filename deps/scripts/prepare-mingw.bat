@@ -44,7 +44,7 @@ if /I "%~2" neq "opengl" (
 7z x vkzos-0.0.1.tar.gz
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 7z x vkzos-0.0.1.tar
-cd vkzos
+cd vkzos-0.0.1
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DVKZOS_TESTS=OFF
