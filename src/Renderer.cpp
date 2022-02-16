@@ -7,7 +7,7 @@
  */
 
 extern "C" {
-#include "vkzos.h"
+#include <vkzos/vkzos.h>
 }
 #include "Renderer.hpp"
 #include <stdexcept>

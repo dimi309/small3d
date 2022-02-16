@@ -27,6 +27,7 @@ if(SMALL3D_OPENGL)
 endif()
 
 include_directories(${Vulkan_INCLUDE_DIRS}
+    ${VKZOS_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/include/small3d)
 
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
@@ -42,7 +43,6 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
 elseif(DEFINED ANDROID_PLATFORM) # Android
   target_include_directories(small3d PUBLIC
     ${CMAKE_SOURCE_DIR}/deps/include
-    ${Vulkan_INCLUDE_DIRS}
     ${ZLIB_INCLUDE_DIRS}
     )
 elseif(IOS) #iOS
@@ -54,6 +54,7 @@ endif()
 if(NOT SMALL3D_OPENGL AND NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC, Vulkan
   target_link_libraries(small3d PUBLIC
     ${GLFW_LIBRARIES}
+    ${VKZOS_LIBRARIES}
     ${Vulkan_LIBRARIES}
     ${PNG_LIBRARIES}
     ${VORBIS_LIBRARIES}
@@ -84,6 +85,7 @@ elseif(DEFINED ANDROID_PLATFORM) # Android
     native_app_glue
     aaudio
     ${log-lib}
+    ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/vkzos.a
     ${Vulkan_LIBRARIES}
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libpng.a
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libvorbis.a
@@ -95,6 +97,7 @@ elseif(IOS)
   target_link_libraries(small3d
     ${CMAKE_SOURCE_DIR}/deps/lib/libbz2.a
     ${CMAKE_SOURCE_DIR}/deps/lib/libfreetype.a
+    ${CMAKE_SOURCE_DIR}/deps/lib/vkzos.a
     ${CMAKE_SOURCE_DIR}/deps/lib/libMoltenVK.a
     ${CMAKE_SOURCE_DIR}/deps/lib/libogg.a
     ${CMAKE_SOURCE_DIR}/deps/lib/libpng.a
@@ -152,6 +155,5 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
 AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
 -framework IOKit -framework CoreVideo")
   endif()
-
 
 endif()
