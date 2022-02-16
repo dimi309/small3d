@@ -74,7 +74,7 @@ fi
 if [ "$2" == "opengl" ]; then
     tar xvf glew-20190928.tgz
     cd glew-2.2.0
-    cmake build/cmake -DBUILD_UTILS=OFF $CMAKE_DEFINITIONS
+    cmake build/cmake -DBUILD_UTILS=OFF
     cmake --build .
     rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp -rf include/GL ../include/
