@@ -41,9 +41,9 @@ rmdir /Q /S glfw-3.3.2
 
 rem Only needed for Vulkan build
 if /I "%~2" neq "opengl" (
-7z x vkzos-0.1.tar.gz
+7z x vkzos-0.0.1.tar.gz
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-7z x vkzos-0.1.tar
+7z x vkzos-0.0.1.tar
 cd vkzos
 mkdir build
 cd build
@@ -55,7 +55,7 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy .\lib\libvkzos.a ..\..\lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
-rmdir /Q /S vkzos
+rmdir /Q /S vkzos-0.0.1
 )
 
 rem Only needed for OpenGL build
