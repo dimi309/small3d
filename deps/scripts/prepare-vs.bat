@@ -63,6 +63,7 @@ for /r %%a in (.\lib\*.pdb) do @copy /y "%%a" ..\..\bin
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S vkzos-0.0.1
+del vkzos-0.0.1.tar
 )
 
 rem Only needed for OpenGL build
