@@ -55,14 +55,14 @@ cd build
 cmake .. %VSCONFIG% -DVKZOS_TESTS=OFF
 cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-xcopy ..\include\vkzos ..\..\include\vkzos /i /s
+xcopy ..\include ..\..\include /i /s
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-copy %BUILDTYPE%\vkzos.lib ..\..\lib
+copy .\lib\vkzos.lib ..\..\lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
+for /r %%a in (.\lib\*.pdb) do @copy /y "%%a" ..\..\bin
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
-rmdir /Q /S vkzos-0.1
+rmdir /Q /S vkzos
 )
 
 rem Only needed for OpenGL build

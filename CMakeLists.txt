@@ -79,8 +79,11 @@ elseif(UNIX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 endif()
 
-if(NOT SMALL3D_OPENGL AND NOT IOS) # Linking to MoltenVK explicitly on iOS
-  find_package(Vulkan REQUIRED)
+if(NOT SMALL3D_OPENGL)
+  find_package(VKZOS REQUIRED)
+  if(NOT IOS) # Linking to MoltenVK explicitly on iOS
+    find_package(Vulkan REQUIRED)
+  endif()
 endif()
 
 if(SMALL3D_OPENGL)

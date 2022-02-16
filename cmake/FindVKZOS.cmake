@@ -1,15 +1,16 @@
 find_path(VKZOS_INCLUDE_DIRS
   NAMES
-  VKZOS
+  include
   PATHS
   include
-  /usr/include/vkzos
+  /usr/include/
   )
 
 find_library(
   VKZOS_LIBRARIES
   NAMES
   vkzos
+  libvkzos
   PATHS
   lib
   /usr/lib
