@@ -24,6 +24,22 @@ rm -rf glm
 for androidabi in x86 x86_64 armeabi-v7a arm64-v8a
 do
     mkdir lib/$androidabi
+
+    tar xvf vkzos-0.0.1.tar.gz
+    cd vkzos-0.0.1
+    mkdir build
+    cd build
+    cmake .. -DVKZOS_TESTS=OFF \
+	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
+	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
+    cmake --build .
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    cp -rf ../include/* ../../include/ 
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    cp lib/libvkzos.a ../../lib/$androidabi
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    cd ../..
+    rm -rf vkzos-0.0.1
     
     tar xvf libpng-1.6.37.tar.gz
     cd libpng-1.6.37
