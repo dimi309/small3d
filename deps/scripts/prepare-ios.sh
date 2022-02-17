@@ -103,6 +103,23 @@ unset CXXFLAGS
 unset LDFLAGS
 unset PKG_CONFIG_PATH
 
+if [ $1 = "ios" ]
+then
+    cp $VULKAN_SDK/../MoltenVK/MoltenVK.xcframework/ios-arm64/libMoltenVK.a lib/
+elif [ $1 = "simulator" ]
+then
+    cp $VULKAN_SDK/../MoltenVK/MoltenVK.xcframework/ios-arm64_x86_64-simulator/libMoltenVK.a lib/
+fi
+
+export CFLAGS=-isystem\ $VULKAN_SDK/../MoltenVK/include
+
+cp -rf $VULKAN_SDK/../MoltenVK/include/* include/
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+cp ios/interop.h include/
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+cp ios/interop.m lib/
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 
 if [ $1 = "ios" ]
 then
@@ -122,7 +139,7 @@ cmake --build .
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp -rf ../include/* ../../include/ 
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-cp lib/libvkzos.a ../../lib/
+cp lib/$2/libvkzos.a ../../lib/
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cd ../..
 rm -rf vkzos-0.0.1
@@ -198,20 +215,5 @@ cd ../..
 rm -rf freetype-2.11.0
 
 unset $SDK
-
-if [ $1 = "ios" ]
-then
-    cp $VULKAN_SDK/../MoltenVK/MoltenVK.xcframework/ios-arm64/libMoltenVK.a lib/
-elif [ $1 = "simulator" ]
-then
-    cp $VULKAN_SDK/../MoltenVK/MoltenVK.xcframework/ios-arm64_x86_64-simulator/libMoltenVK.a lib/
-fi
-
-cp -rf $VULKAN_SDK/../MoltenVK/include/* include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-cp ios/interop.h include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-cp ios/interop.m lib/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
 echo "small3d dependencies built successfully for $1 ($2 mode)"

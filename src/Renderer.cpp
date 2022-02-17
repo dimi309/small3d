@@ -1715,7 +1715,7 @@ namespace small3d {
     const char* exts[2];
 
     exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
-    exts[1] = VK_MVK_IOS_SURFACE_EXTENSION_NAME;
+    exts[1] = "VK_MVK_ios_surface"; //VK_MVK_IOS_SURFACE_EXTENSION_NAME;
 
     uint32_t num = 2;
 
