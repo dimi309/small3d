@@ -5,7 +5,7 @@ v1.801 (still open)
 - VS build scripts switched to build with VS 2022 by default. In order to 
   go back to VS 2019 just change the VSCONFIG variables in 
   `srcipts/build-vs.bat` and `deps/scripts/prepare-vs.bat` to 
-  `-G"Visual Studio 17 2022" -A x64`
+  `-G"Visual Studio 16 2019" -A x64`
 - Stability improvements, especially for sound on Android and iOS.
 
 v1.800 2022-01-03
