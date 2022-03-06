@@ -19,13 +19,13 @@ if [ $(uname) == 'Linux' ]; then
     if type -p "apt" > /dev/null ; then
 	sudo apt update
 	# Without Install-Recommends libvulkan-dev does not get installed on travis-ci...
-	sudo apt install -y -o APT::Install-Recommends=1 libgl1-mesa-dev libglfw3-dev libxinerama-dev glslang-tools libvulkan-dev libxcursor-dev libxi-dev
+	sudo apt install -y -o APT::Install-Recommends=1 libgl1-mesa-dev libxinerama-dev glslang-tools libvulkan-dev libxcursor-dev libxi-dev
 	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     elif type -p "dnf" > /dev/null ; then
-	sudo dnf install -y mesa-libGL-devel glfw-devel
+	sudo dnf install -y mesa-libGL-devel
 	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     elif type -p "yum" > /dev/null ; then
-	sudo yum install -y mesa-libGL-devel glfw-devel
+	sudo yum install -y mesa-libGL-devel
 	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     else
 	echo "No package manager found! Cannot install preprequisites."
@@ -39,8 +39,8 @@ mkdir include
 mkdir lib
 
 
-unzip glfw-3.3.2.zip
-cd glfw-3.3.2
+unzip glfw-3.3.6.zip
+cd glfw-3.3.6
 mkdir build
 cd build
 cmake .. -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF $CMAKE_DEFINITIONS
@@ -51,7 +51,7 @@ rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp src/libglfw3.a ../../lib/
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cd ../..
-rm -rf glfw-3.3.2
+rm -rf glfw-3.3.6
 
 # Only needed for Vulkan build
 if [ "$2" != "opengl" ]; then
