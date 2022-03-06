@@ -14,7 +14,7 @@ class Small3dConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch", "cppstd"
     options = {"shared": [True, False], "fPIC": [True, False], "vulkan": [True, False]}
     default_options = {"shared": False, "fPIC": True, "vulkan": False}
-    requires = "bzip2/1.0.8", "freetype/2.11.0", "glfw/3.3.6", "glm/0.9.9.8", "libpng/1.6.37", "vorbis/1.3.7", "zlib/1.2.11", "portaudio/19.7.0@dimi309/community"
+    requires = "bzip2/1.0.8", "freetype/2.11.1", "glfw/3.3.6", "glm/0.9.9.8", "libpng/1.6.37", "vorbis/1.3.7", "zlib/1.2.11", "portaudio/19.7.0@dimi309/community"
     generators = "cmake"
 
     # Sources are located in the same place as this recipe, copy them to the recipe

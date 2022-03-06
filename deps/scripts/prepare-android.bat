@@ -78,10 +78,10 @@ rmdir /Q /S libpng-1.6.37
 del libpng-1.6.37.tar
 del pax_global_header
 
-7z x ogg-1.3.3.tar.gz
+7z x libogg-1.3.5.tar.gz
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
-7z x ogg-1.3.3.tar
-cd ogg-1.3.3
+7z x libogg-1.3.5.tar
+cd libogg-1.3.5
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF^
@@ -96,14 +96,14 @@ if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel!
 copy libogg.a ..\..\lib\%%A
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 cd ..\..\
-rmdir /Q /S ogg-1.3.3
-del ogg-1.3.3.tar
+rmdir /Q /S libogg-1.3.5
+del libogg-1.3.5.tar
 del pax_global_header
 
-7z x vorbis-1.3.6.tar.gz
+7z x libvorbis-1.3.7.tar.gz
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
-7z x vorbis-1.3.6.tar
-cd vorbis-1.3.6
+7z x libvorbis-1.3.7.tar
+cd libvorbis-1.3.7
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF^
@@ -117,14 +117,14 @@ if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel!
 copy lib\*.a ..\..\lib\%%A
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 cd ..\..\
-rmdir /Q /S vorbis-1.3.6
-del vorbis-1.3.6.tar
+rmdir /Q /S libvorbis-1.3.7
+del libvorbis-1.3.7.tar
 del pax_global_header
 
-7z x freetype-2.11.0.tar.gz
+7z x freetype-2.11.1.tar.gz
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
-7z x freetype-2.11.0.tar
-cd freetype-2.11.0
+7z x freetype-2.11.1.tar
+cd freetype-2.11.1
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF^
@@ -139,8 +139,8 @@ if /I "%~1" == "Debug" set FREETYPEBIN=libfreetyped.a
 copy !FREETYPEBIN! ..\..\lib\%%A\libfreetype.a
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 cd ..\..
-rmdir /Q /S freetype-2.11.0
-del freetype-2.11.0.tar
+rmdir /Q /S freetype-2.11.1
+del freetype-2.11.1.tar
 )
 
 @echo small3d dependencies built successfully for Android (%~1 mode)

@@ -124,10 +124,10 @@ rmdir /Q /S libpng-1.6.37
 del libpng-1.6.37.tar
 del pax_global_header
 
-7z x ogg-1.3.3.tar.gz
+7z x libogg-1.3.5.tar.gz
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-7z x ogg-1.3.3.tar
-cd ogg-1.3.3
+7z x libogg-1.3.5.tar
+cd libogg-1.3.5
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF %CMAKE_DEFINITIONS%
@@ -140,16 +140,16 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy libogg.a ..\..\lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
-rmdir /Q /S ogg-1.3.3
-del ogg-1.3.3.tar
+rmdir /Q /S libogg-1.3.5
+del libogg-1.3.5.tar
 del pax_global_header
 
 set depspath=%cd%
 
-7z x vorbis-1.3.6.tar.gz
+7z x libvorbis-1.3.7.tar.gz
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-7z x vorbis-1.3.6.tar
-cd vorbis-1.3.6
+7z x libvorbis-1.3.7.tar
+cd libvorbis-1.3.7
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF -DOGG_ROOT=%depspath% %CMAKE_DEFINITIONS%
@@ -160,8 +160,8 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy lib\*.a ..\..\lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
-rmdir /Q /S vorbis-1.3.6
-del vorbis-1.3.6.tar
+rmdir /Q /S libvorbis-1.3.7
+del libvorbis-1.3.7.tar
 del pax_global_header
 
 7z x pa_stable_v190700_20210406.tgz
@@ -181,10 +181,10 @@ cd ..\..\
 rmdir /Q /S portaudio
 del pa_stable_v190700_20210406.tar
 
-7z x freetype-2.11.0.tar.gz
+7z x freetype-2.11.1.tar.gz
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-7z x freetype-2.11.0.tar
-cd freetype-2.11.0
+7z x freetype-2.11.1.tar
+cd freetype-2.11.1
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF %CMAKE_DEFINITIONS%
@@ -197,8 +197,8 @@ if /I "%~1" == "Debug" set FREETYPELIB=libfreetyped.a
 copy %FREETYPELIB% ..\..\lib\libfreetype.a
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..
-rmdir /Q /S freetype-2.11.0
-del freetype-2.11.0.tar
+rmdir /Q /S freetype-2.11.1
+del freetype-2.11.1.tar
 
 @echo small3d dependencies built successfully for MinGW (%~1 mode)
 

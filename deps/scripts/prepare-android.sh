@@ -59,8 +59,8 @@ do
     cd ../../
     rm -rf libpng-1.6.37
 
-    tar xvf ogg-1.3.3.tar.gz
-    cd ogg-1.3.3
+    tar xvf libogg-1.3.5.tar.gz
+    cd libogg-1.3.5
     mkdir build
     cd build
     cmake .. -DBUILD_SHARED_LIBS=OFF \
@@ -75,10 +75,10 @@ do
     cp libogg.a ../../lib/$androidabi
     rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cd ../../
-    rm -rf ogg-1.3.3
+    rm -rf libogg-1.3.5
 
-    tar xvf vorbis-1.3.6.tar.gz
-    cd vorbis-1.3.6
+    tar xvf libvorbis-1.3.7.tar.gz
+    cd libvorbis-1.3.7
     mkdir build
     cd build
     cmake .. -DBUILD_SHARED_LIBS=OFF \
@@ -92,10 +92,10 @@ do
     cp lib/*.a ../../lib/$androidabi
     rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cd ../../
-    rm -rf vorbis-1.3.6
+    rm -rf libvorbis-1.3.7
 
-    tar xvf freetype-2.11.0.tar.gz
-    cd freetype-2.11.0
+    tar xvf freetype-2.11.1.tar.gz
+    cd freetype-2.11.1
     mkdir build
     cd build
     cmake .. -DBUILD_SHARED_LIBS=OFF \
@@ -114,7 +114,7 @@ do
     rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     
     cd ../..
-    rm -rf freetype-2.11.0
+    rm -rf freetype-2.11.1
 
 done
 
