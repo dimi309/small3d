@@ -25,7 +25,10 @@ class Small3dConan(ConanFile):
             del self.options.fPIC
 
     def requirements(self):
-        if not self.options.vulkan:
+        if self.options.vulkan:
+            self.requires("vulkan-loader/1.2.190")
+            self.requires("vulkan-headers/1.2.190")
+        else:
             self.requires("glew/2.2.0")
 
     def source(self):
