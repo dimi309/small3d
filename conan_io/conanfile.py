@@ -25,9 +25,7 @@ class Small3dConan(ConanFile):
             del self.options.fPIC
 
     def requirements(self):
-        if self.options.vulkan:
-            self.requires("vkzos/0.0.1@dimi309/vkzos")
-        else:
+        if not self.options.vulkan:
             self.requires("glew/2.2.0")
 
     def source(self):
