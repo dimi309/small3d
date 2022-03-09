@@ -35,6 +35,8 @@ file(COPY "include" DESTINATION ".")
 
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
   file(COPY "resources" DESTINATION "./bin")
+else()
+  file(COPY "src/vulkan_helper.h" DESTINATION "./include")
 endif()
 
 if(SMALL3D_OPENGL)
@@ -80,9 +82,6 @@ endif()
 if(NOT SMALL3D_OPENGL)
   if(NOT IOS) # Linking to MoltenVK explicitly on iOS
     find_package(Vulkan REQUIRED)
-    if(NOT DEFINED ANDROID_PLATFORM)
-      find_package(VKZOS REQUIRED)
-    endif()
   endif()
 endif()
 

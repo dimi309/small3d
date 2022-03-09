@@ -44,28 +44,6 @@ for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 cd ..\..
 rmdir /Q /S glfw-3.3.6
 
-rem Only needed for Vulkan build
-if /I "%~2" neq "opengl" (
-7z x vkzos-0.0.1.tar.gz
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-7z x vkzos-0.0.1.tar
-cd vkzos-0.0.1
-mkdir build
-cd build
-cmake .. %VSCONFIG% -DVKZOS_TESTS=OFF
-cmake --build . --config %BUILDTYPE%
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-xcopy ..\include ..\..\include /i /s
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-copy .\lib\vkzos.lib ..\..\lib
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-for /r %%a in (.\lib\*.pdb) do @copy /y "%%a" ..\..\bin
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-cd ..\..\
-rmdir /Q /S vkzos-0.0.1
-del vkzos-0.0.1.tar
-)
-
 rem Only needed for OpenGL build
 if /I "%~2" == "opengl" (
 7z x glew-20190928.tgz

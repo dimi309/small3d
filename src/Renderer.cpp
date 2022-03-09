@@ -6,8 +6,12 @@
  *     License: BSD 3-Clause License (see LICENSE file)
  */
 
+#ifdef SMALL3D_IOS
+#define VULKAN_HELPER_IOS
+#endif
+
 extern "C" {
-#include <vkzos.h>
+#include "vulkan_helper.h"
 }
 #include "Renderer.hpp"
 #include <stdexcept>
@@ -58,10 +62,10 @@ namespace small3d {
     realScreenHeight = height;
     if (realScreenWidth == 0) realScreenWidth = 1;
     if (realScreenHeight == 0) realScreenHeight = 1;
-    vkz_set_width_height(width, height);
+    vh_set_width_height(width, height);
     LOGDEBUG("New framebuffer dimensions " + std::to_string(realScreenWidth) + " x " +
       std::to_string(realScreenWidth));
-    vkz_recreate_pipelines_and_swapchain();
+    vh_recreate_pipelines_and_swapchain();
   }
 #endif
 
@@ -214,7 +218,7 @@ namespace small3d {
     dpci.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
     dpci.maxSets = MAX_FRAMES_PREPARED * objectsPerFrame;
 
-    if (vkCreateDescriptorPool(vkz_logical_device, &dpci, NULL,
+    if (vkCreateDescriptorPool(vh_logical_device, &dpci, NULL,
       &descriptorPool) != VK_SUCCESS) {
       LOGDEBUG("Failed to create descriptor pool.");
     }
@@ -225,7 +229,7 @@ namespace small3d {
   }
 
   void Renderer::destroyDescriptorPool() {
-    vkDestroyDescriptorPool(vkz_logical_device, descriptorPool, NULL);
+    vkDestroyDescriptorPool(vh_logical_device, descriptorPool, NULL);
     descriptorPool = VK_NULL_HANDLE;
   }
 
@@ -269,7 +273,7 @@ namespace small3d {
     dslci.bindingCount = 4;
     dslci.pBindings = dslb;
 
-    if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
+    if (vkCreateDescriptorSetLayout(vh_logical_device, &dslci, NULL,
       &descriptorSetLayout) != VK_SUCCESS) {
       throw std::runtime_error("Failed to create descriptor set layout.");
     }
@@ -287,7 +291,7 @@ namespace small3d {
     for (uint32_t idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
       descriptorSet[idx] = {};
 
-      if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
+      if (vkAllocateDescriptorSets(vh_logical_device, &dsai,
         &descriptorSet[idx]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to allocate descriptor sets.");
       }
@@ -308,7 +312,7 @@ namespace small3d {
     dslci.pBindings = dslb;
 
 
-    if (vkCreateDescriptorSetLayout(vkz_logical_device, &dslci, NULL,
+    if (vkCreateDescriptorSetLayout(vh_logical_device, &dslci, NULL,
       &textureDescriptorSetLayout) != VK_SUCCESS) {
       throw std::runtime_error("Failed to create texture "
         "descriptor set layout.");
@@ -387,22 +391,22 @@ namespace small3d {
     wds[3].pImageInfo = NULL;
     wds[3].pTexelBufferView = NULL;
 
-    vkUpdateDescriptorSets(vkz_logical_device, 4, &wds[0], 0, NULL);
+    vkUpdateDescriptorSets(vh_logical_device, 4, &wds[0], 0, NULL);
   }
 
   void Renderer::destroyDescriptorSets() {
     for (uint32_t idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
-      if (vkFreeDescriptorSets(vkz_logical_device, descriptorPool, 1,
+      if (vkFreeDescriptorSets(vh_logical_device, descriptorPool, 1,
         &descriptorSet[idx]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to free descriptor sets.");
       }
       descriptorSet[idx] = VK_NULL_HANDLE;
     }
 
-    vkDestroyDescriptorSetLayout(vkz_logical_device,
+    vkDestroyDescriptorSetLayout(vh_logical_device,
       descriptorSetLayout, NULL);
 
-    vkDestroyDescriptorSetLayout(vkz_logical_device,
+    vkDestroyDescriptorSetLayout(vh_logical_device,
       textureDescriptorSetLayout, NULL);
   }
 
@@ -525,19 +529,19 @@ namespace small3d {
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
 
-    if (!vkz_create_buffer(&stagingBuffer, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+    if (!vh_create_buffer(&stagingBuffer, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
       imageByteSize, &stagingBufferMemory, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
       VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
       throw std::runtime_error("Failed to create staging buffer for texture.");
     }
 
     void* imgData;
-    vkMapMemory(vkz_logical_device, stagingBufferMemory, 0, VK_WHOLE_SIZE,
+    vkMapMemory(vh_logical_device, stagingBufferMemory, 0, VK_WHOLE_SIZE,
       0, &imgData);
     memcpy(imgData, &(*textureHandlePtr->data)[0], imageByteSize);
-    vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+    vkUnmapMemory(vh_logical_device, stagingBufferMemory);
 
-    if (!vkz_create_image(&textureHandlePtr->image, static_cast<uint32_t>(textureHandlePtr->width),
+    if (!vh_create_image(&textureHandlePtr->image, static_cast<uint32_t>(textureHandlePtr->width),
       static_cast<uint32_t>(textureHandlePtr->height),
       VK_FORMAT_R32G32B32A32_SFLOAT, VK_IMAGE_TILING_OPTIMAL,
       VK_IMAGE_USAGE_TRANSFER_DST_BIT |
@@ -548,22 +552,22 @@ namespace small3d {
         " as a texture.");
     }
 
-    vkz_transition_image_layout(textureHandlePtr->image,
+    vh_transition_image_layout(textureHandlePtr->image,
       VK_FORMAT_R32G32B32A32_SFLOAT,
       VK_IMAGE_LAYOUT_UNDEFINED,
       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
-    vkz_copy_buffer_to_image(stagingBuffer, textureHandlePtr->image,
+    vh_copy_buffer_to_image(stagingBuffer, textureHandlePtr->image,
       (uint32_t)textureHandlePtr->width, (uint32_t)textureHandlePtr->height);
 
-    vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+    vh_destroy_buffer(stagingBuffer, stagingBufferMemory);
 
-    vkz_transition_image_layout(textureHandlePtr->image,
+    vh_transition_image_layout(textureHandlePtr->image,
       VK_FORMAT_R32G32B32A32_SFLOAT,
       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
       VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-    if (!vkz_create_image_view(&textureHandlePtr->imageView, textureHandlePtr->image,
+    if (!vh_create_image_view(&textureHandlePtr->imageView, textureHandlePtr->image,
       VK_FORMAT_R32G32B32A32_SFLOAT,
       VK_IMAGE_ASPECT_COLOR_BIT)) {
       throw std::runtime_error("Failed to create texture image view!\n\r");
@@ -580,7 +584,7 @@ namespace small3d {
 
     for (int idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
       textureHandlePtr->descriptorSet[idx] = {};
-      if (vkAllocateDescriptorSets(vkz_logical_device, &dsai,
+      if (vkAllocateDescriptorSets(vh_logical_device, &dsai,
         &textureHandlePtr->descriptorSet[idx]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to allocate texture descriptor set.");
       }
@@ -605,7 +609,7 @@ namespace small3d {
       wds.pImageInfo = &diiTexture;
       wds.pTexelBufferView = NULL;
 
-      vkUpdateDescriptorSets(vkz_logical_device, 1, &wds, 0, NULL);
+      vkUpdateDescriptorSets(vh_logical_device, 1, &wds, 0, NULL);
     }
 
 
@@ -644,7 +648,7 @@ namespace small3d {
 
   void Renderer::allocateDynamicBuffers() {
     VkPhysicalDeviceProperties pdp = {};
-    vkGetPhysicalDeviceProperties(vkz_physical_device, &pdp);
+    vkGetPhysicalDeviceProperties(vh_physical_device, &pdp);
     VkDeviceSize minAlignment = pdp.limits.minUniformBufferOffsetAlignment;
 
     dynamicModelPlacementAlignment = sizeof(UboModelPlacement);
@@ -662,7 +666,7 @@ namespace small3d {
     renderModelPlacementBuffersDynamicMemory.resize(MAX_FRAMES_PREPARED);
 
     for (size_t i = 0; i < MAX_FRAMES_PREPARED; ++i) {
-      vkz_create_buffer(&renderModelPlacementBuffersDynamic[i],
+      vh_create_buffer(&renderModelPlacementBuffersDynamic[i],
         VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
         (uint32_t)uboModelPlacementDynamicSize,
         &renderModelPlacementBuffersDynamicMemory[i],
@@ -686,7 +690,7 @@ namespace small3d {
     worldDetailsBuffersDynamicMemory.resize(MAX_FRAMES_PREPARED);
 
     for (size_t i = 0; i < MAX_FRAMES_PREPARED; ++i) {
-      vkz_create_buffer(&worldDetailsBuffersDynamic[i],
+      vh_create_buffer(&worldDetailsBuffersDynamic[i],
         VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
         (uint32_t)uboWorldDetailsDynamicSize,
         &worldDetailsBuffersDynamicMemory[i],
@@ -712,7 +716,7 @@ namespace small3d {
 
 
     for (size_t i = 0; i < MAX_FRAMES_PREPARED; ++i) {
-      vkz_create_buffer(&colourBuffersDynamic[i],
+      vh_create_buffer(&colourBuffersDynamic[i],
         VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
         (uint32_t)uboColourDynamicSize,
         &colourBuffersDynamicMemory[i],
@@ -745,21 +749,21 @@ namespace small3d {
     for (uint32_t i = 0; i < MAX_FRAMES_PREPARED; ++i) {
 
       if (i < renderModelPlacementBuffersDynamic.size()) {
-        vkz_destroy_buffer(renderModelPlacementBuffersDynamic[i],
+        vh_destroy_buffer(renderModelPlacementBuffersDynamic[i],
           renderModelPlacementBuffersDynamicMemory[i]);
       }
 
       if (i < worldDetailsBuffersDynamic.size()) {
-        vkz_destroy_buffer(worldDetailsBuffersDynamic[i],
+        vh_destroy_buffer(worldDetailsBuffersDynamic[i],
           worldDetailsBuffersDynamicMemory[i]);
       }
 
       if (i < lightIntensityBuffers.size()) {
-        vkz_destroy_buffer(lightIntensityBuffers[i],
+        vh_destroy_buffer(lightIntensityBuffers[i],
           lightIntensityBufferMemories[i]);
       }
       if (i < colourBuffersDynamic.size()) {
-        vkz_destroy_buffer(colourBuffersDynamic[i],
+        vh_destroy_buffer(colourBuffersDynamic[i],
           colourBuffersDynamicMemory[i]);
       }
     }
@@ -779,9 +783,9 @@ namespace small3d {
 
   void Renderer::initWindow(int& width, int& height) {
 #if defined(__ANDROID__)
-    assert(vkz_android_app->window != nullptr);
-    width = ANativeWindow_getWidth(vkz_android_app->window);
-    height = ANativeWindow_getHeight(vkz_android_app->window);
+    assert(vh_android_app->window != nullptr);
+    width = ANativeWindow_getWidth(vh_android_app->window);
+    height = ANativeWindow_getHeight(vh_android_app->window);
 #elif defined(SMALL3D_IOS)
     width = get_app_width();
     height = get_app_height();
@@ -874,7 +878,7 @@ namespace small3d {
         std::vector<VkDeviceMemory>(MAX_FRAMES_PREPARED);
 
       for (size_t i = 0; i < MAX_FRAMES_PREPARED; i++) {
-        vkz_create_buffer(&lightIntensityBuffers[i],
+        vh_create_buffer(&lightIntensityBuffers[i],
           VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
           lightIntensitySize,
           &lightIntensityBufferMemories[i],
@@ -884,26 +888,26 @@ namespace small3d {
     }
 
     void* lightIntensityData;
-    vkMapMemory(vkz_logical_device,
+    vkMapMemory(vh_logical_device,
       lightIntensityBufferMemories[currentFrameIndex],
       0, lightIntensitySize, 0, &lightIntensityData);
     memcpy(lightIntensityData, &light, lightIntensitySize);
-    vkUnmapMemory(vkz_logical_device,
+    vkUnmapMemory(vh_logical_device,
       lightIntensityBufferMemories[currentFrameIndex]);
   }
 
   void Renderer::deleteImageFromGPU(VulkanImage& gpuImage) {
-    vkDeviceWaitIdle(vkz_logical_device);
+    vkDeviceWaitIdle(vh_logical_device);
     for (int idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
-      if (vkFreeDescriptorSets(vkz_logical_device, descriptorPool, 1,
+      if (vkFreeDescriptorSets(vh_logical_device, descriptorPool, 1,
         &gpuImage.descriptorSet[idx]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to free texture descriptor set.");
       }
     }
 
-    vkDestroyImageView(vkz_logical_device,
+    vkDestroyImageView(vh_logical_device,
       gpuImage.imageView, NULL);
-    vkz_destroy_image(gpuImage.image,
+    vh_destroy_image(gpuImage.image,
       gpuImage.imageMemory);
   }
 
@@ -1063,7 +1067,7 @@ namespace small3d {
 
       LOGDEBUG("Loading font from " + faceFullPath);
 #ifdef __ANDROID__
-      AAsset* asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+      AAsset* asset = AAssetManager_open(vh_android_app->activity->assetManager,
         faceFullPath.c_str(),
         AASSET_MODE_STREAMING);
       if (!asset) throw std::runtime_error("Opening asset " + faceFullPath +
@@ -1262,7 +1266,7 @@ namespace small3d {
 
       // Send vertex data to GPU
 
-      if (!vkz_create_buffer(&model.positionBuffer,
+      if (!vh_create_buffer(&model.positionBuffer,
         VK_BUFFER_USAGE_TRANSFER_DST_BIT |
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
         model.vertexDataByteSize,
@@ -1276,23 +1280,23 @@ namespace small3d {
       VkBuffer stagingBuffer;
       VkDeviceMemory stagingBufferMemory;
 
-      if (vkz_create_buffer(&stagingBuffer,
+      if (vh_create_buffer(&stagingBuffer,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         model.vertexDataByteSize,
         &stagingBufferMemory,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
         void* stagingData;
-        vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
+        vkMapMemory(vh_logical_device, stagingBufferMemory, 0,
           VK_WHOLE_SIZE,
           0, &stagingData);
         memcpy(stagingData, &model.vertexData[0], model.vertexDataByteSize);
-        vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+        vkUnmapMemory(vh_logical_device, stagingBufferMemory);
 
-        vkz_copy_buffer(stagingBuffer, model.positionBuffer,
+        vh_copy_buffer(stagingBuffer, model.positionBuffer,
           model.vertexDataByteSize);
 
-        vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+        vh_destroy_buffer(stagingBuffer, stagingBufferMemory);
       }
       else {
         throw std::runtime_error("Failed to create the staging buffer"
@@ -1301,7 +1305,7 @@ namespace small3d {
 
       // Send index data
 
-      if (!vkz_create_buffer(&model.indexBuffer,
+      if (!vh_create_buffer(&model.indexBuffer,
         VK_BUFFER_USAGE_TRANSFER_DST_BIT |
         VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
         model.indexDataByteSize,
@@ -1312,23 +1316,23 @@ namespace small3d {
 
       allocatedBufferMemory.insert(std::make_pair(model.indexBuffer, model.indexBufferMemory));
 
-      if (vkz_create_buffer(&stagingBuffer,
+      if (vh_create_buffer(&stagingBuffer,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         model.indexDataByteSize,
         &stagingBufferMemory,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
         void* stagingData;
-        vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
+        vkMapMemory(vh_logical_device, stagingBufferMemory, 0,
           VK_WHOLE_SIZE,
           0, &stagingData);
         memcpy(stagingData, &model.indexData[0], model.indexDataByteSize);
-        vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+        vkUnmapMemory(vh_logical_device, stagingBufferMemory);
 
-        vkz_copy_buffer(stagingBuffer, model.indexBuffer,
+        vh_copy_buffer(stagingBuffer, model.indexBuffer,
           model.indexDataByteSize);
 
-        vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+        vh_destroy_buffer(stagingBuffer, stagingBufferMemory);
       }
       else {
         throw std::runtime_error("Failed to create the staging"
@@ -1343,7 +1347,7 @@ namespace small3d {
 
       auto nrByteSize = model.normalsDataByteSize == 0 ? (model.vertexDataByteSize / 4) * 3 : model.normalsDataByteSize;
 
-      if (!vkz_create_buffer(&model.normalsBuffer,
+      if (!vh_create_buffer(&model.normalsBuffer,
         VK_BUFFER_USAGE_TRANSFER_DST_BIT |
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
         nrByteSize,
@@ -1354,14 +1358,14 @@ namespace small3d {
 
       allocatedBufferMemory.insert(std::make_pair(model.normalsBuffer, model.normalsBufferMemory));
 
-      if (vkz_create_buffer(&stagingBuffer,
+      if (vh_create_buffer(&stagingBuffer,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         nrByteSize,
         &stagingBufferMemory,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
         void* normalsData;
-        vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
+        vkMapMemory(vh_logical_device, stagingBufferMemory, 0,
           VK_WHOLE_SIZE,
           0, &normalsData);
 
@@ -1373,12 +1377,12 @@ namespace small3d {
           memset(normalsData, 0, nrByteSize);
         }
 
-        vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+        vkUnmapMemory(vh_logical_device, stagingBufferMemory);
 
-        vkz_copy_buffer(stagingBuffer, model.normalsBuffer,
+        vh_copy_buffer(stagingBuffer, model.normalsBuffer,
           nrByteSize);
 
-        vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+        vh_destroy_buffer(stagingBuffer, stagingBufferMemory);
       }
       else {
         throw std::runtime_error("Failed to create the staging"
@@ -1387,7 +1391,7 @@ namespace small3d {
 
       auto uvByteSize = model.textureCoordsDataByteSize == 0 ? model.vertexDataByteSize / 2 : model.textureCoordsDataByteSize;
 
-      if (!vkz_create_buffer(&model.uvBuffer,
+      if (!vh_create_buffer(&model.uvBuffer,
         VK_BUFFER_USAGE_TRANSFER_DST_BIT |
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
         uvByteSize,
@@ -1398,14 +1402,14 @@ namespace small3d {
 
       allocatedBufferMemory.insert(std::make_pair(model.uvBuffer, model.uvBufferMemory));
 
-      if (vkz_create_buffer(&stagingBuffer,
+      if (vh_create_buffer(&stagingBuffer,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         uvByteSize,
         &stagingBufferMemory,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
         void* uvData;
-        vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
+        vkMapMemory(vh_logical_device, stagingBufferMemory, 0,
           VK_WHOLE_SIZE,
           0, &uvData);
 
@@ -1417,12 +1421,12 @@ namespace small3d {
           memset(uvData, 0, uvByteSize);
         }
 
-        vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+        vkUnmapMemory(vh_logical_device, stagingBufferMemory);
 
-        vkz_copy_buffer(stagingBuffer, model.uvBuffer,
+        vh_copy_buffer(stagingBuffer, model.uvBuffer,
           uvByteSize);
 
-        vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+        vh_destroy_buffer(stagingBuffer, stagingBufferMemory);
       }
       else {
         throw std::runtime_error("Failed to create the staging"
@@ -1432,7 +1436,7 @@ namespace small3d {
       auto jointByteSize = model.jointDataByteSize == 0 ? model.vertexDataByteSize / 4 :
         model.jointDataByteSize;
 
-      if (!vkz_create_buffer(&model.jointBuffer,
+      if (!vh_create_buffer(&model.jointBuffer,
         VK_BUFFER_USAGE_TRANSFER_DST_BIT |
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
         jointByteSize,
@@ -1443,14 +1447,14 @@ namespace small3d {
 
       allocatedBufferMemory.insert(std::make_pair(model.jointBuffer, model.jointBufferMemory));
 
-      if (vkz_create_buffer(&stagingBuffer,
+      if (vh_create_buffer(&stagingBuffer,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         jointByteSize,
         &stagingBufferMemory,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
         void* jointData;
-        vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
+        vkMapMemory(vh_logical_device, stagingBufferMemory, 0,
           VK_WHOLE_SIZE,
           0, &jointData);
 
@@ -1461,12 +1465,12 @@ namespace small3d {
         else {
           memset(jointData, 0, jointByteSize);
         }
-        vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+        vkUnmapMemory(vh_logical_device, stagingBufferMemory);
 
-        vkz_copy_buffer(stagingBuffer, model.jointBuffer,
+        vh_copy_buffer(stagingBuffer, model.jointBuffer,
           jointByteSize);
 
-        vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+        vh_destroy_buffer(stagingBuffer, stagingBufferMemory);
       }
       else {
         throw std::runtime_error("Failed to create the staging"
@@ -1475,7 +1479,7 @@ namespace small3d {
 
       auto weightByteSize = model.weightDataByteSize == 0 ? model.vertexDataByteSize :
         model.weightDataByteSize;
-      if (!vkz_create_buffer(&model.weightBuffer,
+      if (!vh_create_buffer(&model.weightBuffer,
         VK_BUFFER_USAGE_TRANSFER_DST_BIT |
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
         weightByteSize,
@@ -1486,14 +1490,14 @@ namespace small3d {
 
       allocatedBufferMemory.insert(std::make_pair(model.weightBuffer, model.weightBufferMemory));
 
-      if (vkz_create_buffer(&stagingBuffer,
+      if (vh_create_buffer(&stagingBuffer,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         weightByteSize,
         &stagingBufferMemory,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
         void* weightData;
-        vkMapMemory(vkz_logical_device, stagingBufferMemory, 0,
+        vkMapMemory(vh_logical_device, stagingBufferMemory, 0,
           VK_WHOLE_SIZE,
           0, &weightData);
 
@@ -1505,12 +1509,12 @@ namespace small3d {
           memset(weightData, 0, weightByteSize);
         }
 
-        vkUnmapMemory(vkz_logical_device, stagingBufferMemory);
+        vkUnmapMemory(vh_logical_device, stagingBufferMemory);
 
-        vkz_copy_buffer(stagingBuffer, model.weightBuffer,
+        vh_copy_buffer(stagingBuffer, model.weightBuffer,
           weightByteSize);
 
-        vkz_destroy_buffer(stagingBuffer, stagingBufferMemory);
+        vh_destroy_buffer(stagingBuffer, stagingBufferMemory);
       }
       else {
         throw std::runtime_error("Failed to create the staging"
@@ -1578,19 +1582,19 @@ namespace small3d {
   }
 
   void Renderer::clearBuffers(Model& model) {
-    vkDeviceWaitIdle(vkz_logical_device);
+    vkDeviceWaitIdle(vh_logical_device);
     if (model.alreadyInGPU) {
-      vkz_destroy_buffer(model.positionBuffer, model.positionBufferMemory);
+      vh_destroy_buffer(model.positionBuffer, model.positionBufferMemory);
       allocatedBufferMemory.erase(model.positionBuffer);
-      vkz_destroy_buffer(model.indexBuffer, model.indexBufferMemory);
+      vh_destroy_buffer(model.indexBuffer, model.indexBufferMemory);
       allocatedBufferMemory.erase(model.indexBuffer);
-      vkz_destroy_buffer(model.normalsBuffer, model.normalsBufferMemory);
+      vh_destroy_buffer(model.normalsBuffer, model.normalsBufferMemory);
       allocatedBufferMemory.erase(model.normalsBuffer);
-      vkz_destroy_buffer(model.uvBuffer, model.uvBufferMemory);
+      vh_destroy_buffer(model.uvBuffer, model.uvBufferMemory);
       allocatedBufferMemory.erase(model.uvBuffer);
-      vkz_destroy_buffer(model.jointBuffer, model.jointBufferMemory);
+      vh_destroy_buffer(model.jointBuffer, model.jointBufferMemory);
       allocatedBufferMemory.erase(model.jointBuffer);
-      vkz_destroy_buffer(model.weightBuffer, model.weightBufferMemory);
+      vh_destroy_buffer(model.weightBuffer, model.weightBufferMemory);
       allocatedBufferMemory.erase(model.weightBuffer);
       model.alreadyInGPU = false;
     }
@@ -1604,21 +1608,21 @@ namespace small3d {
 
   void Renderer::setBackgroundColour(const glm::vec4& colour) {
     backgroundColour = colour;
-    vkz_clear_colour.float32[0] = colour.r;
-    vkz_clear_colour.float32[1] = colour.g;
-    vkz_clear_colour.float32[2] = colour.b;
-    vkz_clear_colour.float32[3] = colour.a;
+    vh_clear_colour.float32[0] = colour.r;
+    vh_clear_colour.float32[1] = colour.g;
+    vh_clear_colour.float32[2] = colour.b;
+    vh_clear_colour.float32[3] = colour.a;
   }
 
   void Renderer::swapBuffers() {
 
     uint32_t imageIndexNotNeeded = 0;
 
-    vkz_acquire_next_image(pipelineIndex,
+    vh_acquire_next_image(pipelineIndex,
       &imageIndexNotNeeded, &currentFrameIndex);
     
-    vkz_wait_gpu_cpu_fence(currentFrameIndex);
-    vkz_destroy_draw_command_buffer(&commandBuffer[currentFrameIndex]);
+    vh_wait_gpu_cpu_fence(currentFrameIndex);
+    vh_destroy_draw_command_buffer(&commandBuffer[currentFrameIndex]);
 
     modelPlacementMemIndex = 0;
     colourMemIndex = 0;
@@ -1629,50 +1633,50 @@ namespace small3d {
 
     // Updating object positioning 
     void* modelPlacementData;
-    vkMapMemory(vkz_logical_device,
+    vkMapMemory(vh_logical_device,
       renderModelPlacementBuffersDynamicMemory[currentFrameIndex],
       0, uboModelPlacementDynamicSize, 0, &modelPlacementData);
     memcpy(modelPlacementData, uboModelPlacementDynamic, uboModelPlacementDynamicSize);
-    vkUnmapMemory(vkz_logical_device,
+    vkUnmapMemory(vh_logical_device,
       renderModelPlacementBuffersDynamicMemory[currentFrameIndex]);
 
     // Updating world details
     void* worldDetailsData;
-    vkMapMemory(vkz_logical_device,
+    vkMapMemory(vh_logical_device,
       worldDetailsBuffersDynamicMemory[currentFrameIndex],
       0, uboWorldDetailsDynamicSize, 0, &worldDetailsData);
     memcpy(worldDetailsData, uboWorldDetailsDynamic, uboWorldDetailsDynamicSize);
-    vkUnmapMemory(vkz_logical_device,
+    vkUnmapMemory(vh_logical_device,
       worldDetailsBuffersDynamicMemory[currentFrameIndex]);
 
     // Updating colour
     void* colourData;
-    vkMapMemory(vkz_logical_device,
+    vkMapMemory(vh_logical_device,
       colourBuffersDynamicMemory[currentFrameIndex],
       0, uboColourDynamicSize, 0, &colourData);
     memcpy(colourData, uboColourDynamic, uboColourDynamicSize);
-    vkUnmapMemory(vkz_logical_device,
+    vkUnmapMemory(vh_logical_device,
       colourBuffersDynamicMemory[currentFrameIndex]);
 
     // All of the above is bound here.
     updateDescriptorSets();
 
-    vkz_begin_draw_command_buffer(&commandBuffer[currentFrameIndex]);
+    vh_begin_draw_command_buffer(&commandBuffer[currentFrameIndex]);
 
     for (auto& model : nextModelsToDraw) {
-      vkz_bind_pipeline_to_command_buffer(pipelineIndex,
+      vh_bind_pipeline_to_command_buffer(pipelineIndex,
         &commandBuffer[currentFrameIndex]);
       bindBuffers(commandBuffer[currentFrameIndex], model);
       recordDrawCommand(commandBuffer[currentFrameIndex],
-        vkz_pipeline_layout[pipelineIndex],
+        vh_pipeline_layout[pipelineIndex],
         model, currentFrameIndex, model.perspective);
     }
 
-    vkz_end_draw_command_buffer(&commandBuffer[currentFrameIndex]);
+    vh_end_draw_command_buffer(&commandBuffer[currentFrameIndex]);
 
-    vkz_draw(&commandBuffer[currentFrameIndex]);
+    vh_draw(&commandBuffer[currentFrameIndex]);
 
-    vkz_present_next_image();
+    vh_present_next_image();
 
     nextModelsToDraw.clear();
 
@@ -1696,7 +1700,7 @@ namespace small3d {
 
     LOGDEBUG("Creating Vulkan instance...");
 
-    if (!vkz_create_instance(windowTitle.c_str(), exts, num)) {
+    if (!vh_create_instance(windowTitle.c_str(), exts, num)) {
       throw std::runtime_error("Failed to create Vulkan instance.");
     }
 
@@ -1704,9 +1708,9 @@ namespace small3d {
     sci.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
     sci.pNext = nullptr;
     sci.flags = 0;
-    sci.window = vkz_android_app->window;
+    sci.window = vh_android_app->window;
     LOGDEBUG("Creating surface...");
-    if (vkCreateAndroidSurfaceKHR(vkz_instance, &sci, nullptr, &vkz_surface) !=
+    if (vkCreateAndroidSurfaceKHR(vh_instance, &sci, nullptr, &vh_surface) !=
       VK_SUCCESS) {
       throw std::runtime_error("Could not create surface.");
     }
@@ -1721,11 +1725,11 @@ namespace small3d {
 
     LOGDEBUG("Creating Vulkan instance...");
 
-    if (!vkz_create_instance(windowTitle.c_str(), exts, num)) {
+    if (!vh_create_instance(windowTitle.c_str(), exts, num)) {
       throw std::runtime_error("Failed to create Vulkan instance.");
     }
 
-    if (!create_ios_surface(vkz_instance, &vkz_surface)) {
+    if (!create_ios_surface(vh_instance, &vh_surface)) {
       throw std::runtime_error("Could not create surface.");
     }
 
@@ -1744,30 +1748,30 @@ namespace small3d {
     }
     printf("\n\r");
 
-    if (!vkz_create_instance(windowTitle.c_str(), glfwExtensions,
+    if (!vh_create_instance(windowTitle.c_str(), glfwExtensions,
       glfwExtensionCount)) {
       throw std::runtime_error("Failed to create Vulkan instance.");
     }
 
-    if (glfwCreateWindowSurface(vkz_instance, window, NULL, &vkz_surface) !=
+    if (glfwCreateWindowSurface(vh_instance, window, NULL, &vh_surface) !=
       VK_SUCCESS) {
       throw std::runtime_error("Could not create surface.");
     }
 #endif
 
-    if (!vkz_init(MAX_FRAMES_PREPARED)) {
+    if (!vh_init(MAX_FRAMES_PREPARED)) {
       throw std::runtime_error("Could not initialise Vulkan.");
     }
 
     if (realScreenWidth == 0) realScreenWidth = 1;
     if (realScreenHeight == 0) realScreenHeight = 1;
-    vkz_set_width_height(realScreenWidth, realScreenHeight);
+    vh_set_width_height(realScreenWidth, realScreenHeight);
 
-    vkz_create_sync_objects();
+    vh_create_sync_objects();
 
     LOGDEBUG("Creating swapchain...");
 
-    if (!vkz_create_swapchain()) {
+    if (!vh_create_swapchain()) {
       throw std::runtime_error("Failed to create swapchain.");
     }
 
@@ -1781,11 +1785,11 @@ namespace small3d {
     std::string fragmentShaderPath = this->shadersPath +
       "textureShader.spv";
 
-    if (!vkz_create_sampler(&textureSampler)) {
+    if (!vh_create_sampler(&textureSampler)) {
       throw std::runtime_error("Failed to create the sampler!");
     }
 
-    if (!vkz_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
+    if (!vh_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
       setInputStateCallback, setPipelineLayoutCallback,
       &pipelineIndex)) {
       throw std::runtime_error("Could not create the Vulkan pipeline!");
@@ -1803,25 +1807,25 @@ namespace small3d {
     memoryResetModelRenderIndex = nextModelRenderIndex;
     currentFrameIndex = 0;
 
-    vkz_clear_colour.float32[0] = backgroundColour.r;
-    vkz_clear_colour.float32[1] = backgroundColour.g;
-    vkz_clear_colour.float32[2] = backgroundColour.b;
-    vkz_clear_colour.float32[3] = backgroundColour.a;
+    vh_clear_colour.float32[0] = backgroundColour.r;
+    vh_clear_colour.float32[1] = backgroundColour.g;
+    vh_clear_colour.float32[2] = backgroundColour.b;
+    vh_clear_colour.float32[3] = backgroundColour.a;
   }
 
   void Renderer::destroyVulkan() {
 
-    vkDeviceWaitIdle(vkz_logical_device);
+    vkDeviceWaitIdle(vh_logical_device);
     
     for (uint32_t idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
-      vkz_destroy_draw_command_buffer(&commandBuffer[idx]);
+      vh_destroy_draw_command_buffer(&commandBuffer[idx]);
       commandBuffer[idx] = VK_NULL_HANDLE;
     }
 
     LOGDEBUG("Destroying buffers...");
 
     for (auto& b : allocatedBufferMemory) {
-      vkz_destroy_buffer(b.first, b.second);
+      vh_destroy_buffer(b.first, b.second);
     }
 
     allocatedBufferMemory.clear();
@@ -1835,9 +1839,9 @@ namespace small3d {
       deleteImageFromGPU(t.second);
     }
 
-    vkz_destroy_pipeline(pipelineIndex);
+    vh_destroy_pipeline(pipelineIndex);
 
-    vkDestroySampler(vkz_logical_device, textureSampler, NULL);
+    vkDestroySampler(vh_logical_device, textureSampler, NULL);
 
     destroyDescriptorSets();
 
@@ -1845,15 +1849,15 @@ namespace small3d {
 
     destroyDynamicBuffers();
 
-    vkz_destroy_swapchain();
+    vh_destroy_swapchain();
 
-    vkz_destroy_sync_objects();
+    vh_destroy_sync_objects();
 
     LOGDEBUG("Destroying surface.\n\r");
 
-    vkDestroySurfaceKHR(vkz_instance, vkz_surface, NULL);
+    vkDestroySurfaceKHR(vh_instance, vh_surface, NULL);
 
-    vkz_shutdown();
+    vh_shutdown();
 
     pipelineIndex = 100;
   }

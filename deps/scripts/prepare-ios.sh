@@ -130,20 +130,6 @@ then
     export CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64"
 fi
 
-tar xvf vkzos-0.0.1.tar.gz
-cd vkzos-0.0.1
-mkdir build
-cd build
-cmake .. -DVKZOS_TESTS=OFF $CMAKE_DEFINITIONS
-cmake --build .
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-cp -rf ../include/* ../../include/ 
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-cp lib/$2/libvkzos.a ../../lib/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
-cd ../..
-rm -rf vkzos-0.0.1
-
 tar xvf libpng-1.6.37.tar.gz
 cd libpng-1.6.37
 mkdir build
