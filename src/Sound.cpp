@@ -15,7 +15,7 @@
 #include <vorbis/vorbisfile.h>
 
 #if defined(__ANDROID__) || defined(SMALL3D_IOS)
-#include "vkzos.h"
+#include "vulkan_helper.h"
 #include <sys/time.h>
 #else
 #include <GLFW/glfw3.h>
@@ -360,7 +360,7 @@ namespace small3d {
       }
 
 #else
-      AAsset *asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+      AAsset *asset = AAssetManager_open(vh_android_app->activity->assetManager,
                                          soundFilePath.c_str(),
                                          AASSET_MODE_STREAMING);
       if(!asset) {

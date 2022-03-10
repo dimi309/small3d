@@ -14,7 +14,6 @@
 #include "WavefrontFile.hpp"
 
 #if defined(__ANDROID__)
-#include "vkzos.h"
 #include <streambuf>
 #include <istream>
 #endif

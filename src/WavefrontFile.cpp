@@ -12,7 +12,7 @@
 #include <fstream>
 
 #ifdef __ANDROID__
-#include "vkzos.h"
+#include "vulkan_helper.h"
 #include <streambuf>
 #include <istream>
 
@@ -211,7 +211,7 @@ namespace small3d {
     std::string line;
    
 #ifdef __ANDROID__
-    AAsset* asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+    AAsset* asset = AAssetManager_open(vh_android_app->activity->assetManager,
       fullPath.c_str(),
       AASSET_MODE_STREAMING);
     if (!asset) throw std::runtime_error("Opening asset " + fullPath +

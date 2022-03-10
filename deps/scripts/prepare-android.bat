@@ -88,7 +88,7 @@ cd libvorbis-1.3.7
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF^
- -DOGG_INCLUDE_DIRS=%depspath%/include -DOGG_LIBRARIES=%depspath%/lib/%%A/libogg.a^
+ -DOGG_INCLUDE_DIR=%depspath%/include -DOGG_LIBRARY=%depspath%/lib/%%A/libogg.a^
  -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A^
  %CMAKE_DEFINITIONS%
 cmake --build .

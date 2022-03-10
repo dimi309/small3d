@@ -12,7 +12,7 @@
 #include "BasePath.hpp"
 
 #ifdef __ANDROID__
-#include "vkzos.h"
+#include "vulkan_helper.h"
 #endif
 
 namespace small3d {
@@ -107,7 +107,7 @@ namespace small3d {
 
       LOGDEBUG("About to open image asset " + fileLocation);
 
-      asset = AAssetManager_open(vkz_android_app->activity->assetManager,
+      asset = AAssetManager_open(vh_android_app->activity->assetManager,
         fileLocation.c_str(), AASSET_MODE_STREAMING);
 
       if (!asset) {
