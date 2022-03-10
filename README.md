@@ -97,7 +97,6 @@ with its source code. They can be built by executing a single script
 (see "Building", above).
 
 - Vulkan SDK, or glew if building with OpenGL
-- vkzos if building with Vulkan
 - glfw 
 - glm 
 - png
