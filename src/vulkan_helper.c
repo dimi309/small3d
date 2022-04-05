@@ -1637,9 +1637,27 @@ int vh_destroy_draw_command_buffer(VkCommandBuffer* command_buffer) {
 
 int vh_create_sync_objects(void) {
 
+  if (max_frames_prepared <= 0) {
+    LOGDEBUG0("Cannot perform sync object allocation with 0 max frames!");
+    return 0;
+  }
+
   gpu_cpu_fence = malloc(max_frames_prepared * sizeof(VkFence));
+  if (gpu_cpu_fence == NULL) {
+    LOGDEBUG0("GPU fence memory allocation error!");
+    return 0;
+  }
   acquire_semaphore = malloc(max_frames_prepared * sizeof(VkSemaphore));
+  if (acquire_semaphore == NULL) {
+    LOGDEBUG0("Acquire semaphore memory allocation error!");
+    return 0;
+  }
   draw_semaphore = malloc(max_frames_prepared * sizeof(VkSemaphore));
+  if (draw_semaphore == NULL) {
+    LOGDEBUG0("Draw semaphore memory allocation error!");
+    return 0;
+  }
+  
 
   for (uint32_t idx = 0; idx < max_frames_prepared; ++idx) {
     gpu_cpu_fence[idx] = VK_NULL_HANDLE;

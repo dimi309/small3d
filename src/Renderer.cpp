@@ -217,7 +217,10 @@ namespace small3d {
     dpci.pPoolSizes = ps;
     dpci.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
     dpci.maxSets = MAX_FRAMES_PREPARED * objectsPerFrame;
-
+    // No point in VS C26812 unscoped enum warning on VkResult.
+    // small3d does not define that code itself.
+#pragma warning(push)
+#pragma warning(disable:26812)
     if (vkCreateDescriptorPool(vh_logical_device, &dpci, NULL,
       &descriptorPool) != VK_SUCCESS) {
       LOGDEBUG("Failed to create descriptor pool.");
@@ -225,7 +228,7 @@ namespace small3d {
     else {
       LOGDEBUG("Created descriptor pool.");
     }
-
+#pragma warning(pop)
   }
 
   void Renderer::destroyDescriptorPool() {
@@ -518,8 +521,8 @@ namespace small3d {
       (found && replace) /*texture to be replaced*/) {
       textureHandlePtr->width = width;
       textureHandlePtr->height = height;
-      textureHandlePtr->data->resize(width * height * 4);
-      imageByteSize = static_cast<uint32_t>(width * height * 4 * sizeof(float));
+      textureHandlePtr->data->resize(static_cast<uint64_t>(width) * height * 4);
+      imageByteSize = static_cast<uint32_t>(static_cast<uint64_t>(width) * height * 4 * sizeof(float));
       memcpy(&(*textureHandlePtr->data)[0], data, imageByteSize);
     } // Otherwise these values are kept and we are just recopying to the GPU
     else {
@@ -1767,7 +1770,9 @@ namespace small3d {
     if (realScreenHeight == 0) realScreenHeight = 1;
     vh_set_width_height(realScreenWidth, realScreenHeight);
 
-    vh_create_sync_objects();
+    if (!vh_create_sync_objects()) {
+      throw std::runtime_error("Failed to create sync objects.");
+    }
 
     LOGDEBUG("Creating swapchain...");
 
