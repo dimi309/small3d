@@ -39,8 +39,8 @@ mkdir include
 mkdir lib
 
 
-unzip glfw-3.3.6.zip
-cd glfw-3.3.6
+unzip glfw-3.3.7.zip
+cd glfw-3.3.7
 mkdir build
 cd build
 cmake .. -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF $CMAKE_DEFINITIONS
@@ -51,7 +51,7 @@ rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp src/libglfw3.a ../../lib/
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cd ../..
-rm -rf glfw-3.3.6
+rm -rf glfw-3.3.7
 
 # Only needed for OpenGL build
 if [ "$2" == "opengl" ]; then

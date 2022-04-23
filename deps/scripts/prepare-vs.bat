@@ -28,9 +28,9 @@ mkdir include
 mkdir lib
 mkdir bin
 
-7z x glfw-3.3.6.zip
+7z x glfw-3.3.7.zip
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-cd glfw-3.3.6
+cd glfw-3.3.7
 mkdir build
 cd build
 cmake .. %VSCONFIG% -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF
@@ -42,7 +42,7 @@ copy src\%BUILDTYPE%\glfw3.lib ..\..\lib\
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 cd ..\..
-rmdir /Q /S glfw-3.3.6
+rmdir /Q /S glfw-3.3.7
 
 rem Only needed for OpenGL build
 if /I "%~2" == "opengl" (
