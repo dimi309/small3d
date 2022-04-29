@@ -763,6 +763,10 @@ namespace small3d {
     const std::string& textureName,
     const bool perspective) {
 
+    if (!perspective) {
+      glClearDepth(1.0f);
+    }
+
     unsigned const attrib_position = 0;
     unsigned const attrib_normal = 1;
     unsigned const attrib_joint = 2;
