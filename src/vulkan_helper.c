@@ -144,6 +144,7 @@ static VkImage depth_image;
 static VkFormat depth_image_format;
 static VkDeviceMemory depth_image_memory;
 static VkImageView depth_image_view;
+static VkClearDepthStencilValue clear_depth_stencil_value;
 
 static uint32_t next_image_index;
 
@@ -729,6 +730,8 @@ int create_logical_device() {
 
 int create_depth_image(void) {
 
+  memset(&clear_depth_stencil_value, 0, sizeof(clear_depth_stencil_value));
+
   VkFormat candidate_formats[3];
   candidate_formats[0] = VK_FORMAT_D32_SFLOAT;
   candidate_formats[1] = VK_FORMAT_D32_SFLOAT_S8_UINT;
@@ -768,6 +771,12 @@ int create_depth_image(void) {
   return vh_transition_image_layout(depth_image, depth_image_format,
     VK_IMAGE_LAYOUT_UNDEFINED,
     VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+}
+
+int vh_clear_depth_image(VkCommandBuffer* command_buffer) {
+    vkCmdClearDepthStencilImage(*command_buffer, depth_image, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+        &clear_depth_stencil_value, 0, NULL);
+    return 1;
 }
 
 int destroy_depth_image(void) {

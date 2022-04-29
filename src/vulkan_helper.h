@@ -91,6 +91,14 @@ void vh_wait_gpu_cpu_fence(uint32_t idx);
 int vh_create_instance(const char* application_name,
   const char** enabled_extension_names,
   size_t enabled_extension_count);
+
+/**
+ * @brief  Clear the depth image.
+ * @param  command_buffer The command buffer to record the clearing command to
+ * @return 1 if successful, 0 otherwise
+ */
+int vh_clear_depth_image(VkCommandBuffer* command_buffer);
+
 /**
  * @brief  Initialise. Internally this means create physical device, select queue
  *         families and create logical device.

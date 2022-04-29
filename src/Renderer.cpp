@@ -1240,6 +1240,8 @@ namespace small3d {
     const std::string& textureName,
     const bool perspective) {
 
+    
+
 #if defined(DEBUG) || defined(_DEBUG) || !defined (NDEBUG)
     if (model.indexData.size() == 0 ||
       model.indexDataByteSize == 0 ||
@@ -1670,6 +1672,11 @@ namespace small3d {
       vh_bind_pipeline_to_command_buffer(pipelineIndex,
         &commandBuffer[currentFrameIndex]);
       bindBuffers(commandBuffer[currentFrameIndex], model);
+
+      if (!model.perspective) {
+          vh_clear_depth_image(&commandBuffer[currentFrameIndex]);
+      }
+
       recordDrawCommand(commandBuffer[currentFrameIndex],
         vh_pipeline_layout[pipelineIndex],
         model, currentFrameIndex, model.perspective);
