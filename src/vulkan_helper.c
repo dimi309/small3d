@@ -1772,6 +1772,7 @@ int vh_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index, uint32
       VK_NULL_HANDLE, &next_image_index);
 
   if (r == VK_ERROR_OUT_OF_DATE_KHR) {
+    LOGDEBUG0("VK_ERROR_OUT_OF_DATE_KHR while acquiring next image.");
     vh_recreate_pipelines_and_swapchain();
     return 1;
   }
@@ -1801,10 +1802,19 @@ int vh_present_next_image(void) {
   
 
   VkResult r = vkQueuePresentKHR(vh_present_queue, &pinf);
-  if (r == VK_ERROR_OUT_OF_DATE_KHR || r == VK_SUBOPTIMAL_KHR) {
+  if (r == VK_ERROR_OUT_OF_DATE_KHR) {
+    LOGDEBUG0("VK_ERROR_OUT_OF_DATE_KHR while presenting next image");
+    vh_recreate_pipelines_and_swapchain();
+  }
+#if !defined(__ANDROID__)
+  else if (r == VK_SUBOPTIMAL_KHR) {
+    LOGDEBUG0("VK_SUBOPTIMAL_KHR while presenting next image");
     vh_recreate_pipelines_and_swapchain();
   }
   else if (r != VK_SUCCESS) {
+#else
+  else if (r != VK_SUCCESS && r!= VK_SUBOPTIMAL_KHR) {
+#endif
     LOGDEBUG0("Could not present swapchain image!");
     return 0;
   }
