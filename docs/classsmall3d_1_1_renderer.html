@@ -802,7 +802,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
     <tr><td class="paramname">rotation</td><td>Rotation (x, y, z) </td></tr>
     <tr><td class="paramname">colour</td><td>The colour of the model </td></tr>
     <tr><td class="paramname">textureName</td><td>The name of the texture to attach to the model (optional). The texture has to have been generated already. If this is set, the colour parameter will be ignored. </td></tr>
-    <tr><td class="paramname">perspective</td><td>If true perform perspective rendering, otherwise orthographic. </td></tr>
+    <tr><td class="paramname">perspective</td><td>If true perform perspective rendering, otherwise orthographic. If false, the depth buffer is cleared. Do not intermingle perspective and orthographic rendering. Perform all the orthographic rendering in the end. <br  />
+ </td></tr>
   </table>
   </dd>
 </dl>
@@ -897,7 +898,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   <table class="params">
     <tr><td class="paramname">model</td><td>The model </td></tr>
     <tr><td class="paramname">colour</td><td>The colour of the model </td></tr>
-    <tr><td class="paramname">perspective</td><td>True = perspective drawing, otherwise orthographic </td></tr>
+    <tr><td class="paramname">perspective</td><td>True = perspective drawing, otherwise orthographic If false, the depth buffer is cleared. Do not intermingle perspective and orthographic rendering. Perform all the orthographic rendering in the end. </td></tr>
   </table>
   </dd>
 </dl>
@@ -941,7 +942,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   <table class="params">
     <tr><td class="paramname">model</td><td>The model </td></tr>
     <tr><td class="paramname">textureName</td><td>The name of the texture to attach to the model. The texture has to have been generated already. </td></tr>
-    <tr><td class="paramname">perspective</td><td>True = perspective drawing, otherwise orthographic </td></tr>
+    <tr><td class="paramname">perspective</td><td>True = perspective drawing, otherwise orthographic If false, the depth buffer is cleared. Do not intermingle perspective and orthographic rendering. Perform all the orthographic rendering in the end. </td></tr>
   </table>
   </dd>
 </dl>

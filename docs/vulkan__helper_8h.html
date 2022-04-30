@@ -88,6 +88,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ab5475a97918f781084c9026e0d75eb5b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vulkan__helper_8h.html#ab5475a97918f781084c9026e0d75eb5b">vh_create_instance</a> (const char *application_name, const char **enabled_extension_names, size_t enabled_extension_count)</td></tr>
 <tr class="memdesc:ab5475a97918f781084c9026e0d75eb5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a vulkan instance.  <a href="vulkan__helper_8h.html#ab5475a97918f781084c9026e0d75eb5b">More...</a><br /></td></tr>
 <tr class="separator:ab5475a97918f781084c9026e0d75eb5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93a1df5f6c8a5ebeba3cebc708422817"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vulkan__helper_8h.html#a93a1df5f6c8a5ebeba3cebc708422817">vh_clear_depth_image</a> (VkCommandBuffer *command_buffer)</td></tr>
+<tr class="memdesc:a93a1df5f6c8a5ebeba3cebc708422817"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the depth image.  <a href="vulkan__helper_8h.html#a93a1df5f6c8a5ebeba3cebc708422817">More...</a><br /></td></tr>
+<tr class="separator:a93a1df5f6c8a5ebeba3cebc708422817"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3f7394172beb13ca12afcc91bcd72a3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="vulkan__helper_8h.html#ab3f7394172beb13ca12afcc91bcd72a3">vh_init</a> (uint32_t max_frames)</td></tr>
 <tr class="memdesc:ab3f7394172beb13ca12afcc91bcd72a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialise. Internally this means create physical device, select queue families and create logical device.  <a href="vulkan__helper_8h.html#ab3f7394172beb13ca12afcc91bcd72a3">More...</a><br /></td></tr>
 <tr class="separator:ab3f7394172beb13ca12afcc91bcd72a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -308,6 +311,33 @@ VkClearColorValue&#160;</td><td class="memItemRight" valign="bottom"><a class="e
   <table class="params">
     <tr><td class="paramname">pipeline_index</td><td>The index of the pipeline </td></tr>
     <tr><td class="paramname">command_buffer</td><td>Pointer to the command buffer. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>1 if successful, 0 otherwise </dd></dl>
+
+</div>
+</div>
+<a id="a93a1df5f6c8a5ebeba3cebc708422817"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93a1df5f6c8a5ebeba3cebc708422817">&#9670;&nbsp;</a></span>vh_clear_depth_image()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int vh_clear_depth_image </td>
+          <td>(</td>
+          <td class="paramtype">VkCommandBuffer *&#160;</td>
+          <td class="paramname"><em>command_buffer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Clear the depth image. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">command_buffer</td><td>The command buffer to record the clearing command to </td></tr>
   </table>
   </dd>
 </dl>
