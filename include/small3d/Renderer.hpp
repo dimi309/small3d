@@ -446,7 +446,10 @@ namespace small3d
      *                    already. If this is set, the colour parameter will
      *                    be ignored.
      * @param perspective If true perform perspective rendering, otherwise
-     *                    orthographic.
+     *                    orthographic. If false, the depth buffer is cleared.
+     *                    Do not intermingle perspective and orthographic
+     *                    rendering. Perform all the orthographic rendering in the
+     *                    end.  
      */
     void render(Model& model, const glm::vec3& position, const glm::vec3& rotation,
       const glm::vec4& colour, const std::string& textureName = "",
@@ -497,6 +500,10 @@ namespace small3d
      * @param textureName The name of the texture to attach to the model.
      *                    The texture has to have been generated already.
      * @param perspective True = perspective drawing, otherwise orthographic
+     *                    If false, the depth buffer is cleared.
+     *                    Do not intermingle perspective and orthographic
+     *                    rendering. Perform all the orthographic rendering in the
+     *                    end.
      */
     void render(Model& model, const std::string& textureName,
       const bool perspective = true);
@@ -506,6 +513,10 @@ namespace small3d
      * @param model       The model
      * @param colour      The colour of the model
      * @param perspective True = perspective drawing, otherwise orthographic
+     *                    If false, the depth buffer is cleared.
+     *                    Do not intermingle perspective and orthographic
+     *                    rendering. Perform all the orthographic rendering in the
+     *                    end.
      */
     void render(Model& model, const glm::vec4& colour,
       const bool perspective = true);

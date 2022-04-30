@@ -144,7 +144,8 @@ static VkImage depth_image;
 static VkFormat depth_image_format;
 static VkDeviceMemory depth_image_memory;
 static VkImageView depth_image_view;
-static VkClearDepthStencilValue clear_depth_stencil_value;
+static VkClearAttachment clear_depth_attachment;
+static VkClearRect clear_depth_rect;
 
 static uint32_t next_image_index;
 
@@ -730,7 +731,17 @@ int create_logical_device() {
 
 int create_depth_image(void) {
 
-  memset(&clear_depth_stencil_value, 0, sizeof(clear_depth_stencil_value));
+  memset(&clear_depth_attachment, 0, sizeof(VkClearAttachment));
+  clear_depth_attachment.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+  clear_depth_attachment.clearValue.depthStencil.depth = 1;
+  clear_depth_attachment.clearValue.depthStencil.stencil = 0;
+
+  memset(&clear_depth_rect, 0, sizeof(VkClearRect));
+  clear_depth_rect.rect.offset.x = 0;
+  clear_depth_rect.rect.offset.y = 0;
+  clear_depth_rect.rect.extent = vh_swap_extent;
+  clear_depth_rect.baseArrayLayer = 0;
+  clear_depth_rect.layerCount = 1;
 
   VkFormat candidate_formats[3];
   candidate_formats[0] = VK_FORMAT_D32_SFLOAT;
@@ -774,8 +785,7 @@ int create_depth_image(void) {
 }
 
 int vh_clear_depth_image(VkCommandBuffer* command_buffer) {
-    vkCmdClearDepthStencilImage(*command_buffer, depth_image, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
-        &clear_depth_stencil_value, 0, NULL);
+    vkCmdClearAttachments(*command_buffer, 1, &clear_depth_attachment, 1, &clear_depth_rect);
     return 1;
 }
 

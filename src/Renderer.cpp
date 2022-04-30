@@ -1674,7 +1674,7 @@ namespace small3d {
       bindBuffers(commandBuffer[currentFrameIndex], model);
 
       if (!model.perspective) {
-          vh_clear_depth_image(&commandBuffer[currentFrameIndex]);
+        vh_clear_depth_image(&commandBuffer[currentFrameIndex]);
       }
 
       recordDrawCommand(commandBuffer[currentFrameIndex],
