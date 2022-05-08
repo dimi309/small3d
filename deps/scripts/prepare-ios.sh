@@ -152,7 +152,7 @@ tar xvf libogg-1.3.5.tar.gz
 cd libogg-1.3.5
 mkdir build
 cd build
-cmake .. -DBUILD_SHARED_LIBS=OFF $CMAKE_DEFINITIONS
+cmake .. -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTING=OFF $CMAKE_DEFINITIONS
 cmake --build . --config $2
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp -rf ../include/ogg ../../include/
