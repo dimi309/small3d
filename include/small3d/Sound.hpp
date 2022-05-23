@@ -116,6 +116,13 @@ static ALCcontext *openalContext;
     void stop();
 
     /**
+     * @brief Divide the volume (in order to lower it).
+     * @param Divisor Number to divide the volume by.
+     */
+
+    void divideVolume(uint32_t divisor);
+
+    /**
      * @brief Copy constructor
      */
     Sound(const Sound& other) noexcept;

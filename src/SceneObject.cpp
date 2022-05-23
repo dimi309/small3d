@@ -100,7 +100,7 @@ namespace small3d {
     return boundingBoxSet->getModels();
   }
 
-  std::vector<BoundingBoxSet::extremes> SceneObject::getBoundingBoxSetExtremes() {
+  std::vector<BoundingBoxSet::extremes>& SceneObject::getBoundingBoxSetExtremes() {
     return boundingBoxSet->boxExtremes;
   }
 
@@ -139,11 +139,11 @@ namespace small3d {
     return glm::vec3(orientationVec4.x, orientationVec4.y, orientationVec4.z);
   }
 
-  const glm::mat4x4 SceneObject::getRotation() const {
+  const glm::mat4x4& SceneObject::getRotation() const {
     return this->rotation;
   }
 
-  const glm::vec3 SceneObject::getRotationXYZ() const {
+  const glm::vec3& SceneObject::getRotationXYZ() const {
     if (rotationByMatrix) {
       throw std::runtime_error("Attempted x, y, z representation rotation retrieval, while having set the initial rotation by matrix.");
     }

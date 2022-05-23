@@ -140,7 +140,7 @@ namespace small3d
      * @brief Get the bounding box set extremes (min and max coords)
      * @return The bounding box set extremes
      */
-    std::vector<BoundingBoxSet::extremes> getBoundingBoxSetExtremes();
+    std::vector<BoundingBoxSet::extremes>& getBoundingBoxSetExtremes();
 
     /**
      * @brief Get the name of the object
@@ -188,7 +188,7 @@ namespace small3d
      *
      * @return The rotation tranformation matrix
      */
-    const glm::mat4x4 getRotation() const;
+    const glm::mat4x4& getRotation() const;
 
     /**
      * @brief: Get the rotation of the object in x, y, z representation.
@@ -197,7 +197,7 @@ namespace small3d
      *
      * @return The rotation in x, y, z representation
      */
-    const glm::vec3 getRotationXYZ() const;
+    const glm::vec3& getRotationXYZ() const;
 
     /**
      * @brief Start animating the object

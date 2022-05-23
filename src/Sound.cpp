@@ -488,6 +488,12 @@ namespace small3d {
 #endif
   }
 
+  void Sound::divideVolume(uint32_t divisor) {
+    for (auto& byte : soundData.data) {
+      byte /= divisor;
+    }
+  }
+
   void Sound::play(const bool repeat) {
     if (repeat) {
       if (soundData.playingRepeat) return;

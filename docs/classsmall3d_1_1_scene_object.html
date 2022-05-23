@@ -102,9 +102,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a128bf0fe972ec9583dd2e55c841f9f13"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classsmall3d_1_1_model.html">Model</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a128bf0fe972ec9583dd2e55c841f9f13">getBoundingBoxSetModels</a> ()</td></tr>
 <tr class="memdesc:a128bf0fe972ec9583dd2e55c841f9f13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the bounding box set as models (for debug-rendering)  <a href="classsmall3d_1_1_scene_object.html#a128bf0fe972ec9583dd2e55c841f9f13">More...</a><br /></td></tr>
 <tr class="separator:a128bf0fe972ec9583dd2e55c841f9f13"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d6e8a9b8b65307f19ebf330b425e670"><td class="memItemLeft" align="right" valign="top">std::vector&lt; BoundingBoxSet::extremes &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a1d6e8a9b8b65307f19ebf330b425e670">getBoundingBoxSetExtremes</a> ()</td></tr>
-<tr class="memdesc:a1d6e8a9b8b65307f19ebf330b425e670"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the bounding box set extremes (min and max coords)  <a href="classsmall3d_1_1_scene_object.html#a1d6e8a9b8b65307f19ebf330b425e670">More...</a><br /></td></tr>
-<tr class="separator:a1d6e8a9b8b65307f19ebf330b425e670"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a228935cac59f075ac5450dc128ca79e5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; BoundingBoxSet::extremes &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a228935cac59f075ac5450dc128ca79e5">getBoundingBoxSetExtremes</a> ()</td></tr>
+<tr class="memdesc:a228935cac59f075ac5450dc128ca79e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the bounding box set extremes (min and max coords)  <a href="classsmall3d_1_1_scene_object.html#a228935cac59f075ac5450dc128ca79e5">More...</a><br /></td></tr>
+<tr class="separator:a228935cac59f075ac5450dc128ca79e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae18cf681f49f719fa77f9b83bdb88da8"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#ae18cf681f49f719fa77f9b83bdb88da8">getName</a> () const</td></tr>
 <tr class="memdesc:ae18cf681f49f719fa77f9b83bdb88da8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the name of the object.  <a href="classsmall3d_1_1_scene_object.html#ae18cf681f49f719fa77f9b83bdb88da8">More...</a><br /></td></tr>
 <tr class="separator:ae18cf681f49f719fa77f9b83bdb88da8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -120,12 +120,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2d0c13ddbd240538822603b4180e6c80"><td class="memItemLeft" align="right" valign="top">const glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a2d0c13ddbd240538822603b4180e6c80">getOrientation</a> () const</td></tr>
 <tr class="memdesc:a2d0c13ddbd240538822603b4180e6c80"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the orientation of the object  <a href="classsmall3d_1_1_scene_object.html#a2d0c13ddbd240538822603b4180e6c80">More...</a><br /></td></tr>
 <tr class="separator:a2d0c13ddbd240538822603b4180e6c80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37844cfa400f8ece266c8cc2b6be6bc3"><td class="memItemLeft" align="right" valign="top">const glm::mat4x4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a37844cfa400f8ece266c8cc2b6be6bc3">getRotation</a> () const</td></tr>
-<tr class="memdesc:a37844cfa400f8ece266c8cc2b6be6bc3"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the rotation of the object by transformation matrix  <a href="classsmall3d_1_1_scene_object.html#a37844cfa400f8ece266c8cc2b6be6bc3">More...</a><br /></td></tr>
-<tr class="separator:a37844cfa400f8ece266c8cc2b6be6bc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac70ac62c987711b1821b8baa3e1ada0c"><td class="memItemLeft" align="right" valign="top">const glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#ac70ac62c987711b1821b8baa3e1ada0c">getRotationXYZ</a> () const</td></tr>
-<tr class="memdesc:ac70ac62c987711b1821b8baa3e1ada0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the rotation of the object in x, y, z representation. This will NOT work if the rotation was set via the setRotation(mat4x4) function.  <a href="classsmall3d_1_1_scene_object.html#ac70ac62c987711b1821b8baa3e1ada0c">More...</a><br /></td></tr>
-<tr class="separator:ac70ac62c987711b1821b8baa3e1ada0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab265e1d3224cdfa8ad475bda31344be3"><td class="memItemLeft" align="right" valign="top">const glm::mat4x4 &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#ab265e1d3224cdfa8ad475bda31344be3">getRotation</a> () const</td></tr>
+<tr class="memdesc:ab265e1d3224cdfa8ad475bda31344be3"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the rotation of the object by transformation matrix  <a href="classsmall3d_1_1_scene_object.html#ab265e1d3224cdfa8ad475bda31344be3">More...</a><br /></td></tr>
+<tr class="separator:ab265e1d3224cdfa8ad475bda31344be3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13b47e78ca853f3e88544656f10d5aa1"><td class="memItemLeft" align="right" valign="top">const glm::vec3 &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a13b47e78ca853f3e88544656f10d5aa1">getRotationXYZ</a> () const</td></tr>
+<tr class="memdesc:a13b47e78ca853f3e88544656f10d5aa1"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the rotation of the object in x, y, z representation. This will NOT work if the rotation was set via the setRotation(mat4x4) function.  <a href="classsmall3d_1_1_scene_object.html#a13b47e78ca853f3e88544656f10d5aa1">More...</a><br /></td></tr>
+<tr class="separator:a13b47e78ca853f3e88544656f10d5aa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21bd126617420837019165e892b1ff6b"><td class="memItemLeft" align="right" valign="top"><a id="a21bd126617420837019165e892b1ff6b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a21bd126617420837019165e892b1ff6b">startAnimating</a> ()</td></tr>
 <tr class="memdesc:a21bd126617420837019165e892b1ff6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start animating the object. <br /></td></tr>
@@ -374,14 +374,14 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
 
 </div>
 </div>
-<a id="a1d6e8a9b8b65307f19ebf330b425e670"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d6e8a9b8b65307f19ebf330b425e670">&#9670;&nbsp;</a></span>getBoundingBoxSetExtremes()</h2>
+<a id="a228935cac59f075ac5450dc128ca79e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a228935cac59f075ac5450dc128ca79e5">&#9670;&nbsp;</a></span>getBoundingBoxSetExtremes()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt; BoundingBoxSet::extremes &gt; small3d::SceneObject::getBoundingBoxSetExtremes </td>
+          <td class="memname">std::vector&lt; BoundingBoxSet::extremes &gt; &amp; small3d::SceneObject::getBoundingBoxSetExtremes </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -474,14 +474,14 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
 
 </div>
 </div>
-<a id="a37844cfa400f8ece266c8cc2b6be6bc3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a37844cfa400f8ece266c8cc2b6be6bc3">&#9670;&nbsp;</a></span>getRotation()</h2>
+<a id="ab265e1d3224cdfa8ad475bda31344be3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab265e1d3224cdfa8ad475bda31344be3">&#9670;&nbsp;</a></span>getRotation()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const glm::mat4x4 small3d::SceneObject::getRotation </td>
+          <td class="memname">const glm::mat4x4 &amp; small3d::SceneObject::getRotation </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -494,14 +494,14 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
 
 </div>
 </div>
-<a id="ac70ac62c987711b1821b8baa3e1ada0c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac70ac62c987711b1821b8baa3e1ada0c">&#9670;&nbsp;</a></span>getRotationXYZ()</h2>
+<a id="a13b47e78ca853f3e88544656f10d5aa1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13b47e78ca853f3e88544656f10d5aa1">&#9670;&nbsp;</a></span>getRotationXYZ()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const glm::vec3 small3d::SceneObject::getRotationXYZ </td>
+          <td class="memname">const glm::vec3 &amp; small3d::SceneObject::getRotationXYZ </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>

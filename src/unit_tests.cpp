@@ -431,6 +431,13 @@ int SoundTest() {
   double startSeconds = glfwGetTime();
   while (glfwGetTime() - startSeconds < 0.5);
   snd.stop();
+
+  snd.divideVolume(4);
+  snd.play();
+  startSeconds = glfwGetTime();
+  while (glfwGetTime() - startSeconds < 0.5);
+  snd.stop();
+
   startSeconds = glfwGetTime();
   while (glfwGetTime() - startSeconds < 0.5);
   snd.play();
