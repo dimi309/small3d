@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <cstring>
 #include <vorbis/vorbisfile.h>
+#include <cassert>
 
 #if defined(__ANDROID__) || defined(SMALL3D_IOS)
 #include "vulkan_helper.h"
@@ -489,8 +490,16 @@ namespace small3d {
   }
 
   void Sound::divideVolume(uint32_t divisor) {
-    for (auto& byte : soundData.data) {
-      byte /= divisor;
+
+    assert(WORD_SIZE == 2);
+
+    auto units = soundData.data.size() / WORD_SIZE;
+    
+    for (auto dp = soundData.data.begin(); dp != soundData.data.end(); dp+=2) {
+      int16_t n;
+      memcpy(&n, &(*dp), 2);
+      n /= divisor;
+      memcpy(&(*dp), &n, 2);
     }
   }
 
