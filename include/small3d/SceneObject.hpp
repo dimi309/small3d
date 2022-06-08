@@ -45,7 +45,7 @@ namespace small3d
     int numFrames;
     std::string name;
     bool wavefront = false;
-    glm::mat4x4 rotation = glm::mat4x4(1);
+    glm::mat4x4 transformation = glm::mat4x4(1);
     glm::vec3 rotationXYZ = glm::vec3(0.0f);
     bool rotationByMatrix = false;
     std::shared_ptr<std::vector<Model>> models = std::shared_ptr<std::vector<Model>>(new std::vector<Model>());
@@ -154,7 +154,8 @@ namespace small3d
     glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
     
     /**
-     * @brief: Set the rotation of the object 
+     * @brief: Set the rotation of the object. (Overwrites
+     *         transformation entered via setTransformation)
      * 
      * @param rotation The rotation (x, y, z)
      */
@@ -168,12 +169,12 @@ namespace small3d
     void rotate(const glm::vec3& rotation);
 
     /**
-     * @brief: Set the rotation of the object
-     *         by transformation matrix
-     * 
-     * @param rotation The rotation tranformation matrix
+     * @brief: Set the transformation matrix of the object. (Overwrites
+     *         rotation entered via setRotation)
+     *    
+     * @param rotation The tranformation matrix
      */
-    void setRotation(const glm::mat4x4& rotation);
+    void setTransformation(const glm::mat4x4& rotation);
 
     /**
      * @brief: Get the orientation of the object
@@ -183,17 +184,16 @@ namespace small3d
     const glm::vec3 getOrientation() const;
 
     /**
-     * @brief: Get the rotation of the object
-     *         by transformation matrix
+     * @brief: Get the tranformation matrix of the object
      *
-     * @return The rotation tranformation matrix
+     * @return The tranformation matrix
      */
-    const glm::mat4x4& getRotation() const;
+    const glm::mat4x4& getTransformation() const;
 
     /**
      * @brief: Get the rotation of the object in x, y, z representation.
      *         This will NOT work if the rotation was set via the
-     *         setRotation(mat4x4) function.
+     *         setTransformation function.
      *
      * @return The rotation in x, y, z representation
      */

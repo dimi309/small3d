@@ -249,7 +249,7 @@ int BoundingBoxesTest() {
 
       for (auto& m : boundingBoxModels) {
         renderer->render(m, goat.position,
-          goat.getRotation(), glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
+          goat.getTransformation(), glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
       }
       renderer->swapBuffers();
       goat.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
@@ -319,7 +319,7 @@ int FPStest() {
 
       for (auto& m : boundingBoxModels) {
         renderer->render(m, goat.position,
-          goat.getRotation(), glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
+          goat.getTransformation(), glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
       }
 
       renderer->generateTexture("frameRate", std::to_string(framerate) + " FPS",

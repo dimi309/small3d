@@ -7,6 +7,7 @@ v1.801 (still open)
   `srcipts/build-vs.bat` and `deps/scripts/prepare-vs.bat` to 
   `-G"Visual Studio 16 2019" -A x64`
 - Stability improvements, especially for sound on Android and iOS.
+- [BREAKING] setRotation(max4x4) has been renamed to setTransformation.
 
 v1.800 2022-01-03
 

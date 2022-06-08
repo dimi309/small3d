@@ -111,7 +111,7 @@ namespace small3d {
   void SceneObject::setRotation(const glm::vec3& rotation) {
     rotationByMatrix = false;
     this->rotationXYZ = rotation;
-    this->rotation = glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+    this->transformation = glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
   }
@@ -122,30 +122,30 @@ namespace small3d {
     }
     else {
       this->rotationXYZ += rotation;
-      this->rotation = glm::rotate(glm::mat4x4(1.0f), this->rotationXYZ.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+      this->transformation = glm::rotate(glm::mat4x4(1.0f), this->rotationXYZ.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
         glm::rotate(glm::mat4x4(1.0f), this->rotationXYZ.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
         glm::rotate(glm::mat4x4(1.0f), this->rotationXYZ.z, glm::vec3(0.0f, 0.0f, 1.0f));
     }
   }
 
-  void SceneObject::setRotation(const glm::mat4x4& rotation) {
-    this->rotation = rotation;
+  void SceneObject::setTransformation(const glm::mat4x4& rotation) {
+    this->transformation = rotation;
     rotationByMatrix = true;
     this->rotationXYZ = glm::vec3(0.0f);
   }
 
   const glm::vec3 SceneObject::getOrientation() const {
-    auto orientationVec4 = this->rotation * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
+    auto orientationVec4 = this->transformation * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
     return glm::vec3(orientationVec4.x, orientationVec4.y, orientationVec4.z);
   }
 
-  const glm::mat4x4& SceneObject::getRotation() const {
-    return this->rotation;
+  const glm::mat4x4& SceneObject::getTransformation() const {
+    return this->transformation;
   }
 
   const glm::vec3& SceneObject::getRotationXYZ() const {
     if (rotationByMatrix) {
-      throw std::runtime_error("Attempted x, y, z representation rotation retrieval, while having set the initial rotation by matrix.");
+      throw std::runtime_error("Attempted x, y, z representation rotation retrieval. This cannot be done if the setTransformation function has been used on the object.");
     }
     return this->rotationXYZ;
   }
@@ -192,7 +192,7 @@ namespace small3d {
         name +
         ", so collision detection is not enabled.");
     }
-    return boundingBoxSet->contains(point, this->position, this->getRotation());
+    return boundingBoxSet->contains(point, this->position, this->getTransformation());
   }
 
   bool SceneObject::containsCorners(const SceneObject& otherObject) const {
@@ -209,8 +209,8 @@ namespace small3d {
     }
 
     return boundingBoxSet->containsCorners(*otherObject.boundingBoxSet, this->position,
-      this->rotation, otherObject.position,
-      otherObject.rotation);
+      this->transformation, otherObject.position,
+      otherObject.transformation);
   }
 
 }
