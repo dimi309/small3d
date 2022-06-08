@@ -109,22 +109,22 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ae18cf681f49f719fa77f9b83bdb88da8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the name of the object.  <a href="classsmall3d_1_1_scene_object.html#ae18cf681f49f719fa77f9b83bdb88da8">More...</a><br /></td></tr>
 <tr class="separator:ae18cf681f49f719fa77f9b83bdb88da8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25dd3597cb90bca03880e9727f64d8b0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a25dd3597cb90bca03880e9727f64d8b0">setRotation</a> (const glm::vec3 &amp;rotation)</td></tr>
-<tr class="memdesc:a25dd3597cb90bca03880e9727f64d8b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set the rotation of the object  <a href="classsmall3d_1_1_scene_object.html#a25dd3597cb90bca03880e9727f64d8b0">More...</a><br /></td></tr>
+<tr class="memdesc:a25dd3597cb90bca03880e9727f64d8b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set the rotation of the object. (Overwrites transformation entered via setTransformation)  <a href="classsmall3d_1_1_scene_object.html#a25dd3597cb90bca03880e9727f64d8b0">More...</a><br /></td></tr>
 <tr class="separator:a25dd3597cb90bca03880e9727f64d8b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a0c65989bf2723b3cfe10e93b64d808"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a8a0c65989bf2723b3cfe10e93b64d808">rotate</a> (const glm::vec3 &amp;rotation)</td></tr>
 <tr class="memdesc:a8a0c65989bf2723b3cfe10e93b64d808"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Modify the rotation of the object  <a href="classsmall3d_1_1_scene_object.html#a8a0c65989bf2723b3cfe10e93b64d808">More...</a><br /></td></tr>
 <tr class="separator:a8a0c65989bf2723b3cfe10e93b64d808"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a047f55dfe1d7e34cdaa629e73bf1e712"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a047f55dfe1d7e34cdaa629e73bf1e712">setRotation</a> (const glm::mat4x4 &amp;rotation)</td></tr>
-<tr class="memdesc:a047f55dfe1d7e34cdaa629e73bf1e712"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set the rotation of the object by transformation matrix  <a href="classsmall3d_1_1_scene_object.html#a047f55dfe1d7e34cdaa629e73bf1e712">More...</a><br /></td></tr>
-<tr class="separator:a047f55dfe1d7e34cdaa629e73bf1e712"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2e256555d8f7befc6c51422d8a61853"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#ab2e256555d8f7befc6c51422d8a61853">setTransformation</a> (const glm::mat4x4 &amp;rotation)</td></tr>
+<tr class="memdesc:ab2e256555d8f7befc6c51422d8a61853"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set the transformation matrix of the object. (Overwrites rotation entered via setRotation)  <a href="classsmall3d_1_1_scene_object.html#ab2e256555d8f7befc6c51422d8a61853">More...</a><br /></td></tr>
+<tr class="separator:ab2e256555d8f7befc6c51422d8a61853"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d0c13ddbd240538822603b4180e6c80"><td class="memItemLeft" align="right" valign="top">const glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a2d0c13ddbd240538822603b4180e6c80">getOrientation</a> () const</td></tr>
 <tr class="memdesc:a2d0c13ddbd240538822603b4180e6c80"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the orientation of the object  <a href="classsmall3d_1_1_scene_object.html#a2d0c13ddbd240538822603b4180e6c80">More...</a><br /></td></tr>
 <tr class="separator:a2d0c13ddbd240538822603b4180e6c80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab265e1d3224cdfa8ad475bda31344be3"><td class="memItemLeft" align="right" valign="top">const glm::mat4x4 &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#ab265e1d3224cdfa8ad475bda31344be3">getRotation</a> () const</td></tr>
-<tr class="memdesc:ab265e1d3224cdfa8ad475bda31344be3"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the rotation of the object by transformation matrix  <a href="classsmall3d_1_1_scene_object.html#ab265e1d3224cdfa8ad475bda31344be3">More...</a><br /></td></tr>
-<tr class="separator:ab265e1d3224cdfa8ad475bda31344be3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada7bde01d3d008e2a146e155a88721a2"><td class="memItemLeft" align="right" valign="top">const glm::mat4x4 &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#ada7bde01d3d008e2a146e155a88721a2">getTransformation</a> () const</td></tr>
+<tr class="memdesc:ada7bde01d3d008e2a146e155a88721a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the tranformation matrix of the object  <a href="classsmall3d_1_1_scene_object.html#ada7bde01d3d008e2a146e155a88721a2">More...</a><br /></td></tr>
+<tr class="separator:ada7bde01d3d008e2a146e155a88721a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13b47e78ca853f3e88544656f10d5aa1"><td class="memItemLeft" align="right" valign="top">const glm::vec3 &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a13b47e78ca853f3e88544656f10d5aa1">getRotationXYZ</a> () const</td></tr>
-<tr class="memdesc:a13b47e78ca853f3e88544656f10d5aa1"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the rotation of the object in x, y, z representation. This will NOT work if the rotation was set via the setRotation(mat4x4) function.  <a href="classsmall3d_1_1_scene_object.html#a13b47e78ca853f3e88544656f10d5aa1">More...</a><br /></td></tr>
+<tr class="memdesc:a13b47e78ca853f3e88544656f10d5aa1"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the rotation of the object in x, y, z representation. This will NOT work if the rotation was set via the setTransformation function.  <a href="classsmall3d_1_1_scene_object.html#a13b47e78ca853f3e88544656f10d5aa1">More...</a><br /></td></tr>
 <tr class="separator:a13b47e78ca853f3e88544656f10d5aa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21bd126617420837019165e892b1ff6b"><td class="memItemLeft" align="right" valign="top"><a id="a21bd126617420837019165e892b1ff6b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a21bd126617420837019165e892b1ff6b">startAnimating</a> ()</td></tr>
@@ -474,26 +474,6 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
 
 </div>
 </div>
-<a id="ab265e1d3224cdfa8ad475bda31344be3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab265e1d3224cdfa8ad475bda31344be3">&#9670;&nbsp;</a></span>getRotation()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const glm::mat4x4 &amp; small3d::SceneObject::getRotation </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>: Get the rotation of the object by transformation matrix </p>
-<dl class="section return"><dt>Returns</dt><dd>The rotation tranformation matrix </dd></dl>
-
-</div>
-</div>
 <a id="a13b47e78ca853f3e88544656f10d5aa1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a13b47e78ca853f3e88544656f10d5aa1">&#9670;&nbsp;</a></span>getRotationXYZ()</h2>
 
@@ -509,8 +489,28 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
       </table>
 </div><div class="memdoc">
 
-<p>: Get the rotation of the object in x, y, z representation. This will NOT work if the rotation was set via the setRotation(mat4x4) function. </p>
+<p>: Get the rotation of the object in x, y, z representation. This will NOT work if the rotation was set via the setTransformation function. </p>
 <dl class="section return"><dt>Returns</dt><dd>The rotation in x, y, z representation </dd></dl>
+
+</div>
+</div>
+<a id="ada7bde01d3d008e2a146e155a88721a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada7bde01d3d008e2a146e155a88721a2">&#9670;&nbsp;</a></span>getTransformation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const glm::mat4x4 &amp; small3d::SceneObject::getTransformation </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>: Get the tranformation matrix of the object </p>
+<dl class="section return"><dt>Returns</dt><dd>The tranformation matrix </dd></dl>
 
 </div>
 </div>
@@ -566,34 +566,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
 
 </div>
 </div>
-<a id="a047f55dfe1d7e34cdaa629e73bf1e712"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a047f55dfe1d7e34cdaa629e73bf1e712">&#9670;&nbsp;</a></span>setRotation() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void small3d::SceneObject::setRotation </td>
-          <td>(</td>
-          <td class="paramtype">const glm::mat4x4 &amp;&#160;</td>
-          <td class="paramname"><em>rotation</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>: Set the rotation of the object by transformation matrix </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">rotation</td><td>The rotation tranformation matrix </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="a25dd3597cb90bca03880e9727f64d8b0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25dd3597cb90bca03880e9727f64d8b0">&#9670;&nbsp;</a></span>setRotation() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a25dd3597cb90bca03880e9727f64d8b0">&#9670;&nbsp;</a></span>setRotation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -608,10 +582,36 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
       </table>
 </div><div class="memdoc">
 
-<p>: Set the rotation of the object </p>
+<p>: Set the rotation of the object. (Overwrites transformation entered via setTransformation) </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">rotation</td><td>The rotation (x, y, z) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab2e256555d8f7befc6c51422d8a61853"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2e256555d8f7befc6c51422d8a61853">&#9670;&nbsp;</a></span>setTransformation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void small3d::SceneObject::setTransformation </td>
+          <td>(</td>
+          <td class="paramtype">const glm::mat4x4 &amp;&#160;</td>
+          <td class="paramname"><em>rotation</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>: Set the transformation matrix of the object. (Overwrites rotation entered via setRotation) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rotation</td><td>The tranformation matrix </td></tr>
   </table>
   </dd>
 </dl>
