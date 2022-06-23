@@ -1,4 +1,4 @@
-/*
+ /*
  * Renderer.cpp
  *
  *  Created on: 2014/10/19
@@ -935,13 +935,13 @@ namespace small3d {
   void Renderer::render(SceneObject& sceneObject,
     const glm::vec4& colour) {
     this->render(sceneObject.getModel(), sceneObject.position,
-      sceneObject.rotation, colour, "");
+      sceneObject.transformation, colour, "");
   }
 
   void Renderer::render(SceneObject& sceneObject,
     const std::string& textureName) {
     this->render(sceneObject.getModel(), sceneObject.position,
-      sceneObject.rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
+      sceneObject.transformation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName);
   }
 
