@@ -7,10 +7,9 @@
 Minimalistic, open source library for making 3D games in C++, with
 Vulkan and OpenGL support
 
-## Sample games
+## Sample game
 
 - [Gloom](https://github.com/dimi309/gloom)
-- [Islet Hell](https://github.com/dimi309/islet-hell)
 
 ## Tutorial
 
@@ -84,9 +83,7 @@ git repository.
 ## small3d on mobile
 
 You can build small3d for mobile platforms by executing either `build-android` or 
-`build-ios` from the scripts directory. Two sample games have been ported to
-Android and iOS. The [Islet Hell](https://github.com/dimi309/islet-hell) repository
-contains ports of the game to Android and iOS, which can be used as examples.
+`build-ios` from the scripts directory.
 Note that, while with the desktop edition of small3d I use GLFW for windowing functionalities 
 and I/O, on mobile I access the native infrastructure directly.
 
