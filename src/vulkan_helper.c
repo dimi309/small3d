@@ -685,7 +685,7 @@ int create_logical_device() {
   if (VK_KHR_portability_subset_supported) {
     LOGDEBUG0("Enabling VK_KHR_portability_subset");
     dci.ppEnabledExtensionNames = (const char* const*)device_extensions2;
-    dci.enabledExtensionCount = 3;
+    dci.enabledExtensionCount = 2;
   }
   else {
     dci.ppEnabledExtensionNames = (const char* const*)device_extensions1;
