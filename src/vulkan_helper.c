@@ -51,21 +51,22 @@ struct android_app* vh_android_app;
 
 #endif
 
-uint32_t numValidationLayers = 3; // Set to 4 to enable VK_LAYER_MESA_overlay
-const char* vl[4] = {
-  "VK_LAYER_LUNARG_standard_validation",
-  "VK_LAYER_MESA_device_select",
-  "VK_LAYER_KHRONOS_validation",
-  "VK_LAYER_MESA_overlay"
-};
-
 #else
 #define LOGDEBUG0(x)
 #define LOGDEBUG1(x, y) 
 #define LOGDEBUG2(x, y, z)
 
-uint32_t numValidationLayers = 0;
+#endif
 
+#if !defined(NDEBUG) || defined(__ANDROID__)
+uint32_t numValidationLayers = 3; // Set to 4 to enable VK_LAYER_MESA_overlay
+const char* vl[4] = {
+  "VK_LAYER_KHRONOS_validation",
+  "VK_LAYER_MESA_device_select",
+  "VK_LAYER_MESA_overlay"
+};
+#else
+uint32_t numValidationLayers = 0;
 #endif
 
 static VKAPI_ATTR VkBool32 VKAPI_CALL
@@ -238,7 +239,7 @@ int vh_create_instance(const char* application_name,
   ci.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
   ci.pApplicationInfo = &ai;
 
-#ifndef NDEBUG
+#if !defined(NDEBUG) || defined(__ANDROID__)
   uint32_t lc = 0;
   VkLayerProperties* lp = NULL;
 
@@ -341,7 +342,7 @@ int vh_create_instance(const char* application_name,
 #endif
   }
 
-#ifndef NDEBUG
+#if !defined(NDEBUG) || defined(__ANDROID__)
 
   if (lp) {
     free(lp);
@@ -692,8 +693,6 @@ int create_logical_device() {
     dci.enabledExtensionCount = 1;
   }
 
-#ifndef NDEBUG
-
   if (validation_layer_count > 0) {
     dci.enabledLayerCount = validation_layer_count;
     dci.ppEnabledLayerNames = validation_layers;
@@ -701,9 +700,6 @@ int create_logical_device() {
   else {
     dci.enabledLayerCount = 0;
   }
-#else
-  dci.enabledLayerCount = 0;
-#endif
 
   LOGDEBUG0("Creating logical device...");
 
