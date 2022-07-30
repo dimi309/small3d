@@ -863,7 +863,7 @@ namespace small3d {
       cameraPosition : glm::vec3(0.0f, 0.0f, 0.0f);
 
     uboWorldDetailsDynamic[worldDetailsIndex].cameraTransformation = perspective ?
-      cameraRotation :
+      cameraTransformation :
       glm::mat4x4(1);
 
   }
@@ -951,7 +951,7 @@ namespace small3d {
   void Renderer::setCameraRotation(const glm::vec3& rotation) {
     cameraRotationByMatrix = false;
     this->cameraRotationXYZ = rotation;
-    this->cameraRotation = glm::rotate(glm::mat4x4(1.0f), -rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+    this->cameraTransformation = glm::rotate(glm::mat4x4(1.0f), -rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
       glm::rotate(glm::mat4x4(1.0f), -rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), -rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
   }
@@ -962,25 +962,25 @@ namespace small3d {
     }
     else {
       this->cameraRotationXYZ += rotation;
-      this->cameraRotation = glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+      this->cameraTransformation = glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
         glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
         glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.y, glm::vec3(0.0f, 1.0f, 0.0f));
     }
   }
 
-  void Renderer::setCameraRotation(const glm::mat4x4& rotation) {
-    this->cameraRotation = glm::inverse(rotation);
+  void Renderer::setCameraTransformation(const glm::mat4x4& transformation) {
+    this->cameraTransformation = glm::inverse(transformation);
     cameraRotationByMatrix = true;
     cameraRotationXYZ = glm::vec3(0.0f);
   }
 
   const glm::vec3 Renderer::getCameraOrientation() const {
-    auto orientationVec4 = glm::inverse(this->cameraRotation) * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
+    auto orientationVec4 = glm::inverse(this->cameraTransformation) * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
     return glm::vec3(orientationVec4.x, orientationVec4.y, orientationVec4.z);
   }
 
   const glm::mat4x4 Renderer::getCameraRotation() const {
-    return glm::inverse(this->cameraRotation);
+    return glm::inverse(this->cameraTransformation);
   }
 
   const glm::vec3 Renderer::getCameraRotationXYZ() const {

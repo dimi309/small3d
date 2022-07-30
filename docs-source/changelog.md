@@ -13,6 +13,8 @@ v1.801 (still open)
   builds. This is done as a workaround to a Qualcomm Adreno driver bug, 
   which makes the vertex shader compilation crash when using Vulkan in 
   release builds on some devices.
+- [BREAKING]  Renderer::setCameraRotation(const mat4x4&)
+  has been renamed to setCameraTransformation(const mat4x4&).
 
 v1.800 2022-01-03
 

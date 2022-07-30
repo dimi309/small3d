@@ -240,7 +240,7 @@ namespace small3d
 
     void deleteImageFromGPU(VulkanImage &gpuImage);
 
-    glm::mat4x4 cameraRotation = glm::mat4x4(1);
+    glm::mat4x4 cameraTransformation = glm::mat4x4(1);
     glm::vec3 cameraRotationXYZ = glm::vec3(0);
     bool cameraRotationByMatrix = false;
 
@@ -284,12 +284,11 @@ namespace small3d
     void rotateCamera(const glm::vec3& rotation);
 
     /**
-     * @brief: Set the rotation of the camera
-     *         by transformation matrix
+     * @brief: Set the camera transformation matrix
      *
      * @param rotation The rotation tranformation matrix
      */
-    void setCameraRotation(const glm::mat4x4& rotation);
+    void setCameraTransformation(const glm::mat4x4& transformation);
 
     /**
      * @brief: Get the orientation of the camera
