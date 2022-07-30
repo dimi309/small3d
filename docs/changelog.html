@@ -71,7 +71,7 @@ $(function() {
 <li>VS build scripts switched to build with VS 2022 by default. In order to go back to VS 2019 just change the VSCONFIG variables in <code>srcipts/build-vs.bat</code> and <code>deps/scripts/prepare-vs.bat</code> to <code>-G"Visual Studio 16 2019" -A x64</code></li>
 <li>Stability improvements, especially for sound on Android and iOS.</li>
 <li>[BREAKING] SceneObject::setRotation(mat4x4) has been renamed to setTransformation.</li>
-<li>Always loading khronos validation layer on Android, even in release builds. This is done as a workaround to a Qualcomm Adreno driver bug, which makes the vertex shader compilation crash when using Vulkan in release builds on some devices.</li>
+<li>Always loading the khronos validation layer on Android, even in release builds. This is done as a workaround to a Qualcomm Adreno driver bug, which makes the vertex shader compilation crash when using Vulkan in release builds on some devices.</li>
 </ul>
 <p>v1.800 2022-01-03</p>
 <ul>

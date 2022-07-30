@@ -9,7 +9,7 @@ v1.801 (still open)
 - Stability improvements, especially for sound on Android and iOS.
 - [BREAKING] SceneObject::setRotation(mat4x4) has been renamed to 
   setTransformation.
-- Always loading khronos validation layer on Android, even in release
+- Always loading the khronos validation layer on Android, even in release
   builds. This is done as a workaround to a Qualcomm Adreno driver bug, 
   which makes the vertex shader compilation crash when using Vulkan in 
   release builds on some devices.
