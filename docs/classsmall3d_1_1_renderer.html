@@ -89,9 +89,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a88086d55064237f48d33d6366df58eaf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a88086d55064237f48d33d6366df58eaf">rotateCamera</a> (const glm::vec3 &amp;rotation)</td></tr>
 <tr class="memdesc:a88086d55064237f48d33d6366df58eaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Modify the rotation of the camera  <a href="classsmall3d_1_1_renderer.html#a88086d55064237f48d33d6366df58eaf">More...</a><br /></td></tr>
 <tr class="separator:a88086d55064237f48d33d6366df58eaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adfa453846ed1623a8f37d9bf8bc69bb0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#adfa453846ed1623a8f37d9bf8bc69bb0">setCameraRotation</a> (const glm::mat4x4 &amp;rotation)</td></tr>
-<tr class="memdesc:adfa453846ed1623a8f37d9bf8bc69bb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set the rotation of the camera by transformation matrix  <a href="classsmall3d_1_1_renderer.html#adfa453846ed1623a8f37d9bf8bc69bb0">More...</a><br /></td></tr>
-<tr class="separator:adfa453846ed1623a8f37d9bf8bc69bb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab895333eea762ecfab8fb2e902b2862e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ab895333eea762ecfab8fb2e902b2862e">setCameraTransformation</a> (const glm::mat4x4 &amp;transformation)</td></tr>
+<tr class="memdesc:ab895333eea762ecfab8fb2e902b2862e"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set the camera transformation matrix  <a href="classsmall3d_1_1_renderer.html#ab895333eea762ecfab8fb2e902b2862e">More...</a><br /></td></tr>
+<tr class="separator:ab895333eea762ecfab8fb2e902b2862e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4560bec0819d5f5c4b83500659e5fda"><td class="memItemLeft" align="right" valign="top">const glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ae4560bec0819d5f5c4b83500659e5fda">getCameraOrientation</a> () const</td></tr>
 <tr class="memdesc:ae4560bec0819d5f5c4b83500659e5fda"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the orientation of the camera  <a href="classsmall3d_1_1_renderer.html#ae4560bec0819d5f5c4b83500659e5fda">More...</a><br /></td></tr>
 <tr class="separator:ae4560bec0819d5f5c4b83500659e5fda"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1075,34 +1075,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a id="adfa453846ed1623a8f37d9bf8bc69bb0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adfa453846ed1623a8f37d9bf8bc69bb0">&#9670;&nbsp;</a></span>setCameraRotation() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void small3d::Renderer::setCameraRotation </td>
-          <td>(</td>
-          <td class="paramtype">const glm::mat4x4 &amp;&#160;</td>
-          <td class="paramname"><em>rotation</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>: Set the rotation of the camera by transformation matrix </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">rotation</td><td>The rotation tranformation matrix </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="a431380a4b28abb9a14c02c4535e49a1b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a431380a4b28abb9a14c02c4535e49a1b">&#9670;&nbsp;</a></span>setCameraRotation() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a431380a4b28abb9a14c02c4535e49a1b">&#9670;&nbsp;</a></span>setCameraRotation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1121,6 +1095,32 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">rotation</td><td>The rotation (x, y, z) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab895333eea762ecfab8fb2e902b2862e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab895333eea762ecfab8fb2e902b2862e">&#9670;&nbsp;</a></span>setCameraTransformation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void small3d::Renderer::setCameraTransformation </td>
+          <td>(</td>
+          <td class="paramtype">const glm::mat4x4 &amp;&#160;</td>
+          <td class="paramname"><em>transformation</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>: Set the camera transformation matrix </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">transformation</td><td>The tranformation matrix </td></tr>
   </table>
   </dd>
 </dl>
