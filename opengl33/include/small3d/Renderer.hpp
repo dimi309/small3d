@@ -67,7 +67,7 @@ namespace small3d
     std::vector<float> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
 
-    glm::mat4x4 cameraRotation = glm::mat4x4(1.0f);
+    glm::mat4x4 cameraTransformation = glm::mat4x4(1.0f);
     glm::vec3 cameraRotationXYZ = glm::vec3(0.0f);
     bool cameraRotationByMatrix = false;
 
@@ -138,12 +138,11 @@ namespace small3d
     void rotateCamera(const glm::vec3& rotation);
 
     /**
-     * @brief: Set the rotation of the camera
-     *         by transformation matrix
+     * @brief: Set the camera by transformation matrix
      *
-     * @param rotation The rotation tranformation matrix
+     * @param transformation The tranformation matrix
      */
-    void setCameraRotation(const glm::mat4x4& rotation);
+    void setCameraTransformation(const glm::mat4x4& transformation);
 
     /**
      * @brief: Get the orientation of the camera

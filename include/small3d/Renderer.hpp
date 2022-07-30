@@ -286,7 +286,7 @@ namespace small3d
     /**
      * @brief: Set the camera transformation matrix
      *
-     * @param rotation The rotation tranformation matrix
+     * @param transformation The tranformation matrix
      */
     void setCameraTransformation(const glm::mat4x4& transformation);
 
