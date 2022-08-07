@@ -915,7 +915,7 @@ int create_render_pass() {
     VK_ATTACHMENT_LOAD_OP_LOAD;
   depth_attachment_description.stencilStoreOp =
     VK_ATTACHMENT_STORE_OP_STORE;
-  depth_attachment_description.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+  depth_attachment_description.initialLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
   depth_attachment_description.finalLayout =
     VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
