@@ -1791,9 +1791,15 @@ namespace small3d {
 
     createDescriptorPool();
     allocateDescriptorSets();
-
+    // Shader with joints does not compile on some Android GPUs
+    // like Adreno (Qualcomm)
+#if !defined(__ANDROID__)
     std::string vertexShaderPath = this->shadersPath +
       "perspectiveMatrixLightedShader.spv";
+#else
+    std::string vertexShaderPath = this->shadersPath +
+      "perspectiveMatrixLightedShaderNoJoints.spv";
+#endif
     std::string fragmentShaderPath = this->shadersPath +
       "textureShader.spv";
 

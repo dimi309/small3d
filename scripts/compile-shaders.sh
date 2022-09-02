@@ -18,6 +18,8 @@ echo "Compiling shaders..."
 
 glslangValidator -V perspectiveMatrixLightedShader.vert -o perspectiveMatrixLightedShader.spv $DEBUG_INFO
 
+glslangValidator -V perspectiveMatrixLightedShaderNoJoints.vert -o perspectiveMatrixLightedShaderNoJoints.spv $DEBUG_INFO
+
 glslangValidator -V textureShader.frag -o textureShader.spv $DEBUG_INFO
 
 if [ -d "../../build/" ]; then
