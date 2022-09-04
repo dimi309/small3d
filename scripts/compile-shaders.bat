@@ -19,11 +19,11 @@ endlocal & exit /b 1
 
 cd ..\resources\shaders
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
-glslangvalidator -V perspectiveMatrixLightedShader.vert -o perspectiveMatrixLightedShader.spv %debug_info%
+glslangvalidator --target-env vulkan1.1 perspectiveMatrixLightedShader.vert -o perspectiveMatrixLightedShader.spv %debug_info%
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
-glslangvalidator -V perspectiveMatrixLightedShaderNoJoints.vert -o perspectiveMatrixLightedShaderNoJoints.spv %debug_info%
+glslangvalidator --target-env vulkan1.1 perspectiveMatrixLightedShaderNoJoints.vert -o perspectiveMatrixLightedShaderNoJoints.spv %debug_info%
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
-glslangvalidator -V textureShader.frag -o textureShader.spv %debug_info%
+glslangvalidator --target-env vulkan1.1 textureShader.frag -o textureShader.spv %debug_info%
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 echo SPV binaries created successfully
 if exist ..\..\build (

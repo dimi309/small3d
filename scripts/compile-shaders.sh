@@ -16,11 +16,11 @@ fi
 cd ../resources/shaders
 echo "Compiling shaders..."
 
-glslangValidator -V perspectiveMatrixLightedShader.vert -o perspectiveMatrixLightedShader.spv $DEBUG_INFO
+glslangValidator --target-env vulkan1.1 perspectiveMatrixLightedShader.vert -o perspectiveMatrixLightedShader.spv $DEBUG_INFO
 
-glslangValidator -V perspectiveMatrixLightedShaderNoJoints.vert -o perspectiveMatrixLightedShaderNoJoints.spv $DEBUG_INFO
+glslangValidator --target-env vulkan1.1 perspectiveMatrixLightedShaderNoJoints.vert -o perspectiveMatrixLightedShaderNoJoints.spv $DEBUG_INFO
 
-glslangValidator -V textureShader.frag -o textureShader.spv $DEBUG_INFO
+glslangValidator --target-env vulkan1.1 textureShader.frag -o textureShader.spv $DEBUG_INFO
 
 if [ -d "../../build/" ]; then
     if [ ! -d "../../build/shaders/" ]; then

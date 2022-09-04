@@ -232,7 +232,7 @@ int vh_create_instance(const char* application_name,
   ai.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
   ai.pEngineName = "vulkan_helper";
   ai.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-  ai.apiVersion = VK_API_VERSION_1_0;
+  ai.apiVersion = VK_API_VERSION_1_1;
 
   VkInstanceCreateInfo ci;
   memset(&ci, 0, sizeof(VkInstanceCreateInfo));

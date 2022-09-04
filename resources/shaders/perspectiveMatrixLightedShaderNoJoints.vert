@@ -26,9 +26,7 @@ layout(location = 1) out vec2 textureCoords;
 
 void main()
 {
-  mat4 skinMat = mat4(1.0f);
-  
-  vec4 worldPos = modelTransformation * skinMat * position + vec4(modelOffset, 0.0);
+  vec4 worldPos = modelTransformation * position + vec4(modelOffset, 0.0);
 
   vec4 cameraPos = cameraTransformation * (worldPos - vec4(cameraOffset, 0.0));
 
