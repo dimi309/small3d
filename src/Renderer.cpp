@@ -1744,11 +1744,15 @@ namespace small3d {
     }
 
 #else
+
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
 
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
+#if defined(__APPLE__)
+    glfwExtensions[glfwExtensionCount] =  "VK_KHR_portability_enumeration";
+    ++glfwExtensionCount;
+#endif
     std::string requiredExtensions = "GLFW required extensions (";
     requiredExtensions += std::to_string(glfwExtensionCount) + ")";
     LOGDEBUG(requiredExtensions);

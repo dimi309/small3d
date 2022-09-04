@@ -304,7 +304,9 @@ int vh_create_instance(const char* application_name,
   ci.enabledExtensionCount = enabled_extension_count;
   ci.ppEnabledExtensionNames = enabled_extension_names;
 #endif
-
+#if defined(__APPLE__)
+  ci.flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
+#endif
   int success = 1;
   VkResult result = vkCreateInstance(&ci, NULL, &vh_instance);
   if (result != VK_SUCCESS) {
