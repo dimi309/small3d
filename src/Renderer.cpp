@@ -1726,13 +1726,16 @@ namespace small3d {
     }
 #elif defined(SMALL3D_IOS)
 
-    const char* exts[3];
+    const char* exts[2];
 
     exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
     exts[1] = "VK_MVK_ios_surface"; //VK_MVK_IOS_SURFACE_EXTENSION_NAME;
-    exts[2] = "VK_KHR_portability_enumeration";
+    //This is not found on iOS and returns an error.
+    //The VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR is used
+    //for the instance creation without any issue though..
+    //exts[2] = "VK_KHR_portability_enumeration";
 
-    uint32_t num = 3;
+    uint32_t num = 2;
 
     LOGDEBUG("Creating Vulkan instance...");
 
