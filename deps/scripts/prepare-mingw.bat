@@ -24,9 +24,9 @@ if /I "%~1" == "release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
 
 mkdir include
 mkdir lib
-7z x glfw-3.3.7.zip
+7z x glfw-3.3.8.zip
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-cd glfw-3.3.7
+cd glfw-3.3.8
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF %CMAKE_DEFINITIONS%
@@ -37,7 +37,7 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy src\libglfw3.a ..\..\lib\
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..
-rmdir /Q /S glfw-3.3.7
+rmdir /Q /S glfw-3.3.8
 
 rem Only needed for OpenGL build
 if /I "%~2" == "opengl" (
