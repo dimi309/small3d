@@ -1726,12 +1726,13 @@ namespace small3d {
     }
 #elif defined(SMALL3D_IOS)
 
-    const char* exts[2];
+    const char* exts[3];
 
     exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
     exts[1] = "VK_MVK_ios_surface"; //VK_MVK_IOS_SURFACE_EXTENSION_NAME;
+    exts[2] = "VK_KHR_portability_enumeration";
 
-    uint32_t num = 2;
+    uint32_t num = 3;
 
     LOGDEBUG("Creating Vulkan instance...");
 
