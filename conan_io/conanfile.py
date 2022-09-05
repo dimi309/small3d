@@ -26,8 +26,8 @@ class Small3dConan(ConanFile):
 
     def requirements(self):
         if self.options.vulkan:
-            self.requires("vulkan-loader/1.2.190")
-            self.requires("vulkan-headers/1.2.190")
+            self.requires("vulkan-loader/1.3.224.0")
+            self.requires("vulkan-headers/1.3.224.0")
         else:
             self.requires("glew/2.2.0")
 
