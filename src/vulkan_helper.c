@@ -682,19 +682,15 @@ int create_logical_device() {
     vh_present_family_index ? 1 : 2;
   dci.pEnabledFeatures = &pdf;
 
-  const char* device_extensions1[] = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-  const char* device_extensions2[] = { "VK_KHR_portability_subset", VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-
+  const char* device_extensions[] = { VK_KHR_SWAPCHAIN_EXTENSION_NAME, "VK_KHR_portability_subset" };
+  dci.ppEnabledExtensionNames = (const char* const*)device_extensions;
+  dci.enabledExtensionCount = 1;
+  
   if (VK_KHR_portability_subset_supported) {
     LOGDEBUG0("Enabling VK_KHR_portability_subset");
-    dci.ppEnabledExtensionNames = (const char* const*)device_extensions2;
     dci.enabledExtensionCount = 2;
   }
-  else {
-    dci.ppEnabledExtensionNames = (const char* const*)device_extensions1;
-    dci.enabledExtensionCount = 1;
-  }
-
+  
   if (validation_layer_count > 0) {
     dci.enabledLayerCount = validation_layer_count;
     dci.ppEnabledLayerNames = validation_layers;
