@@ -58,12 +58,19 @@ struct android_app* vh_android_app;
 
 #endif
 
-#if !defined(NDEBUG) || defined(__ANDROID__)
-uint32_t numValidationLayers = 3; // Set to 4 to enable VK_LAYER_MESA_overlay
-const char* vl[4] = {
+#if !defined(NDEBUG)
+uint32_t numValidationLayers = 4; // Set to 5 to enable VK_LAYER_MESA_overlay
+const char* vl[5] = {
   "VK_LAYER_KHRONOS_validation",
   "VK_LAYER_MESA_device_select",
+  "VK_LAYER_ADRENO_debug",
+  "VK_LAYER_IMG_powervr_perf_doc",
   "VK_LAYER_MESA_overlay"
+};
+#elif defined(__ANDROID__) // Hack to make programs not crash on some Adreno GPUs
+uint32_t numValidationLayers = 1;
+const char* vl[1] = {
+  "VK_LAYER_KHRONOS_validation"
 };
 #else
 uint32_t numValidationLayers = 0;
