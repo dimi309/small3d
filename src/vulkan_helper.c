@@ -1581,8 +1581,12 @@ int vh_begin_draw_command_buffer(VkCommandBuffer* command_buffer) {
     memset(&command_buffer_bi, 0, sizeof(VkCommandBufferBeginInfo));
     command_buffer_bi.sType =
       VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    command_buffer_bi.flags =
-      VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+
+    // Formerly this was being set to VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT.
+    // However, this would make PowerVR GPUs "lose" the output of each vkCmdDrawIndexed
+    // call within a command buffer.
+    command_buffer_bi.flags = 0;
+
     command_buffer_bi.pInheritanceInfo = NULL;
 
     if (vkBeginCommandBuffer(*command_buffer, &command_buffer_bi) != VK_SUCCESS) {
