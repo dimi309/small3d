@@ -191,29 +191,23 @@ namespace small3d {
 
   void Renderer::createDescriptorPool() {
 
-    VkDescriptorPoolSize ps[5];
+    VkDescriptorPoolSize ps[3];
 
-    memset(ps, 0, 5 * sizeof(VkDescriptorPoolSize));
+    memset(ps, 0, 3 * sizeof(VkDescriptorPoolSize));
 
     ps[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    ps[0].descriptorCount = MAX_FRAMES_PREPARED;
+    ps[0].descriptorCount = 3 * MAX_FRAMES_PREPARED; // For uboWorld, uboModelPlacement and uboColour (3) 
 
-    ps[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    ps[1].descriptorCount = MAX_FRAMES_PREPARED;
+    ps[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    ps[1].descriptorCount = MAX_FRAMES_PREPARED * objectsPerFrame;
 
-    ps[2].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    ps[2].descriptorCount = MAX_FRAMES_PREPARED * objectsPerFrame;
-
-    ps[3].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    ps[3].descriptorCount = MAX_FRAMES_PREPARED;
-
-    ps[4].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    ps[4].descriptorCount = MAX_FRAMES_PREPARED;
+    ps[2].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    ps[2].descriptorCount = MAX_FRAMES_PREPARED; // For uboLight
 
     VkDescriptorPoolCreateInfo dpci;
     memset(&dpci, 0, sizeof(VkDescriptorPoolCreateInfo));
     dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-    dpci.poolSizeCount = 5;
+    dpci.poolSizeCount = 3;
     dpci.pPoolSizes = ps;
     dpci.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
     dpci.maxSets = MAX_FRAMES_PREPARED * objectsPerFrame;
