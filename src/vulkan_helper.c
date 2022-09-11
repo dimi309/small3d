@@ -915,11 +915,11 @@ int create_render_pass() {
 
   depth_attachment_description.samples = VK_SAMPLE_COUNT_1_BIT;
   depth_attachment_description.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-  depth_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+  depth_attachment_description.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
   depth_attachment_description.stencilLoadOp =
-    VK_ATTACHMENT_LOAD_OP_LOAD;
+    VK_ATTACHMENT_LOAD_OP_DONT_CARE;
   depth_attachment_description.stencilStoreOp =
-    VK_ATTACHMENT_STORE_OP_STORE;
+    VK_ATTACHMENT_STORE_OP_DONT_CARE;
   depth_attachment_description.initialLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
   depth_attachment_description.finalLayout =
     VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
