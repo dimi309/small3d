@@ -1514,6 +1514,7 @@ int vh_create_pipeline(const char* vertex_shader_path, const char* fragment_shad
     &pipeline_systems[*index].pipeline) !=
     VK_SUCCESS) {
     LOGDEBUG0("Could not create graphics pipeline!");
+    return 0;
   }
   else {
     LOGDEBUG0("Pipeline created ok.");
