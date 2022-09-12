@@ -1413,6 +1413,7 @@ int vh_create_pipeline(const char* vertex_shader_path, const char* fragment_shad
   rasterization_state_ci.depthBiasClamp = 0.0f;
   rasterization_state_ci.depthBiasSlopeFactor = 0.0f;
 
+  VkSampleMask sampleMask = ~0u;
   VkPipelineMultisampleStateCreateInfo multisample_state_ci;
   memset(&multisample_state_ci, 0,
     sizeof(VkPipelineMultisampleStateCreateInfo));
@@ -1420,8 +1421,8 @@ int vh_create_pipeline(const char* vertex_shader_path, const char* fragment_shad
     VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
   multisample_state_ci.sampleShadingEnable = VK_FALSE;
   multisample_state_ci.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-  multisample_state_ci.minSampleShading = 1.0f;
-  multisample_state_ci.pSampleMask = NULL;
+  multisample_state_ci.minSampleShading = 0.0f;
+  multisample_state_ci.pSampleMask = &sampleMask;
   multisample_state_ci.alphaToCoverageEnable = VK_FALSE;
   multisample_state_ci.alphaToOneEnable = VK_FALSE;
 
@@ -1505,7 +1506,7 @@ int vh_create_pipeline(const char* vertex_shader_path, const char* fragment_shad
   pipeline_ci.subpass = 0;
 
   pipeline_ci.basePipelineHandle = VK_NULL_HANDLE;
-  pipeline_ci.basePipelineIndex = -1;
+  pipeline_ci.basePipelineIndex = 0;
 
   pipeline_ci.pDepthStencilState = &depth_stencil_ci;
 
