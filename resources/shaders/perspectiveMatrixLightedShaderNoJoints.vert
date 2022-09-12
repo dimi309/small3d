@@ -7,18 +7,18 @@ layout(location = 2) in vec2 uvCoords;
 layout(location = 3) in uvec4 joint;
 layout(location = 4) in vec4 weight;
 
-layout(binding = 0) uniform uboWorld {
+layout(set = 0, binding = 0) uniform uboWorld {
   mat4 perspectiveMatrix;
   vec3 lightDirection;
   mat4 cameraTransformation;
   vec3 cameraOffset;
 };
 
-layout(binding = 1) uniform uboModelPlacement {
+layout(set = 0, binding = 1) uniform uboModelPlacement {
   mat4 modelTransformation;
   mat4 jointTransformations[16];
   vec3 modelOffset;
-  bool hasJoints;
+  uint hasJoints;
 };
 
 layout(location = 0) smooth out float cosAngIncidence;

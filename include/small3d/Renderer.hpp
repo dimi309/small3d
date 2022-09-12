@@ -184,7 +184,7 @@ namespace small3d
 
     const uint32_t colourDescBinding = 2;
     const uint32_t lightDescBinding = 3;
-    const uint32_t textureDescBinding = 4;
+    const uint32_t textureDescBinding = 0;
 
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     static void framebufferSizeCallback(GLFWwindow* window, int width,

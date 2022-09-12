@@ -12,7 +12,7 @@ layout(set = 0, binding = 3) uniform uboLight {
   float lightIntensity;
 };
 
-layout(set = 1, binding = 4) uniform sampler2D textureImage;
+layout(set = 1, binding = 0) uniform sampler2D textureImage;
 
 layout(location = 0) out vec4 outputColour;
 
