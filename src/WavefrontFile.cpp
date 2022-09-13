@@ -10,12 +10,13 @@
 #include <stdexcept>
 #include <unordered_map>
 #include <fstream>
+#include <regex>
 
 #ifdef __ANDROID__
 #include "vulkan_helper.h"
 #include <streambuf>
 #include <istream>
-#include <regex>
+
 
 struct membuf : std::streambuf
 {

@@ -31,10 +31,8 @@ Renderer *r = nullptr;
 bool appActive = false;
 bool instantiated = false;
 uint32_t screenWidth, screenHeight;
-
-
 #else
-#define RETURN1 RETURN1
+#define RETURN1 return 1;
 #define RETURN0 return 0;
 #endif
 
@@ -56,9 +54,9 @@ void initRenderer() {
   }
 #else
   #if !defined(NDEBUG) && defined(WIN32)
-  return small3d::Renderer::getInstance("Islet Hell", 1024, 768);
+  r = &small3d::Renderer::getInstance("Islet Hell", 1024, 768);
 #else
-  return small3d::Renderer::getInstance("Islet Hell");
+  r = &small3d::Renderer::getInstance("Islet Hell");
 #endif
 #endif
 }
