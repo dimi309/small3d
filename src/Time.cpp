@@ -8,7 +8,9 @@
 
 #include "Time.hpp"
 
-#if defined(__ANDROID__) || defined(SMALL3D_IOS)
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
+#include <GLFW/glfw3.h>
+#else
 #include <sys/time.h>
 #endif
 
