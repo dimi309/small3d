@@ -14,7 +14,8 @@ MESSAGE(STATUS "Sources: ${SOURCE_FILES} ${HEADER_FILES}")
 add_library(small3d_tests
         SHARED
         ${SOURCE_FILES}
-        ${HEADER_FILES})
+        ${HEADER_FILES}
+        ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
 find_package(Vulkan REQUIRED)
 message(STATUS "Vulkan FOUND = ${Vulkan_FOUND}")
@@ -22,23 +23,22 @@ message(STATUS "Vulkan Include = ${Vulkan_INCLUDE_DIR}")
 message(STATUS "Vulkan Libs = ${Vulkan_LIBRARIES}")
 
 target_include_directories(small3d_tests PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/deps/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/main/cpp/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../include/small3d
         ${Vulkan_INCLUDE_DIRS}
         ${ANDROID_NDK}/sources/android/native_app_glue
         )
 
 target_link_libraries(small3d_tests
         android
-        ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libnative_app_glue.a
         aaudio
         ${log-lib}
         ${Vulkan_LIBRARIES}
-        ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libpng.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/lib/${ANDROID_ABI}/libpng.a
         z
-        ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libvorbis.a
-        ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libvorbisfile.a
-        ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libogg.a
-        ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libfreetype.a
-        ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libsmall3d.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/lib/${ANDROID_ABI}/libvorbis.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/lib/${ANDROID_ABI}/libvorbisfile.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/lib/${ANDROID_ABI}/libogg.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/lib/${ANDROID_ABI}/libfreetype.a
         )

@@ -17,9 +17,28 @@
 #include <small3d/GlbFile.hpp>
 #include <small3d/WavefrontFile.hpp>
 #include "OctPyramid.hpp"
+#include "vulkan_helper.h"
 
 using namespace small3d;
 using namespace std;
+
+#if defined(__ANDROID__)
+#define RETURN1
+#define RETURN0
+#else
+#define RETURN1 RETURN1
+#define RETURN0 return 0;
+#endif
+
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
+void pollEvents() {
+  glfwPollEvents();
+}
+#else
+void pollEvents() {
+
+}
+#endif
 
 Renderer& initRenderer() {
   return Renderer::getInstance("test", 800, 600);
@@ -135,7 +154,7 @@ int WavefrontModelTest() {
   model3.scale += 0.3f;
 
   while (seconds - startSeconds < 5.0) {
-    glfwPollEvents();
+    pollEvents();
     seconds = getTimeInSeconds();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
@@ -147,7 +166,7 @@ int WavefrontModelTest() {
       renderer->swapBuffers();
     }
   }
-  
+
   return 1;
 }
 
@@ -166,7 +185,7 @@ int ScaleAndTransformTest() {
   boxes.position = glm::vec3(0.0f, 0.0f, -3.0f);
   
   while (seconds - startSeconds < 5.0) {
-    glfwPollEvents();
+    pollEvents();
     seconds = getTimeInSeconds();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
@@ -204,7 +223,7 @@ int GlbTextureTest() {
   tree.position = glm::vec3(0.0f, 0.0f, -4.0f);
 
   while (seconds - startSeconds < 5.0) {
-    glfwPollEvents();
+    pollEvents();
     seconds = getTimeInSeconds();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
@@ -238,7 +257,7 @@ int BoundingBoxesTest() {
   goat.startAnimating();
 
   while (seconds - startSeconds < 5.0) {
-    glfwPollEvents();
+    pollEvents();
     seconds = getTimeInSeconds();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
@@ -305,7 +324,7 @@ int FPStest() {
     glm::vec3(1.0f, -1.0f, 0.0f));
 
   while (seconds - startSeconds < 10.0) {
-    glfwPollEvents();
+    pollEvents();
     seconds = getTimeInSeconds();
     if (seconds - prevSeconds > 1.0) {
       framerate = numFrames;
@@ -356,9 +375,9 @@ int RendererTest() {
 
   Image cubeTexture("resources/models/Cube/cubeTexture.png");
   renderer->generateTexture("cubeTexture", cubeTexture);
-
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
   glfwShowWindow(renderer->getWindow());
-
+#endif
   Model singleColourRect;
   renderer->createRectangle(singleColourRect, glm::vec3(-1.0f, 0.0f, 0.0f),
     glm::vec3(-0.5f, -0.5f, 0.0f));
@@ -385,7 +404,7 @@ int RendererTest() {
   glm::vec3 rotation(0.0f, 0.0f, 0.0f);
 
   while (seconds - startSeconds < 5.0) {
-    glfwPollEvents();
+    pollEvents();
     seconds = getTimeInSeconds();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
@@ -492,85 +511,93 @@ int GenericSceneObjectConstructorTest() {
 
   return 1;
 }
-
+#if defined(__ANDROID__)
+extern "C" {
+void android_main(struct android_app* state) {
+  vh_android_app = state;
+#else
 int main(int argc, char** argv) {
+#endif
   try
   {
     if (!LoggerTest()) {
       printf("*** Failing LoggerTest.\n\r");
-      return 1;
+      RETURN1
     }
 
     if (!ImageTest()) {
       printf("*** Failing ImageTest.\n\r");
-      return 1;
+      RETURN1
     }
 
     if (!WavefrontTest()) {
       printf("*** Failing WavefrontTest.\n\r");
-      return 1;
+      RETURN1
     }
 
     if (!WavefrontModelTest()) {
       printf("*** Failing WavefrontModelTest.\n\r");
-      return 1;
+      RETURN1
     }
 
     if (!ScaleAndTransformTest()) {
       printf("*** Failing GlbTextureText.\n\r");
-      return 1;
+      RETURN1
     }
 
     if (!GlbTextureTest()) {
       printf("*** Failing GlbTextureText.\n\r");
-      return 1;
+      RETURN1
     }
     
     if (!BoundingBoxesTest()) {
       printf("*** Failing BoundingBoxesTest.\n\r");
-      return 1;
+      RETURN1
     }
     
     if (!FPStest()) {
       printf("*** Failing FPStest.\n\r");
-      return 1;
+      RETURN1
     }
 
     if (!GenericSceneObjectConstructorTest()) {
       printf("*** Failing GenericSceneObjectConstructorTest.\n\r");
-      return 1;
+      RETURN1
     }
 
     if (!RendererTest()) {
       printf("*** Failing RendererTest.\n\r");
-      return 1;
+      RETURN1
     }
 
     if (!SoundTest()) {
       printf("*** Failing SoundTest.\n\r");
-      return 1;
+      RETURN1
     }
 
     if (!SoundTest2()) {
       printf("*** Failing SoundTest2.\n\r");
-      return 1;
+      RETURN1
     }
 
     if (!SoundTest3()) {
       printf("*** Failing SoundTest3.\n\r");
-      return 1;
+      RETURN1
     }
 
     if (!GlbTest()) {
       printf("*** Failing GlbTest.\n\r");
-      return 1;
+      RETURN1
     }
 
   }
   catch (exception& e) {
     printf("*** %s\n\r", e.what());
-    return 1;
+    RETURN1
   }
   printf("All tests have executed successfully.\n\r");
-  return 0;
+  RETURN0
 }
+#if defined(__ANDROID__)
+}
+#endif
