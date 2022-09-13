@@ -1,0 +1,15 @@
+Build small3d for android. Then copy:
+
+  small3d/build/include to islet-hell/android/app/deps/include
+  small3d/build/lib to islet-hell/android/app/deps/lib
+  small3d/build/shaders to islet-hell/android/app/src/main/assets/resources/shaders
+
+Some phones using the Qualcomm Adreno GPU cannot compile the vertex shader. Strangely enough the solution is to
+download the chronos validation layers binaries from https://github.com/KhronosGroup/Vulkan-ValidationLayers/releases
+and deploy them with the Android application. I am using the latest validation layers (v1.3.224 at the time of
+writing - the v1.2 layers make the virtual devices in Android Studio crash).
+In order to deploy them, decompress the archive and copy the directories it contains (arm64-v8a, armeabi-v7a, etc) to
+islet-hell/android/app/src/main/jniLibs. (Already done for Islet Hell and checked-in to Git.)
+More recently, another failure to compile the vertex shader on a device with an Adreno GPU was resolved by removing the joints calculations
+from the shader in small3d (only for Android devices). The validation layer is still necessary though, since there are crashes if it is removed, even with
+the joints calculations removed.

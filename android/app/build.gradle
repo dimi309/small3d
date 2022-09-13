@@ -1,0 +1,51 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+
+    compileSdk 30
+
+    defaultConfig {
+        applicationId 'com.dimi309.small3d_tests'
+        minSdk 26
+        targetSdk 30
+        versionCode 1
+        versionName "1.00"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            debuggable true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path file('CMakeLists.txt')
+
+        }
+    }
+    ndkVersion '25.1.8937393'
+    namespace 'com.dimi309.small3d_tests'
+
+
+}
+
+dependencies {
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
