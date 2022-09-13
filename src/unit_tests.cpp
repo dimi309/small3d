@@ -22,9 +22,17 @@
 using namespace small3d;
 using namespace std;
 
+Renderer *r = nullptr;
+
 #if defined(__ANDROID__)
 #define RETURN1
 #define RETURN0
+
+bool appActive = false;
+bool instantiated = false;
+uint32_t screenWidth, screenHeight;
+
+
 #else
 #define RETURN1 RETURN1
 #define RETURN0 return 0;
@@ -40,10 +48,12 @@ void pollEvents() {
 }
 #endif
 
-Renderer& initRenderer() {
+void initRenderer() {
 #if defined(__ANDROID__) || defined(SMALL3D_IOS)
-  return small3d::Renderer::getInstance("Islet Hell", 854, 480, 0.785f, 1.0f, 24.0f,
-                                         "resources/shaders/", 5000);
+  if (r == nullptr) {
+    r = &small3d::Renderer::getInstance("Islet Hell", 854, 480, 0.785f, 1.0f, 24.0f,
+                                        "resources/shaders/", 5000);
+  }
 #else
   #if !defined(NDEBUG) && defined(WIN32)
   return small3d::Renderer::getInstance("Islet Hell", 1024, 768);
@@ -52,6 +62,49 @@ Renderer& initRenderer() {
 #endif
 #endif
 }
+
+#if defined(__ANDROID__)
+
+void get_screen_info() {
+  screenWidth = r->getScreenWidth();
+  screenHeight = r->getScreenHeight();
+}
+
+void handle_cmd(android_app *pApp, int32_t cmd) {
+  switch (cmd) {
+    case APP_CMD_INIT_WINDOW:
+    case APP_CMD_GAINED_FOCUS:
+      if (!appActive) {
+        if (!instantiated) {
+          initRenderer();
+          instantiated = true;
+
+        } else {
+          r->setupVulkan();
+
+        }
+
+        get_screen_info();
+        appActive = true;
+      }
+      break;
+
+    case APP_CMD_TERM_WINDOW:
+    case APP_CMD_LOST_FOCUS:
+    case APP_CMD_SAVE_STATE:
+    case APP_CMD_STOP:
+      if (appActive) {
+        r->destroyVulkan();
+        appActive = false;
+      }
+      break;
+
+    default:
+      LOGDEBUG("event not handled: " + std::to_string(cmd));
+  }
+}
+
+#endif
 
 int LoggerTest() {
   deleteLogger();
@@ -151,7 +204,7 @@ int WavefrontModelTest() {
   Model model3(w2, "Cube");
   Model model4(w2, "");
 
-  Renderer* renderer = &initRenderer();
+  initRenderer();
 
   double startSeconds = getTimeInSeconds();
   double seconds = getTimeInSeconds();
@@ -168,11 +221,11 @@ int WavefrontModelTest() {
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
       
-      renderer->render(model2, glm::vec3(-1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-      renderer->render(model3, glm::vec3(0.0f, -1.0f, -2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-      renderer->render(model4, glm::vec3(1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+      r->render(model2, glm::vec3(-1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+      r->render(model3, glm::vec3(0.0f, -1.0f, -2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+      r->render(model4, glm::vec3(1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 
-      renderer->swapBuffers();
+      r->swapBuffers();
     }
   }
 
@@ -180,7 +233,7 @@ int WavefrontModelTest() {
 }
 
 int ScaleAndTransformTest() {
-  Renderer* renderer = &initRenderer();
+  initRenderer();
 
   double startSeconds = getTimeInSeconds();
   double seconds = getTimeInSeconds();
@@ -199,9 +252,9 @@ int ScaleAndTransformTest() {
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
 
-      renderer->render(boxes, glm::vec4(0.5f, 0.3f, 0.0f, 1.0f));
+      r->render(boxes, glm::vec4(0.5f, 0.3f, 0.0f, 1.0f));
 
-      renderer->swapBuffers();
+      r->swapBuffers();
       boxes.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
     }
   }
@@ -210,7 +263,7 @@ int ScaleAndTransformTest() {
 }
 
 int GlbTextureTest() {
-  Renderer* renderer = &initRenderer();
+  initRenderer();
 
   double startSeconds = getTimeInSeconds();
   double seconds = getTimeInSeconds();
@@ -221,11 +274,11 @@ int GlbTextureTest() {
 
   SceneObject goat("goat5", "resources/models/goatAndTree.glb", "Cube");
 
-  renderer->generateTexture("goatGlbTexture", *goat.getModel().defaultTextureImage);
+  r->generateTexture("goatGlbTexture", *goat.getModel().defaultTextureImage);
 
   SceneObject tree("tree5", "resources/models/goatAndTree.glb", "Cube.001");
 
-  renderer->generateTexture("treeGlbTexture", *tree.getModel().defaultTextureImage);
+  r->generateTexture("treeGlbTexture", *tree.getModel().defaultTextureImage);
 
   goat.position = glm::vec3(0.0f, 0.0f, -3.0f);
   goat.startAnimating();
@@ -238,10 +291,10 @@ int GlbTextureTest() {
       prevSeconds = seconds;
       goat.animate();
 
-      renderer->render(goat, "goatGlbTexture");
-      renderer->render(tree, "treeGlbTexture");
+      r->render(goat, "goatGlbTexture");
+      r->render(tree, "treeGlbTexture");
 
-      renderer->swapBuffers();
+      r->swapBuffers();
       goat.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
     }
   }
@@ -251,7 +304,7 @@ int GlbTextureTest() {
 
 int BoundingBoxesTest() {
 
-  Renderer* renderer = &initRenderer();
+  initRenderer();
 
   double startSeconds = getTimeInSeconds();
   double seconds = getTimeInSeconds();
@@ -273,13 +326,13 @@ int BoundingBoxesTest() {
 
       goat.animate();
 
-      renderer->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+      r->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
       for (auto& m : boundingBoxModels) {
-        renderer->render(m, goat.position,
+        r->render(m, goat.position,
           goat.getTransformation(), glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
       }
-      renderer->swapBuffers();
+      r->swapBuffers();
       goat.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
     }
   }
@@ -314,7 +367,7 @@ int BoundingBoxesTest() {
 
 int FPStest() {
 
-  Renderer* renderer = &initRenderer();
+  initRenderer();
 
   double startSeconds = getTimeInSeconds();
   double seconds = getTimeInSeconds();
@@ -329,8 +382,9 @@ int FPStest() {
 
   Model texturedRect;
 
-  renderer->createRectangle(texturedRect, glm::vec3(0.0f, 0.5f, 0.0f),
+  r->createRectangle(texturedRect, glm::vec3(0.0f, 0.5f, 0.0f),
     glm::vec3(1.0f, -1.0f, 0.0f));
+
 
   while (seconds - startSeconds < 10.0) {
     pollEvents();
@@ -343,21 +397,21 @@ int FPStest() {
 
       goat.animate();
 
-      renderer->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+      r->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
       for (auto& m : boundingBoxModels) {
-        renderer->render(m, goat.position,
+        r->render(m, goat.position,
           goat.getTransformation(), glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
       }
 
-      renderer->generateTexture("frameRate", std::to_string(framerate) + " FPS",
+      r->generateTexture("frameRate", std::to_string(framerate) + " FPS",
         glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
-      renderer->render(texturedRect,
+      r->render(texturedRect,
         glm::vec3(0.0f, 0.0f, -1.0f),
         glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "frameRate", false);
 
-      renderer->swapBuffers();
+      r->swapBuffers();
       ++numFrames;
       goat.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
     
@@ -367,41 +421,41 @@ int FPStest() {
 }
 
 int RendererTest() {
-  Renderer* renderer = &initRenderer();
+  initRenderer();
 
-  renderer->setCameraRotation(glm::vec3(0.4f, 0.1f, 0.1f));
+  r->setCameraRotation(glm::vec3(0.4f, 0.1f, 0.1f));
   
   // Here loading the mesh without providing a name is also tested.
   Model modelFromGlb(GlbFile("resources/models/goatUnscaled.glb"), ""); 
 
   SceneObject object("cube", "resources/models/Cube/CubeNoTexture.obj");
   object.position = glm::vec3(0.0f, -1.0f, -8.0f);
-  renderer->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  r->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
   SceneObject object2("texutredCube", "resources/models/Cube/Cube.obj");
   object2.position = glm::vec3(-2.0f, -1.0f, -7.0f);
   object2.setRotation(glm::vec3(0.3f, 1.3f, 0.0f));
 
   Image cubeTexture("resources/models/Cube/cubeTexture.png");
-  renderer->generateTexture("cubeTexture", cubeTexture);
+  r->generateTexture("cubeTexture", cubeTexture);
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
-  glfwShowWindow(renderer->getWindow());
+  glfwShowWindow(r->getWindow());
 #endif
   Model singleColourRect;
-  renderer->createRectangle(singleColourRect, glm::vec3(-1.0f, 0.0f, 0.0f),
+  r->createRectangle(singleColourRect, glm::vec3(-1.0f, 0.0f, 0.0f),
     glm::vec3(-0.5f, -0.5f, 0.0f));
 
   Model texturedRect;
 
-  renderer->createRectangle(texturedRect, glm::vec3(0.0f, 0.5f, 0.0f),
+  r->createRectangle(texturedRect, glm::vec3(0.0f, 0.5f, 0.0f),
     glm::vec3(1.0f, -1.0f, 0.0f));
 
-  renderer->generateTexture("small3dTexture", "small3d :)",
+  r->generateTexture("small3dTexture", "small3d :)",
     glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
   Model textRect;
 
-  renderer->createRectangle(textRect, glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.5f, -0.5f, 0.0f));
+  r->createRectangle(textRect, glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.5f, -0.5f, 0.0f));
 
   double startSeconds = getTimeInSeconds();
   double seconds = getTimeInSeconds();
@@ -418,37 +472,37 @@ int RendererTest() {
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
 
-      renderer->render(singleColourRect,
+      r->render(singleColourRect,
         glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), "", false);
 
-      renderer->generateTexture("small3dTexture", std::to_string(modelFromGlb.getCurrentPoseIdx()),
+      r->generateTexture("small3dTexture", std::to_string(modelFromGlb.getCurrentPoseIdx()),
         glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
-      renderer->render(texturedRect,
+      r->render(texturedRect,
         glm::vec3(0.0f, 0.0f, -2.0f),
         glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "cubeTexture", true);
 
-      renderer->render(object2, "cubeTexture");
+      r->render(object2, "cubeTexture");
 
       modelFromGlb.animate();
       rotation.y += 0.1f;
 
-      renderer->render(modelFromGlb, glm::vec3(0.0f, 1.0f, -6.0f),
+      r->render(modelFromGlb, glm::vec3(0.0f, 1.0f, -6.0f),
         rotation, glm::vec4(0.3f, 1.0f, 1.0f, 1.0f));
 
-      renderer->render(textRect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+      r->render(textRect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", false);
 
-      renderer->swapBuffers();
+      r->swapBuffers();
       
     }
   }
-  renderer->clearBuffers(object);
-  renderer->clearBuffers(object2);
-  renderer->clearBuffers(texturedRect);
-  renderer->clearBuffers(textRect);
-  renderer->deleteTexture("cubeTexture");
+  r->clearBuffers(object);
+  r->clearBuffers(object2);
+  r->clearBuffers(texturedRect);
+  r->clearBuffers(textRect);
+  r->deleteTexture("cubeTexture");
 
   return 1;
 }
@@ -524,6 +578,37 @@ int GenericSceneObjectConstructorTest() {
 extern "C" {
 void android_main(struct android_app* state) {
   vh_android_app = state;
+  vh_android_app->onAppCmd = handle_cmd;
+
+
+  const uint32_t frameRate = 60;
+  double seconds = getTimeInSeconds();
+  double prevSeconds = seconds;
+  double secondsInterval = 1.0 / frameRate;
+  int events;
+  android_poll_source *pSource;
+  do {
+
+    if (ALooper_pollAll(0, nullptr, &events, (void **) &pSource) >= 0) {
+      if (pSource != NULL) {
+        pSource->process(state, pSource);
+      }
+    }
+
+    if (appActive) {
+      seconds = getTimeInSeconds();
+
+      if (seconds - prevSeconds > secondsInterval) {
+        prevSeconds = seconds;
+        FPStest();
+        break;
+      }
+
+    }
+
+  } while (!state->destroyRequested);
+  std::terminate();
+return;
 #else
 int main(int argc, char** argv) {
 #endif
