@@ -1,5 +1,5 @@
 /*
- *  main.cpp
+ *  unit_tests.cpp
  *
  *  Created on: 2014/10/18
  *      Author: Dimitri Kourkoulis
@@ -7,7 +7,7 @@
  */
 #include <iostream>
 #include <small3d/Renderer.hpp>
-
+#include <small3d/Time.hpp>
 #include <small3d/Logger.hpp>
 #include <small3d/Image.hpp>
 #include <small3d/Model.hpp>
@@ -125,8 +125,8 @@ int WavefrontModelTest() {
 
   Renderer* renderer = &initRenderer();
 
-  double startSeconds = glfwGetTime();
-  double seconds = glfwGetTime();
+  double startSeconds = getTimeInSeconds();
+  double seconds = getTimeInSeconds();
   double prevSeconds = seconds;
   const uint32_t framerate = 30;
 
@@ -136,7 +136,7 @@ int WavefrontModelTest() {
 
   while (seconds - startSeconds < 5.0) {
     glfwPollEvents();
-    seconds = glfwGetTime();
+    seconds = getTimeInSeconds();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
       
@@ -154,8 +154,8 @@ int WavefrontModelTest() {
 int ScaleAndTransformTest() {
   Renderer* renderer = &initRenderer();
 
-  double startSeconds = glfwGetTime();
-  double seconds = glfwGetTime();
+  double startSeconds = getTimeInSeconds();
+  double seconds = getTimeInSeconds();
   double prevSeconds = seconds;
   const uint32_t framerate = 30;
   
@@ -167,7 +167,7 @@ int ScaleAndTransformTest() {
   
   while (seconds - startSeconds < 5.0) {
     glfwPollEvents();
-    seconds = glfwGetTime();
+    seconds = getTimeInSeconds();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
 
@@ -184,8 +184,8 @@ int ScaleAndTransformTest() {
 int GlbTextureTest() {
   Renderer* renderer = &initRenderer();
 
-  double startSeconds = glfwGetTime();
-  double seconds = glfwGetTime();
+  double startSeconds = getTimeInSeconds();
+  double seconds = getTimeInSeconds();
   double prevSeconds = seconds;
   const uint32_t framerate = 30;
 
@@ -205,7 +205,7 @@ int GlbTextureTest() {
 
   while (seconds - startSeconds < 5.0) {
     glfwPollEvents();
-    seconds = glfwGetTime();
+    seconds = getTimeInSeconds();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
       goat.animate();
@@ -225,8 +225,8 @@ int BoundingBoxesTest() {
 
   Renderer* renderer = &initRenderer();
 
-  double startSeconds = glfwGetTime();
-  double seconds = glfwGetTime();
+  double startSeconds = getTimeInSeconds();
+  double seconds = getTimeInSeconds();
   double prevSeconds = seconds;
   const uint32_t framerate = 30;
 
@@ -239,7 +239,7 @@ int BoundingBoxesTest() {
 
   while (seconds - startSeconds < 5.0) {
     glfwPollEvents();
-    seconds = glfwGetTime();
+    seconds = getTimeInSeconds();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
 
@@ -288,8 +288,8 @@ int FPStest() {
 
   Renderer* renderer = &initRenderer();
 
-  double startSeconds = glfwGetTime();
-  double seconds = glfwGetTime();
+  double startSeconds = getTimeInSeconds();
+  double seconds = getTimeInSeconds();
   double prevSeconds = seconds;
   uint32_t framerate = 0;
   uint32_t numFrames = 0;
@@ -306,7 +306,7 @@ int FPStest() {
 
   while (seconds - startSeconds < 10.0) {
     glfwPollEvents();
-    seconds = glfwGetTime();
+    seconds = getTimeInSeconds();
     if (seconds - prevSeconds > 1.0) {
       framerate = numFrames;
       numFrames = 0;
@@ -375,8 +375,8 @@ int RendererTest() {
 
   renderer->createRectangle(textRect, glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.5f, -0.5f, 0.0f));
 
-  double startSeconds = glfwGetTime();
-  double seconds = glfwGetTime();
+  double startSeconds = getTimeInSeconds();
+  double seconds = getTimeInSeconds();
   double prevSeconds = seconds;
   const uint32_t framerate = 30;
 
@@ -386,7 +386,7 @@ int RendererTest() {
 
   while (seconds - startSeconds < 5.0) {
     glfwPollEvents();
-    seconds = glfwGetTime();
+    seconds = getTimeInSeconds();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
 
@@ -428,22 +428,22 @@ int RendererTest() {
 int SoundTest() {
   Sound snd("resources/sounds/bah.ogg");
   snd.play();
-  double startSeconds = glfwGetTime();
-  while (glfwGetTime() - startSeconds < 0.5);
+  double startSeconds = getTimeInSeconds();
+  while (getTimeInSeconds() - startSeconds < 0.5);
   snd.stop();
 
   snd.divideVolume(4);
   snd.play();
-  startSeconds = glfwGetTime();
-  while (glfwGetTime() - startSeconds < 0.5);
+  startSeconds = getTimeInSeconds();
+  while (getTimeInSeconds() - startSeconds < 0.5);
   snd.stop();
 
-  startSeconds = glfwGetTime();
-  while (glfwGetTime() - startSeconds < 0.5);
+  startSeconds = getTimeInSeconds();
+  while (getTimeInSeconds() - startSeconds < 0.5);
   snd.play();
   // Make sure the sound is stopped by the stop function and not the destructor.
-  startSeconds = glfwGetTime();
-  while(glfwGetTime() - startSeconds < 2.0);
+  startSeconds = getTimeInSeconds();
+  while(getTimeInSeconds() - startSeconds < 2.0);
   return 1;
 }
 
@@ -452,22 +452,22 @@ int SoundTest2() {
   Sound snd2(snd1);
   Sound snd3 = snd2;
   snd1.play();
-  double startSeconds = glfwGetTime();
-  while (glfwGetTime() - startSeconds < 0.3);
+  double startSeconds = getTimeInSeconds();
+  while (getTimeInSeconds() - startSeconds < 0.3);
   snd2.play();
-  startSeconds = glfwGetTime();
-  while (glfwGetTime() - startSeconds < 0.3);
+  startSeconds = getTimeInSeconds();
+  while (getTimeInSeconds() - startSeconds < 0.3);
   snd3.play();
-  startSeconds = glfwGetTime();
-  while(glfwGetTime() - startSeconds < 1.0);
+  startSeconds = getTimeInSeconds();
+  while(getTimeInSeconds() - startSeconds < 1.0);
   return 1;
 }
 
 int SoundTest3() {
   Sound snd("resources/sounds/bah.ogg");
   snd.play(true);
-  double startSeconds = glfwGetTime();
-  while(glfwGetTime() - startSeconds < 6.0);
+  double startSeconds = getTimeInSeconds();
+  while(getTimeInSeconds() - startSeconds < 6.0);
   return 1;
 }
 
