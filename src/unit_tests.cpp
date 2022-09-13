@@ -41,7 +41,16 @@ void pollEvents() {
 #endif
 
 Renderer& initRenderer() {
-  return Renderer::getInstance("test", 800, 600);
+#if defined(__ANDROID__) || defined(SMALL3D_IOS)
+  return small3d::Renderer::getInstance("Islet Hell", 854, 480, 0.785f, 1.0f, 24.0f,
+                                         "resources/shaders/", 5000);
+#else
+  #if !defined(NDEBUG) && defined(WIN32)
+  return small3d::Renderer::getInstance("Islet Hell", 1024, 768);
+#else
+  return small3d::Renderer::getInstance("Islet Hell");
+#endif
+#endif
 }
 
 int LoggerTest() {

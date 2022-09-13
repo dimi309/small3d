@@ -15,6 +15,7 @@
 #include "vulkan_helper.h"
 #include <streambuf>
 #include <istream>
+#include <regex>
 
 struct membuf : std::streambuf
 {
@@ -234,7 +235,7 @@ namespace small3d {
           std::vector<std::string> tokens;
           uint32_t numTokens = getTokens(line, ' ', tokens);
           if (numTokens > 1) {
-            std::string objName = tokens[1];
+            std::string objName = std::regex_replace(tokens[1], std::regex("\\r"), "");
             objectNames.push_back(objName);
             objectStartFaceIdx.insert(std::pair<std::string, size_t>(objName, facesVertexIndices.size()));
           }
