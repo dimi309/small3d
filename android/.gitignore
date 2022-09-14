@@ -17,5 +17,4 @@ local.properties
 /app/deps
 /app/src/main/assets/resources/shaders
 /app/release
-/app/src/main/assets/resources
 /app/src/main/jniLibs

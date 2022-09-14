@@ -1,0 +1,19 @@
+Android Tests for small3d
+-------------------------
+
+For this project to work, run the scripts/build-android script first.
+
+gltf (glb) joints animation does not work on Android because the shader
+would crash on Adreno gpus when containing joint logic. A separate
+shader without this code was created in order to avoid this problem
+(perspectiveMatrixLightedShaderNoJoints.vert)
+
+Even with this hack, the shaders fail to load on some devices with
+Adreno CPUs. Another hack to avoid that issue, is to download the latest
+Khronos validation layer binaries from
+https://github.com/KhronosGroup/Vulkan-ValidationLayers
+and place the jniLibs directory in small3d\android\app\src\main.
+small3d has been programmed to load them, even in release builds,
+because for some strange reason this corrects the shader load issue
+most of the time.
+
