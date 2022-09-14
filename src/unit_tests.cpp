@@ -393,7 +393,9 @@ int FPStest() {
       prevSeconds = seconds;
     }
 
-      goat.animate();
+      goat.animate(); // on android shader will ignore animation
+                      // (it cannot be loaded on Adreno with joints logic - shader compilation error
+                      // is returned)
 
       r->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
