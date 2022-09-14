@@ -17,7 +17,9 @@
 #include <small3d/GlbFile.hpp>
 #include <small3d/WavefrontFile.hpp>
 #include "OctPyramid.hpp"
+#ifndef SMALL3D_OPENGL
 #include "vulkan_helper.h"
+#endif
 
 using namespace small3d;
 using namespace std;
