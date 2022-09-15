@@ -8,7 +8,9 @@
 
 #include "Renderer.hpp"
 #include <stdexcept>
+#ifndef __ANDROID__
 #include <fstream>
+#endif
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -19,6 +21,18 @@
 #ifdef __ANDROID__
 #define glDepthRange glDepthRangef
 #define glClearDepth glClearDepthf
+#include <android_native_app_glue.h>
+#include <android/asset_manager.h>
+#include <streambuf>
+#include <istream>
+
+struct membuf : std::streambuf
+{
+  membuf(char* begin, char* end) {
+    this->setg(begin, begin, end);
+  }
+};
+
 #endif
 
 namespace small3d {
@@ -52,13 +66,36 @@ namespace small3d {
     const {
     std::string shaderSource = "";
     std::string fullPath = getBasePath() + fileLocation;
-    std::ifstream file(fullPath.c_str());
     std::string line;
+ #ifdef __ANDROID__
+    AAsset* asset = AAssetManager_open(vh_android_app->activity->assetManager,
+      fullPath.c_str(),
+      AASSET_MODE_STREAMING);
+    if (!asset) throw std::runtime_error("Opening asset " + fullPath +
+      " has failed!");
+    off_t length;
+    length = AAsset_getLength(asset);
+    const void* buffer = AAsset_getBuffer(asset);
+    membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * length);
+    std::istream in(&sbuf);
+    if (in) {
+      while (std::getline(in, line)) {
+#else
+    std::ifstream file(fullPath.c_str());
     if (file.is_open()) {
       while (std::getline(file, line)) {
+#endif
         shaderSource += line + "\n";
+	
       }
     }
+
+#ifdef __ANDROID__
+      AAsset_close(asset);
+#else
+      file.close();
+#endif
+    
     return shaderSource;
   }
 
