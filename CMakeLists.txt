@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(small3d)
 
-option(SMALL3D_OPENGL "Compile with OpenGL 3.3" OFF)
+option(SMALL3D_OPENGL "Compile with OpenGL 3.3 / OpenGL ES 2.0" OFF)
 
 if(IOS AND DEFINED ANDROID_PLATFORM)
   message(FATAL_ERROR "small3d cannot be built for Android and iOS at the same time (both IOS set to ON and ANDROID_PLATFORM defined)")
@@ -14,11 +14,11 @@ if(IOS)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -x objective-c -fmodules")
 endif()
 
-message(STATUS "OpenGL: ${SMALL3D_OPENGL}")
+message(STATUS "OpenGL/OpenGL ES: ${SMALL3D_OPENGL}")
 
 if(SMALL3D_OPENGL)
-  if(IOS OR DEFINED ANDROID_PLATFORM)
-    message(FATAL_ERROR "small3d cannot be built with OpenGL for iOS or Android.")
+  if(IOS)
+    message(FATAL_ERROR "small3d cannot be built with OpenGL for iOS.")
   endif()
   add_compile_definitions(SMALL3D_OPENGL)
 endif()
@@ -86,8 +86,10 @@ if(NOT SMALL3D_OPENGL)
 endif()
 
 if(SMALL3D_OPENGL)
-  find_package(OpenGL REQUIRED)
-  find_package(GLEW REQUIRED)
+  if(NOT DEFINED ANDROID_PLATFORM)
+    find_package(OpenGL REQUIRED)
+    find_package(GLEW REQUIRED)
+  endif()
 endif()
 
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
@@ -108,7 +110,7 @@ elseif(DEFINED ANDROID_PLATFORM)
   find_package(ZLIB REQUIRED)
 endif()
 
-if(SMALL3D_OPENGL AND WIN32)
+if(SMALL3D_OPENGL AND WIN32 AND NOT DEFINED ANDROID_PLATFORM)
   add_definitions(-DGLEW_STATIC)
 endif()
 

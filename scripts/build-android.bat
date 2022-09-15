@@ -11,24 +11,31 @@ set args_ok=false
 
 if /I "%~1" == "Debug" set args_ok=true
 if /I "%~1" == "Release" set args_ok=true
+if /I "%~2" == "" set opengl_ok=true
+if /I "%~2" == "opengles" set opengles_ok=true
+if /I "%~2" == "skipdeps" set opengles_ok=true
+if not "%opengles_ok%" == "true" set args_ok=false
 
 if "%args_ok%" == "false" (
-echo Please indicate build type: Debug or Release
-endlocal & exit /B 1
+echo Please indicate build type: Debug or Release, followed by opengles if you would like to build in OpenGL ES based mode.
+endlocal & exit /b 1
 )
 
 if /I "%~1" == "Debug" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Debug
 if /I "%~1" == "Release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
+if /I "%~2" == "opengles" set CMAKE_DEFINITIONS=%CMAKE_DEFINITIONS% -DSMALL3D_OPENGL=ON
 
 set sourcepath=%cd%
 set platformstr=android-26
 
-if /I not "%~2" == "skipdeps" (
+if /I not "%~2" == "skipdeps"  (
+if /I not "%~3" == "skipdeps"  (
 cd ..\deps\scripts
 if exist include rmdir /Q /S include
 if exist lib rmdir /Q /S lib
 call prepare-android.bat %1
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+)
 )
 cd ..
 if exist build rmdir /Q /S build

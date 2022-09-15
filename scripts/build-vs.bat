@@ -10,7 +10,7 @@ if /I "%~2" == "opengl" set opengl_ok=true
 if not "%opengl_ok%" == "true" set args_ok=false
 
 if "%args_ok%" == "false" (
-echo Please indicate build type: debug or release, followed by opengl if you would like to also prepare OpenGL-related libraries.
+echo Please indicate build type: debug or release, followed by opengles if you would like to build in OpenGL ES based mode.
 endlocal & exit /b 1
 )
 

@@ -60,7 +60,7 @@ if(NOT SMALL3D_OPENGL AND NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC, Vulkan
     ${PORTAUDIO_LIBRARIES}
     ${FREETYPE_LIBRARIES}
     )
-elseif(SMALL3D_OPENGL) # PC, OpenGL
+elseif(SMALL3D_OPENGL AND NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC, OpenGL
   target_link_libraries(small3d PUBLIC
     ${GLEW_LIBRARIES}
     ${OPENGL_LIBRARIES}
@@ -77,19 +77,35 @@ elseif(DEFINED ANDROID_PLATFORM) # Android
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
   target_include_directories(native_app_glue PUBLIC
     ${ANDROID_NDK}/sources/android/native_app_glue)
-  
-  target_link_libraries(small3d
-    android
-    native_app_glue
-    aaudio
-    ${log-lib}
-    ${Vulkan_LIBRARIES}
-    ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libpng.a
-    ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libvorbis.a
-    ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libvorbisfile.a
-    ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libogg.a
-    ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libfreetype.a
-    ${ZLIB_LIBRARIES})
+
+  if(NOT SMALL3D_OPENGL)
+    target_link_libraries(small3d
+      android
+      native_app_glue
+      aaudio
+      ${log-lib}
+      ${Vulkan_LIBRARIES}
+      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libpng.a
+      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libvorbis.a
+      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libvorbisfile.a
+      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libogg.a
+      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libfreetype.a
+      ${ZLIB_LIBRARIES})
+  else()
+    target_link_libraries(small3d
+      android
+      native_app_glue
+      aaudio
+      ${log-lib}
+      GLESv2
+      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libpng.a
+      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libvorbis.a
+      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libvorbisfile.a
+      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libogg.a
+      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libfreetype.a
+      ${ZLIB_LIBRARIES})
+  endif()
+
 elseif(IOS)
   target_link_libraries(small3d
     ${CMAKE_SOURCE_DIR}/deps/lib/libbz2.a
