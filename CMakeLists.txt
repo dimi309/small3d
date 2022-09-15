@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(small3d)
 
-option(SMALL3D_OPENGL "Compile with OpenGL 3.3 / OpenGL ES 2.0" OFF)
+option(SMALL3D_OPENGL "Compile with OpenGL 3.3 / OpenGL ES 3.0" OFF)
 
 if(IOS AND DEFINED ANDROID_PLATFORM)
   message(FATAL_ERROR "small3d cannot be built for Android and iOS at the same time (both IOS set to ON and ANDROID_PLATFORM defined)")

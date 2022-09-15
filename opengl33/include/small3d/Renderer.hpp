@@ -9,9 +9,14 @@
 
 #pragma once
 
+#ifndef __ANDROID__
 #define GLEW_NO_GLU
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#else
+#include <GLES3/gl3.h>
+#include <GLES3/gl3ext.h>
+#endif
 
 #include "Logger.hpp"
 #include "Image.hpp"
@@ -31,15 +36,17 @@ namespace small3d
 
   /**
    * @class Renderer
-   * @brief Renderer class (OpenGL 3.3)
+   * @brief Renderer class (OpenGL 3.3 / OpenGL ES 3.0)
    */
   class Renderer
   {
 
   private:
-
+#ifndef __ANDROID__
     GLFWwindow* window;
-
+#else
+    int window;
+#endif
     static int realScreenWidth, realScreenHeight;
 
     uint32_t shaderProgram = 0;
@@ -70,10 +77,10 @@ namespace small3d
     glm::mat4x4 cameraTransformation = glm::mat4x4(1.0f);
     glm::vec3 cameraRotationXYZ = glm::vec3(0.0f);
     bool cameraRotationByMatrix = false;
-
+#ifndef __ANDROID__
     static void framebufferSizeCallback(GLFWwindow* window, int width,
 					int height);
-
+#endif
     std::string loadShaderFromFile(const std::string& fileLocation) const;
     uint32_t compileShader(const std::string& shaderSourceFile,
       const uint32_t shaderType) const;
@@ -225,11 +232,13 @@ namespace small3d
      */
     ~Renderer();
 
+#ifndef __ANDROID__
     /**
      * @brief Get the GLFW window object, associated with the Renderer.
      */
     GLFWwindow* getWindow() const;
-
+#endif
+    
     /**
      * @brief Generate a texture on the GPU from the given image
      * @param name The name by which the texture will be known

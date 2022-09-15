@@ -16,6 +16,11 @@
 
 #include "BasePath.hpp"
 
+#ifdef __ANDROID__
+#define glDepthRange glDepthRangef
+#define glClearDepth glClearDepthf
+#endif
+
 namespace small3d {
 
   static void error_callback(int error, const char* description)
@@ -27,7 +32,8 @@ namespace small3d {
 
   int Renderer::realScreenWidth;
   int Renderer::realScreenHeight;
-
+  
+#ifndef __ANDROID__
   void Renderer::framebufferSizeCallback(GLFWwindow* window, int width,
     int height) {
     realScreenWidth = width;
@@ -40,7 +46,8 @@ namespace small3d {
       std::to_string(height));
 
   }
-
+#endif
+  
   std::string Renderer::loadShaderFromFile(const std::string& fileLocation)
     const {
     std::string shaderSource = "";
@@ -119,7 +126,7 @@ namespace small3d {
   }
 
   void Renderer::initOpenGL() {
-
+#ifndef __ANDROID__
     glewExperimental = GL_TRUE;
 
     GLenum initResult = glewInit();
@@ -138,7 +145,8 @@ namespace small3d {
     LOGINFO("OpenGL version: " +
       std::string(reinterpret_cast<char*>
       (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
-
+#endif
+    
 #ifdef __APPLE__
     GLboolean clientStorage = 0;
     glGetBooleanv(GL_APPLE_client_storage, &clientStorage);
@@ -325,7 +333,7 @@ namespace small3d {
 
   void Renderer::initWindow(int& width, int& height,
     const std::string& windowTitle) {
-
+#ifndef __ANDROID__
     glfwSetErrorCallback(error_callback);
 
     if (!glfwInit()) {
@@ -393,7 +401,7 @@ namespace small3d {
 
     LOGINFO("Framebuffer width " + std::to_string(width) + " height " +
       std::to_string(height));
-
+#endif
   }
 
   void Renderer::setWorldDetails(bool perspective) {
@@ -587,13 +595,18 @@ namespace small3d {
     if (shaderProgram != 0) {
       glDeleteProgram(shaderProgram);
     }
+
+#ifndef __ANDROID__
       //This was causing crashes on MacOS
       //glfwTerminate();
+#endif
   }
 
+#ifndef __ANDROID__
   GLFWwindow* Renderer::getWindow() const {
     return window;
   }
+#endif
 
   void Renderer::generateTexture(const std::string& name, const Image& image) {
     LOGDEBUG("Sending image to GPU, dimensions " + std::to_string(image.getWidth()) +
@@ -978,7 +991,9 @@ namespace small3d {
   }
 
   void Renderer::swapBuffers() const {
+#ifndef __ANDROID__
     glfwSwapBuffers(window);
+#endif
     clearScreen();
   }
 
@@ -1020,6 +1035,7 @@ namespace small3d {
         "execute the command. The state of the GL is undefined, except for "
         "the state of the error flags, after this error is recorded.";
       break;
+ #ifndef __ANDROID__
     case GL_STACK_UNDERFLOW:
       errorString = "GL_STACK_UNDERFLOW: An attempt has been made to perform "
         "an operation that would cause an internal stack to underflow.";
@@ -1028,6 +1044,7 @@ namespace small3d {
       errorString = "GL_STACK_OVERFLOW: An attempt has been made to perform "
         "an operation that would cause an internal stack to overflow.";
       break;
+ #endif
     default:
       errorString = "Unknown error";
       break;

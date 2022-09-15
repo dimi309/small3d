@@ -97,7 +97,7 @@ elseif(DEFINED ANDROID_PLATFORM) # Android
       native_app_glue
       aaudio
       ${log-lib}
-      GLESv2
+      GLESv3
       ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libpng.a
       ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libvorbis.a
       ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libvorbisfile.a
