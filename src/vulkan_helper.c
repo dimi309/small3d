@@ -34,7 +34,7 @@ typedef int BOOL;
 
 #ifdef __ANDROID__
 #include <android/log.h>
-struct android_app* vh_android_app;
+#include "small3d_android.h"
 #endif
 
 #ifndef NDEBUG

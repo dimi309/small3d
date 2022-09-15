@@ -4,6 +4,11 @@ list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/OctPyramid.cpp)
 
 file(GLOB HEADER_FILES ${CMAKE_SOURCE_DIR}/include/small3d/*.hpp)
 
+if(DEFINED ANDROID_PLATFORM)
+  list(APPEND SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/small3d_android.c)
+  list(APPEND HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/small3d_android.h)
+endif()
+
 if(SMALL3D_OPENGL)
   list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/Renderer.cpp)
   list(APPEND SOURCE_FILES ${CMAKE_SOURCE_DIR}/opengl33/src/Renderer.cpp)
@@ -20,10 +25,14 @@ endif()
 
 add_library(small3d ${SOURCE_FILES} ${HEADER_FILES})
 
-# When using OpenGL include the OpenGL Renderer.hpp directory first
-# so that OpenGL Renderer.hpp takes precedence over Vulkan Renderer.hpp
 if(SMALL3D_OPENGL)
+  # When using OpenGL include the OpenGL Renderer.hpp directory first
+  # so that OpenGL Renderer.hpp takes precedence over Vulkan Renderer.hpp
   include_directories(${CMAKE_SOURCE_DIR}/opengl33/include/small3d)
+  if(DEFINED ANDROID_PLATFORM)
+    # The following is so that small3d_android.h can be included
+    include_directories(${CMAKE_SOURCE_DIR}/src)
+  endif()
 endif()
 
 include_directories(${Vulkan_INCLUDE_DIRS}

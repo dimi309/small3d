@@ -19,6 +19,7 @@
 #include "BasePath.hpp"
 
 #ifdef __ANDROID__
+#include "small3d_android.h"
 #define glDepthRange glDepthRangef
 #define glClearDepth glClearDepthf
 #include <android_native_app_glue.h>
