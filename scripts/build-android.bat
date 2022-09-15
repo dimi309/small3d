@@ -11,7 +11,7 @@ set args_ok=false
 
 if /I "%~1" == "Debug" set args_ok=true
 if /I "%~1" == "Release" set args_ok=true
-if /I "%~2" == "" set opengl_ok=true
+if /I "%~2" == "" set opengles_ok=true
 if /I "%~2" == "opengles" set opengles_ok=true
 if /I "%~2" == "skipdeps" set opengles_ok=true
 if not "%opengles_ok%" == "true" set args_ok=false
