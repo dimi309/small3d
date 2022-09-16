@@ -19,11 +19,8 @@
 #include "BasePath.hpp"
 
 #ifdef __ANDROID__
-#include "small3d_android.h"
 #define glDepthRange glDepthRangef
 #define glClearDepth glClearDepthf
-
-#include <android_native_app_glue.h>
 #include <android/asset_manager.h>
 #include <streambuf>
 #include <istream>
@@ -226,11 +223,10 @@ namespace small3d {
 #else
 
     EGLint majorVersion, minorVersion;
-    EGLDisplay eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
     eglInitialize(eglDisplay, &majorVersion, &minorVersion);
-    LOGDEBUG("GL version: " + std::to_string(majorVersion) + "." +
+    LOGDEBUG("EGL version: " + std::to_string(majorVersion) + "." +
              std::to_string(minorVersion));
-
 #endif
     
 #ifdef __APPLE__
@@ -361,10 +357,14 @@ namespace small3d {
     realScreenWidth = width;
     realScreenHeight = height;
 
-    this->initWindow(realScreenWidth, realScreenHeight, windowTitle);
-
+#ifdef __ANDROID__
     this->initOpenGL();
+#endif
 
+    this->initWindow(realScreenWidth, realScreenHeight, windowTitle);
+#ifndef __ANDROID__
+    this->initOpenGL();
+#endif
     glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
       static_cast<GLsizei>(realScreenHeight));
 
@@ -489,65 +489,22 @@ namespace small3d {
       std::to_string(height));
 #else
 
-
-    EGLContext eglContext;
-    EGLSurface eglSurface;
-    EGLConfig eglConfig;
-
-    EGLint format;
-    const EGLint* config = NULL ;
-    int numConfigs;
-    int windowFormat;
-
     window = small3d_android_app->window;
-
-
-
-    if(window == 0) {
-      throw std::runtime_error("Could not create surface.");
-    }
 
     /* get the format of the window. */
     windowFormat = ANativeWindow_getFormat(window) ;
 
+    initEGLContext();
 
 
-    /* choose the config according to the format of the window. */
-    switch(windowFormat) {
-      case WINDOW_FORMAT_RGBA_8888:
-        config = config32bpp ;
-        break ;
-      case WINDOW_FORMAT_RGBX_8888:
-        config = config24bpp ;
-        break ;
-      case WINDOW_FORMAT_RGB_565:
-        config = config16bpp ;
-        break ;
-      default:
-        printf("Unknown window format\n") ;
-        exit(-1) ;
-    }
-    EGLDisplay eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-
-    if (!eglChooseConfig(eglDisplay, config32bpp, &eglConfig, 1, &numConfigs)) {
-      printf("eglChooseConfig failed\n");
-      if (eglContext==0) printf("Error code: %x\n", eglGetError());
-      exit(-1) ;
-    }
-
-    eglContext = eglCreateContext(eglDisplay, eglConfig,  EGL_NO_CONTEXT, NULL);
-    printf("GL context: %x\n", eglContext);
-    if (eglContext==0) {
-      printf("Error code: %x\n", eglGetError());
-      exit(-1) ;
-    }
-
+#endif
+  }
+  void Renderer::createEGLSurface(int& width, int& height) {
     eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, window, NULL);
 
-    printf("GL surface: %x\n", eglSurface);
+
     if (eglSurface==0) {
-      printf("Error code: %x\n", eglGetError());
-      exit(-1);
+      throw std::runtime_error("Error creating surface");
     }
 
     eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext);
@@ -563,8 +520,66 @@ namespace small3d {
 
     width = ANativeWindow_getWidth(small3d_android_app->window);
     height = ANativeWindow_getHeight(small3d_android_app->window);
-#endif
+
   }
+
+  void Renderer::initEGLContext() {
+    /* choose the config according to the format of the window. */
+    switch(windowFormat) {
+      case WINDOW_FORMAT_RGBA_8888:
+        config = config32bpp ;
+        break ;
+      case WINDOW_FORMAT_RGBX_8888:
+        config = config24bpp ;
+        break ;
+      case WINDOW_FORMAT_RGB_565:
+        config = config16bpp ;
+        break ;
+      default:
+        printf("Unknown window format\n") ;
+        exit(-1) ;
+    }
+
+    if (!eglChooseConfig(eglDisplay, config32bpp, &eglConfig, 1, &numConfigs)) {
+      printf("eglChooseConfig failed\n");
+      if (eglContext==0) printf("Error code: %x\n", eglGetError());
+      exit(-1) ;
+    }
+
+    const EGLint context_attribs[] = {EGL_CONTEXT_CLIENT_VERSION,
+                                      3,  // Request opengl ES3.0
+                                      EGL_NONE};
+
+    eglContext = eglCreateContext(eglDisplay, eglConfig,  EGL_NO_CONTEXT, context_attribs);
+    throw std::runtime_error("GL context creation error: " + std::to_string(eglGetError()));
+
+    eglContextValid = true;
+
+    }
+
+      void Renderer::terminateEGL() {
+
+
+        if (eglDisplay != EGL_NO_DISPLAY) {
+          eglMakeCurrent(eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+          if (eglContext != EGL_NO_CONTEXT) {
+            eglDestroyContext(eglDisplay, eglContext);
+          }
+
+          if (eglSurface != EGL_NO_SURFACE) {
+            eglDestroySurface(eglDisplay, eglSurface);
+          }
+          eglTerminate(eglDisplay);
+        }
+
+        eglDisplay = EGL_NO_DISPLAY;
+        eglContext = EGL_NO_CONTEXT;
+        eglSurface = EGL_NO_SURFACE;
+        window = nullptr;
+        eglContextValid = false;
+
+
+      }
 
   void Renderer::setWorldDetails(bool perspective) {
 
@@ -744,6 +759,12 @@ namespace small3d {
       FT_Done_Face(idFacePair.second);
     }
 
+#ifdef __ANDROID__
+    for (auto& asset : fontAssets) {
+      AAsset_close(asset);
+    }
+#endif
+
     FT_Done_FreeType(library);
 
     if (!noShaders) {
@@ -791,7 +812,21 @@ namespace small3d {
     if (idFacePair == fontFaces.end()) {
       std::string faceFullPath = getBasePath() + fontPath;
       LOGDEBUG("Loading font from " + faceFullPath);
+#ifdef __ANDROID__
+      AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
+                                         faceFullPath.c_str(),
+                                         AASSET_MODE_STREAMING);
+      if (!asset) throw std::runtime_error("Opening asset " + faceFullPath +
+                                           " has failed!");
+      off_t length;
+      length = AAsset_getLength(asset);
+      const void* buffer = AAsset_getBuffer(asset);
+      error = FT_New_Memory_Face(library, (const FT_Byte*)buffer,
+                                 length, 0, &face);
+      fontAssets.push_back(asset);
+#else
       error = FT_New_Face(library, faceFullPath.c_str(), 0, &face);
+#endif
       if (error != 0) {
         throw std::runtime_error("Failed to load font from " + faceFullPath);
       }
@@ -1152,9 +1187,26 @@ namespace small3d {
     glClearColor(clearColour.x, clearColour.y, clearColour.z, clearColour.w);
   }
 
-  void Renderer::swapBuffers() const {
+  void Renderer::swapBuffers()  {
 #ifndef __ANDROID__
     glfwSwapBuffers(window);
+#else
+    bool b = eglSwapBuffers(eglDisplay, eglSurface);
+    if (!b) {
+      EGLint err = eglGetError();
+      if (err == EGL_BAD_SURFACE) {
+        // Recreate surface
+        createEGLSurface(realScreenWidth, realScreenHeight);
+       throw std::runtime_error("Bad surcace.");
+      } else if (err == EGL_CONTEXT_LOST || err == EGL_BAD_CONTEXT) {
+        // Context has been lost!!
+        eglContextValid = false;
+        terminateEGL();
+        initEGLContext();
+      }
+      throw std::runtime_error("Context has been lost.");
+    }
+    return;
 #endif
     clearScreen();
   }

@@ -8,7 +8,7 @@
  */
 
 #pragma once
-
+#include <vector>
 #ifndef __ANDROID__
 #define GLEW_NO_GLU
 #include <GL/glew.h>
@@ -17,6 +17,8 @@
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
 #include <GLES3/gl3ext.h>
+#include "small3d_android.h"
+
 #endif
 
 #include "Logger.hpp"
@@ -25,7 +27,7 @@
 #include "SceneObject.hpp"
 
 #include <unordered_map>
-#include <vector>
+
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -46,7 +48,21 @@ namespace small3d
 #ifndef __ANDROID__
     GLFWwindow* window;
 #else
+    EGLContext eglContext;
+    EGLConfig eglConfig;
+    EGLint format;
+    const EGLint* config = NULL ;
+    int numConfigs;
+    int windowFormat;
+
+    EGLDisplay eglDisplay;
+    EGLSurface eglSurface;
     NativeWindowType  window;
+    std::vector<AAsset*> fontAssets;
+    bool eglContextValid = false;
+    void createEGLSurface(int& width, int& height);
+    void initEGLContext();
+    void terminateEGL();
 #endif
     static int realScreenWidth, realScreenHeight;
 
@@ -423,7 +439,7 @@ namespace small3d
      * @brief This is a double buffered system and this command swaps
      * the buffers.
      */
-    void swapBuffers() const;
+    void swapBuffers();
 
     Renderer(Renderer const&) = delete;
     void operator=(Renderer const&) = delete;

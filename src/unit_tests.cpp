@@ -6,7 +6,7 @@
  *     License: BSD 3-Clause License (see LICENSE file)
  */
 #include <iostream>
-#include <small3d/Renderer.hpp>
+#include <Renderer.hpp>
 #include <small3d/Time.hpp>
 #include <small3d/Logger.hpp>
 #include <small3d/Image.hpp>
