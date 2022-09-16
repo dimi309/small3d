@@ -17,8 +17,9 @@
 #include <small3d/GlbFile.hpp>
 #include <small3d/WavefrontFile.hpp>
 #include "OctPyramid.hpp"
-#ifndef SMALL3D_OPENGL
-#include "vulkan_helper.h"
+
+#ifdef __ANDROID__
+#include "small3d_android.h"
 #endif
 
 using namespace small3d;
@@ -80,8 +81,9 @@ void handle_cmd(android_app *pApp, int32_t cmd) {
           instantiated = true;
 
         } else {
+#ifndef SMALL3D_OPENGL
           r->setupVulkan();
-
+#endif
         }
 
         get_screen_info();
@@ -94,7 +96,9 @@ void handle_cmd(android_app *pApp, int32_t cmd) {
     case APP_CMD_SAVE_STATE:
     case APP_CMD_STOP:
       if (appActive) {
+#ifndef SMALL3D_OPENGL
         r->destroyVulkan();
+#endif
         appActive = false;
       }
       break;

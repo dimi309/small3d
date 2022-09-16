@@ -22,6 +22,7 @@
 #include "small3d_android.h"
 #define glDepthRange glDepthRangef
 #define glClearDepth glClearDepthf
+
 #include <android_native_app_glue.h>
 #include <android/asset_manager.h>
 #include <streambuf>
@@ -33,6 +34,35 @@ struct membuf : std::streambuf
     this->setg(begin, begin, end);
   }
 };
+
+ const EGLint config16bpp[] = {
+     EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
+     EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
+     EGL_RED_SIZE,   5,
+     EGL_GREEN_SIZE, 6,
+     EGL_BLUE_SIZE,  5,
+     EGL_NONE
+ };
+
+
+ const EGLint config24bpp[] = {
+     EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
+     EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
+     EGL_RED_SIZE,   8,
+     EGL_GREEN_SIZE, 8,
+     EGL_BLUE_SIZE,  8,
+     EGL_NONE
+ };
+
+ const EGLint config32bpp[] = {
+     EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
+     EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
+     EGL_RED_SIZE,   8,
+     EGL_GREEN_SIZE, 8,
+     EGL_BLUE_SIZE,  8,
+     EGL_ALPHA_SIZE, 8,
+     EGL_NONE
+ };
 
 #endif
 
@@ -62,6 +92,16 @@ namespace small3d {
 
   }
 #endif
+
+   int Renderer::getScreenWidth() {
+     return realScreenWidth;
+   }
+
+   int Renderer::getScreenHeight() {
+     return realScreenHeight;
+   }
+
+
   
   std::string Renderer::loadShaderFromFile(const std::string& fileLocation)
     const {
@@ -183,6 +223,14 @@ namespace small3d {
     LOGINFO("OpenGL version: " +
       std::string(reinterpret_cast<char*>
       (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
+#else
+
+    EGLint majorVersion, minorVersion;
+    EGLDisplay eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    eglInitialize(eglDisplay, &majorVersion, &minorVersion);
+    LOGDEBUG("GL version: " + std::to_string(majorVersion) + "." +
+             std::to_string(minorVersion));
+
 #endif
     
 #ifdef __APPLE__
@@ -439,6 +487,82 @@ namespace small3d {
 
     LOGINFO("Framebuffer width " + std::to_string(width) + " height " +
       std::to_string(height));
+#else
+
+
+    EGLContext eglContext;
+    EGLSurface eglSurface;
+    EGLConfig eglConfig;
+
+    EGLint format;
+    const EGLint* config = NULL ;
+    int numConfigs;
+    int windowFormat;
+
+    window = small3d_android_app->window;
+
+
+
+    if(window == 0) {
+      throw std::runtime_error("Could not create surface.");
+    }
+
+    /* get the format of the window. */
+    windowFormat = ANativeWindow_getFormat(window) ;
+
+
+
+    /* choose the config according to the format of the window. */
+    switch(windowFormat) {
+      case WINDOW_FORMAT_RGBA_8888:
+        config = config32bpp ;
+        break ;
+      case WINDOW_FORMAT_RGBX_8888:
+        config = config24bpp ;
+        break ;
+      case WINDOW_FORMAT_RGB_565:
+        config = config16bpp ;
+        break ;
+      default:
+        printf("Unknown window format\n") ;
+        exit(-1) ;
+    }
+    EGLDisplay eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+
+    if (!eglChooseConfig(eglDisplay, config32bpp, &eglConfig, 1, &numConfigs)) {
+      printf("eglChooseConfig failed\n");
+      if (eglContext==0) printf("Error code: %x\n", eglGetError());
+      exit(-1) ;
+    }
+
+    eglContext = eglCreateContext(eglDisplay, eglConfig,  EGL_NO_CONTEXT, NULL);
+    printf("GL context: %x\n", eglContext);
+    if (eglContext==0) {
+      printf("Error code: %x\n", eglGetError());
+      exit(-1) ;
+    }
+
+    eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, window, NULL);
+
+    printf("GL surface: %x\n", eglSurface);
+    if (eglSurface==0) {
+      printf("Error code: %x\n", eglGetError());
+      exit(-1);
+    }
+
+    eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext);
+
+    printf(
+        "Vendor: %s, Renderer: %s, Version: %s\n",
+        glGetString(GL_VENDOR),
+        glGetString(GL_RENDERER),
+        glGetString(GL_VERSION)
+    ) ;
+
+    printf("Extensions: %s\n", glGetString(GL_EXTENSIONS)) ;
+
+    width = ANativeWindow_getWidth(small3d_android_app->window);
+    height = ANativeWindow_getHeight(small3d_android_app->window);
 #endif
   }
 

@@ -75,6 +75,7 @@ else ()
             aaudio
             ${log-lib}
             GLESv3
+            EGL
             ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/lib/${ANDROID_ABI}/libpng.a
             z
             ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/lib/${ANDROID_ABI}/libvorbis.a

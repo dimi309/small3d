@@ -14,6 +14,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #else
+#include <EGL/egl.h>
 #include <GLES3/gl3.h>
 #include <GLES3/gl3ext.h>
 #endif
@@ -45,7 +46,7 @@ namespace small3d
 #ifndef __ANDROID__
     GLFWwindow* window;
 #else
-    int window;
+    NativeWindowType  window;
 #endif
     static int realScreenWidth, realScreenHeight;
 
@@ -176,6 +177,18 @@ namespace small3d
      *         when rendering)
      */
     const glm::vec3 getCameraRotationXYZ() const;
+
+    /**
+     * @brief Get the real screen width
+     * @return The screen width
+     */
+    int getScreenWidth();
+
+    /**
+     * @brief Get the real screen height
+     * @return The screen height
+     */
+    int getScreenHeight();
 
     /**
      * @brief The light intensity (set to -1.0f if no lighting is to be used).
