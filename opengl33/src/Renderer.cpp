@@ -496,6 +496,7 @@ namespace small3d {
 
     initEGLContext();
 
+    createEGLSurface(realScreenWidth, realScreenHeight);
 
 #endif
   }
@@ -551,7 +552,9 @@ namespace small3d {
                                       EGL_NONE};
 
     eglContext = eglCreateContext(eglDisplay, eglConfig,  EGL_NO_CONTEXT, context_attribs);
-    throw std::runtime_error("GL context creation error: " + std::to_string(eglGetError()));
+    if (!eglContext) {
+      throw std::runtime_error("GL context creation error: " + std::to_string(eglGetError()));
+    }
 
     eglContextValid = true;
 

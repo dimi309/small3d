@@ -1,19 +1,19 @@
 #version 300 es
 
-smooth in float cosAngIncidence;
-in vec2 textureCoords;
+smooth in mediump float cosAngIncidence;
+in mediump vec2 textureCoords;
 
-uniform vec4 modelColour;
+uniform mediump vec4 modelColour;
 
-uniform float lightIntensity;
+uniform mediump float lightIntensity;
 
 uniform sampler2D textureImage;
 
-layout(location = 0) out vec4 outputColour;
+layout(location = 0) out mediump vec4 outputColour;
 
 void main() {
 
-  vec4 inputColour;
+  mediump vec4 inputColour;
   
   if (modelColour != vec4(0, 0, 0, 0)) {
     inputColour = modelColour;
