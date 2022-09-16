@@ -5,9 +5,9 @@ in mediump vec2 textureCoords;
 
 uniform mediump vec4 modelColour;
 
-uniform mediump float lightIntensity;
+uniform  mediump float lightIntensity;
 
-uniform sampler2D textureImage;
+uniform  mediump sampler2D textureImage;
 
 layout(location = 0) out mediump vec4 outputColour;
 
