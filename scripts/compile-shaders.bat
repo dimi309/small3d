@@ -40,7 +40,8 @@ copy /y "%%a" ..\..\build\bin\resources\shaders
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 )
 )
-if exist ..\..\android\app\src\main\assets\resources\shaders (
+if exist ..\..\android\app\src\main\assets\resources (
+mkdir ..\..\android\app\src\main\assets\resources\shaders
 for /r %%a in (*.spv) do (
 echo Copying %%a to android\app\src\main\assets\resources\shaders
 copy /y "%%a" ..\..\android\app\src\main\assets\resources\shaders

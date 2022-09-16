@@ -361,7 +361,7 @@ namespace small3d {
       }
 
 #else
-      AAsset *asset = AAssetManager_open(vh_android_app->activity->assetManager,
+      AAsset *asset = AAssetManager_open(small3d_android_app->activity->assetManager,
                                          soundFilePath.c_str(),
                                          AASSET_MODE_STREAMING);
       if(!asset) {

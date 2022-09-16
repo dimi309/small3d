@@ -30,7 +30,7 @@
 #include <android_native_app_glue.h>
 #include <android/asset_manager.h>
 #define VK_USE_PLATFORM_ANDROID_KHR
-extern struct android_app *vh_android_app;
+extern struct android_app *small3d_android_app;
 #endif
 
 #ifdef VULKAN_HELPER_IOS

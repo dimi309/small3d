@@ -579,8 +579,8 @@ int GenericSceneObjectConstructorTest() {
 #if defined(__ANDROID__)
 extern "C" {
 void android_main(struct android_app* state) {
-  vh_android_app = state;
-  vh_android_app->onAppCmd = handle_cmd;
+  small3d_android_app = state;
+  small3d_android_app->onAppCmd = handle_cmd;
 
 
   const uint32_t frameRate = 60;

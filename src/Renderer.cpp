@@ -780,9 +780,9 @@ namespace small3d {
 
   void Renderer::initWindow(int& width, int& height) {
 #if defined(__ANDROID__)
-    assert(vh_android_app->window != nullptr);
-    width = ANativeWindow_getWidth(vh_android_app->window);
-    height = ANativeWindow_getHeight(vh_android_app->window);
+    assert(small3d_android_app->window != nullptr);
+    width = ANativeWindow_getWidth(small3d_android_app->window);
+    height = ANativeWindow_getHeight(small3d_android_app->window);
 #elif defined(SMALL3D_IOS)
     width = get_app_width();
     height = get_app_height();
@@ -1064,9 +1064,9 @@ namespace small3d {
 
       LOGDEBUG("Loading font from " + faceFullPath);
 #ifdef __ANDROID__
-      AAsset* asset = AAssetManager_open(vh_android_app->activity->assetManager,
-        faceFullPath.c_str(),
-        AASSET_MODE_STREAMING);
+      AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
+                                         faceFullPath.c_str(),
+                                         AASSET_MODE_STREAMING);
       if (!asset) throw std::runtime_error("Opening asset " + faceFullPath +
         " has failed!");
       off_t length;
@@ -1712,7 +1712,7 @@ namespace small3d {
     sci.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
     sci.pNext = nullptr;
     sci.flags = 0;
-    sci.window = vh_android_app->window;
+    sci.window = small3d_android_app->window;
     LOGDEBUG("Creating surface...");
     if (vkCreateAndroidSurfaceKHR(vh_instance, &sci, nullptr, &vh_surface) !=
       VK_SUCCESS) {

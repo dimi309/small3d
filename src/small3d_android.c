@@ -1,1 +1,1 @@
-struct android_app* vh_android_app;
+struct android_app* small3d_android_app;

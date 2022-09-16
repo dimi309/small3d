@@ -267,9 +267,9 @@ namespace small3d {
   GlbFile::GlbFile(const std::string& fileLocation) : File(fileLocation) {
 
 #ifdef __ANDROID__
-    AAsset* asset = AAssetManager_open(vh_android_app->activity->assetManager,
-      fullPath.c_str(),
-      AASSET_MODE_STREAMING);
+    AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
+                                       fullPath.c_str(),
+                                       AASSET_MODE_STREAMING);
     if (!asset) throw std::runtime_error("Opening asset " + fullPath +
       " has failed!");
     off_t assetLength;

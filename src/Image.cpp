@@ -107,8 +107,8 @@ namespace small3d {
 
       LOGDEBUG("About to open image asset " + fileLocation);
 
-      asset = AAssetManager_open(vh_android_app->activity->assetManager,
-        fileLocation.c_str(), AASSET_MODE_STREAMING);
+      asset = AAssetManager_open(small3d_android_app->activity->assetManager,
+                                 fileLocation.c_str(), AASSET_MODE_STREAMING);
 
       if (!asset) {
         throw std::runtime_error("Opening asset " + fileLocation + " has failed!");

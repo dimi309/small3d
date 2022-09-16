@@ -69,7 +69,7 @@ namespace small3d {
     std::string fullPath = getBasePath() + fileLocation;
     std::string line;
  #ifdef __ANDROID__
-    AAsset* asset = AAssetManager_open(vh_android_app->activity->assetManager,
+    AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
       fullPath.c_str(),
       AASSET_MODE_STREAMING);
     if (!asset) throw std::runtime_error("Opening asset " + fullPath +

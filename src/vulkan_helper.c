@@ -1141,8 +1141,8 @@ long alloc_load_shader_spv(char* path, uint32_t** spv) {
   long fs = 0;
   LOGDEBUG1("About to load shader from %s", path);
 #ifdef __ANDROID__
-  AAsset* asset = AAssetManager_open(vh_android_app->activity->assetManager,
-    path, AASSET_MODE_STREAMING);
+  AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
+                                     path, AASSET_MODE_STREAMING);
   if (!asset) {
     LOGDEBUG1("Could not open file %s!", path);
     return 0;
