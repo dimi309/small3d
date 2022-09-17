@@ -38,6 +38,7 @@ const EGLint config16bpp[] = {
     EGL_RED_SIZE,   5,
     EGL_GREEN_SIZE, 6,
     EGL_BLUE_SIZE,  5,
+    EGL_DEPTH_SIZE, 16,
     EGL_NONE
 };
 
@@ -48,6 +49,7 @@ const EGLint config24bpp[] = {
     EGL_RED_SIZE,   8,
     EGL_GREEN_SIZE, 8,
     EGL_BLUE_SIZE,  8,
+    EGL_DEPTH_SIZE, 16,
     EGL_NONE
 };
 
@@ -58,6 +60,7 @@ const EGLint config32bpp[] = {
     EGL_GREEN_SIZE, 8,
     EGL_BLUE_SIZE,  8,
     EGL_ALPHA_SIZE, 8,
+    EGL_DEPTH_SIZE, 16,
     EGL_NONE
 };
 
@@ -407,7 +410,6 @@ namespace small3d {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
-
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClearDepth(1.0f);
 
@@ -828,7 +830,7 @@ namespace small3d {
     const glm::vec3 & colour, const int fontSize,
     const std::string & fontPath,
     const bool replace) {
-
+    
     std::string faceId = std::to_string(fontSize) + fontPath;
 
     auto idFacePair = fontFaces.find(faceId);
@@ -1216,6 +1218,7 @@ namespace small3d {
   void Renderer::setBackgroundColour(const glm::vec4 & colour) {
     clearColour = colour;
     glClearColor(clearColour.x, clearColour.y, clearColour.z, clearColour.w);
+    
   }
 
   void Renderer::swapBuffers() {
