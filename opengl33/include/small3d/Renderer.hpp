@@ -134,7 +134,27 @@ namespace small3d
 
     Renderer();
 
+    
+
   public:
+
+    
+    /**
+     * @brief: Used to re-initialise the Renderer, for example in Android apps
+     *         after they come back into focus.
+     */
+    void start(const std::string& windowTitle, const int width, const int height,
+      const float fieldOfView, const float zNear, const float zFar,
+      const std::string& shadersPath,
+      const uint32_t objectsPerFrame,
+      const uint32_t objectsPerFrameInc);
+
+    /**
+     * @brief: Used to shutdown the renderer, for example in Android apps
+     *         when they lose focus.
+     */
+    void stop();
+    
     /**
      * @brief Vector, indicating the direction of the light in the scene.
      *        It points towards a directional light source.

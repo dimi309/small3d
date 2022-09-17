@@ -670,6 +670,21 @@ namespace small3d {
     const uint32_t objectsPerFrame,
     const uint32_t objectsPerFrameInc) {
 
+    start(windowTitle, width,
+		 height, fieldOfView,
+		 zNear,  zFar,
+		 shadersPath,
+		 objectsPerFrame,
+		 objectsPerFrameInc);
+  }
+
+  void Renderer::start(const std::string & windowTitle, const int width,
+    const int height, const float fieldOfView,
+    const float zNear, const float zFar,
+    const std::string & shadersPath,
+    const uint32_t objectsPerFrame,
+    const uint32_t objectsPerFrameInc) {
+
     window = 0;
     shaderProgram = 0;
 
@@ -690,6 +705,7 @@ namespace small3d {
     // Generate VAO
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
+
   }
 
   void Renderer::setCameraRotation(const glm::vec3 & rotation) {
@@ -751,15 +767,6 @@ namespace small3d {
 
   Renderer::~Renderer() {
     LOGDEBUG("Renderer destructor running");
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    //At times, this has caused crashes on MacOS
-    for (auto it = textures.begin();
-      it != textures.end(); ++it) {
-      LOGDEBUG("Deleting texture " + it->first);
-      glDeleteTextures(1, &it->second);
-    }
-
     for (auto idFacePair : fontFaces) {
       FT_Done_Face(idFacePair.second);
     }
@@ -771,6 +778,25 @@ namespace small3d {
 #endif
 
     FT_Done_FreeType(library);
+    
+    stop();
+
+#ifndef __ANDROID__
+    //This was causing crashes on MacOS
+    //glfwTerminate();
+#endif
+  }
+
+  void Renderer::stop() {
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    //At times, this has caused crashes on MacOS
+    for (auto it = textures.begin();
+      it != textures.end(); ++it) {
+      LOGDEBUG("Deleting texture " + it->first);
+      glDeleteTextures(1, &it->second);
+    }
+    textures.clear();
 
     if (!noShaders) {
       glUseProgram(0);
@@ -783,11 +809,6 @@ namespace small3d {
     if (shaderProgram != 0) {
       glDeleteProgram(shaderProgram);
     }
-
-#ifndef __ANDROID__
-    //This was causing crashes on MacOS
-    //glfwTerminate();
-#endif
   }
 
 #ifndef __ANDROID__
@@ -990,7 +1011,11 @@ namespace small3d {
 
     glUseProgram(shaderProgram);
 
-    bool alreadyInGPU = model.positionBufferObjectId != 0;
+    GLint bufSize = 0;
+    glBindBuffer(GL_ARRAY_BUFFER, model.positionBufferObjectId);
+    glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufSize);
+
+    bool alreadyInGPU = bufSize > 0;
 
     if (!alreadyInGPU) {
       glGenBuffers(1, &model.indexBufferObjectId);
