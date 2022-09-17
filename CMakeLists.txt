@@ -37,6 +37,7 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
   file(COPY "resources" DESTINATION "./bin")
 else()
   file(COPY "src/vulkan_helper.h" DESTINATION "./include")
+  file(COPY "src/small3d_android.h" DESTINATION "./include")
 endif()
 
 if(SMALL3D_OPENGL)
