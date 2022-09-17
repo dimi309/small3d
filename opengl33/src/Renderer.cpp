@@ -1,10 +1,10 @@
- /*
- * Renderer.cpp
- *
- *  Created on: 2014/10/19
- *      Author: Dimitri Kourkoulis
- *     License: BSD 3-Clause License (see LICENSE file)
- */
+/*
+* Renderer.cpp
+*
+*  Created on: 2014/10/19
+*      Author: Dimitri Kourkoulis
+*     License: BSD 3-Clause License (see LICENSE file)
+*/
 
 #include "Renderer.hpp"
 #include <stdexcept>
@@ -32,34 +32,34 @@ struct membuf : std::streambuf
   }
 };
 
- const EGLint config16bpp[] = {
-     EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
-     EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
-     EGL_RED_SIZE,   5,
-     EGL_GREEN_SIZE, 6,
-     EGL_BLUE_SIZE,  5,
-     EGL_NONE
- };
+const EGLint config16bpp[] = {
+    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
+    EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
+    EGL_RED_SIZE,   5,
+    EGL_GREEN_SIZE, 6,
+    EGL_BLUE_SIZE,  5,
+    EGL_NONE
+};
 
 
- const EGLint config24bpp[] = {
-     EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
-     EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
-     EGL_RED_SIZE,   8,
-     EGL_GREEN_SIZE, 8,
-     EGL_BLUE_SIZE,  8,
-     EGL_NONE
- };
+const EGLint config24bpp[] = {
+    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
+    EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
+    EGL_RED_SIZE,   8,
+    EGL_GREEN_SIZE, 8,
+    EGL_BLUE_SIZE,  8,
+    EGL_NONE
+};
 
- const EGLint config32bpp[] = {
-     EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
-     EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
-     EGL_RED_SIZE,   8,
-     EGL_GREEN_SIZE, 8,
-     EGL_BLUE_SIZE,  8,
-     EGL_ALPHA_SIZE, 8,
-     EGL_NONE
- };
+const EGLint config32bpp[] = {
+    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
+    EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
+    EGL_RED_SIZE,   8,
+    EGL_GREEN_SIZE, 8,
+    EGL_BLUE_SIZE,  8,
+    EGL_ALPHA_SIZE, 8,
+    EGL_NONE
+};
 
 #endif
 
@@ -74,7 +74,7 @@ namespace small3d {
 
   int Renderer::realScreenWidth;
   int Renderer::realScreenHeight;
-  
+
 #ifndef __ANDROID__
   void Renderer::framebufferSizeCallback(GLFWwindow* window, int width,
     int height) {
@@ -90,22 +90,20 @@ namespace small3d {
   }
 #endif
 
-   int Renderer::getScreenWidth() {
-     return realScreenWidth;
-   }
+  int Renderer::getScreenWidth() {
+    return realScreenWidth;
+  }
 
-   int Renderer::getScreenHeight() {
-     return realScreenHeight;
-   }
+  int Renderer::getScreenHeight() {
+    return realScreenHeight;
+  }
 
-
-  
   std::string Renderer::loadShaderFromFile(const std::string& fileLocation)
     const {
     std::string shaderSource = "";
     std::string fullPath = getBasePath() + fileLocation;
     std::string line;
- #ifdef __ANDROID__
+#ifdef __ANDROID__
     AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
       fullPath.c_str(),
       AASSET_MODE_STREAMING);
@@ -124,20 +122,20 @@ namespace small3d {
       while (std::getline(file, line)) {
 #endif
         shaderSource += line + "\n";
-	
+
       }
     }
 
 #ifdef __ANDROID__
-      AAsset_close(asset);
+    AAsset_close(asset);
 #else
-      file.close();
+    file.close();
 #endif
-    
+
     return shaderSource;
   }
 
-  GLuint Renderer::compileShader(const std::string& shaderSourceFile,
+  GLuint Renderer::compileShader(const std::string & shaderSourceFile,
     const uint32_t shaderType) const {
     GLuint shader = glCreateShader(shaderType);
     std::string shaderSource = this->loadShaderFromFile(shaderSourceFile);
@@ -219,16 +217,16 @@ namespace small3d {
 
     LOGINFO("OpenGL version: " +
       std::string(reinterpret_cast<char*>
-      (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
+        (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
 #else
 
     EGLint majorVersion, minorVersion;
     eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
     eglInitialize(eglDisplay, &majorVersion, &minorVersion);
     LOGDEBUG("EGL version: " + std::to_string(majorVersion) + "." +
-             std::to_string(minorVersion));
+      std::to_string(minorVersion));
 #endif
-    
+
 #ifdef __APPLE__
     GLboolean clientStorage = 0;
     glGetBooleanv(GL_APPLE_client_storage, &clientStorage);
@@ -242,7 +240,7 @@ namespace small3d {
 
   }
 
-  void Renderer::checkForOpenGLErrors(const std::string& when, const bool abort)
+  void Renderer::checkForOpenGLErrors(const std::string & when, const bool abort)
     const {
     GLenum errorCode = glGetError();
     if (errorCode != GL_NO_ERROR) {
@@ -258,19 +256,19 @@ namespace small3d {
     }
   }
 
-  void Renderer::transform(Model& model, const glm::vec3& offset,
-    const glm::mat4x4& rotation) const {
-    
+  void Renderer::transform(Model & model, const glm::vec3 & offset,
+    const glm::mat4x4 & rotation) const {
+
     GLint modelTransformationUniformLocation = glGetUniformLocation(shaderProgram,
       "modelTransformation");
 
-    glm::mat4x4 modelTranformation = 
+    glm::mat4x4 modelTranformation =
       rotation *
       glm::scale(glm::mat4x4(1.0f), model.scale) *
       glm::translate(glm::mat4x4(1.0f), model.origTranslation) *
       glm::toMat4(model.origRotation) *
       glm::scale(glm::mat4x4(1.0f), model.origScale) * model.origTransformation;
-    
+
     glUniformMatrix4fv(modelTransformationUniformLocation, 1, GL_FALSE,
       glm::value_ptr(modelTranformation));
 
@@ -303,7 +301,7 @@ namespace small3d {
     glUniform3fv(offsetUniform, 1, glm::value_ptr(offset));
   }
 
-  GLuint Renderer::getTextureHandle(const std::string& name) const {
+  GLuint Renderer::getTextureHandle(const std::string & name) const {
     GLuint handle = 0;
     auto nameTexturePair = textures.find(name);
     if (nameTexturePair != textures.end()) {
@@ -312,7 +310,7 @@ namespace small3d {
     return handle;
   }
 
-  GLuint Renderer::generateTexture(const std::string& name, const float* data,
+  GLuint Renderer::generateTexture(const std::string & name, const float* data,
     const unsigned long width,
     const unsigned long height,
     const bool replace) {
@@ -354,8 +352,8 @@ namespace small3d {
   }
 
   void Renderer::init(const int width, const int height,
-    const std::string& windowTitle,
-    const std::string& shadersPath) {
+    const std::string & windowTitle,
+    const std::string & shadersPath) {
 
     realScreenWidth = width;
     realScreenHeight = height;
@@ -421,7 +419,7 @@ namespace small3d {
   }
 
   void Renderer::initWindow(int& width, int& height,
-    const std::string& windowTitle) {
+    const std::string & windowTitle) {
 #ifndef __ANDROID__
     glfwSetErrorCallback(error_callback);
 
@@ -495,7 +493,7 @@ namespace small3d {
     window = small3d_android_app->window;
 
     /* get the format of the window. */
-    windowFormat = ANativeWindow_getFormat(window) ;
+    windowFormat = ANativeWindow_getFormat(window);
 
     initEGLContext();
 
@@ -503,24 +501,25 @@ namespace small3d {
 
 #endif
   }
+#ifdef __ANDROID__  
   void Renderer::createEGLSurface(int& width, int& height) {
     eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, window, NULL);
 
 
-    if (eglSurface==0) {
+    if (eglSurface == 0) {
       throw std::runtime_error("Error creating surface");
     }
 
     eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext);
 
     printf(
-        "Vendor: %s, Renderer: %s, Version: %s\n",
-        glGetString(GL_VENDOR),
-        glGetString(GL_RENDERER),
-        glGetString(GL_VERSION)
-    ) ;
+      "Vendor: %s, Renderer: %s, Version: %s\n",
+      glGetString(GL_VENDOR),
+      glGetString(GL_RENDERER),
+      glGetString(GL_VERSION)
+    );
 
-    printf("Extensions: %s\n", glGetString(GL_EXTENSIONS)) ;
+    printf("Extensions: %s\n", glGetString(GL_EXTENSIONS));
 
     width = ANativeWindow_getWidth(small3d_android_app->window);
     height = ANativeWindow_getHeight(small3d_android_app->window);
@@ -529,64 +528,64 @@ namespace small3d {
 
   void Renderer::initEGLContext() {
     /* choose the config according to the format of the window. */
-    switch(windowFormat) {
-      case WINDOW_FORMAT_RGBA_8888:
-        config = config32bpp ;
-        break ;
-      case WINDOW_FORMAT_RGBX_8888:
-        config = config24bpp ;
-        break ;
-      case WINDOW_FORMAT_RGB_565:
-        config = config16bpp ;
-        break ;
-      default:
-        printf("Unknown window format\n") ;
-        exit(-1) ;
+    switch (windowFormat) {
+    case WINDOW_FORMAT_RGBA_8888:
+      config = config32bpp;
+      break;
+    case WINDOW_FORMAT_RGBX_8888:
+      config = config24bpp;
+      break;
+    case WINDOW_FORMAT_RGB_565:
+      config = config16bpp;
+      break;
+    default:
+      printf("Unknown window format\n");
+      exit(-1);
     }
 
     if (!eglChooseConfig(eglDisplay, config32bpp, &eglConfig, 1, &numConfigs)) {
       printf("eglChooseConfig failed\n");
-      if (eglContext==0) printf("Error code: %x\n", eglGetError());
-      exit(-1) ;
+      if (eglContext == 0) printf("Error code: %x\n", eglGetError());
+      exit(-1);
     }
 
-    const EGLint context_attribs[] = {EGL_CONTEXT_CLIENT_VERSION,
+    const EGLint context_attribs[] = { EGL_CONTEXT_CLIENT_VERSION,
                                       3,  // Request opengl ES3.0
-                                      EGL_NONE};
+                                      EGL_NONE };
 
-    eglContext = eglCreateContext(eglDisplay, eglConfig,  EGL_NO_CONTEXT, context_attribs);
+    eglContext = eglCreateContext(eglDisplay, eglConfig, EGL_NO_CONTEXT, context_attribs);
     if (!eglContext) {
       throw std::runtime_error("GL context creation error: " + std::to_string(eglGetError()));
     }
 
     eglContextValid = true;
 
-    }
+  }
 
-      void Renderer::terminateEGL() {
-
-
-        if (eglDisplay != EGL_NO_DISPLAY) {
-          eglMakeCurrent(eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-          if (eglContext != EGL_NO_CONTEXT) {
-            eglDestroyContext(eglDisplay, eglContext);
-          }
-
-          if (eglSurface != EGL_NO_SURFACE) {
-            eglDestroySurface(eglDisplay, eglSurface);
-          }
-          eglTerminate(eglDisplay);
-        }
-
-        eglDisplay = EGL_NO_DISPLAY;
-        eglContext = EGL_NO_CONTEXT;
-        eglSurface = EGL_NO_SURFACE;
-        window = nullptr;
-        eglContextValid = false;
+  void Renderer::terminateEGL() {
 
 
+    if (eglDisplay != EGL_NO_DISPLAY) {
+      eglMakeCurrent(eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+      if (eglContext != EGL_NO_CONTEXT) {
+        eglDestroyContext(eglDisplay, eglContext);
       }
 
+      if (eglSurface != EGL_NO_SURFACE) {
+        eglDestroySurface(eglDisplay, eglSurface);
+      }
+      eglTerminate(eglDisplay);
+    }
+
+    eglDisplay = EGL_NO_DISPLAY;
+    eglContext = EGL_NO_CONTEXT;
+    eglSurface = EGL_NO_SURFACE;
+    window = nullptr;
+    eglContextValid = false;
+
+
+  }
+#endif
   void Renderer::setWorldDetails(bool perspective) {
 
     GLint perspectiveMatrixUniform =
@@ -629,7 +628,7 @@ namespace small3d {
 
   }
 
-  void Renderer::bindTexture(const std::string& name) {
+  void Renderer::bindTexture(const std::string & name) {
     GLuint textureHandle = getTextureHandle(name);
 
     if (textureHandle == 0) {
@@ -646,7 +645,7 @@ namespace small3d {
 
   }
 
-    void Renderer::clearScreen() const {
+  void Renderer::clearScreen() const {
 #ifdef __APPLE__
     // Needed to avoid transparent rendering in Mojave by default
     // (caused by the transparency hint in initWindow, which is
@@ -664,10 +663,10 @@ namespace small3d {
     noShaders = false;
   }
 
-  Renderer::Renderer(const std::string& windowTitle, const int width,
+  Renderer::Renderer(const std::string & windowTitle, const int width,
     const int height, const float fieldOfView,
     const float zNear, const float zFar,
-    const std::string& shadersPath,
+    const std::string & shadersPath,
     const uint32_t objectsPerFrame,
     const uint32_t objectsPerFrameInc) {
 
@@ -693,7 +692,7 @@ namespace small3d {
     glBindVertexArray(vao);
   }
 
-  void Renderer::setCameraRotation(const glm::vec3& rotation) {
+  void Renderer::setCameraRotation(const glm::vec3 & rotation) {
     cameraRotationByMatrix = false;
     this->cameraRotationXYZ = rotation;
     this->cameraTransformation = glm::rotate(glm::mat4x4(1.0f), -rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
@@ -701,19 +700,19 @@ namespace small3d {
       glm::rotate(glm::mat4x4(1.0f), -rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
   }
 
-  void Renderer::rotateCamera(const glm::vec3& rotation) {
+  void Renderer::rotateCamera(const glm::vec3 & rotation) {
     if (cameraRotationByMatrix) {
       throw std::runtime_error("Attempted x, y, z representation camera rotation, while having set the initial rotation by matrix.");
     }
     else {
       this->cameraRotationXYZ += rotation;
       this->cameraTransformation = glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-	glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-	glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.y, glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+        glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.y, glm::vec3(0.0f, 1.0f, 0.0f));
     }
   }
 
-  void Renderer::setCameraTransformation(const glm::mat4x4& rotation) {
+  void Renderer::setCameraTransformation(const glm::mat4x4 & rotation) {
     this->cameraTransformation = glm::inverse(rotation);
     cameraRotationByMatrix = true;
     cameraRotationXYZ = glm::vec3(0.0f);
@@ -735,11 +734,11 @@ namespace small3d {
     return this->cameraRotationXYZ;
   }
 
-  Renderer& Renderer::getInstance(const std::string& windowTitle,
+  Renderer& Renderer::getInstance(const std::string & windowTitle,
     const int width, const int height,
     const float fieldOfView,
     const float zNear, const float zFar,
-    const std::string& shadersPath,
+    const std::string & shadersPath,
     const uint32_t objectsPerFrame,
     const uint32_t objectsPerFrameInc) {
 
@@ -760,7 +759,7 @@ namespace small3d {
       LOGDEBUG("Deleting texture " + it->first);
       glDeleteTextures(1, &it->second);
     }
-    
+
     for (auto idFacePair : fontFaces) {
       FT_Done_Face(idFacePair.second);
     }
@@ -786,8 +785,8 @@ namespace small3d {
     }
 
 #ifndef __ANDROID__
-      //This was causing crashes on MacOS
-      //glfwTerminate();
+    //This was causing crashes on MacOS
+    //glfwTerminate();
 #endif
   }
 
@@ -797,16 +796,16 @@ namespace small3d {
   }
 #endif
 
-  void Renderer::generateTexture(const std::string& name, const Image& image) {
+  void Renderer::generateTexture(const std::string & name, const Image & image) {
     LOGDEBUG("Sending image to GPU, dimensions " + std::to_string(image.getWidth()) +
-	     ", " + std::to_string(image.getHeight()));
+      ", " + std::to_string(image.getHeight()));
     this->generateTexture(name, image.getData(), image.getWidth(),
       image.getHeight(), true);
   }
 
-  void Renderer::generateTexture(const std::string& name, const std::string& text,
-    const glm::vec3& colour, const int fontSize,
-    const std::string& fontPath,
+  void Renderer::generateTexture(const std::string & name, const std::string & text,
+    const glm::vec3 & colour, const int fontSize,
+    const std::string & fontPath,
     const bool replace) {
 
     std::string faceId = std::to_string(fontSize) + fontPath;
@@ -820,15 +819,15 @@ namespace small3d {
       LOGDEBUG("Loading font from " + faceFullPath);
 #ifdef __ANDROID__
       AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
-                                         faceFullPath.c_str(),
-                                         AASSET_MODE_STREAMING);
+        faceFullPath.c_str(),
+        AASSET_MODE_STREAMING);
       if (!asset) throw std::runtime_error("Opening asset " + faceFullPath +
-                                           " has failed!");
+        " has failed!");
       off_t length;
       length = AAsset_getLength(asset);
       const void* buffer = AAsset_getBuffer(asset);
       error = FT_New_Memory_Face(library, (const FT_Byte*)buffer,
-                                 length, 0, &face);
+        length, 0, &face);
       fontAssets.push_back(asset);
 #else
       error = FT_New_Face(library, faceFullPath.c_str(), 0, &face);
@@ -889,13 +888,13 @@ namespace small3d {
 
             colourAlpha.a =
               floorf(100.0f * (static_cast<float>
-              (slot->bitmap.buffer[row * slot->bitmap.width +
-                col]) /
+                (slot->bitmap.buffer[row * slot->bitmap.width +
+                  col]) /
                 255.0f) + 0.5f) / 100.0f;
 
             memcpy(&textMemory[4 * (maxTop -
               slot->bitmap_top
-              + row)* static_cast<size_t>(width) +
+              + row) * static_cast<size_t>(width) +
               4 *
               (static_cast<size_t>(slot->bitmap_left) +
                 static_cast<size_t>(col))
@@ -910,7 +909,7 @@ namespace small3d {
     generateTexture(name, &textMemory[0], static_cast<unsigned long>(width), static_cast<unsigned long>(height), replace);
   }
 
-  void Renderer::deleteTexture(const std::string& name) {
+  void Renderer::deleteTexture(const std::string & name) {
     auto nameTexturePair = textures.find(name);
 
     if (nameTexturePair != textures.end()) {
@@ -920,9 +919,9 @@ namespace small3d {
     }
   }
 
-  void Renderer::createRectangle(Model& rect,
-    const glm::vec3& topLeft,
-    const glm::vec3& bottomRight) {
+  void Renderer::createRectangle(Model & rect,
+    const glm::vec3 & topLeft,
+    const glm::vec3 & bottomRight) {
 
     rect.vertexData = {
       bottomRight.x, bottomRight.y, bottomRight.z, 1.0f,
@@ -952,19 +951,19 @@ namespace small3d {
     rect.textureCoordsDataByteSize = 8 * sizeof(float);
   }
 
-  void Renderer::render(Model& model, const glm::vec3& position, const glm::vec3& rotation,
-    const glm::vec4& colour, const std::string& textureName,
+  void Renderer::render(Model & model, const glm::vec3 & position, const glm::vec3 & rotation,
+    const glm::vec4 & colour, const std::string & textureName,
     const bool perspective) {
 
-    this->render(model, position, glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f))*
-      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f))*
+    this->render(model, position, glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)),
       colour, textureName, perspective);
 
   }
 
-  void Renderer::render(Model& model, const glm::vec3& position, const glm::vec3& rotation,
-    const std::string& textureName) {
+  void Renderer::render(Model & model, const glm::vec3 & position, const glm::vec3 & rotation,
+    const std::string & textureName) {
 
     this->render(model, position, glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
@@ -973,10 +972,10 @@ namespace small3d {
 
   }
 
-  void Renderer::render(Model& model, const glm::vec3& offset,
-    const glm::mat4x4& rotation,
-    const glm::vec4& colour,
-    const std::string& textureName,
+  void Renderer::render(Model & model, const glm::vec3 & offset,
+    const glm::mat4x4 & rotation,
+    const glm::vec4 & colour,
+    const std::string & textureName,
     const bool perspective) {
 
     if (!perspective) {
@@ -1024,32 +1023,33 @@ namespace small3d {
     glVertexAttribPointer(attrib_position, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
     // Normals
-    
+
     glBindBuffer(GL_ARRAY_BUFFER, model.normalsBufferObjectId);
-    
-      
+
+
     if (!alreadyInGPU) {
       if (model.normalsDataByteSize > 0) {
-	glBufferData(GL_ARRAY_BUFFER,
-		     model.normalsDataByteSize,
-		     model.normalsData.data(),
-		     GL_STATIC_DRAW);
-      } else {
-	// The normals buffer is created with 0 values if the corresponding
-	// data does not exist, otherwise there can be a EXC_BAD_ACCESS
-	// when running glDrawElements on MacOS.
-	size_t ns = (model.vertexDataByteSize / 4) * 3;
-	std::unique_ptr<char[]> data = std::make_unique<char[]>(ns);
-	glBufferData(GL_ARRAY_BUFFER,
-		     ns,
-		     &data[0],
-		     GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER,
+          model.normalsDataByteSize,
+          model.normalsData.data(),
+          GL_STATIC_DRAW);
+      }
+      else {
+        // The normals buffer is created with 0 values if the corresponding
+        // data does not exist, otherwise there can be a EXC_BAD_ACCESS
+        // when running glDrawElements on MacOS.
+        size_t ns = (model.vertexDataByteSize / 4) * 3;
+        std::unique_ptr<char[]> data = std::make_unique<char[]>(ns);
+        glBufferData(GL_ARRAY_BUFFER,
+          ns,
+          &data[0],
+          GL_STATIC_DRAW);
       }
     }
-      
+
     glEnableVertexAttribArray(attrib_normal);
     glVertexAttribPointer(attrib_normal, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-    
+
     if (model.jointDataByteSize != 0) {
       glBindBuffer(GL_ARRAY_BUFFER, model.jointBufferObjectId);
       if (!alreadyInGPU) {
@@ -1058,9 +1058,9 @@ namespace small3d {
           model.jointData.data(),
           GL_STATIC_DRAW);
       }
-        
-        glEnableVertexAttribArray(attrib_joint);
-        glVertexAttribIPointer(attrib_joint, 4, GL_UNSIGNED_BYTE, 0, 0);
+
+      glEnableVertexAttribArray(attrib_joint);
+      glVertexAttribIPointer(attrib_joint, 4, GL_UNSIGNED_BYTE, 0, 0);
     }
 
     if (model.weightDataByteSize != 0) {
@@ -1098,7 +1098,7 @@ namespace small3d {
           model.textureCoordsData.data(),
           GL_STATIC_DRAW);
       }
-      
+
       glEnableVertexAttribArray(attrib_uv);
       glVertexAttribPointer(attrib_uv, 2, GL_FLOAT, GL_FALSE, 0, 0);
     }
@@ -1125,43 +1125,43 @@ namespace small3d {
     if (textureName != "") glDisableVertexAttribArray(attrib_uv);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    
+
     glUseProgram(0);
   }
 
-  void Renderer::render(Model& model, const glm::vec3& offset,
-    const glm::mat4x4& rotation,
-    const std::string& textureName) {
+  void Renderer::render(Model & model, const glm::vec3 & offset,
+    const glm::mat4x4 & rotation,
+    const std::string & textureName) {
     this->render(model, offset, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName);
   }
 
-  void Renderer::render(Model& model, const std::string& textureName,
+  void Renderer::render(Model & model, const std::string & textureName,
     const bool perspective) {
     this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName, perspective);
   }
 
-  void Renderer::render(Model& model, const glm::vec4& colour,
+  void Renderer::render(Model & model, const glm::vec4 & colour,
     const bool perspective) {
     this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), colour,
       "", perspective);
   }
 
-  void Renderer::render(SceneObject& sceneObject,
-    const glm::vec4& colour) {
+  void Renderer::render(SceneObject & sceneObject,
+    const glm::vec4 & colour) {
     this->render(sceneObject.getModel(), sceneObject.position,
       sceneObject.transformation, colour, "");
   }
 
-  void Renderer::render(SceneObject& sceneObject,
-    const std::string& textureName) {
+  void Renderer::render(SceneObject & sceneObject,
+    const std::string & textureName) {
     this->render(sceneObject.getModel(), sceneObject.position,
       sceneObject.transformation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName);
   }
 
-  void Renderer::clearBuffers(Model& model) const {
+  void Renderer::clearBuffers(Model & model) const {
     if (model.positionBufferObjectId != 0) {
       glDeleteBuffers(1, &model.positionBufferObjectId);
       model.positionBufferObjectId = 0;
@@ -1182,18 +1182,18 @@ namespace small3d {
     }
   }
 
-  void Renderer::clearBuffers(SceneObject& sceneObject) const {
+  void Renderer::clearBuffers(SceneObject & sceneObject) const {
     for (auto model : *sceneObject.models) {
       clearBuffers(model);
     }
   }
 
-  void Renderer::setBackgroundColour(const glm::vec4& colour) {
+  void Renderer::setBackgroundColour(const glm::vec4 & colour) {
     clearColour = colour;
     glClearColor(clearColour.x, clearColour.y, clearColour.z, clearColour.w);
   }
 
-  void Renderer::swapBuffers()  {
+  void Renderer::swapBuffers() {
 #ifndef __ANDROID__
     glfwSwapBuffers(window);
 #else
@@ -1203,8 +1203,9 @@ namespace small3d {
       if (err == EGL_BAD_SURFACE) {
         // Recreate surface
         createEGLSurface(realScreenWidth, realScreenHeight);
-       throw std::runtime_error("Bad surcace.");
-      } else if (err == EGL_CONTEXT_LOST || err == EGL_BAD_CONTEXT) {
+        throw std::runtime_error("Bad surcace.");
+      }
+      else if (err == EGL_CONTEXT_LOST || err == EGL_BAD_CONTEXT) {
         // Context has been lost!!
         eglContextValid = false;
         terminateEGL();
@@ -1255,7 +1256,7 @@ namespace small3d {
         "execute the command. The state of the GL is undefined, except for "
         "the state of the error flags, after this error is recorded.";
       break;
- #ifndef __ANDROID__
+#ifndef __ANDROID__
     case GL_STACK_UNDERFLOW:
       errorString = "GL_STACK_UNDERFLOW: An attempt has been made to perform "
         "an operation that would cause an internal stack to underflow.";
@@ -1264,7 +1265,7 @@ namespace small3d {
       errorString = "GL_STACK_OVERFLOW: An attempt has been made to perform "
         "an operation that would cause an internal stack to overflow.";
       break;
- #endif
+#endif
     default:
       errorString = "Unknown error";
       break;
