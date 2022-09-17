@@ -57,8 +57,12 @@ rmdir /Q /S src
 
 cd ..\scripts
 
-if /I not "%~2" == "opengles" call compile-shaders.bat %~1
-
+if /I not "%~2" == "opengles" (
+call compile-shaders.bat %~1
+echo Copying android\app\CMakeListsVulkan.txt to android\app\CMakeLists.txt
+copy /y ..\android\app\CMakeListsVulkan.txt ..\android\app\CMakeLists.txt
+if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
+)
 cd ..
 
 if /I "%~2" == "opengles" (
@@ -81,8 +85,10 @@ if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 )
 )
 cd ..\..\..
+echo Copying android\app\CMakeListsOpenGLES.txt to android\app\CMakeLists.txt
+copy /y android\app\CMakeListsOpenGLES.txt android\app\CMakeLists.txt
+if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 )
-
 
 
 if /I "%~1" == "Release" (
