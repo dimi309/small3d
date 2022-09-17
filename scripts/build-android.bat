@@ -57,7 +57,33 @@ rmdir /Q /S src
 
 cd ..\scripts
 
-compile-shaders.bat %~1
+if /I not "%~2" == "opengles" call compile-shaders.bat %~1
+
+cd ..
+
+if /I "%~2" == "opengles" (
+
+cd opengl33\resources\shadersOpenGLES
+for /r %%a in (*.*) do (
+echo Copying %%a to build\shaders
+copy /y "%%a" ..\..\..\build\shaders
+if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
+)
+cd ..\..\..
+
+if exist android\app\src\main\assets\resources (
+mkdir android\app\src\main\assets\resources\shaders
+cd opengl33\resources\shadersOpenGLES
+for /r %%a in (*.*) do (
+echo Copying %%a to android\app\src\main\assets\resources\shaders
+copy /y "%%a" ..\..\..\android\app\src\main\assets\resources\shaders
+if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
+)
+)
+cd ..\..\..
+)
+
+
 
 if /I "%~1" == "Release" (
 echo "WARNING: Release builds can cause the following error on at least some devices:"

@@ -340,10 +340,13 @@ namespace small3d {
     glBindTexture(GL_TEXTURE_2D, textureHandle);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-
+#ifndef __ANDROID__
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA,
+      GL_FLOAT, data);
+#else
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA,
       GL_FLOAT, data);
-
+#endif
     textures.insert(make_pair(name, textureHandle));
     glBindTexture(GL_TEXTURE_2D, 0);
 
