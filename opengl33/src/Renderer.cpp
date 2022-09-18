@@ -18,6 +18,12 @@
 
 #include "BasePath.hpp"
 
+unsigned const attrib_position = 0;
+unsigned const attrib_normal = 1;
+unsigned const attrib_joint = 2;
+unsigned const attrib_weight = 3;
+unsigned const attrib_uv = 4;
+
 #ifdef __ANDROID__
 #define glDepthRange glDepthRangef
 #define glClearDepth glClearDepthf
@@ -141,6 +147,7 @@ namespace small3d {
   GLuint Renderer::compileShader(const std::string & shaderSourceFile,
     const uint32_t shaderType) const {
     GLuint shader = glCreateShader(shaderType);
+
     std::string shaderSource = this->loadShaderFromFile(shaderSourceFile);
     if (shaderSource.length() == 0) {
       throw std::runtime_error("Shader source file '" + shaderSourceFile +
@@ -148,6 +155,7 @@ namespace small3d {
     }
     const char* shaderSourceChars = shaderSource.c_str();
     glShaderSource(shader, 1, &shaderSourceChars, NULL);
+
     glCompileShader(shader);
 
     GLint status;
@@ -161,6 +169,7 @@ namespace small3d {
     else {
       LOGDEBUG("Shader " + shaderSourceFile + " compiled successfully.");
     }
+
     return shader;
   }
 
@@ -228,6 +237,7 @@ namespace small3d {
     eglInitialize(eglDisplay, &majorVersion, &minorVersion);
     LOGDEBUG("EGL version: " + std::to_string(majorVersion) + "." +
       std::to_string(minorVersion));
+
 #endif
 
 #ifdef __APPLE__
@@ -275,9 +285,9 @@ namespace small3d {
     glUniformMatrix4fv(modelTransformationUniformLocation, 1, GL_FALSE,
       glm::value_ptr(modelTranformation));
 
-    uint32_t hasJoints = model.joints.size() > 0 ? 1U : 0U;
+    int32_t hasJoints = model.joints.size() > 0 ? 1 : 0;
     GLint hasJointsUniform = glGetUniformLocation(shaderProgram, "hasJoints");
-    glUniform1ui(hasJointsUniform, hasJoints);
+    glUniform1i(hasJointsUniform, hasJoints);
 
     glm::mat4 jointTransformations[Model::MAX_JOINTS_SUPPORTED];
 
@@ -339,15 +349,19 @@ namespace small3d {
 
     glGenTextures(1, &textureHandle);
     glBindTexture(GL_TEXTURE_2D, textureHandle);
+
+#ifndef __ANDROID__
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-#ifndef __ANDROID__
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA,
       GL_FLOAT, data);
 #else
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA,
-      GL_FLOAT, data);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, textureInternalFormat, width, height, 0, GL_RGBA,
+                 GL_FLOAT, data);
 #endif
+
     textures.insert(make_pair(name, textureHandle));
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -388,6 +402,15 @@ namespace small3d {
       GL_FRAGMENT_SHADER);
 
     shaderProgram = glCreateProgram();
+
+#ifdef __ANDROID__
+    glBindAttribLocation(shaderProgram, attrib_position, "position");
+    glBindAttribLocation(shaderProgram, attrib_normal, "normal");
+    glBindAttribLocation(shaderProgram, attrib_joint, "joint");
+    glBindAttribLocation(shaderProgram, attrib_weight, "weight");
+    glBindAttribLocation(shaderProgram, attrib_uv, "uvCoords");
+#endif
+
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
 
@@ -507,21 +530,18 @@ namespace small3d {
   void Renderer::createEGLSurface(int& width, int& height) {
     eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, window, NULL);
 
-
     if (eglSurface == 0) {
       throw std::runtime_error("Error creating surface");
     }
 
     eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext);
 
-    printf(
-      "Vendor: %s, Renderer: %s, Version: %s\n",
-      glGetString(GL_VENDOR),
-      glGetString(GL_RENDERER),
-      glGetString(GL_VERSION)
-    );
-
-    printf("Extensions: %s\n", glGetString(GL_EXTENSIONS));
+    LOGDEBUG("Vendor " +
+        std::string(reinterpret_cast<const char *>(glGetString(GL_VENDOR))) +
+        ", Renderer " +
+        std::string(reinterpret_cast<const char *>(glGetString(GL_RENDERER))) +
+        ", Version " +
+        std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))));
 
     width = ANativeWindow_getWidth(small3d_android_app->window);
     height = ANativeWindow_getHeight(small3d_android_app->window);
@@ -541,18 +561,15 @@ namespace small3d {
       config = config16bpp;
       break;
     default:
-      printf("Unknown window format\n");
-      exit(-1);
+      throw std::runtime_error("Unknown window format.");
     }
 
     if (!eglChooseConfig(eglDisplay, config32bpp, &eglConfig, 1, &numConfigs)) {
-      printf("eglChooseConfig failed\n");
-      if (eglContext == 0) printf("Error code: %x\n", eglGetError());
-      exit(-1);
+      throw std::runtime_error("eglChooseConfig failed. Error code: " + std::to_string(eglGetError()));
     }
 
     const EGLint context_attribs[] = { EGL_CONTEXT_CLIENT_VERSION,
-                                      3,  // Request opengl ES3.0
+                                      2,  // Request opengl ES2.0
                                       EGL_NONE };
 
     eglContext = eglCreateContext(eglDisplay, eglConfig, EGL_NO_CONTEXT, context_attribs);
@@ -561,7 +578,6 @@ namespace small3d {
     }
 
     eglContextValid = true;
-
   }
 
   void Renderer::terminateEGL() {
@@ -658,7 +674,6 @@ namespace small3d {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 
-
   Renderer::Renderer() {
     window = 0;
     shaderProgram = 0;
@@ -678,6 +693,13 @@ namespace small3d {
 		 shadersPath,
 		 objectsPerFrame,
 		 objectsPerFrameInc);
+#ifdef __ANDROID__
+    if (std::string((const char*)glGetString(GL_EXTENSIONS)).find("GL_EXT_color_buffer_half_float") != std::string::npos) {
+      LOGDEBUG("Extension GL_EXT_color_buffer_half_float found. "
+               "Using GL_RGBA16F_EXT internal format for textures.");
+      textureInternalFormat = GL_RGBA16F_EXT;
+    }
+#endif
   }
 
   void Renderer::start(const std::string & windowTitle, const int width,
@@ -704,9 +726,11 @@ namespace small3d {
       throw std::runtime_error("Unable to initialise font system");
     }
 
+#ifndef __ANDROID__
     // Generate VAO
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
+#endif
 
   }
 
@@ -803,8 +827,10 @@ namespace small3d {
     if (!noShaders) {
       glUseProgram(0);
 
+#ifndef __ANDROID__
       glDeleteVertexArrays(1, &vao);
       glBindVertexArray(0);
+#endif
 
     }
 
@@ -1005,12 +1031,6 @@ namespace small3d {
       glClearDepth(1.0f);
     }
 
-    unsigned const attrib_position = 0;
-    unsigned const attrib_normal = 1;
-    unsigned const attrib_joint = 2;
-    unsigned const attrib_weight = 3;
-    unsigned const attrib_uv = 4;
-
     glUseProgram(shaderProgram);
 
     GLint bufSize = 0;
@@ -1048,6 +1068,7 @@ namespace small3d {
 
     glEnableVertexAttribArray(attrib_position);
     glVertexAttribPointer(attrib_position, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
 
     // Normals
 
@@ -1087,7 +1108,12 @@ namespace small3d {
       }
 
       glEnableVertexAttribArray(attrib_joint);
+#ifndef __ANDROID__
       glVertexAttribIPointer(attrib_joint, 4, GL_UNSIGNED_BYTE, 0, 0);
+#else
+      glVertexAttribPointer(attrib_joint, 4, GL_UNSIGNED_BYTE, GL_FALSE, 0, 0);
+#endif
+
     }
 
     if (model.weightDataByteSize != 0) {

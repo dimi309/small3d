@@ -1,7 +1,5 @@
-#version 300 es
-
-smooth in mediump float cosAngIncidence;
-in mediump vec2 textureCoords;
+varying mediump float cosAngIncidence;
+varying mediump vec2 textureCoords;
 
 uniform mediump vec4 modelColour;
 
@@ -9,9 +7,7 @@ uniform  mediump float lightIntensity;
 
 uniform  mediump sampler2D textureImage;
 
-layout(location = 0) out mediump vec4 outputColour;
-
-void main() {
+void main(void) {
 
   mediump vec4 inputColour;
   
@@ -19,14 +15,14 @@ void main() {
     inputColour = modelColour;
   }
   else {
-    inputColour = texture(textureImage, textureCoords);
+    inputColour = texture2D(textureImage, textureCoords);
   }
 
   if (lightIntensity == -1.0) {
-    outputColour = inputColour;
+    gl_FragColor = inputColour;
   }
   else {
-    outputColour = vec4((lightIntensity * cosAngIncidence * inputColour).rgb,
+    gl_FragColor = vec4((lightIntensity * cosAngIncidence * inputColour).rgb,
 			inputColour.a);
   }
 

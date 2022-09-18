@@ -15,8 +15,8 @@
 #include <GLFW/glfw3.h>
 #else
 #include <EGL/egl.h>
-#include <GLES3/gl3.h>
-#include <GLES3/gl3ext.h>
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
 #include "small3d_android.h"
 
 #endif
@@ -60,6 +60,8 @@ namespace small3d
     NativeWindowType  window;
     std::vector<AAsset*> fontAssets;
     bool eglContextValid = false;
+    GLint textureInternalFormat = GL_RGBA;
+
     void createEGLSurface(int& width, int& height);
     void initEGLContext();
     void terminateEGL();

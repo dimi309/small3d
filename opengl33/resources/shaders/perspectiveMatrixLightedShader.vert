@@ -15,7 +15,7 @@ uniform vec3 cameraOffset;
 uniform mat4 modelTransformation;
 uniform mat4 jointTransformations[16];
 uniform vec3 modelOffset;
-uniform bool hasJoints;
+uniform int hasJoints;
 
 layout(location = 0) smooth out float cosAngIncidence;
 layout(location = 1) out vec2 textureCoords;
@@ -24,7 +24,7 @@ void main()
 {
   mat4 skinMat = mat4(1.0f);
   
-  if (hasJoints) {
+  if (hasJoints != 0) {
     skinMat =
       weight.x * jointTransformations[joint.x] +
       weight.y * jointTransformations[joint.y] +
