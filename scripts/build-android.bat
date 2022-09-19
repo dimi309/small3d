@@ -90,12 +90,6 @@ copy /y android\app\CMakeListsOpenGLES.txt android\app\CMakeLists.txt
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 )
 
-
-if /I "%~1" == "Release" (
-echo "WARNING: Release builds can cause the following error on at least some devices:"
-echo "`I/Adreno: Shader compilation failed for shaderType: 0`"
-)
-
 echo small3d built successfully for Android (%~1 mode)
 endlocal
 @echo on
