@@ -1028,7 +1028,7 @@ namespace small3d {
     const bool perspective) {
 
     if (!perspective) {
-      glClearDepth(1.0f);
+      glClear(GL_DEPTH_BUFFER_BIT);
     }
 
     glUseProgram(shaderProgram);
