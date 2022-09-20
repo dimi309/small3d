@@ -41,7 +41,7 @@ if [ -d "../../build/bin/resources/shaders/" ]; then
     done   
 fi
 if [ -d "../../android/app/src/main/assets/resources/shaders/" ]; then
-    echo "Copying binaries to build/bin/resources/shaders..."
+    echo "Copying binaries to android/app/src/main/assets/resources/shaders..."
     for f in *.spv ; do
 	cp $f ../../android/app/src/main/assets/resources/shaders/ ;
 	echo "Copied $f" ;
