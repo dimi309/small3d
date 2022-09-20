@@ -23,9 +23,10 @@ var searchData=
   ['getrotationxyz_42',['getRotationXYZ',['../classsmall3d_1_1_scene_object.html#a13b47e78ca853f3e88544656f10d5aa1',1,'small3d::SceneObject']]],
   ['getscreenheight_43',['getScreenHeight',['../classsmall3d_1_1_renderer.html#aed406b218be5e972d7566a321f893e82',1,'small3d::Renderer']]],
   ['getscreenwidth_44',['getScreenWidth',['../classsmall3d_1_1_renderer.html#adc8816c9329595bbe489131cc2bf4495',1,'small3d::Renderer']]],
-  ['gettransformation_45',['getTransformation',['../classsmall3d_1_1_scene_object.html#ada7bde01d3d008e2a146e155a88721a2',1,'small3d::SceneObject']]],
-  ['getwidth_46',['getWidth',['../classsmall3d_1_1_image.html#a335588f99053b1f55c15c60c76c26624',1,'small3d::Image']]],
-  ['getwindow_47',['getWindow',['../classsmall3d_1_1_renderer.html#a2065e4645034d538e5bbd40cd5fa3a50',1,'small3d::Renderer']]],
-  ['glbfile_48',['GlbFile',['../classsmall3d_1_1_glb_file.html',1,'small3d::GlbFile'],['../classsmall3d_1_1_glb_file.html#a864e3d5ca31cd99f5fd87f8533aa5260',1,'small3d::GlbFile::GlbFile()']]],
-  ['glbfile_2ehpp_49',['GlbFile.hpp',['../_glb_file_8hpp.html',1,'']]]
+  ['gettimeinseconds_45',['getTimeInSeconds',['../_time_8hpp.html#a79a6c6958f58945d162eade4cc13e32c',1,'Time.cpp']]],
+  ['gettransformation_46',['getTransformation',['../classsmall3d_1_1_scene_object.html#ada7bde01d3d008e2a146e155a88721a2',1,'small3d::SceneObject']]],
+  ['getwidth_47',['getWidth',['../classsmall3d_1_1_image.html#a335588f99053b1f55c15c60c76c26624',1,'small3d::Image']]],
+  ['getwindow_48',['getWindow',['../classsmall3d_1_1_renderer.html#a2065e4645034d538e5bbd40cd5fa3a50',1,'small3d::Renderer']]],
+  ['glbfile_49',['GlbFile',['../classsmall3d_1_1_glb_file.html',1,'small3d::GlbFile'],['../classsmall3d_1_1_glb_file.html#a864e3d5ca31cd99f5fd87f8533aa5260',1,'small3d::GlbFile::GlbFile()']]],
+  ['glbfile_2ehpp_50',['GlbFile.hpp',['../_glb_file_8hpp.html',1,'']]]
 ];
