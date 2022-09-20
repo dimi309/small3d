@@ -7,9 +7,11 @@
 Minimalistic, open source library for making 3D games in C++, with
 Vulkan, OpenGL and OpenGL ES support.
 
-## Sample game
+## Sample games
 
-- [Gloom](https://github.com/dimi309/gloom)
+- [Gloom](https://github.com/dimi309/gloom) (open source)
+
+- [Islet Hell](https://store.steampowered.com/app/2069750/Islet_Hell/) (commercially released, also available for [Android](https://play.google.com/store/apps/details?id=dimi309.islethelladroid) and [Apple iOS](https://apps.apple.com/us/app/islet-hell/id1631875184))
 
 ## Tutorial
 
