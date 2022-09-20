@@ -13,7 +13,7 @@ if [ ! -z "$2" ] && [ "$2" != "opengles" ] && [ "$2" != "skipdeps" ]; then
     args_ok=false
 fi
 
-if [ ! -z "$3" ] && [ "$2" != "skipdeps" ]; then
+if [ ! -z "$3" ] && [ "$3" != "skipdeps" ]; then
     args_ok=false
 fi
 
@@ -28,6 +28,12 @@ if [ "$1" == "Debug" ]; then
 else
     export buildtype=Release
 fi
+
+export opengldef=OFF
+if [ "$2" == "opengles" ]; then
+    export opengldef=ON
+fi
+
 
 cd ..
 
@@ -49,7 +55,7 @@ cd build
 for androidabi in x86 x86_64 armeabi-v7a arm64-v8a
 do    
     cmake .. -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake \
-	  -DANDROID_PLATFORM=$platformstr -DANDROID_ABI=$androidabi -DCMAKE_BUILD_TYPE=$buildtype
+	  -DANDROID_PLATFORM=$platformstr -DANDROID_ABI=$androidabi -DCMAKE_BUILD_TYPE=$buildtype -DSMALL3D_OPENGL=$opengldef
     cmake --build .
 
     mv lib/*.a lib/$androidabi
@@ -76,7 +82,10 @@ else
 	    echo "Copied $f" ;
 	done
     fi
-    if [ -d "android/app/src/main/assets/resources/shaders/" ]; then
+    if [ -d "android/app/src/main/assets/resources/" ]; then
+	if [ ! -d "android/app/src/main/assets/resources/shaders/" ]; then
+	    mkdir android/app/src/main/assets/resources/shaders/ ;
+	fi
 	echo "Copying shaders to build/bin/resources/shaders..."
 	for f in opengl33/resources/shadersOpenGLES/* ; do
 	    cp $f android/app/src/main/assets/resources/shaders/ ;
