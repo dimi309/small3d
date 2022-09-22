@@ -7,11 +7,11 @@ Everything works fine with OpenGL ES.
 
 When using Vulkan, gltf (glb) joints animation does not work on Android
 because the shader would crash on Adreno gpus when containing joint
-logic. A separate shader without this code was created in order to
+calculations. A separate shader without this code was created in order to
 avoid this problem (perspectiveMatrixLightedShaderNoJoints.vert)
 
 Even with this hack, on Vulkan the shaders fail to load on some devices with
-Adreno CPUs. Another hack to avoid that issue, is to download the latest
+Adreno gpus. Another hack to avoid that issue, is to download the latest
 Khronos validation layer binaries from
 https://github.com/KhronosGroup/Vulkan-ValidationLayers
 and place the jniLibs directory in small3d\android\app\src\main.
