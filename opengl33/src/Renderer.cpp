@@ -8,8 +8,19 @@
 
 #include "Renderer.hpp"
 #include <stdexcept>
+
 #ifndef __ANDROID__
 #include <fstream>
+#else
+#include <android/asset_manager.h>
+#include <streambuf>
+#include <istream>
+struct membuf : std::streambuf
+{
+  membuf(char* begin, char* end) {
+    this->setg(begin, begin, end);
+  }
+};
 #endif
 
 #include <glm/gtc/type_ptr.hpp>
@@ -24,19 +35,10 @@ unsigned const attrib_joint = 2;
 unsigned const attrib_weight = 3;
 unsigned const attrib_uv = 4;
 
-#ifdef __ANDROID__
+#ifdef SMALL3D_OPENGLES
 #define glDepthRange glDepthRangef
 #define glClearDepth glClearDepthf
-#include <android/asset_manager.h>
-#include <streambuf>
-#include <istream>
 
-struct membuf : std::streambuf
-{
-  membuf(char* begin, char* end) {
-    this->setg(begin, begin, end);
-  }
-};
 
 const EGLint config16bpp[] = {
     EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
@@ -84,7 +86,7 @@ namespace small3d {
   int Renderer::realScreenWidth;
   int Renderer::realScreenHeight;
 
-#ifndef __ANDROID__
+#ifndef SMALL3D_OPENGLES
   void Renderer::framebufferSizeCallback(GLFWwindow* window, int width,
     int height) {
     realScreenWidth = width;
@@ -211,7 +213,7 @@ namespace small3d {
   }
 
   void Renderer::initOpenGL() {
-#ifndef __ANDROID__
+#ifndef SMALL3D_OPENGLES
     glewExperimental = GL_TRUE;
 
     GLenum initResult = glewInit();
@@ -350,7 +352,7 @@ namespace small3d {
     glGenTextures(1, &textureHandle);
     glBindTexture(GL_TEXTURE_2D, textureHandle);
 
-#ifndef __ANDROID__
+#ifndef SMALL3D_OPENGLES
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA,
@@ -375,12 +377,12 @@ namespace small3d {
     realScreenWidth = width;
     realScreenHeight = height;
 
-#ifdef __ANDROID__
+#ifdef SMALL3D_OPENGLES
     this->initOpenGL();
 #endif
 
     this->initWindow(realScreenWidth, realScreenHeight, windowTitle);
-#ifndef __ANDROID__
+#ifndef SMALL3D_OPENGLES
     this->initOpenGL();
 #endif
     glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
@@ -403,7 +405,7 @@ namespace small3d {
 
     shaderProgram = glCreateProgram();
 
-#ifdef __ANDROID__
+#ifdef SMALL3D_OPENGLES
     glBindAttribLocation(shaderProgram, attrib_position, "position");
     glBindAttribLocation(shaderProgram, attrib_normal, "normal");
     glBindAttribLocation(shaderProgram, attrib_joint, "joint");
@@ -445,7 +447,7 @@ namespace small3d {
 
   void Renderer::initWindow(int& width, int& height,
     const std::string & windowTitle) {
-#ifndef __ANDROID__
+#ifndef SMALL3D_OPENGLES
     glfwSetErrorCallback(error_callback);
 
     if (!glfwInit()) {
@@ -526,7 +528,7 @@ namespace small3d {
 
 #endif
   }
-#ifdef __ANDROID__  
+#ifdef SMALL3D_OPENGLES  
   void Renderer::createEGLSurface(int& width, int& height) {
     eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, window, NULL);
 
@@ -693,7 +695,7 @@ namespace small3d {
 		 shadersPath,
 		 objectsPerFrame,
 		 objectsPerFrameInc);
-#ifdef __ANDROID__
+#ifdef SMALL3D_OPENGLES
     if (std::string((const char*)glGetString(GL_EXTENSIONS)).find("GL_EXT_color_buffer_half_float") != std::string::npos) {
       LOGDEBUG("Extension GL_EXT_color_buffer_half_float found. "
                "Using GL_RGBA16F_EXT internal format for textures.");
@@ -726,7 +728,7 @@ namespace small3d {
       throw std::runtime_error("Unable to initialise font system");
     }
 
-#ifndef __ANDROID__
+#ifndef SMALL3D_OPENGLES
     // Generate VAO
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
@@ -827,7 +829,7 @@ namespace small3d {
     if (!noShaders) {
       glUseProgram(0);
 
-#ifndef __ANDROID__
+#ifndef SMALL3D_OPENGLES
       glDeleteVertexArrays(1, &vao);
       glBindVertexArray(0);
 #endif
@@ -839,7 +841,7 @@ namespace small3d {
     }
   }
 
-#ifndef __ANDROID__
+#ifndef SMALL3D_OPENGLES
   GLFWwindow* Renderer::getWindow() const {
     return window;
   }
@@ -1108,7 +1110,7 @@ namespace small3d {
       }
 
       glEnableVertexAttribArray(attrib_joint);
-#ifndef __ANDROID__
+#ifndef SMALL3D_OPENGLES
       glVertexAttribIPointer(attrib_joint, 4, GL_UNSIGNED_BYTE, 0, 0);
 #else
       glVertexAttribPointer(attrib_joint, 4, GL_UNSIGNED_BYTE, GL_FALSE, 0, 0);
@@ -1248,7 +1250,7 @@ namespace small3d {
   }
 
   void Renderer::swapBuffers() {
-#ifndef __ANDROID__
+#ifndef SMALL3D_OPENGLES
     glfwSwapBuffers(window);
 #else
     bool b = eglSwapBuffers(eglDisplay, eglSurface);
@@ -1310,7 +1312,7 @@ namespace small3d {
         "execute the command. The state of the GL is undefined, except for "
         "the state of the error flags, after this error is recorded.";
       break;
-#ifndef __ANDROID__
+#ifndef SMALL3D_OPENGLES
     case GL_STACK_UNDERFLOW:
       errorString = "GL_STACK_UNDERFLOW: An attempt has been made to perform "
         "an operation that would cause an internal stack to underflow.";

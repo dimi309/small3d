@@ -69,6 +69,8 @@ done
 if [ "$2" != "opengles" ]; then
     cd ../scripts
     ./compile-shaders.sh $1
+    echo Copying android/app/CMakeListsVulkan.txt to android/app/CMakeLists.txt
+    cp ../android/app/CMakeListsVulkan.txt ../android/app/CMakeLists.txt
 else
     cd ..
     if [ -d "build/" ]; then
@@ -92,6 +94,8 @@ else
 	    echo "Copied $f" ;
 	done   
     fi
+    echo Copying android/app/CMakeListsOpenGLES.txt to android/app/CMakeLists.txt
+    cp android/app/CMakeListsOpenGLES.txt android/app/CMakeLists.txt
     
 fi
 

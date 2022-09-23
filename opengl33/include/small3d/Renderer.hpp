@@ -9,7 +9,8 @@
 
 #pragma once
 #include <vector>
-#ifndef __ANDROID__
+
+#ifndef SMALL3D_OPENGLES
 #define GLEW_NO_GLU
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -17,6 +18,9 @@
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
+#endif
+
+#ifdef __ANDROID__
 #include "small3d_android.h"
 
 #endif
@@ -45,7 +49,7 @@ namespace small3d
   {
 
   private:
-#ifndef __ANDROID__
+#ifndef SMALL3D_OPENGLES
     GLFWwindow* window;
 #else
     EGLContext eglContext;
@@ -57,8 +61,7 @@ namespace small3d
 
     EGLDisplay eglDisplay;
     EGLSurface eglSurface;
-    NativeWindowType  window;
-    std::vector<AAsset*> fontAssets;
+  
     bool eglContextValid = false;
     GLint textureInternalFormat = GL_RGBA;
 
@@ -66,6 +69,12 @@ namespace small3d
     void initEGLContext();
     void terminateEGL();
 #endif
+
+#ifdef __ANDROID__
+    NativeWindowType  window;
+    std::vector<AAsset*> fontAssets;
+#endif
+    
     static int realScreenWidth, realScreenHeight;
 
     uint32_t shaderProgram = 0;
@@ -96,7 +105,7 @@ namespace small3d
     glm::mat4x4 cameraTransformation = glm::mat4x4(1.0f);
     glm::vec3 cameraRotationXYZ = glm::vec3(0.0f);
     bool cameraRotationByMatrix = false;
-#ifndef __ANDROID__
+#ifndef SMALL3D_OPENGLES
     static void framebufferSizeCallback(GLFWwindow* window, int width,
 					int height);
 #endif
