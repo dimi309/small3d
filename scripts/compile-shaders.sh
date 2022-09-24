@@ -40,10 +40,23 @@ if [ -d "../../build/bin/resources/shaders/" ]; then
 	echo "Copied $f" ;
     done   
 fi
-if [ -d "../../android/app/src/main/assets/resources/shaders/" ]; then
+if [ -d "../../android/app/src/main/assets/resources/" ]; then
+    if [ ! -d "../../android/app/src/main/assets/resources/shaders/" ]; then
+       mkdir ../../android/app/src/main/assets/resources/shaders/
+    fi
     echo "Copying binaries to android/app/src/main/assets/resources/shaders..."
     for f in *.spv ; do
 	cp $f ../../android/app/src/main/assets/resources/shaders/ ;
+	echo "Copied $f" ;
+    done   
+fi
+if [ -d "../../ios/small3d-Tests-ios/resources1/" ]; then
+    if [ ! -d "../../ios/small3d-Tests-ios/resources1/shaders/" ]; then
+	mkdir ../../ios/small3d-Tests-ios/resources1/shaders/
+    fi
+    echo "Copying binaries to ios/small3d-Tests-ios/resources1/shaders..."
+    for f in *.spv ; do
+	cp $f ../../ios/small3d-Tests-ios/resources1/shaders/ ;
 	echo "Copied $f" ;
     done   
 fi

@@ -51,7 +51,6 @@ cmake --build . --config $2
 mv lib/$2/* lib/
 
 rmdir lib/$2
-rm lib/interop.m
 
 cd ../scripts
 

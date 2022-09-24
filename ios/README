@@ -1,0 +1,5 @@
+Build small3d for ios. Then copy:
+
+  small3d/build/include to islet-hell/ios/deps/include
+  small3d/build/lib to islet-hell/ios/deps/lib
+  small3d/build/shaders to islet-hell/ios/islet-hell-ios/resources1/shaders
