@@ -13,6 +13,7 @@ file(GLOB SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../src/*.c*)
 file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../src/*.h*)
 
 add_compile_definitions(SMALL3D_OPENGL)
+add_compile_definitions(SMALL3D_OPENGLES)
 list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../src/Renderer.cpp)
 list(APPEND SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../opengl33/src/Renderer.cpp)
 list(REMOVE_ITEM HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../include/small3d/Renderer.hpp)

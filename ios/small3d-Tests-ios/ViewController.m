@@ -7,11 +7,11 @@
 
 #import "ViewController.h"
 #include "interop.h"
-
+#include "UnitTests.hpp"
 #include <small3d/Renderer.hpp>
+#include <small3d/Model.hpp>
 
-small3d::Renderer *r;
-std::string resourceDir = "resources1";
+small3d::Model texturedRect;
 
 @implementation ViewController {
   CADisplayLink* _displayLink;
@@ -29,8 +29,12 @@ std::string resourceDir = "resources1";
     
     
   try {
-    r = &small3d::Renderer::getInstance("Islet Hell", 854, 480, 0.785f, 1.0f, 24.0f,
-        resourceDir + "/shaders/", 5000);
+    initRenderer();
+    r->createRectangle(texturedRect, glm::vec3(-1.0f, 0.1f, -1.0f),
+      glm::vec3(1.0f, -0.1f, -1.0f));
+    r->generateTexture("message_ios", "No extended testing due to ios 'game' loop control", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+    SoundTest();
+    
   }
   catch (std::exception& e) {
     LOGERROR(std::string(e.what()));
@@ -52,7 +56,9 @@ std::string resourceDir = "resources1";
 }
 
 -(void) renderLoop {
-// ***RENDER HERE
+  
+  r->render(texturedRect, "message_ios");
+  r->swapBuffers();
 }
 
 void processPhase(UITouchPhase phase, CGPoint touchPoint) {

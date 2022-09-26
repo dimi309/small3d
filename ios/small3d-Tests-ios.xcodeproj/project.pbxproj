@@ -43,6 +43,7 @@
 		8C4EB26827881BB3000DD6DF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C4EB26627881BB3000DD6DF /* Main.storyboard */; };
 		8C4EB26A27881BB5000DD6DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C4EB26927881BB5000DD6DF /* Assets.xcassets */; };
 		8C4EB27027881BB5000DD6DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4EB26F27881BB5000DD6DF /* main.m */; };
+		8CB7352228E29FE300466A13 /* UnitTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8CB7352028E29FE300466A13 /* UnitTests.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -108,6 +109,8 @@
 		8C4EB26927881BB5000DD6DF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8C4EB26E27881BB5000DD6DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8C4EB26F27881BB5000DD6DF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		8CB7352028E29FE300466A13 /* UnitTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UnitTests.cpp; path = ../../src/UnitTests.cpp; sourceTree = "<group>"; };
+		8CB7352128E29FE300466A13 /* UnitTests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = UnitTests.hpp; path = ../../src/UnitTests.hpp; sourceTree = "<group>"; };
 		8CCF87D328DEA8F500BDEF3A /* small3d-Tests-ios copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "small3d-Tests-ios copy-Info.plist"; path = "/Users/me/Source/small3d/ios/small3d-Tests-ios copy-Info.plist"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -184,6 +187,8 @@
 		8C4EB25C27881BB3000DD6DF /* small3d-Tests-ios */ = {
 			isa = PBXGroup;
 			children = (
+				8CB7352028E29FE300466A13 /* UnitTests.cpp */,
+				8CB7352128E29FE300466A13 /* UnitTests.hpp */,
 				8C0F135728E036A400976580 /* interop.h */,
 				8C0BD1BE28E01A1C00B21659 /* interop.m */,
 				8C06D2D728DF0E92008E9BE5 /* BasePath.hpp */,
@@ -299,6 +304,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C06D2CA28DF0E83008E9BE5 /* Renderer.cpp in Sources */,
+				8CB7352228E29FE300466A13 /* UnitTests.cpp in Sources */,
 				8C4EB26527881BB3000DD6DF /* ViewController.m in Sources */,
 				8C06D2D028DF0E83008E9BE5 /* vulkan_helper.c in Sources */,
 				8C06D2CB28DF0E83008E9BE5 /* WavefrontFile.cpp in Sources */,
