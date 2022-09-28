@@ -17,6 +17,9 @@ else
     elif [ $1 = "simulator" ]
     then
 	echo "Building for Xcode iOS Simulator..."
+    elif [ $1 = "ios32" ]
+    then
+	echo "Building for 32-bit iOS devices (you can only use OpenGL ES in this case)..."
     else
 	echo $1 "not supported"
 	exit 1
@@ -27,6 +30,7 @@ if [ "$2" != "Debug" ] && [ "$2" != "Release" ]; then
     echo "Please indicate build type: Debug or Release (second argument, e.g. ./build-ios.sh simulator Debug)"
     exit 1
 fi
+
 
 mkdir include
 mkdir lib
@@ -39,6 +43,10 @@ rm -rf glm
 if [ $1 = "ios" ]
 then
     export ARCH=arm64 
+    export SDK=iphoneos
+elif [ $1 = "ios32" ]
+then
+    export ARCH=armv7
     export SDK=iphoneos
 elif [ $1 = "simulator" ]
 then
@@ -124,7 +132,9 @@ rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 if [ $1 = "ios" ]
 then
     export CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64"
-
+elif [ $1 = "ios32" ]
+then
+    export CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS -DARCHS=armv7"
 elif [ $1 = "simulator" ]
 then
     export CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64"

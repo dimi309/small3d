@@ -492,8 +492,6 @@ namespace small3d {
   void Sound::divideVolume(uint32_t divisor) {
 
     assert(WORD_SIZE == 2);
-
-    auto units = soundData.data.size() / WORD_SIZE;
     
     for (auto dp = soundData.data.begin(); dp != soundData.data.end(); dp+=2) {
       int16_t n;

@@ -9,14 +9,14 @@
 
 #ifndef interop_h
 #define interop_h
+#ifndef SMALL3D_OPENGL
 #include <MoltenVK/mvk_vulkan.h>
+#endif
 
 #ifdef SMALL3D_USING_XCODE
 // Needed for compiling within Xcode
 extern "C" {
 #endif
-  
-extern void* app_window;
 
 void init_log();
 
@@ -32,7 +32,12 @@ int get_app_width();
 
 int get_app_height();
 
+#ifndef SMALL3D_OPENGL
+extern void* app_window;
+
 int create_ios_surface(VkInstance instance, VkSurfaceKHR *surface);
+
+#endif
 
 #ifdef SMALL3D_USING_XCODE
 // Needed for compiling within Xcode (see extern "C" at the top of the file)

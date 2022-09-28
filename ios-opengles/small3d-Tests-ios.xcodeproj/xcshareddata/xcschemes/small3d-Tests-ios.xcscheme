@@ -73,7 +73,6 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
-      customArchiveName = "small3d-Tests-ios"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

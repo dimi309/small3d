@@ -88,7 +88,7 @@ else
 	if [ ! -d "android/app/src/main/assets/resources/shaders/" ]; then
 	    mkdir android/app/src/main/assets/resources/shaders/ ;
 	fi
-	echo "Copying shaders to build/bin/resources/shaders..."
+	echo "Copying shaders to android/app/src/main/assets/resources/shaders..."
 	for f in opengl33/resources/shadersOpenGLES/* ; do
 	    cp $f android/app/src/main/assets/resources/shaders/ ;
 	    echo "Copied $f" ;

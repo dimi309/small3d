@@ -15,9 +15,14 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #else
+#ifdef __ANDROID__
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
+#else
+#include <OpenGLES/ES2/gl.h>
+#include <OpenGLES/ES2/glext.h>
+#endif
 #endif
 
 #ifdef __ANDROID__
@@ -52,6 +57,8 @@ namespace small3d
 #ifndef SMALL3D_OPENGLES
     GLFWwindow* window;
 #else
+    GLint textureInternalFormat = GL_RGBA;
+#ifdef __ANDROID__
     EGLContext eglContext;
     EGLConfig eglConfig;
     EGLint format;
@@ -63,11 +70,12 @@ namespace small3d
     EGLSurface eglSurface;
   
     bool eglContextValid = false;
-    GLint textureInternalFormat = GL_RGBA;
+    
 
     void createEGLSurface(int& width, int& height);
     void initEGLContext();
     void terminateEGL();
+#endif
 #endif
 
 #ifdef __ANDROID__
@@ -283,7 +291,11 @@ namespace small3d
       const float zNear = 1.0f,
       const float zFar = 24.0f,
       const std::string& shadersPath =
+#if defined(SMALL3D_OPENGLES) && defined(__APPLE__)
+      "resources1/shaders/",
+#else
       "resources/shaders/",
+#endif
       const uint32_t objectsPerFrame = 200,
       const uint32_t objectsPerFrameInc = 1000);
 
@@ -292,7 +304,7 @@ namespace small3d
      */
     ~Renderer();
 
-#ifndef __ANDROID__
+#ifndef SMALL3D_OPENGLES
     /**
      * @brief Get the GLFW window object, associated with the Renderer.
      */
@@ -321,7 +333,11 @@ namespace small3d
       const glm::vec3& colour,
       const int fontSize = 48,
       const std::string& fontPath =
+#if defined(SMALL3D_OPENGLES) && defined(__APPLE__)
+      "resources1/fonts/CrusoeText/CrusoeText-Regular.ttf",
+#else
       "resources/fonts/CrusoeText/CrusoeText-Regular.ttf",
+#endif
       const bool replace = true);
 
     /**

@@ -12,7 +12,7 @@
 #include "Renderer.hpp"
 extern small3d::Renderer *r;
 void pollEvents();
-void initRenderer();
+void initRenderer(uint32_t width = 854, uint32_t height = 480);
 
 #ifdef __ANDROID__
 extern "C" {

@@ -479,7 +479,7 @@ namespace small3d {
     bool found = false;
 
     VulkanImage textureHandleLocal;
-    VulkanImage* textureHandlePtr;
+    VulkanImage* textureHandlePtr = nullptr;
 
     for (auto& nameTexturePair : textures) {
       if (nameTexturePair.first == name) {

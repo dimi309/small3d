@@ -27,7 +27,7 @@
 		8C0BD1B728E017C700B21659 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C0BD1B628E017C700B21659 /* IOSurface.framework */; };
 		8C0BD1B928E0183300B21659 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C0BD1B828E0183300B21659 /* UIKit.framework */; };
 		8C0BD1BD28E0198F00B21659 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C0BD1BC28E0198F00B21659 /* QuartzCore.framework */; };
-		8C0BD1BF28E01A1C00B21659 /* interop.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C0BD1BE28E01A1C00B21659 /* interop.m */; };
+		8C41E6C328E6AF5700FAC458 /* interop.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C41E6C128E6AF5700FAC458 /* interop.m */; };
 		8C4CF6BE2788365F00F9F4E8 /* libbz2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CF6BB2788364A00F9F4E8 /* libbz2.a */; };
 		8C4CF6BF2788365F00F9F4E8 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CF6B92788364A00F9F4E8 /* libfreetype.a */; };
 		8C4CF6C12788365F00F9F4E8 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CF6BD2788364A00F9F4E8 /* libogg.a */; };
@@ -38,7 +38,6 @@
 		8C4CF6C92788367300F9F4E8 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CF6C82788367200F9F4E8 /* OpenAL.framework */; };
 		8C4CF6E527883A4E00F9F4E8 /* resources1 in Resources */ = {isa = PBXBuildFile; fileRef = 8C4CF6DA27883A4E00F9F4E8 /* resources1 */; };
 		8C4EB25F27881BB3000DD6DF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4EB25E27881BB3000DD6DF /* AppDelegate.m */; };
-		8C4EB26227881BB3000DD6DF /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4EB26127881BB3000DD6DF /* SceneDelegate.m */; };
 		8C4EB26527881BB3000DD6DF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4EB26427881BB3000DD6DF /* ViewController.m */; };
 		8C4EB26827881BB3000DD6DF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C4EB26627881BB3000DD6DF /* Main.storyboard */; };
 		8C4EB26A27881BB5000DD6DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C4EB26927881BB5000DD6DF /* Assets.xcassets */; };
@@ -82,9 +81,9 @@
 		8C0BD1B828E0183300B21659 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8C0BD1BA28E018C500B21659 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		8C0BD1BC28E0198F00B21659 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		8C0BD1BE28E01A1C00B21659 /* interop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = interop.m; path = ../../deps/lib/interop.m; sourceTree = "<group>"; };
-		8C0F135728E036A400976580 /* interop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interop.h; path = ../../deps/include/interop.h; sourceTree = "<group>"; };
 		8C2FC02D27BE1D16003566FC /* libvkzos.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvkzos.a; path = deps/lib/libvkzos.a; sourceTree = "<group>"; };
+		8C41E6C128E6AF5700FAC458 /* interop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = interop.m; path = ../../deps/ios/interop.m; sourceTree = "<group>"; };
+		8C41E6C228E6AF5700FAC458 /* interop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interop.h; path = ../../deps/ios/interop.h; sourceTree = "<group>"; };
 		8C4CF6B42788364A00F9F4E8 /* libvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisfile.a; path = deps/lib/libvorbisfile.a; sourceTree = "<group>"; };
 		8C4CF6B52788364A00F9F4E8 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = deps/lib/libz.a; sourceTree = "<group>"; };
 		8C4CF6B62788364A00F9F4E8 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = deps/lib/libpng.a; sourceTree = "<group>"; };
@@ -101,8 +100,6 @@
 		8C4EB25A27881BB3000DD6DF /* small3d-Tests-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "small3d-Tests-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C4EB25D27881BB3000DD6DF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		8C4EB25E27881BB3000DD6DF /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		8C4EB26027881BB3000DD6DF /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
-		8C4EB26127881BB3000DD6DF /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
 		8C4EB26327881BB3000DD6DF /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		8C4EB26427881BB3000DD6DF /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		8C4EB26727881BB3000DD6DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -187,10 +184,10 @@
 		8C4EB25C27881BB3000DD6DF /* small3d-Tests-ios */ = {
 			isa = PBXGroup;
 			children = (
+				8C41E6C228E6AF5700FAC458 /* interop.h */,
+				8C41E6C128E6AF5700FAC458 /* interop.m */,
 				8CB7352028E29FE300466A13 /* UnitTests.cpp */,
 				8CB7352128E29FE300466A13 /* UnitTests.hpp */,
-				8C0F135728E036A400976580 /* interop.h */,
-				8C0BD1BE28E01A1C00B21659 /* interop.m */,
 				8C06D2D728DF0E92008E9BE5 /* BasePath.hpp */,
 				8C06D2DC28DF0E92008E9BE5 /* BoundingBoxSet.hpp */,
 				8C06D2D628DF0E92008E9BE5 /* File.hpp */,
@@ -222,8 +219,6 @@
 				8C4CF6DA27883A4E00F9F4E8 /* resources1 */,
 				8C4EB25D27881BB3000DD6DF /* AppDelegate.h */,
 				8C4EB25E27881BB3000DD6DF /* AppDelegate.m */,
-				8C4EB26027881BB3000DD6DF /* SceneDelegate.h */,
-				8C4EB26127881BB3000DD6DF /* SceneDelegate.m */,
 				8C4EB26327881BB3000DD6DF /* ViewController.h */,
 				8C4EB26427881BB3000DD6DF /* ViewController.m */,
 				8C4EB26627881BB3000DD6DF /* Main.storyboard */,
@@ -313,14 +308,13 @@
 				8C06D2C428DF0E83008E9BE5 /* BasePath.cpp in Sources */,
 				8C4EB25F27881BB3000DD6DF /* AppDelegate.m in Sources */,
 				8C4EB27027881BB5000DD6DF /* main.m in Sources */,
-				8C4EB26227881BB3000DD6DF /* SceneDelegate.m in Sources */,
 				8C06D2CF28DF0E83008E9BE5 /* Model.cpp in Sources */,
 				8C06D2CE28DF0E83008E9BE5 /* File.cpp in Sources */,
 				8C06D2C728DF0E83008E9BE5 /* GlbFile.cpp in Sources */,
-				8C0BD1BF28E01A1C00B21659 /* interop.m in Sources */,
 				8C06D2C628DF0E83008E9BE5 /* SceneObject.cpp in Sources */,
 				8C06D2C328DF0E83008E9BE5 /* Image.cpp in Sources */,
 				8C06D2CC28DF0E83008E9BE5 /* Time.cpp in Sources */,
+				8C41E6C328E6AF5700FAC458 /* interop.m in Sources */,
 				8C06D2C528DF0E83008E9BE5 /* OctPyramid.cpp in Sources */,
 				8C06D2CD28DF0E83008E9BE5 /* Sound.cpp in Sources */,
 			);

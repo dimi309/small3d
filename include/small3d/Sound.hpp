@@ -117,7 +117,7 @@ static ALCcontext *openalContext;
 
     /**
      * @brief Divide the volume (in order to lower it).
-     * @param Divisor Number to divide the volume by.
+     * @param divisor Number to divide the volume by.
      */
 
     void divideVolume(uint32_t divisor);

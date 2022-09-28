@@ -1,6 +1,6 @@
 //
 //  ViewController.m
-//  islet-hell-ios
+//  
 //
 //  Created by me on 07/01/2022.
 //
@@ -10,8 +10,10 @@
 #include "UnitTests.hpp"
 #include <small3d/Renderer.hpp>
 #include <small3d/Model.hpp>
+#include <small3d/GlbFile.hpp>
 
 small3d::Model texturedRect;
+small3d::Model goat(small3d::GlbFile("resources1/models/goatAndTree.glb"), "Cube");
 
 @implementation ViewController {
   CADisplayLink* _displayLink;
@@ -24,15 +26,14 @@ small3d::Model texturedRect;
   // Do any additional setup after loading the view.
   app_window = (__bridge void*) self.view.layer;
   
-    
   small3d::initLogger();
-    
     
   try {
     initRenderer();
-    r->createRectangle(texturedRect, glm::vec3(-1.0f, 0.1f, -1.0f),
-      glm::vec3(1.0f, -0.1f, -1.0f));
-    r->generateTexture("message_ios", "No extended testing due to ios 'game' loop control", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+    r->setBackgroundColour(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
+    r->createRectangle(texturedRect, glm::vec3(-0.8f, 0.1f, -1.0f),
+      glm::vec3(0.8f, -0.1f, -1.0f));
+    r->generateTexture("message_ios", "No extended testing due to ios loop control", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
     SoundTest();
     
   }
@@ -42,7 +43,6 @@ small3d::Model texturedRect;
     
   _displayLink = [CADisplayLink displayLinkWithTarget: self selector: @selector(renderLoop)];
   _displayLink.preferredFramesPerSecond = 60;
-  //[_displayLink preferredFramesPerSecond: 60 ];
   [_displayLink addToRunLoop: NSRunLoop.currentRunLoop forMode: NSDefaultRunLoopMode];
     
 }
@@ -56,7 +56,7 @@ small3d::Model texturedRect;
 }
 
 -(void) renderLoop {
-  
+  r->render(goat, glm::vec3(-1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
   r->render(texturedRect, "message_ios");
   r->swapBuffers();
 }

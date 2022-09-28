@@ -6,7 +6,7 @@
 *     License: BSD 3-Clause License (see LICENSE file)
 */
 
-#include "Renderer.hpp"
+#include <small3d/Renderer.hpp>
 #include <stdexcept>
 
 #ifndef __ANDROID__
@@ -39,7 +39,7 @@ unsigned const attrib_uv = 4;
 #define glDepthRange glDepthRangef
 #define glClearDepth glClearDepthf
 
-
+#ifdef __ANDROID__
 const EGLint config16bpp[] = {
     EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
     EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
@@ -71,16 +71,18 @@ const EGLint config32bpp[] = {
     EGL_DEPTH_SIZE, 16,
     EGL_NONE
 };
-
+#else
+#include "interop.h"
+#endif
 #endif
 
 namespace small3d {
-
+#ifndef SMALL3D_OPENGLES
   static void error_callback(int error, const char* description)
   {
     LOGERROR(std::string(description));
   }
-
+#endif
   static std::string openglErrorToString(GLenum error);
 
   int Renderer::realScreenWidth;
@@ -233,16 +235,16 @@ namespace small3d {
       std::string(reinterpret_cast<char*>
         (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
 #else
-
+#ifdef __ANDROID__
     EGLint majorVersion, minorVersion;
     eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
     eglInitialize(eglDisplay, &majorVersion, &minorVersion);
     LOGDEBUG("EGL version: " + std::to_string(majorVersion) + "." +
       std::to_string(minorVersion));
-
+#endif
 #endif
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(SMALL3D_OPENGLES)
     GLboolean clientStorage = 0;
     glGetBooleanv(GL_APPLE_client_storage, &clientStorage);
     if (clientStorage == GL_TRUE) {
@@ -355,12 +357,20 @@ namespace small3d {
 #ifndef SMALL3D_OPENGLES
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA,
+    glTexImage2D(GL_TEXTURE_2D, 0, textureInternalFormat, width, height, 0, GL_RGBA,
       GL_FLOAT, data);
 #else
+#ifdef __ANDROID__
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, textureInternalFormat, width, height, 0, GL_RGBA,
+#endif
+#ifdef __APPLE__
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+#endif
+    glTexImage2D(GL_TEXTURE_2D, 0, textureInternalFormat, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGBA,
                  GL_FLOAT, data);
 #endif
 
@@ -443,6 +453,7 @@ namespace small3d {
     Image blankImage("");
     blankImage.toColour(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
     generateTexture("blank", blankImage);
+    LOGDEBUG("Blank image generated");
   }
 
   void Renderer::initWindow(int& width, int& height,
@@ -516,7 +527,7 @@ namespace small3d {
     LOGINFO("Framebuffer width " + std::to_string(width) + " height " +
       std::to_string(height));
 #else
-
+#ifdef __ANDROID__
     window = small3d_android_app->window;
 
     /* get the format of the window. */
@@ -525,10 +536,11 @@ namespace small3d {
     initEGLContext();
 
     createEGLSurface(realScreenWidth, realScreenHeight);
-
+#endif
 #endif
   }
-#ifdef SMALL3D_OPENGLES  
+#ifdef SMALL3D_OPENGLES
+#ifdef __ANDROID__
   void Renderer::createEGLSurface(int& width, int& height) {
     eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, window, NULL);
 
@@ -606,6 +618,7 @@ namespace small3d {
 
   }
 #endif
+#endif
   void Renderer::setWorldDetails(bool perspective) {
 
     GLint perspectiveMatrixUniform =
@@ -666,7 +679,7 @@ namespace small3d {
   }
 
   void Renderer::clearScreen() const {
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(SMALL3D_OPENGLES)
     // Needed to avoid transparent rendering in Mojave by default
     // (caused by the transparency hint in initWindow, which is
     // a workaround for a GLFW problem on that platform)
@@ -677,7 +690,9 @@ namespace small3d {
   }
 
   Renderer::Renderer() {
+#ifdef __ANDROID__
     window = 0;
+#endif
     shaderProgram = 0;
     noShaders = false;
   }
@@ -695,13 +710,23 @@ namespace small3d {
 		 shadersPath,
 		 objectsPerFrame,
 		 objectsPerFrameInc);
-#ifdef SMALL3D_OPENGLES
+    
+#if defined(__ANDROID__)
     if (std::string((const char*)glGetString(GL_EXTENSIONS)).find("GL_EXT_color_buffer_half_float") != std::string::npos) {
       LOGDEBUG("Extension GL_EXT_color_buffer_half_float found. "
                "Using GL_RGBA16F_EXT internal format for textures.");
       textureInternalFormat = GL_RGBA16F_EXT;
     }
+    else {
+      LOGDEBUG("Extension GL_EXT_color_buffer_half_float not found.");
+    }
+#elif defined(__APPLE__) && defined(SMALL3D_OPENGLES)
+    textureInternalFormat = GL_RGBA;
+#else
+    textureInternalFormat = GL_RGBA32F;
 #endif
+
+    LOGDEBUG("Renderer constructor done.");
   }
 
   void Renderer::start(const std::string & windowTitle, const int width,
@@ -710,8 +735,9 @@ namespace small3d {
     const std::string & shadersPath,
     const uint32_t objectsPerFrame,
     const uint32_t objectsPerFrameInc) {
-
+#ifdef __ANDROID__
     window = 0;
+#endif
     shaderProgram = 0;
 
     noShaders = false;
@@ -733,6 +759,7 @@ namespace small3d {
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 #endif
+    LOGDEBUG("start done");
 
   }
 
@@ -1253,6 +1280,7 @@ namespace small3d {
 #ifndef SMALL3D_OPENGLES
     glfwSwapBuffers(window);
 #else
+#ifdef __ANDROID__
     bool b = eglSwapBuffers(eglDisplay, eglSurface);
     if (!b) {
       EGLint err = eglGetError();
@@ -1269,7 +1297,7 @@ namespace small3d {
       }
       throw std::runtime_error("Context has been lost.");
     }
-
+#endif
 #endif
     clearScreen();
   }

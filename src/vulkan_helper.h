@@ -82,7 +82,7 @@ extern VkClearColorValue vh_clear_colour;
 
 /**
  * @brief Wait on a GPU-CPU fence
- * @param The GPU-CPU fence index
+ * @param idx The GPU-CPU fence index
  */
 void vh_wait_gpu_cpu_fence(uint32_t idx);
 

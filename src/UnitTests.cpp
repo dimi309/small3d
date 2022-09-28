@@ -61,10 +61,10 @@ void pollEvents() {
 }
 #endif
 
-void initRenderer() {
+void initRenderer(uint32_t width, uint32_t height) {
 #if defined(__ANDROID__) || defined(SMALL3D_IOS)
   if (r == nullptr) {
-    r = &small3d::Renderer::getInstance("small3d Tests", 854, 480, 0.785f, 1.0f, 24.0f,
+    r = &small3d::Renderer::getInstance("small3d Tests", width, height, 0.785f, 1.0f, 24.0f,
                                         resourceDir + "/shaders/", 5000);
   }
 #else

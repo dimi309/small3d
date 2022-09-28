@@ -27,6 +27,7 @@ add_library(small3d ${SOURCE_FILES} ${HEADER_FILES})
 if(SMALL3D_OPENGL)
   # When using OpenGL include the OpenGL Renderer.hpp directory first
   # so that OpenGL Renderer.hpp takes precedence over Vulkan Renderer.hpp
+  include_directories(${CMAKE_SOURCE_DIR}/opengl33/include)
   include_directories(${CMAKE_SOURCE_DIR}/opengl33/include/small3d)
   if(DEFINED ANDROID_PLATFORM)
     # The following is so that small3d_android.h can be included
@@ -115,17 +116,30 @@ elseif(DEFINED ANDROID_PLATFORM) # Android
   endif()
 
 elseif(IOS)
-  target_link_libraries(small3d
-    ${CMAKE_SOURCE_DIR}/deps/lib/libbz2.a
-    ${CMAKE_SOURCE_DIR}/deps/lib/libfreetype.a
-    ${CMAKE_SOURCE_DIR}/deps/lib/libMoltenVK.a
-    ${CMAKE_SOURCE_DIR}/deps/lib/libogg.a
-    ${CMAKE_SOURCE_DIR}/deps/lib/libpng.a
-    ${CMAKE_SOURCE_DIR}/deps/lib/libvorbis.a
-    ${CMAKE_SOURCE_DIR}/deps/lib/libvorbisfile.a
-    ${CMAKE_SOURCE_DIR}/deps/lib/libz.a
-    OpenAL.framework
-    )
+  if(NOT SMALL3D_OPENGL)
+    target_link_libraries(small3d
+      ${CMAKE_SOURCE_DIR}/deps/lib/libbz2.a
+      ${CMAKE_SOURCE_DIR}/deps/lib/libfreetype.a
+      ${CMAKE_SOURCE_DIR}/deps/lib/libMoltenVK.a
+      ${CMAKE_SOURCE_DIR}/deps/lib/libogg.a
+      ${CMAKE_SOURCE_DIR}/deps/lib/libpng.a
+      ${CMAKE_SOURCE_DIR}/deps/lib/libvorbis.a
+      ${CMAKE_SOURCE_DIR}/deps/lib/libvorbisfile.a
+      ${CMAKE_SOURCE_DIR}/deps/lib/libz.a
+      OpenAL.framework
+      )
+  else()
+    target_link_libraries(small3d
+      ${CMAKE_SOURCE_DIR}/deps/lib/libbz2.a
+      ${CMAKE_SOURCE_DIR}/deps/lib/libfreetype.a
+      ${CMAKE_SOURCE_DIR}/deps/lib/libogg.a
+      ${CMAKE_SOURCE_DIR}/deps/lib/libpng.a
+      ${CMAKE_SOURCE_DIR}/deps/lib/libvorbis.a
+      ${CMAKE_SOURCE_DIR}/deps/lib/libvorbisfile.a
+      ${CMAKE_SOURCE_DIR}/deps/lib/libz.a
+      OpenAL.framework
+      )
+  endif()
 endif()
 
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
