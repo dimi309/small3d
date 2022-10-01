@@ -6,7 +6,12 @@
 *     License: BSD 3-Clause License (see LICENSE file)
 */
 
+#if defined(SMALL3D_OPENGLES) && defined(__APPLE__)
 #include <small3d/Renderer.hpp>
+#else
+#include "Renderer.hpp"
+#endif
+
 #include <stdexcept>
 
 #ifndef __ANDROID__
