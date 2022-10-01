@@ -84,16 +84,17 @@ git repository.
 
 ## small3d on mobile
 
-On Android, small3d runs on Vulkan and OpenGL ES. OpenGL ES is recommended 
-because Vulkan  still has some issues on quite a few Android devices.
+small3d runs on mobile devices using Vulkan and OpenGL ES. On Android, OpenGL ES 
+is recommended because Vulkan still has some issues on quite a few devices.
 
-On iOS, small3d only runs on Vulkan (using MoltenVK). OpenGL ES is not used, 
-since it has been deprecated on that platform.
+On iOS, Vulkan is recommended (using MoltenVK). OpenGL ES has been deprecated by
+Apple, but please feel free to use it, especially if you are developing for older 
+32-bit devices for which the Vulkan build will not work.
 
 You can build small3d for mobile platforms by executing either `build-android` 
 or  `build-ios` from the `scripts` directory. Then you can use the test projects 
-in the `android` and `ios` directories to check if everything works, or as a 
-starting point for your own projects.
+in the `android`, `ios` and `ios-opengles` directories to check if everything works, 
+or as a starting point for your own projects.
 
 Note that, while with the desktop edition of small3d I use GLFW for windowing 
 functionalities and I/O, on mobile I access the native infrastructure directly.

@@ -15,7 +15,7 @@ v1.801 (still open)
   release builds on some devices.
 - [BREAKING]  Renderer::setCameraRotation(const mat4x4&)
   has been renamed to setCameraTransformation(const mat4x4&).
-- Added OpenGL ES 2.0 support for Android.
+- Added OpenGL ES 2.0 support for Android and iOS.
 - Added Android and iOS test projects to the repository.
 
 v1.800 2022-01-03
