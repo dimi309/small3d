@@ -54,10 +54,9 @@ namespace small3d
   {
 
   private:
+    GLint textureInternalFormat = GL_RGBA;
 #ifndef SMALL3D_OPENGLES
     GLFWwindow* window;
-#else
-    GLint textureInternalFormat = GL_RGBA;
 #ifdef __ANDROID__
     EGLContext eglContext;
     EGLConfig eglConfig;
