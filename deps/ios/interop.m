@@ -13,7 +13,6 @@
 #ifndef SMALL3D_OPENGL
 #import <MoltenVK/mvk_vulkan.h>
 #endif
-#include <small3d/Logger.hpp>
 #import <OSLog/OSLog.h>
 
 #ifdef SMALL3D_USING_XCODE

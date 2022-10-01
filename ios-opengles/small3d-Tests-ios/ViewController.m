@@ -85,8 +85,8 @@ small3d::Model goat(small3d::GlbFile("resources1/models/goatAndTree.glb"), "Cube
     initRenderer(framebufferWidth, framebufferHeight);
     r->setBackgroundColour(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
     LOGDEBUG("renderer initialised");
-    r->createRectangle(texturedRect, glm::vec3(-0.8f, 0.1f, -2.0f),
-      glm::vec3(0.8f, -0.1f, -2.0f));
+    r->createRectangle(texturedRect, glm::vec3(-0.8f, 0.1f, -1.0f),
+      glm::vec3(0.8f, -0.1f, -1.0f));
     r->generateTexture("message_ios", "No extended testing due to ios render loop control", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
     SoundTest();
