@@ -129,7 +129,7 @@ Deploying with conan</h1>
 <h1><a class="anchor" id="autotoc_md8"></a>
 small3d on mobile</h1>
 <p><a class="el" href="namespacesmall3d.html">small3d</a> runs on mobile devices using Vulkan and OpenGL ES. On Android, OpenGL ES is recommended because Vulkan still has some issues on quite a few devices.</p>
-<p>On iOS, Vulkan is recommended (using MoltenVK). OpenGL ES has been deprecated by Apple, but please feel free to use it, especially if you are developing for older 32-bit devices for which the Vulkan build will not work.</p>
+<p>Concerning iOS, it has to be mentioned that OpenGL ES has been deprecated by Apple. It is not a bad idea to use it though. It still works and it will run on older 32-bit devices for which the Vulkan build will not. Other than that, <a class="el" href="namespacesmall3d.html">small3d</a> runs fine with Vulkan on 64-bit iOS devices (using MoltenVK).</p>
 <p>You can build <a class="el" href="namespacesmall3d.html">small3d</a> for mobile platforms by executing either <code>build-android</code> or <code>build-ios</code> from the <code>scripts</code> directory. Then you can use the test projects in the <code>android</code>, <code>ios</code> and <code>ios-opengles</code> directories to check if everything works, or as a starting point for your own projects.</p>
 <p>Note that, while with the desktop edition of <a class="el" href="namespacesmall3d.html">small3d</a> I use GLFW for windowing functionalities and I/O, on mobile I access the native infrastructure directly.</p>
 <h1><a class="anchor" id="autotoc_md9"></a>
