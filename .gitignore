@@ -25,3 +25,5 @@ Thumbs.db
 *\.spv
 
 android/app/CMakeLists.txt
+
+scripts/tmp*

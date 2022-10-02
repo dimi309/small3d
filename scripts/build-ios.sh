@@ -39,7 +39,6 @@ cd ..
 
 
 if [ "$3" != "skipdeps" ] && [ "$4" != "skipdeps" ]; then
-git clean -fdx
 cd deps/scripts
 ./prepare-ios.sh $1 $2
 cd ..
