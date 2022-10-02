@@ -1298,9 +1298,13 @@ namespace small3d {
       }
       throw std::runtime_error("Context has been lost.");
     }
-#endif
-#endif
     clearScreen();
+#endif
+#ifdef SMALL3D_IOS
+    throw std::runtime_error("Swapping buffers must be handled in the ViewController on iOS - OpenGL ES.");
+#endif
+#endif
+    
   }
 
   /**
