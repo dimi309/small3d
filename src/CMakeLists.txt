@@ -22,10 +22,6 @@ else()
   list(APPEND HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/vulkan_helper.h)
 endif()
 
-if(IOS)
-  list(APPEND SOURCE_FILES ${CMAKE_SOURCE_DIR}/deps/lib/interop.m)
-endif()
-
 add_library(small3d ${SOURCE_FILES} ${HEADER_FILES})
 
 if(SMALL3D_OPENGL)
