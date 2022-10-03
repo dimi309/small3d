@@ -68,9 +68,10 @@ cd ..
 if /I "%~2" == "opengles" (
 
 cd opengl33\resources\shadersOpenGLES
+mkdir ..\..\..\build\shaders\
 for /r %%a in (*.*) do (
 echo Copying %%a to build\shaders
-copy /y "%%a" ..\..\..\build\shaders
+copy /y "%%a" ..\..\..\build\shaders\
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 )
 cd ..\..\..
@@ -80,7 +81,7 @@ mkdir android\app\src\main\assets\resources\shaders
 cd opengl33\resources\shadersOpenGLES
 for /r %%a in (*.*) do (
 echo Copying %%a to android\app\src\main\assets\resources\shaders
-copy /y "%%a" ..\..\..\android\app\src\main\assets\resources\shaders
+copy /y "%%a" ..\..\..\android\app\src\main\assets\resources\shaders\
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 )
 )
