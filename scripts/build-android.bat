@@ -91,6 +91,9 @@ copy /y android\app\CMakeListsOpenGLES.txt android\app\CMakeLists.txt
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 )
 
+echo Copying small3d_android.h to build\deps\include
+copy /y src\small3d_android.h build\deps\include\
+
 echo small3d built successfully for Android (%~1 mode)
 endlocal
 @echo on
