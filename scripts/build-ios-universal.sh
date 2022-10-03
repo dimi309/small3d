@@ -30,6 +30,8 @@ cp tmp1/lib/interop.m ../build/lib/
 
 rm -rf tmp1
 rm -rf tmp2
+rm -rf ../deps/lib
+cp -rf ../build/lib ../deps/
 
 echo Universal libraries built successfully and placed in build/lib
 
