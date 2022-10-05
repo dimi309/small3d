@@ -1280,6 +1280,7 @@ namespace small3d {
   void Renderer::swapBuffers() {
 #ifndef SMALL3D_OPENGLES
     glfwSwapBuffers(window);
+    clearScreen();
 #else
 #ifdef __ANDROID__
     bool b = eglSwapBuffers(eglDisplay, eglSurface);
