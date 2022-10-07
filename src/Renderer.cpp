@@ -12,6 +12,7 @@
 
 extern "C" {
 #include "vulkan_helper.h"
+#include "small3d_android.h"
 }
 #include "Renderer.hpp"
 #include <stdexcept>

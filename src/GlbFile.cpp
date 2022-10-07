@@ -10,7 +10,7 @@
 #include "Logger.hpp"
 
 #ifdef __ANDROID__
-#include "vulkan_helper.h"
+#include "small3d_android.h"
 #include <streambuf>
 #include <istream>
 

@@ -16,7 +16,7 @@
 #include <cassert>
 
 #if defined(__ANDROID__) || defined(SMALL3D_IOS)
-#include "vulkan_helper.h"
+#include "small3d_android.h"
 #include <sys/time.h>
 #else
 #include <GLFW/glfw3.h>
