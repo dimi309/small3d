@@ -12,7 +12,7 @@
 #include <unordered_map>
 
 #if defined(__ANDROID__)
-#include <aaudio/AAudio.h>
+#include <oboe/Oboe.h>
 #elif defined(SMALL3D_IOS)
 #include <OpenAL/al.h>
 #include <OpenAL/alc.h>
@@ -52,8 +52,8 @@ namespace small3d {
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     PaStream *stream;
 #elif defined(__ANDROID__)
-    AAudioStreamBuilder *streamBuilder;
-    AAudioStream *stream;
+    oboe::AudioStreamBuilder *streamBuilder;
+    oboe::AudioStream *stream;
 #elif defined(SMALL3D_IOS)
 static ALCdevice *openalDevice;
 static ALCcontext *openalContext;
@@ -78,9 +78,26 @@ static ALCcontext *openalContext;
       void *userData,
       void *audioData,
       int32_t numFrames);
-    static void errorCallback(AAudioStream *stream, void *userData, aaudio_result_t error);
-    static void asyncAndroidStopOnceFinished(AAudioStream *stream, long samples);
-    static void asyncAndroidStopImmediately(AAudioStream *stream);
+
+    class AudioCallbackClass : public oboe::AudioStreamDataCallback {
+    public:
+      oboe::DataCallbackResult
+      onAudioReady(oboe::AudioStream *audioStream, void *audioData, int32_t numFrames) {
+        auto *outputData = static_cast<float *>(audioData);
+
+        const float amplitude = 0.2f;
+        for (int i = 0; i < numFrames; ++i){
+          outputData[i] = ((float)drand48() - 0.5f) * 2 * amplitude;
+        }
+
+        return oboe::DataCallbackResult::Continue;
+      }
+    };
+
+
+    //static void errorCallback(AAudioStream *stream, void *userData, aaudio_result_t error);
+    //static void asyncAndroidStopOnceFinished(AAudioStream *stream, long samples);
+    //static void asyncAndroidStopImmediately(AAudioStream *stream);
 
 #endif
 

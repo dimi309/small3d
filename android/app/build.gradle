@@ -6,6 +6,10 @@ android {
 
     compileSdk 30
 
+    buildFeatures {
+        prefab true // For Oboe
+    }
+
     defaultConfig {
         applicationId 'com.dimi309.small3d_tests'
         minSdk 26
@@ -14,6 +18,11 @@ android {
         versionName "1.00"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                arguments "-DANDROID_STL=c++_shared" // For Oboe
+            }
+        }
 
     }
 
@@ -29,10 +38,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+
+
     externalNativeBuild {
         cmake {
             path file('CMakeLists.txt')
-
         }
     }
     ndkVersion '25.1.8937393'
@@ -45,7 +56,7 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'com.google.oboe:oboe:1.6.1'
+
+
 }
