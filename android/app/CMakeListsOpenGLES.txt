@@ -24,6 +24,8 @@ list(REMOVE_ITEM HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../src/vulkan_helpe
 
 MESSAGE(STATUS "Sources: ${SOURCE_FILES} ${HEADER_FILES}")
 
+find_package (oboe REQUIRED CONFIG)
+
 add_library(small3d_tests
         SHARED
         ${SOURCE_FILES}
@@ -51,7 +53,7 @@ target_include_directories(small3d_tests PUBLIC
 
 target_link_libraries(small3d_tests
         android
-        aaudio
+        oboe::oboe
         ${log-lib}
         GLESv3
         EGL
