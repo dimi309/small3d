@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
 #endif
   try
   {
-    if (!LoggerTest()) {
+    /*if (!LoggerTest()) {
       printf("*** Failing LoggerTest.\n\r");
       RETURN1
     }
@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
       printf("*** Failing RendererTest.\n\r");
       RETURN1
     }
-
+*/
     if (!SoundTest()) {
       printf("*** Failing SoundTest.\n\r");
       RETURN1

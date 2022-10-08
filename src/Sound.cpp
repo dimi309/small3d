@@ -24,14 +24,11 @@
 
 #include "BasePath.hpp"
 
-#define WORD_SIZE 2
+
 #define PORTAUDIO_SAMPLE_FORMAT paInt16
 
-#ifndef __ANDROID__
-#define SAMPLE_DATATYPE short
-#else
-#define SAMPLE_DATATYPE uint8_t
-#define SAMPLES_PER_FRAME 1
+#ifdef __ANDROID__
+
 #include <thread>
 #include <chrono>
 #endif
@@ -200,7 +197,7 @@ namespace small3d {
   }
 
 #elif defined(__ANDROID__)
-  aaudio_data_callback_result_t Sound::audioCallback (
+  /*aaudio_data_callback_result_t Sound::audioCallback (
 						      AAudioStream *stream,
 						      void *userData,
 						      void *audioData,
@@ -228,7 +225,7 @@ namespace small3d {
     soundData->currentFrame += numFrames;
 
     return AAUDIO_CALLBACK_RESULT_CONTINUE;
-  }
+  }*/
 
   /*void Sound::errorCallback(AAudioStream *stream, void *userData, aaudio_result_t error) {
     initLogger();
@@ -239,7 +236,7 @@ namespace small3d {
 
 #endif
 
-  Sound::Sound() {
+  Sound::Sound() :  audioCallbackObject(&this->soundData) {
 
 #if !defined(SMALL3D_IOS)
     this->stream = nullptr;
@@ -280,9 +277,8 @@ namespace small3d {
     streamBuilder = new oboe::AudioStreamBuilder();
     streamBuilder->setDirection(oboe::Direction::Output);
     streamBuilder->setPerformanceMode(oboe::PerformanceMode::LowLatency);
-    streamBuilder->setSharingMode(oboe::SharingMode::Exclusive);
-    streamBuilder->setFormat(oboe::AudioFormat::Float);
     streamBuilder->setChannelCount(oboe::ChannelCount::Mono);
+    streamBuilder->setDataCallback(&audioCallbackObject);
 
 #elif defined(SMALL3D_IOS)
     if (numInstances == 0) {
@@ -314,8 +310,7 @@ namespace small3d {
       stop();
       
 #if defined(__ANDROID__)
-      AAudioStream_close(stream);
-      AAudioStreamBuilder_delete(streamBuilder);
+      stream->close();
 #elif defined(SMALL3D_IOS)
       alDeleteBuffers((ALuint) 1, &openalBuffer);
       alDeleteSources((ALuint) 1, &openalSource);
@@ -469,19 +464,26 @@ namespace small3d {
 			       std::string(Pa_GetErrorText(error)));
     }
 #elif defined(__ANDROID__)
-    AAudioStreamBuilder_setSampleRate(streamBuilder, soundData.rate / SAMPLES_PER_FRAME);
+    streamBuilder->setSampleRate(soundData.rate / SAMPLES_PER_FRAME);
+    streamBuilder->setChannelCount(soundData.channels);
+    streamBuilder->setFormat(oboe::AudioFormat::I16);
+    streamBuilder->setSharingMode(oboe::SharingMode::Shared);
+    streamBuilder->openStream(&stream);
+
+    /*AAudioStreamBuilder_setSampleRate(streamBuilder, soundData.rate / SAMPLES_PER_FRAME);
     AAudioStreamBuilder_setChannelCount(streamBuilder, soundData.channels);
     AAudioStreamBuilder_setFormat(streamBuilder, AAUDIO_FORMAT_PCM_I16);
     AAudioStreamBuilder_setSharingMode(streamBuilder, AAUDIO_SHARING_MODE_SHARED);
     AAudioStreamBuilder_setSamplesPerFrame(streamBuilder, SAMPLES_PER_FRAME);
+     */
 
     // Leaving this as unspecified for now
     //AAudioStreamBuilder_setBufferCapacityInFrames(streamBuilder, 100);
 
-    AAudioStreamBuilder_setDataCallback(streamBuilder, Sound::audioCallback, &soundData);
+    //AAudioStreamBuilder_setDataCallback(streamBuilder, Sound::audioCallback, &soundData);
     //AAudioStreamBuilder_setErrorCallback(streamBuilder, Sound::errorCallback, &soundData);
 
-    AAudioStreamBuilder_openStream(streamBuilder, &stream);
+    //AAudioStreamBuilder_openStream(streamBuilder, &stream);
 #elif defined(SMALL3D_IOS)
     alGenSources((ALuint)1, &openalSource);
     alGenBuffers((ALuint)1, &openalBuffer);
@@ -526,10 +528,15 @@ namespace small3d {
       
 #elif defined(__ANDROID__)
 
-      aaudio_stream_state_t s = AAudioStream_getState(stream);
-      if (s == AAUDIO_STREAM_STATE_STARTED || s == AAUDIO_STREAM_STATE_STARTING) {
+      auto st = stream->getState();
+      if (st == oboe::StreamState::Started || st == oboe::StreamState::Starting) {
         return;
       }
+
+      /*aaudio_stream_state_t s = AAudioStream_getState(stream);
+      if (s == AAUDIO_STREAM_STATE_STARTED || s == AAUDIO_STREAM_STATE_STARTING) {
+        return;
+      }*/
 
 #elif defined(SMALL3D_IOS)
       int state = 0;
@@ -550,7 +557,7 @@ namespace small3d {
 				 std::string(Pa_GetErrorText(error)));
       }
 #elif defined(__ANDROID__)
-      if (AAudioStream_requestStart(stream) != AAUDIO_OK) {
+      if (stream->requestStart() != oboe::Result::OK) {
 	LOGDEBUG("Failed to request start of sound stream.");
       }
       else {
@@ -583,12 +590,20 @@ namespace small3d {
 #endif
 
 #if defined(__ANDROID__)
-	if (AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTED ||
+
+        auto st = stream->getState();
+        if (st == oboe::StreamState::Started ||
+            st == oboe::StreamState::Starting ||
+            st == oboe::StreamState::Paused ||
+            st == oboe::StreamState::Pausing) {
+          stream->requestStop();
+        }
+	/*if (AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTED ||
 	    AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTING ||
 	    AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSED ||
 	    AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSING) {
 	  AAudioStream_requestStop(stream);
-	}
+	}*/
 #elif defined(SMALL3D_IOS)
         alSourceStop(openalSource);
 #else
