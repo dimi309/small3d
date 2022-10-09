@@ -38,6 +38,24 @@ for %%A in (x86,x86_64,armeabi-v7a,arm64-v8a) do (
 
 mkdir lib\%%A
 
+7z x oboe-1.6.1.tar.gz
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel!
+7z x oboe-1.6.1.tar
+cd oboe-1.6.1
+mkdir build
+cd build
+cmake .. -G"MinGW Makefiles"^
+ -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A^
+ %CMAKE_DEFINITIONS%
+cmake --build .
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel!
+xcopy ..\include ..\..\include /s /e /y
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
+copy liboboe.a ..\..\lib\%%A
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
+cd ..\..\
+rmdir /Q /S oboe-1.6.1
+
 7z x libpng-1.6.37.tar.gz
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel!
 7z x libpng-1.6.37.tar
@@ -51,7 +69,7 @@ cmake --build .
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 copy ..\*.h ..\..\include /y
 copy pnglibconf.h ..\..\include /y
-if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel!
 copy libpng.a ..\..\lib\%%A
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 cd ..\..\
