@@ -91,7 +91,7 @@ elseif(DEFINED ANDROID_PLATFORM) # Android
     target_link_libraries(small3d
       android
       native_app_glue
-      aaudio
+      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/liboboe.a
       ${log-lib}
       ${Vulkan_LIBRARIES}
       ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libpng.a
@@ -104,7 +104,7 @@ elseif(DEFINED ANDROID_PLATFORM) # Android
     target_link_libraries(small3d
       android
       native_app_glue
-      aaudio
+      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/liboboe.a
       ${log-lib}
       GLESv2
       ${CMAKE_CURRENT_SOURCE_DIR}/deps/lib/${ANDROID_ABI}/libpng.a
