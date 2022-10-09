@@ -55,6 +55,7 @@ copy liboboe.a ..\..\lib\%%A
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 cd ..\..\
 rmdir /Q /S oboe-1.6.1
+del oboe-1.6.1.tar
 
 7z x libpng-1.6.37.tar.gz
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel!
