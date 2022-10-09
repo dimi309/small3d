@@ -53,7 +53,7 @@ target_link_libraries(small3d_tests
         android
         aaudio
         ${log-lib}
-        GLESv3
+        GLESv2
         EGL
         ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/lib/${ANDROID_ABI}/libpng.a
         z
