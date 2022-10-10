@@ -13,10 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:hasCode="false"
+        android:hasCode="true"
         android:isGame="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="android.app.NativeActivity"
+        <activity android:name="com.dimi309.small3d_tests.Small3dTests"
             android:screenOrientation="landscape"
             android:configChanges="keyboardHidden|keyboard|orientation|screenSize">
             <meta-data

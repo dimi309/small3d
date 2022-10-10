@@ -27,7 +27,7 @@ mkdir include
 mkdir lib
 
 SET depspath=%cd%
-SET platformstr=android-26
+SET platformstr=android-16
 
 7z x glm-0.9.9.8.zip
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel% 

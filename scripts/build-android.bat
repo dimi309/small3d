@@ -26,7 +26,7 @@ if /I "%~1" == "Release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
 if /I "%~2" == "opengles" set CMAKE_DEFINITIONS=%CMAKE_DEFINITIONS% -DSMALL3D_OPENGL=ON
 
 set sourcepath=%cd%
-set platformstr=android-26
+set platformstr=android-16
 
 if /I not "%~2" == "skipdeps"  (
 if /I not "%~3" == "skipdeps"  (

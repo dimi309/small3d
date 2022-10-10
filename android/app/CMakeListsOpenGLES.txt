@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6.0)
-
+project(Small3dTests)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 # This does not seem to work in Android Studio
@@ -24,7 +24,7 @@ list(REMOVE_ITEM HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../src/vulkan_helpe
 
 MESSAGE(STATUS "Sources: ${SOURCE_FILES} ${HEADER_FILES}")
 
-#find_package (oboe REQUIRED CONFIG)
+find_package (oboe REQUIRED CONFIG)
 
 add_library(small3d_tests
         SHARED
@@ -56,6 +56,7 @@ target_link_libraries(small3d_tests
         ${log-lib}
         GLESv2
         EGL
+        oboe::oboe
         ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/lib/${ANDROID_ABI}/libpng.a
         z
         ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/lib/${ANDROID_ABI}/libvorbis.a
