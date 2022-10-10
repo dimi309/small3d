@@ -713,7 +713,9 @@ namespace small3d {
 		 objectsPerFrameInc);
     
 #if defined(__ANDROID__)
-    if (std::string((const char*)glGetString(GL_EXTENSIONS)).find("GL_EXT_color_buffer_half_float") != std::string::npos) {
+    std::string extensionsStr = std::string((const char*)glGetString(GL_EXTENSIONS));
+    LOGDEBUG("Extensions: " + extensionsStr);
+    if (extensionsStr.find("GL_EXT_color_buffer_half_float") != std::string::npos) {
       LOGDEBUG("Extension GL_EXT_color_buffer_half_float found. "
                "Using GL_RGBA16F_EXT internal format for textures.");
       textureInternalFormat = GL_RGBA16F_EXT;
