@@ -107,7 +107,7 @@ namespace small3d
     std::unordered_map<std::string, uint32_t> textures;
 
     FT_Library library = 0;
-    std::vector<float> textMemory;
+    std::vector<uint8_t> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
 
     glm::mat4x4 cameraTransformation = glm::mat4x4(1.0f);
@@ -129,7 +129,7 @@ namespace small3d
       const glm::mat4x4& rotation) const;
 
     uint32_t getTextureHandle(const std::string& name) const;
-    uint32_t generateTexture(const std::string& name, const float* data,
+    uint32_t generateTexture(const std::string& name, const uint8_t* data,
       const unsigned long width,
       const unsigned long height,
       const bool replace);

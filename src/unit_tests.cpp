@@ -64,23 +64,23 @@ int main(int argc, char** argv) {
     if (!BoundingBoxesTest()) {
       printf("*** Failing BoundingBoxesTest.\n\r");
       RETURN1
-    } */
+    }
     
     if (!FPStest()) {
       printf("*** Failing FPStest.\n\r");
       RETURN1
     }
 
-    /*if (!GenericSceneObjectConstructorTest()) {
+    if (!GenericSceneObjectConstructorTest()) {
       printf("*** Failing GenericSceneObjectConstructorTest.\n\r");
       RETURN1
     }
-
+*/
     if (!RendererTest()) {
       printf("*** Failing RendererTest.\n\r");
       RETURN1
     }
-
+/*
     if (!SoundTest()) {
       printf("*** Failing SoundTest.\n\r");
       RETURN1

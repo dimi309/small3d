@@ -37,7 +37,7 @@ namespace small3d {
     memoryDataAndPos_ memoryDataAndPos;
 
     unsigned long width = 0, height = 0;
-    std::vector<float> imageData;
+    std::vector<uint8_t> imageData;
     unsigned long imageDataSize = 0;
     void load(const std::string fileLocation, std::vector<char>& data);
     static void readDataFromMemory(png_structp png_ptr, png_bytep outBytes,
@@ -98,7 +98,7 @@ namespace small3d {
      * @brief Get the image data
      * @return The image data
      */
-    const float* getData() const;
+    const uint8_t* getData() const;
 
   };
 

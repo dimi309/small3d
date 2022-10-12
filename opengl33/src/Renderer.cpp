@@ -328,7 +328,7 @@ namespace small3d {
     return handle;
   }
 
-  GLuint Renderer::generateTexture(const std::string & name, const float* data,
+  GLuint Renderer::generateTexture(const std::string & name, const uint8_t* data,
     const unsigned long width,
     const unsigned long height,
     const bool replace) {
@@ -368,7 +368,7 @@ namespace small3d {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glTexImage2D(GL_TEXTURE_2D, 0, textureInternalFormat, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGBA,
-                 GL_FLOAT, data);
+                 GL_UNSIGNED_BYTE, data);
 #endif
 
     textures.insert(make_pair(name, textureHandle));
@@ -396,6 +396,7 @@ namespace small3d {
       static_cast<GLsizei>(realScreenHeight));
 
     glEnable(GL_DEPTH_TEST);
+
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LEQUAL);
 
@@ -884,7 +885,9 @@ namespace small3d {
     const glm::vec3 & colour, const int fontSize,
     const std::string & fontPath,
     const bool replace) {
-    
+
+    glm::ivec3 icolour(colour.r * 255, colour.g * 255, colour.b * 255);
+
     std::string faceId = std::to_string(fontSize) + fontPath;
 
     auto idFacePair = fontFaces.find(faceId);
@@ -944,8 +947,8 @@ namespace small3d {
 
     height = maxTop + static_cast<unsigned long>(0.3 * maxTop);
 
-    textMemory.resize(4 * width * height * sizeof(float));
-    memset(&textMemory[0], 0, 4 * width * height * sizeof(float));
+    textMemory.resize(4 * width * height);
+    memset(&textMemory[0], 0, 4 * width * height);
 
     unsigned long totalAdvance = 0;
 
@@ -961,13 +964,9 @@ namespace small3d {
         for (int row = 0; row < static_cast<int>(slot->bitmap.rows); ++row) {
           for (int col = 0; col < static_cast<int>(slot->bitmap.width); ++col) {
 
-            glm::vec4 colourAlpha = glm::vec4(colour, 0.0f);
+            glm::ivec4 colourAlpha = glm::ivec4(colour, 0.0f);
 
-            colourAlpha.a =
-              floorf(100.0f * (static_cast<float>
-                (slot->bitmap.buffer[row * slot->bitmap.width +
-                  col]) /
-                255.0f) + 0.5f) / 100.0f;
+            colourAlpha.a = slot->bitmap.buffer[row * slot->bitmap.width + col];
 
             memcpy(&textMemory[4 * (maxTop -
               slot->bitmap_top
@@ -977,7 +976,7 @@ namespace small3d {
                 static_cast<size_t>(col))
               + totalAdvance],
               glm::value_ptr(colourAlpha),
-              4 * sizeof(float));
+              4);
           }
         }
       }

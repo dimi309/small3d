@@ -139,28 +139,7 @@ int ImageTest() {
   cout << "Image width " << image.getWidth() << ", height " <<
     image.getHeight() << endl;
 
-  const float* imageData = image.getData();
 
-  unsigned long x = 0, y = 0;
-
-  while (y < image.getHeight()) {
-    x = 0;
-    while (x < image.getWidth()) {
-      
-      const float *colour = &imageData[4 * y * image.getWidth() + 4 * x];       
-      
-      if (colour[0] <  0.0f) return 0;
-      if (colour[0] > 1.0f) return 0;
-      if (colour[1] < 0.0f) return 0;
-      if (colour[1] > 1.0f) return 0;
-      if (colour[2] < 0.0f) return 0;
-      if (colour[2] > 1.0f) return 0;
-      if (colour[3] != 1.0f) return 0;
-      
-      ++x;
-    }
-    ++y;
-  }
   return 1;
 }
 

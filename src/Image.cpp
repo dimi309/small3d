@@ -60,11 +60,11 @@ namespace small3d {
   void Image::toColour(glm::vec4 colour) {
     width = 10;
     height = 10;
-    imageDataSize = 400 * sizeof(float);
+    imageDataSize = 400 * sizeof(uint8_t);
     imageData.resize(400);
 
     for (uint64_t i = 0; i < 100; ++i) {
-      std::memcpy(&imageData[i * 4], &colour, 4 * sizeof(float));
+      std::memcpy(&imageData[i * 4], &colour, 4 * sizeof(uint8_t));
     }
   }
 
@@ -227,8 +227,8 @@ namespace small3d {
 
     imageDataSize = 4 * width * height;
 
-    LOGDEBUG("Reading " + std::to_string(imageDataSize * sizeof(float)) + " bytes of image data. Float size " +
-	     std::to_string(sizeof(float)) + ", dimensions " + std::to_string(width) + ", " + std::to_string(height));
+    LOGDEBUG("Reading " + std::to_string(imageDataSize * sizeof(uint8_t)) + " bytes of image data. uint8_t size " +
+	     std::to_string(sizeof(uint8_t)) + ", dimensions " + std::to_string(width) + ", " + std::to_string(height));
 
     imageData.resize(imageDataSize);
 
@@ -240,17 +240,17 @@ namespace small3d {
 
         png_byte* ptr = &(row[x * numComponents]);
 
-        float rgb[4];
+        uint8_t rgb[4];
 
-        rgb[0] = static_cast<float>(ptr[0]);
-        rgb[1] = static_cast<float>(ptr[1]);
-        rgb[2] = static_cast<float>(ptr[2]);
-        rgb[3] = numComponents == 3 ? 255.0f : static_cast<float>(ptr[3]);
+        rgb[0] = static_cast<uint8_t>(ptr[0]);
+        rgb[1] = static_cast<uint8_t>(ptr[1]);
+        rgb[2] = static_cast<uint8_t>(ptr[2]);
+        rgb[3] = numComponents == 3 ? 255 : static_cast<uint8_t>(ptr[3]);
 
-        imageData[y * width * 4 + x * 4] = rgb[0] / 255.0f;
-        imageData[y * width * 4 + x * 4 + 1] = rgb[1] / 255.0f;
-        imageData[y * width * 4 + x * 4 + 2] = rgb[2] / 255.0f;
-        imageData[y * width * 4 + x * 4 + 3] = rgb[3] / 255.0f;
+        imageData[y * width * 4 + x * 4] = rgb[0];
+        imageData[y * width * 4 + x * 4 + 1] = rgb[1];
+        imageData[y * width * 4 + x * 4 + 2] = rgb[2];
+        imageData[y * width * 4 + x * 4 + 3] = rgb[3];
 
       }
     }
@@ -290,7 +290,7 @@ namespace small3d {
     return imageDataSize;
   }
 
-  const float* Image::getData() const {
+  const uint8_t* Image::getData() const {
     return imageData.data();
   }
 
