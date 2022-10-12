@@ -964,7 +964,7 @@ namespace small3d {
         for (int row = 0; row < static_cast<int>(slot->bitmap.rows); ++row) {
           for (int col = 0; col < static_cast<int>(slot->bitmap.width); ++col) {
 
-            glm::ivec4 colourAlpha = glm::ivec4(colour, 0.0f);
+            glm::ivec4 colourAlpha = glm::ivec4(colour, 0);
 
             colourAlpha.a = slot->bitmap.buffer[row * slot->bitmap.width + col];
 
