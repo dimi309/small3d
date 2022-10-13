@@ -474,7 +474,7 @@ namespace small3d {
   }
 
   void Renderer::generateTexture(const std::string name,
-    const float* data,
+    const uint8_t* data,
     const unsigned long width,
     const unsigned long height,
     const bool replace) {
@@ -519,11 +519,11 @@ namespace small3d {
       textureHandlePtr->width = width;
       textureHandlePtr->height = height;
       textureHandlePtr->data->resize(static_cast<uint64_t>(width) * height * 4);
-      imageByteSize = static_cast<uint32_t>(static_cast<uint64_t>(width) * height * 4 * sizeof(float));
+      imageByteSize = static_cast<uint32_t>(static_cast<uint64_t>(width) * height * 4);
       memcpy(&(*textureHandlePtr->data)[0], data, imageByteSize);
     } // Otherwise these values are kept and we are just recopying to the GPU
     else {
-      imageByteSize = static_cast<uint32_t>(textureHandlePtr->width * textureHandlePtr->height * 4 * sizeof(float));
+      imageByteSize = static_cast<uint32_t>(textureHandlePtr->width * textureHandlePtr->height * 4);
     }
 
     VkBuffer stagingBuffer;
@@ -541,9 +541,11 @@ namespace small3d {
     memcpy(imgData, &(*textureHandlePtr->data)[0], imageByteSize);
     vkUnmapMemory(vh_logical_device, stagingBufferMemory);
 
+    VkFormat imageFormat = VK_FORMAT_R8G8B8A8_UNORM;
+
     if (!vh_create_image(&textureHandlePtr->image, static_cast<uint32_t>(textureHandlePtr->width),
-      static_cast<uint32_t>(textureHandlePtr->height),
-      VK_FORMAT_R32G32B32A32_SFLOAT, VK_IMAGE_TILING_OPTIMAL,
+      static_cast<uint32_t>(textureHandlePtr->height), 
+      imageFormat, VK_IMAGE_TILING_OPTIMAL,
       VK_IMAGE_USAGE_TRANSFER_DST_BIT |
       VK_IMAGE_USAGE_SAMPLED_BIT,
       &textureHandlePtr->imageMemory,
@@ -553,7 +555,7 @@ namespace small3d {
     }
 
     vh_transition_image_layout(textureHandlePtr->image,
-      VK_FORMAT_R32G32B32A32_SFLOAT,
+      imageFormat,
       VK_IMAGE_LAYOUT_UNDEFINED,
       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
@@ -563,12 +565,12 @@ namespace small3d {
     vh_destroy_buffer(stagingBuffer, stagingBufferMemory);
 
     vh_transition_image_layout(textureHandlePtr->image,
-      VK_FORMAT_R32G32B32A32_SFLOAT,
+      imageFormat,
       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
       VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
     if (!vh_create_image_view(&textureHandlePtr->imageView, textureHandlePtr->image,
-      VK_FORMAT_R32G32B32A32_SFLOAT,
+      imageFormat,
       VK_IMAGE_ASPECT_COLOR_BIT)) {
       throw std::runtime_error("Failed to create texture image view!\n\r");
     };
@@ -1054,6 +1056,8 @@ namespace small3d {
     const glm::vec3& colour, const int fontSize,
     const std::string& fontPath, const bool replace) {
 
+    glm::ivec3 icolour(colour.r * 255, colour.g * 255, colour.b * 255);
+
     std::string faceId = std::to_string(fontSize) + fontPath;
 
     auto idFacePair = fontFaces.find(faceId);
@@ -1117,9 +1121,9 @@ namespace small3d {
     height = maxTop + static_cast<unsigned long>(0.3 * maxTop);
 
     textMemory.resize(4 * static_cast<size_t>(width) *
-      static_cast<size_t>(height) * sizeof(float));
+      static_cast<size_t>(height));
     memset(&textMemory[0], 0, 4 * static_cast<size_t>(width) *
-      static_cast<size_t>(height) * sizeof(float));
+      static_cast<size_t>(height));
 
     unsigned long totalAdvance = 0;
 
@@ -1136,21 +1140,22 @@ namespace small3d {
           for (size_t col = 0; col < static_cast<int>(slot->bitmap.width);
             ++col) {
 
-            glm::vec4 colourAlpha = glm::vec4(colour, 0.0f);
+            glm::ivec4 colourAlpha = glm::ivec4(icolour, 0);
 
-            colourAlpha.a =
-              floorf(100.0f * (static_cast<float>
-                (slot->bitmap.buffer[row * slot->bitmap.width +
-                  col]) /
-                255.0f) + 0.5f) / 100.0f;
+            colourAlpha.a = slot->bitmap.buffer[row * slot->bitmap.width + col];
 
-            size_t dst = 4 * (maxTop - static_cast<size_t>(slot->bitmap_top) +
-              row) *
-              width + 4 * (static_cast<size_t>(slot->bitmap_left) + col)
+            auto pos = 4 * (maxTop -
+              slot->bitmap_top
+              + row) * static_cast<size_t>(width) +
+              4 *
+              (static_cast<size_t>(slot->bitmap_left) +
+                static_cast<size_t>(col))
               + totalAdvance;
 
-            std::memcpy(&textMemory[dst], glm::value_ptr(colourAlpha),
-              4 * sizeof(float));
+            textMemory[pos] = colourAlpha.r;
+            textMemory[pos + 1] = colourAlpha.g;
+            textMemory[pos + 2] = colourAlpha.b;
+            textMemory[pos + 3] = colourAlpha.a;
           }
         }
       }

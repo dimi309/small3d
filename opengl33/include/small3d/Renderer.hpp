@@ -54,7 +54,7 @@ namespace small3d
   {
 
   private:
-    GLint textureInternalFormat = GL_RGBA;
+
 #ifndef SMALL3D_OPENGLES
     GLFWwindow* window;
 #else

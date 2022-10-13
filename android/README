@@ -19,5 +19,14 @@ small3d has been programmed to load them, even in release builds,
 because for some strange reason this corrects the shader load issue
 most of the time.
 
+*** In order to build small3d and the tests for Vulkan, the android platform
+    version has to be set to at least 26 in scripts/build-android.bat (or .sh,
+    variable platformstr) and in android/app/build.gradle (minSdk).
+
+*** For OpenGL ES builds targetting older devices you will probably need to build
+    with an older version of the Android NDK, like 22.1.7171670 because otherwise
+    there can be errors like this one on some of them:
+    Cannot load library: soinfo_relocate(linker.cpp:975): cannot locate symbol
+    "statvfs" referenced by "libc++_shared.so"...
 
 

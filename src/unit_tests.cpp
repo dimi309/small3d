@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
 #endif
   try
   {
-    /*if (!LoggerTest()) {
+    if (!LoggerTest()) {
       printf("*** Failing LoggerTest.\n\r");
       RETURN1
     }
@@ -75,12 +75,12 @@ int main(int argc, char** argv) {
       printf("*** Failing GenericSceneObjectConstructorTest.\n\r");
       RETURN1
     }
-*/
+    
     if (!RendererTest()) {
       printf("*** Failing RendererTest.\n\r");
       RETURN1
     }
-/*
+    
     if (!SoundTest()) {
       printf("*** Failing SoundTest.\n\r");
       RETURN1
@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
     if (!GlbTest()) {
       printf("*** Failing GlbTest.\n\r");
       RETURN1
-    }*/
+    } 
 
   }
   catch (std::exception& e) {

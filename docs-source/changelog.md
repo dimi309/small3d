@@ -17,6 +17,9 @@ v1.801 (still open)
   has been renamed to setCameraTransformation(const mat4x4&).
 - Added OpenGL ES 2.0 support for Android and iOS.
 - Added Android and iOS test projects to the repository.
+- Texture colour components are now loaded and managed as 8-bit unsigned 
+  integers.
+- On Android, using oboe for sound instead of aaudio.
 
 v1.800 2022-01-03
 

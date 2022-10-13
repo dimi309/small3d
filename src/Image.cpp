@@ -60,7 +60,7 @@ namespace small3d {
   void Image::toColour(glm::vec4 colour) {
     width = 10;
     height = 10;
-    imageDataSize = 400 * sizeof(uint8_t);
+    imageDataSize = 400;
     imageData.resize(400);
 
     for (uint64_t i = 0; i < 100; ++i) {

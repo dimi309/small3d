@@ -49,14 +49,14 @@ namespace small3d
     VkImage image = VK_NULL_HANDLE;
     VkDeviceMemory imageMemory = VK_NULL_HANDLE;
     VkDescriptorSet descriptorSet[MAX_FRAMES_PREPARED] = {};
-    std::shared_ptr<std::vector<float>> data; // Using a pointer here to avoid
+    std::shared_ptr<std::vector<uint8_t>> data; // Using a pointer here to avoid
                                               // copying data when manipulating this
                                               // structure.
     unsigned long width = 0; 
     unsigned long height = 0;
 
     VulkanImage() {
-      data = std::make_shared<std::vector<float>>();
+      data = std::make_shared<std::vector<uint8_t>>();
     }
   };
 
@@ -162,7 +162,7 @@ namespace small3d
     std::unordered_map<VkBuffer, VkDeviceMemory> allocatedBufferMemory;
 
     FT_Library library = 0;
-    std::vector<float> textMemory;
+    std::vector<uint8_t> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
 
 #ifdef __ANDROID__
@@ -221,7 +221,7 @@ namespace small3d
 
     VulkanImage getTextureHandle(const std::string name) const;
     void generateTexture(const std::string name,
-      const float* data,
+      const uint8_t* data,
       const unsigned long width,
       const unsigned long height,
       const bool replace);

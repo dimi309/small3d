@@ -9,7 +9,6 @@
 #include "Renderer.hpp"
 
 #include <stdexcept>
-
 #ifndef __ANDROID__
 #include <fstream>
 #else
@@ -358,8 +357,8 @@ namespace small3d {
 #ifndef SMALL3D_OPENGLES
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-    glTexImage2D(GL_TEXTURE_2D, 0, textureInternalFormat, width, height, 0, GL_RGBA,
-      GL_FLOAT, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+      GL_UNSIGNED_BYTE, data);
 #else
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -367,7 +366,7 @@ namespace small3d {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, textureInternalFormat, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGBA,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGBA,
                  GL_UNSIGNED_BYTE, data);
 #endif
 
@@ -708,23 +707,6 @@ namespace small3d {
 		 shadersPath,
 		 objectsPerFrame,
 		 objectsPerFrameInc);
-    
-#if defined(__ANDROID__)
-    std::string extensionsStr = std::string((const char*)glGetString(GL_EXTENSIONS));
-    LOGDEBUG("Extensions: " + extensionsStr);
-    if (extensionsStr.find("GL_EXT_color_buffer_half_float") != std::string::npos) {
-      LOGDEBUG("Extension GL_EXT_color_buffer_half_float found. "
-               "Using GL_RGBA16F_EXT internal format for textures.");
-      textureInternalFormat = GL_RGBA16F_EXT;
-    }
-    else {
-      LOGDEBUG("Extension GL_EXT_color_buffer_half_float not found.");
-    }
-#elif defined(__APPLE__) && defined(SMALL3D_OPENGLES)
-    textureInternalFormat = GL_RGBA;
-#else
-    textureInternalFormat = GL_RGBA32F;
-#endif
 
     LOGDEBUG("Renderer constructor done.");
   }
@@ -964,19 +946,23 @@ namespace small3d {
         for (int row = 0; row < static_cast<int>(slot->bitmap.rows); ++row) {
           for (int col = 0; col < static_cast<int>(slot->bitmap.width); ++col) {
 
-            glm::ivec4 colourAlpha = glm::ivec4(colour, 0);
+            glm::ivec4 colourAlpha = glm::ivec4(icolour, 0);
 
             colourAlpha.a = slot->bitmap.buffer[row * slot->bitmap.width + col];
 
-            memcpy(&textMemory[4 * (maxTop -
-              slot->bitmap_top
-              + row) * static_cast<size_t>(width) +
-              4 *
-              (static_cast<size_t>(slot->bitmap_left) +
-                static_cast<size_t>(col))
-              + totalAdvance],
-              glm::value_ptr(colourAlpha),
-              4);
+            auto pos = 4 * (maxTop -
+                            slot->bitmap_top
+                            + row) * static_cast<size_t>(width) +
+                       4 *
+                       (static_cast<size_t>(slot->bitmap_left) +
+                        static_cast<size_t>(col))
+                       + totalAdvance;
+
+            textMemory[pos] = colourAlpha.r;
+            textMemory[pos + 1] = colourAlpha.g;
+            textMemory[pos + 2] = colourAlpha.b;
+            textMemory[pos + 3] = colourAlpha.a;
+
           }
         }
       }
@@ -1096,11 +1082,9 @@ namespace small3d {
     glEnableVertexAttribArray(attrib_position);
     glVertexAttribPointer(attrib_position, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-
     // Normals
 
     glBindBuffer(GL_ARRAY_BUFFER, model.normalsBufferObjectId);
-
 
     if (!alreadyInGPU) {
       if (model.normalsDataByteSize > 0) {

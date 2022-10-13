@@ -111,30 +111,6 @@ static ov_callbacks OV_SMALL3D_ANDROID_MEMORY_NOCLOSE = {
 
 };
 
-/*void small3d::Sound::asyncAndroidStopOnceFinished(AAudioStream *stream, long samples) {
-  // Older Android APIs might not stop the stream after
-  // AAUDIO_CALLBACK_RESULT_STOP has been returned from the audio
-  // callback funcion
-  initLogger();
-  auto state = AAudioStream_getState(stream);
-  while(state == AAUDIO_STREAM_STATE_STARTED || state == AAUDIO_STREAM_STATE_STARTING) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    if (AAudioStream_getFramesWritten(stream) / SAMPLES_PER_FRAME > samples) {
-      AAudioStream_requestStop(stream);
-      LOGDEBUG("Stream stopped by small3d::Sound::asyncAndroidStopOnceFinished");
-      break;
-    }
-    state = AAudioStream_getState(stream);
-  }
-}
-*/
-
-/*void small3d::Sound::asyncAndroidStopImmediately(AAudioStream *stream) {
-  initLogger();
-  AAudioStream_requestStop(stream);
-  LOGDEBUG("Stream stopped by small3d::Sound::asyncAndroidStopImmediately");
-}*/
-
 #endif
 
 namespace small3d {
@@ -197,46 +173,14 @@ namespace small3d {
   }
 
 #elif defined(__ANDROID__)
-  /*aaudio_data_callback_result_t Sound::audioCallback (
-						      AAudioStream *stream,
-						      void *userData,
-						      void *audioData,
-						      int32_t numFrames) {
-
-    SoundData *soundData = static_cast<SoundData *>(userData);
-
-    SAMPLE_DATATYPE *out = static_cast<SAMPLE_DATATYPE *>(audioData);
-
-    if (soundData->currentFrame * SAMPLES_PER_FRAME >= soundData->samples) {
-      if (soundData->repeat) {
-	soundData->currentFrame = 0;
-      }
-      else {
-	// Always write something to the stream
-	memset(out, 0, WORD_SIZE * numFrames * SAMPLES_PER_FRAME * soundData->channels);
-	return AAUDIO_CALLBACK_RESULT_STOP;
-      }
-    }
-
-    memcpy(out, &soundData->data.data()[WORD_SIZE * soundData->currentFrame *
-					SAMPLES_PER_FRAME * soundData->channels],
-	   WORD_SIZE * numFrames * SAMPLES_PER_FRAME * soundData->channels);
-
-    soundData->currentFrame += numFrames;
-
-    return AAUDIO_CALLBACK_RESULT_CONTINUE;
-  }*/
-
-  /*void Sound::errorCallback(AAudioStream *stream, void *userData, aaudio_result_t error) {
-    initLogger();
-    LOGDEBUG("Error callback called. Stopping stream...");
-    std::thread t(asyncAndroidStopImmediately, stream);
-    t.detach();
-  }*/
 
 #endif
 
+#ifdef __ANDROID__
   Sound::Sound() :  audioCallbackObject(&this->soundData) {
+#else
+  Sound::Sound() {
+#endif
 
 #if !defined(SMALL3D_IOS)
     this->stream = nullptr;
@@ -470,20 +414,6 @@ namespace small3d {
     streamBuilder->setSharingMode(oboe::SharingMode::Shared);
     streamBuilder->openStream(&stream);
 
-    /*AAudioStreamBuilder_setSampleRate(streamBuilder, soundData.rate / SAMPLES_PER_FRAME);
-    AAudioStreamBuilder_setChannelCount(streamBuilder, soundData.channels);
-    AAudioStreamBuilder_setFormat(streamBuilder, AAUDIO_FORMAT_PCM_I16);
-    AAudioStreamBuilder_setSharingMode(streamBuilder, AAUDIO_SHARING_MODE_SHARED);
-    AAudioStreamBuilder_setSamplesPerFrame(streamBuilder, SAMPLES_PER_FRAME);
-     */
-
-    // Leaving this as unspecified for now
-    //AAudioStreamBuilder_setBufferCapacityInFrames(streamBuilder, 100);
-
-    //AAudioStreamBuilder_setDataCallback(streamBuilder, Sound::audioCallback, &soundData);
-    //AAudioStreamBuilder_setErrorCallback(streamBuilder, Sound::errorCallback, &soundData);
-
-    //AAudioStreamBuilder_openStream(streamBuilder, &stream);
 #elif defined(SMALL3D_IOS)
     alGenSources((ALuint)1, &openalSource);
     alGenBuffers((ALuint)1, &openalBuffer);
@@ -533,11 +463,6 @@ namespace small3d {
         return;
       }
 
-      /*aaudio_stream_state_t s = AAudioStream_getState(stream);
-      if (s == AAUDIO_STREAM_STATE_STARTED || s == AAUDIO_STREAM_STATE_STARTING) {
-        return;
-      }*/
-
 #elif defined(SMALL3D_IOS)
       int state = 0;
       alGetSourcei(openalSource, AL_SOURCE_STATE, &state);
@@ -559,16 +484,6 @@ namespace small3d {
 #elif defined(__ANDROID__)
       if (stream->requestStart() != oboe::Result::OK) {
 	LOGDEBUG("Failed to request start of sound stream.");
-      }
-      else {
-	// Older Android APIs might not stop the stream after
-	// AAUDIO_CALLBACK_RESULT_STOP has been returned from the audio
-	// callback funcion:
-	// https://github.com/google/oboe/issues/1230#issuecomment-881587838
-	/*if (!soundData.repeat) {
-	  std::thread t(asyncAndroidStopOnceFinished, stream, soundData.samples);
-	  t.detach();
-	}*/
       }
 #endif
   }
@@ -598,12 +513,6 @@ namespace small3d {
             st == oboe::StreamState::Pausing) {
           stream->requestStop();
         }
-	/*if (AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTED ||
-	    AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_STARTING ||
-	    AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSED ||
-	    AAudioStream_getState(stream) == AAUDIO_STREAM_STATE_PAUSING) {
-	  AAudioStream_requestStop(stream);
-	}*/
 #elif defined(SMALL3D_IOS)
         alSourceStop(openalSource);
 #else

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6.0)
-
+project(Small3dTests)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 find_library(log-lib
@@ -10,6 +10,8 @@ file(GLOB SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../src/*.c*)
 file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../src/*.h*)
 
 MESSAGE(STATUS "Sources: ${SOURCE_FILES} ${HEADER_FILES}")
+
+find_package (oboe REQUIRED CONFIG)
 
 add_library(small3d_tests
         SHARED
@@ -32,9 +34,9 @@ target_include_directories(small3d_tests PUBLIC
 
 target_link_libraries(small3d_tests
         android
-        aaudio
         ${log-lib}
         ${Vulkan_LIBRARIES}
+        oboe::oboe
         ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/lib/${ANDROID_ABI}/libpng.a
         z
         ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/lib/${ANDROID_ABI}/libvorbis.a

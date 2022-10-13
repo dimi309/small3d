@@ -82,12 +82,7 @@ static ALCcontext *openalContext;
 			     PaStreamCallbackFlags statusFlags,
 			     void *userData);
 #elif defined(__ANDROID__)
-/*    static aaudio_data_callback_result_t audioCallback (
-      AAudioStream *stream,
-      void *userData,
-      void *audioData,
-      int32_t numFrames);
-*/
+
     class AudioCallbackClass : public oboe::AudioStreamDataCallback {
     private:
       SoundData *soundData;
@@ -122,10 +117,6 @@ static ALCcontext *openalContext;
     };
 
     AudioCallbackClass audioCallbackObject;
-
-    //static void errorCallback(AAudioStream *stream, void *userData, aaudio_result_t error);
-    //static void asyncAndroidStopOnceFinished(AAudioStream *stream, long samples);
-    //static void asyncAndroidStopImmediately(AAudioStream *stream);
 
 #endif
 
