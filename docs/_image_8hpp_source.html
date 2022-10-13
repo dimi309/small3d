@@ -93,7 +93,7 @@ $(function() {
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    memoryDataAndPos_ memoryDataAndPos;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> width = 0, height = 0;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    std::vector&lt;float&gt; imageData;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    std::vector&lt;uint8_t&gt; imageData;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> imageDataSize = 0;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">void</span> load(<span class="keyword">const</span> std::string fileLocation, std::vector&lt;char&gt;&amp; data);</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> readDataFromMemory(png_structp png_ptr, png_bytep outBytes,</div>
@@ -117,7 +117,7 @@ $(function() {
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classsmall3d_1_1_image.html#a2ca91e211b1f2eb978def755cb1821f3">getByteSize</a>() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">float</span>* <a class="code" href="classsmall3d_1_1_image.html#ab26bc22464edb7aefbcd4a2b95d788a2">getData</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keyword">const</span> uint8_t* <a class="code" href="classsmall3d_1_1_image.html#a5d3226c747156c0176eef8082d55753c">getData</a>() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  };</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
@@ -130,7 +130,7 @@ $(function() {
 <div class="ttc" id="anamespacesmall3d_html"><div class="ttname"><a href="namespacesmall3d.html">small3d</a></div><div class="ttdef"><b>Definition:</b> BoundingBoxSet.hpp:19</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_image_html_a335588f99053b1f55c15c60c76c26624"><div class="ttname"><a href="classsmall3d_1_1_image.html#a335588f99053b1f55c15c60c76c26624">small3d::Image::getWidth</a></div><div class="ttdeci">unsigned long getWidth() const</div><div class="ttdoc">Get the image width.</div><div class="ttdef"><b>Definition:</b> Image.cpp:281</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_image_html"><div class="ttname"><a href="classsmall3d_1_1_image.html">small3d::Image</a></div><div class="ttdoc">An image, loaded from a .png file, which can be used for generating textures.</div><div class="ttdef"><b>Definition:</b> Image.hpp:29</div></div>
-<div class="ttc" id="aclasssmall3d_1_1_image_html_ab26bc22464edb7aefbcd4a2b95d788a2"><div class="ttname"><a href="classsmall3d_1_1_image.html#ab26bc22464edb7aefbcd4a2b95d788a2">small3d::Image::getData</a></div><div class="ttdeci">const float * getData() const</div><div class="ttdoc">Get the image data.</div><div class="ttdef"><b>Definition:</b> Image.cpp:293</div></div>
+<div class="ttc" id="aclasssmall3d_1_1_image_html_a5d3226c747156c0176eef8082d55753c"><div class="ttname"><a href="classsmall3d_1_1_image.html#a5d3226c747156c0176eef8082d55753c">small3d::Image::getData</a></div><div class="ttdeci">const uint8_t * getData() const</div><div class="ttdoc">Get the image data.</div><div class="ttdef"><b>Definition:</b> Image.cpp:293</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_image_html_afd4336c0afa2ec91f144da3bb17dc9ef"><div class="ttname"><a href="classsmall3d_1_1_image.html#afd4336c0afa2ec91f144da3bb17dc9ef">small3d::Image::~Image</a></div><div class="ttdeci">~Image()=default</div><div class="ttdoc">Destructor.</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_image_html_adf097899bb8212b43a6e620ff0d15007"><div class="ttname"><a href="classsmall3d_1_1_image.html#adf097899bb8212b43a6e620ff0d15007">small3d::Image::getHeight</a></div><div class="ttdeci">unsigned long getHeight() const</div><div class="ttdoc">Get the image height.</div><div class="ttdef"><b>Definition:</b> Image.cpp:285</div></div>
 <div class="ttc" id="a_logger_8hpp_html"><div class="ttname"><a href="_logger_8hpp.html">Logger.hpp</a></div><div class="ttdoc">Logger used in small3d.</div></div>

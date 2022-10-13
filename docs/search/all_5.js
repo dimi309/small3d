@@ -9,7 +9,7 @@ var searchData=
   ['getcamerarotation_28',['getCameraRotation',['../classsmall3d_1_1_renderer.html#a9c8a29f7eb8e71597aac9f4ccfbb06f8',1,'small3d::Renderer']]],
   ['getcamerarotationxyz_29',['getCameraRotationXYZ',['../classsmall3d_1_1_renderer.html#a657c6be0841a2f8b938c1fc9ef857a84',1,'small3d::Renderer']]],
   ['getcurrentposeidx_30',['getCurrentPoseIdx',['../classsmall3d_1_1_model.html#a5d501a1d394c08b7666a48d55736a5ab',1,'small3d::Model']]],
-  ['getdata_31',['getData',['../classsmall3d_1_1_image.html#ab26bc22464edb7aefbcd4a2b95d788a2',1,'small3d::Image']]],
+  ['getdata_31',['getData',['../classsmall3d_1_1_image.html#a5d3226c747156c0176eef8082d55753c',1,'small3d::Image']]],
   ['getheight_32',['getHeight',['../classsmall3d_1_1_image.html#adf097899bb8212b43a6e620ff0d15007',1,'small3d::Image']]],
   ['getinstance_33',['getInstance',['../classsmall3d_1_1_renderer.html#a0c081b92ef1a16188a4eaee9b689982a',1,'small3d::Renderer']]],
   ['getjointtransform_34',['getJointTransform',['../classsmall3d_1_1_model.html#a7a80b1e60717a21ef51034f7f95751df',1,'small3d::Model']]],
