@@ -34,33 +34,17 @@ if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 xcopy glm\glm include\glm /i /s /y
 rmdir /Q /S glm
 
-for %%A in (x86,x86_64,armeabi-v7a,arm64-v8a) do (
-
-mkdir lib\%%A
-
 7z x oboe-1.6.1.tar.gz
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel!
 7z x oboe-1.6.1.tar
-cd oboe-1.6.1
-REM Linking to oboe inside the Android project, using gradle
-REM mkdir build
-REM cd build
-REM cmake .. -G"MinGW Makefiles"^
-REM -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A^
-REM %CMAKE_DEFINITIONS%
-REM cmake --build .
-REM if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel!
-REM xcopy ..\include ..\..\include /s /e /y
-REM if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
-REM copy liboboe.a ..\..\lib\%%A
-REM if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
-REM cd ..\..\
-
-xcopy .\include ..\include /s /e /y
-cd ..
-
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel!
+xcopy oboe-1.6.1\include .\include /s /e /y
 rmdir /Q /S oboe-1.6.1
 del oboe-1.6.1.tar
+
+for %%A in (x86,x86_64,armeabi-v7a,arm64-v8a) do (
+
+mkdir lib\%%A
 
 7z x libpng-1.6.37.tar.gz
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel!
