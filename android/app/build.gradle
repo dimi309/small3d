@@ -48,7 +48,7 @@ android {
             path file('CMakeLists.txt')
         }
     }
-    ndkVersion '25.1.8937393'
+    ndkVersion '22.1.7171670'
     namespace 'com.dimi309.small3d_tests'
 
 

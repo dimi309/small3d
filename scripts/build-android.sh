@@ -38,7 +38,7 @@ fi
 cd ..
 
 sourcepath=$(pwd)
-platformstr=android-26
+platformstr=android-16
 
 if [ "$2" != "skipdeps" ] && [ "$3" != "skipdeps" ]; then
     git clean -fdx
@@ -95,10 +95,11 @@ else
 	done   
     fi
     echo Copying android/app/CMakeListsOpenGLES.txt to android/app/CMakeLists.txt
-    cp android/app/CMakeListsOpenGLES.txt android/app/CMakeLists.txt
-    
+    cp android/app/CMakeListsOpenGLES.txt android/app/CMakeLists.txt    
 fi
 
+echo Copying small3d_android.h to build/include
+cp src/small3d_android.h build/include/
 
 
 echo "small3d built successfully for Android ($1 mode)"
