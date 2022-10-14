@@ -15,10 +15,11 @@
 #include <vorbis/vorbisfile.h>
 #include <cassert>
 
-#if defined(__ANDROID__) || defined(SMALL3D_IOS)
+#if defined(__ANDROID__)
 #include "small3d_android.h"
+#endif
 
-#else
+#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
 #include <GLFW/glfw3.h>
 #endif
 
