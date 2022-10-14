@@ -848,6 +848,9 @@ namespace small3d {
     if (shaderProgram != 0) {
       glDeleteProgram(shaderProgram);
     }
+#if defined(SMALL3D_OPENGLES) && defined(__ANDROID__)
+    terminateEGL();
+#endif
   }
 
 #ifndef SMALL3D_OPENGLES
