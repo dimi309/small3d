@@ -1,9 +1,10 @@
-/*
- *  UnitTests.hpp
+/**
+ * @file UnitTests.hpp
+ * @brief Unit tests
  *
- *  Created on: 2022/09/26
- *      Author: Dimitri Kourkoulis
- *     License: BSD 3-Clause License (see LICENSE file)
+ * Created on: 2022/09/26
+ *    Author: Dimitri Kourkoulis
+ *    License: BSD 3-Clause License (see LICENSE file)
  */
 
 #ifdef __ANDROID__

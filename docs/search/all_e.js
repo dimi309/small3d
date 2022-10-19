@@ -12,12 +12,13 @@ var searchData=
   ['settransformation_96',['setTransformation',['../classsmall3d_1_1_scene_object.html#ab2e256555d8f7befc6c51422d8a61853',1,'small3d::SceneObject']]],
   ['setupvulkan_97',['setupVulkan',['../classsmall3d_1_1_renderer.html#adeade4469aab5489c7a7a1c5755653f8',1,'small3d::Renderer']]],
   ['small3d_98',['small3d',['../namespacesmall3d.html',1,'']]],
-  ['sound_99',['Sound',['../classsmall3d_1_1_sound.html',1,'small3d::Sound'],['../classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219',1,'small3d::Sound::Sound()'],['../classsmall3d_1_1_sound.html#a5c0dcc69eba4f4f1993d3d8aa50b28f7',1,'small3d::Sound::Sound(const std::string soundFilePath)'],['../classsmall3d_1_1_sound.html#abe9fffa807136a82dba901f6c1b9aeb7',1,'small3d::Sound::Sound(const Sound &amp;other) noexcept'],['../classsmall3d_1_1_sound.html#aa6e96196c84086a30c9d02aa1a4aa358',1,'small3d::Sound::Sound(const Sound &amp;&amp;other) noexcept']]],
-  ['sound_2ehpp_100',['Sound.hpp',['../_sound_8hpp.html',1,'']]],
-  ['startanimating_101',['startAnimating',['../classsmall3d_1_1_scene_object.html#a21bd126617420837019165e892b1ff6b',1,'small3d::SceneObject']]],
-  ['stop_102',['stop',['../classsmall3d_1_1_sound.html#a3b239ef468eae9e89c48351127b329f3',1,'small3d::Sound']]],
-  ['stopanimating_103',['stopAnimating',['../classsmall3d_1_1_scene_object.html#a005d922b169d1922f2f28402cd7a0cf6',1,'small3d::SceneObject']]],
-  ['swapbuffers_104',['swapBuffers',['../classsmall3d_1_1_renderer.html#acdc83f2aaaf3f41f35e99c1eabc6ac98',1,'small3d::Renderer']]],
-  ['setting_20up_20small3d_20with_20visual_20studio_105',['Setting up small3d with Visual Studio',['../vs.html',1,'']]],
-  ['setting_20up_20small3d_20with_20xcode_106',['Setting up small3d with Xcode',['../xcode.html',1,'']]]
+  ['small3d_5fandroid_2eh_99',['small3d_android.h',['../small3d__android_8h.html',1,'']]],
+  ['sound_100',['Sound',['../classsmall3d_1_1_sound.html',1,'small3d::Sound'],['../classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219',1,'small3d::Sound::Sound()'],['../classsmall3d_1_1_sound.html#a5c0dcc69eba4f4f1993d3d8aa50b28f7',1,'small3d::Sound::Sound(const std::string soundFilePath)'],['../classsmall3d_1_1_sound.html#abe9fffa807136a82dba901f6c1b9aeb7',1,'small3d::Sound::Sound(const Sound &amp;other) noexcept'],['../classsmall3d_1_1_sound.html#aa6e96196c84086a30c9d02aa1a4aa358',1,'small3d::Sound::Sound(const Sound &amp;&amp;other) noexcept']]],
+  ['sound_2ehpp_101',['Sound.hpp',['../_sound_8hpp.html',1,'']]],
+  ['startanimating_102',['startAnimating',['../classsmall3d_1_1_scene_object.html#a21bd126617420837019165e892b1ff6b',1,'small3d::SceneObject']]],
+  ['stop_103',['stop',['../classsmall3d_1_1_sound.html#a3b239ef468eae9e89c48351127b329f3',1,'small3d::Sound']]],
+  ['stopanimating_104',['stopAnimating',['../classsmall3d_1_1_scene_object.html#a005d922b169d1922f2f28402cd7a0cf6',1,'small3d::SceneObject']]],
+  ['swapbuffers_105',['swapBuffers',['../classsmall3d_1_1_renderer.html#acdc83f2aaaf3f41f35e99c1eabc6ac98',1,'small3d::Renderer']]],
+  ['setting_20up_20small3d_20with_20visual_20studio_106',['Setting up small3d with Visual Studio',['../vs.html',1,'']]],
+  ['setting_20up_20small3d_20with_20xcode_107',['Setting up small3d with Xcode',['../xcode.html',1,'']]]
 ];
