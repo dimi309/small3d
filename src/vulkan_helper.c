@@ -2169,7 +2169,13 @@ int vh_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index, uint32
       sci.mipLodBias = 0.0f;
       sci.minLod = 0.0f;
       sci.maxLod = 0.0f;
+      // compareEnable, set to true in commit d151e5f37fd275ac3631e4ddcbe897f1540777cd Feb 8
+      // was making textures not appear on Ubuntu / GeForce GTX
+#if defined(__linux__) && !defined(__ANDROID__) && !defined(SMALL3D_IOS)
+      sci.compareEnable = VK_FALSE;
+#else
       sci.compareEnable = VK_KHR_portability_subset_supported ? VK_FALSE : VK_TRUE;
+#endif
       if (vkCreateSampler(vh_logical_device, &sci, NULL, sampler) != VK_SUCCESS) {
         return 0;
       }
