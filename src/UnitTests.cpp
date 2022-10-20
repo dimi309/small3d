@@ -68,7 +68,7 @@ void initRenderer(uint32_t width, uint32_t height) {
                                         resourceDir + "/shaders/", 5000);
   }
 #else
-  #if !defined(NDEBUG) && defined(WIN32)
+#if !defined(NDEBUG) 
   r = &small3d::Renderer::getInstance("small3d Tests", 1024, 768);
 #else
   r = &small3d::Renderer::getInstance("small3d Tests");
