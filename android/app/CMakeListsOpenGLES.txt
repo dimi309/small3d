@@ -15,9 +15,9 @@ file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../src/*.h*)
 add_compile_definitions(SMALL3D_OPENGL)
 add_compile_definitions(SMALL3D_OPENGLES)
 list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../src/Renderer.cpp)
-list(APPEND SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../opengl33/src/Renderer.cpp)
+list(APPEND SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../opengl/src/Renderer.cpp)
 list(REMOVE_ITEM HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../include/small3d/Renderer.hpp)
-list(APPEND HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../opengl33/include/small3d/Renderer.hpp)
+list(APPEND HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../opengl/include/small3d/Renderer.hpp)
 list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../src/vulkan_helper.c)
 list(REMOVE_ITEM HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../src/vulkan_helper.h)
 
@@ -35,8 +35,8 @@ add_library(small3d_tests
 # When using OpenGL include the OpenGL Renderer.hpp directory first
 # so that OpenGL Renderer.hpp takes precedence over Vulkan Renderer.hpp
 target_include_directories(small3d_tests PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../opengl33/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../opengl33/include/small3d)
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../opengl/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../opengl/include/small3d)
 if (DEFINED ANDROID_PLATFORM)
     # The following is so that small3d_android.h can be included
     target_include_directories(small3d_tests PUBLIC

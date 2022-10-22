@@ -12,9 +12,9 @@ endif()
 
 if(SMALL3D_OPENGL)
   list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/Renderer.cpp)
-  list(APPEND SOURCE_FILES ${CMAKE_SOURCE_DIR}/opengl33/src/Renderer.cpp)
+  list(APPEND SOURCE_FILES ${CMAKE_SOURCE_DIR}/opengl/src/Renderer.cpp)
   list(REMOVE_ITEM HEADER_FILES  ${CMAKE_SOURCE_DIR}/include/small3d/Renderer.hpp)
-  list(APPEND HEADER_FILES ${CMAKE_SOURCE_DIR}/opengl33/include/small3d/Renderer.hpp)
+  list(APPEND HEADER_FILES ${CMAKE_SOURCE_DIR}/opengl/include/small3d/Renderer.hpp)
 else()
   list(APPEND SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/vulkan_helper.c)
   list(APPEND HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/vulkan_helper.h)
@@ -25,8 +25,8 @@ add_library(small3d ${SOURCE_FILES} ${HEADER_FILES})
 if(SMALL3D_OPENGL)
   # When using OpenGL include the OpenGL Renderer.hpp directory first
   # so that OpenGL Renderer.hpp takes precedence over Vulkan Renderer.hpp
-  include_directories(${CMAKE_SOURCE_DIR}/opengl33/include)
-  include_directories(${CMAKE_SOURCE_DIR}/opengl33/include/small3d)
+  include_directories(${CMAKE_SOURCE_DIR}/opengl/include)
+  include_directories(${CMAKE_SOURCE_DIR}/opengl/include/small3d)
   if(DEFINED ANDROID_PLATFORM)
     # The following is so that small3d_android.h can be included
     include_directories(${CMAKE_SOURCE_DIR}/src)
@@ -73,7 +73,7 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
   # so that OpenGL Renderer.hpp takes precedence over Vulkan Renderer.hpp
   if(SMALL3D_OPENGL)
     target_include_directories(unittests PUBLIC
-      ${CMAKE_SOURCE_DIR}/opengl33/include)
+      ${CMAKE_SOURCE_DIR}/opengl/include)
   endif()
   target_include_directories(unittests PUBLIC
     ${CMAKE_SOURCE_DIR}/include)

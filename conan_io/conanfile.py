@@ -18,7 +18,7 @@ class Small3dConan(ConanFile):
     generators = "cmake"
 
     # Sources are located in the same place as this recipe, copy them to the recipe
-    exports_sources = "CMakeLists.txt", "src.CMakeLists.txt", "../src*", "../include*", "../scripts*", "../resources*", "../opengl33*", "LICENSE"
+    exports_sources = "CMakeLists.txt", "src.CMakeLists.txt", "../src*", "../include*", "../scripts*", "../resources*", "../opengl*", "LICENSE"
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -56,9 +56,9 @@ class Small3dConan(ConanFile):
             self.copy("*.spv", dst="resources", src="resources")
             self.copy("*.hpp", dst="include", src="include")
         else:
-            self.copy("*", dst="resources/shaders", src="opengl33/resources/shaders")
+            self.copy("*", dst="resources/shaders", src="opengl/resources/shaders")
             self.copy("*.hpp", dst="include", src="include", excludes="Renderer.*p")
-            self.copy("*.hpp", dst="include", src="opengl33/include")
+            self.copy("*.hpp", dst="include", src="opengl/include")
         
     
         self.copy(pattern="LICENSE*", dst="licenses", src="",  ignore_case=True, keep_path=False)

@@ -81,7 +81,7 @@ else
 	    mkdir build/shaders/ ;
 	fi
 	echo "Copying shaders to build/shaders..."
-	for f in opengl33/resources/shadersOpenGLES/* ; do
+	for f in opengl/resources/shadersOpenGLES/* ; do
 	    cp $f build/shaders/ ;
 	    if [ $? != 0 ]; then exit $rc; fi
 	    echo "Copied $f" ;
@@ -92,7 +92,7 @@ else
 	    mkdir ios-opengles/small3d-Tests-ios/resources1/shaders/ ;
 	fi
 	echo "Copying shaders to ios-opengles/small3d-Tests-ios/resources1/shaders..."
-	for f in opengl33/resources/shadersOpenGLES/* ; do
+	for f in opengl/resources/shadersOpenGLES/* ; do
 	    cp $f ios-opengles/small3d-Tests-ios/resources1/shaders/ ;
 	    echo "Copied $f" ;
 	done   

@@ -102,8 +102,8 @@
 		8CB7352028E29FE300466A13 /* UnitTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UnitTests.cpp; path = ../../src/UnitTests.cpp; sourceTree = "<group>"; };
 		8CB7352128E29FE300466A13 /* UnitTests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = UnitTests.hpp; path = ../../src/UnitTests.hpp; sourceTree = "<group>"; };
 		8CCF87D328DEA8F500BDEF3A /* small3d-Tests-ios copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "small3d-Tests-ios copy-Info.plist"; path = "/Users/me/Source/small3d/ios/small3d-Tests-ios copy-Info.plist"; sourceTree = "<absolute>"; };
-		8CE54A2628E4070700EC474D /* Renderer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Renderer.hpp; path = ../../opengl33/include/small3d/Renderer.hpp; sourceTree = "<group>"; };
-		8CE54A2728E4071B00EC474D /* Renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Renderer.cpp; path = ../../opengl33/src/Renderer.cpp; sourceTree = "<group>"; };
+		8CE54A2628E4070700EC474D /* Renderer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Renderer.hpp; path = ../../opengl/include/small3d/Renderer.hpp; sourceTree = "<group>"; };
+		8CE54A2728E4071B00EC474D /* Renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Renderer.cpp; path = ../../opengl/src/Renderer.cpp; sourceTree = "<group>"; };
 		8CE54A2928E40E3600EC474D /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		8CE54A2B28E40E4700EC474D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -461,7 +461,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/../opengl33/include",
+					"$(PROJECT_DIR)/../opengl/include",
 					"$(PROJECT_DIR)/../include",
 					"$(PROJECT_DIR)/../deps/include",
 				);
@@ -515,7 +515,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/../opengl33/include",
+					"$(PROJECT_DIR)/../opengl/include",
 					"$(PROJECT_DIR)/../include",
 					"$(PROJECT_DIR)/../deps/include",
 				);
