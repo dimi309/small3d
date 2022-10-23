@@ -76,7 +76,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>The renderer (Vulkan)  
+<p>The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl directory. It is picked up automatically by the project build scripts and build configuration when launched with the appropriate parameters.  
  <a href="classsmall3d_1_1_renderer.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_renderer_8hpp_source.html">Renderer.hpp</a>&gt;</code></p>
@@ -113,7 +113,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a32163440246ed8ea5016e15dfc781775"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2065e4645034d538e5bbd40cd5fa3a50"><td class="memItemLeft" align="right" valign="top"><a id="a2065e4645034d538e5bbd40cd5fa3a50"></a>
 GLFWwindow *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a2065e4645034d538e5bbd40cd5fa3a50">getWindow</a> () const</td></tr>
-<tr class="memdesc:a2065e4645034d538e5bbd40cd5fa3a50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the GLFW window object, associated with the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a>. <br /></td></tr>
+<tr class="memdesc:a2065e4645034d538e5bbd40cd5fa3a50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the GLFW window object, associated with the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl direct...">Renderer</a>. <br /></td></tr>
 <tr class="separator:a2065e4645034d538e5bbd40cd5fa3a50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3fc446b4ee64fbb831aa8f08a54dbdc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#aa3fc446b4ee64fbb831aa8f08a54dbdc">generateTexture</a> (const std::string &amp;name, const <a class="el" href="classsmall3d_1_1_image.html">Image</a> &amp;image)</td></tr>
 <tr class="memdesc:aa3fc446b4ee64fbb831aa8f08a54dbdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a texture on the GPU from the given image.  <a href="classsmall3d_1_1_renderer.html#aa3fc446b4ee64fbb831aa8f08a54dbdc">More...</a><br /></td></tr>
@@ -188,7 +188,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a cla
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a0c081b92ef1a16188a4eaee9b689982a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classsmall3d_1_1_renderer.html">Renderer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a0c081b92ef1a16188a4eaee9b689982a">getInstance</a> (const std::string &amp;windowTitle=&quot;&quot;, const int width=0, const int height=0, const float fieldOfView=0.785f, const float zNear=1.0f, const float zFar=24.0f, const std::string &amp;shadersPath=DEFAULT_SHADERS_DIR, const uint32_t objectsPerFrame=defaultObjectsPerFrame, const uint32_t objectsPerFrameInc=defaultObjectsPerFrameInc)</td></tr>
-<tr class="memdesc:a0c081b92ef1a16188a4eaee9b689982a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the instance of the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> (the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> is a singleton).  <a href="classsmall3d_1_1_renderer.html#a0c081b92ef1a16188a4eaee9b689982a">More...</a><br /></td></tr>
+<tr class="memdesc:a0c081b92ef1a16188a4eaee9b689982a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the instance of the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl direct...">Renderer</a> (the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl direct...">Renderer</a> is a singleton).  <a href="classsmall3d_1_1_renderer.html#a0c081b92ef1a16188a4eaee9b689982a">More...</a><br /></td></tr>
 <tr class="separator:a0c081b92ef1a16188a4eaee9b689982a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -207,7 +207,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <tr class="separator:a16cad6462cacc418e9d470fa90677c40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The renderer (Vulkan) </p>
+<div class="textblock"><p>The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl directory. It is picked up automatically by the project build scripts and build configuration when launched with the appropriate parameters. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a40ab3a6ebf64fe75c9121d06637d8ee8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a40ab3a6ebf64fe75c9121d06637d8ee8">&#9670;&nbsp;</a></span>clearBuffers() <span class="overload">[1/2]</span></h2>
@@ -569,7 +569,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 </table>
 </div><div class="memdoc">
 
-<p>Get the instance of the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> (the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> is a singleton). </p>
+<p>Get the instance of the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl direct...">Renderer</a> (the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl direct...">Renderer</a> is a singleton). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">windowTitle</td><td>The title of the game's window </td></tr>
@@ -584,7 +584,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> object. It can only be assigned to a pointer by its address (<a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> *r = &amp;Renderer::getInstance(...), since declaring another <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan)">Renderer</a> variable and assigning to it would invoke the default constructor, which has been deleted. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl direct...">Renderer</a> object. It can only be assigned to a pointer by its address (<a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl direct...">Renderer</a> *r = &amp;Renderer::getInstance(...), since declaring another <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl direct...">Renderer</a> variable and assigning to it would invoke the default constructor, which has been deleted. </dd></dl>
 
 </div>
 </div>

@@ -96,7 +96,10 @@ namespace small3d
 
   /**
    * @class Renderer
-   * @brief The renderer (Vulkan)
+   * @brief The renderer (Vulkan). There is an OpenGL renderer class with the
+   *        same interface in the opengl directory. It is picked up automatically
+   *        by the project build scripts and build configuration when launched
+   *        with the appropriate parameters.
    */
   class Renderer
   {
