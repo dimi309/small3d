@@ -4,6 +4,8 @@ REM For this to work, set the %NDK% variable to your ndk path. It should look li
 REM C:\Users\user\AppData\Local\Android\Sdk\ndk\22.0.6917172 for example. Also, the
 REM script needs to run in an environment with MinGW set up and no settings for
 REM Visual Studio.
+REM For OpenGL ES builds, an NDK version that works well is 22.1.7171670. There
+REM can be some glitches on newer versions.
 
 cd ..
 

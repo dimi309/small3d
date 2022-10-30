@@ -1,6 +1,8 @@
 # For this to work, set the NDK variable to your ndk path. It should look like
 # /Users/user/Library/Android/sdk/ndk/21.2.6472646 for example.
 # Tested on MacOS and Debian
+# For OpenGL ES builds, an NDK version that works well is 22.1.7171670. There
+# can be some glitches on newer versions.
 
 cd ..
 
