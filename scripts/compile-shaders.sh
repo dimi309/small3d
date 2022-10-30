@@ -6,11 +6,11 @@ if [ "$1" != "Debug" ] && [ "$1" != "Release" ]; then
 fi
 
 if [ "$1" == "Debug" ]; then
-   export DEBUG_INFO=-g
+   DEBUG_INFO=-g
 fi
 
 if [ "$1" == "Release" ]; then
-   export DEBUG_INFO=-g0
+   DEBUG_INFO=-g0
 fi
 
 cd ../resources/shaders

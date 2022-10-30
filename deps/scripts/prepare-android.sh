@@ -11,13 +11,18 @@ if [ "$1" != "Debug" ] && [ "$1" != "Release" ]; then
     exit 1
 fi
 
-export CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=$1 
+if [ -z "$2" ]; then
+    echo "Please indicate android platform, e.g. android-26 or android-16"
+    exit 1
+fi
+
+CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=$1 
 
 mkdir include
 mkdir lib
 
 depspath=$(pwd)
-platformstr=android-16
+platformstr=$2
 
 unzip glm-0.9.9.8.zip
 cp -rf glm/glm include/

@@ -14,7 +14,7 @@ fi
 
 if [ $(uname) == 'Linux' ]; then
 
-    export CMAKE_PORTAUDIO_DEFINITIONS="-DPA_USE_JACK=OFF"
+    CMAKE_PORTAUDIO_DEFINITIONS="-DPA_USE_JACK=OFF"
 
     if type -p "apt" > /dev/null ; then
 	sudo apt update
@@ -33,7 +33,7 @@ if [ $(uname) == 'Linux' ]; then
     fi
 fi
 
-export CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=$1 
+CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=$1 
 
 mkdir include
 mkdir lib

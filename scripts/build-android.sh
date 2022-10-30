@@ -26,26 +26,29 @@ fi
 
 
 if [ "$1" == "Debug" ]; then
-    export buildtype=Debug
+    buildtype=Debug
 else
-    export buildtype=Release
+    buildtype=Release
 fi
 
-export opengldef=OFF
+opengldef=OFF
 if [ "$2" == "opengles" ]; then
-    export opengldef=ON
+    opengldef=ON
+    platformstr=android-16
+else
+    platformstr=android-26
 fi
 
+echo "Building on $platformstr"
 
 cd ..
 
 sourcepath=$(pwd)
-platformstr=android-16
 
 if [ "$2" != "skipdeps" ] && [ "$3" != "skipdeps" ]; then
     git clean -fdx
     cd deps/scripts
-    ./prepare-android.sh $1
+    ./prepare-android.sh $1 $platformstr
     cd ../..
 else
     rm -rf build
@@ -99,9 +102,5 @@ else
     echo Copying android/app/CMakeListsOpenGLES.txt to android/app/CMakeLists.txt
     cp android/app/CMakeListsOpenGLES.txt android/app/CMakeLists.txt    
 fi
-
-echo Copying small3d_android.h to build/include
-cp src/small3d_android.h build/include/
-
 
 echo "small3d built successfully for Android ($1 mode)"

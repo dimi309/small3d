@@ -28,14 +28,21 @@ if /I "%~1" == "Release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
 if /I "%~2" == "opengles" set CMAKE_DEFINITIONS=%CMAKE_DEFINITIONS% -DSMALL3D_OPENGL=ON
 
 set sourcepath=%cd%
+
+if /I "%~2" == "opengles" (
 set platformstr=android-16
+) else (
+set platformstr=android-26
+)
+
+echo Building on %platformstr%
 
 if /I not "%~2" == "skipdeps"  (
 if /I not "%~3" == "skipdeps"  (
 cd ..\deps\scripts
 if exist include rmdir /Q /S include
 if exist lib rmdir /Q /S lib
-call prepare-android.bat %1
+call prepare-android.bat %1 %platformstr%
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 )
 )

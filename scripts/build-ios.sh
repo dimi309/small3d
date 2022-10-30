@@ -47,9 +47,9 @@ else
 rm -rf build
 fi
 
-export opengldef=OFF
+opengldef=OFF
 if [ "$3" == "opengles" ]; then
-    export opengldef=ON
+    opengldef=ON
 fi
 
 mkdir build

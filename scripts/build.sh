@@ -11,9 +11,9 @@ if [ ! -z "$2" ] && [ "$2" != "opengl" ]; then
 fi
 
 if [ "$2" == "opengl" ]; then
-    export CMAKE_DEFINITIONS="-DCMAKE_BUILD_TYPE=$1 -DSMALL3D_OPENGL=ON"
+    CMAKE_DEFINITIONS="-DCMAKE_BUILD_TYPE=$1 -DSMALL3D_OPENGL=ON"
 else
-    export CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=$1
+    CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=$1
 fi
 
 cd ..

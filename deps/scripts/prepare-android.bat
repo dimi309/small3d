@@ -23,13 +23,18 @@ endlocal & exit /B 1
 if /I "%~1" == "Debug" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Debug
 if /I "%~1" == "Release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
 
+if /I [%2] == [] (
+echo Please indicate android platform, e.g. android-26 or android-16
+endlocal & exit /B 1
+)
+
 @echo on
 
 mkdir include
 mkdir lib
 
 SET depspath=%cd%
-SET platformstr=android-16
+SET platformstr=%2
 
 7z x glm-0.9.9.8.zip
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel% 
