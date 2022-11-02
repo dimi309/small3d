@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId 'com.dimi309.small3d_tests'
-        minSdk 16
+        minSdk 26 // set to 16 if building with OpenGL ES and to 26 if building with Vulkan
         targetSdk 30
         versionCode 1
         versionName "1.00"
