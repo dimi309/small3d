@@ -172,7 +172,7 @@ namespace small3d
     std::vector<AAsset*> fontAssets;
 #endif
 
-    static std::vector<Model> nextModelsToDraw;
+    static std::vector<Model*> nextModelsToDraw;
 
     static VkVertexInputBindingDescription bd[5];
     static VkVertexInputAttributeDescription ad[5];
