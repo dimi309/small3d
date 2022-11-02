@@ -173,13 +173,13 @@ cd ..\..\
 rmdir /Q /S portaudio
 del pa_stable_v190700_20210406.tar
 
-7z x freetype-2.11.1.tar.gz
+7z x freetype-2.12.1.tar.gz
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-7z x freetype-2.11.1.tar
-cd freetype-2.11.1
+7z x freetype-2.12.1.tar
+cd freetype-2.12.1
 mkdir build
 cd build
-cmake .. %VSCONFIG% -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=%BUILDTYPE%
+cmake .. %VSCONFIG% -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=%BUILDTYPE% -DZLIB_LIBRARY=..\..\lib/zlib.lib -DZLIB_INCLUDE_DIR=..\..\include -DFT_DISABLE_ZLIB=ON
 cmake --build . --config %BUILDTYPE%
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 xcopy ..\include ..\..\include /s /e
@@ -189,8 +189,8 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..
-rmdir /Q /S freetype-2.11.1
-del freetype-2.11.1.tar
+rmdir /Q /S freetype-2.12.1
+del freetype-2.12.1.tar
 
 @echo small3d dependencies built successfully for Visual Studio (%BUILDTYPE% mode)
 

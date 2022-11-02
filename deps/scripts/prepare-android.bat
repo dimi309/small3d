@@ -117,15 +117,15 @@ rmdir /Q /S libvorbis-1.3.7
 del libvorbis-1.3.7.tar
 del pax_global_header
 
-7z x freetype-2.11.1.tar.gz
+7z x freetype-2.12.1.tar.gz
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
-7z x freetype-2.11.1.tar
-cd freetype-2.11.1
+7z x freetype-2.12.1.tar
+cd freetype-2.12.1
 mkdir build
 cd build
 cmake .. -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF^
  -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A^
- %CMAKE_DEFINITIONS%
+ %CMAKE_DEFINITIONS% -DFT_DISABLE_ZLIB=ON
 cmake --build .
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 xcopy ..\include ..\..\include /s /e /y
@@ -135,8 +135,8 @@ if /I "%~1" == "Debug" set FREETYPEBIN=libfreetyped.a
 copy !FREETYPEBIN! ..\..\lib\%%A\libfreetype.a
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
 cd ..\..
-rmdir /Q /S freetype-2.11.1
-del freetype-2.11.1.tar
+rmdir /Q /S freetype-2.12.1
+del freetype-2.12.1.tar
 )
 
 @echo small3d dependencies built successfully for Android (%~1 mode)

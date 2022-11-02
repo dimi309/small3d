@@ -162,12 +162,12 @@ rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cd ..
 rm -rf bzip2-1.0.8
 
-tar xvf freetype-2.11.1.tar.gz
-cd freetype-2.11.1
+tar xvf freetype-2.12.1.tar.gz
+cd freetype-2.12.1
 mkdir build
 cd build
 # Not using BrotliDec because it causes linking issues on Linux
-cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_DISABLE_FIND_PACKAGE_BrotliDec=TRUE -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS
+cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_DISABLE_FIND_PACKAGE_BrotliDec=TRUE -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS -DZLIB_LIBRARY=..\..\lib/zlib.a -DZLIB_INCLUDE_DIR=..\..\include -DFT_DISABLE_ZLIB=ON
 cmake --build .
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cp -rf ../include/* ../../include/
@@ -179,6 +179,6 @@ else
 fi
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cd ../..
-rm -rf freetype-2.11.1
+rm -rf freetype-2.12.1
 
 echo "small3d dependencies built successfully ($1 mode)"

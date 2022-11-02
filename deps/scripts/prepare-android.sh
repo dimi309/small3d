@@ -89,13 +89,13 @@ do
     cd ../../
     rm -rf libvorbis-1.3.7
 
-    tar xvf freetype-2.11.1.tar.gz
-    cd freetype-2.11.1
+    tar xvf freetype-2.12.1.tar.gz
+    cd freetype-2.12.1
     mkdir build
     cd build
     cmake .. -DBUILD_SHARED_LIBS=OFF \
 	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
-	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
+	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS -DFT_DISABLE_ZLIB=ON
     cmake --build .
     rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp -rf ../include/* ../../include/
@@ -109,7 +109,7 @@ do
     rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     
     cd ../..
-    rm -rf freetype-2.11.1
+    rm -rf freetype-2.12.1
 
 done
 
