@@ -1,19 +1,45 @@
 environment:
   matrix:
+    - job_name: Ubuntu Linux builds
+      appveyor_build_worker_image: Ubuntu2004
+      
     - job_name: MacOS builds
       appveyor_build_worker_image: macos-bigsur
       
     - job_name: Windows MinGW builds
       appveyor_build_worker_image: Visual Studio 2015
       
-    - job_name: Ubuntu Linux builds
-      appveyor_build_worker_image: Ubuntu2004
-      
     - job_name: Windows VS 2022 builds
       appveyor_build_worker_image: Visual Studio 2022
       
 for:
 
+-
+  matrix:
+    only:
+      - job_name: Ubuntu Linux builds
+
+  install:
+  - sudo apt-get update
+  - sudo apt-get -y install libgl-dev libglu1-mesa-dev glslang-tools libasound2-dev libx11-dev libx11-xcb-dev libfontenc-dev libice-dev libsm-dev libxau-dev libxaw7-dev libxcomposite-dev libxcursor-dev libxdamage-dev libxdmcp-dev libxext-dev libxfixes-dev libxft-dev libxi-dev libxinerama-dev libxkbfile-dev libxmu-dev libxmuu-dev libxpm-dev libxrandr-dev libxrender-dev libxres-dev libxss-dev libxt-dev libxtst-dev libxv-dev libxvmc-dev libxxf86vm-dev xtrans-dev libxcb-render0-dev libxcb-render-util0-dev libxcb-xkb-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-shape0-dev libxcb-sync-dev libxcb-xfixes0-dev libxcb-xinerama0-dev xkb-data libxcb-dri3-dev libxcb-util-dev
+  - source ~/venv3.10/bin/activate
+  - pip install --upgrade pip
+  - pip install conan
+  - conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
+
+  test_script:
+  - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Release -o portaudio:with_jack=False --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Release -o portaudio:with_jack=False -o small3d:vulkan=True --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Debug -o portaudio:with_jack=False --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Debug -o portaudio:with_jack=False -o small3d:vulkan=True --build=missing && cd ..
+  - cd scripts && ./build.sh Debug && cd ..
+  - git clean -fdx
+  - cd scripts && ./build.sh Release && cd ..
+  - git clean -fdx
+  - cd scripts && ./build.sh Debug opengl && cd ..
+  - git clean -fdx
+  - cd scripts && ./build.sh Release opengl
+  
 -
   matrix:
     only:
@@ -70,11 +96,11 @@ for:
   - conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
   
   test_script:
-  # conan build started crashing on appveyor even though it works locally (cannot link with
-  # the glew package through conan: "/bin/ld.exe: cannot find -llibglew32d")
-  # - cd conan_io && conan create . small3d/master@ -pr=mingw -s build_type=Debug --build=missing && cd ..
-  # - cd conan_io && conan create . small3d/master@ -pr=mingw -s build_type=Release --build=missing && cd ..
-  # conan Vulkan package build was already crashing, so no conan Vulkan build here
+  
+  - cd conan_io && conan create . small3d/master@ -pr=mingw -s build_type=Debug --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -pr=mingw -s build_type=Debug -o small3d:vulkan=True --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -pr=mingw -s build_type=Release --build=missing && cd ..
+  - cd conan_io && conan create . small3d/master@ -pr=mingw -s build_type=Release -o small3d:vulkan=True --build=missing && cd ..
   - cd scripts && .\build-mingw.bat Debug && cd ..
   - git clean -fdx
   - cd scripts && .\build-mingw.bat Release && cd ..
@@ -82,33 +108,6 @@ for:
   - cd scripts && .\build-mingw.bat Debug opengl && cd ..
   - git clean -fdx
   - cd scripts && .\build-mingw.bat Release opengl && cd ..
-
--
-  matrix:
-    only:
-      - job_name: Ubuntu Linux builds
-
-  install:
-  - sudo apt-get update
-  - sudo apt-get -y install libgl-dev libglu1-mesa-dev glslang-tools libasound2-dev libx11-dev libx11-xcb-dev libfontenc-dev libice-dev libsm-dev libxau-dev libxaw7-dev libxcomposite-dev libxcursor-dev libxdamage-dev libxdmcp-dev libxext-dev libxfixes-dev libxft-dev libxi-dev libxinerama-dev libxkbfile-dev libxmu-dev libxmuu-dev libxpm-dev libxrandr-dev libxrender-dev libxres-dev libxss-dev libxt-dev libxtst-dev libxv-dev libxvmc-dev libxxf86vm-dev xtrans-dev libxcb-render0-dev libxcb-render-util0-dev libxcb-xkb-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-shape0-dev libxcb-sync-dev libxcb-xfixes0-dev libxcb-xinerama0-dev xkb-data libxcb-dri3-dev libxcb-util-dev
-  - source ~/venv3.10/bin/activate
-  - pip install --upgrade pip
-  - pip install conan
-  - conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
-
-  test_script:
-  - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Release -o portaudio:with_jack=False --build=missing && cd ..
-  - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Release -o portaudio:with_jack=False -o small3d:vulkan=True --build=missing && cd ..
-  - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Debug -o portaudio:with_jack=False --build=missing && cd ..
-  - cd conan_io && conan create . small3d/master@ -s cppstd=14 -s build_type=Debug -o portaudio:with_jack=False -o small3d:vulkan=True --build=missing && cd ..
-# Linking error related to freetype. Issue is not reproduced locally..
-#  - cd scripts && ./build.sh Debug && cd ..
-#  - git clean -fdx
-#  - cd scripts && ./build.sh Release && cd ..
-#  - git clean -fdx
-#  - cd scripts && ./build.sh Debug opengl && cd ..
-#  - git clean -fdx
-#  - cd scripts && ./build.sh Release opengl
 
 -
   matrix:
