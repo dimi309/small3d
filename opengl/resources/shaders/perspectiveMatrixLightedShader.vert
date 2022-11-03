@@ -11,14 +11,17 @@ uniform mat4 perspectiveMatrix;
 uniform vec3 lightDirection;
 uniform mat4 cameraTransformation;
 uniform vec3 cameraOffset;
-
+uniform mat4 lightSpaceMatrix;
+uniform mat4 orthographicMatrix;
 uniform mat4 modelTransformation;
 uniform mat4 jointTransformations[16];
+
 uniform vec3 modelOffset;
 uniform int hasJoints;
 
 layout(location = 0) smooth out float cosAngIncidence;
 layout(location = 1) out vec2 textureCoords;
+layout(location = 2) out vec4 posLightSpace;
 
 void main()
 {
@@ -37,6 +40,13 @@ void main()
   vec4 cameraPos = cameraTransformation * (worldPos -
 					       vec4(cameraOffset, 0.0));
 
+  if (perspectiveMatrix != mat4(1.0f)) {
+    posLightSpace = lightSpaceMatrix * worldPos * orthographicMatrix;
+
+  } else {
+    posLightSpace = vec4(0.0f);
+  }
+  
   gl_Position = cameraPos * perspectiveMatrix;
 
   vec4 normalInWorld = normalize(modelTransformation * vec4(normal, 1) *
@@ -48,5 +58,5 @@ void main()
   cosAngIncidence = clamp(dot(normalInWorld, lightDirectionWorld), 0.5, 1);
   
   textureCoords = uvCoords;
-  
+ 
 }

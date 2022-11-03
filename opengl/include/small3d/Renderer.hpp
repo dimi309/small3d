@@ -54,7 +54,7 @@ namespace small3d
   {
 
   private:
-
+    
 #ifndef SMALL3D_OPENGLES
     GLFWwindow* window;
 #else
@@ -153,11 +153,34 @@ namespace small3d
 
     Renderer();
 
-    
+    std::vector<std::tuple< Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool>> renderList;
 
+    void renderTuple(std::tuple< Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool> tuple);
+
+    GLuint depthMapFramebuffer = 0;
+    GLuint depthMapTexture = 0;
+    const uint32_t depthMapTextureWidth = 2048;
+    const uint32_t depthMapTextureHeight = 2048;
+    glm::mat4x4 lightSpaceMatrix = glm::mat4x4(0);
+    bool renderingDepthMap = false;
+    glm::mat4x4 orthographicMatrix = glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, 1.0f, 5.0f);
+    
   public:
 
-    
+    /**
+    * @brief: Render shadows?
+    */
+    bool shadowsActive = true;
+
+    /**
+     * @brief: Shadows transformation. The "light source point of view".
+     *         The renderer will initialise it with a value that works
+     *         in a basic scenario, but it will often need to be tweaked
+     *         by the programmer during the execution of the
+     *         game or application.
+     */
+    glm::mat4x4 shadowCamTransformation = glm::mat4x4(0);
+
     /**
      * @brief: Used to re-initialise the Renderer, for example in Android apps
      *         after they come back into focus.
@@ -178,7 +201,7 @@ namespace small3d
      * @brief Vector, indicating the direction of the light in the scene.
      *        It points towards a directional light source.
      */
-    glm::vec3 lightDirection = glm::vec3(0.0f, 0.4f, 0.5f);
+    glm::vec3 lightDirection = glm::vec3(0.0f, 0.7f, 0.3f);
 
     /**
      * @brief The camera position in world space. Ignored for orthographic

@@ -203,6 +203,11 @@ namespace small3d {
     std::vector<Joint> joints;
 
     /**
+     * @brief Should the model produce a shadow?
+     */
+    bool noShadow = false;
+
+    /**
      * @brief Default constructor
      *
      */

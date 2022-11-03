@@ -174,6 +174,7 @@ namespace small3d {
       LOGDEBUG("Shader " + shaderSourceFile + " compiled successfully.");
     }
 
+
     return shader;
   }
 
@@ -352,6 +353,7 @@ namespace small3d {
     }
 
     glGenTextures(1, &textureHandle);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureHandle);
 
 #ifndef SMALL3D_OPENGLES
@@ -371,6 +373,7 @@ namespace small3d {
 #endif
 
     textures.insert(make_pair(name, textureHandle));
+
     glBindTexture(GL_TEXTURE_2D, 0);
 
     return textureHandle;
@@ -439,6 +442,12 @@ namespace small3d {
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
+    GLint colourTextureLocation = glGetUniformLocation(shaderProgram, "textureImage");
+    GLint depthMapTextureLocation = glGetUniformLocation(shaderProgram, "shadowMap");
+   
+    glProgramUniform1i(shaderProgram, colourTextureLocation, 0);
+    glProgramUniform1i(shaderProgram, depthMapTextureLocation, 1);
+
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
@@ -451,6 +460,35 @@ namespace small3d {
     blankImage.toColour(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
     generateTexture("blank", blankImage);
     LOGDEBUG("Blank image generated");
+
+    glGenTextures(1, &depthMapTexture);
+    glActiveTexture(GL_TEXTURE0 + 1);
+    glBindTexture(GL_TEXTURE_2D, depthMapTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+      depthMapTextureWidth, depthMapTextureHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    
+    glGenFramebuffers(1, &depthMapFramebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFramebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMapTexture, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+    // Shadow camera will be facing down (rotate 90 degrees around the x axis)
+    glm::vec3 shadowCamRotation = glm::vec3(1.57f, 0.0f, 0.0f);
+    shadowCamTransformation = 
+      glm::translate(glm::mat4x4(1.0f), glm::vec3(0.0f, 8.0f, -3.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), -shadowCamRotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), -shadowCamRotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), -shadowCamRotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+      
   }
 
   void Renderer::initWindow(int& width, int& height,
@@ -623,7 +661,7 @@ namespace small3d {
 
     glm::mat4x4 perspectiveMatrix = perspective && realScreenHeight != 0 ?
       glm::perspective(fieldOfView, static_cast<float>(realScreenWidth / realScreenHeight), zNear, zFar) :
-      glm::mat4x4(1);
+      renderingDepthMap ? orthographicMatrix : glm::mat4x4(1.0f);
 
     glUniformMatrix4fv(perspectiveMatrixUniform, 1, GL_FALSE,
       glm::value_ptr(perspectiveMatrix));
@@ -642,7 +680,7 @@ namespace small3d {
     GLint cameraTransformationUniform = glGetUniformLocation(shaderProgram,
       "cameraTransformation");
 
-    glm::mat4x4 cameraTransformation = perspective ?
+    glm::mat4x4 cameraTransformation = perspective || renderingDepthMap ?
       this->cameraTransformation :
       glm::mat4x4(1);
 
@@ -652,10 +690,20 @@ namespace small3d {
     GLint cameraOffsetUniform = glGetUniformLocation(shaderProgram,
       "cameraOffset");
 
-    glm::vec3 cameraPositionOut = perspective ?
+    glm::vec3 cameraPositionOut = perspective || renderingDepthMap ?
       cameraPosition : glm::vec3(0.0f, 0.0f, 0.0f);
     glUniform3fv(cameraOffsetUniform, 1, glm::value_ptr(cameraPositionOut));
 
+    GLint lightSpaceMatrixUniform = glGetUniformLocation(shaderProgram,
+      "lightSpaceMatrix");
+
+    glUniformMatrix4fv(lightSpaceMatrixUniform, 1, GL_FALSE,
+      glm::value_ptr(lightSpaceMatrix));
+
+    GLint orthographicMatrixUniform = glGetUniformLocation(shaderProgram,
+      "orthographicMatrix");
+    glUniformMatrix4fv(orthographicMatrixUniform, 1, GL_FALSE,
+      glm::value_ptr(orthographicMatrix));
   }
 
   void Renderer::bindTexture(const std::string & name) {
@@ -825,7 +873,16 @@ namespace small3d {
   }
 
   void Renderer::stop() {
+
+    glDeleteFramebuffers(1, &depthMapFramebuffer);
+    depthMapFramebuffer = 0;
+    
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE0 + 1);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    
+    glDeleteTextures(0, &depthMapTexture);
 
     //At times, this has caused crashes on MacOS
     for (auto it = textures.begin();
@@ -976,7 +1033,7 @@ namespace small3d {
 
   void Renderer::deleteTexture(const std::string & name) {
     auto nameTexturePair = textures.find(name);
-
+    glActiveTexture(GL_TEXTURE0);
     if (nameTexturePair != textures.end()) {
       glBindTexture(GL_TEXTURE_2D, 0);
       glDeleteTextures(1, &(nameTexturePair->second));
@@ -1037,48 +1094,51 @@ namespace small3d {
 
   }
 
-  void Renderer::render(Model & model, const glm::vec3 & offset,
-    const glm::mat4x4 & rotation,
-    const glm::vec4 & colour,
-    const std::string & textureName,
-    const bool perspective) {
+  void Renderer::renderTuple(std::tuple< Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool> tuple) {
 
-    if (!perspective) {
+    Model *model = std::get<0>(tuple);
+      glm::vec3 offset = std::get<1>(tuple);
+      glm::mat4x4 rotation = std::get<2>(tuple);
+      glm::vec4 colour = std::get<3>(tuple);
+      std::string textureName = std::get<4>(tuple);
+      bool perspective = std::get<5>(tuple);
+
+    if (!perspective && !renderingDepthMap) {
       glClear(GL_DEPTH_BUFFER_BIT);
     }
 
     glUseProgram(shaderProgram);
 
     GLint bufSize = 0;
-    glBindBuffer(GL_ARRAY_BUFFER, model.positionBufferObjectId);
+    glBindBuffer(GL_ARRAY_BUFFER, model->positionBufferObjectId);
     glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufSize);
 
     bool alreadyInGPU = bufSize > 0;
 
     if (!alreadyInGPU) {
-      glGenBuffers(1, &model.indexBufferObjectId);
-      glGenBuffers(1, &model.positionBufferObjectId);
-      glGenBuffers(1, &model.normalsBufferObjectId);
-      glGenBuffers(1, &model.uvBufferObjectId);
-      glGenBuffers(1, &model.jointBufferObjectId);
-      glGenBuffers(1, &model.weightBufferObjectId);
+      glGenBuffers(1, &model->indexBufferObjectId);
+      glGenBuffers(1, &model->positionBufferObjectId);
+      glGenBuffers(1, &model->normalsBufferObjectId);
+      glGenBuffers(1, &model->uvBufferObjectId);
+      glGenBuffers(1, &model->jointBufferObjectId);
+      glGenBuffers(1, &model->weightBufferObjectId);
     }
 
     // Vertices
-    glBindBuffer(GL_ARRAY_BUFFER, model.positionBufferObjectId);
+    glBindBuffer(GL_ARRAY_BUFFER, model->positionBufferObjectId);
     if (!alreadyInGPU) {
       glBufferData(GL_ARRAY_BUFFER,
-        model.vertexDataByteSize,
-        model.vertexData.data(),
+        model->vertexDataByteSize,
+        model->vertexData.data(),
         GL_STATIC_DRAW);
     }
 
     // Vertex indices
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model.indexBufferObjectId);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->indexBufferObjectId);
     if (!alreadyInGPU) {
       glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-        model.indexDataByteSize,
-        model.indexData.data(),
+        model->indexDataByteSize,
+        model->indexData.data(),
         GL_STATIC_DRAW);
     }
 
@@ -1087,20 +1147,20 @@ namespace small3d {
 
     // Normals
 
-    glBindBuffer(GL_ARRAY_BUFFER, model.normalsBufferObjectId);
+    glBindBuffer(GL_ARRAY_BUFFER, model->normalsBufferObjectId);
 
     if (!alreadyInGPU) {
-      if (model.normalsDataByteSize > 0) {
+      if (model->normalsDataByteSize > 0) {
         glBufferData(GL_ARRAY_BUFFER,
-          model.normalsDataByteSize,
-          model.normalsData.data(),
+          model->normalsDataByteSize,
+          model->normalsData.data(),
           GL_STATIC_DRAW);
       }
       else {
         // The normals buffer is created with 0 values if the corresponding
         // data does not exist, otherwise there can be a EXC_BAD_ACCESS
         // when running glDrawElements on MacOS.
-        size_t ns = (model.vertexDataByteSize / 4) * 3;
+        size_t ns = (model->vertexDataByteSize / 4) * 3;
         std::unique_ptr<char[]> data = std::make_unique<char[]>(ns);
         glBufferData(GL_ARRAY_BUFFER,
           ns,
@@ -1112,12 +1172,12 @@ namespace small3d {
     glEnableVertexAttribArray(attrib_normal);
     glVertexAttribPointer(attrib_normal, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-    if (model.jointDataByteSize != 0) {
-      glBindBuffer(GL_ARRAY_BUFFER, model.jointBufferObjectId);
+    if (model->jointDataByteSize != 0) {
+      glBindBuffer(GL_ARRAY_BUFFER, model->jointBufferObjectId);
       if (!alreadyInGPU) {
         glBufferData(GL_ARRAY_BUFFER,
-          model.jointDataByteSize,
-          model.jointData.data(),
+          model->jointDataByteSize,
+          model->jointData.data(),
           GL_STATIC_DRAW);
       }
 
@@ -1130,12 +1190,12 @@ namespace small3d {
 
     }
 
-    if (model.weightDataByteSize != 0) {
-      glBindBuffer(GL_ARRAY_BUFFER, model.weightBufferObjectId);
+    if (model->weightDataByteSize != 0) {
+      glBindBuffer(GL_ARRAY_BUFFER, model->weightBufferObjectId);
       if (!alreadyInGPU) {
         glBufferData(GL_ARRAY_BUFFER,
-          model.weightDataByteSize,
-          model.weightData.data(),
+          model->weightDataByteSize,
+          model->weightData.data(),
           GL_STATIC_DRAW);
       }
 
@@ -1157,12 +1217,12 @@ namespace small3d {
 
       // UV Coordinates
 
-      glBindBuffer(GL_ARRAY_BUFFER, model.uvBufferObjectId);
+      glBindBuffer(GL_ARRAY_BUFFER, model->uvBufferObjectId);
 
       if (!alreadyInGPU) {
         glBufferData(GL_ARRAY_BUFFER,
-          model.textureCoordsDataByteSize,
-          model.textureCoordsData.data(),
+          model->textureCoordsDataByteSize,
+          model->textureCoordsData.data(),
           GL_STATIC_DRAW);
       }
 
@@ -1174,26 +1234,38 @@ namespace small3d {
       glUniform4fv(colourUniform, 1, glm::value_ptr(colour));
       bindTexture("blank");
     }
-
+    glActiveTexture(GL_TEXTURE0 + 1);
+    glBindTexture(GL_TEXTURE_2D, depthMapTexture);
+   
     setWorldDetails(perspective);
 
-    transform(model, offset, rotation);
+    transform(*model, offset, rotation);
 
     // Draw
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glDrawElements(GL_TRIANGLES,
-      static_cast<GLsizei>(model.indexData.size()),
+      static_cast<GLsizei>(model->indexData.size()),
       GL_UNSIGNED_INT, 0);
 
     glDisableVertexAttribArray(attrib_position);
     glDisableVertexAttribArray(attrib_normal);
-    if (model.jointDataByteSize != 0) glDisableVertexAttribArray(attrib_joint);
-    if (model.weightDataByteSize != 0) glDisableVertexAttribArray(attrib_weight);
+    if (model->jointDataByteSize != 0) glDisableVertexAttribArray(attrib_joint);
+    if (model->weightDataByteSize != 0) glDisableVertexAttribArray(attrib_weight);
     if (textureName != "") glDisableVertexAttribArray(attrib_uv);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     glUseProgram(0);
+  }
+
+  void Renderer::render(Model & model, const glm::vec3 & offset,
+    const glm::mat4x4 & rotation,
+    const glm::vec4 & colour,
+    const std::string & textureName,
+    const bool perspective) {
+
+    renderList.push_back(std::tuple<Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool>{&model, offset, rotation, colour, textureName, perspective});
+    
   }
 
   void Renderer::render(Model & model, const glm::vec3 & offset,
@@ -1262,7 +1334,60 @@ namespace small3d {
   }
 
   void Renderer::swapBuffers() {
+
+    if (shadowsActive) {
+      lightSpaceMatrix = glm::mat4x4(0);
+      
+      glViewport(0, 0, depthMapTextureWidth, depthMapTextureHeight);
+      glBindFramebuffer(GL_FRAMEBUFFER, depthMapFramebuffer);
+      glClear(GL_DEPTH_BUFFER_BIT);
+      
+      // Store "normal" camera position and transformation (rotation)
+      auto tmpCamTr = cameraTransformation;
+      auto tmpCamPos = cameraPosition;
+
+      // Position camera at 0. Position (translation) will be stored with transformation.
+      cameraPosition = glm::vec3(0);
+
+      setCameraTransformation(shadowCamTransformation);
+      
+      // Render in orthographic mode on depth map framebuffer, only the models that are to be drawn using perspective
+      // (Orthographically rendered models will not produce shadows as they are mostly used for messages and interface
+      // components)
+      renderingDepthMap = true;
+      glCullFace(GL_FRONT); // Avoid peter panning
+      for (auto& tuple : renderList) {
+        if (std::get<5>(tuple)) {
+          auto tmpt = tuple;
+	  if (std::get<0>(tuple)->noShadow) {
+	    continue;
+	  }
+          std::get<5>(tmpt) = false;
+          renderTuple(tmpt);
+        }
+      }
+      renderingDepthMap = false;
+      glCullFace(GL_BACK);
+
+      // Store the light space camera transformation to be used during normal rendering to position shadows
+      lightSpaceMatrix = cameraTransformation;
+      
+      // Return to "normal" camera rotation and position
+      cameraTransformation = tmpCamTr;
+      cameraPosition = tmpCamPos;
+
+      glBindFramebuffer(GL_FRAMEBUFFER, 0);
+      glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
+        static_cast<GLsizei>(realScreenHeight));
+    }
+
+    for (auto& tuple : renderList) {
+      renderTuple(tuple);
+    }
+    renderList.clear();
+
 #ifndef SMALL3D_OPENGLES
+
     glfwSwapBuffers(window);
     clearScreen();
 #else
