@@ -442,12 +442,14 @@ namespace small3d {
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
+#ifndef SMALL3D_OPENGLES
     GLint colourTextureLocation = glGetUniformLocation(shaderProgram, "textureImage");
     GLint depthMapTextureLocation = glGetUniformLocation(shaderProgram, "shadowMap");
    
     glProgramUniform1i(shaderProgram, colourTextureLocation, 0);
     glProgramUniform1i(shaderProgram, depthMapTextureLocation, 1);
-
+#endif
+    
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
@@ -460,7 +462,8 @@ namespace small3d {
     blankImage.toColour(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
     generateTexture("blank", blankImage);
     LOGDEBUG("Blank image generated");
-
+    
+#ifndef SMALL3D_OPENGLES
     glGenTextures(1, &depthMapTexture);
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_2D, depthMapTexture);
@@ -488,7 +491,7 @@ namespace small3d {
       glm::rotate(glm::mat4x4(1.0f), -shadowCamRotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
       glm::rotate(glm::mat4x4(1.0f), -shadowCamRotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), -shadowCamRotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-      
+#endif  
   }
 
   void Renderer::initWindow(int& width, int& height,
@@ -873,17 +876,22 @@ namespace small3d {
   }
 
   void Renderer::stop() {
-
+#ifndef SMALL3D_OPENGLES
     glDeleteFramebuffers(1, &depthMapFramebuffer);
     depthMapFramebuffer = 0;
-    
+#endif
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+#ifndef SMALL3D_OPENGLES
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_2D, 0);
-    
-    glDeleteTextures(0, &depthMapTexture);
+#endif
 
+#ifndef SMALL3D_OPENGLES
+    glDeleteTextures(0, &depthMapTexture);
+#endif
+    
     //At times, this has caused crashes on MacOS
     for (auto it = textures.begin();
       it != textures.end(); ++it) {
@@ -1234,9 +1242,12 @@ namespace small3d {
       glUniform4fv(colourUniform, 1, glm::value_ptr(colour));
       bindTexture("blank");
     }
+
+#ifndef SMALL3D_OPENGLES
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_2D, depthMapTexture);
-   
+#endif
+    
     setWorldDetails(perspective);
 
     transform(*model, offset, rotation);
@@ -1334,7 +1345,7 @@ namespace small3d {
   }
 
   void Renderer::swapBuffers() {
-
+#ifndef SMALL3D_OPENGLES
     if (shadowsActive) {
       lightSpaceMatrix = glm::mat4x4(0);
       
@@ -1380,7 +1391,7 @@ namespace small3d {
       glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
         static_cast<GLsizei>(realScreenHeight));
     }
-
+#endif
     for (auto& tuple : renderList) {
       renderTuple(tuple);
     }

@@ -28,6 +28,7 @@ https://www.gamedev.net/tutorials/programming/engines-and-middleware/small3d-tut
 - Font rendering
 - Sound
 - Collision detection
+- Shadow mapping - only implemented for the OpenGL (PC) renderer
 
 ## Supported platforms
 

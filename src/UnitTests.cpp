@@ -259,7 +259,7 @@ int ScaleAndTransformTest() {
 
 int GlbTextureTest() {
   initRenderer();
-
+  
   double startSeconds = getTimeInSeconds();
   double seconds = getTimeInSeconds();
   double prevSeconds = seconds;
@@ -279,13 +279,13 @@ int GlbTextureTest() {
   goat.startAnimating();
   tree.position = glm::vec3(0.0f, 0.0f, -4.0f);
 
-  while (seconds - startSeconds < 40.0) {
+  while (seconds - startSeconds < 4.0) {
     pollEvents();
     seconds = getTimeInSeconds();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
       goat.animate();
-      //if (goat.position.z < 0.0f) goat.position.z += 0.01f;
+     
 
       r->render(goat, "goatGlbTexture");
       r->render(tree, "treeGlbTexture");
@@ -294,7 +294,7 @@ int GlbTextureTest() {
       goat.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
     }
   }
-
+  
   return 1;
 }
 
