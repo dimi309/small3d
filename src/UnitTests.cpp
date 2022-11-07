@@ -259,7 +259,9 @@ int ScaleAndTransformTest() {
 
 int GlbTextureTest() {
   initRenderer();
-  
+#if defined(SMALL3D_OPENGL)
+  r->shadowsActive = true;
+#endif
   double startSeconds = getTimeInSeconds();
   double seconds = getTimeInSeconds();
   double prevSeconds = seconds;
@@ -294,7 +296,9 @@ int GlbTextureTest() {
       goat.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
     }
   }
-  
+#if defined(SMALL3D_OPENGL)
+  r->shadowsActive = false;
+#endif
   return 1;
 }
 

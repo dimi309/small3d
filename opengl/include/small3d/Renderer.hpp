@@ -170,7 +170,7 @@ namespace small3d
     /**
     * @brief: Render shadows?
     */
-    bool shadowsActive = true;
+    bool shadowsActive = false;
 
     /**
      * @brief: Shadows transformation. The "light source point of view".

@@ -487,7 +487,7 @@ namespace small3d {
     // Shadow camera will be facing down (rotate 90 degrees around the x axis)
     glm::vec3 shadowCamRotation = glm::vec3(1.57f, 0.0f, 0.0f);
     shadowCamTransformation = 
-      glm::translate(glm::mat4x4(1.0f), glm::vec3(0.0f, 8.0f, -3.0f)) *
+      glm::translate(glm::mat4x4(1.0f), glm::vec3(1.0f, 6.0f, -4.0f)) *
       glm::rotate(glm::mat4x4(1.0f), -shadowCamRotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
       glm::rotate(glm::mat4x4(1.0f), -shadowCamRotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), -shadowCamRotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -1346,9 +1346,8 @@ namespace small3d {
 
   void Renderer::swapBuffers() {
 #ifndef SMALL3D_OPENGLES
+    lightSpaceMatrix = glm::mat4x4(0);
     if (shadowsActive) {
-      lightSpaceMatrix = glm::mat4x4(0);
-      
       glViewport(0, 0, depthMapTextureWidth, depthMapTextureHeight);
       glBindFramebuffer(GL_FRAMEBUFFER, depthMapFramebuffer);
       glClear(GL_DEPTH_BUFFER_BIT);
