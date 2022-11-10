@@ -53,7 +53,8 @@ namespace small3d {
   VkDescriptorSetLayout Renderer::descriptorSetLayout;
   VkDescriptorSet Renderer::descriptorSet[MAX_FRAMES_PREPARED];
   VkDescriptorSetLayout Renderer::textureDescriptorSetLayout;
-  VkDescriptorSetLayout Renderer::perspectiveLayouts[2];
+  VkDescriptorSetLayout Renderer::shadowMapDescriptorSetLayout;
+  VkDescriptorSetLayout Renderer::perspectiveLayouts[3];
 
   int Renderer::realScreenWidth;
   int Renderer::realScreenHeight;
@@ -131,10 +132,38 @@ namespace small3d {
     pipelineLayoutCreateInfo) {
     perspectiveLayouts[0] = descriptorSetLayout;
     perspectiveLayouts[1] = textureDescriptorSetLayout;
-    pipelineLayoutCreateInfo->setLayoutCount = 2;
+    perspectiveLayouts[2] = shadowMapDescriptorSetLayout;
+    pipelineLayoutCreateInfo->setLayoutCount = 3;
     pipelineLayoutCreateInfo->pSetLayouts = perspectiveLayouts;
 
     return 1;
+  }
+
+  void Renderer::updateShadowMapDescriptorSet(const uint32_t currentFrameIndex) {
+    
+
+      // Write shadow map descriptor set
+
+      VkDescriptorImageInfo diiTexture = {};
+
+      diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+      diiTexture.imageView = vh_shadow_image_view;
+      diiTexture.sampler = shadowMapSampler;
+
+      VkWriteDescriptorSet wds = {};
+
+      wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+      wds.dstSet = shadowMapDescriptorSet[currentFrameIndex];
+      wds.dstBinding = shadowMapDescBinding;
+      wds.dstArrayElement = 0;
+      wds.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+      wds.descriptorCount = 1;
+      wds.pBufferInfo = NULL;
+      wds.pImageInfo = &diiTexture;
+      wds.pTexelBufferView = NULL;
+
+      vkUpdateDescriptorSets(vh_logical_device, 1, &wds, 0, NULL);
+    
   }
 
   int Renderer::bindBuffers(VkCommandBuffer commandBuffer, const Model& model) {
@@ -181,11 +210,11 @@ namespace small3d {
       dynamicModelPlacementOffset,
       dynamicColourOffset };
 
-    const VkDescriptorSet descriptorSets[2] =
-    { descriptorSet[currentFrameIndex], getTextureHandle(model.textureName).descriptorSet[currentFrameIndex] };
+    const VkDescriptorSet descriptorSets[3] =
+    { descriptorSet[currentFrameIndex], getTextureHandle(model.textureName).descriptorSet[currentFrameIndex], shadowMapDescriptorSet[currentFrameIndex] };
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-      pipelineLayout, 0, 2,
+      pipelineLayout, 0, 3,
       descriptorSets, 3, dynamicOffsets);
 
     vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(),
@@ -202,7 +231,7 @@ namespace small3d {
     ps[0].descriptorCount = 3 * MAX_FRAMES_PREPARED; // For uboWorld, uboModelPlacement and uboColour (3) 
 
     ps[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    ps[1].descriptorCount = MAX_FRAMES_PREPARED * objectsPerFrame;
+    ps[1].descriptorCount = 2 * MAX_FRAMES_PREPARED * objectsPerFrame; // For texture and shadow map (2)
 
     ps[2].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     ps[2].descriptorCount = MAX_FRAMES_PREPARED; // For uboLight
@@ -321,77 +350,122 @@ namespace small3d {
       LOGDEBUG("Created texture descriptor set layout.");
     }
 
+    memset(dslb, 0, 4 * sizeof(VkDescriptorSetLayoutBinding));
+
+    // textureShader - shadowMap
+    dslb[0].binding = shadowMapDescBinding;
+    dslb[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    dslb[0].descriptorCount = 1;
+    dslb[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    dslb[0].pImmutableSamplers = NULL;
+
+    memset(&dslci, 0, sizeof(VkDescriptorSetLayoutCreateInfo));
+    dslci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    dslci.bindingCount = 1;
+    dslci.pBindings = dslb;
+
+    if (vkCreateDescriptorSetLayout(vh_logical_device, &dslci, NULL,
+      &shadowMapDescriptorSetLayout) != VK_SUCCESS) {
+      throw std::runtime_error("Failed to create shadow map "
+        "descriptor set layout.");
+    }
+    else {
+      LOGDEBUG("Created shadow map descriptor set layout.");
+    }
+
+    // Allocate shadow map descriptor set
+
+    memset(&dsai, 0, sizeof(VkDescriptorSetAllocateInfo));
+
+    dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    dsai.descriptorPool = descriptorPool;
+    dsai.descriptorSetCount = 1;
+    dsai.pSetLayouts = &shadowMapDescriptorSetLayout;
+
+    for (int idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
+      shadowMapDescriptorSet[idx] = {};
+      if (vkAllocateDescriptorSets(vh_logical_device, &dsai,
+        &shadowMapDescriptorSet[idx]) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to allocate shadow map descriptor set.");
+      }
+    }
+    LOGDEBUG("Allocated shadow map descriptor set.");
   }
 
   void Renderer::updateDescriptorSets() {
 
-    VkDescriptorBufferInfo dbiWorld = {};
-    dbiWorld.buffer = worldDetailsBuffersDynamic[currentFrameIndex];
-    dbiWorld.offset = 0;
-    dbiWorld.range = sizeof(UboWorldDetails);
+    for (int idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
 
-    VkDescriptorBufferInfo dbiModelPlacement = {};
+      VkDescriptorBufferInfo dbiWorld = {};
+      dbiWorld.buffer = worldDetailsBuffersDynamic[idx];
+      dbiWorld.offset = 0;
+      dbiWorld.range = sizeof(UboWorldDetails);
 
-    dbiModelPlacement.buffer =
-      renderModelPlacementBuffersDynamic[currentFrameIndex];
-    dbiModelPlacement.offset = 0;
-    dbiModelPlacement.range = sizeof(UboModelPlacement);
+      VkDescriptorBufferInfo dbiModelPlacement = {};
 
-    VkDescriptorBufferInfo dbiColour = {};
+      dbiModelPlacement.buffer =
+        renderModelPlacementBuffersDynamic[idx];
+      dbiModelPlacement.offset = 0;
+      dbiModelPlacement.range = sizeof(UboModelPlacement);
 
-    dbiColour.buffer = colourBuffersDynamic[currentFrameIndex];
-    dbiColour.offset = 0;
-    dbiColour.range = sizeof(UboColour);
+      VkDescriptorBufferInfo dbiColour = {};
 
-    VkDescriptorBufferInfo dbiLight = {};
+      dbiColour.buffer = colourBuffersDynamic[idx];
+      dbiColour.offset = 0;
+      dbiColour.range = sizeof(UboColour);
 
-    dbiLight.buffer = lightIntensityBuffers[currentFrameIndex];
-    dbiLight.offset = 0;
-    dbiLight.range = sizeof(UboLight);
+      VkDescriptorBufferInfo dbiLight = {};
 
-    std::vector<VkWriteDescriptorSet> wds(4);
+      dbiLight.buffer = lightIntensityBuffers[idx];
+      dbiLight.offset = 0;
+      dbiLight.range = sizeof(UboLight);
 
-    wds[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[0].dstSet = descriptorSet[currentFrameIndex];
-    wds[0].dstBinding = worldDescBinding;
-    wds[0].dstArrayElement = 0;
-    wds[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    wds[0].descriptorCount = 1;
-    wds[0].pBufferInfo = &dbiWorld;
-    wds[0].pImageInfo = NULL;
-    wds[0].pTexelBufferView = NULL;
+      std::vector<VkWriteDescriptorSet> wds(4);
 
-    wds[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[1].dstSet = descriptorSet[currentFrameIndex];
-    wds[1].dstBinding = modelPlacementDescBinding;
-    wds[1].dstArrayElement = 0;
-    wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    wds[1].descriptorCount = 1;
-    wds[1].pBufferInfo = &dbiModelPlacement;
-    wds[1].pImageInfo = NULL;
-    wds[1].pTexelBufferView = NULL;
+      wds[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+      wds[0].dstSet = descriptorSet[idx];
+      wds[0].dstBinding = worldDescBinding;
+      wds[0].dstArrayElement = 0;
+      wds[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+      wds[0].descriptorCount = 1;
+      wds[0].pBufferInfo = &dbiWorld;
+      wds[0].pImageInfo = NULL;
+      wds[0].pTexelBufferView = NULL;
 
-    wds[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[2].dstSet = descriptorSet[currentFrameIndex];
-    wds[2].dstBinding = colourDescBinding;
-    wds[2].dstArrayElement = 0;
-    wds[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    wds[2].descriptorCount = 1;
-    wds[2].pBufferInfo = &dbiColour;
-    wds[2].pImageInfo = NULL;
-    wds[2].pTexelBufferView = NULL;
+      wds[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+      wds[1].dstSet = descriptorSet[idx];
+      wds[1].dstBinding = modelPlacementDescBinding;
+      wds[1].dstArrayElement = 0;
+      wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+      wds[1].descriptorCount = 1;
+      wds[1].pBufferInfo = &dbiModelPlacement;
+      wds[1].pImageInfo = NULL;
+      wds[1].pTexelBufferView = NULL;
 
-    wds[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    wds[3].dstSet = descriptorSet[currentFrameIndex];
-    wds[3].dstBinding = lightDescBinding;
-    wds[3].dstArrayElement = 0;
-    wds[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    wds[3].descriptorCount = 1;
-    wds[3].pBufferInfo = &dbiLight;
-    wds[3].pImageInfo = NULL;
-    wds[3].pTexelBufferView = NULL;
+      wds[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+      wds[2].dstSet = descriptorSet[idx];
+      wds[2].dstBinding = colourDescBinding;
+      wds[2].dstArrayElement = 0;
+      wds[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+      wds[2].descriptorCount = 1;
+      wds[2].pBufferInfo = &dbiColour;
+      wds[2].pImageInfo = NULL;
+      wds[2].pTexelBufferView = NULL;
 
-    vkUpdateDescriptorSets(vh_logical_device, 4, &wds[0], 0, NULL);
+      wds[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+      wds[3].dstSet = descriptorSet[idx];
+      wds[3].dstBinding = lightDescBinding;
+      wds[3].dstArrayElement = 0;
+      wds[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      wds[3].descriptorCount = 1;
+      wds[3].pBufferInfo = &dbiLight;
+      wds[3].pImageInfo = NULL;
+      wds[3].pTexelBufferView = NULL;
+
+      vkUpdateDescriptorSets(vh_logical_device, 4, &wds[0], 0, NULL);
+
+      updateShadowMapDescriptorSet(idx);
+    }
   }
 
   void Renderer::destroyDescriptorSets() {
@@ -557,7 +631,7 @@ namespace small3d {
     vh_transition_image_layout(textureHandlePtr->image,
       imageFormat,
       VK_IMAGE_LAYOUT_UNDEFINED,
-      VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+      VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 0);
 
     vh_copy_buffer_to_image(stagingBuffer, textureHandlePtr->image,
       (uint32_t)textureHandlePtr->width, (uint32_t)textureHandlePtr->height);
@@ -567,7 +641,7 @@ namespace small3d {
     vh_transition_image_layout(textureHandlePtr->image,
       imageFormat,
       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, 0);
 
     if (!vh_create_image_view(&textureHandlePtr->imageView, textureHandlePtr->image,
       imageFormat,
@@ -613,8 +687,6 @@ namespace small3d {
 
       vkUpdateDescriptorSets(vh_logical_device, 1, &wds, 0, NULL);
     }
-
-
 
     if (!found || replace) {
       textures.insert(make_pair(name, *textureHandlePtr));
@@ -845,25 +917,22 @@ namespace small3d {
 #endif
 }
 
-  void Renderer::setWorldDetails(bool perspective) {
+  void Renderer::setWorldDetails(const glm::mat4x4& perspectiveMatrix) {
 
-    uint32_t worldDetailsIndex = perspective ? 0 : 1;
+    uboWorldDetailsDynamic[0] = {};
+    uboWorldDetailsDynamic[1] = {};
 
-    uboWorldDetailsDynamic[worldDetailsIndex] = {};
+    uboWorldDetailsDynamic[0].perspectiveMatrix = perspectiveMatrix;
+    uboWorldDetailsDynamic[1].perspectiveMatrix = glm::mat4x4(1);
 
-    uboWorldDetailsDynamic[worldDetailsIndex].perspectiveMatrix = perspective && realScreenHeight != 0 ?
-      glm::perspective(fieldOfView, static_cast<float>(realScreenWidth / realScreenHeight), zNear, zFar) :
-      glm::mat4x4(1);
+    uboWorldDetailsDynamic[0].lightDirection = lightDirection;
+    uboWorldDetailsDynamic[1].lightDirection = glm::vec3(0.0f, 0.0f, 0.0f);
 
-    uboWorldDetailsDynamic[worldDetailsIndex].lightDirection = perspective ?
-      lightDirection : glm::vec3(0.0f, 0.0f, 0.0f);
+    uboWorldDetailsDynamic[0].cameraOffset = cameraPosition;
+    uboWorldDetailsDynamic[1].cameraOffset = glm::vec3(0.0f, 0.0f, 0.0f);
 
-    uboWorldDetailsDynamic[worldDetailsIndex].cameraOffset = perspective ?
-      cameraPosition : glm::vec3(0.0f, 0.0f, 0.0f);
-
-    uboWorldDetailsDynamic[worldDetailsIndex].cameraTransformation = perspective ?
-      cameraTransformation :
-      glm::mat4x4(1);
+    uboWorldDetailsDynamic[0].cameraTransformation = cameraTransformation;
+    uboWorldDetailsDynamic[1].cameraTransformation = glm::mat4x4(1);
 
   }
 
@@ -917,6 +986,103 @@ namespace small3d {
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     window = 0;
 #endif
+
+  }
+
+  void Renderer::drawNextModels(bool onlyShadows) {
+   
+    vh_destroy_draw_command_buffer(&commandBuffer[currentFrameIndex]);
+
+    modelPlacementMemIndex = 0;
+    colourMemIndex = 0;
+
+    // Store "normal" camera position and transformation (rotation)
+    auto tmpCamTr = cameraTransformation;
+    auto tmpCamPos = cameraPosition;
+
+    if (onlyShadows && shadowsActive) {
+      
+      // Position camera at 0. Position (translation) stored with transformation.
+      cameraPosition = glm::vec3(0);
+      cameraTransformation = shadowCamTransformation;
+
+      setWorldDetails(orthographicMatrix);
+      uboWorldDetailsDynamic[0].lightSpaceMatrix = glm::mat4x4(0);
+      uboWorldDetailsDynamic[0].orthographicMatrix = glm::mat4x4(0);
+
+      cameraPosition = tmpCamPos;
+      cameraTransformation = tmpCamTr;
+    }
+    else {
+
+      setWorldDetails(realScreenHeight != 0 ?
+        glm::perspective(fieldOfView, static_cast<float>(realScreenWidth / realScreenHeight), zNear, zFar) :
+        glm::mat4x4(1));
+      uboWorldDetailsDynamic[0].lightSpaceMatrix = shadowCamTransformation;
+      uboWorldDetailsDynamic[0].orthographicMatrix = orthographicMatrix;
+    }
+
+    setLightIntensity();
+
+    // Updating object positioning 
+    void* modelPlacementData;
+    vkMapMemory(vh_logical_device,
+      renderModelPlacementBuffersDynamicMemory[currentFrameIndex],
+      0, uboModelPlacementDynamicSize, 0, &modelPlacementData);
+    memcpy(modelPlacementData, uboModelPlacementDynamic, uboModelPlacementDynamicSize);
+    vkUnmapMemory(vh_logical_device,
+      renderModelPlacementBuffersDynamicMemory[currentFrameIndex]);
+
+    // Updating world details
+    void* worldDetailsData;
+    vkMapMemory(vh_logical_device,
+      worldDetailsBuffersDynamicMemory[currentFrameIndex],
+      0, uboWorldDetailsDynamicSize, 0, &worldDetailsData);
+    memcpy(worldDetailsData, uboWorldDetailsDynamic, uboWorldDetailsDynamicSize);
+    vkUnmapMemory(vh_logical_device,
+      worldDetailsBuffersDynamicMemory[currentFrameIndex]);
+
+    // Updating colour
+    void* colourData;
+    vkMapMemory(vh_logical_device,
+      colourBuffersDynamicMemory[currentFrameIndex],
+      0, uboColourDynamicSize, 0, &colourData);
+    memcpy(colourData, uboColourDynamic, uboColourDynamicSize);
+    vkUnmapMemory(vh_logical_device,
+      colourBuffersDynamicMemory[currentFrameIndex]);
+    
+    if (vh_new_pipeline_state) {
+      updateDescriptorSets();
+    }
+
+    vh_begin_draw_command_buffer(&commandBuffer[currentFrameIndex]);
+
+    for (auto model : nextModelsToDraw) {
+
+      if (onlyShadows && (model->noShadow || !model->perspective)) {
+        continue;
+      }
+
+      vh_bind_pipeline_to_command_buffer(pipelineIndex,
+        &commandBuffer[currentFrameIndex]);
+      bindBuffers(commandBuffer[currentFrameIndex], *model);
+
+      if (!model->perspective) {
+        vh_clear_depth_image(&commandBuffer[currentFrameIndex]);
+      }
+
+      recordDrawCommand(commandBuffer[currentFrameIndex],
+        vh_pipeline_layout[pipelineIndex],
+        *model, currentFrameIndex, model->perspective);
+    }
+
+    vh_end_draw_command_buffer(&commandBuffer[currentFrameIndex]);
+
+    vh_draw(&commandBuffer[currentFrameIndex], onlyShadows? 1 : 0);
+
+    if (onlyShadows) {
+      vh_copy_depth_to_shadow_image();
+    }
 
   }
 
@@ -1627,66 +1793,12 @@ namespace small3d {
 
     vh_acquire_next_image(pipelineIndex,
       &imageIndexNotNeeded, &currentFrameIndex);
-    
+
     vh_wait_gpu_cpu_fence(currentFrameIndex);
-    vh_destroy_draw_command_buffer(&commandBuffer[currentFrameIndex]);
+    
+    drawNextModels(true);
 
-    modelPlacementMemIndex = 0;
-    colourMemIndex = 0;
-
-    setWorldDetails(true);
-    setWorldDetails(false);
-    setLightIntensity();
-
-    // Updating object positioning 
-    void* modelPlacementData;
-    vkMapMemory(vh_logical_device,
-      renderModelPlacementBuffersDynamicMemory[currentFrameIndex],
-      0, uboModelPlacementDynamicSize, 0, &modelPlacementData);
-    memcpy(modelPlacementData, uboModelPlacementDynamic, uboModelPlacementDynamicSize);
-    vkUnmapMemory(vh_logical_device,
-      renderModelPlacementBuffersDynamicMemory[currentFrameIndex]);
-
-    // Updating world details
-    void* worldDetailsData;
-    vkMapMemory(vh_logical_device,
-      worldDetailsBuffersDynamicMemory[currentFrameIndex],
-      0, uboWorldDetailsDynamicSize, 0, &worldDetailsData);
-    memcpy(worldDetailsData, uboWorldDetailsDynamic, uboWorldDetailsDynamicSize);
-    vkUnmapMemory(vh_logical_device,
-      worldDetailsBuffersDynamicMemory[currentFrameIndex]);
-
-    // Updating colour
-    void* colourData;
-    vkMapMemory(vh_logical_device,
-      colourBuffersDynamicMemory[currentFrameIndex],
-      0, uboColourDynamicSize, 0, &colourData);
-    memcpy(colourData, uboColourDynamic, uboColourDynamicSize);
-    vkUnmapMemory(vh_logical_device,
-      colourBuffersDynamicMemory[currentFrameIndex]);
-
-    // All of the above is bound here.
-    updateDescriptorSets();
-
-    vh_begin_draw_command_buffer(&commandBuffer[currentFrameIndex]);
-
-    for (auto model : nextModelsToDraw) {
-      vh_bind_pipeline_to_command_buffer(pipelineIndex,
-        &commandBuffer[currentFrameIndex]);
-      bindBuffers(commandBuffer[currentFrameIndex], *model);
-
-      if (!model->perspective) {
-        vh_clear_depth_image(&commandBuffer[currentFrameIndex]);
-      }
-
-      recordDrawCommand(commandBuffer[currentFrameIndex],
-        vh_pipeline_layout[pipelineIndex],
-        *model, currentFrameIndex, model->perspective);
-    }
-
-    vh_end_draw_command_buffer(&commandBuffer[currentFrameIndex]);
-
-    vh_draw(&commandBuffer[currentFrameIndex]);
+    drawNextModels(false);
 
     vh_present_next_image();
 
@@ -1801,20 +1913,22 @@ namespace small3d {
 
     createDescriptorPool();
     allocateDescriptorSets();
-    // Shader with joints does not compile on some Android GPUs
+
+    // Attention: Shader with joints does not compile on some Android GPUs
     // like Adreno (Qualcomm)
-#if !defined(__ANDROID__)
+
     std::string vertexShaderPath = this->shadersPath +
       "perspectiveMatrixLightedShader.spv";
-#else
-    std::string vertexShaderPath = this->shadersPath +
-      "perspectiveMatrixLightedShaderNoJoints.spv";
-#endif
+
     std::string fragmentShaderPath = this->shadersPath +
       "textureShader.spv";
 
     if (!vh_create_sampler(&textureSampler)) {
-      throw std::runtime_error("Failed to create the sampler!");
+      throw std::runtime_error("Failed to create the texture sampler!");
+    }
+
+    if (!vh_create_sampler(&shadowMapSampler)) {
+      throw std::runtime_error("Failed to create the shadow map sampler!");
     }
 
     if (!vh_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
@@ -1870,6 +1984,8 @@ namespace small3d {
     vh_destroy_pipeline(pipelineIndex);
 
     vkDestroySampler(vh_logical_device, textureSampler, NULL);
+
+    vkDestroySampler(vh_logical_device, shadowMapSampler, NULL);
 
     destroyDescriptorSets();
 

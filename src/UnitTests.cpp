@@ -259,9 +259,9 @@ int ScaleAndTransformTest() {
 
 int GlbTextureTest() {
   initRenderer();
-#if defined(SMALL3D_OPENGL)
+
   r->shadowsActive = true;
-#endif
+
   double startSeconds = getTimeInSeconds();
   double seconds = getTimeInSeconds();
   double prevSeconds = seconds;
@@ -277,18 +277,28 @@ int GlbTextureTest() {
 
   r->generateTexture("treeGlbTexture", *tree.getModel().defaultTextureImage);
 
-  goat.position = glm::vec3(0.0f, 0.0f, -3.0f);
-  goat.startAnimating();
-  tree.position = glm::vec3(0.0f, 0.0f, -4.0f);
+  Model rect;
 
+  r->createRectangle(rect, glm::vec3(-5.0f, -1.5f, -14.0f),
+    glm::vec3(5.0f, -1.5f, 4.0f));
+  
+
+  goat.position = glm::vec3(0.0f, -1.0f, -7.0f);
+  goat.startAnimating();
+  tree.position = glm::vec3(1.0f, -1.0f, -7.0f);
+  auto rectPos = glm::vec3(0.0, 0.6, -5.6);
+  auto rectRot = glm::vec3(0.0, 0.0, 0.0);
+
+  
   while (seconds - startSeconds < 4.0) {
+    
     pollEvents();
     seconds = getTimeInSeconds();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
       goat.animate();
-     
 
+      r->render(rect, rectPos, rectRot, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
       r->render(goat, "goatGlbTexture");
       r->render(tree, "treeGlbTexture");
 
@@ -296,9 +306,9 @@ int GlbTextureTest() {
       goat.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
     }
   }
-#if defined(SMALL3D_OPENGL)
+
   r->shadowsActive = false;
-#endif
+
   return 1;
 }
 

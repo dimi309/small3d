@@ -18,8 +18,6 @@ echo "Compiling shaders..."
 
 glslangValidator --target-env vulkan1.0 perspectiveMatrixLightedShader.vert -o perspectiveMatrixLightedShader.spv $DEBUG_INFO
 
-glslangValidator --target-env vulkan1.0 perspectiveMatrixLightedShaderNoJoints.vert -o perspectiveMatrixLightedShaderNoJoints.spv $DEBUG_INFO
-
 glslangValidator --target-env vulkan1.0 textureShader.frag -o textureShader.spv $DEBUG_INFO
 
 if [ -d "../../build/" ]; then

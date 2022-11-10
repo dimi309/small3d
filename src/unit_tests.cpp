@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
       printf("*** Failing GlbTextureText.\n\r");
       RETURN1
     }
-
+    
     if (!GlbTextureTest()) {
       printf("*** Failing GlbTextureText.\n\r");
       RETURN1
@@ -74,7 +74,7 @@ int main(int argc, char** argv) {
     if (!GenericSceneObjectConstructorTest()) {
       printf("*** Failing GenericSceneObjectConstructorTest.\n\r");
       RETURN1
-    }
+    } 
     
     if (!RendererTest()) {
       printf("*** Failing RendererTest.\n\r");
@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
       printf("*** Failing GlbTest.\n\r");
       RETURN1
     } 
-
+    
   }
   catch (std::exception& e) {
     printf("*** %s\n\r", e.what());

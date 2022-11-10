@@ -7,6 +7,19 @@
  *     License: BSD 3-Clause License (see LICENSE file)
  */
 
+// TODO: Vulkan implementation of shadow rendering is not efficient 
+//       and has brought a performance hit ~ 300fps -> 80 fps
+//       The reason is that a single pipeline is used, and there is 
+//       a wait on the GPU-CPU fence on every buffer swap, while the
+//       depth image from the output is copied back to the shadow mapping
+//       image as an input. 80 fps is not THAT bad though as a price
+//       to pay for not implementing a separate shadow-mapping pipeline.
+//       This remains a hobby, time-constrained project ;)
+// TODO: Deactivating shadows after they had been active keeps the last
+//       shadow mapping image for the reset of the program execution.
+//       Clear the shadow mapping image when shadows are activated
+//       and deactivated during program execution.
+
 #pragma once
 #define MAX_FRAMES_PREPARED 3
 #if defined(__ANDROID__)
@@ -71,7 +84,10 @@ namespace small3d
     float padding1;
     glm::mat4x4 cameraTransformation;
     glm::vec3 cameraOffset;
-    float padding2[25]; // Paddings seem to work when the number of floats (not bytes)
+    float padding2;
+    glm::mat4x4 lightSpaceMatrix;
+    glm::mat4x4 orthographicMatrix;
+    float padding3[56]; // Paddings seem to work when the number of floats (not bytes)
                         // add up to powers of two for each ubo.
   };
 
@@ -154,6 +170,7 @@ namespace small3d
     size_t uboColourDynamicSize = 0;
 
     VkSampler textureSampler = VK_NULL_HANDLE;
+    VkSampler shadowMapSampler = VK_NULL_HANDLE;
 
     std::allocator<char> alloc;
 
@@ -180,7 +197,8 @@ namespace small3d
     static VkDescriptorSetLayout descriptorSetLayout;
     static VkDescriptorSet descriptorSet[MAX_FRAMES_PREPARED];
     static VkDescriptorSetLayout textureDescriptorSetLayout;
-    static VkDescriptorSetLayout perspectiveLayouts[2];
+    static VkDescriptorSetLayout shadowMapDescriptorSetLayout;
+    static VkDescriptorSetLayout perspectiveLayouts[3];
 
     const uint32_t worldDescBinding = 0;
     const uint32_t modelPlacementDescBinding = 1;
@@ -188,6 +206,7 @@ namespace small3d
     const uint32_t colourDescBinding = 2;
     const uint32_t lightDescBinding = 3;
     const uint32_t textureDescBinding = 0;
+    const uint32_t shadowMapDescBinding = 0;
 
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     static void framebufferSizeCallback(GLFWwindow* window, int width,
@@ -198,6 +217,8 @@ namespace small3d
       inputStateCreateInfo);
     static int setPipelineLayoutCallback(VkPipelineLayoutCreateInfo*
       pipelineLayoutCreateInfo);
+    void Renderer::updateShadowMapDescriptorSet(const uint32_t currentFrameIndex);
+
 
     int bindBuffers(VkCommandBuffer commandBuffer, const Model& model);
     void recordDrawCommand(VkCommandBuffer commandBuffer,
@@ -238,7 +259,7 @@ namespace small3d
     void destroyDynamicBuffers();
     void initWindow(int& width, int& height);
 
-    void setWorldDetails(bool perspective);
+    void setWorldDetails(const glm::mat4x4 &perspectiveMatrix);
     void setLightIntensity();
 
     void deleteImageFromGPU(VulkanImage &gpuImage);
@@ -258,7 +279,31 @@ namespace small3d
 
     Renderer();
 
+    glm::mat4x4 lightSpaceMatrix = glm::mat4x4(0);
+    glm::mat4x4 orthographicMatrix = glm::ortho(-5.0f, 5.0f, 5.0f, -5.0f, -5.0f, 5.0f);
+
+    VkDescriptorSet shadowMapDescriptorSet[MAX_FRAMES_PREPARED] = {};
+
+    void drawNextModels(bool onlyShadows);
+
   public:
+
+    /**
+    * @brief: Render shadows?
+    */
+    bool shadowsActive = false;
+
+    /**
+     * @brief: Shadows transformation. The "light source point of view".
+     *         The renderer initialises it with a value that works
+     *         in a basic scenario (facing down, rotated 90 degrees around
+     *         the x axis), but it will often need to be tweaked
+     *         by the programmer during the execution of the
+     *         game or application.
+     */
+    glm::mat4x4 shadowCamTransformation = glm::translate(glm::mat4x4(1.0f), 
+      glm::vec3(1.0f, -11.5f, -4.0f)) *
+      glm::rotate(glm::mat4x4(1.0f), 1.57f, glm::vec3(1.0f, 0.0f, 0.0f));
 
     /**
      * @brief Vector, indicating the direction of the light in the scene.

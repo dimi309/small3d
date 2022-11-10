@@ -45,6 +45,12 @@ extern "C" {
 #endif
   
 /**
+ * @brief Has a pipeline just been created or recreated?
+ */
+
+extern uint32_t vh_new_pipeline_state;
+
+/**
  * @brief The Vulkan instance
  */
 extern VkInstance vh_instance;
@@ -79,6 +85,28 @@ extern uint32_t vh_swapchain_image_count;
  * @brief The colour used to clear the screen.
  */
 extern VkClearColorValue vh_clear_colour;
+
+/**
+ * @brief The image used for shadow mapping.
+ */
+extern VkImage vh_shadow_image;
+
+/**
+ * @brief The image memory used for shadow mapping.
+ */
+extern VkDeviceMemory vh_shadow_image_memory;
+
+/**
+ * @brief The image view used for shadow mapping.
+ */
+extern VkImageView vh_shadow_image_view;
+
+extern VkCommandBuffer cmd_buffer_copy_depth_to_shadow;
+
+/**
+ * @brief Copy the depth image to the shadow image.
+ */
+int vh_copy_depth_to_shadow_image();
 
 /**
  * @brief Wait on a GPU-CPU fence
@@ -243,9 +271,10 @@ int vh_present_next_image(void);
  * @brief  Send draw commands (will take effect on the current pipeline image
  *         acquired by vh_acquire_next_image())
  * @param  command_buffer Pointer to the command buffer containing the commands.
+ * @param  only_shadows Only drawing shadows?
  * @return 1 if successful, 0 otherwise
  */
-int vh_draw(VkCommandBuffer* command_buffer);
+int vh_draw(VkCommandBuffer* command_buffer, int only_shadows);
 
 /**
  * @brief  Create a buffer
@@ -314,11 +343,13 @@ int vh_destroy_image(VkImage image, VkDeviceMemory image_memory);
  * @param format         The image format
  * @param old_layout     The old layout
  * @param new_layout     The new layout
+ * @param only_depth     Only a depth image?
  * @return 1 if successful, 0 otherwise
  */
 int vh_transition_image_layout(VkImage image, VkFormat format,
                                VkImageLayout old_layout,
-                               VkImageLayout new_layout);
+                               VkImageLayout new_layout,
+                               int only_depth);
 
 /**
  * @brief Copy a buffer to an image
@@ -348,6 +379,18 @@ int vh_create_image_view(VkImageView* image_view, VkImage image,
  * @return 1 if successful, 0 otherwise
  */
 int vh_create_sampler(VkSampler* sampler);
+
+/**
+ * @brief Create command buffer that copies depth to
+ *        shadow image.
+ */
+int vh_create_depth_to_shadow_copy_cmd();
+
+/**
+* @brief Destroy command buffer that copies depth to
+*        shadow image.
+*/
+int vh_destroy_depth_to_shadow_copy_cmd();
 
 /**
  * @brief  Cleanup the memory, destroy any debug callbacks, as well as the
