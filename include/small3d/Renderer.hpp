@@ -217,7 +217,7 @@ namespace small3d
       inputStateCreateInfo);
     static int setPipelineLayoutCallback(VkPipelineLayoutCreateInfo*
       pipelineLayoutCreateInfo);
-    void Renderer::updateShadowMapDescriptorSet(const uint32_t currentFrameIndex);
+    void updateShadowMapDescriptorSet(const uint32_t currentFrameIndex);
 
 
     int bindBuffers(VkCommandBuffer commandBuffer, const Model& model);

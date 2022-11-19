@@ -483,14 +483,6 @@ namespace small3d {
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-
-    // Shadow camera will be facing down (rotate 90 degrees around the x axis)
-    glm::vec3 shadowCamRotation = glm::vec3(1.57f, 0.0f, 0.0f);
-    shadowCamTransformation = 
-      glm::translate(glm::mat4x4(1.0f), glm::vec3(1.0f, 6.0f, -4.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), -shadowCamRotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), -shadowCamRotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), -shadowCamRotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
 #endif  
   }
 
