@@ -283,7 +283,7 @@ int GlbTextureTest() {
     glm::vec3(5.0f, -1.5f, 4.0f));
   
 
-  goat.position = glm::vec3(0.0f, -1.0f, -7.0f);
+  goat.position = glm::vec3(-1.1f, -1.0f, -7.0f);
   goat.startAnimating();
   tree.position = glm::vec3(1.0f, -1.0f, -7.0f);
   auto rectPos = glm::vec3(0.0, 0.6, -5.6);
@@ -303,7 +303,7 @@ int GlbTextureTest() {
       r->render(tree, "treeGlbTexture");
 
       r->swapBuffers();
-      goat.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
+      goat.rotate(glm::vec3(0.0f, 0.03f, 0.0f));
     }
   }
 
