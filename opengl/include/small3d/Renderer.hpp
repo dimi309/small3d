@@ -163,7 +163,8 @@ namespace small3d
     const uint32_t depthMapTextureHeight = 2048;
     glm::mat4x4 lightSpaceMatrix = glm::mat4x4(0);
     bool renderingDepthMap = false;
-    glm::mat4x4 orthographicMatrix = glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, 5.0f, -2.0f);
+    glm::mat4x4 orthographicMatrix = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, 15.0f, -15.0f);
+    glm::mat4x4 shadowCamTransformation = glm::mat4x4(0.0f);
     
   public:
 
@@ -171,19 +172,6 @@ namespace small3d
     * @brief: Render shadows?
     */
     bool shadowsActive = false;
-
-    /**
-     * @brief: Shadows transformation. The "light source point of view".
-     *         The renderer initialises it with a value that works
-     *         in a basic scenario (facing down, rotated 90 degrees around
-     *         the x axis), but it will often need to be tweaked
-     *         by the programmer during the execution of the
-     *         game or application.
-     */
-    glm::mat4x4 shadowCamTransformation = 
-      glm::translate(glm::mat4x4(1.0f), glm::vec3(1.0f, 5.3f, -4.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), 1.57f, glm::vec3(1.0f, 0.0f, 0.0f));
-      
 
     /**
      * @brief: Used to re-initialise the Renderer, for example in Android apps

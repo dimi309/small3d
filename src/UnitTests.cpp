@@ -290,14 +290,14 @@ int GlbTextureTest() {
   auto rectRot = glm::vec3(0.0, 0.0, 0.0);
 
   
-  while (seconds - startSeconds < 4.0) {
+  while (seconds - startSeconds < 54.0) {
     
     pollEvents();
     seconds = getTimeInSeconds();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
       goat.animate();
-
+      
       r->render(rect, rectPos, rectRot, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
       r->render(goat, "goatGlbTexture");
       r->render(tree, "treeGlbTexture");

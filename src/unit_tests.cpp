@@ -30,7 +30,7 @@ void android_main(struct android_app* state) {
 int main(int argc, char** argv) {
 #endif
   try
-  {
+  { /*
     if (!LoggerTest()) {
       printf("*** Failing LoggerTest.\n\r");
       RETURN1
@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
     if (!ScaleAndTransformTest()) {
       printf("*** Failing GlbTextureText.\n\r");
       RETURN1
-    }
+    }*/
     
     if (!GlbTextureTest()) {
       printf("*** Failing GlbTextureText.\n\r");

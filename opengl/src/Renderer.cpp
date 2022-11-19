@@ -1340,6 +1340,11 @@ namespace small3d {
 #ifndef SMALL3D_OPENGLES
     lightSpaceMatrix = glm::mat4x4(0);
     if (shadowsActive) {
+
+      auto normLightDirection = glm::normalize(lightDirection);
+
+      shadowCamTransformation = glm::lookAt(lightDirection, glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
       glViewport(0, 0, depthMapTextureWidth, depthMapTextureHeight);
       glBindFramebuffer(GL_FRAMEBUFFER, depthMapFramebuffer);
       glClear(GL_DEPTH_BUFFER_BIT);
