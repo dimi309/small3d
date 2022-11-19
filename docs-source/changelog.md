@@ -20,6 +20,7 @@ v1.801 (still open)
 - Texture colour components are now loaded and managed as 8-bit unsigned 
   integers.
 - On Android, using oboe for sound instead of aaudio.
+- Implemented shadow mapping.
 
 v1.800 2022-01-03
 
