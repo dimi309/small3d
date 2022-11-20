@@ -661,23 +661,24 @@ int select_queue_families() {
     if (!found_present) {
       LOGDEBUG0("Could not find present queue family!");
     }
-  }
 
-  for (uint32_t n = 0; n < queueFamilyCount; n++) {
-    if (queueFamilyProperties[n].queueCount > 0 &&
-      queueFamilyProperties[n].queueFlags & VK_QUEUE_TRANSFER_BIT) {
-      vh_transfer_family_index = n;
-      found_transfer = TRUE;
-      LOGDEBUG1("Found transfer queue family index: %d", 
-        vh_transfer_family_index);
-      break;
+
+    for (uint32_t n = 0; n < queueFamilyCount; n++) {
+      if (queueFamilyProperties[n].queueCount > 0 &&
+        queueFamilyProperties[n].queueFlags & VK_QUEUE_TRANSFER_BIT) {
+        vh_transfer_family_index = n;
+        found_transfer = TRUE;
+        LOGDEBUG1("Found transfer queue family index: %d",
+          vh_transfer_family_index);
+        break;
+      }
     }
-  }
-  if (!found_transfer) {
-    LOGDEBUG0("Cound not find transfer queue family!");
-  }
+    if (!found_transfer) {
+      LOGDEBUG0("Cound not find transfer queue family!");
+    }
 
-  free(queueFamilyProperties);
+    free(queueFamilyProperties);
+  }
   return (found_graphics && found_present);
 }
 

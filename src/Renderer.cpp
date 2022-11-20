@@ -934,6 +934,9 @@ namespace small3d {
     uboWorldDetailsDynamic[0].cameraTransformation = cameraTransformation;
     uboWorldDetailsDynamic[1].cameraTransformation = glm::mat4x4(1);
 
+    uboWorldDetailsDynamic[0].shadowsActive = shadowsActive ? 1U : 0U;
+    uboWorldDetailsDynamic[1].shadowsActive = 0U;
+
   }
 
   void Renderer::setLightIntensity() {
@@ -999,8 +1002,13 @@ namespace small3d {
     // Store "normal" camera position and transformation (rotation)
     auto tmpCamTr = cameraTransformation;
     auto tmpCamPos = cameraPosition;
-
-    if (onlyShadows && shadowsActive) {
+    
+    auto orthographicMatrix = glm::ortho(-shadowSpaceSize, shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize);
+    
+    auto shadowCamTransformation = glm::lookAt(lightDirection, sceneShadowCenter, glm::vec3(0.0f, -1.0f, 0.0f));
+    //auto shadowCamTransformation = 
+      //glm::rotate(glm::mat4x4(1.0f), 1.57f, glm::vec3(1.0f, 0.0f, 0.0f)) * glm::translate(glm::mat4x4(1.0f), lightDirection);
+    if (onlyShadows) {
       
       // Position camera at 0. Position (translation) stored with transformation.
       cameraPosition = glm::vec3(0);

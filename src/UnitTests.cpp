@@ -18,6 +18,7 @@
 #include <small3d/GlbFile.hpp>
 #include <small3d/WavefrontFile.hpp>
 #include "OctPyramid.hpp"
+#include <glm/gtx/string_cast.hpp>
 
 using namespace small3d;
 using namespace std;
@@ -60,6 +61,19 @@ void pollEvents() {
   
 }
 #endif
+
+static small3d::Model indicator;
+
+void write(std::string text, float elevation) {
+  if (indicator.vertexData.empty()) {
+    r->createRectangle(indicator, glm::vec3(-0.4f, -0.4f, 0.1f),
+      glm::vec3(0.4f, -0.50f, 0.1f));
+  }
+  std::string textureName = "indication" + std::to_string(elevation);
+  r->generateTexture(textureName, text, glm::vec3(1.0f, 1.0f, 1.0f), 24);
+  r->render(indicator, glm::vec3(0.0f, elevation, 0.0f), glm::mat4(1.0f),
+    glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), textureName, false);
+}
 
 void initRenderer(uint32_t width, uint32_t height) {
 #if defined(__ANDROID__) || defined(SMALL3D_IOS)
@@ -282,26 +296,33 @@ int GlbTextureTest() {
   r->createRectangle(rect, glm::vec3(-5.0f, -1.5f, -14.0f),
     glm::vec3(5.0f, -1.5f, 4.0f));
   
-
   goat.position = glm::vec3(-1.1f, -1.0f, -7.0f);
   goat.startAnimating();
   tree.position = glm::vec3(1.0f, -1.0f, -7.0f);
   auto rectPos = glm::vec3(0.0, 0.6, -5.6);
   auto rectRot = glm::vec3(0.0, 0.0, 0.0);
 
-  
-  while (seconds - startSeconds < 54.0) {
+  r->shadowSpaceSize = 12.0f;
+  r->lightDirection = glm::vec3(0.0f, 7.0f, -5.0f);
+
+  while (seconds - startSeconds < 4.0) {
     
     pollEvents();
     seconds = getTimeInSeconds();
+    
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
       goat.animate();
-      
+
+       //r->shadowSpaceSize += 0.01f;
+       r->lightDirection.x -= 0.01f;
+       //r->sceneShadowCenter.z -= 0.01f;
       r->render(rect, rectPos, rectRot, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
       r->render(goat, "goatGlbTexture");
       r->render(tree, "treeGlbTexture");
-
+      write("Light dir: " + glm::to_string(r->lightDirection), 0.0f);
+      // write("Shadow ct: " + glm::to_string(r->sceneShadowCenter), -0.5f);
+      // write("Shadow sz:" + std::to_string(r->shadowSpaceSize), 0.0f);
       r->swapBuffers();
       goat.rotate(glm::vec3(0.0f, 0.03f, 0.0f));
     }

@@ -14,6 +14,7 @@ layout(binding = 0) uniform uboWorld {
   vec3 cameraOffset;
   mat4 lightSpaceMatrix;
   mat4 orthographicMatrix;
+  uint shadowsActive;
 };
 
 layout(binding = 1) uniform uboModelPlacement {
@@ -26,6 +27,7 @@ layout(binding = 1) uniform uboModelPlacement {
 layout(location = 0) smooth out float cosAngIncidence;
 layout(location = 1) out vec2 textureCoords;
 layout(location = 2) out vec4 posLightSpace;
+layout(location = 3) flat out uint shadowsActiveOut;
 
 void main()
 {
@@ -43,9 +45,8 @@ void main()
 
   vec4 cameraPos = cameraTransformation * (worldPos - vec4(cameraOffset, 0.0));
 
-  if (perspectiveMatrix != mat4(1.0f)) { // No shadows for orthographic objects (e.g. text, etc)
+  if (shadowsActive != 0) { // Are shadows on? 
     posLightSpace = lightSpaceMatrix * worldPos * orthographicMatrix;
-
   } else {
     posLightSpace = vec4(0.0f);
   }
@@ -62,6 +63,8 @@ void main()
 
   textureCoords = uvCoords;
 
+  shadowsActiveOut = shadowsActive;
+
   // OpenGL -> Vulkan viewport correction
   // see: http://matthewwellings.com/blog/the-new-vulkan-coordinate-system/
   if (orthographicMatrix != mat4(0) ||  // The correction is not applied when rendering with the shadow-camera.
@@ -69,6 +72,6 @@ void main()
                                         // rendering, e.g. for text.
     gl_Position.z = (gl_Position.z + gl_Position.w) / 2.0;
     gl_Position.y = -gl_Position.y;
-   }
+  }
 
 }
