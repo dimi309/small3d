@@ -163,8 +163,6 @@ namespace small3d
     const uint32_t depthMapTextureHeight = 2048;
     glm::mat4x4 lightSpaceMatrix = glm::mat4x4(0);
     bool renderingDepthMap = false;
-    glm::mat4x4 orthographicMatrix = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, 15.0f, -15.0f);
-    glm::mat4x4 shadowCamTransformation = glm::mat4x4(0.0f);
     
   public:
 
@@ -193,7 +191,18 @@ namespace small3d
      * @brief Vector, indicating the direction of the light in the scene.
      *        It points towards a directional light source.
      */
-    glm::vec3 lightDirection = glm::vec3(0.0f, 0.7f, 0.3f);
+    glm::vec3 lightDirection = glm::vec3(0.0f, 6.0f, -1.0f);
+
+    /**
+     * @brief Where the center of the screen is (used for shadow mapping).
+     */
+    glm::vec3 sceneShadowCenter = glm::vec3(0.0f, 0.1f, -2.0f);
+
+    /**
+     * @brief Size of the shadows space (half-edge of the orthographic projection
+     *        cube)
+     */
+    float shadowSpaceSize = 5.0f;
 
     /**
      * @brief The camera position in world space. Ignored for orthographic

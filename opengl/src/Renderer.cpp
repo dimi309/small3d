@@ -651,6 +651,9 @@ namespace small3d {
 #endif
   void Renderer::setWorldDetails(bool perspective) {
 
+    auto orthographicMatrix = glm::ortho(-shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize);
+    
+
     GLint perspectiveMatrixUniform =
       glGetUniformLocation(shaderProgram, "perspectiveMatrix");
 
@@ -1341,10 +1344,6 @@ namespace small3d {
     lightSpaceMatrix = glm::mat4x4(0);
     if (shadowsActive) {
 
-      auto normLightDirection = glm::normalize(lightDirection);
-
-      shadowCamTransformation = glm::lookAt(lightDirection, glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
       glViewport(0, 0, depthMapTextureWidth, depthMapTextureHeight);
       glBindFramebuffer(GL_FRAMEBUFFER, depthMapFramebuffer);
       glClear(GL_DEPTH_BUFFER_BIT);
@@ -1356,6 +1355,7 @@ namespace small3d {
       // Position camera at 0. Position (translation) will be stored with transformation.
       cameraPosition = glm::vec3(0);
 
+      auto shadowCamTransformation = glm::lookAt(lightDirection, sceneShadowCenter, glm::vec3(0.0f, 1.0f, 0.0f));
       setCameraTransformation(shadowCamTransformation);
       
       // Render in orthographic mode on depth map framebuffer, only the models that are to be drawn using perspective
