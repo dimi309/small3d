@@ -197,13 +197,18 @@ Public Attributes</h2></td></tr>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ae41ab2c06a1a2c768c5a14aafbe79868">shadowsActive</a> = false</td></tr>
 <tr class="memdesc:ae41ab2c06a1a2c768c5a14aafbe79868"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Render shadows? <br /></td></tr>
 <tr class="separator:ae41ab2c06a1a2c768c5a14aafbe79868"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c76d273924ca89a305f694eab55ba45"><td class="memItemLeft" align="right" valign="top">glm::mat4x4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a5c76d273924ca89a305f694eab55ba45">shadowCamTransformation</a></td></tr>
-<tr class="memdesc:a5c76d273924ca89a305f694eab55ba45"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Shadows transformation. The "light source point of view". The renderer initialises it with a value that works in a basic scenario (facing down, rotated 90 degrees around the x axis), but it will often need to be tweaked by the programmer during the execution of the game or application.  <a href="classsmall3d_1_1_renderer.html#a5c76d273924ca89a305f694eab55ba45">More...</a><br /></td></tr>
-<tr class="separator:a5c76d273924ca89a305f694eab55ba45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77353e63ccea1c4f33ff9cba9eb81978"><td class="memItemLeft" align="right" valign="top"><a id="a77353e63ccea1c4f33ff9cba9eb81978"></a>
-glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a77353e63ccea1c4f33ff9cba9eb81978">lightDirection</a> = glm::vec3(0.0f, 0.4f, 0.5f)</td></tr>
+glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a77353e63ccea1c4f33ff9cba9eb81978">lightDirection</a> = glm::vec3(0.0f, 6.0f, -1.0f)</td></tr>
 <tr class="memdesc:a77353e63ccea1c4f33ff9cba9eb81978"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector, indicating the direction of the light in the scene. It points towards a directional light source. <br /></td></tr>
 <tr class="separator:a77353e63ccea1c4f33ff9cba9eb81978"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1fcd3999b7b910e436a6e4b81474e248"><td class="memItemLeft" align="right" valign="top"><a id="a1fcd3999b7b910e436a6e4b81474e248"></a>
+glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a1fcd3999b7b910e436a6e4b81474e248">sceneShadowCenter</a> = glm::vec3(0.0f, 0.1f, -2.0f)</td></tr>
+<tr class="memdesc:a1fcd3999b7b910e436a6e4b81474e248"><td class="mdescLeft">&#160;</td><td class="mdescRight">Where the center of the screen is (used for shadow mapping). <br /></td></tr>
+<tr class="separator:a1fcd3999b7b910e436a6e4b81474e248"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a405fc8a2a37c88cec17aa49641cf50af"><td class="memItemLeft" align="right" valign="top"><a id="a405fc8a2a37c88cec17aa49641cf50af"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a405fc8a2a37c88cec17aa49641cf50af">shadowSpaceSize</a> = 5.0f</td></tr>
+<tr class="memdesc:a405fc8a2a37c88cec17aa49641cf50af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the shadows space (half-edge of the orthographic projection cube) <br /></td></tr>
+<tr class="separator:a405fc8a2a37c88cec17aa49641cf50af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98e23bfad9181afafcf6f64655698c35"><td class="memItemLeft" align="right" valign="top"><a id="a98e23bfad9181afafcf6f64655698c35"></a>
 glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a98e23bfad9181afafcf6f64655698c35">cameraPosition</a> = glm::vec3(0, 0, 0)</td></tr>
 <tr class="memdesc:a98e23bfad9181afafcf6f64655698c35"><td class="mdescLeft">&#160;</td><td class="mdescRight">The camera position in world space. Ignored for orthographic rendering. <br /></td></tr>
@@ -1131,26 +1136,6 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a5c76d273924ca89a305f694eab55ba45"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c76d273924ca89a305f694eab55ba45">&#9670;&nbsp;</a></span>shadowCamTransformation</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">glm::mat4x4 small3d::Renderer::shadowCamTransformation</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= glm::translate(glm::mat4x4(1.0f), </div>
-<div class="line">      glm::vec3(1.0f, -11.5f, -4.0f)) *</div>
-<div class="line">      glm::rotate(glm::mat4x4(1.0f), 1.57f, glm::vec3(1.0f, 0.0f, 0.0f))</div>
-</div><!-- fragment -->
-<p>: Shadows transformation. The "light source point of view". The renderer initialises it with a value that works in a basic scenario (facing down, rotated 90 degrees around the x axis), but it will often need to be tweaked by the programmer during the execution of the game or application. </p>
 
 </div>
 </div>
