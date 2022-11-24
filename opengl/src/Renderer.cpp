@@ -1356,7 +1356,7 @@ namespace small3d {
       cameraPosition = glm::vec3(0);
 
       auto shadowCamTransformation = glm::lookAt(lightDirection, sceneShadowCenter, glm::vec3(0.0f, 1.0f, 0.0f));
-      setCameraTransformation(shadowCamTransformation);
+      cameraTransformation = shadowCamTransformation;
       
       // Render in orthographic mode on depth map framebuffer, only the models that are to be drawn using perspective
       // (Orthographically rendered models will not produce shadows as they are mostly used for messages and interface
