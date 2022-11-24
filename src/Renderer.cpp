@@ -46,7 +46,7 @@ namespace small3d {
     float padding[63];
   };
 
-  std::vector<Model*> Renderer::nextModelsToDraw;
+  std::vector<Model> Renderer::nextModelsToDraw;
 
   VkVertexInputBindingDescription Renderer::bd[5];
   VkVertexInputAttributeDescription Renderer::ad[5];
@@ -1067,21 +1067,21 @@ namespace small3d {
 
     for (auto model : nextModelsToDraw) {
 
-      if (onlyShadows && (model->noShadow || !model->perspective)) {
-        continue;
-      }
+      //if (onlyShadows && (model->noShadow || !model->perspective)) {
+        //continue;
+      //}
 
       vh_bind_pipeline_to_command_buffer(pipelineIndex,
         &commandBuffer[currentFrameIndex]);
-      bindBuffers(commandBuffer[currentFrameIndex], *model);
+      bindBuffers(commandBuffer[currentFrameIndex], model);
 
-      if (!model->perspective) {
+      if (!model.perspective) {
         vh_clear_depth_image(&commandBuffer[currentFrameIndex]);
       }
 
       recordDrawCommand(commandBuffer[currentFrameIndex],
         vh_pipeline_layout[pipelineIndex],
-        *model, currentFrameIndex, model->perspective);
+        model, currentFrameIndex, model.perspective);
     }
 
     vh_end_draw_command_buffer(&commandBuffer[currentFrameIndex]);
@@ -1725,7 +1725,7 @@ namespace small3d {
     model.placementMemIndex = modelPlacementMemIndex;
     ++modelPlacementMemIndex;
 
-    nextModelsToDraw.push_back(&model);
+    nextModelsToDraw.push_back(model);
 
   }
 

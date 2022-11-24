@@ -7,6 +7,8 @@
  *     License: BSD 3-Clause License (see LICENSE file)
  */
 
+// TODO: Optimise model draw vector copies.
+
 #pragma once
 #define MAX_FRAMES_PREPARED 3
 #if defined(__ANDROID__)
@@ -177,7 +179,7 @@ namespace small3d
     std::vector<AAsset*> fontAssets;
 #endif
 
-    static std::vector<Model*> nextModelsToDraw;
+    static std::vector<Model> nextModelsToDraw;
 
     static VkVertexInputBindingDescription bd[5];
     static VkVertexInputAttributeDescription ad[5];

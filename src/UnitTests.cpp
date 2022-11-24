@@ -319,6 +319,11 @@ int GlbTextureTest() {
        //r->sceneShadowCenter.z -= 0.01f;
       r->render(rect, rectPos, rectRot, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
       r->render(goat, "goatGlbTexture");
+
+      goat.position = glm::vec3(1.1f, -1.0f, -7.0f);
+      r->render(goat, "goatGlbTexture");
+      goat.position = glm::vec3(-1.1f, -1.0f, -7.0f);
+
       r->render(tree, "treeGlbTexture");
       write("Light dir: " + glm::to_string(r->lightDirection), 0.0f);
       // write("Shadow ct: " + glm::to_string(r->sceneShadowCenter), -0.5f);
