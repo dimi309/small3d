@@ -46,7 +46,7 @@ namespace small3d {
     float padding[63];
   };
 
-  std::vector<Model> Renderer::nextModelsToDraw;
+  std::vector<std::tuple<Model*, uint32_t, uint32_t>> Renderer::nextModelsToDraw;
 
   VkVertexInputBindingDescription Renderer::bd[5];
   VkVertexInputAttributeDescription Renderer::ad[5];
@@ -194,16 +194,16 @@ namespace small3d {
   }
 
   void Renderer::recordDrawCommand(VkCommandBuffer commandBuffer,
-    VkPipelineLayout pipelineLayout, const Model& model,
-    uint32_t swapchainImageIndex, bool perspective) {
+    VkPipelineLayout pipelineLayout, const Model& model, uint32_t colourMemIndex, 
+    uint32_t placementMemIndex, uint32_t swapchainImageIndex, bool perspective) {
 
-    uint32_t dynamicModelPlacementOffset = model.placementMemIndex *
+    uint32_t dynamicModelPlacementOffset = placementMemIndex *
       static_cast<uint32_t>(dynamicModelPlacementAlignment);
 
     uint32_t dynamicWorldDetailsOffset = perspective ? 0 : 1 *
       static_cast<uint32_t>(dynamicWorldDetailsAlignment);
 
-    uint32_t dynamicColourOffset = model.colourMemIndex *
+    uint32_t dynamicColourOffset = colourMemIndex *
       static_cast<uint32_t>(dynamicColourAlignment);
 
     const uint32_t dynamicOffsets[3] = { dynamicWorldDetailsOffset,
@@ -1065,23 +1065,24 @@ namespace small3d {
 
     vh_begin_draw_command_buffer(&commandBuffer[currentFrameIndex]);
 
-    for (auto model : nextModelsToDraw) {
+    for (auto &mt : nextModelsToDraw) {
 
-      //if (onlyShadows && (model->noShadow || !model->perspective)) {
-        //continue;
-      //}
+      if (onlyShadows && (std::get<0>(mt)->noShadow || !std::get<0>(mt)->perspective)) {
+        continue;
+      }
 
       vh_bind_pipeline_to_command_buffer(pipelineIndex,
         &commandBuffer[currentFrameIndex]);
-      bindBuffers(commandBuffer[currentFrameIndex], model);
+      bindBuffers(commandBuffer[currentFrameIndex], *std::get<0>(mt));
 
-      if (!model.perspective) {
+      if (!std::get<0>(mt)->perspective) {
         vh_clear_depth_image(&commandBuffer[currentFrameIndex]);
       }
 
       recordDrawCommand(commandBuffer[currentFrameIndex],
         vh_pipeline_layout[pipelineIndex],
-        model, currentFrameIndex, model.perspective);
+        *std::get<0>(mt), std::get<1>(mt), std::get<2>(mt), 
+        currentFrameIndex, std::get<0>(mt)->perspective);
     }
 
     vh_end_draw_command_buffer(&commandBuffer[currentFrameIndex]);
@@ -1716,16 +1717,16 @@ namespace small3d {
       model.textureName = "blank";
     }
 
-    model.colourMemIndex = colourMemIndex;
+    auto thisColourMemIndex = colourMemIndex;
     ++colourMemIndex;
 
     model.perspective = perspective;
 
     transform(model, offset, rotation, modelPlacementMemIndex);
-    model.placementMemIndex = modelPlacementMemIndex;
+    auto thisModelPlacementMemIndex = modelPlacementMemIndex;
     ++modelPlacementMemIndex;
 
-    nextModelsToDraw.push_back(model);
+    nextModelsToDraw.push_back(std::tuple<Model*, uint32_t, uint32_t>{&model, thisColourMemIndex, thisModelPlacementMemIndex});
 
   }
 

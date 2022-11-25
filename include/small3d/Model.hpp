@@ -45,8 +45,6 @@ namespace small3d {
     VkDeviceMemory normalsBufferMemory = 0;
     VkBuffer uvBuffer = 0;
     VkDeviceMemory uvBufferMemory = 0;
-    uint32_t placementMemIndex = 0;
-    uint32_t colourMemIndex = 0;
     VkBuffer jointBuffer = 0;
     VkDeviceMemory jointBufferMemory = 0;
     VkBuffer weightBuffer = 0;

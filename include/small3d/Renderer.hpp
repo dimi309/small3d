@@ -7,8 +7,6 @@
  *     License: BSD 3-Clause License (see LICENSE file)
  */
 
-// TODO: Optimise model draw vector copies.
-
 #pragma once
 #define MAX_FRAMES_PREPARED 3
 #if defined(__ANDROID__)
@@ -178,8 +176,8 @@ namespace small3d
 #ifdef __ANDROID__
     std::vector<AAsset*> fontAssets;
 #endif
-
-    static std::vector<Model> nextModelsToDraw;
+    
+    static std::vector<std::tuple<Model*, uint32_t, uint32_t>> nextModelsToDraw;
 
     static VkVertexInputBindingDescription bd[5];
     static VkVertexInputAttributeDescription ad[5];
@@ -212,7 +210,8 @@ namespace small3d
 
     int bindBuffers(VkCommandBuffer commandBuffer, const Model& model);
     void recordDrawCommand(VkCommandBuffer commandBuffer,
-      VkPipelineLayout pipelineLayout, const Model& model,
+      VkPipelineLayout pipelineLayout, const Model& model, 
+      uint32_t colourMemIndex, uint32_t placementMemIndex,
       uint32_t swapchainImageIndex, bool perspective);
 
     VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
