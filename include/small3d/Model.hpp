@@ -52,10 +52,6 @@ namespace small3d {
 
     bool perspective = false;
 
-    // Name of the texture the model will be rendered with. The texture has to
-    // have been previously generated with Renderer.generateTexture().
-    std::string textureName = "";
-
     // Index number used to keep track of whether or not the model has been
     // rendered after a reinitialisation of GPU memory.
     uint32_t renderIndex = 0;

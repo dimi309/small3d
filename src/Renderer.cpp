@@ -46,7 +46,7 @@ namespace small3d {
     float padding[63];
   };
 
-  std::vector<std::tuple<Model*, uint32_t, uint32_t>> Renderer::nextModelsToDraw;
+  std::vector<std::tuple<Model*, uint32_t, uint32_t, std::string>> Renderer::nextModelsToDraw;
 
   VkVertexInputBindingDescription Renderer::bd[5];
   VkVertexInputAttributeDescription Renderer::ad[5];
@@ -195,7 +195,8 @@ namespace small3d {
 
   void Renderer::recordDrawCommand(VkCommandBuffer commandBuffer,
     VkPipelineLayout pipelineLayout, const Model& model, uint32_t colourMemIndex, 
-    uint32_t placementMemIndex, uint32_t swapchainImageIndex, bool perspective) {
+    uint32_t placementMemIndex, std::string textureName,
+    uint32_t swapchainImageIndex, bool perspective) {
 
     uint32_t dynamicModelPlacementOffset = placementMemIndex *
       static_cast<uint32_t>(dynamicModelPlacementAlignment);
@@ -211,7 +212,7 @@ namespace small3d {
       dynamicColourOffset };
 
     const VkDescriptorSet descriptorSets[3] =
-    { descriptorSet[currentFrameIndex], getTextureHandle(model.textureName).descriptorSet[currentFrameIndex], shadowMapDescriptorSet[currentFrameIndex] };
+    { descriptorSet[currentFrameIndex], getTextureHandle(textureName).descriptorSet[currentFrameIndex], shadowMapDescriptorSet[currentFrameIndex] };
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
       pipelineLayout, 0, 3,
@@ -1082,7 +1083,7 @@ namespace small3d {
       recordDrawCommand(commandBuffer[currentFrameIndex],
         vh_pipeline_layout[pipelineIndex],
         *std::get<0>(mt), std::get<1>(mt), std::get<2>(mt), 
-        currentFrameIndex, std::get<0>(mt)->perspective);
+        std::get<3>(mt), currentFrameIndex, std::get<0>(mt)->perspective);
     }
 
     vh_end_draw_command_buffer(&commandBuffer[currentFrameIndex]);
@@ -1706,15 +1707,16 @@ namespace small3d {
       model.alreadyInGPU = true;
     }
 
+    std::string thisTextureName = "";
     if (textureName != "") {
       // "Disable" colour since there is a texture
       setColourBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), colourMemIndex);
-      model.textureName = textureName;
+      thisTextureName = textureName;
     }
     else {
       // If there is no texture, use the given colour
       setColourBuffer(colour, colourMemIndex);
-      model.textureName = "blank";
+      thisTextureName = "blank";
     }
 
     auto thisColourMemIndex = colourMemIndex;
@@ -1726,7 +1728,7 @@ namespace small3d {
     auto thisModelPlacementMemIndex = modelPlacementMemIndex;
     ++modelPlacementMemIndex;
 
-    nextModelsToDraw.push_back(std::tuple<Model*, uint32_t, uint32_t>{&model, thisColourMemIndex, thisModelPlacementMemIndex});
+    nextModelsToDraw.push_back(std::tuple<Model*, uint32_t, uint32_t, std::string>{&model, thisColourMemIndex, thisModelPlacementMemIndex, thisTextureName});
 
   }
 

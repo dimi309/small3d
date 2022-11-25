@@ -177,7 +177,7 @@ namespace small3d
     std::vector<AAsset*> fontAssets;
 #endif
     
-    static std::vector<std::tuple<Model*, uint32_t, uint32_t>> nextModelsToDraw;
+    static std::vector<std::tuple<Model*, uint32_t, uint32_t, std::string>> nextModelsToDraw;
 
     static VkVertexInputBindingDescription bd[5];
     static VkVertexInputAttributeDescription ad[5];
@@ -211,8 +211,9 @@ namespace small3d
     int bindBuffers(VkCommandBuffer commandBuffer, const Model& model);
     void recordDrawCommand(VkCommandBuffer commandBuffer,
       VkPipelineLayout pipelineLayout, const Model& model, 
-      uint32_t colourMemIndex, uint32_t placementMemIndex,
-      uint32_t swapchainImageIndex, bool perspective);
+      uint32_t colourMemIndex, uint32_t placementMemIndex, 
+      std::string textureName, uint32_t swapchainImageIndex, 
+      bool perspective);
 
     VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
     void createDescriptorPool();

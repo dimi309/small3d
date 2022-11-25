@@ -326,8 +326,8 @@ int GlbTextureTest() {
 
       r->render(tree, "treeGlbTexture");
       write("Light dir: " + glm::to_string(r->lightDirection), 0.0f);
-      // write("Shadow ct: " + glm::to_string(r->sceneShadowCenter), -0.5f);
-      // write("Shadow sz:" + std::to_string(r->shadowSpaceSize), 0.0f);
+      write("Shadow ct: " + glm::to_string(r->sceneShadowCenter), -0.5f);
+      write("Shadow sz:" + std::to_string(r->shadowSpaceSize), 0.9f);
       r->swapBuffers();
       goat.rotate(glm::vec3(0.0f, 0.03f, 0.0f));
     }
