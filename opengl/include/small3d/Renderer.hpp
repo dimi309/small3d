@@ -194,15 +194,17 @@ namespace small3d
     glm::vec3 lightDirection = glm::vec3(0.0f, 0.7f, 0.3f);
 
     /**
-     * @brief Where the center of the screen is (used for shadow mapping).
-     */
-    glm::vec3 sceneShadowCenter = glm::vec3(0.0f, 0.1f, -2.0f);
-
-    /**
      * @brief Size of the shadows space (half-edge of the orthographic projection
      *        cube)
      */
-    float shadowSpaceSize = 5.0f;
+    float shadowSpaceSize = 20.0f;
+
+    /**
+     * @brief Shadow camera transformation.
+     */
+    glm::mat4x4 shadowCamTransformation =
+      glm::rotate(glm::mat4x4(1.0f), -1.57f, glm::vec3(1.0f, 0.0f, 0.0f)) *
+      glm::translate(glm::mat4x4(1.0f), glm::vec3(0.0f, 6.0f, 0.0f));
 
     /**
      * @brief The camera position in world space. Ignored for orthographic

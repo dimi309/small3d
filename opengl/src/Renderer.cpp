@@ -651,7 +651,7 @@ namespace small3d {
 #endif
   void Renderer::setWorldDetails(bool perspective) {
 
-    auto orthographicMatrix = glm::ortho(-shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize);
+    auto orthographicMatrix = glm::ortho(-shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize);
     
 
     GLint perspectiveMatrixUniform =
@@ -1355,7 +1355,6 @@ namespace small3d {
       // Position camera at 0. Position (translation) will be stored with transformation.
       cameraPosition = glm::vec3(0);
 
-      auto shadowCamTransformation = glm::lookAt(lightDirection, sceneShadowCenter, glm::vec3(0.0f, 1.0f, 0.0f));
       cameraTransformation = shadowCamTransformation;
       
       // Render in orthographic mode on depth map framebuffer, only the models that are to be drawn using perspective

@@ -1005,9 +1005,6 @@ namespace small3d {
     auto tmpCamPos = cameraPosition;
     
     auto orthographicMatrix = glm::ortho(-shadowSpaceSize, shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize);
-    auto shadowLightDirection = lightDirection;
-    shadowLightDirection.x *= -1.0f;
-    auto shadowCamTransformation = glm::lookAt(shadowLightDirection, sceneShadowCenter, glm::vec3(0.0f, -1.0f, 0.0f));
     
     if (onlyShadows) {
       
