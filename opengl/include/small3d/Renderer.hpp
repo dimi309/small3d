@@ -203,8 +203,8 @@ namespace small3d
      * @brief Shadow camera transformation.
      */
     glm::mat4x4 shadowCamTransformation =
-      glm::rotate(glm::mat4x4(1.0f), -1.57f, glm::vec3(1.0f, 0.0f, 0.0f)) *
-      glm::translate(glm::mat4x4(1.0f), glm::vec3(0.0f, 6.0f, 0.0f));
+      glm::rotate(glm::mat4x4(1.0f), 1.57f, glm::vec3(1.0f, 0.0f, 0.0f)) *
+      glm::translate(glm::mat4x4(1.0f), glm::vec3(0.0f, -10.0f, 0.0f));
 
     /**
      * @brief The camera position in world space. Ignored for orthographic
