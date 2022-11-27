@@ -13,7 +13,7 @@ var searchData=
   ['vh_5fcreate_5fimage_5fview_281',['vh_create_image_view',['../vulkan__helper_8h.html#af0fdcda959e1e910e405f60b9f6422b5',1,'vulkan_helper.c']]],
   ['vh_5fcreate_5finstance_282',['vh_create_instance',['../vulkan__helper_8h.html#ab5475a97918f781084c9026e0d75eb5b',1,'vulkan_helper.c']]],
   ['vh_5fcreate_5fpipeline_283',['vh_create_pipeline',['../vulkan__helper_8h.html#a33f30df71c19f3a6a4c2252b51b23859',1,'vulkan_helper.c']]],
-  ['vh_5fcreate_5fsampler_284',['vh_create_sampler',['../vulkan__helper_8h.html#af09a39f69bc7b00068a0c56795c3e074',1,'vulkan_helper.c']]],
+  ['vh_5fcreate_5fsampler_284',['vh_create_sampler',['../vulkan__helper_8h.html#a3b45c5cc8a82964663e80fad6f2f6027',1,'vulkan_helper.c']]],
   ['vh_5fcreate_5fswapchain_285',['vh_create_swapchain',['../vulkan__helper_8h.html#a480059c7c0789ddcfda3df407e055f90',1,'vulkan_helper.c']]],
   ['vh_5fcreate_5fsync_5fobjects_286',['vh_create_sync_objects',['../vulkan__helper_8h.html#a349c70299b9fe233e02e3c67487af511',1,'vulkan_helper.c']]],
   ['vh_5fdestroy_5fbuffer_287',['vh_destroy_buffer',['../vulkan__helper_8h.html#a0f808976462029edb2b79559c3be8059',1,'vulkan_helper.c']]],
