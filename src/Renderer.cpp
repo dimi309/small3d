@@ -1931,11 +1931,11 @@ namespace small3d {
     std::string fragmentShaderPath = this->shadersPath +
       "textureShader.spv";
 
-    if (!vh_create_sampler(&textureSampler)) {
+    if (!vh_create_sampler(&textureSampler, VK_SAMPLER_ADDRESS_MODE_REPEAT)) {
       throw std::runtime_error("Failed to create the texture sampler!");
     }
 
-    if (!vh_create_sampler(&shadowMapSampler)) {
+    if (!vh_create_sampler(&shadowMapSampler, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE)) {
       throw std::runtime_error("Failed to create the shadow map sampler!");
     }
 

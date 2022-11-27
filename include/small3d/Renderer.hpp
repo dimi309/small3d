@@ -297,8 +297,12 @@ namespace small3d
     float shadowSpaceSize = 20.0f;
 
     /**
-     * @brief Shadow camera transformation. When tuning this for Vulkan, note that
-     *        y up is *negative*.
+     * @brief Shadow camera transformation. When tuning this for Vulkan, if using
+     *        glm::lookAt, note that y up is -1.0f, but only for glm::lookAt and 
+     *        not for the position of the eye for example. This is because
+     *        a correction is normally applied in the shaders for all Vulkan
+     *        coordinates, in order to make them compatible with OpenGL, but it
+     *        is not applied while mapping shadows.
      */
     glm::mat4x4 shadowCamTransformation =
       glm::rotate(glm::mat4x4(1.0f), 1.57f, glm::vec3(1.0f, 0.0f, 0.0f)) * 

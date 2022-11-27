@@ -271,7 +271,7 @@ int ScaleAndTransformTest() {
   return 1;
 }
 
-int GlbTextureTest() {
+int GlbTextureTestDefaultShadows() {
   initRenderer();
 
   r->shadowsActive = true;
@@ -302,9 +302,6 @@ int GlbTextureTest() {
   auto rectPos = glm::vec3(0.0, 0.6, -5.6);
   auto rectRot = glm::vec3(0.0, 0.0, 0.0);
 
-  r->shadowSpaceSize = 12.0f;
-  r->lightDirection = glm::vec3(0.0f, 7.0f, -5.0f);
-
   while (seconds - startSeconds < 4.0) {
     
     pollEvents();
@@ -322,14 +319,87 @@ int GlbTextureTest() {
       goat.position = glm::vec3(-1.1f, -1.0f, -7.0f);
 
       r->render(tree, "treeGlbTexture");
-      write("Shadows on", 0.0f);
+      write("Shadows using simple transformation", 0.0f);
       r->swapBuffers();
       goat.rotate(glm::vec3(0.0f, 0.03f, 0.0f));
     }
   }
 
   r->shadowsActive = false;
+  r->deleteTexture("goatGlbTexture");
+  r->deleteTexture("treeGlbTexture");
 
+  return 1;
+}
+
+int GlbTextureTestLookAtShadows() {
+  initRenderer();
+
+  r->shadowsActive = true;
+
+  double startSeconds = getTimeInSeconds();
+  double seconds = getTimeInSeconds();
+  double prevSeconds = seconds;
+  const uint32_t framerate = 30;
+
+  constexpr double secondsInterval = 1.0 / framerate;
+
+  SceneObject goat("goat5", resourceDir + "/models/goatAndTree.glb", "Cube");
+
+  r->generateTexture("goatGlbTexture", *goat.getModel().defaultTextureImage);
+
+  SceneObject tree("tree5", resourceDir + "/models/goatAndTree.glb", "Cube.001");
+
+  r->generateTexture("treeGlbTexture", *tree.getModel().defaultTextureImage);
+
+  Model rect;
+
+  r->createRectangle(rect, glm::vec3(-5.0f, -1.5f, -14.0f),
+    glm::vec3(5.0f, -1.5f, 4.0f));
+
+  goat.position = glm::vec3(-1.1f, -1.0f, -7.0f);
+  goat.startAnimating();
+  tree.position = glm::vec3(1.0f, -1.0f, -7.0f);
+  auto rectPos = glm::vec3(0.0, 0.6, -5.6);
+  auto rectRot = glm::vec3(0.0, 0.0, 0.0);
+
+  auto topForShadows = tree.position;
+  topForShadows.y += 8.0f;
+  topForShadows.z -= 0.1f; // for lookAt to work..
+  auto up = glm::vec3(0.0f, 1.0f, 0.0f);
+  
+#ifndef SMALL3D_OPENGL
+  up.y *= -1.0f;
+#endif
+
+  r->shadowCamTransformation = glm::lookAt(topForShadows, tree.position, up);
+
+  while (seconds - startSeconds < 4.0) {
+
+    pollEvents();
+    seconds = getTimeInSeconds();
+
+    if (seconds - prevSeconds > secondsInterval) {
+      prevSeconds = seconds;
+      goat.animate();
+
+      r->render(rect, rectPos, rectRot, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
+      r->render(goat, "goatGlbTexture");
+
+      goat.position = glm::vec3(1.1f, -1.0f, -7.0f);
+      r->render(goat, "goatGlbTexture");
+      goat.position = glm::vec3(-1.1f, -1.0f, -7.0f);
+
+      r->render(tree, "treeGlbTexture");
+      write("Shadows using glm::lookAt", 0.0f);
+      r->swapBuffers();
+      goat.rotate(glm::vec3(0.0f, 0.03f, 0.0f));
+    }
+  }
+
+  r->shadowsActive = false;
+  r->deleteTexture("goatGlbTexture");
+  r->deleteTexture("treeGlbTexture");
   return 1;
 }
 

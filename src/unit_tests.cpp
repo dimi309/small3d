@@ -50,13 +50,18 @@ int main(int argc, char** argv) {
       printf("*** Failing WavefrontModelTest.\n\r");
       RETURN1
     }
-
+    
     if (!ScaleAndTransformTest()) {
       printf("*** Failing GlbTextureText.\n\r");
       RETURN1
     }
     
-    if (!GlbTextureTest()) {
+    if (!GlbTextureTestDefaultShadows()) {
+      printf("*** Failing GlbTextureText.\n\r");
+      RETURN1
+    }
+    
+    if (!GlbTextureTestLookAtShadows()) {
       printf("*** Failing GlbTextureText.\n\r");
       RETURN1
     }

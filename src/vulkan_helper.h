@@ -378,7 +378,7 @@ int vh_create_image_view(VkImageView* image_view, VkImage image,
  * @param sampler The sampler to be created
  * @return 1 if successful, 0 otherwise
  */
-int vh_create_sampler(VkSampler* sampler);
+int vh_create_sampler(VkSampler* sampler, VkSamplerAddressMode addressMode);
 
 /**
  * @brief Create command buffer that copies depth to

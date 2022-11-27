@@ -2297,15 +2297,15 @@ int vh_acquire_next_image(uint32_t pipeline_index, uint32_t* image_index, uint32
       return 1;
     }
     
-    int vh_create_sampler(VkSampler* sampler) {
+    int vh_create_sampler(VkSampler* sampler, VkSamplerAddressMode addressMode) {
       VkSamplerCreateInfo sci;
       memset(&sci, 0, sizeof(VkSamplerCreateInfo));
       sci.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
       sci.magFilter = VK_FILTER_LINEAR;
       sci.minFilter = VK_FILTER_LINEAR;
-      sci.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-      sci.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-      sci.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+      sci.addressModeU = addressMode;
+      sci.addressModeV = addressMode;
+      sci.addressModeW = addressMode;
       sci.anisotropyEnable = VK_FALSE; // Was true in the tutorial
       sci.maxAnisotropy = 16;
       sci.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;

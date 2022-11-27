@@ -651,7 +651,7 @@ namespace small3d {
 #endif
   void Renderer::setWorldDetails(bool perspective) {
 
-    auto orthographicMatrix = glm::ortho(-shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize);
+    auto orthographicMatrix = glm::ortho(-shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize);
     
 
     GLint perspectiveMatrixUniform =
@@ -1361,7 +1361,7 @@ namespace small3d {
       // (Orthographically rendered models will not produce shadows as they are mostly used for messages and interface
       // components)
       renderingDepthMap = true;
-      glCullFace(GL_FRONT); // Avoid peter panning
+      //glCullFace(GL_FRONT); // Avoid peter panning (but creates worse quality shadows)
       for (auto& tuple : renderList) {
         if (std::get<5>(tuple)) {
           auto tmpt = tuple;
@@ -1373,7 +1373,7 @@ namespace small3d {
         }
       }
       renderingDepthMap = false;
-      glCullFace(GL_BACK);
+      glCullFace(GL_BACK); // Back to normal culling (after avoiding peter panning)
 
       // Store the light space camera transformation to be used during normal rendering to position shadows
       lightSpaceMatrix = cameraTransformation;
