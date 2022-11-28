@@ -38,6 +38,8 @@ https://www.gamedev.net/tutorials/programming/engines-and-middleware/small3d-tut
 - Android
 - iOS
 
+(Extremely backwards compatible. It can run on iOS 9.3 and Android 4.2.)
+
 ## Building prerequisites
 
 The following need to be installed, with the relevant environment variables
