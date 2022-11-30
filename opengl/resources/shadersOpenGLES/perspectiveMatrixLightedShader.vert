@@ -8,7 +8,8 @@ uniform mat4 perspectiveMatrix;
 uniform vec3 lightDirection;
 uniform mat4 cameraTransformation;
 uniform vec3 cameraOffset;
-
+uniform mat4 lightSpaceMatrix;
+uniform mat4 orthographicMatrix;
 uniform mat4 modelTransformation;
 uniform mat4 jointTransformations[16];
 uniform vec3 modelOffset;
@@ -16,7 +17,9 @@ uniform int hasJoints;
 
 varying mediump float cosAngIncidence;
 varying mediump vec2 textureCoords;
-
+varying mediump vec4 posLightSpace;
+varying mediump float zValue;
+mediump int rdm;
 void main(void)
 {
   mat4 skinMat = mat4(1.0);
@@ -33,7 +36,17 @@ void main(void)
 
   vec4 cameraPos = cameraTransformation * (worldPos - vec4(cameraOffset, 0));
 
+  
+  if (perspectiveMatrix != mat4(1.0)) {
+    posLightSpace = lightSpaceMatrix * worldPos * orthographicMatrix;
+  } else {
+    posLightSpace = vec4(0.0);
+  }
+  
+
   gl_Position = cameraPos * perspectiveMatrix;
+
+  zValue = gl_Position.z;
 
   vec4 normalInWorld = normalize(modelTransformation * vec4(normal, 1) * perspectiveMatrix);
 

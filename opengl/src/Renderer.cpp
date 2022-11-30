@@ -442,12 +442,16 @@ namespace small3d {
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-#ifndef SMALL3D_OPENGLES
+
     GLint colourTextureLocation = glGetUniformLocation(shaderProgram, "textureImage");
     GLint depthMapTextureLocation = glGetUniformLocation(shaderProgram, "shadowMap");
-   
+#ifndef SMALL3D_OPENGLES
     glProgramUniform1i(shaderProgram, colourTextureLocation, 0);
     glProgramUniform1i(shaderProgram, depthMapTextureLocation, 1);
+#else
+    glUseProgram(shaderProgram);
+    glUniform1i(colourTextureLocation, 0);
+    glUniform1i(depthMapTextureLocation, 1);
 #endif
     
     glEnable(GL_CULL_FACE);
@@ -462,10 +466,34 @@ namespace small3d {
     blankImage.toColour(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
     generateTexture("blank", blankImage);
     LOGDEBUG("Blank image generated");
-    
-#ifndef SMALL3D_OPENGLES
+
+
+#ifdef SMALL3D_OPENGLES
+
+    glGenTextures(1, &depthRenderColourTexture);
+
+    glBindTexture(GL_TEXTURE_2D, depthRenderColourTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+                 depthMapTextureWidth, depthMapTextureHeight, 0, GL_RGBA,
+                 GL_UNSIGNED_BYTE, NULL);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glGenRenderbuffers(1, &depthRenderBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, depthMapTextureWidth, depthMapTextureHeight);
+
+#endif
+
     glGenTextures(1, &depthMapTexture);
+
     glActiveTexture(GL_TEXTURE0 + 1);
+
     glBindTexture(GL_TEXTURE_2D, depthMapTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
       depthMapTextureWidth, depthMapTextureHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
@@ -479,11 +507,17 @@ namespace small3d {
     glGenFramebuffers(1, &depthMapFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFramebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMapTexture, 0);
+#ifndef SMALL3D_OPENGLES
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
+#else
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthRenderColourTexture, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+#endif
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-#endif  
+
   }
 
   void Renderer::initWindow(int& width, int& height,
@@ -673,7 +707,13 @@ namespace small3d {
 
     GLint lightIntensityUniform = glGetUniformLocation(shaderProgram,
       "lightIntensity");
+#ifdef SMALL3D_OPENGLES
+    // In OpenGL ES we signal to the fragment shader that it is supposed to render a simulated
+    // depth map using the red colour, using light intensity = -2.0.
+    glUniform1f(lightIntensityUniform, renderingDepthMap ? -2.0f : lightIntensity);
+#else
     glUniform1f(lightIntensityUniform, lightIntensity);
+#endif
 
     GLint cameraTransformationUniform = glGetUniformLocation(shaderProgram,
       "cameraTransformation");
@@ -702,6 +742,7 @@ namespace small3d {
       "orthographicMatrix");
     glUniformMatrix4fv(orthographicMatrixUniform, 1, GL_FALSE,
       glm::value_ptr(orthographicMatrix));
+
   }
 
   void Renderer::bindTexture(const std::string & name) {
@@ -871,22 +912,28 @@ namespace small3d {
   }
 
   void Renderer::stop() {
-#ifndef SMALL3D_OPENGLES
+
     glDeleteFramebuffers(1, &depthMapFramebuffer);
     depthMapFramebuffer = 0;
+
+#ifdef SMALL3D_OPENGLES
+    glDeleteRenderbuffers(1, &depthRenderBuffer);
+    depthRenderBuffer = 0;
 #endif
+    
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-#ifndef SMALL3D_OPENGLES
+
     glActiveTexture(GL_TEXTURE0 + 1);
+
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    glDeleteTextures(0, &depthMapTexture);
+#ifdef SMALL3D_OPENGLES
+    glDeleteTextures(1, &depthRenderColourTexture);
 #endif
 
-#ifndef SMALL3D_OPENGLES
-    glDeleteTextures(0, &depthMapTexture);
-#endif
-    
     //At times, this has caused crashes on MacOS
     for (auto it = textures.begin();
       it != textures.end(); ++it) {
@@ -1238,14 +1285,24 @@ namespace small3d {
       bindTexture("blank");
     }
 
-#ifndef SMALL3D_OPENGLES
+
     glActiveTexture(GL_TEXTURE0 + 1);
-    glBindTexture(GL_TEXTURE_2D, depthMapTexture);
+
+    if(!renderingDepthMap) {
+#ifndef SMALL3D_OPENGLES
+      glBindTexture(GL_TEXTURE_2D, depthMapTexture);
+#else
+      glBindTexture(GL_TEXTURE_2D, depthRenderColourTexture);
 #endif
-    
+    } else {
+      glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
     setWorldDetails(perspective);
 
     transform(*model, offset, rotation);
+
+
 
     // Draw
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -1340,14 +1397,14 @@ namespace small3d {
   }
 
   void Renderer::swapBuffers() {
-#ifndef SMALL3D_OPENGLES
-    lightSpaceMatrix = glm::mat4x4(0);
-    if (shadowsActive) {
 
+    lightSpaceMatrix = glm::mat4x4(0);
+
+    if (shadowsActive) {
       glViewport(0, 0, depthMapTextureWidth, depthMapTextureHeight);
       glBindFramebuffer(GL_FRAMEBUFFER, depthMapFramebuffer);
       glClear(GL_DEPTH_BUFFER_BIT);
-      
+
       // Store "normal" camera position and transformation (rotation)
       auto tmpCamTr = cameraTransformation;
       auto tmpCamPos = cameraPosition;
@@ -1362,6 +1419,7 @@ namespace small3d {
       // components)
       renderingDepthMap = true;
       //glCullFace(GL_FRONT); // Avoid peter panning (but creates worse quality shadows)
+
       for (auto& tuple : renderList) {
         if (std::get<5>(tuple)) {
           auto tmpt = tuple;
@@ -1386,7 +1444,7 @@ namespace small3d {
       glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
         static_cast<GLsizei>(realScreenHeight));
     }
-#endif
+
     for (auto& tuple : renderList) {
       renderTuple(tuple);
     }

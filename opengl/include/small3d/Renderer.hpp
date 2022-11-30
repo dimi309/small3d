@@ -159,10 +159,16 @@ namespace small3d
 
     GLuint depthMapFramebuffer = 0;
     GLuint depthMapTexture = 0;
+#ifdef SMALL3D_OPENGLES
+    GLuint depthRenderColourTexture = 0;
+#endif
     const uint32_t depthMapTextureWidth = 2048;
     const uint32_t depthMapTextureHeight = 2048;
     glm::mat4x4 lightSpaceMatrix = glm::mat4x4(0);
     bool renderingDepthMap = false;
+#ifdef SMALL3D_OPENGLES
+    GLuint depthRenderBuffer;
+#endif
     
   public:
 

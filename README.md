@@ -28,7 +28,7 @@ https://www.gamedev.net/tutorials/programming/engines-and-middleware/small3d-tut
 - Font rendering
 - Sound
 - Collision detection
-- Shadow mapping - Implemented for the Vulkan and the OpenGL renderer (not for OpenGL ES)
+- Shadow mapping
 
 ## Supported platforms
 
