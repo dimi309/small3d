@@ -26,12 +26,15 @@ void main(void) {
     mediump vec3 projCoords = posLightSpace.xyz / posLightSpace.w;
     
     projCoords = projCoords * 0.5 + 0.5; // e.g. -0.3 * 0.5 + 0.5 = -0.15 + 0.5 = 0.35
-    
-    mediump float closestDepth = texture2D(shadowMap, projCoords.xy).r * 0.5 + 0.5;
-    mediump float currentDepth = projCoords.z;
-    mediump float shadow = currentDepth - 0.005 > closestDepth ? 0.4 : 0.0;
 
-    inputColour = vec4(inputColour.rgb * (1.0 - shadow), inputColour.a);
+    if(projCoords.z < 1.0 && projCoords.x < 1.0 && projCoords.y < 1.0) {
+    
+      mediump float closestDepth = texture2D(shadowMap, projCoords.xy).r * 0.5 + 0.5;
+      mediump float currentDepth = projCoords.z;
+      mediump float shadow = currentDepth - 0.005 > closestDepth ? 0.4 : 0.0;
+
+      inputColour = vec4(inputColour.rgb * (1.0 - shadow), inputColour.a);
+    }
     
   } else {
     gl_FragColor = vec4(zValue, 0.0, 0.0, 1.0);
