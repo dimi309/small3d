@@ -467,21 +467,31 @@ namespace small3d {
     generateTexture("blank", blankImage);
     LOGDEBUG("Blank image generated");
 
+// OpenGL supports rendering without a colour image, only producing a depth map.
+// OpenGL ES 2.0 however does not support the glDrawBuffer and glReadBuffer commands
+// (see them used conditionally below) so in the following lines a render buffer with
+// a colour attachment and a depth attachment is created. The depth attachment might
+// be superfluous in OpenGL ES but I have left it there in case it is required (I have not checked).
+// But I am not using it in OpenGL ES; only in OpenGL. The reason is that, at least
+// with some Android devices, I could not feed it back as a texture to the normal
+// render pass. Checking with RenderDoc, I saw an error mentioning that the attached
+// texture is incomplete because "BASE_LEVEL 0 has invalid dimensions: 0x0". So in OpenGL ES
+// I am just outputting the z coordinate to the colour texture as the r component of each
+// texel, and informing the fragment shader that this is the case by setting light intensity to
+// -2. The fragment shader then adjusts the value accordingly (it needs to be translated to the
+// 0 - 1 range) before performing the shadow calculations.
 
 #ifdef SMALL3D_OPENGLES
 
     glGenTextures(1, &depthRenderColourTexture);
-
     glBindTexture(GL_TEXTURE_2D, depthRenderColourTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
                  depthMapTextureWidth, depthMapTextureHeight, 0, GL_RGBA,
                  GL_UNSIGNED_BYTE, NULL);
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
     glBindTexture(GL_TEXTURE_2D, 0);
 
     glGenRenderbuffers(1, &depthRenderBuffer);
