@@ -24,7 +24,43 @@ small3d::Model goat(small3d::GlbFile("resources1/models/goatAndTree.glb"), "Cube
 @implementation ViewController {
   CADisplayLink* _displayLink;
 }
-
+-(void) generateBuffers: (GLuint&) framembuffer : (GLuint &)colourbuffer : (GLuint &)depthbuffer : (GLint&) width : (GLint&) height {
+  
+  // Ensuring that the buffer id parameter is zero when generating buffers.
+  GLuint tmp = 0;
+  
+  glGenFramebuffers(1, &tmp);
+  framembuffer = tmp;
+  glBindFramebuffer(GL_FRAMEBUFFER, framembuffer);
+  
+  tmp = 0;
+  glGenRenderbuffers(1, &tmp);
+  colourbuffer = tmp;
+  glBindRenderbuffer(GL_RENDERBUFFER, colourbuffer);
+  
+  [[self.app_view context] renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.app_eaglLayer];
+  
+  
+  glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &width);
+  glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &height);
+  
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colourbuffer);
+  
+  tmp = 0;
+  glGenRenderbuffers(1, &tmp);
+  depthbuffer = tmp;
+  glBindRenderbuffer(GL_RENDERBUFFER, depthbuffer);
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, self.app_depth_buffer);
+  
+  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+          LOGERROR("Failed to make complete framebuffer object");
+  }
+  else {
+    LOGDEBUG("Framebuffer object is complete.");
+  }
+  
+}
 - (void)viewDidLoad {
   [super viewDidLoad];
   
@@ -47,42 +83,22 @@ small3d::Model goat(small3d::GlbFile("resources1/models/goatAndTree.glb"), "Cube
     LOGERROR("Failed to set current OpenGL ES context.");
   }
   
-  GLuint tmp = 0;
-  
-  glGenFramebuffers(1, &tmp);
-  self.app_framebuffer = tmp;
-  glBindFramebuffer(GL_FRAMEBUFFER, self.app_framebuffer);
-  
-  tmp = 0;
-  glGenRenderbuffers(1, &tmp);
-  self.app_colour_render_buffer = tmp;
-  glBindRenderbuffer(GL_RENDERBUFFER, self.app_colour_render_buffer);
-  
-  [[self.app_view context] renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.app_eaglLayer];
-  
   GLint framebufferWidth = 0, framebufferHeight = 0;
-  glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &framebufferWidth);
-  glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &framebufferHeight);
+  GLuint framebuffer, colourbuffer, depthbuffer;
+  [self generateBuffers:framebuffer :colourbuffer :depthbuffer :framebufferWidth :framebufferHeight];
+  self.app_framebuffer = framebuffer;
+  self.app_colour_render_buffer = colourbuffer;
+  self.app_depth_buffer = depthbuffer;
   
-  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, self.app_colour_render_buffer);
   
-  tmp = 0;
-  glGenRenderbuffers(1, &tmp);
-  self.app_depth_buffer = tmp;
-  glBindRenderbuffer(GL_RENDERBUFFER, self.app_depth_buffer);
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, framebufferWidth, framebufferHeight);
-  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, self.app_depth_buffer);
-  
-  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-          LOGERROR("Failed to make complete framebuffer object");
-  }
-  else {
-    LOGDEBUG("Framebuffer object is complete.");
-  }
+  LOGDEBUG("COLOUR BUFFER " + std::to_string(colourbuffer));
 
   try {
     LOGDEBUG("initialising renderer");
     initRenderer(framebufferWidth, framebufferHeight);
+    r->origRenderbuffer = self.app_colour_render_buffer;
+    r->origFramebuffer = self.app_framebuffer;
+    r->shadowsActive = false;
     r->setBackgroundColour(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
     LOGDEBUG("renderer initialised");
     r->createRectangle(texturedRect, glm::vec3(-0.8f, 0.1f, -1.0f),
@@ -142,8 +158,9 @@ small3d::Model goat(small3d::GlbFile("resources1/models/goatAndTree.glb"), "Cube
   glBindFramebuffer(GL_FRAMEBUFFER, self.app_framebuffer);
   glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
   r->render(goat, glm::vec3(-1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+  r->render(goat, glm::vec3(-1.5f, 1.0f, -4.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
   r->render(texturedRect, "message_ios");
-  
+  r->swapBuffers();
   const GLenum discards[]  = {GL_DEPTH_ATTACHMENT};
   glDiscardFramebufferEXT(GL_FRAMEBUFFER,1,discards);
   

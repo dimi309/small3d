@@ -523,9 +523,9 @@ namespace small3d {
 #else
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthRenderColourTexture, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glBindRenderbuffer(GL_RENDERBUFFER, origRenderbuffer);
 #endif
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, origFramebuffer);
 
 
   }
@@ -1450,7 +1450,7 @@ namespace small3d {
       cameraTransformation = tmpCamTr;
       cameraPosition = tmpCamPos;
 
-      glBindFramebuffer(GL_FRAMEBUFFER, 0);
+      glBindFramebuffer(GL_FRAMEBUFFER, origFramebuffer);
       glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
         static_cast<GLsizei>(realScreenHeight));
     }
@@ -1485,7 +1485,7 @@ namespace small3d {
     clearScreen();
 #endif
 #ifdef SMALL3D_IOS
-    throw std::runtime_error("Swapping buffers must be handled in the ViewController on iOS - OpenGL ES.");
+   // throw std::runtime_error("Swapping buffers must be handled in the ViewController on //iOS - OpenGL ES.");
 #endif
 #endif
     

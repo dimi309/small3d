@@ -15,5 +15,7 @@
 @property CAEAGLLayer* app_eaglLayer;
 @property GLKView* app_view;
 
+-(void) generateBuffers: (GLuint&) framembuffer : (GLuint &)colourbuffer : (GLuint &)depthbuffer : (GLint&) width : (GLint&) height;
+
 @end
 
