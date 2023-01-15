@@ -27,7 +27,7 @@ namespace small3d {
     this->append(LogLevel::loggerinfo, "Logger getting destroyed");
   }
 
-  void Logger::append(const LogLevel level, const std::string message) const {
+  void Logger::append(const LogLevel level, const std::string &message) const {
       if (!logger) return;
 
 

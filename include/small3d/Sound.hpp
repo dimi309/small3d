@@ -133,7 +133,7 @@ static ALCcontext *openalContext;
      * @brief Ogg file loading constructor
      * @param soundFilePath The path to the ogg file from which to load the sound.
      */
-    Sound(const std::string soundFilePath);
+    explicit Sound(const std::string soundFilePath);
 
     /**
      * @brief Destructor

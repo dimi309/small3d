@@ -71,7 +71,7 @@ namespace small3d {
      * @param	message	The message.
      */
 
-    void append(const LogLevel level, const std::string message) const;
+    void append(const LogLevel level, const std::string &message) const;
   };
 
   /**
