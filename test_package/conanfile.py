@@ -1,0 +1,31 @@
+import os
+
+from conan import ConanFile
+from conan.tools.cmake import CMake, cmake_layout
+from conan.tools.build import can_run
+
+
+class Small3dTestConan(ConanFile):
+    settings = "os", "compiler", "build_type", "arch"
+    options = {"vulkan": [True, False]}
+    default_options = {"vulkan": False}
+    generators = "CMakeDeps", "CMakeToolchain"
+
+    def requirements(self):
+        self.requires(self.tested_reference_str)
+
+    def build(self):
+        cmake = CMake(self)
+        cmake.configure()
+        cmake.build()
+
+    def layout(self):
+        cmake_layout(self)
+
+    def imports(self):
+        self.copy("*.spv", dst="", src="")
+
+    def test(self):
+        if can_run(self):
+            cmd = os.path.join(self.cpp.build.bindir, "example")
+            self.run(cmd, env="conanrun")

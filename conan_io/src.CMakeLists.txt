@@ -18,8 +18,8 @@ endif()
 add_library(small3d ${SOURCE_FILES} ${HEADER_FILES})
 
 if(NOT SMALL3D_OPENGL)
-  target_include_directories(small3d PUBLIC ${CONAN_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/include/small3d)
+  target_include_directories(small3d PUBLIC ${CMAKE_INCLUDE_PATH} ${CMAKE_SOURCE_DIR}/include/small3d)
 else()
-  target_include_directories(small3d PUBLIC ${CONAN_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/opengl/include/small3d ${CMAKE_SOURCE_DIR}/include/small3d)
+  target_include_directories(small3d PUBLIC ${CMAKE_INCLUDE_PATH} ${CMAKE_SOURCE_DIR}/opengl/include/small3d ${CMAKE_SOURCE_DIR}/include/small3d)
 endif()
-target_link_libraries(small3d PUBLIC ${CONAN_LIBS})
+
