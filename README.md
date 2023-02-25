@@ -74,6 +74,8 @@ If you are using cmake, the modules in `small3d/cmake` can be useful. Check the
 
 ## Deploying with conan
 
+Please use conan version 1.59.0. Not all required packages work well with version 2.0 yet.
+
 For deploying small3d with [conan.io](https://conan.io), first add the [Barbarian package index](https://barbarian.bfgroup.xyz):
 
 	conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
