@@ -28,14 +28,15 @@ for:
   - conan profile detect
 
   test_script:
+  - cd ..
   - git clone https://github.com/dimi309/portaudio-conan
   - cd portaudio-conan
   - conan export . --version=19.7.0
-  - cd ..
-  - conan create . --version=master -s build_type=Release --build=missing && cd ..
-#  - conan create . small3d/master@ -s cppstd=14 -s build_type=Release -o portaudio:with_jack=False -o small3d:vulkan=True --build=missing && cd ..
-  - conan create . --version=master -s build_type=Debug --build=missing && cd ..
-#  - conan create . small3d/master@ -s cppstd=14 -s build_type=Debug -o portaudio:with_jack=False -o small3d:vulkan=True --build=missing && cd ..
+  - cd ../small3d
+  - conan create . --version=master -s build_type=Release --build=missing
+#  - conan create . small3d/master@ -s cppstd=14 -s build_type=Release -o portaudio:with_jack=False -o small3d:vulkan=True --build=missing
+  - conan create . --version=master -s build_type=Debug --build=missing
+#  - conan create . small3d/master@ -s cppstd=14 -s build_type=Debug -o portaudio:with_jack=False -o small3d:vulkan=True --build=missing
   - cd scripts && ./build.sh Debug && cd ..
   - git clean -fdx
   - cd scripts && ./build.sh Release && cd ..
@@ -64,15 +65,16 @@ for:
   - export VK_ICD_FILENAMES=$VULKAN_SDK/../MoltenVK/dylib/macOS/MoltenVK_icd.json
   
   test_script:
+  - cd ..
   - git clone https://github.com/dimi309/portaudio-conan
   - cd portaudio-conan
   - conan export . --version=19.7.0
-  - cd ..
+  - cd ../small3d
 
-  - conan create . --version=master -s build_type=Release --build=missing && cd ..
-#  - conan create . small3d/master@ -s cppstd=14 -s build_type=Release -o small3d:vulkan=True --build=missing && cd ..
-  - conan create . --version=master -s build_type=Debug --build=missing && cd ..
-#  - conan create . small3d/master@ -s cppstd=14 -s build_type=Debug -o small3d:vulkan=True --build=missing && cd ..
+  - conan create . --version=master -s build_type=Release --build=missing 
+#  - conan create . small3d/master@ -s cppstd=14 -s build_type=Release -o small3d:vulkan=True --build=missing
+  - conan create . --version=master -s build_type=Debug --build=missing
+#  - conan create . small3d/master@ -s cppstd=14 -s build_type=Debug -o small3d:vulkan=True --build=missing
   - cd scripts && ./build.sh Debug && cd ..
   - git clean -fdx
   - cd scripts && ./build.sh Release && cd ..
@@ -136,15 +138,16 @@ for:
   - conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
   
   test_script:
+  - cd ..
   - git clone https://github.com/dimi309/portaudio-conan
   - cd portaudio-conan
   - conan export . --version=19.7.0
-  - cd ..
+  - cd ../small3d
 
-  - conan create . --version=master -s build_type=Release --build=missing && cd ..
-#  - conan create . small3d/master@ -s build_type=Release -o small3d:vulkan=True --build=missing && cd ..
-  - conan create . --version=master -s build_type=Debug --build=missing && cd ..
-#  - conan create . small3d/master@ -s build_type=Debug -o small3d:vulkan=True --build=missing && cd ..
+  - conan create . --version=master -s build_type=Release --build=missing
+#  - conan create . small3d/master@ -s build_type=Release -o small3d:vulkan=True --build=missing
+  - conan create . --version=master -s build_type=Debug --build=missing
+#  - conan create . small3d/master@ -s build_type=Debug -o small3d:vulkan=True --build=missing
   - cd scripts && .\build-vs.bat Debug opengl && cd ..
   - git clean -fdx
   - cd scripts && .\build-vs.bat Release opengl && cd ..
