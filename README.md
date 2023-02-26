@@ -52,8 +52,29 @@ and tools accessible via the command line:
 
 ## Building and deploying
 
-Run the build script which is suitable to your platform from the scripts 
-directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`)
+---
+**NOTE**
+
+Building and deployment can be carried out the "traditional" way, just 
+with CMake and batch scripts, but deployment with conan.io is also
+available. small3d has been recently migrated to conan 2.0 in that
+respect. The Vulkan build does not yet work with conan (you can try it
+but it will probably crash), but the OpenGL should be ok. You need to
+deploy my variation of the portaudio package for conan as a prerequisite:
+
+	git clone https://github.com/dimi309/portaudio-conan
+	cd portaudio-conan
+	conan export . --version=19.7.0
+
+And of course, small3d too:
+
+	git clone https://github.com/dimi309/small3d
+	cd small3d
+	conan export . --version=master
+---
+
+For "traditional" deployment, run the build script which is suitable to your platform 
+from the scripts directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`).
 	
 Then, the unit tests can be run via the `unittests` binary from `build/bin`.
 
@@ -71,21 +92,6 @@ For building your own project, you need:
 If you are using cmake, the modules in `small3d/cmake` can be useful. Check the 
 `CMakeLists.txt` and `src/CMakeLists.txt` files for other configuration details 
 (link flags, etc) that may also be required or useful.
-
-## Deploying with conan
-
-Please use conan version 1.59.0. Not all required packages work well with version 2.0 yet.
-
-For deploying small3d with [conan.io](https://conan.io), first add the [Barbarian package index](https://barbarian.bfgroup.xyz):
-
-	conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
-	
-You can then reference the small3d library as `small3d/master@dimi309/small3d` 
-in your conanfiles.
-
-If you would like to export and set up the small3d package locally yourself, the 
-conan configuration can be found in the `conan_io` subdirectory of this 
-git repository.
 
 ## small3d on mobile
 
