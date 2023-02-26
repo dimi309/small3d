@@ -113,7 +113,16 @@ Building prerequisites</h1>
 </ul>
 <h1><a class="anchor" id="autotoc_md6"></a>
 Building and deploying</h1>
-<p>Run the build script which is suitable to your platform from the scripts directory (<code>build-vs.bat</code>, <code>build-mingw.bat</code> or <code>build.sh</code>)</p>
+<hr  />
+<p> <b>NOTE</b></p>
+<p>Building and deployment can be carried out the "traditional" way, just with CMake and batch scripts, but deployment with conan.io is also available. <a class="el" href="namespacesmall3d.html">small3d</a> has been recently migrated to conan 2.0 in that respect. The Vulkan build does not yet work with conan (you can try it but it will probably crash), but the OpenGL should be ok. You need to deploy my variation of the portaudio package for conan as a prerequisite: </p><pre class="fragment">git clone https://github.com/dimi309/portaudio-conan
+cd portaudio-conan
+conan export . --version=19.7.0
+</pre><p>And of course, <a class="el" href="namespacesmall3d.html">small3d</a> too: </p><pre class="fragment">git clone https://github.com/dimi309/small3d
+cd small3d
+conan export . --version=master
+</pre><hr  />
+<p>For "traditional" deployment, run the build script which is suitable to your platform from the scripts directory (<code>build-vs.bat</code>, <code>build-mingw.bat</code> or <code>build.sh</code>).</p>
 <p>Then, the unit tests can be run via the <code>unittests</code> binary from <code>build/bin</code>.</p>
 <p>If any of this fails or you would simply like to restart the building procedure, the best way to clean the <a class="el" href="namespacesmall3d.html">small3d</a> directories is by using git: </p><pre class="fragment">git clean -fdx
 </pre><p>For building your own project, you need:</p>
@@ -123,12 +132,6 @@ Building and deploying</h1>
 <li>The shaders from <code>build/shaders</code> directory</li>
 </ul>
 <p>If you are using cmake, the modules in <code>small3d/cmake</code> can be useful. Check the <code>CMakeLists.txt</code> and <code>src/CMakeLists.txt</code> files for other configuration details (link flags, etc) that may also be required or useful.</p>
-<h1><a class="anchor" id="autotoc_md7"></a>
-Deploying with conan</h1>
-<p>Please use conan version 1.59.0. Not all required packages work well with version 2.0 yet.</p>
-<p>For deploying <a class="el" href="namespacesmall3d.html">small3d</a> with <a href="https://conan.io">conan.io</a>, first add the <a href="https://barbarian.bfgroup.xyz">Barbarian package index</a>: </p><pre class="fragment">conan remote add barbarian-github https://barbarian.bfgroup.xyz/github
-</pre><p>You can then reference the <a class="el" href="namespacesmall3d.html">small3d</a> library as <code>small3d/master@dimi309/small3d</code> in your conanfiles.</p>
-<p>If you would like to export and set up the <a class="el" href="namespacesmall3d.html">small3d</a> package locally yourself, the conan configuration can be found in the <code>conan_io</code> subdirectory of this git repository.</p>
 <h1><a class="anchor" id="autotoc_md8"></a>
 small3d on mobile</h1>
 <p><a class="el" href="namespacesmall3d.html">small3d</a> runs on mobile devices using Vulkan and OpenGL ES. On Android, OpenGL ES is recommended because Vulkan still has some issues on quite a few devices.</p>
