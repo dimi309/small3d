@@ -32,9 +32,9 @@ for:
   - cd portaudio-conan
   - conan export . --version=19.7.0
   - cd ..
-  - conan create . small3d/master@ -s cppstd=14 -s build_type=Release -o portaudio:with_jack=False --build=missing && cd ..
+  - conan create . --version=master -s build_type=Release --build=missing && cd ..
 #  - conan create . small3d/master@ -s cppstd=14 -s build_type=Release -o portaudio:with_jack=False -o small3d:vulkan=True --build=missing && cd ..
-  - conan create . small3d/master@ -s cppstd=14 -s build_type=Debug -o portaudio:with_jack=False --build=missing && cd ..
+  - conan create . --version=master -s build_type=Debug --build=missing && cd ..
 #  - conan create . small3d/master@ -s cppstd=14 -s build_type=Debug -o portaudio:with_jack=False -o small3d:vulkan=True --build=missing && cd ..
   - cd scripts && ./build.sh Debug && cd ..
   - git clean -fdx
@@ -68,9 +68,10 @@ for:
   - cd portaudio-conan
   - conan export . --version=19.7.0
   - cd ..
-  - conan create . small3d/master@ -s cppstd=14 -s build_type=Release --build=missing && cd ..
+
+  - conan create . --version=master -s build_type=Release --build=missing && cd ..
 #  - conan create . small3d/master@ -s cppstd=14 -s build_type=Release -o small3d:vulkan=True --build=missing && cd ..
-  - conan create . small3d/master@ -s cppstd=14 -s build_type=Debug --build=missing && cd ..
+  - conan create . --version=master -s build_type=Debug --build=missing && cd ..
 #  - conan create . small3d/master@ -s cppstd=14 -s build_type=Debug -o small3d:vulkan=True --build=missing && cd ..
   - cd scripts && ./build.sh Debug && cd ..
   - git clean -fdx
@@ -139,9 +140,10 @@ for:
   - cd portaudio-conan
   - conan export . --version=19.7.0
   - cd ..
-  - conan create . small3d/master@ -s build_type=Release --build=missing && cd ..
+
+  - conan create . --version=master -s build_type=Release --build=missing && cd ..
 #  - conan create . small3d/master@ -s build_type=Release -o small3d:vulkan=True --build=missing && cd ..
-  - conan create . small3d/master@ -s build_type=Debug --build=missing && cd ..
+  - conan create . --version=master -s build_type=Debug --build=missing && cd ..
 #  - conan create . small3d/master@ -s build_type=Debug -o small3d:vulkan=True --build=missing && cd ..
   - cd scripts && .\build-vs.bat Debug opengl && cd ..
   - git clean -fdx

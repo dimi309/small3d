@@ -56,10 +56,10 @@ and tools accessible via the command line:
 **NOTE**
 
 Building and deployment can be carried out the "traditional" way, just 
-with CMake and batch scripts, but deployment with conan.io is also
+with CMake and batch scripts, but deployment with [conan.io](https://conan.io/) is also
 available. small3d has been recently migrated to conan 2.0 in that
 respect. The Vulkan build does not yet work with conan (you can try it
-but it will probably crash), but the OpenGL should be ok. You need to
+but it will probably crash), but the OpenGL build does. You need to
 deploy my variation of the portaudio package for conan as a prerequisite:
 
 	git clone https://github.com/dimi309/portaudio-conan
