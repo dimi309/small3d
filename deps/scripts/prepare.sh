@@ -19,7 +19,7 @@ if [ $(uname) == 'Linux' ]; then
     if type -p "apt" > /dev/null ; then
 	sudo apt update
 	# Without Install-Recommends libvulkan-dev does not get installed on travis-ci...
-	sudo apt install -y -o APT::Install-Recommends=1 libgl1-mesa-dev libxinerama-dev glslang-tools libxcursor-dev libxi-dev
+	sudo apt install -y -o APT::Install-Recommends=1 libgl1-mesa-dev libxinerama-dev glslang-tools libxcursor-dev libxi-dev libxrandr-dev libasound2-dev
 	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 	if [ "$2" != "opengl" ]; then
 	    sudo apt install -y -o APT::Install-Recommends=1 libvulkan-dev
