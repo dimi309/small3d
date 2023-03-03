@@ -56,18 +56,18 @@ class Small3dConan(ConanFile):
         cmake.build()
         if self.options.vulkan:
             if self.settings.os == "Windows":
-                self.run("cd scripts && compile-shaders.bat " + str(self.settings.build_type), "scripts", msys_mingw=False)
+                self.run("cd ..\\scripts && compile-shaders.bat " + str(self.settings.build_type))
             else:
                 if self.settings.build_type == "Release":
                     debug_info = "-g0"
                 else:
                     debug_info = "-g"
-                self.run("cd resources/shaders && glslangValidator -V perspectiveMatrixLightedShader.vert -o perspectiveMatrixLightedShader.spv "+ debug_info +
-                             " && glslangValidator -V textureShader.frag -o textureShader.spv " + debug_info, "resources/shaders", msys_mingw=False)
+                self.run("cd ../resources/shaders && glslangValidator -V perspectiveMatrixLightedShader.vert -o perspectiveMatrixLightedShader.spv "+ debug_info +
+                             " && glslangValidator -V textureShader.frag -o textureShader.spv " + debug_info, "resources/shaders")
 
     def package(self):
         if self.options.vulkan:
-            copy(self, pattern="*.spv", dst=os.path.join(self.package_folder, "bin/resources/shaders"), src=os.path.join(self.source_folder, "resources"))
+            copy(self, pattern="*.spv", dst=os.path.join(self.package_folder, "bin/resources"), src=os.path.join(self.source_folder, "resources"))
             copy(self, pattern="*.hpp", dst=os.path.join(self.package_folder, "include"), src=os.path.join(self.source_folder, "include"))
         else:
             copy(self, "*", dst=os.path.join(self.package_folder, "bin/resources/shaders"), src=os.path.join(self.source_folder, "opengl/resources/shaders"))
