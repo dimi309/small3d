@@ -55,25 +55,11 @@ and tools accessible via the command line:
 ---
 **NOTE**
 
-Building and deployment can be carried out the "traditional" way, just 
-with CMake and batch scripts, but deployment with [conan.io](https://conan.io/) is also
-available. small3d has been recently migrated to conan 2.0 in that
-respect. The Vulkan build does not yet work with conan (you can try it
-but it will probably crash), but the OpenGL build does. You need to
-deploy my variation of the portaudio package for conan as a prerequisite:
+The [conan](https://conan.io) package is now provided in a [separate repository](https://github.com/dimi309/small3d-conan).
 
-	git clone https://github.com/dimi309/portaudio-conan
-	cd portaudio-conan
-	conan export . --version=19.7.0
-
-And of course, small3d too:
-
-	git clone https://github.com/dimi309/small3d
-	cd small3d
-	conan export . --version=master
 ---
 
-For "traditional" deployment, run the build script which is suitable to your platform 
+Run the build script which is suitable to your platform 
 from the scripts directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`).
 	
 Then, the unit tests can be run via the `unittests` binary from `build/bin`.
