@@ -52,13 +52,6 @@ and tools accessible via the command line:
 
 ## Building and deploying
 
----
-**NOTE**
-
-The [conan](https://conan.io) package is now provided in a [separate repository](https://github.com/dimi309/small3d-conan).
-
----
-
 Run the build script which is suitable to your platform 
 from the scripts directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`).
 	
@@ -78,6 +71,13 @@ For building your own project, you need:
 If you are using cmake, the modules in `small3d/cmake` can be useful. Check the 
 `CMakeLists.txt` and `src/CMakeLists.txt` files for other configuration details 
 (link flags, etc) that may also be required or useful.
+
+---
+**NOTE**
+
+The small3d [conan](https://conan.io) package is now provided in a [separate repository](https://github.com/dimi309/small3d-conan).
+
+---
 
 ## small3d on mobile
 
