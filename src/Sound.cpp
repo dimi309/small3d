@@ -19,12 +19,8 @@
 #include "small3d_android.h"
 #endif
 
-#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
-#include <GLFW/glfw3.h>
-#endif
-
+#include "Time.hpp"
 #include "BasePath.hpp"
-
 
 #define PORTAUDIO_SAMPLE_FORMAT paInt16
 
@@ -137,10 +133,10 @@ namespace small3d {
     SoundData *soundData = static_cast<SoundData *>(userData);
 
     if (soundData->startTime == 0) {
-      soundData->startTime = glfwGetTime() - 0.1;
-    } else if (glfwGetTime() - soundData->startTime > soundData->duration) {
+      soundData->startTime = getTimeInSeconds() - 0.1;
+    } else if (getTimeInSeconds() - soundData->startTime > soundData->duration) {
       if (soundData->repeat) {
-        soundData->startTime = glfwGetTime() - 0.1;
+        soundData->startTime = getTimeInSeconds() - 0.1;
         soundData->currentFrame = 0;
       }
       else {
