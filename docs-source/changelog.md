@@ -1,6 +1,6 @@
 /*! \page changelog changes per version
 
-v1.801 (still open)
+v1.801 2023-01-21
 
 - VS build scripts switched to build with VS 2022 by default. In order to 
   go back to VS 2019 just change the VSCONFIG variables in 
@@ -21,6 +21,9 @@ v1.801 (still open)
   integers.
 - On Android, using oboe for sound instead of aaudio.
 - Implemented shadow mapping.
+- Migrated conan package configuration to conan 2.0 and separated it
+  from the main small3d repository (note: small3d is built with plain 
+  cmake - conan package manager use is optional)
 
 v1.800 2022-01-03
 

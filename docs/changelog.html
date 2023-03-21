@@ -66,7 +66,7 @@ $(function() {
 <div class="title">changes per version </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>v1.801 (still open)</p>
+<div class="textblock"><p>v1.801 2023-01-21</p>
 <ul>
 <li>VS build scripts switched to build with VS 2022 by default. In order to go back to VS 2019 just change the VSCONFIG variables in <code>srcipts/build-vs.bat</code> and <code>deps/scripts/prepare-vs.bat</code> to <code>-G"Visual Studio 16 2019" -A x64</code></li>
 <li>Stability improvements, especially for sound on Android and iOS.</li>
@@ -78,6 +78,7 @@ $(function() {
 <li>Texture colour components are now loaded and managed as 8-bit unsigned integers.</li>
 <li>On Android, using oboe for sound instead of aaudio.</li>
 <li>Implemented shadow mapping.</li>
+<li>Migrated conan package configuration to conan 2.0 and separated it from the main <a class="el" href="namespacesmall3d.html">small3d</a> repository (note: <a class="el" href="namespacesmall3d.html">small3d</a> is built with plain cmake - conan package manager use is optional)</li>
 </ul>
 <p>v1.800 2022-01-03</p>
 <ul>
