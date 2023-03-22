@@ -140,6 +140,22 @@ then
     CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64"
 fi
 
+if [ "$3" != "opengles" ]; then
+    cd vulkan_helper
+    mkdir build
+    cd build
+    cmake .. -DVULKAN_HELPER_TESTS=OFF $CMAKE_DEFINITIONS
+    cmake --build . --config $2
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    cp -rf include ../../
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    cp lib/$2/libvulkan_helper.a ../../lib/
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    cd ..
+    rm -rf build
+    cd ..
+fi
+
 tar xvf libpng-1.6.37.tar.gz
 cd libpng-1.6.37
 mkdir build

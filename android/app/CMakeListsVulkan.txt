@@ -35,6 +35,7 @@ target_include_directories(small3d_tests PUBLIC
 target_link_libraries(small3d_tests
         android
         ${log-lib}
+	${CMAKE_CURRENT_SOURCE_DIR}/../../deps/lib/${ANDROID_ABI}/libvulkan_helper.a
         ${Vulkan_LIBRARIES}
         oboe::oboe
         ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/lib/${ANDROID_ABI}/libpng.a

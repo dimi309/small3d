@@ -40,7 +40,7 @@ cd ..
 
 if [ "$3" != "skipdeps" ] && [ "$4" != "skipdeps" ]; then
 cd deps/scripts
-./prepare-ios.sh $1 $2
+./prepare-ios.sh $1 $2 $3
 cd ..
 cd ..
 else

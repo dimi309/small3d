@@ -1,5 +1,14 @@
 /*! \page changelog changes per version
 
+v1.802 (still open)
+
+- vulkan_helper is now provided as an external library through a git submodule.
+  This is not [BREAKING] for source code but please update your cmakefiles by
+  including it if you are using vulkan. As an example, see the cmakefiles of
+  the small3d library itself. Basically, `find_package(VULKAN_HELPER REQUIRED)`
+  needs to be added to find the vulkan_helper and then `${VULKAN_HELPER_LIBRARY}` 
+  is needed in `target_link_libraries`, before ` ${Vulkan_LIBRARIES}`.
+
 v1.801 2023-01-21
 
 - VS build scripts switched to build with VS 2022 by default. In order to 

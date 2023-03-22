@@ -5,19 +5,11 @@ list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/UnitTests.cpp)
 
 file(GLOB HEADER_FILES ${CMAKE_SOURCE_DIR}/include/small3d/*.hpp)
 
-if(DEFINED ANDROID_PLATFORM)
-  list(APPEND SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/small3d_android.c)
-  list(APPEND HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/small3d_android.h)
-endif()
-
 if(SMALL3D_OPENGL)
   list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/Renderer.cpp)
   list(APPEND SOURCE_FILES ${CMAKE_SOURCE_DIR}/opengl/src/Renderer.cpp)
   list(REMOVE_ITEM HEADER_FILES  ${CMAKE_SOURCE_DIR}/include/small3d/Renderer.hpp)
   list(APPEND HEADER_FILES ${CMAKE_SOURCE_DIR}/opengl/include/small3d/Renderer.hpp)
-else()
-  list(APPEND SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/vulkan_helper.c)
-  list(APPEND HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/vulkan_helper.h)
 endif()
 
 add_library(small3d ${SOURCE_FILES} ${HEADER_FILES})
@@ -30,6 +22,10 @@ if(SMALL3D_OPENGL)
   if(DEFINED ANDROID_PLATFORM)
     # The following is so that small3d_android.h can be included
     include_directories(${CMAKE_SOURCE_DIR}/src)
+  endif()
+else()
+  if(APPLE)
+    include_directories($ENV{VULKAN_SDK}/../MoltenVK/include)
   endif()
 endif()
 
@@ -91,13 +87,14 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
   if(APPLE) # MacOS
     set_target_properties(unittests PROPERTIES LINK_FLAGS "-framework \
 AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
--framework IOKit -framework CoreVideo")
+-framework IOKit -framework CoreVideo -framework QuartzCore")
   endif()
 
   if(NOT SMALL3D_OPENGL AND NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC, Vulkan
     target_link_libraries(unittests PUBLIC
       small3d
       ${GLFW_LIBRARIES}
+      ${VULKAN_HELPER_LIBRARY}
       ${Vulkan_LIBRARIES}
       ${PNG_LIBRARIES}
       ${VORBIS_LIBRARIES}

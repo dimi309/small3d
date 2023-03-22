@@ -35,7 +35,25 @@ rm -rf oboe-1.6.1
 for androidabi in x86 x86_64 armeabi-v7a arm64-v8a
 do
     mkdir lib/$androidabi
-    
+
+    if [ "$3" != "opengles" ]; then
+	cd vulkan_helper
+	mkdir build
+	cd build
+	cmake .. -DVULKAN_HELPER_TESTS=OFF \
+	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
+	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
+	cmake --build .
+	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+	cp -rf include ../../
+	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+	cp lib/libvulkan_helper.a ../../lib/$androidabi
+	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+	cd ..
+	rm -rf build
+	cd ..
+    fi
+        
     tar xvf libpng-1.6.37.tar.gz
     cd libpng-1.6.37
     mkdir build

@@ -42,7 +42,11 @@ if /I not "%~3" == "skipdeps"  (
 cd ..\deps\scripts
 if exist include rmdir /Q /S include
 if exist lib rmdir /Q /S lib
+if /I "%~2" == "opengles" (
+call prepare-android.bat %1 %platformstr% opengles
+) else (
 call prepare-android.bat %1 %platformstr%
+)
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 )
 )

@@ -57,6 +57,19 @@ if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 cd ..
 del glew-20190928.tar
 rmdir /Q /S glew-2.2.0
+) ELSE (
+cd vulkan_helper
+mkdir build
+cd build
+cmake .. -G"MinGW Makefiles" -DVULKAN_HELPER_TESTS=OFF
+cmake --build .
+xcopy include ..\..\include /i /s
+if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
+copy lib\libvulkan_helper.a ..\..\lib\libvulkan_helper.a
+if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
+cd ..
+rmdir /Q /S build
+cd ..
 )
 
 7z x glm-0.9.9.8.zip

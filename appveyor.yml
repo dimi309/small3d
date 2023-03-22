@@ -24,6 +24,8 @@ for:
   - refreshenv
   
   test_script:
+  - git submodule init
+  - git submodule update
   - cd scripts && .\build-vs.bat Debug opengl && cd ..
   - git clean -fdx
   - cd scripts && .\build-vs.bat Release opengl && cd ..
@@ -42,6 +44,8 @@ for:
   - sudo apt-get -y install libgl-dev libglu1-mesa-dev glslang-tools libasound2-dev libx11-dev libx11-xcb-dev libfontenc-dev libice-dev libsm-dev libxau-dev libxaw7-dev libxcomposite-dev libxcursor-dev libxdamage-dev libxdmcp-dev libxext-dev libxfixes-dev libxft-dev libxi-dev libxinerama-dev libxkbfile-dev libxmu-dev libxmuu-dev libxpm-dev libxrandr-dev libxrender-dev libxres-dev libxss-dev libxt-dev libxtst-dev libxv-dev libxvmc-dev libxxf86vm-dev xtrans-dev libxcb-render0-dev libxcb-render-util0-dev libxcb-xkb-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-shape0-dev libxcb-sync-dev libxcb-xfixes0-dev libxcb-xinerama0-dev xkb-data libxcb-dri3-dev libxcb-util-dev
 
   test_script:
+  - git submodule init
+  - git submodule update
   - cd scripts && ./build.sh Debug && cd ..
   - git clean -fdx
   - cd scripts && ./build.sh Release && cd ..
@@ -66,6 +70,8 @@ for:
   - export VK_ICD_FILENAMES=$VULKAN_SDK/../MoltenVK/dylib/macOS/MoltenVK_icd.json
   
   test_script:
+  - git submodule init
+  - git submodule update
   - cd scripts && ./build.sh Debug && cd ..
   - git clean -fdx
   - cd scripts && ./build.sh Release && cd ..
@@ -90,10 +96,13 @@ for:
   - del "C:\Program Files\Git\usr\bin\sh.exe"
 
   test_script:
-  - cd scripts && .\build-mingw.bat Debug && cd ..
-  - git clean -fdx
-  - cd scripts && .\build-mingw.bat Release && cd ..
-  - git clean -fdx
+  # git submodule just won't work on appveyor so, no vulkan...
+  # - git submodule init
+  # - git submodule update
+  # - cd scripts && .\build-mingw.bat Debug && cd ..
+  # - git clean -fdx
+  # - cd scripts && .\build-mingw.bat Release && cd ..
+  # - git clean -fdx
   - cd scripts && .\build-mingw.bat Debug opengl && cd ..
   - git clean -fdx
   - cd scripts && .\build-mingw.bat Release opengl && cd ..

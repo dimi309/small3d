@@ -66,7 +66,11 @@ $(function() {
 <div class="title">changes per version </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>v1.801 2023-01-21</p>
+<div class="textblock"><p>v1.802 (still open)</p>
+<ul>
+<li>vulkan_helper is now provided as an external library through a git submodule. This is not [BREAKING] for source code but please update your cmakefiles by including it if you are using vulkan. As an example, see the cmakefiles of the <a class="el" href="namespacesmall3d.html">small3d</a> library itself. Basically, <code>find_package(VULKAN_HELPER REQUIRED)</code> needs to be added to find the vulkan_helper and then <code>${VULKAN_HELPER_LIBRARY}</code> is needed in <code>target_link_libraries</code>, before <code>${Vulkan_LIBRARIES}</code>.</li>
+</ul>
+<p>v1.801 2023-01-21</p>
 <ul>
 <li>VS build scripts switched to build with VS 2022 by default. In order to go back to VS 2019 just change the VSCONFIG variables in <code>srcipts/build-vs.bat</code> and <code>deps/scripts/prepare-vs.bat</code> to <code>-G"Visual Studio 16 2019" -A x64</code></li>
 <li>Stability improvements, especially for sound on Android and iOS.</li>

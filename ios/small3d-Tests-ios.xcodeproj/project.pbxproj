@@ -20,7 +20,6 @@
 		8C06D2CD28DF0E83008E9BE5 /* Sound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C06D2BE28DF0E82008E9BE5 /* Sound.cpp */; };
 		8C06D2CE28DF0E83008E9BE5 /* File.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C06D2BF28DF0E82008E9BE5 /* File.cpp */; };
 		8C06D2CF28DF0E83008E9BE5 /* Model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C06D2C028DF0E82008E9BE5 /* Model.cpp */; };
-		8C06D2D028DF0E83008E9BE5 /* vulkan_helper.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C06D2C128DF0E82008E9BE5 /* vulkan_helper.c */; };
 		8C06D2DE28DF0EAF008E9BE5 /* libMoltenVK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C06D2DD28DF0EAF008E9BE5 /* libMoltenVK.a */; };
 		8C0BD1B328E0174400B21659 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C0BD1B228E0174400B21659 /* Metal.framework */; };
 		8C0BD1B528E0177E00B21659 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C0BD1B428E0177E00B21659 /* CoreGraphics.framework */; };
@@ -43,6 +42,7 @@
 		8C4EB26A27881BB5000DD6DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C4EB26927881BB5000DD6DF /* Assets.xcassets */; };
 		8C4EB27027881BB5000DD6DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4EB26F27881BB5000DD6DF /* main.m */; };
 		8CB7352228E29FE300466A13 /* UnitTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8CB7352028E29FE300466A13 /* UnitTests.cpp */; };
+		8CF8631429CD817400E25097 /* libvulkan_helper.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CF8631329CD817400E25097 /* libvulkan_helper.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,11 +56,9 @@
 		8C06D2BA28DF0E82008E9BE5 /* Renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Renderer.cpp; path = ../../src/Renderer.cpp; sourceTree = "<group>"; };
 		8C06D2BB28DF0E82008E9BE5 /* WavefrontFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = WavefrontFile.cpp; path = ../../src/WavefrontFile.cpp; sourceTree = "<group>"; };
 		8C06D2BC28DF0E82008E9BE5 /* Time.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Time.cpp; path = ../../src/Time.cpp; sourceTree = "<group>"; };
-		8C06D2BD28DF0E82008E9BE5 /* vulkan_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vulkan_helper.h; path = ../../src/vulkan_helper.h; sourceTree = "<group>"; };
 		8C06D2BE28DF0E82008E9BE5 /* Sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Sound.cpp; path = ../../src/Sound.cpp; sourceTree = "<group>"; };
 		8C06D2BF28DF0E82008E9BE5 /* File.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = File.cpp; path = ../../src/File.cpp; sourceTree = "<group>"; };
 		8C06D2C028DF0E82008E9BE5 /* Model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Model.cpp; path = ../../src/Model.cpp; sourceTree = "<group>"; };
-		8C06D2C128DF0E82008E9BE5 /* vulkan_helper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vulkan_helper.c; path = ../../src/vulkan_helper.c; sourceTree = "<group>"; };
 		8C06D2C228DF0E82008E9BE5 /* OctPyramid.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = OctPyramid.hpp; path = ../../src/OctPyramid.hpp; sourceTree = "<group>"; };
 		8C06D2D128DF0E92008E9BE5 /* SceneObject.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SceneObject.hpp; path = ../../include/small3d/SceneObject.hpp; sourceTree = "<group>"; };
 		8C06D2D228DF0E92008E9BE5 /* Sound.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Sound.hpp; path = ../../include/small3d/Sound.hpp; sourceTree = "<group>"; };
@@ -109,6 +107,7 @@
 		8CB7352028E29FE300466A13 /* UnitTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UnitTests.cpp; path = ../../src/UnitTests.cpp; sourceTree = "<group>"; };
 		8CB7352128E29FE300466A13 /* UnitTests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = UnitTests.hpp; path = ../../src/UnitTests.hpp; sourceTree = "<group>"; };
 		8CCF87D328DEA8F500BDEF3A /* small3d-Tests-ios copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "small3d-Tests-ios copy-Info.plist"; path = "/Users/me/Source/small3d/ios/small3d-Tests-ios copy-Info.plist"; sourceTree = "<absolute>"; };
+		8CF8631329CD817400E25097 /* libvulkan_helper.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvulkan_helper.a; path = ../deps/lib/libvulkan_helper.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +120,7 @@
 				8C0BD1B728E017C700B21659 /* IOSurface.framework in Frameworks */,
 				8C0BD1B528E0177E00B21659 /* CoreGraphics.framework in Frameworks */,
 				8C0BD1B328E0174400B21659 /* Metal.framework in Frameworks */,
+				8CF8631429CD817400E25097 /* libvulkan_helper.a in Frameworks */,
 				8C06D2DE28DF0EAF008E9BE5 /* libMoltenVK.a in Frameworks */,
 				8C4CF6C92788367300F9F4E8 /* OpenAL.framework in Frameworks */,
 				8C4CF6C72788365F00F9F4E8 /* libz.a in Frameworks */,
@@ -139,6 +139,7 @@
 		8C4CF6B32788364900F9F4E8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8CF8631329CD817400E25097 /* libvulkan_helper.a */,
 				8C0BD1BC28E0198F00B21659 /* QuartzCore.framework */,
 				8C0BD1BA28E018C500B21659 /* CoreMotion.framework */,
 				8C0BD1B828E0183300B21659 /* UIKit.framework */,
@@ -213,8 +214,6 @@
 				8C06D2B628DF0E82008E9BE5 /* SceneObject.cpp */,
 				8C06D2BE28DF0E82008E9BE5 /* Sound.cpp */,
 				8C06D2BC28DF0E82008E9BE5 /* Time.cpp */,
-				8C06D2C128DF0E82008E9BE5 /* vulkan_helper.c */,
-				8C06D2BD28DF0E82008E9BE5 /* vulkan_helper.h */,
 				8C06D2BB28DF0E82008E9BE5 /* WavefrontFile.cpp */,
 				8C4CF6DA27883A4E00F9F4E8 /* resources1 */,
 				8C4EB25D27881BB3000DD6DF /* AppDelegate.h */,
@@ -301,7 +300,6 @@
 				8C06D2CA28DF0E83008E9BE5 /* Renderer.cpp in Sources */,
 				8CB7352228E29FE300466A13 /* UnitTests.cpp in Sources */,
 				8C4EB26527881BB3000DD6DF /* ViewController.m in Sources */,
-				8C06D2D028DF0E83008E9BE5 /* vulkan_helper.c in Sources */,
 				8C06D2CB28DF0E83008E9BE5 /* WavefrontFile.cpp in Sources */,
 				8C06D2C828DF0E83008E9BE5 /* Logger.cpp in Sources */,
 				8C06D2C928DF0E83008E9BE5 /* BoundingBoxSet.cpp in Sources */,

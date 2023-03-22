@@ -52,6 +52,23 @@ del oboe-1.6.1.tar
 for %%A in (x86,x86_64,armeabi-v7a,arm64-v8a) do (
 
 mkdir lib\%%A
+if /I not "%~3" == "opengles" (
+cd vulkan_helper
+mkdir build
+cd build
+cmake .. -G"MinGW Makefiles" -DVULKAN_HELPER_TESTS=OFF^
+ -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A^
+ %CMAKE_DEFINITIONS%
+cmake --build .
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
+xcopy include ..\..\include /i /s /y
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
+copy lib\libvulkan_helper.a ..\..\lib\%%A
+if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
+cd ..
+rmdir /Q /S build
+cd ..
+)
 
 7z x libpng-1.6.37.tar.gz
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel!

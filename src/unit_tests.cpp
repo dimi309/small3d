@@ -21,7 +21,12 @@
 #if defined(__ANDROID__)
 extern "C" {
 void android_main(struct android_app* state) {
+
   small3d_android_app = state;
+#ifndef SMALL3D_OPENGLES
+  vh_android_app = state;
+#endif
+  
   small3d_android_app->onAppCmd = handle_cmd;
   while(!appActive) {
     pollEvents();

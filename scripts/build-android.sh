@@ -48,7 +48,11 @@ sourcepath=$(pwd)
 if [ "$2" != "skipdeps" ] && [ "$3" != "skipdeps" ]; then
     git clean -fdx
     cd deps/scripts
-    ./prepare-android.sh $1 $platformstr
+    if [ "$2" == "opengles" ]; then
+	./prepare-android.sh $1 $platformstr opengles
+    else
+	./prepare-android.sh $1 $platformstr
+    fi
     cd ../..
 else
     rm -rf build

@@ -70,6 +70,20 @@ if [ "$2" == "opengl" ]; then
     rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cd ..
     rm -rf glew-2.2.0
+else
+    cd vulkan_helper
+    mkdir build
+    cd build
+    cmake .. -DVULKAN_HELPER_TESTS=OFF
+    cmake --build .
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    cp -rf include ../../
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    cp lib/libvulkan_helper.a ../../lib/libvulkan_helper.a
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    cd ..
+    rm -rf build
+    cd ..
 fi
 
 unzip glm-0.9.9.8.zip

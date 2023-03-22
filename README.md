@@ -52,8 +52,17 @@ and tools accessible via the command line:
 
 ## Building and deploying
 
-Run the build script which is suitable to your platform 
-from the scripts directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`).
+If you are going to use vulkan, ensure that the vulkan_helper submodule has been
+retrieved:
+	
+	git submodule init
+	git submodule update
+	
+After executing the commands above, the `vulkan_helper` directory should contain 
+the source code of the vulkan_helper library.
+
+Back to the  main repository, run the build script which is suitable to your platform 
+from the `scripts` directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`).
 	
 Then, the unit tests can be run via the `unittests` binary from `build/bin`.
 
