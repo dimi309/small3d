@@ -144,7 +144,7 @@ if [ "$3" != "opengles" ]; then
     cd vulkan_helper
     mkdir build
     cd build
-    cmake .. -DVULKAN_HELPER_TESTS=OFF $CMAKE_DEFINITIONS
+    cmake .. -DVH_BUILD_TESTS=OFF $CMAKE_DEFINITIONS
     cmake --build . --config $2
     rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp -rf include ../../

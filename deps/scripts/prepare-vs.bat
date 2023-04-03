@@ -66,7 +66,7 @@ rmdir /Q /S glew-2.2.0
 cd vulkan_helper
 mkdir build
 cd build
-cmake .. %VSCONFIG% -DVULKAN_HELPER_TESTS=OFF
+cmake .. %VSCONFIG% -DVH_BUILD_TESTS=OFF
 cmake --build . --config %BUILDTYPE%
 xcopy include ..\..\include /i /s
 if !errorlevel! neq 0 endlocal & exit /b !errorlevel!

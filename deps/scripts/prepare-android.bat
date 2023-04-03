@@ -56,7 +56,7 @@ if /I not "%~3" == "opengles" (
 cd vulkan_helper
 mkdir build
 cd build
-cmake .. -G"MinGW Makefiles" -DVULKAN_HELPER_TESTS=OFF^
+cmake .. -G"MinGW Makefiles" -DVH_BUILD_TESTS=OFF^
  -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A^
  %CMAKE_DEFINITIONS%
 cmake --build .

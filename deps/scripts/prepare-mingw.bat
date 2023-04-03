@@ -61,7 +61,7 @@ rmdir /Q /S glew-2.2.0
 cd vulkan_helper
 mkdir build
 cd build
-cmake .. -G"MinGW Makefiles" -DVULKAN_HELPER_TESTS=OFF
+cmake .. -G"MinGW Makefiles" -DVH_BUILD_TESTS=OFF
 cmake --build .
 xcopy include ..\..\include /i /s
 if !errorlevel! neq 0 endlocal & exit /b !errorlevel!

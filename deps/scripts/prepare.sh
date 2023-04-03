@@ -74,7 +74,7 @@ else
     cd vulkan_helper
     mkdir build
     cd build
-    cmake .. -DVULKAN_HELPER_TESTS=OFF
+    cmake .. -DVH_BUILD_TESTS=OFF
     cmake --build .
     rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
     cp -rf include ../../

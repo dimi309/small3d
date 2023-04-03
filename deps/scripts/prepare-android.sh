@@ -40,7 +40,7 @@ do
 	cd vulkan_helper
 	mkdir build
 	cd build
-	cmake .. -DVULKAN_HELPER_TESTS=OFF \
+	cmake .. -DVH_BUILD_TESTS=OFF \
 	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
 	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
 	cmake --build .
