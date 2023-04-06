@@ -1,7 +1,7 @@
 # For this to work, set the NDK variable to your ndk path. It should look like
-# /Users/user/Library/Android/sdk/ndk/21.2.6472646 for example.
+# /Users/user/Library/Android/sdk/ndk/22.1.7171670 for example.
 # Tested on MacOS and Debian
-# For OpenGL ES builds, an NDK version that works well is 22.1.7171670. There
+# Because of some OpenGL ES details, an NDK version that works well is 22.1.7171670. There
 # can be some glitches on newer versions.
 
 set -e
@@ -37,24 +37,6 @@ rm -rf oboe-1.6.1
 for androidabi in x86 x86_64 armeabi-v7a arm64-v8a
 do
     mkdir lib/$androidabi
-
-    if [ "$3" != "opengles" ]; then
-	cd vulkan_helper
-	mkdir build
-	cd build
-	cmake .. -DVH_BUILD_TESTS=OFF \
-	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
-	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
-	cmake --build .
-	
-	cp -rf include ../../
-	
-	cp lib/libvulkan_helper.a ../../lib/$androidabi
-	
-	cd ..
-	rm -rf build
-	cd ..
-    fi
         
     tar xvf libpng-1.6.37.tar.gz
     cd libpng-1.6.37

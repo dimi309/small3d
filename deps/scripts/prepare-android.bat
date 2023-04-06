@@ -1,10 +1,10 @@
 @echo off
 
 REM For this to work, set the %NDK% variable to your ndk path. It should look like
-REM C:\Users\user\AppData\Local\Android\Sdk\ndk\22.0.6917172 for example. Also, the
+REM C:\Users\user\AppData\Local\Android\Sdk\ndk\22.1.7171670 for example. Also, the
 REM script needs to run in an environment with MinGW set up and no settings for
 REM Visual Studio.
-REM For OpenGL ES builds, an NDK version that works well is 22.1.7171670. There
+REM Because of some OpenGL ES details, an NDK version that works well is 22.1.7171670. There
 REM can be some glitches on newer versions.
 
 cd ..
@@ -52,23 +52,6 @@ del oboe-1.6.1.tar
 for %%A in (x86,x86_64,armeabi-v7a,arm64-v8a) do (
 
 mkdir lib\%%A
-if /I not "%~3" == "opengles" (
-cd vulkan_helper
-mkdir build
-cd build
-cmake .. -G"MinGW Makefiles" -DVH_BUILD_TESTS=OFF^
- -DCMAKE_TOOLCHAIN_FILE=%NDK%\build\cmake\android.toolchain.cmake -DANDROID_PLATFORM=%platformstr% -DANDROID_ABI=%%A^
- %CMAKE_DEFINITIONS%
-cmake --build .
-if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
-xcopy include ..\..\include /i /s /y
-if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
-copy lib\libvulkan_helper.a ..\..\lib\%%A
-if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel! 
-cd ..
-rmdir /Q /S build
-cd ..
-)
 
 7z x libpng-1.6.37.tar.gz
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel!

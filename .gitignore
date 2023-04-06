@@ -24,6 +24,4 @@ Thumbs.db
 #compiled shaders
 *\.spv
 
-android/app/CMakeLists.txt
-
 scripts/tmp*

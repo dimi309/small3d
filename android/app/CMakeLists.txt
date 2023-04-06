@@ -2,9 +2,6 @@ cmake_minimum_required(VERSION 3.6.0)
 project(Small3dTests)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-# This does not seem to work in Android Studio
-# option(SMALL3D_OPENGL "Compile with OpenGL 3.3 / OpenGL ES" ON)
-
 find_library(log-lib
         log)
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
@@ -14,13 +11,6 @@ file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../src/*.h*)
 
 add_compile_definitions(SMALL3D_OPENGL)
 add_compile_definitions(SMALL3D_OPENGLES)
-list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../src/Renderer.cpp)
-list(APPEND SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../opengl/src/Renderer.cpp)
-list(REMOVE_ITEM HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../include/small3d/Renderer.hpp)
-list(APPEND HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../opengl/include/small3d/Renderer.hpp)
-list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../src/vulkan_helper.c)
-list(REMOVE_ITEM HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../src/vulkan_helper.h)
-
 
 MESSAGE(STATUS "Sources: ${SOURCE_FILES} ${HEADER_FILES}")
 
@@ -32,11 +22,6 @@ add_library(small3d_tests
         ${HEADER_FILES}
         ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
-# When using OpenGL include the OpenGL Renderer.hpp directory first
-# so that OpenGL Renderer.hpp takes precedence over Vulkan Renderer.hpp
-target_include_directories(small3d_tests PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../opengl/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../opengl/include/small3d)
 if (DEFINED ANDROID_PLATFORM)
     # The following is so that small3d_android.h can be included
     target_include_directories(small3d_tests PUBLIC

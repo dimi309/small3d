@@ -7,13 +7,6 @@ if [ "$1" != "Debug" ] && [ "$1" != "Release" ]; then
     exit 1
 fi
 
-if [ ! -z "$2" ] && [ "$2" != "opengl" ]; then
-    echo "The second parameter, if entered, can only be opengl if you would like to prepare the OpenGL-related dependencies"
-    exit 1
-fi
-
-
-
 if [ $(uname) == 'Linux' ]; then
 
     CMAKE_PORTAUDIO_DEFINITIONS="-DPA_USE_JACK=OFF"
@@ -23,10 +16,6 @@ if [ $(uname) == 'Linux' ]; then
 	# Without Install-Recommends libvulkan-dev does not get installed on travis-ci...
 	sudo apt install -y -o APT::Install-Recommends=1 libgl1-mesa-dev libxinerama-dev glslang-tools libxcursor-dev libxi-dev libxrandr-dev libasound2-dev
 	
-	if [ "$2" != "opengl" ]; then
-	    sudo apt install -y -o APT::Install-Recommends=1 libvulkan-dev
-	    
-	fi
     elif type -p "dnf" > /dev/null ; then
 	sudo dnf install -y mesa-libGL-devel
 	
@@ -51,61 +40,32 @@ mkdir build
 cd build
 cmake .. -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF $CMAKE_DEFINITIONS
 cmake --build .
-
 cp -rf ../include/GLFW ../../include/
-
 cp src/libglfw3.a ../../lib/
-
 cd ../..
 rm -rf glfw-3.3.8
 
-# Only needed for OpenGL build
-if [ "$2" == "opengl" ]; then
-    tar xvf glew-20190928.tgz
-    cd glew-2.2.0
-    cmake build/cmake -DBUILD_UTILS=OFF
-    cmake --build .
-    
-    cp -rf include/GL ../include/
-    
-    cp lib/libGLEW.a ../lib/
-    
-    cd ..
-    rm -rf glew-2.2.0
-else
-    cd vulkan_helper
-    mkdir build
-    cd build
-    cmake .. -DVH_BUILD_TESTS=OFF
-    cmake --build .
-    
-    cp -rf include ../../
-    
-    cp lib/libvulkan_helper.a ../../lib/libvulkan_helper.a
-    
-    cd ..
-    rm -rf build
-    cd ..
-fi
+tar xvf glew-20190928.tgz
+cd glew-2.2.0
+cmake build/cmake -DBUILD_UTILS=OFF
+cmake --build .
+cp -rf include/GL ../include/
+cp lib/libGLEW.a ../lib/
+cd ..
+rm -rf glew-2.2.0
 
 unzip glm-0.9.9.8.zip
 cp -rf glm/glm include/
-
 rm -rf glm
-
 tar xvf zlib-1.2.11-noexample.tar.gz
 cd zlib-1.2.11
 mkdir build
 cd build
 cmake .. $CMAKE_DEFINITIONS
 cmake --build .
-
 cp ../zlib.h ../../include/
-
 cp zconf.h ../../include/
-
 cp libz.a ../../lib/
-
 cd ../../
 rm -rf zlib-1.2.11
 
@@ -117,13 +77,9 @@ cd build
 # "PNG_ARM_NEON_FILE undefined: no support for run-time ARM NEON checks
 cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DPNG_ARM_NEON=off -DZLIB_LIBRARY=$(pwd)/../../lib/libza -DZLIB_INCLUDE_DIR=$(pwd)/../../include $CMAKE_DEFINITIONS
 cmake --build .
-
 cp ../*.h ../../include/
-
 cp pnglibconf.h ../../include/
-
 cp libpng.a ../../lib/
-
 cd ../../
 rm -rf libpng-1.6.37
 
@@ -133,13 +89,9 @@ mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF $CMAKE_DEFINITIONS
 cmake --build .
-
 cp -rf ../include/ogg ../../include/
-
 cp include/ogg/config_types.h ../../include/ogg/
-
 cp libogg.a ../../lib/
-
 cd ../../
 rm -rf libogg-1.3.5
 
@@ -149,11 +101,8 @@ mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS
 cmake --build .
-
 cp -rf ../include/vorbis ../../include/
-
 cp lib/*.a ../../lib/
-
 cd ../../
 rm -rf libvorbis-1.3.7
 
@@ -163,22 +112,16 @@ mkdir build1
 cd build1
 cmake .. $CMAKE_DEFINITIONS $CMAKE_PORTAUDIO_DEFINITIONS
 cmake --build .
-
 cp ../include/* ../../include/
-
 cp libportaudio.a ../../lib/
-
 cd ../../
 rm -rf portaudio
 
 tar xvf bzip2-1.0.8-use-env.tar.gz
 cd bzip2-1.0.8
 make
-
 cp bzlib.h ../include/
-
 cp libbz2.a ../lib/
-
 cd ..
 rm -rf bzip2-1.0.8
 

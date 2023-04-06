@@ -75,15 +75,16 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>The <a class="el" href="namespacesmall3d.html">small3d</a> renderer.  
+<p>Header of the Renderer class.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;GLFW/glfw3.h&gt;</code><br />
+<div class="textblock"><code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;GL/glew.h&gt;</code><br />
+<code>#include &lt;GLFW/glfw3.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="_logger_8hpp_source.html">Logger.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_image_8hpp_source.html">Image.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_model_8hpp_source.html">Model.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_scene_object_8hpp_source.html">SceneObject.hpp</a>&quot;</code><br />
 <code>#include &lt;unordered_map&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;glm/glm.hpp&gt;</code><br />
 <code>#include &lt;ft2build.h&gt;</code><br />
 </div>
@@ -92,34 +93,16 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html">small3d::Renderer</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl directory. It is picked up automatically by the project build scripts and build configuration when launched with the appropriate parameters.  <a href="classsmall3d_1_1_renderer.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a> class (OpenGL 3.3 / OpenGL ES 3.0)  <a href="classsmall3d_1_1_renderer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacesmall3d"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesmall3d.html">small3d</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a1d2ba3140560d8d53758174f4832ad76"><td class="memItemLeft" align="right" valign="top"><a id="a1d2ba3140560d8d53758174f4832ad76"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>MAX_FRAMES_PREPARED</b>&#160;&#160;&#160;3</td></tr>
-<tr class="separator:a1d2ba3140560d8d53758174f4832ad76"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab91f325a54d3e35fe831a86d6382c2a9"><td class="memItemLeft" align="right" valign="top"><a id="ab91f325a54d3e35fe831a86d6382c2a9"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>GLFW_INCLUDE_VULKAN</b></td></tr>
-<tr class="separator:ab91f325a54d3e35fe831a86d6382c2a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a816ab7d5c2ce1f0a01216042837beb93"><td class="memItemLeft" align="right" valign="top"><a id="a816ab7d5c2ce1f0a01216042837beb93"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>GLM_FORCE_RADIANS</b></td></tr>
-<tr class="separator:a816ab7d5c2ce1f0a01216042837beb93"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a90e006e34ac5bade5bb30145225e3253"><td class="memItemLeft" align="right" valign="top"><a id="a90e006e34ac5bade5bb30145225e3253"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>DEFAULT_SHADERS_DIR</b>&#160;&#160;&#160;&quot;resources/shaders/&quot;</td></tr>
-<tr class="separator:a90e006e34ac5bade5bb30145225e3253"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff339dbf456a8cdb8b11ad8e3e8dec4b"><td class="memItemLeft" align="right" valign="top"><a id="aff339dbf456a8cdb8b11ad8e3e8dec4b"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>DEFAULT_FONT_PATH</b>&#160;&#160;&#160;&quot;resources/fonts/CrusoeText/CrusoeText-Regular.ttf&quot;</td></tr>
-<tr class="separator:aff339dbf456a8cdb8b11ad8e3e8dec4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The <a class="el" href="namespacesmall3d.html">small3d</a> renderer. </p>
+<div class="textblock"><p>Header of the Renderer class. </p>
 <p>Created on: 2014/10/19 Author: Dimitri Kourkoulis License: BSD 3-Clause License (see LICENSE file) </p>
 </div></div><!-- contents -->
 <!-- start footer part -->

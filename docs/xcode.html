@@ -71,14 +71,9 @@ $(function() {
 cd build
 cmake .. -G"Xcode"
 cmake --build .
-</pre><p>In order to set up <a class="el" href="namespacesmall3d.html">small3d</a> with OpenGL, instead of the third line above, execute: </p><pre class="fragment">cmake .. -G"Xcode" -DSMALL3D_OPENGL=ON
 </pre><p>The created project, <code>build/small3d.xcodeproj</code> can then be opened in Xcode.</p>
-<p>There are two things that need to be taken care of before proceeding to run and debug the unit tests though. First of all, from the Project Navigator, click on <code><a class="el" href="namespacesmall3d.html">small3d</a></code>, and then on the <code>unittests</code> target. Select <code>Build Settings</code> and scroll down to <code>User-Defined</code>. There, the <code>CONFIGURATION_BUILD_DIR</code> variable needs to be set to the <code>bin</code> directory in all cases, for example <code>/Users/me/Source/small3d/build/bin/</code>, rather than the differentiated directories it is set to by default, e.g. <code>bin/Debug</code>, <code>bin/Release</code>, etc.</p>
-<p>The other problem is that, if you have set some Vulkan-related environment variables in bash / zsh, Xcode is not aware of them. Select the <code>unittests</code> target and then select <code>Edit Scheme</code>. Then select <code>Run Debug</code>, <code>Arguments</code> and add the necessary Environment Variables. They cannot be exactly the same as in <code>.zprofile</code> or <code>.bash_profile</code>. For example <code>VULKAN_SDK</code> does not need to be defined in this case and its value cannot be reused as <code>$VULKAN_SDK</code> anyway. They should look somewhat like these (note that, in my case, I do not install the Vulkan SDK. I just unzip it in my <code>Software</code> directory. So your specific path locations may vary): </p><pre class="fragment">PATH=$PATH:/Users/user/Software/vulkansdk-macos-1.2.154.0/macOS/bin
-DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/Users/user/Software/vulkansdk-macos-1.2.154.0/macOS/lib
-VK_LAYER_PATH=/Users/user/Software/vulkansdk-macos-1.2.154.0/macOS/share/vulkan/explicit_layer.d
-VK_ICD_FILENAMES=/Users/user/Software/vulkansdk-macos-1.2.154.0/MoltenVK/dylib/macOS/MoltenVK_icd.json
-</pre> </div></div><!-- contents -->
+<p>There are some settings that need to be taken care of before proceeding to run and debug the unit tests though. From the Project Navigator, click on <code><a class="el" href="namespacesmall3d.html">small3d</a></code>, and then on the <code>unittests</code> target. Select <code>Build Settings</code> and scroll down to <code>User-Defined</code>. There, the <code>CONFIGURATION_BUILD_DIR</code> variable needs to be set to the <code>bin</code> directory in all cases, for example <code>/Users/me/Source/small3d/build/bin/</code>, rather than the differentiated directories it is set to by default, e.g. <code>bin/Debug</code>, <code>bin/Release</code>, etc. </p>
+</div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

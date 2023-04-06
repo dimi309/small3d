@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(small3d)
 
-option(SMALL3D_OPENGL "Compile with OpenGL 3.3 / OpenGL ES" OFF)
-
 if(IOS AND DEFINED ANDROID_PLATFORM)
   message(FATAL_ERROR "small3d cannot be built for Android and iOS at the same time (both IOS set to ON and ANDROID_PLATFORM defined)")
 endif()
@@ -14,13 +12,9 @@ if(IOS)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -x objective-c -fmodules")
 endif()
 
-message(STATUS "OpenGL/OpenGL ES: ${SMALL3D_OPENGL}")
-
-if(SMALL3D_OPENGL)
-  add_compile_definitions(SMALL3D_OPENGL)
-  if(DEFINED ANDROID_PLATFORM OR IOS)
-    add_compile_definitions(SMALL3D_OPENGLES)
-  endif()
+add_compile_definitions(SMALL3D_OPENGL)
+if(DEFINED ANDROID_PLATFORM OR IOS)
+  add_compile_definitions(SMALL3D_OPENGLES)
 endif()
 
 file(COPY "deps/include" DESTINATION ".")
@@ -35,18 +29,6 @@ file(COPY "include" DESTINATION ".")
 
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
   file(COPY "resources" DESTINATION "./bin")
-endif()
-  
-
-if(SMALL3D_OPENGL)
-  file(REMOVE ${PROJECT_BINARY_DIR}/include/small3d/Renderer.hpp)
-  file(COPY "opengl/include/small3d/Renderer.hpp" DESTINATION "./include/small3d")
-  if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)  
-    file(GLOB VULKAN_SHADERS "${PROJECT_BINARY_DIR}/bin/resources/shaders/*")
-    file(REMOVE ${VULKAN_SHADERS})
-    file(COPY "opengl/resources/shaders" DESTINATION "./bin/resources")
-    file(COPY "opengl/resources/shaders" DESTINATION ".")
-  endif()
 endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
@@ -80,23 +62,9 @@ elseif(UNIX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 endif()
 
-if(NOT SMALL3D_OPENGL)
-  if(NOT IOS) # Linking to MoltenVK explicitly on iOS
-    find_package(Vulkan REQUIRED)
-    if (NOT ANDROID_PLATFORM)
-      find_package(VULKAN_HELPER REQUIRED)
-    endif()
-  endif()
-endif()
-
-if(SMALL3D_OPENGL)
-  if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
-    find_package(OpenGL REQUIRED)
-    find_package(GLEW REQUIRED)
-  endif()
-endif()
-
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
+  find_package(OpenGL REQUIRED)
+  find_package(GLEW REQUIRED)
   find_package(GLFW REQUIRED)
   find_package(Portaudio REQUIRED)
   find_package(PNG REQUIRED)
@@ -114,7 +82,7 @@ elseif(DEFINED ANDROID_PLATFORM)
   find_package(ZLIB REQUIRED)
 endif()
 
-if(SMALL3D_OPENGL AND WIN32 AND NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
+if(WIN32 AND NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
   add_definitions(-DGLEW_STATIC)
 endif()
 

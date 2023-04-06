@@ -1,24 +1,17 @@
 @echo off
 setlocal enabledelayedexpansion
 set args_ok=false
-set opengl_ok=false
 
 if /I "%~1" == "debug" set args_ok=true
 if /I "%~1" == "release" set args_ok=true
-if /I "%~2" == "" set opengl_ok=true
-if /I "%~2" == "opengl" set opengl_ok=true
-if not "%opengl_ok%" == "true" set args_ok=false
 
 if "%args_ok%" == "false" (
-echo Please indicate build type: debug or release, followed by opengles if you would like to build in OpenGL ES based mode.
+echo Please indicate build type: Debug or Release
 endlocal & exit /b 1
 )
 
 if /I "%~1" == "debug" set BUILDTYPE=Debug
 if /I "%~1" == "release" set BUILDTYPE=Release
-
-set CMAKE_DEFINITIONS=
-if /I "%~2" == "opengl" set CMAKE_DEFINITIONS=%CMAKE_DEFINITIONS% -DSMALL3D_OPENGL=ON
 
 set VSCONFIG=-G"Visual Studio 17 2022" -A x64
 
@@ -33,16 +26,13 @@ if exist build rmdir /Q /S build
 mkdir build
 cd build
 
-cmake .. %VSCONFIG% %CMAKE_DEFINITIONS%
+cmake .. %VSCONFIG%
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 cmake --build . --config %BUILDTYPE%
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 
 cd ..\scripts
 
-if /I "%~2" neq "opengl" (
-compile-shaders.bat %~1
-)
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 
 echo small3d built successfully for Visual Studio (%~1 mode)

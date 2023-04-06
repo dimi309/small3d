@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['generatetexture_173',['generateTexture',['../classsmall3d_1_1_renderer.html#aa3fc446b4ee64fbb831aa8f08a54dbdc',1,'small3d::Renderer::generateTexture(const std::string &amp;name, const Image &amp;image)'],['../classsmall3d_1_1_renderer.html#a9e6b2ba40d5f89691d03ebebd52aaabb',1,'small3d::Renderer::generateTexture(const std::string &amp;name, const std::string &amp;text, const glm::vec3 &amp;colour, const int fontSize=48, const std::string &amp;fontPath=DEFAULT_FONT_PATH, const bool replace=true)']]],
+  ['generatetexture_173',['generateTexture',['../classsmall3d_1_1_renderer.html#aa3fc446b4ee64fbb831aa8f08a54dbdc',1,'small3d::Renderer::generateTexture(const std::string &amp;name, const Image &amp;image)'],['../classsmall3d_1_1_renderer.html#a071ed4cfc38f7553d2e16a058ebd992b',1,'small3d::Renderer::generateTexture(const std::string &amp;name, const std::string &amp;text, const glm::vec3 &amp;colour, const int fontSize=48, const std::string &amp;fontPath=&quot;resources/fonts/CrusoeText/CrusoeText-Regular.ttf&quot;, const bool replace=true)']]],
   ['getbasepath_174',['getBasePath',['../_base_path_8hpp.html#add32e1431a57d5c1fcbf8b5fc9c6ffa4',1,'BasePath.cpp']]],
   ['getboundingboxsetextremes_175',['getBoundingBoxSetExtremes',['../classsmall3d_1_1_scene_object.html#a228935cac59f075ac5450dc128ca79e5',1,'small3d::SceneObject']]],
   ['getboundingboxsetmodels_176',['getBoundingBoxSetModels',['../classsmall3d_1_1_scene_object.html#a128bf0fe972ec9583dd2e55c841f9f13',1,'small3d::SceneObject']]],
@@ -11,7 +11,7 @@ var searchData=
   ['getcurrentposeidx_181',['getCurrentPoseIdx',['../classsmall3d_1_1_model.html#a5d501a1d394c08b7666a48d55736a5ab',1,'small3d::Model']]],
   ['getdata_182',['getData',['../classsmall3d_1_1_image.html#a5d3226c747156c0176eef8082d55753c',1,'small3d::Image']]],
   ['getheight_183',['getHeight',['../classsmall3d_1_1_image.html#adf097899bb8212b43a6e620ff0d15007',1,'small3d::Image']]],
-  ['getinstance_184',['getInstance',['../classsmall3d_1_1_renderer.html#a0c081b92ef1a16188a4eaee9b689982a',1,'small3d::Renderer']]],
+  ['getinstance_184',['getInstance',['../classsmall3d_1_1_renderer.html#ac0e306b1d7b9de6bc48c3cf8b4376a99',1,'small3d::Renderer']]],
   ['getjointtransform_185',['getJointTransform',['../classsmall3d_1_1_model.html#a7a80b1e60717a21ef51034f7f95751df',1,'small3d::Model']]],
   ['getmeshnames_186',['getMeshNames',['../classsmall3d_1_1_file.html#a1fa8b53546f047cf51793672d1c33bbc',1,'small3d::File::getMeshNames()'],['../classsmall3d_1_1_glb_file.html#a5eaf966354dcdc6f122e295a6a4f65af',1,'small3d::GlbFile::getMeshNames()'],['../classsmall3d_1_1_wavefront_file.html#a2c725a671f6616a479828113188f5691',1,'small3d::WavefrontFile::getMeshNames()']]],
   ['getmodel_187',['getModel',['../classsmall3d_1_1_scene_object.html#a990a1b6f6f3ab08fd71f5c4a220afc4c',1,'small3d::SceneObject']]],

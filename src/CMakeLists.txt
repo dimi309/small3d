@@ -5,32 +5,9 @@ list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/UnitTests.cpp)
 
 file(GLOB HEADER_FILES ${CMAKE_SOURCE_DIR}/include/small3d/*.hpp)
 
-if(SMALL3D_OPENGL)
-  list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/Renderer.cpp)
-  list(APPEND SOURCE_FILES ${CMAKE_SOURCE_DIR}/opengl/src/Renderer.cpp)
-  list(REMOVE_ITEM HEADER_FILES  ${CMAKE_SOURCE_DIR}/include/small3d/Renderer.hpp)
-  list(APPEND HEADER_FILES ${CMAKE_SOURCE_DIR}/opengl/include/small3d/Renderer.hpp)
-endif()
-
 add_library(small3d ${SOURCE_FILES} ${HEADER_FILES})
 
-if(SMALL3D_OPENGL)
-  # When using OpenGL include the OpenGL Renderer.hpp directory first
-  # so that OpenGL Renderer.hpp takes precedence over Vulkan Renderer.hpp
-  include_directories(${CMAKE_SOURCE_DIR}/opengl/include)
-  include_directories(${CMAKE_SOURCE_DIR}/opengl/include/small3d)
-  if(DEFINED ANDROID_PLATFORM)
-    # The following is so that small3d_android.h can be included
-    include_directories(${CMAKE_SOURCE_DIR}/src)
-  endif()
-else()
-  if(APPLE)
-    include_directories($ENV{VULKAN_SDK}/../MoltenVK/include)
-  endif()
-endif()
-
-include_directories(${Vulkan_INCLUDE_DIRS}
-  ${CMAKE_SOURCE_DIR}/include/small3d)
+include_directories(${CMAKE_SOURCE_DIR}/include/small3d)
 
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
   include_directories(
@@ -47,13 +24,15 @@ elseif(DEFINED ANDROID_PLATFORM) # Android
     ${CMAKE_SOURCE_DIR}/deps/include
     ${ZLIB_INCLUDE_DIRS}
     )
+  # The following is so that small3d_android.h can be included
+  include_directories(${CMAKE_SOURCE_DIR}/src)
 elseif(IOS) #iOS
   target_include_directories(small3d PUBLIC
     ${CMAKE_SOURCE_DIR}/deps/include
     )
 endif()
 
-if(DEFINED ANDROID_PLATFORM) # Android
+if(DEFINED ANDROID_PLATFORM) # native_app_glue for Android
   add_library(native_app_glue STATIC
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
   include_directories(
@@ -65,12 +44,6 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
 
   add_executable(unittests unit_tests.cpp OctPyramid.hpp OctPyramid.cpp UnitTests.hpp UnitTests.cpp)
 
-  # When using OpenGL include the OpenGL Renderer.hpp directory first
-  # so that OpenGL Renderer.hpp takes precedence over Vulkan Renderer.hpp
-  if(SMALL3D_OPENGL)
-    target_include_directories(unittests PUBLIC
-      ${CMAKE_SOURCE_DIR}/opengl/include)
-  endif()
   target_include_directories(unittests PUBLIC
     ${CMAKE_SOURCE_DIR}/include)
 
@@ -87,22 +60,10 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
   if(APPLE) # MacOS
     set_target_properties(unittests PROPERTIES LINK_FLAGS "-framework \
 AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
--framework IOKit -framework CoreVideo -framework QuartzCore")
+-framework IOKit -framework CoreVideo")
   endif()
 
-  if(NOT SMALL3D_OPENGL AND NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC, Vulkan
-    target_link_libraries(unittests PUBLIC
-      small3d
-      ${GLFW_LIBRARIES}
-      ${VULKAN_HELPER_LIBRARY}
-      ${Vulkan_LIBRARIES}
-      ${PNG_LIBRARIES}
-      ${VORBIS_LIBRARIES}
-      ${OGG_LIBRARIES}
-      ${PORTAUDIO_LIBRARIES}
-      ${FREETYPE_LIBRARIES}
-      )
-  elseif(SMALL3D_OPENGL AND NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC, OpenGL
+  if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC, OpenGL
     target_link_libraries(unittests PUBLIC
       small3d
       ${GLEW_LIBRARIES}

@@ -14,19 +14,13 @@
 		8C06D2C728DF0E83008E9BE5 /* GlbFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C06D2B728DF0E82008E9BE5 /* GlbFile.cpp */; };
 		8C06D2C828DF0E83008E9BE5 /* Logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C06D2B828DF0E82008E9BE5 /* Logger.cpp */; };
 		8C06D2C928DF0E83008E9BE5 /* BoundingBoxSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C06D2B928DF0E82008E9BE5 /* BoundingBoxSet.cpp */; };
-		8C06D2CA28DF0E83008E9BE5 /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C06D2BA28DF0E82008E9BE5 /* Renderer.cpp */; };
 		8C06D2CB28DF0E83008E9BE5 /* WavefrontFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C06D2BB28DF0E82008E9BE5 /* WavefrontFile.cpp */; };
 		8C06D2CC28DF0E83008E9BE5 /* Time.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C06D2BC28DF0E82008E9BE5 /* Time.cpp */; };
 		8C06D2CD28DF0E83008E9BE5 /* Sound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C06D2BE28DF0E82008E9BE5 /* Sound.cpp */; };
 		8C06D2CE28DF0E83008E9BE5 /* File.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C06D2BF28DF0E82008E9BE5 /* File.cpp */; };
 		8C06D2CF28DF0E83008E9BE5 /* Model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C06D2C028DF0E82008E9BE5 /* Model.cpp */; };
-		8C06D2DE28DF0EAF008E9BE5 /* libMoltenVK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C06D2DD28DF0EAF008E9BE5 /* libMoltenVK.a */; };
-		8C0BD1B328E0174400B21659 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C0BD1B228E0174400B21659 /* Metal.framework */; };
-		8C0BD1B528E0177E00B21659 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C0BD1B428E0177E00B21659 /* CoreGraphics.framework */; };
-		8C0BD1B728E017C700B21659 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C0BD1B628E017C700B21659 /* IOSurface.framework */; };
-		8C0BD1B928E0183300B21659 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C0BD1B828E0183300B21659 /* UIKit.framework */; };
-		8C0BD1BD28E0198F00B21659 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C0BD1BC28E0198F00B21659 /* QuartzCore.framework */; };
-		8C41E6C328E6AF5700FAC458 /* interop.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C41E6C128E6AF5700FAC458 /* interop.m */; };
+		8C097A8029DF7DA60084C00F /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C097A7F29DF7DA60084C00F /* Renderer.cpp */; };
+		8C4A03E028E69767007953E3 /* interop.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4A03DF28E69767007953E3 /* interop.m */; };
 		8C4CF6BE2788365F00F9F4E8 /* libbz2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CF6BB2788364A00F9F4E8 /* libbz2.a */; };
 		8C4CF6BF2788365F00F9F4E8 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CF6B92788364A00F9F4E8 /* libfreetype.a */; };
 		8C4CF6C12788365F00F9F4E8 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CF6BD2788364A00F9F4E8 /* libogg.a */; };
@@ -41,8 +35,11 @@
 		8C4EB26827881BB3000DD6DF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C4EB26627881BB3000DD6DF /* Main.storyboard */; };
 		8C4EB26A27881BB5000DD6DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C4EB26927881BB5000DD6DF /* Assets.xcassets */; };
 		8C4EB27027881BB5000DD6DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4EB26F27881BB5000DD6DF /* main.m */; };
+		8C7B72F628E5574B005E1635 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C0BD1BC28E0198F00B21659 /* QuartzCore.framework */; };
+		8C7B72F828E55994005E1635 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C0BD1B828E0183300B21659 /* UIKit.framework */; };
 		8CB7352228E29FE300466A13 /* UnitTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8CB7352028E29FE300466A13 /* UnitTests.cpp */; };
-		8CF8631429CD817400E25097 /* libvulkan_helper.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CF8631329CD817400E25097 /* libvulkan_helper.a */; };
+		8CE54A2A28E40E3600EC474D /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CE54A2928E40E3600EC474D /* GLKit.framework */; };
+		8CE54A2C28E40E4700EC474D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CE54A2B28E40E4700EC474D /* OpenGLES.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,7 +50,6 @@
 		8C06D2B728DF0E82008E9BE5 /* GlbFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GlbFile.cpp; path = ../../src/GlbFile.cpp; sourceTree = "<group>"; };
 		8C06D2B828DF0E82008E9BE5 /* Logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Logger.cpp; path = ../../src/Logger.cpp; sourceTree = "<group>"; };
 		8C06D2B928DF0E82008E9BE5 /* BoundingBoxSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BoundingBoxSet.cpp; path = ../../src/BoundingBoxSet.cpp; sourceTree = "<group>"; };
-		8C06D2BA28DF0E82008E9BE5 /* Renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Renderer.cpp; path = ../../src/Renderer.cpp; sourceTree = "<group>"; };
 		8C06D2BB28DF0E82008E9BE5 /* WavefrontFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = WavefrontFile.cpp; path = ../../src/WavefrontFile.cpp; sourceTree = "<group>"; };
 		8C06D2BC28DF0E82008E9BE5 /* Time.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Time.cpp; path = ../../src/Time.cpp; sourceTree = "<group>"; };
 		8C06D2BE28DF0E82008E9BE5 /* Sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Sound.cpp; path = ../../src/Sound.cpp; sourceTree = "<group>"; };
@@ -63,7 +59,6 @@
 		8C06D2D128DF0E92008E9BE5 /* SceneObject.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SceneObject.hpp; path = ../../include/small3d/SceneObject.hpp; sourceTree = "<group>"; };
 		8C06D2D228DF0E92008E9BE5 /* Sound.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Sound.hpp; path = ../../include/small3d/Sound.hpp; sourceTree = "<group>"; };
 		8C06D2D328DF0E92008E9BE5 /* Time.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Time.hpp; path = ../../include/small3d/Time.hpp; sourceTree = "<group>"; };
-		8C06D2D428DF0E92008E9BE5 /* Renderer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Renderer.hpp; path = ../../include/small3d/Renderer.hpp; sourceTree = "<group>"; };
 		8C06D2D528DF0E92008E9BE5 /* Model.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Model.hpp; path = ../../include/small3d/Model.hpp; sourceTree = "<group>"; };
 		8C06D2D628DF0E92008E9BE5 /* File.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = File.hpp; path = ../../include/small3d/File.hpp; sourceTree = "<group>"; };
 		8C06D2D728DF0E92008E9BE5 /* BasePath.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = BasePath.hpp; path = ../../include/small3d/BasePath.hpp; sourceTree = "<group>"; };
@@ -73,6 +68,8 @@
 		8C06D2DB28DF0E92008E9BE5 /* Logger.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Logger.hpp; path = ../../include/small3d/Logger.hpp; sourceTree = "<group>"; };
 		8C06D2DC28DF0E92008E9BE5 /* BoundingBoxSet.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = BoundingBoxSet.hpp; path = ../../include/small3d/BoundingBoxSet.hpp; sourceTree = "<group>"; };
 		8C06D2DD28DF0EAF008E9BE5 /* libMoltenVK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMoltenVK.a; path = ../build/lib/libMoltenVK.a; sourceTree = "<group>"; };
+		8C097A7E29DF7D910084C00F /* Renderer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Renderer.hpp; path = ../../include/small3d/Renderer.hpp; sourceTree = "<group>"; };
+		8C097A7F29DF7DA60084C00F /* Renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Renderer.cpp; path = ../../src/Renderer.cpp; sourceTree = "<group>"; };
 		8C0BD1B228E0174400B21659 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		8C0BD1B428E0177E00B21659 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		8C0BD1B628E017C700B21659 /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = System/Library/Frameworks/IOSurface.framework; sourceTree = SDKROOT; };
@@ -80,8 +77,8 @@
 		8C0BD1BA28E018C500B21659 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		8C0BD1BC28E0198F00B21659 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		8C2FC02D27BE1D16003566FC /* libvkzos.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvkzos.a; path = deps/lib/libvkzos.a; sourceTree = "<group>"; };
-		8C41E6C128E6AF5700FAC458 /* interop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = interop.m; path = ../../deps/ios/interop.m; sourceTree = "<group>"; };
-		8C41E6C228E6AF5700FAC458 /* interop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interop.h; path = ../../deps/ios/interop.h; sourceTree = "<group>"; };
+		8C4A03DE28E69767007953E3 /* interop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interop.h; path = ../../deps/ios/interop.h; sourceTree = "<group>"; };
+		8C4A03DF28E69767007953E3 /* interop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = interop.m; path = ../../deps/ios/interop.m; sourceTree = "<group>"; };
 		8C4CF6B42788364A00F9F4E8 /* libvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisfile.a; path = deps/lib/libvorbisfile.a; sourceTree = "<group>"; };
 		8C4CF6B52788364A00F9F4E8 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = deps/lib/libz.a; sourceTree = "<group>"; };
 		8C4CF6B62788364A00F9F4E8 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = deps/lib/libpng.a; sourceTree = "<group>"; };
@@ -107,7 +104,8 @@
 		8CB7352028E29FE300466A13 /* UnitTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UnitTests.cpp; path = ../../src/UnitTests.cpp; sourceTree = "<group>"; };
 		8CB7352128E29FE300466A13 /* UnitTests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = UnitTests.hpp; path = ../../src/UnitTests.hpp; sourceTree = "<group>"; };
 		8CCF87D328DEA8F500BDEF3A /* small3d-Tests-ios copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "small3d-Tests-ios copy-Info.plist"; path = "/Users/me/Source/small3d/ios/small3d-Tests-ios copy-Info.plist"; sourceTree = "<absolute>"; };
-		8CF8631329CD817400E25097 /* libvulkan_helper.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvulkan_helper.a; path = ../deps/lib/libvulkan_helper.a; sourceTree = "<group>"; };
+		8CE54A2928E40E3600EC474D /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		8CE54A2B28E40E4700EC474D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,17 +113,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C0BD1BD28E0198F00B21659 /* QuartzCore.framework in Frameworks */,
-				8C0BD1B928E0183300B21659 /* UIKit.framework in Frameworks */,
-				8C0BD1B728E017C700B21659 /* IOSurface.framework in Frameworks */,
-				8C0BD1B528E0177E00B21659 /* CoreGraphics.framework in Frameworks */,
-				8C0BD1B328E0174400B21659 /* Metal.framework in Frameworks */,
-				8CF8631429CD817400E25097 /* libvulkan_helper.a in Frameworks */,
-				8C06D2DE28DF0EAF008E9BE5 /* libMoltenVK.a in Frameworks */,
-				8C4CF6C92788367300F9F4E8 /* OpenAL.framework in Frameworks */,
-				8C4CF6C72788365F00F9F4E8 /* libz.a in Frameworks */,
-				8C4CF6C22788365F00F9F4E8 /* libpng.a in Frameworks */,
 				8C4CF6BF2788365F00F9F4E8 /* libfreetype.a in Frameworks */,
+				8C4CF6C22788365F00F9F4E8 /* libpng.a in Frameworks */,
+				8C4CF6C72788365F00F9F4E8 /* libz.a in Frameworks */,
+				8C7B72F828E55994005E1635 /* UIKit.framework in Frameworks */,
+				8C7B72F628E5574B005E1635 /* QuartzCore.framework in Frameworks */,
+				8CE54A2C28E40E4700EC474D /* OpenGLES.framework in Frameworks */,
+				8CE54A2A28E40E3600EC474D /* GLKit.framework in Frameworks */,
+				8C4CF6C92788367300F9F4E8 /* OpenAL.framework in Frameworks */,
 				8C4CF6C42788365F00F9F4E8 /* libvorbis.a in Frameworks */,
 				8C4CF6C62788365F00F9F4E8 /* libvorbisfile.a in Frameworks */,
 				8C4CF6C12788365F00F9F4E8 /* libogg.a in Frameworks */,
@@ -139,7 +134,8 @@
 		8C4CF6B32788364900F9F4E8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				8CF8631329CD817400E25097 /* libvulkan_helper.a */,
+				8CE54A2B28E40E4700EC474D /* OpenGLES.framework */,
+				8CE54A2928E40E3600EC474D /* GLKit.framework */,
 				8C0BD1BC28E0198F00B21659 /* QuartzCore.framework */,
 				8C0BD1BA28E018C500B21659 /* CoreMotion.framework */,
 				8C0BD1B828E0183300B21659 /* UIKit.framework */,
@@ -185,8 +181,10 @@
 		8C4EB25C27881BB3000DD6DF /* small3d-Tests-ios */ = {
 			isa = PBXGroup;
 			children = (
-				8C41E6C228E6AF5700FAC458 /* interop.h */,
-				8C41E6C128E6AF5700FAC458 /* interop.m */,
+				8C097A7F29DF7DA60084C00F /* Renderer.cpp */,
+				8C097A7E29DF7D910084C00F /* Renderer.hpp */,
+				8C4A03DE28E69767007953E3 /* interop.h */,
+				8C4A03DF28E69767007953E3 /* interop.m */,
 				8CB7352028E29FE300466A13 /* UnitTests.cpp */,
 				8CB7352128E29FE300466A13 /* UnitTests.hpp */,
 				8C06D2D728DF0E92008E9BE5 /* BasePath.hpp */,
@@ -196,7 +194,6 @@
 				8C06D2D928DF0E92008E9BE5 /* Image.hpp */,
 				8C06D2DB28DF0E92008E9BE5 /* Logger.hpp */,
 				8C06D2D528DF0E92008E9BE5 /* Model.hpp */,
-				8C06D2D428DF0E92008E9BE5 /* Renderer.hpp */,
 				8C06D2D128DF0E92008E9BE5 /* SceneObject.hpp */,
 				8C06D2D228DF0E92008E9BE5 /* Sound.hpp */,
 				8C06D2D328DF0E92008E9BE5 /* Time.hpp */,
@@ -210,7 +207,6 @@
 				8C06D2C028DF0E82008E9BE5 /* Model.cpp */,
 				8C06D2B528DF0E82008E9BE5 /* OctPyramid.cpp */,
 				8C06D2C228DF0E82008E9BE5 /* OctPyramid.hpp */,
-				8C06D2BA28DF0E82008E9BE5 /* Renderer.cpp */,
 				8C06D2B628DF0E82008E9BE5 /* SceneObject.cpp */,
 				8C06D2BE28DF0E82008E9BE5 /* Sound.cpp */,
 				8C06D2BC28DF0E82008E9BE5 /* Time.cpp */,
@@ -254,7 +250,7 @@
 		8C4EB25227881BB3000DD6DF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1320;
+				LastUpgradeCheck = 1340;
 				TargetAttributes = {
 					8C4EB25927881BB3000DD6DF = {
 						CreatedOnToolsVersion = 13.2.1;
@@ -297,7 +293,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C06D2CA28DF0E83008E9BE5 /* Renderer.cpp in Sources */,
+				8C097A8029DF7DA60084C00F /* Renderer.cpp in Sources */,
 				8CB7352228E29FE300466A13 /* UnitTests.cpp in Sources */,
 				8C4EB26527881BB3000DD6DF /* ViewController.m in Sources */,
 				8C06D2CB28DF0E83008E9BE5 /* WavefrontFile.cpp in Sources */,
@@ -309,10 +305,10 @@
 				8C06D2CF28DF0E83008E9BE5 /* Model.cpp in Sources */,
 				8C06D2CE28DF0E83008E9BE5 /* File.cpp in Sources */,
 				8C06D2C728DF0E83008E9BE5 /* GlbFile.cpp in Sources */,
+				8C4A03E028E69767007953E3 /* interop.m in Sources */,
 				8C06D2C628DF0E83008E9BE5 /* SceneObject.cpp in Sources */,
 				8C06D2C328DF0E83008E9BE5 /* Image.cpp in Sources */,
 				8C06D2CC28DF0E83008E9BE5 /* Time.cpp in Sources */,
-				8C41E6C328E6AF5700FAC458 /* interop.m in Sources */,
 				8C06D2C528DF0E83008E9BE5 /* OctPyramid.cpp in Sources */,
 				8C06D2CD28DF0E83008E9BE5 /* Sound.cpp in Sources */,
 			);
@@ -383,7 +379,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -436,7 +432,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -450,17 +446,22 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = C5LX5W2Z3T;
 				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"SMALL3D_IOS=1",
 					"SMALL3D_USING_XCODE=1",
+					"SMALL3D_OPENGLES=1",
+					"SMALL3D_OPENGL=1",
+					"GLES_SILENCE_DEPRECATION=1",
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
+					"$(PROJECT_DIR)/../opengl/include",
 					"$(PROJECT_DIR)/../include",
 					"$(PROJECT_DIR)/../deps/include",
 				);
@@ -474,6 +475,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationLandscapeRight;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationLandscapeRight;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationLandscapeRight;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -498,17 +500,22 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = C5LX5W2Z3T;
 				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"SMALL3D_IOS=1",
 					"SMALL3D_USING_XCODE=1",
+					"SMALL3D_OPENGLES=1",
+					"SMALL3D_OPENGL=1",
+					"GLES_SILENCE_DEPRECATION=1",
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
+					"$(PROJECT_DIR)/../opengl/include",
 					"$(PROJECT_DIR)/../include",
 					"$(PROJECT_DIR)/../deps/include",
 				);
@@ -522,6 +529,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationLandscapeRight;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationLandscapeRight;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationLandscapeRight;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -534,7 +542,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dimi309.small3d-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "general dev";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

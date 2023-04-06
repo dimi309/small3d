@@ -76,13 +76,21 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl directory. It is picked up automatically by the project build scripts and build configuration when launched with the appropriate parameters.  
+<p><a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a> class (OpenGL 3.3 / OpenGL ES 3.0)  
  <a href="classsmall3d_1_1_renderer.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_renderer_8hpp_source.html">Renderer.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:ab8b6dbd513c16e99f9f673f14e00409b"><td class="memItemLeft" align="right" valign="top"><a id="ab8b6dbd513c16e99f9f673f14e00409b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ab8b6dbd513c16e99f9f673f14e00409b">start</a> (const std::string &amp;windowTitle, const int width, const int height, const float fieldOfView, const float zNear, const float zFar, const std::string &amp;shadersPath, const uint32_t objectsPerFrame, const uint32_t objectsPerFrameInc)</td></tr>
+<tr class="memdesc:ab8b6dbd513c16e99f9f673f14e00409b"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Used to re-initialise the <a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a>, for example in Android apps after they come back into focus. <br /></td></tr>
+<tr class="separator:ab8b6dbd513c16e99f9f673f14e00409b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15011351cd2207d0430b0ebb5a65bef8"><td class="memItemLeft" align="right" valign="top"><a id="a15011351cd2207d0430b0ebb5a65bef8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a15011351cd2207d0430b0ebb5a65bef8">stop</a> ()</td></tr>
+<tr class="memdesc:a15011351cd2207d0430b0ebb5a65bef8"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Used to shutdown the renderer, for example in Android apps when they lose focus. <br /></td></tr>
+<tr class="separator:a15011351cd2207d0430b0ebb5a65bef8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a431380a4b28abb9a14c02c4535e49a1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a431380a4b28abb9a14c02c4535e49a1b">setCameraRotation</a> (const glm::vec3 &amp;rotation)</td></tr>
 <tr class="memdesc:a431380a4b28abb9a14c02c4535e49a1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set the rotation of the camera  <a href="classsmall3d_1_1_renderer.html#a431380a4b28abb9a14c02c4535e49a1b">More...</a><br /></td></tr>
 <tr class="separator:a431380a4b28abb9a14c02c4535e49a1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -90,7 +98,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a88086d55064237f48d33d6366df58eaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Modify the rotation of the camera  <a href="classsmall3d_1_1_renderer.html#a88086d55064237f48d33d6366df58eaf">More...</a><br /></td></tr>
 <tr class="separator:a88086d55064237f48d33d6366df58eaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab895333eea762ecfab8fb2e902b2862e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ab895333eea762ecfab8fb2e902b2862e">setCameraTransformation</a> (const glm::mat4x4 &amp;transformation)</td></tr>
-<tr class="memdesc:ab895333eea762ecfab8fb2e902b2862e"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set the camera transformation matrix  <a href="classsmall3d_1_1_renderer.html#ab895333eea762ecfab8fb2e902b2862e">More...</a><br /></td></tr>
+<tr class="memdesc:ab895333eea762ecfab8fb2e902b2862e"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set the camera by transformation matrix  <a href="classsmall3d_1_1_renderer.html#ab895333eea762ecfab8fb2e902b2862e">More...</a><br /></td></tr>
 <tr class="separator:ab895333eea762ecfab8fb2e902b2862e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4560bec0819d5f5c4b83500659e5fda"><td class="memItemLeft" align="right" valign="top">const glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ae4560bec0819d5f5c4b83500659e5fda">getCameraOrientation</a> () const</td></tr>
 <tr class="memdesc:ae4560bec0819d5f5c4b83500659e5fda"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the orientation of the camera  <a href="classsmall3d_1_1_renderer.html#ae4560bec0819d5f5c4b83500659e5fda">More...</a><br /></td></tr>
@@ -113,14 +121,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a32163440246ed8ea5016e15dfc781775"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2065e4645034d538e5bbd40cd5fa3a50"><td class="memItemLeft" align="right" valign="top"><a id="a2065e4645034d538e5bbd40cd5fa3a50"></a>
 GLFWwindow *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a2065e4645034d538e5bbd40cd5fa3a50">getWindow</a> () const</td></tr>
-<tr class="memdesc:a2065e4645034d538e5bbd40cd5fa3a50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the GLFW window object, associated with the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl direct...">Renderer</a>. <br /></td></tr>
+<tr class="memdesc:a2065e4645034d538e5bbd40cd5fa3a50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the GLFW window object, associated with the <a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a>. <br /></td></tr>
 <tr class="separator:a2065e4645034d538e5bbd40cd5fa3a50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3fc446b4ee64fbb831aa8f08a54dbdc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#aa3fc446b4ee64fbb831aa8f08a54dbdc">generateTexture</a> (const std::string &amp;name, const <a class="el" href="classsmall3d_1_1_image.html">Image</a> &amp;image)</td></tr>
 <tr class="memdesc:aa3fc446b4ee64fbb831aa8f08a54dbdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a texture on the GPU from the given image.  <a href="classsmall3d_1_1_renderer.html#aa3fc446b4ee64fbb831aa8f08a54dbdc">More...</a><br /></td></tr>
 <tr class="separator:aa3fc446b4ee64fbb831aa8f08a54dbdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e6b2ba40d5f89691d03ebebd52aaabb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a9e6b2ba40d5f89691d03ebebd52aaabb">generateTexture</a> (const std::string &amp;name, const std::string &amp;text, const glm::vec3 &amp;colour, const int fontSize=48, const std::string &amp;fontPath=DEFAULT_FONT_PATH, const bool replace=true)</td></tr>
-<tr class="memdesc:a9e6b2ba40d5f89691d03ebebd52aaabb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a texture on the GPU that contains the given text.  <a href="classsmall3d_1_1_renderer.html#a9e6b2ba40d5f89691d03ebebd52aaabb">More...</a><br /></td></tr>
-<tr class="separator:a9e6b2ba40d5f89691d03ebebd52aaabb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a071ed4cfc38f7553d2e16a058ebd992b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a071ed4cfc38f7553d2e16a058ebd992b">generateTexture</a> (const std::string &amp;name, const std::string &amp;text, const glm::vec3 &amp;colour, const int fontSize=48, const std::string &amp;fontPath=&quot;resources/fonts/CrusoeText/CrusoeText-Regular.ttf&quot;, const bool replace=true)</td></tr>
+<tr class="memdesc:a071ed4cfc38f7553d2e16a058ebd992b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a texture on the GPU that contains the given text.  <a href="classsmall3d_1_1_renderer.html#a071ed4cfc38f7553d2e16a058ebd992b">More...</a><br /></td></tr>
+<tr class="separator:a071ed4cfc38f7553d2e16a058ebd992b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3edaca7521e526b5cf311ed4c541452"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#aa3edaca7521e526b5cf311ed4c541452">deleteTexture</a> (const std::string &amp;name)</td></tr>
 <tr class="memdesc:aa3edaca7521e526b5cf311ed4c541452"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes the texture indicated by the given name.  <a href="classsmall3d_1_1_renderer.html#aa3edaca7521e526b5cf311ed4c541452">More...</a><br /></td></tr>
 <tr class="separator:aa3edaca7521e526b5cf311ed4c541452"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -151,27 +159,19 @@ GLFWwindow *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a8ad10fd0f0546566c6022931b6b54bed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a8ad10fd0f0546566c6022931b6b54bed">render</a> (<a class="el" href="classsmall3d_1_1_scene_object.html">SceneObject</a> &amp;sceneObject, const std::string &amp;textureName)</td></tr>
 <tr class="memdesc:a8ad10fd0f0546566c6022931b6b54bed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Render a <a class="el" href="classsmall3d_1_1_scene_object.html" title="An object that appears on the 3D scene. It is made up of a Model, together with information for posit...">SceneObject</a>.  <a href="classsmall3d_1_1_renderer.html#a8ad10fd0f0546566c6022931b6b54bed">More...</a><br /></td></tr>
 <tr class="separator:a8ad10fd0f0546566c6022931b6b54bed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40ab3a6ebf64fe75c9121d06637d8ee8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a40ab3a6ebf64fe75c9121d06637d8ee8">clearBuffers</a> (<a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;model)</td></tr>
-<tr class="memdesc:a40ab3a6ebf64fe75c9121d06637d8ee8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> from the GPU buffers (the object itself remains intact).  <a href="classsmall3d_1_1_renderer.html#a40ab3a6ebf64fe75c9121d06637d8ee8">More...</a><br /></td></tr>
-<tr class="separator:a40ab3a6ebf64fe75c9121d06637d8ee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e2f6135159d392f38175fc8a55c186d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a6e2f6135159d392f38175fc8a55c186d">clearBuffers</a> (<a class="el" href="classsmall3d_1_1_scene_object.html">SceneObject</a> &amp;sceneObject)</td></tr>
-<tr class="memdesc:a6e2f6135159d392f38175fc8a55c186d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear an <a class="el" href="classsmall3d_1_1_scene_object.html" title="An object that appears on the 3D scene. It is made up of a Model, together with information for posit...">SceneObject</a> (multiple models) from the GPU buffers (the <a class="el" href="classsmall3d_1_1_scene_object.html" title="An object that appears on the 3D scene. It is made up of a Model, together with information for posit...">SceneObject</a> itself remains intact).  <a href="classsmall3d_1_1_renderer.html#a6e2f6135159d392f38175fc8a55c186d">More...</a><br /></td></tr>
-<tr class="separator:a6e2f6135159d392f38175fc8a55c186d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd6b563ad9f26558659cb335b06fc95d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#acd6b563ad9f26558659cb335b06fc95d">clearBuffers</a> (<a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;model) const</td></tr>
+<tr class="memdesc:acd6b563ad9f26558659cb335b06fc95d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> from the GPU buffers (the <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> itself remains intact).  <a href="classsmall3d_1_1_renderer.html#acd6b563ad9f26558659cb335b06fc95d">More...</a><br /></td></tr>
+<tr class="separator:acd6b563ad9f26558659cb335b06fc95d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b636d995107d5dce4c20c465d0f6187"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a2b636d995107d5dce4c20c465d0f6187">clearBuffers</a> (<a class="el" href="classsmall3d_1_1_scene_object.html">SceneObject</a> &amp;sceneObject) const</td></tr>
+<tr class="memdesc:a2b636d995107d5dce4c20c465d0f6187"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear a <a class="el" href="classsmall3d_1_1_scene_object.html" title="An object that appears on the 3D scene. It is made up of a Model, together with information for posit...">SceneObject</a> (multiple models) from the GPU buffers (the <a class="el" href="classsmall3d_1_1_scene_object.html" title="An object that appears on the 3D scene. It is made up of a Model, together with information for posit...">SceneObject</a> itself remains intact).  <a href="classsmall3d_1_1_renderer.html#a2b636d995107d5dce4c20c465d0f6187">More...</a><br /></td></tr>
+<tr class="separator:a2b636d995107d5dce4c20c465d0f6187"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab68576dfc33356d43722e83fadec55f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ab68576dfc33356d43722e83fadec55f4">setBackgroundColour</a> (const glm::vec4 &amp;colour)</td></tr>
 <tr class="memdesc:ab68576dfc33356d43722e83fadec55f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the background colour of the screen.  <a href="classsmall3d_1_1_renderer.html#ab68576dfc33356d43722e83fadec55f4">More...</a><br /></td></tr>
 <tr class="separator:ab68576dfc33356d43722e83fadec55f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdc83f2aaaf3f41f35e99c1eabc6ac98"><td class="memItemLeft" align="right" valign="top"><a id="acdc83f2aaaf3f41f35e99c1eabc6ac98"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#acdc83f2aaaf3f41f35e99c1eabc6ac98">swapBuffers</a> ()</td></tr>
-<tr class="memdesc:acdc83f2aaaf3f41f35e99c1eabc6ac98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swap the buffers. <br /></td></tr>
+<tr class="memdesc:acdc83f2aaaf3f41f35e99c1eabc6ac98"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is a double buffered system and this command swaps the buffers. <br /></td></tr>
 <tr class="separator:acdc83f2aaaf3f41f35e99c1eabc6ac98"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adeade4469aab5489c7a7a1c5755653f8"><td class="memItemLeft" align="right" valign="top"><a id="adeade4469aab5489c7a7a1c5755653f8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#adeade4469aab5489c7a7a1c5755653f8">setupVulkan</a> ()</td></tr>
-<tr class="memdesc:adeade4469aab5489c7a7a1c5755653f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set up the Vulkan. This is called by the constructor and used internally. Normally there is no need to invoke it, appart from when an application runs on a mobile platform, in which case it can be useful to call destroyVulkan when the app loses focus and then setupVulkan when it regains it. <br /></td></tr>
-<tr class="separator:adeade4469aab5489c7a7a1c5755653f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a5de0802d1fd020a118db1852ea6e6b"><td class="memItemLeft" align="right" valign="top"><a id="a5a5de0802d1fd020a118db1852ea6e6b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a5a5de0802d1fd020a118db1852ea6e6b">destroyVulkan</a> ()</td></tr>
-<tr class="memdesc:a5a5de0802d1fd020a118db1852ea6e6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy Vulkan. This is is called by the destructor and used internally. Normally there is no need to invoke it, appart from when an application runs on a mobile platform, in which case it can be useful to call destroyVulkan when the app loses focus and then setupVulkan when it regains it. <br /></td></tr>
-<tr class="separator:a5a5de0802d1fd020a118db1852ea6e6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbe22353fdbf54f36f8dedb607ab9c74"><td class="memItemLeft" align="right" valign="top"><a id="afbe22353fdbf54f36f8dedb607ab9c74"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b> (<a class="el" href="classsmall3d_1_1_renderer.html">Renderer</a> const &amp;)=delete</td></tr>
 <tr class="separator:afbe22353fdbf54f36f8dedb607ab9c74"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -187,12 +187,20 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a cla
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a0c081b92ef1a16188a4eaee9b689982a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classsmall3d_1_1_renderer.html">Renderer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a0c081b92ef1a16188a4eaee9b689982a">getInstance</a> (const std::string &amp;windowTitle=&quot;&quot;, const int width=0, const int height=0, const float fieldOfView=0.785f, const float zNear=1.0f, const float zFar=24.0f, const std::string &amp;shadersPath=DEFAULT_SHADERS_DIR, const uint32_t objectsPerFrame=defaultObjectsPerFrame, const uint32_t objectsPerFrameInc=defaultObjectsPerFrameInc)</td></tr>
-<tr class="memdesc:a0c081b92ef1a16188a4eaee9b689982a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the instance of the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl direct...">Renderer</a> (the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl direct...">Renderer</a> is a singleton).  <a href="classsmall3d_1_1_renderer.html#a0c081b92ef1a16188a4eaee9b689982a">More...</a><br /></td></tr>
-<tr class="separator:a0c081b92ef1a16188a4eaee9b689982a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0e306b1d7b9de6bc48c3cf8b4376a99"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classsmall3d_1_1_renderer.html">Renderer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ac0e306b1d7b9de6bc48c3cf8b4376a99">getInstance</a> (const std::string &amp;windowTitle=&quot;&quot;, const int width=0, const int height=0, const float fieldOfView=0.785, const float zNear=1.0f, const float zFar=24.0f, const std::string &amp;shadersPath=&quot;resources/shaders/&quot;, const uint32_t objectsPerFrame=200, const uint32_t objectsPerFrameInc=1000)</td></tr>
+<tr class="memdesc:ac0e306b1d7b9de6bc48c3cf8b4376a99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the instance of the <a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a> (the <a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a> is a singleton).  <a href="classsmall3d_1_1_renderer.html#ac0e306b1d7b9de6bc48c3cf8b4376a99">More...</a><br /></td></tr>
+<tr class="separator:ac0e306b1d7b9de6bc48c3cf8b4376a99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr class="memitem:adafec1db077603b5b1c4a12e291fa798"><td class="memItemLeft" align="right" valign="top"><a id="adafec1db077603b5b1c4a12e291fa798"></a>
+GLint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#adafec1db077603b5b1c4a12e291fa798">origRenderbuffer</a> = 0</td></tr>
+<tr class="memdesc:adafec1db077603b5b1c4a12e291fa798"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set to the id of the original renderbuffer, in case it is temporarily replaced during shadow mapping. This is mostly useful on iOS. <br /></td></tr>
+<tr class="separator:adafec1db077603b5b1c4a12e291fa798"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b939a3e62a9b97bcec47357ca697a94"><td class="memItemLeft" align="right" valign="top"><a id="a9b939a3e62a9b97bcec47357ca697a94"></a>
+GLint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a9b939a3e62a9b97bcec47357ca697a94">origFramebuffer</a> = 0</td></tr>
+<tr class="memdesc:a9b939a3e62a9b97bcec47357ca697a94"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set to the id of the original framebuffer, in case it is temporarily replaced during shadow mapping. This is mostly useful on iOS. <br /></td></tr>
+<tr class="separator:a9b939a3e62a9b97bcec47357ca697a94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae41ab2c06a1a2c768c5a14aafbe79868"><td class="memItemLeft" align="right" valign="top"><a id="ae41ab2c06a1a2c768c5a14aafbe79868"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ae41ab2c06a1a2c768c5a14aafbe79868">shadowsActive</a> = false</td></tr>
 <tr class="memdesc:ae41ab2c06a1a2c768c5a14aafbe79868"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Render shadows? <br /></td></tr>
@@ -206,7 +214,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <tr class="memdesc:a405fc8a2a37c88cec17aa49641cf50af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the shadows space (half-edge of the orthographic projection cube) <br /></td></tr>
 <tr class="separator:a405fc8a2a37c88cec17aa49641cf50af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c76d273924ca89a305f694eab55ba45"><td class="memItemLeft" align="right" valign="top">glm::mat4x4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a5c76d273924ca89a305f694eab55ba45">shadowCamTransformation</a></td></tr>
-<tr class="memdesc:a5c76d273924ca89a305f694eab55ba45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shadow camera transformation. When tuning this for Vulkan, if using glm::lookAt, note that y up is -1.0f, but only for glm::lookAt and not for the position of the eye for example. This is because a correction is normally applied in the shaders for all Vulkan coordinates, in order to make them compatible with OpenGL, but it is not applied while mapping shadows.  <a href="classsmall3d_1_1_renderer.html#a5c76d273924ca89a305f694eab55ba45">More...</a><br /></td></tr>
+<tr class="memdesc:a5c76d273924ca89a305f694eab55ba45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shadow camera transformation.  <a href="classsmall3d_1_1_renderer.html#a5c76d273924ca89a305f694eab55ba45">More...</a><br /></td></tr>
 <tr class="separator:a5c76d273924ca89a305f694eab55ba45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98e23bfad9181afafcf6f64655698c35"><td class="memItemLeft" align="right" valign="top"><a id="a98e23bfad9181afafcf6f64655698c35"></a>
 glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a98e23bfad9181afafcf6f64655698c35">cameraPosition</a> = glm::vec3(0, 0, 0)</td></tr>
@@ -218,10 +226,10 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <tr class="separator:a16cad6462cacc418e9d470fa90677c40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl directory. It is picked up automatically by the project build scripts and build configuration when launched with the appropriate parameters. </p>
+<div class="textblock"><p><a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a> class (OpenGL 3.3 / OpenGL ES 3.0) </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a40ab3a6ebf64fe75c9121d06637d8ee8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a40ab3a6ebf64fe75c9121d06637d8ee8">&#9670;&nbsp;</a></span>clearBuffers() <span class="overload">[1/2]</span></h2>
+<a id="acd6b563ad9f26558659cb335b06fc95d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd6b563ad9f26558659cb335b06fc95d">&#9670;&nbsp;</a></span>clearBuffers() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -231,12 +239,12 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
           <td>(</td>
           <td class="paramtype"><a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;&#160;</td>
           <td class="paramname"><em>model</em></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Clear a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> from the GPU buffers (the object itself remains intact). </p>
+<p>Clear a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> from the GPU buffers (the <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> itself remains intact). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">model</td><td>The model </td></tr>
@@ -246,8 +254,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a id="a6e2f6135159d392f38175fc8a55c186d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6e2f6135159d392f38175fc8a55c186d">&#9670;&nbsp;</a></span>clearBuffers() <span class="overload">[2/2]</span></h2>
+<a id="a2b636d995107d5dce4c20c465d0f6187"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b636d995107d5dce4c20c465d0f6187">&#9670;&nbsp;</a></span>clearBuffers() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -257,12 +265,12 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
           <td>(</td>
           <td class="paramtype"><a class="el" href="classsmall3d_1_1_scene_object.html">SceneObject</a> &amp;&#160;</td>
           <td class="paramname"><em>sceneObject</em></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Clear an <a class="el" href="classsmall3d_1_1_scene_object.html" title="An object that appears on the 3D scene. It is made up of a Model, together with information for posit...">SceneObject</a> (multiple models) from the GPU buffers (the <a class="el" href="classsmall3d_1_1_scene_object.html" title="An object that appears on the 3D scene. It is made up of a Model, together with information for posit...">SceneObject</a> itself remains intact). </p>
+<p>Clear a <a class="el" href="classsmall3d_1_1_scene_object.html" title="An object that appears on the 3D scene. It is made up of a Model, together with information for posit...">SceneObject</a> (multiple models) from the GPU buffers (the <a class="el" href="classsmall3d_1_1_scene_object.html" title="An object that appears on the 3D scene. It is made up of a Model, together with information for posit...">SceneObject</a> itself remains intact). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sceneObject</td><td>The scene object </td></tr>
@@ -379,8 +387,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a id="a9e6b2ba40d5f89691d03ebebd52aaabb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9e6b2ba40d5f89691d03ebebd52aaabb">&#9670;&nbsp;</a></span>generateTexture() <span class="overload">[2/2]</span></h2>
+<a id="a071ed4cfc38f7553d2e16a058ebd992b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a071ed4cfc38f7553d2e16a058ebd992b">&#9670;&nbsp;</a></span>generateTexture() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -413,7 +421,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>fontPath</em> = <code>DEFAULT_FONT_PATH</code>, </td>
+          <td class="paramname"><em>fontPath</em> = <code>&quot;resources/fonts/CrusoeText/CrusoeText-Regular.ttf&quot;</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -504,8 +512,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a id="a0c081b92ef1a16188a4eaee9b689982a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0c081b92ef1a16188a4eaee9b689982a">&#9670;&nbsp;</a></span>getInstance()</h2>
+<a id="ac0e306b1d7b9de6bc48c3cf8b4376a99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0e306b1d7b9de6bc48c3cf8b4376a99">&#9670;&nbsp;</a></span>getInstance()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -535,7 +543,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const float&#160;</td>
-          <td class="paramname"><em>fieldOfView</em> = <code>0.785f</code>, </td>
+          <td class="paramname"><em>fieldOfView</em> = <code>0.785</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -553,19 +561,19 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>shadersPath</em> = <code>DEFAULT_SHADERS_DIR</code>, </td>
+          <td class="paramname"><em>shadersPath</em> = <code>&quot;resources/shaders/&quot;</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const uint32_t&#160;</td>
-          <td class="paramname"><em>objectsPerFrame</em> = <code>defaultObjectsPerFrame</code>, </td>
+          <td class="paramname"><em>objectsPerFrame</em> = <code>200</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const uint32_t&#160;</td>
-          <td class="paramname"><em>objectsPerFrameInc</em> = <code>defaultObjectsPerFrameInc</code>&#160;</td>
+          <td class="paramname"><em>objectsPerFrameInc</em> = <code>1000</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -580,22 +588,22 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 </table>
 </div><div class="memdoc">
 
-<p>Get the instance of the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl direct...">Renderer</a> (the <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl direct...">Renderer</a> is a singleton). </p>
+<p>Get the instance of the <a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a> (the <a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a> is a singleton). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">windowTitle</td><td>The title of the game's window </td></tr>
     <tr><td class="paramname">width</td><td>The width of the window. If width and height are not set or set to 0, the game will run in full screen mode. </td></tr>
     <tr><td class="paramname">height</td><td>The height of the window </td></tr>
-    <tr><td class="paramname">fieldOfView</td><td>Field of view in radians (angle between the top and the bottom plane of the view frustum). </td></tr>
+    <tr><td class="paramname">fieldOfView</td><td>Field of view in radians (angle between the top and the bottom plane </td></tr>
     <tr><td class="paramname">zNear</td><td>Projection plane z coordinate (use positive value) </td></tr>
     <tr><td class="paramname">zFar</td><td>Far end of frustum z coordinate (use positive value) </td></tr>
     <tr><td class="paramname">shadersPath</td><td>The path where the shaders will be stored, relative to the application's executing directory. It defaults to the path provided by the engine, but it can be changed, so as to accommodate for executables which are going to be using it. Even though the path to the folder can be changed, the folder structure within it and the names of the shaders must remain as provided. The shader code can be changed, provided that their inputs and outputs are maintained the same. </td></tr>
-    <tr><td class="paramname">objectsPerFrame</td><td>Maximum number of Models and / or SceneObjects foreseen to be rendered per frame. This is used to pre-allocate the needed memory buffers. </td></tr>
-    <tr><td class="paramname">objectsPerFrameInc</td><td>Number of objects to increase number of objects per frame by, each time the latter is exceeded. </td></tr>
+    <tr><td class="paramname">objectsPerFrame</td><td>Ignored parameter (used for compatibility with Vulkan edition). </td></tr>
+    <tr><td class="paramname">objectsPerFrameInc</td><td>Ignored parameter (used for compatibility with Vulkan edition). </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl direct...">Renderer</a> object. It can only be assigned to a pointer by its address (<a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl direct...">Renderer</a> *r = &amp;Renderer::getInstance(...), since declaring another <a class="el" href="classsmall3d_1_1_renderer.html" title="The renderer (Vulkan). There is an OpenGL renderer class with the same interface in the opengl direct...">Renderer</a> variable and assigning to it would invoke the default constructor, which has been deleted. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The <a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a> object. It can only be assigned to a pointer by its address (<a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a> *r = &amp;Renderer::getInstance(...), since declaring another <a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a> variable and assigning to it would invoke the default constructor, which has been deleted. </dd></dl>
 
 </div>
 </div>
@@ -697,7 +705,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
     <tr><td class="paramname">rotation</td><td>Rotation transformation matrix </td></tr>
     <tr><td class="paramname">colour</td><td>The colour of the model </td></tr>
     <tr><td class="paramname">textureName</td><td>The name of the texture to attach to the model (optional). The texture has to have been generated already. If this is set, the colour parameter will be ignored. </td></tr>
-    <tr><td class="paramname">perspective</td><td>If true perform perspective rendering, otherwise orthographic. </td></tr>
+    <tr><td class="paramname">perspective</td><td>If true perform perspective rendering, otherwise orthographic. If false, the depth buffer is cleared. Do not intermingle perspective and orthographic rendering. Perform all the orthographic rendering in the end. </td></tr>
   </table>
   </dd>
 </dl>
@@ -813,8 +821,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
     <tr><td class="paramname">rotation</td><td>Rotation (x, y, z) </td></tr>
     <tr><td class="paramname">colour</td><td>The colour of the model </td></tr>
     <tr><td class="paramname">textureName</td><td>The name of the texture to attach to the model (optional). The texture has to have been generated already. If this is set, the colour parameter will be ignored. </td></tr>
-    <tr><td class="paramname">perspective</td><td>If true perform perspective rendering, otherwise orthographic. If false, the depth buffer is cleared. Do not intermingle perspective and orthographic rendering. Perform all the orthographic rendering in the end. <br  />
- </td></tr>
+    <tr><td class="paramname">perspective</td><td>If true perform perspective rendering, otherwise orthographic. If false, the depth buffer is cleared. Do not intermingle perspective and orthographic rendering. Perform all the orthographic rendering in the end. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1128,7 +1135,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
       </table>
 </div><div class="memdoc">
 
-<p>: Set the camera transformation matrix </p>
+<p>: Set the camera by transformation matrix </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">transformation</td><td>The tranformation matrix </td></tr>
@@ -1151,10 +1158,10 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
-<div class="line">      glm::rotate(glm::mat4x4(1.0f), 1.57f, glm::vec3(1.0f, 0.0f, 0.0f)) * </div>
+<div class="line">      glm::rotate(glm::mat4x4(1.0f), 1.57f, glm::vec3(1.0f, 0.0f, 0.0f)) *</div>
 <div class="line">      glm::translate(glm::mat4x4(1.0f), glm::vec3(0.0f, -10.0f, 0.0f))</div>
 </div><!-- fragment -->
-<p>Shadow camera transformation. When tuning this for Vulkan, if using glm::lookAt, note that y up is -1.0f, but only for glm::lookAt and not for the position of the eye for example. This is because a correction is normally applied in the shaders for all Vulkan coordinates, in order to make them compatible with OpenGL, but it is not applied while mapping shadows. </p>
+<p>Shadow camera transformation. </p>
 
 </div>
 </div>

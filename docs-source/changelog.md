@@ -2,12 +2,20 @@
 
 v1.802 (still open)
 
-- vulkan_helper is now provided as an external library through a git submodule.
-  This is not [BREAKING] for source code but please update your cmakefiles by
-  including it if you are using vulkan. As an example, see the cmakefiles of
-  the small3d library itself. Basically, `find_package(VULKAN_HELPER REQUIRED)`
-  needs to be added to find the vulkan_helper and then `${VULKAN_HELPER_LIBRARY}` 
-  is needed in `target_link_libraries`, before ` ${Vulkan_LIBRARIES}`.
+- I have taken the difficult decision to stop supporting Vulkan, at least
+  for now. The small3d Vulkan renderer was initially developed years ago. The
+  goal was to perhaps drop support for OpenGL at some point. But things did not
+  turn out as foreseen. It has now been a long time after the initial release of 
+  the Vulkan API. While using it I have spent much time chasing down obscure 
+  driver bugs on various devices, be that mobile or older PCs. The growing criticism
+  of the Vulkan pipeline object and the recent introduction of the VK_EXT_shader_object
+  extension has made me realise that it will still be very long before I can
+  safely publish anything running on Vulkan in production guaranteed to 
+  execute on hardware that is not the latest and greatest. At the same time, 
+  OpenGL and OpenGL ES  still run reliably, even on Apple devices on which they 
+  are officially deprecated. So I am pulling the plug on Vulkan, at least
+  for now. This will also decrease the complexity of small3d, allowing for
+  more efficient maintenance and evolution in directions that matter more.
 
 v1.801 2023-01-21
 

@@ -1,3 +1,0 @@
-[submodule "deps/vulkan_helper"]
-	path = deps/vulkan_helper
-	url = https://github.com/dimi309/vulkan_helper

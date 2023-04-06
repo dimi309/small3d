@@ -1,6 +1,6 @@
 # For this to work, set the NDK variable to your ndk path. It should look like
-# /Users/user/Library/Android/sdk/ndk/21.2.6472646 for example.
-# For OpenGL ES builds, an NDK version that works well is 22.1.7171670. There
+# /Users/user/Library/Android/sdk/ndk/22.1.7171670 for example.
+# Because of some OpenGL ES details, an NDK version that works well is 22.1.7171670. There
 # can be some glitches on newer versions.
 
 set -e
@@ -11,19 +11,14 @@ if [ "$1" != "Debug" ] && [ "$1" != "Release" ]; then
     args_ok=false
 fi
 
-if [ ! -z "$2" ] && [ "$2" != "opengles" ] && [ "$2" != "skipdeps" ]; then
-    args_ok=false
-fi
-
-if [ ! -z "$3" ] && [ "$3" != "skipdeps" ]; then
+if [ ! -z "$2" ] && [ "$2" != "skipdeps" ]; then
     args_ok=false
 fi
 
 if [ "$args_ok" == "false" ]; then
-    echo "Please indicate build type: Debug or Release, followed by opengles if you would like to build in OpenGL ES based mode."
+    echo "Please indicate build type: Debug or Release"
     exit 1
 fi
-
 
 if [ "$1" == "Debug" ]; then
     buildtype=Debug
@@ -31,13 +26,7 @@ else
     buildtype=Release
 fi
 
-opengldef=OFF
-if [ "$2" == "opengles" ]; then
-    opengldef=ON
-    platformstr=android-16
-else
-    platformstr=android-26
-fi
+platformstr=android-16
 
 echo "Building on $platformstr"
 
@@ -45,14 +34,10 @@ cd ..
 
 sourcepath=$(pwd)
 
-if [ "$2" != "skipdeps" ] && [ "$3" != "skipdeps" ]; then
+if [ "$2" != "skipdeps" ]; then
     git clean -fdx
     cd deps/scripts
-    if [ "$2" == "opengles" ]; then
-	./prepare-android.sh $1 $platformstr opengles
-    else
-	./prepare-android.sh $1 $platformstr
-    fi
+    ./prepare-android.sh $1 $platformstr
     cd ../..
 else
     rm -rf build
@@ -64,7 +49,7 @@ cd build
 for androidabi in x86 x86_64 armeabi-v7a arm64-v8a
 do    
     cmake .. -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake \
-	  -DANDROID_PLATFORM=$platformstr -DANDROID_ABI=$androidabi -DCMAKE_BUILD_TYPE=$buildtype -DSMALL3D_OPENGL=$opengldef
+	  -DANDROID_PLATFORM=$platformstr -DANDROID_ABI=$androidabi -DCMAKE_BUILD_TYPE=$buildtype
     cmake --build .
 
     mv lib/*.a lib/$androidabi
@@ -74,37 +59,26 @@ do
     rm -rf src
 done
 
-
-if [ "$2" != "opengles" ]; then
-    cd ../scripts
-    ./compile-shaders.sh $1
-    echo Copying android/app/CMakeListsVulkan.txt to android/app/CMakeLists.txt
-    cp ../android/app/CMakeListsVulkan.txt ../android/app/CMakeLists.txt
-else
-    cd ..
-    if [ -d "build/" ]; then
-	if [ ! -d "build/shaders/" ]; then
-	    mkdir build/shaders/ ;
-	fi
-	echo "Copying shaders to build/shaders..."
-	for f in opengl/resources/shadersOpenGLES/* ; do
-	    cp $f build/shaders/ ;
-	    if [ $? != 0 ]; then exit $rc; fi
-	    echo "Copied $f" ;
-	done
+cd ..
+if [ -d "build/" ]; then
+    if [ ! -d "build/shaders/" ]; then
+	mkdir build/shaders/ ;
     fi
-    if [ -d "android/app/src/main/assets/resources/" ]; then
-	if [ ! -d "android/app/src/main/assets/resources/shaders/" ]; then
-	    mkdir android/app/src/main/assets/resources/shaders/ ;
-	fi
-	echo "Copying shaders to android/app/src/main/assets/resources/shaders..."
-	for f in opengl/resources/shadersOpenGLES/* ; do
-	    cp $f android/app/src/main/assets/resources/shaders/ ;
-	    echo "Copied $f" ;
-	done   
+    echo "Copying shaders to build/shaders..."
+    for f in resources/shadersOpenGLES/* ; do
+	cp $f build/shaders/ ;
+	echo "Copied $f" ;
+    done
+fi
+if [ -d "android/app/src/main/assets/resources/" ]; then
+    if [ ! -d "android/app/src/main/assets/resources/shaders/" ]; then
+	mkdir android/app/src/main/assets/resources/shaders/ ;
     fi
-    echo Copying android/app/CMakeListsOpenGLES.txt to android/app/CMakeLists.txt
-    cp android/app/CMakeListsOpenGLES.txt android/app/CMakeLists.txt    
+    echo "Copying shaders to android/app/src/main/assets/resources/shaders..."
+    for f in resources/shadersOpenGLES/* ; do
+	cp $f android/app/src/main/assets/resources/shaders/ ;
+	echo "Copied $f" ;
+    done   
 fi
 
 echo "small3d built successfully for Android ($1 mode)"

@@ -4,16 +4,12 @@ cd ..
 
 setlocal enabledelayedexpansion
 set args_ok=false
-set opengl_ok=false
 
 if /I "%~1" == "debug" set args_ok=true
 if /I "%~1" == "release" set args_ok=true
-if /I "%~2" == "" set opengl_ok=true
-if /I "%~2" == "opengl" set opengl_ok=true
-if not "%opengl_ok%" == "true" set args_ok=false
 
 if "%args_ok%" == "false" (
-echo Please indicate build type: debug or release, followed by opengl if you would like to also prepare OpenGL-related libraries.
+echo Please indicate build type: Debug or Release
 endlocal & exit /b 1
 )
 
@@ -39,8 +35,6 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..
 rmdir /Q /S glfw-3.3.8
 
-rem Only needed for OpenGL build
-if /I "%~2" == "opengl" (
 7z x glew-20190928.tgz
 7z x glew-20190928.tar
 if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
@@ -57,20 +51,6 @@ if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 cd ..
 del glew-20190928.tar
 rmdir /Q /S glew-2.2.0
-) ELSE (
-cd vulkan_helper
-mkdir build
-cd build
-cmake .. -G"MinGW Makefiles" -DVH_BUILD_TESTS=OFF
-cmake --build .
-xcopy include ..\..\include /i /s
-if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
-copy lib\libvulkan_helper.a ..\..\lib\libvulkan_helper.a
-if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
-cd ..
-rmdir /Q /S build
-cd ..
-)
 
 7z x glm-0.9.9.8.zip
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel% 

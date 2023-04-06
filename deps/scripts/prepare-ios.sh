@@ -2,12 +2,6 @@ set -e
 
 cd ..
 
-if [ -z $VULKAN_SDK ]
-then
-    echo "VULKAN_SDK is not set. Please set it to your Vulkan SDK location, e.g. export VULKAN_SDK=/Users/john/Software/vulkansdk-macos-1.2.154.0/macOS"
-    exit 1
-fi
-
 if [ -z $1 ]
 then
     echo "Please indicate what we are building for, './build-ios.sh ios' for iOS devices or './build-ios.sh simulator' for the Xcode iOS Simulator."
@@ -21,7 +15,7 @@ else
 	echo "Building for Xcode iOS Simulator..."
     elif [ $1 = "ios32" ]
     then
-	echo "Building for 32-bit iOS devices (you can only use OpenGL ES in this case)..."
+	echo "Building for 32-bit iOS devices..."
     else
 	echo $1 "not supported"
 	exit 1
@@ -142,22 +136,6 @@ then
     CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64"
 fi
 
-if [ "$3" != "opengles" ]; then
-    cd vulkan_helper
-    mkdir build
-    cd build
-    cmake .. -DVH_BUILD_TESTS=OFF $CMAKE_DEFINITIONS
-    cmake --build . --config $2
-    
-    cp -rf include ../../
-    
-    cp lib/$2/libvulkan_helper.a ../../lib/
-    
-    cd ..
-    rm -rf build
-    cd ..
-fi
-
 tar xvf libpng-1.6.37.tar.gz
 cd libpng-1.6.37
 mkdir build
@@ -205,8 +183,6 @@ cp lib/$2-$SDK/*.a ../../lib/
 
 cd ../../
 rm -rf libvorbis-1.3.7
-
-./prepare-bzip2-ios.sh
 
 tar xvf freetype-2.12.1.tar.gz
 cd freetype-2.12.1

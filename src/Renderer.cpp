@@ -1,527 +1,305 @@
 /*
- * Renderer.cpp
- *
- *  Created on: 2014/10/19
- *      Author: Dimitri Kourkoulis
- *     License: BSD 3-Clause License (see LICENSE file)
- */
+* Renderer.cpp
+*
+*  Created on: 2014/10/19
+*      Author: Dimitri Kourkoulis
+*     License: BSD 3-Clause License (see LICENSE file)
+*/
 
-#ifdef SMALL3D_IOS
-#define VULKAN_HELPER_IOS
-#endif
-
-extern "C" {
-#include "vulkan_helper.h"
-#ifdef __ANDROID__
-#include "small3d_android.h"
-#endif
-}
 #include "Renderer.hpp"
+
 #include <stdexcept>
+#ifndef __ANDROID__
 #include <fstream>
+#else
+#include <android/asset_manager.h>
+#include <streambuf>
+#include <istream>
+struct membuf : std::streambuf
+{
+  membuf(char* begin, char* end) {
+    this->setg(begin, begin, end);
+  }
+};
+#endif
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
-#include <glm/gtx/string_cast.hpp>
-#include "BasePath.hpp"
-#include <cstring>
 
-#ifdef SMALL3D_IOS
+#include "BasePath.hpp"
+
+unsigned const attrib_position = 0;
+unsigned const attrib_normal = 1;
+unsigned const attrib_joint = 2;
+unsigned const attrib_weight = 3;
+unsigned const attrib_uv = 4;
+
+#ifdef SMALL3D_OPENGLES
+#define glDepthRange glDepthRangef
+#define glClearDepth glClearDepthf
+
+#ifdef __ANDROID__
+const EGLint config16bpp[] = {
+    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
+    EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
+    EGL_RED_SIZE,   5,
+    EGL_GREEN_SIZE, 6,
+    EGL_BLUE_SIZE,  5,
+    EGL_DEPTH_SIZE, 16,
+    EGL_NONE
+};
+
+
+const EGLint config24bpp[] = {
+    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
+    EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
+    EGL_RED_SIZE,   8,
+    EGL_GREEN_SIZE, 8,
+    EGL_BLUE_SIZE,  8,
+    EGL_DEPTH_SIZE, 16,
+    EGL_NONE
+};
+
+const EGLint config32bpp[] = {
+    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
+    EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
+    EGL_RED_SIZE,   8,
+    EGL_GREEN_SIZE, 8,
+    EGL_BLUE_SIZE,  8,
+    EGL_ALPHA_SIZE, 8,
+    EGL_DEPTH_SIZE, 16,
+    EGL_NONE
+};
+#else
 #include "interop.h"
+#endif
 #endif
 
 namespace small3d {
-
-  void errorCallback(int error, const char* description)
+#ifndef SMALL3D_OPENGLES
+  static void error_callback(int error, const char* description)
   {
     LOGERROR(std::string(description));
   }
-
-  /**
-   * @brief Light uniform buffer object. Used internally
-   */
-  struct UboLight {
-    float lightIntensity;
-    float padding[63];
-  };
-
-  std::vector<std::tuple<Model*, uint32_t, uint32_t, std::string>> Renderer::nextModelsToDraw;
-
-  VkVertexInputBindingDescription Renderer::bd[5];
-  VkVertexInputAttributeDescription Renderer::ad[5];
-  VkDescriptorSetLayout Renderer::descriptorSetLayout;
-  VkDescriptorSet Renderer::descriptorSet[MAX_FRAMES_PREPARED];
-  VkDescriptorSetLayout Renderer::textureDescriptorSetLayout;
-  VkDescriptorSetLayout Renderer::shadowMapDescriptorSetLayout;
-  VkDescriptorSetLayout Renderer::perspectiveLayouts[3];
+#endif
+  static std::string openglErrorToString(GLenum error);
 
   int Renderer::realScreenWidth;
   int Renderer::realScreenHeight;
 
-#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
+#ifndef SMALL3D_OPENGLES
   void Renderer::framebufferSizeCallback(GLFWwindow* window, int width,
     int height) {
     realScreenWidth = width;
     realScreenHeight = height;
-    if (realScreenWidth == 0) realScreenWidth = 1;
-    if (realScreenHeight == 0) realScreenHeight = 1;
-    vh_set_width_height(width, height);
-    LOGDEBUG("New framebuffer dimensions " + std::to_string(realScreenWidth) + " x " +
-      std::to_string(realScreenWidth));
-    vh_recreate_pipelines_and_swapchain();
+
+    glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
+      static_cast<GLsizei>(realScreenHeight));
+
+    LOGDEBUG("New framebuffer dimensions " + std::to_string(width) + " x " +
+      std::to_string(height));
+
   }
 #endif
 
-  int Renderer::setInputStateCallback(VkPipelineVertexInputStateCreateInfo*
-    inputStateCreateInfo) {
-
-    memset(bd, 0, 5 * sizeof(VkVertexInputBindingDescription));
-
-    bd[0].binding = 0;
-    bd[0].stride = 4 * sizeof(float);
-
-    bd[1].binding = 1;
-    bd[1].stride = 3 * sizeof(float);
-
-    bd[2].binding = 2;
-    bd[2].stride = 2 * sizeof(float);
-
-    bd[3].binding = 3;
-    bd[3].stride = 4;
-
-    bd[4].binding = 4;
-    bd[4].stride = 4 * sizeof(float);
-
-    memset(ad, 0, 5 * sizeof(VkVertexInputAttributeDescription));
-
-    ad[0].binding = 0;
-    ad[0].location = 0;
-    ad[0].format = VK_FORMAT_R32G32B32A32_SFLOAT;
-    ad[0].offset = 0;
-
-    ad[1].binding = 1;
-    ad[1].location = 1;
-    ad[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-    ad[1].offset = 0;
-
-    ad[2].binding = 2;
-    ad[2].location = 2;
-    ad[2].format = VK_FORMAT_R32G32_SFLOAT;
-    ad[2].offset = 0;
-
-    ad[3].binding = 3;
-    ad[3].location = 3;
-    ad[3].format = VK_FORMAT_R8G8B8A8_UINT;
-    ad[3].offset = 0;
-
-    ad[4].binding = 4;
-    ad[4].location = 4;
-    ad[4].format = VK_FORMAT_R32G32B32A32_SFLOAT;
-    ad[4].offset = 0;
-
-    inputStateCreateInfo->vertexBindingDescriptionCount = 5;
-    inputStateCreateInfo->vertexAttributeDescriptionCount = 5;
-    inputStateCreateInfo->pVertexBindingDescriptions = bd;
-    inputStateCreateInfo->pVertexAttributeDescriptions = ad;
-
-    return 1;
+  int Renderer::getScreenWidth() {
+    return realScreenWidth;
   }
 
-  int Renderer::setPipelineLayoutCallback(VkPipelineLayoutCreateInfo*
-    pipelineLayoutCreateInfo) {
-    perspectiveLayouts[0] = descriptorSetLayout;
-    perspectiveLayouts[1] = textureDescriptorSetLayout;
-    perspectiveLayouts[2] = shadowMapDescriptorSetLayout;
-    pipelineLayoutCreateInfo->setLayoutCount = 3;
-    pipelineLayoutCreateInfo->pSetLayouts = perspectiveLayouts;
-
-    return 1;
+  int Renderer::getScreenHeight() {
+    return realScreenHeight;
   }
 
-  void Renderer::updateShadowMapDescriptorSet(const uint32_t currentFrameIndex) {
-    
+  std::string Renderer::loadShaderFromFile(const std::string& fileLocation)
+    const {
+    std::string shaderSource = "";
+    std::string fullPath = getBasePath() + fileLocation;
+    std::string line;
+#ifdef __ANDROID__
+    AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
+      fullPath.c_str(),
+      AASSET_MODE_STREAMING);
+    if (!asset) throw std::runtime_error("Opening asset " + fullPath +
+      " has failed!");
+    off_t length;
+    length = AAsset_getLength(asset);
+    const void* buffer = AAsset_getBuffer(asset);
+    membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * length);
+    std::istream in(&sbuf);
+    if (in) {
+      while (std::getline(in, line)) {
+#else
+    std::ifstream file(fullPath.c_str());
+    if (file.is_open()) {
+      while (std::getline(file, line)) {
+#endif
+        shaderSource += line + "\n";
 
-      // Write shadow map descriptor set
-
-      VkDescriptorImageInfo diiTexture = {};
-
-      diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-      diiTexture.imageView = vh_shadow_image_view;
-      diiTexture.sampler = shadowMapSampler;
-
-      VkWriteDescriptorSet wds = {};
-
-      wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      wds.dstSet = shadowMapDescriptorSet[currentFrameIndex];
-      wds.dstBinding = shadowMapDescBinding;
-      wds.dstArrayElement = 0;
-      wds.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-      wds.descriptorCount = 1;
-      wds.pBufferInfo = NULL;
-      wds.pImageInfo = &diiTexture;
-      wds.pTexelBufferView = NULL;
-
-      vkUpdateDescriptorSets(vh_logical_device, 1, &wds, 0, NULL);
-    
-  }
-
-  int Renderer::bindBuffers(VkCommandBuffer commandBuffer, const Model& model) {
-
-    VkBuffer vertexBuffers[5];
-    vertexBuffers[0] = model.positionBuffer;
-    vertexBuffers[1] = model.normalsBuffer;
-    vertexBuffers[2] = model.uvBuffer;
-    vertexBuffers[3] = model.jointBuffer;
-    vertexBuffers[4] = model.weightBuffer;
-
-    VkDeviceSize offsets[5];
-    offsets[0] = 0;
-    offsets[1] = 0;
-    offsets[2] = 0;
-    offsets[3] = 0;
-    offsets[4] = 0;
-
-    uint32_t bindingCount = 5;
-
-    // Vertex buffer
-    vkCmdBindVertexBuffers(commandBuffer, 0, bindingCount, vertexBuffers, offsets);
-
-    // Index buffer
-    vkCmdBindIndexBuffer(commandBuffer, model.indexBuffer,
-      0, VK_INDEX_TYPE_UINT32);
-    return 1;
-  }
-
-  void Renderer::recordDrawCommand(VkCommandBuffer commandBuffer,
-    VkPipelineLayout pipelineLayout, const Model& model, uint32_t colourMemIndex, 
-    uint32_t placementMemIndex, std::string textureName,
-    uint32_t swapchainImageIndex, bool perspective) {
-
-    uint32_t dynamicModelPlacementOffset = placementMemIndex *
-      static_cast<uint32_t>(dynamicModelPlacementAlignment);
-
-    uint32_t dynamicWorldDetailsOffset = perspective ? 0 : 1 *
-      static_cast<uint32_t>(dynamicWorldDetailsAlignment);
-
-    uint32_t dynamicColourOffset = colourMemIndex *
-      static_cast<uint32_t>(dynamicColourAlignment);
-
-    const uint32_t dynamicOffsets[3] = { dynamicWorldDetailsOffset,
-      dynamicModelPlacementOffset,
-      dynamicColourOffset };
-
-    const VkDescriptorSet descriptorSets[3] =
-    { descriptorSet[currentFrameIndex], getTextureHandle(textureName).descriptorSet[currentFrameIndex], shadowMapDescriptorSet[currentFrameIndex] };
-
-    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-      pipelineLayout, 0, 3,
-      descriptorSets, 3, dynamicOffsets);
-
-    vkCmdDrawIndexed(commandBuffer, (uint32_t)model.indexData.size(),
-      1, 0, 0, 0);
-  }
-
-  void Renderer::createDescriptorPool() {
-
-    VkDescriptorPoolSize ps[3];
-
-    memset(ps, 0, 3 * sizeof(VkDescriptorPoolSize));
-
-    ps[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    ps[0].descriptorCount = 3 * MAX_FRAMES_PREPARED; // For uboWorld, uboModelPlacement and uboColour (3) 
-
-    ps[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    ps[1].descriptorCount = 2 * MAX_FRAMES_PREPARED * objectsPerFrame; // For texture and shadow map (2)
-
-    ps[2].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    ps[2].descriptorCount = MAX_FRAMES_PREPARED; // For uboLight
-
-    VkDescriptorPoolCreateInfo dpci;
-    memset(&dpci, 0, sizeof(VkDescriptorPoolCreateInfo));
-    dpci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-    dpci.poolSizeCount = 3;
-    dpci.pPoolSizes = ps;
-    dpci.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-    dpci.maxSets = MAX_FRAMES_PREPARED * objectsPerFrame;
-    // No point in VS C26812 unscoped enum warning on VkResult.
-    // small3d does not define that code itself.
-#pragma warning(push)
-#pragma warning(disable:26812)
-    if (vkCreateDescriptorPool(vh_logical_device, &dpci, NULL,
-      &descriptorPool) != VK_SUCCESS) {
-      LOGDEBUG("Failed to create descriptor pool.");
-    }
-    else {
-      LOGDEBUG("Created descriptor pool.");
-    }
-#pragma warning(pop)
-  }
-
-  void Renderer::destroyDescriptorPool() {
-    vkDestroyDescriptorPool(vh_logical_device, descriptorPool, NULL);
-    descriptorPool = VK_NULL_HANDLE;
-  }
-
-  void Renderer::allocateDescriptorSets() {
-
-    VkDescriptorSetLayoutBinding dslb[4];
-    memset(dslb, 0, 4 * sizeof(VkDescriptorSetLayoutBinding));
-
-    // perspectiveMatrixLightedShader - uboWorld
-    dslb[0].binding = worldDescBinding;
-    dslb[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    dslb[0].descriptorCount = 1;
-    dslb[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-    dslb[0].pImmutableSamplers = NULL;
-
-    // perspectiveMatrixLightedShader - uboModelPlacement
-
-    dslb[1].binding = modelPlacementDescBinding;
-    dslb[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    dslb[1].descriptorCount = 1;
-    dslb[1].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-    dslb[1].pImmutableSamplers = NULL;
-
-    // textureShader - uboColour
-    dslb[2].binding = colourDescBinding;
-    dslb[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    dslb[2].descriptorCount = 1;
-    dslb[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    dslb[2].pImmutableSamplers = NULL;
-
-    // textureShader - uboLight
-    dslb[3].binding = lightDescBinding;
-    dslb[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    dslb[3].descriptorCount = 1;
-    dslb[3].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    dslb[3].pImmutableSamplers = NULL;
-
-    VkDescriptorSetLayoutCreateInfo dslci;
-    memset(&dslci, 0, sizeof(VkDescriptorSetLayoutCreateInfo));
-    dslci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    dslci.bindingCount = 4;
-    dslci.pBindings = dslb;
-
-    if (vkCreateDescriptorSetLayout(vh_logical_device, &dslci, NULL,
-      &descriptorSetLayout) != VK_SUCCESS) {
-      throw std::runtime_error("Failed to create descriptor set layout.");
-    }
-    else {
-      LOGDEBUG("Created descriptor set layout.");
-    }
-
-    VkDescriptorSetAllocateInfo dsai;
-    memset(&dsai, 0, sizeof(VkDescriptorSetAllocateInfo));
-    dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-    dsai.descriptorPool = descriptorPool;
-    dsai.descriptorSetCount = 1;
-    dsai.pSetLayouts = &descriptorSetLayout;
-
-    for (uint32_t idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
-      descriptorSet[idx] = {};
-
-      if (vkAllocateDescriptorSets(vh_logical_device, &dsai,
-        &descriptorSet[idx]) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to allocate descriptor sets.");
       }
     }
 
-    memset(dslb, 0, 4 * sizeof(VkDescriptorSetLayoutBinding));
+#ifdef __ANDROID__
+    AAsset_close(asset);
+#else
+    file.close();
+#endif
 
-    // textureShader - textureImage
-    dslb[0].binding = textureDescBinding;
-    dslb[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    dslb[0].descriptorCount = 1;
-    dslb[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    dslb[0].pImmutableSamplers = NULL;
+    return shaderSource;
+  }
 
-    memset(&dslci, 0, sizeof(VkDescriptorSetLayoutCreateInfo));
-    dslci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    dslci.bindingCount = 1;
-    dslci.pBindings = dslb;
+  GLuint Renderer::compileShader(const std::string & shaderSourceFile,
+    const uint32_t shaderType) const {
+    GLuint shader = glCreateShader(shaderType);
 
+    std::string shaderSource = this->loadShaderFromFile(shaderSourceFile);
+    if (shaderSource.length() == 0) {
+      throw std::runtime_error("Shader source file '" + shaderSourceFile +
+        "' is empty or not found.");
+    }
+    const char* shaderSourceChars = shaderSource.c_str();
+    glShaderSource(shader, 1, &shaderSourceChars, NULL);
 
-    if (vkCreateDescriptorSetLayout(vh_logical_device, &dslci, NULL,
-      &textureDescriptorSetLayout) != VK_SUCCESS) {
-      throw std::runtime_error("Failed to create texture "
-        "descriptor set layout.");
+    glCompileShader(shader);
+
+    GLint status;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+
+    if (status == GL_FALSE) {
+      throw std::runtime_error(
+        "Failed to compile shader:\n" + shaderSource +
+        "\n" + this->getShaderInfoLog(shader));
     }
     else {
-      LOGDEBUG("Created texture descriptor set layout.");
+      LOGDEBUG("Shader " + shaderSourceFile + " compiled successfully.");
     }
 
-    memset(dslb, 0, 4 * sizeof(VkDescriptorSetLayoutBinding));
 
-    // textureShader - shadowMap
-    dslb[0].binding = shadowMapDescBinding;
-    dslb[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    dslb[0].descriptorCount = 1;
-    dslb[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-    dslb[0].pImmutableSamplers = NULL;
+    return shader;
+  }
 
-    memset(&dslci, 0, sizeof(VkDescriptorSetLayoutCreateInfo));
-    dslci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    dslci.bindingCount = 1;
-    dslci.pBindings = dslb;
+  std::string Renderer::getProgramInfoLog(const GLuint linkedProgram) const {
 
-    if (vkCreateDescriptorSetLayout(vh_logical_device, &dslci, NULL,
-      &shadowMapDescriptorSetLayout) != VK_SUCCESS) {
-      throw std::runtime_error("Failed to create shadow map "
-        "descriptor set layout.");
+    GLint infoLogLength;
+    glGetProgramiv(linkedProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+    GLchar* infoLog = new GLchar[static_cast<size_t>(infoLogLength) + 1];
+    GLsizei lengthReturned = 0;
+    glGetProgramInfoLog(linkedProgram, infoLogLength, &lengthReturned, infoLog);
+
+    std::string infoLogStr(infoLog);
+
+    if (lengthReturned == 0) {
+      infoLogStr = "(No info)";
+    }
+    delete[] infoLog;
+    return infoLogStr;
+  }
+
+  std::string Renderer::getShaderInfoLog(const GLuint shader) const {
+
+    GLint infoLogLength;
+    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+    GLchar* infoLog = new GLchar[static_cast<size_t>(infoLogLength) + 1];
+    GLsizei lengthReturned = 0;
+    glGetShaderInfoLog(shader, infoLogLength, &lengthReturned, infoLog);
+
+    std::string infoLogStr(infoLog);
+    if (lengthReturned == 0) {
+      infoLogStr = "(No info)";
+    }
+
+    delete[] infoLog;
+
+    return infoLogStr;
+  }
+
+  void Renderer::initOpenGL() {
+#ifndef SMALL3D_OPENGLES
+    glewExperimental = GL_TRUE;
+
+    GLenum initResult = glewInit();
+
+    if (initResult != GLEW_OK) {
+      throw std::runtime_error("Error initialising GLEW");
     }
     else {
-      LOGDEBUG("Created shadow map descriptor set layout.");
+      std::string glewVersion = reinterpret_cast<char*>
+        (const_cast<GLubyte*>(glewGetString(GLEW_VERSION)));
+      LOGDEBUG("Using GLEW version " + glewVersion);
     }
 
-    // Allocate shadow map descriptor set
+    checkForOpenGLErrors("initialising GLEW", false);
 
-    memset(&dsai, 0, sizeof(VkDescriptorSetAllocateInfo));
+    LOGINFO("OpenGL version: " +
+      std::string(reinterpret_cast<char*>
+        (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
+#else
+#ifdef __ANDROID__
+    EGLint majorVersion, minorVersion;
+    eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    eglInitialize(eglDisplay, &majorVersion, &minorVersion);
+    LOGDEBUG("EGL version: " + std::to_string(majorVersion) + "." +
+      std::to_string(minorVersion));
+#endif
+#endif
 
-    dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-    dsai.descriptorPool = descriptorPool;
-    dsai.descriptorSetCount = 1;
-    dsai.pSetLayouts = &shadowMapDescriptorSetLayout;
-
-    for (int idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
-      shadowMapDescriptorSet[idx] = {};
-      if (vkAllocateDescriptorSets(vh_logical_device, &dsai,
-        &shadowMapDescriptorSet[idx]) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to allocate shadow map descriptor set.");
-      }
+#if defined(__APPLE__) && !defined(SMALL3D_OPENGLES)
+    GLboolean clientStorage = 0;
+    glGetBooleanv(GL_APPLE_client_storage, &clientStorage);
+    if (clientStorage == GL_TRUE) {
+      LOGDEBUG("GL_APPLE_client_storage is activated.");
     }
-    LOGDEBUG("Allocated shadow map descriptor set.");
-  }
-
-  void Renderer::updateDescriptorSets() {
-
-    for (int idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
-
-      VkDescriptorBufferInfo dbiWorld = {};
-      dbiWorld.buffer = worldDetailsBuffersDynamic[idx];
-      dbiWorld.offset = 0;
-      dbiWorld.range = sizeof(UboWorldDetails);
-
-      VkDescriptorBufferInfo dbiModelPlacement = {};
-
-      dbiModelPlacement.buffer =
-        renderModelPlacementBuffersDynamic[idx];
-      dbiModelPlacement.offset = 0;
-      dbiModelPlacement.range = sizeof(UboModelPlacement);
-
-      VkDescriptorBufferInfo dbiColour = {};
-
-      dbiColour.buffer = colourBuffersDynamic[idx];
-      dbiColour.offset = 0;
-      dbiColour.range = sizeof(UboColour);
-
-      VkDescriptorBufferInfo dbiLight = {};
-
-      dbiLight.buffer = lightIntensityBuffers[idx];
-      dbiLight.offset = 0;
-      dbiLight.range = sizeof(UboLight);
-
-      std::vector<VkWriteDescriptorSet> wds(4);
-
-      wds[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      wds[0].dstSet = descriptorSet[idx];
-      wds[0].dstBinding = worldDescBinding;
-      wds[0].dstArrayElement = 0;
-      wds[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-      wds[0].descriptorCount = 1;
-      wds[0].pBufferInfo = &dbiWorld;
-      wds[0].pImageInfo = NULL;
-      wds[0].pTexelBufferView = NULL;
-
-      wds[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      wds[1].dstSet = descriptorSet[idx];
-      wds[1].dstBinding = modelPlacementDescBinding;
-      wds[1].dstArrayElement = 0;
-      wds[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-      wds[1].descriptorCount = 1;
-      wds[1].pBufferInfo = &dbiModelPlacement;
-      wds[1].pImageInfo = NULL;
-      wds[1].pTexelBufferView = NULL;
-
-      wds[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      wds[2].dstSet = descriptorSet[idx];
-      wds[2].dstBinding = colourDescBinding;
-      wds[2].dstArrayElement = 0;
-      wds[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-      wds[2].descriptorCount = 1;
-      wds[2].pBufferInfo = &dbiColour;
-      wds[2].pImageInfo = NULL;
-      wds[2].pTexelBufferView = NULL;
-
-      wds[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      wds[3].dstSet = descriptorSet[idx];
-      wds[3].dstBinding = lightDescBinding;
-      wds[3].dstArrayElement = 0;
-      wds[3].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-      wds[3].descriptorCount = 1;
-      wds[3].pBufferInfo = &dbiLight;
-      wds[3].pImageInfo = NULL;
-      wds[3].pTexelBufferView = NULL;
-
-      vkUpdateDescriptorSets(vh_logical_device, 4, &wds[0], 0, NULL);
-
-      updateShadowMapDescriptorSet(idx);
+    else {
+      LOGDEBUG("GL_APPLE_client_storage is not activated.");
     }
-  }
-
-  void Renderer::destroyDescriptorSets() {
-    for (uint32_t idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
-      if (vkFreeDescriptorSets(vh_logical_device, descriptorPool, 1,
-        &descriptorSet[idx]) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to free descriptor sets.");
-      }
-      descriptorSet[idx] = VK_NULL_HANDLE;
-    }
-
-    vkDestroyDescriptorSetLayout(vh_logical_device,
-      descriptorSetLayout, NULL);
-
-    vkDestroyDescriptorSetLayout(vh_logical_device,
-      textureDescriptorSetLayout, NULL);
-  }
-
-  void Renderer::setColourBuffer(glm::vec4 colour, uint32_t memIndex) {
-
-    if (memIndex >= objectsPerFrame) {
-      LOGERROR("Max objects per pass number (" + std::to_string(objectsPerFrame) +
-        ") exceeded.");
-    }
-
-    uboColourDynamic[memIndex] = {};
-
-    uboColourDynamic[memIndex].modelColour = colour;
+#endif
 
   }
 
-  void Renderer::transform(Model& model, const glm::vec3 offset,
-    const glm::mat4x4 rotation, uint32_t memIndex) {
+  void Renderer::checkForOpenGLErrors(const std::string & when, const bool abort)
+    const {
+    GLenum errorCode = glGetError();
+    if (errorCode != GL_NO_ERROR) {
+      LOGERROR("OpenGL error while " + when);
 
-    if (memIndex >= objectsPerFrame) {
-      LOGERROR("Max objects per pass number (" + std::to_string(objectsPerFrame) +
-        ") exceeded.");
+      do {
+        LOGERROR(openglErrorToString(errorCode));
+        errorCode = glGetError();
+      } while (errorCode != GL_NO_ERROR);
+
+      if (abort)
+        throw std::runtime_error("OpenGL error while " + when);
     }
+  }
 
-    uboModelPlacementDynamic[memIndex] = {};
+  void Renderer::transform(Model & model, const glm::vec3 & offset,
+    const glm::mat4x4 & rotation) const {
 
-    uboModelPlacementDynamic[memIndex].modelTransformation =
+    GLint modelTransformationUniformLocation = glGetUniformLocation(shaderProgram,
+      "modelTransformation");
+
+    glm::mat4x4 modelTranformation =
       rotation *
       glm::scale(glm::mat4x4(1.0f), model.scale) *
       glm::translate(glm::mat4x4(1.0f), model.origTranslation) *
       glm::toMat4(model.origRotation) *
       glm::scale(glm::mat4x4(1.0f), model.origScale) * model.origTransformation;
 
-    uboModelPlacementDynamic[memIndex].modelOffset = offset;
+    glUniformMatrix4fv(modelTransformationUniformLocation, 1, GL_FALSE,
+      glm::value_ptr(modelTranformation));
 
-    uboModelPlacementDynamic[memIndex].hasJoints = model.joints.size() > 0 ? 1U : 0U;
+    int32_t hasJoints = model.joints.size() > 0 ? 1 : 0;
+    GLint hasJointsUniform = glGetUniformLocation(shaderProgram, "hasJoints");
+    glUniform1i(hasJointsUniform, hasJoints);
+
+    glm::mat4 jointTransformations[Model::MAX_JOINTS_SUPPORTED];
+
     uint64_t idx = 0;
     for (auto& joint : model.joints) {
 
-      uboModelPlacementDynamic[memIndex].jointTransformations[idx] =
+      jointTransformations[idx] =
 
         glm::inverse(glm::translate(glm::mat4x4(1.0f), model.origTranslation) *
           glm::toMat4(model.origRotation) *
@@ -534,348 +312,253 @@ namespace small3d {
       ++idx;
     }
 
+    auto jointTransformationsUniformLocation = glGetUniformLocation(shaderProgram, "jointTransformations");
+    glUniformMatrix4fv(jointTransformationsUniformLocation, 16, GL_FALSE, glm::value_ptr(jointTransformations[0]));
+
+    GLint offsetUniform = glGetUniformLocation(shaderProgram, "modelOffset");
+    glUniform3fv(offsetUniform, 1, glm::value_ptr(offset));
   }
 
-  VulkanImage Renderer::getTextureHandle(const std::string name) const {
-    VulkanImage handle;
+  GLuint Renderer::getTextureHandle(const std::string & name) const {
+    GLuint handle = 0;
     auto nameTexturePair = textures.find(name);
     if (nameTexturePair != textures.end()) {
       handle = nameTexturePair->second;
     }
-    else {
-      throw std::runtime_error("Could not find texture " + name);
-    }
     return handle;
   }
 
-  void Renderer::generateTexture(const std::string name,
-    const uint8_t* data,
+  GLuint Renderer::generateTexture(const std::string & name, const uint8_t* data,
     const unsigned long width,
     const unsigned long height,
     const bool replace) {
 
     bool found = false;
 
-    VulkanImage textureHandleLocal;
-    VulkanImage* textureHandlePtr = nullptr;
+    GLuint textureHandle;
 
     for (auto& nameTexturePair : textures) {
       if (nameTexturePair.first == name) {
-        if (data && !replace) { // if found it must either be replaced or 
-                                // just recopied to the GPU from previously
-                                // given data (when data == null)
-          throw std::runtime_error("Texture '" + name +
-            "' already exists, data was given and the replace flag is not set.");
+        if (!replace) {
+          throw std::runtime_error("Texture with name " + name +
+            " already exists and replace flag not set.");
         }
-        textureHandlePtr = &nameTexturePair.second;
         found = true;
         break;
       }
     }
 
-    if (!found) {
-      textureHandlePtr = &textureHandleLocal;
+    if (found) {
+      deleteTexture(name);
     }
 
-    if (found && replace) {
-      if (data && width && height) {
-        textureHandlePtr = &textureHandleLocal;
-        deleteTexture(name);
-      }
-      else {
-        throw std::runtime_error("No data or no dimensions given to replace texture '" + name + "'.");
-      }
-    }
+    glGenTextures(1, &textureHandle);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureHandle);
 
-    uint32_t imageByteSize = 0;
+#ifndef SMALL3D_OPENGLES
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+      GL_UNSIGNED_BYTE, data);
+#else
 
-    if ((!found && data) /*new texture*/ ||
-      (found && replace) /*texture to be replaced*/) {
-      textureHandlePtr->width = width;
-      textureHandlePtr->height = height;
-      textureHandlePtr->data->resize(static_cast<uint64_t>(width) * height * 4);
-      imageByteSize = static_cast<uint32_t>(static_cast<uint64_t>(width) * height * 4);
-      memcpy(&(*textureHandlePtr->data)[0], data, imageByteSize);
-    } // Otherwise these values are kept and we are just recopying to the GPU
-    else {
-      imageByteSize = static_cast<uint32_t>(textureHandlePtr->width * textureHandlePtr->height * 4);
-    }
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    VkBuffer stagingBuffer;
-    VkDeviceMemory stagingBufferMemory;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGBA,
+                 GL_UNSIGNED_BYTE, data);
+#endif
 
-    if (!vh_create_buffer(&stagingBuffer, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-      imageByteSize, &stagingBufferMemory, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-      VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
-      throw std::runtime_error("Failed to create staging buffer for texture.");
-    }
+    textures.insert(make_pair(name, textureHandle));
 
-    void* imgData;
-    vkMapMemory(vh_logical_device, stagingBufferMemory, 0, VK_WHOLE_SIZE,
-      0, &imgData);
-    memcpy(imgData, &(*textureHandlePtr->data)[0], imageByteSize);
-    vkUnmapMemory(vh_logical_device, stagingBufferMemory);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
-    VkFormat imageFormat = VK_FORMAT_R8G8B8A8_UNORM;
-
-    if (!vh_create_image(&textureHandlePtr->image, static_cast<uint32_t>(textureHandlePtr->width),
-      static_cast<uint32_t>(textureHandlePtr->height), 
-      imageFormat, VK_IMAGE_TILING_OPTIMAL,
-      VK_IMAGE_USAGE_TRANSFER_DST_BIT |
-      VK_IMAGE_USAGE_SAMPLED_BIT,
-      &textureHandlePtr->imageMemory,
-      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
-      throw std::runtime_error("Failed to create image to be used"
-        " as a texture.");
-    }
-
-    vh_transition_image_layout(textureHandlePtr->image,
-      imageFormat,
-      VK_IMAGE_LAYOUT_UNDEFINED,
-      VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 0);
-
-    vh_copy_buffer_to_image(stagingBuffer, textureHandlePtr->image,
-      (uint32_t)textureHandlePtr->width, (uint32_t)textureHandlePtr->height);
-
-    vh_destroy_buffer(stagingBuffer, stagingBufferMemory);
-
-    vh_transition_image_layout(textureHandlePtr->image,
-      imageFormat,
-      VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-      VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, 0);
-
-    if (!vh_create_image_view(&textureHandlePtr->imageView, textureHandlePtr->image,
-      imageFormat,
-      VK_IMAGE_ASPECT_COLOR_BIT)) {
-      throw std::runtime_error("Failed to create texture image view!\n\r");
-    };
-
-    // Allocate perspective texture descriptor set
-
-    VkDescriptorSetAllocateInfo dsai = {};
-
-    dsai.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-    dsai.descriptorPool = descriptorPool;
-    dsai.descriptorSetCount = 1;
-    dsai.pSetLayouts = &textureDescriptorSetLayout;
-
-    for (int idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
-      textureHandlePtr->descriptorSet[idx] = {};
-      if (vkAllocateDescriptorSets(vh_logical_device, &dsai,
-        &textureHandlePtr->descriptorSet[idx]) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to allocate texture descriptor set.");
-      }
-
-      // Write texture descriptor set
-
-      VkDescriptorImageInfo diiTexture = {};
-
-      diiTexture.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-      diiTexture.imageView = textureHandlePtr->imageView;
-      diiTexture.sampler = textureSampler;
-
-      VkWriteDescriptorSet wds = {};
-
-      wds.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      wds.dstSet = textureHandlePtr->descriptorSet[idx];
-      wds.dstBinding = textureDescBinding;
-      wds.dstArrayElement = 0;
-      wds.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-      wds.descriptorCount = 1;
-      wds.pBufferInfo = NULL;
-      wds.pImageInfo = &diiTexture;
-      wds.pTexelBufferView = NULL;
-
-      vkUpdateDescriptorSets(vh_logical_device, 1, &wds, 0, NULL);
-    }
-
-    if (!found || replace) {
-      textures.insert(make_pair(name, *textureHandlePtr));
-    }
+    return textureHandle;
   }
 
   void Renderer::init(const int width, const int height,
-    const std::string shadersPath) {
+    const std::string & windowTitle,
+    const std::string & shadersPath) {
 
     realScreenWidth = width;
     realScreenHeight = height;
 
-    this->shadersPath = getBasePath() + shadersPath;
+#ifdef SMALL3D_OPENGLES
+    this->initOpenGL();
+#endif
 
-    this->initWindow(realScreenWidth, realScreenHeight);
+    this->initWindow(realScreenWidth, realScreenHeight, windowTitle);
+#ifndef SMALL3D_OPENGLES
+    this->initOpenGL();
+#endif
+    glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
+      static_cast<GLsizei>(realScreenHeight));
 
-    LOGDEBUG("Detected back width " + std::to_string(realScreenWidth) +
-      " height " + std::to_string(realScreenHeight));
+    glEnable(GL_DEPTH_TEST);
 
-    setupVulkan();
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LEQUAL);
+
+    glDepthRange(0.0f, 1.0f);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    GLuint vertexShader = compileShader(shadersPath +
+      "perspectiveMatrixLightedShader.vert",
+      GL_VERTEX_SHADER);
+    GLuint fragmentShader = compileShader(shadersPath + "textureShader.frag",
+      GL_FRAGMENT_SHADER);
+
+    shaderProgram = glCreateProgram();
+
+#ifdef SMALL3D_OPENGLES
+    glBindAttribLocation(shaderProgram, attrib_position, "position");
+    glBindAttribLocation(shaderProgram, attrib_normal, "normal");
+    glBindAttribLocation(shaderProgram, attrib_joint, "joint");
+    glBindAttribLocation(shaderProgram, attrib_weight, "weight");
+    glBindAttribLocation(shaderProgram, attrib_uv, "uvCoords");
+#endif
+
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+
+    glLinkProgram(shaderProgram);
+
+    GLint status;
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &status);
+    if (status == GL_FALSE) {
+      throw std::runtime_error("Failed to link program:\n" +
+        this->getProgramInfoLog(shaderProgram));
+    }
+    else {
+      LOGDEBUG("Linked main rendering program successfully");
+    }
+    glDetachShader(shaderProgram, vertexShader);
+    glDetachShader(shaderProgram, fragmentShader);
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+
+    GLint colourTextureLocation = glGetUniformLocation(shaderProgram, "textureImage");
+    GLint depthMapTextureLocation = glGetUniformLocation(shaderProgram, "shadowMap");
+#ifndef SMALL3D_OPENGLES
+    glProgramUniform1i(shaderProgram, colourTextureLocation, 0);
+    glProgramUniform1i(shaderProgram, depthMapTextureLocation, 1);
+#else
+    glUseProgram(shaderProgram);
+    glUniform1i(colourTextureLocation, 0);
+    glUniform1i(depthMapTextureLocation, 1);
+#endif
+    
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearDepth(1.0f);
+
+    glUseProgram(0);
 
     Image blankImage("");
     blankImage.toColour(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
     generateTexture("blank", blankImage);
+    LOGDEBUG("Blank image generated");
 
-  }
+// OpenGL supports rendering without a colour image, only producing a depth map.
+// OpenGL ES 2.0 however does not support the glDrawBuffer and glReadBuffer commands
+// (see them used conditionally below) so in the following lines a render buffer with
+// a colour attachment and a depth attachment is created. The depth attachment might
+// be superfluous in OpenGL ES but I have left it there in case it is required (I have not checked).
+// But I am not using it in OpenGL ES; only in OpenGL. The reason is that, at least
+// with some Android devices, I could not feed it back as a texture to the normal
+// render pass. Checking with RenderDoc, I saw an error mentioning that the attached
+// texture is incomplete because "BASE_LEVEL 0 has invalid dimensions: 0x0". So in OpenGL ES
+// I am just outputting the z coordinate to the colour texture as the r component of each
+// texel, and informing the fragment shader that this is the case by setting light intensity to
+// -2. The fragment shader then adjusts the value accordingly (it needs to be translated to the
+// 0 - 1 range) before performing the shadow calculations.
 
-  void Renderer::increaseObjectsPerFrame(const uint32_t additionalObjects) {
-    destroyVulkan();
-    objectsPerFrame += additionalObjects;
-    setupVulkan();
-  }
+#ifdef SMALL3D_OPENGLES
 
-  void Renderer::allocateDynamicBuffers() {
-    VkPhysicalDeviceProperties pdp = {};
-    vkGetPhysicalDeviceProperties(vh_physical_device, &pdp);
-    VkDeviceSize minAlignment = pdp.limits.minUniformBufferOffsetAlignment;
+    glGenTextures(1, &depthRenderColourTexture);
+    glBindTexture(GL_TEXTURE_2D, depthRenderColourTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+                 depthMapTextureWidth, depthMapTextureHeight, 0, GL_RGBA,
+                 GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
-    dynamicModelPlacementAlignment = sizeof(UboModelPlacement);
-    if (minAlignment > 0) {
-      dynamicModelPlacementAlignment = (dynamicModelPlacementAlignment +
-        minAlignment - 1) & ~(minAlignment - 1);
-    }
+    glGenRenderbuffers(1, &depthRenderBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, depthMapTextureWidth, depthMapTextureHeight);
 
-    uboModelPlacementDynamicSize = objectsPerFrame * dynamicModelPlacementAlignment;
-    char* mem = alloc.allocate(uboModelPlacementDynamicSize);
-    std::fill(mem, &mem[uboModelPlacementDynamicSize], 0);
-    uboModelPlacementDynamic = (UboModelPlacement*)mem;
+#endif
 
-    renderModelPlacementBuffersDynamic.resize(MAX_FRAMES_PREPARED);
-    renderModelPlacementBuffersDynamicMemory.resize(MAX_FRAMES_PREPARED);
+    glGenTextures(1, &depthMapTexture);
 
-    for (size_t i = 0; i < MAX_FRAMES_PREPARED; ++i) {
-      vh_create_buffer(&renderModelPlacementBuffersDynamic[i],
-        VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-        (uint32_t)uboModelPlacementDynamicSize,
-        &renderModelPlacementBuffersDynamicMemory[i],
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-    }
+    glActiveTexture(GL_TEXTURE0 + 1);
 
-    // Allocate memory & vulkan dynamic buffers for world details
-    dynamicWorldDetailsAlignment = sizeof(UboWorldDetails);
-    if (minAlignment > 0) {
-      dynamicWorldDetailsAlignment = (dynamicWorldDetailsAlignment +
-        minAlignment - 1) & ~(minAlignment - 1);
-    }
+    glBindTexture(GL_TEXTURE_2D, depthMapTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+      depthMapTextureWidth, depthMapTextureHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
-    // 2x, one for perspective, the other for orthographic rendering
-    uboWorldDetailsDynamicSize = 2 * dynamicWorldDetailsAlignment;
-    mem = alloc.allocate(uboWorldDetailsDynamicSize);
-    std::fill(mem, &mem[uboWorldDetailsDynamicSize], 0);
-    uboWorldDetailsDynamic = (UboWorldDetails*)mem;
-    worldDetailsBuffersDynamic.resize(MAX_FRAMES_PREPARED);
-    worldDetailsBuffersDynamicMemory.resize(MAX_FRAMES_PREPARED);
-
-    for (size_t i = 0; i < MAX_FRAMES_PREPARED; ++i) {
-      vh_create_buffer(&worldDetailsBuffersDynamic[i],
-        VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-        (uint32_t)uboWorldDetailsDynamicSize,
-        &worldDetailsBuffersDynamicMemory[i],
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-    }
-
-    // Allocate memory & vulkan dynamic buffer for model colour
-    dynamicColourAlignment = sizeof(UboColour);
-    if (minAlignment > 0) {
-      dynamicColourAlignment = (dynamicColourAlignment + minAlignment - 1) &
-        ~(minAlignment - 1);
-    }
-
-    uboColourDynamicSize = objectsPerFrame * dynamicColourAlignment;
-    mem = alloc.allocate(uboColourDynamicSize);
-    std::fill(mem, &mem[uboColourDynamicSize], 0);
-    uboColourDynamic = (UboColour*)mem;
-
-
-    colourBuffersDynamic.resize(MAX_FRAMES_PREPARED);
-    colourBuffersDynamicMemory.resize(MAX_FRAMES_PREPARED);
-
-
-    for (size_t i = 0; i < MAX_FRAMES_PREPARED; ++i) {
-      vh_create_buffer(&colourBuffersDynamic[i],
-        VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-        (uint32_t)uboColourDynamicSize,
-        &colourBuffersDynamicMemory[i],
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-    }
-
-  }
-
-  void Renderer::destroyDynamicBuffers() {
-
-    if (uboModelPlacementDynamic) {
-      alloc.deallocate(reinterpret_cast<char*>(uboModelPlacementDynamic),
-        uboModelPlacementDynamicSize);
-      uboModelPlacementDynamic = nullptr;
-    }
-
-    if (uboWorldDetailsDynamic) {
-      alloc.deallocate(reinterpret_cast<char*>(uboWorldDetailsDynamic),
-        uboWorldDetailsDynamicSize);
-      uboWorldDetailsDynamic = nullptr;
-    }
-
-    if (uboColourDynamic) {
-      alloc.deallocate(reinterpret_cast<char*>(uboColourDynamic),
-        uboColourDynamicSize);
-      uboColourDynamic = nullptr;
-    }
-
-    for (uint32_t i = 0; i < MAX_FRAMES_PREPARED; ++i) {
-
-      if (i < renderModelPlacementBuffersDynamic.size()) {
-        vh_destroy_buffer(renderModelPlacementBuffersDynamic[i],
-          renderModelPlacementBuffersDynamicMemory[i]);
-      }
-
-      if (i < worldDetailsBuffersDynamic.size()) {
-        vh_destroy_buffer(worldDetailsBuffersDynamic[i],
-          worldDetailsBuffersDynamicMemory[i]);
-      }
-
-      if (i < lightIntensityBuffers.size()) {
-        vh_destroy_buffer(lightIntensityBuffers[i],
-          lightIntensityBufferMemories[i]);
-      }
-      if (i < colourBuffersDynamic.size()) {
-        vh_destroy_buffer(colourBuffersDynamic[i],
-          colourBuffersDynamicMemory[i]);
-      }
-    }
-
-    renderModelPlacementBuffersDynamic.clear();
-    renderModelPlacementBuffersDynamicMemory.clear();
-
-    worldDetailsBuffersDynamic.clear();
-    worldDetailsBuffersDynamicMemory.clear();
-
-    lightIntensityBuffers.clear();
-    lightIntensityBufferMemories.clear();
-
-    colourBuffersDynamic.clear();
-    colourBuffersDynamicMemory.clear();
-  }
-
-  void Renderer::initWindow(int& width, int& height) {
-#if defined(__ANDROID__)
-    assert(small3d_android_app->window != nullptr);
-    width = ANativeWindow_getWidth(small3d_android_app->window);
-    height = ANativeWindow_getHeight(small3d_android_app->window);
-#elif defined(SMALL3D_IOS)
-    width = get_app_width();
-    height = get_app_height();
+    
+    glGenFramebuffers(1, &depthMapFramebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFramebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMapTexture, 0);
+#ifndef SMALL3D_OPENGLES
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
 #else
-    glfwSetErrorCallback(errorCallback);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthRenderColourTexture, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, origRenderbuffer);
+#endif
+    glBindFramebuffer(GL_FRAMEBUFFER, origFramebuffer);
+
+
+  }
+
+  void Renderer::initWindow(int& width, int& height,
+    const std::string & windowTitle) {
+#ifndef SMALL3D_OPENGLES
+    glfwSetErrorCallback(error_callback);
 
     if (!glfwInit()) {
       throw std::runtime_error("Unable to initialise GLFW");
     }
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    // This was used as a workaround for an issue I cannot remember
+    // on Mojave but on Monterey it was making the window transparent
+    // when the colour of a rendered mesh was transparent so I have
+    // commented it out.
+    // glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
+#else
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+#endif
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     GLFWmonitor* monitor = nullptr; // If NOT null, a full-screen window will
     // be created.
+
     bool fullScreen = false;
 
     if ((width == 0 && height != 0) || (width != 0 && height == 0)) {
@@ -887,17 +570,18 @@ namespace small3d {
       monitor = glfwGetPrimaryMonitor();
 
       const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-
       width = mode->width;
       height = mode->height;
 
       LOGINFO("Detected screen width " + std::to_string(width) + " and height " +
         std::to_string(height));
+
       fullScreen = true;
     }
 
     window = glfwCreateWindow(width, height, windowTitle.c_str(), monitor,
       nullptr);
+
     if (!window) {
       throw std::runtime_error("Unable to create GLFW window");
     }
@@ -905,6 +589,8 @@ namespace small3d {
     if (fullScreen) {
       glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     }
+
+    glfwMakeContextCurrent(window);
 
     width = 0;
     height = 0;
@@ -914,213 +600,249 @@ namespace small3d {
 
     LOGINFO("Framebuffer width " + std::to_string(width) + " height " +
       std::to_string(height));
+#else
+#ifdef __ANDROID__
+    window = small3d_android_app->window;
 
+    /* get the format of the window. */
+    windowFormat = ANativeWindow_getFormat(window);
+
+    initEGLContext();
+
+    createEGLSurface(realScreenWidth, realScreenHeight);
 #endif
-}
+#endif
+  }
+#ifdef SMALL3D_OPENGLES
+#ifdef __ANDROID__
+  void Renderer::createEGLSurface(int& width, int& height) {
+    eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, window, NULL);
 
-  void Renderer::setWorldDetails(const glm::mat4x4& perspectiveMatrix) {
+    if (eglSurface == 0) {
+      throw std::runtime_error("Error creating surface");
+    }
 
-    uboWorldDetailsDynamic[0] = {};
-    uboWorldDetailsDynamic[1] = {};
+    eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext);
 
-    uboWorldDetailsDynamic[0].perspectiveMatrix = perspectiveMatrix;
-    uboWorldDetailsDynamic[1].perspectiveMatrix = glm::mat4x4(1);
+    LOGDEBUG("Vendor " +
+        std::string(reinterpret_cast<const char *>(glGetString(GL_VENDOR))) +
+        ", Renderer " +
+        std::string(reinterpret_cast<const char *>(glGetString(GL_RENDERER))) +
+        ", Version " +
+        std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))));
 
-    uboWorldDetailsDynamic[0].lightDirection = lightDirection;
-    uboWorldDetailsDynamic[1].lightDirection = glm::vec3(0.0f, 0.0f, 0.0f);
-
-    uboWorldDetailsDynamic[0].cameraOffset = cameraPosition;
-    uboWorldDetailsDynamic[1].cameraOffset = glm::vec3(0.0f, 0.0f, 0.0f);
-
-    uboWorldDetailsDynamic[0].cameraTransformation = cameraTransformation;
-    uboWorldDetailsDynamic[1].cameraTransformation = glm::mat4x4(1);
-
-    uboWorldDetailsDynamic[0].shadowsActive = shadowsActive ? 1U : 0U;
-    uboWorldDetailsDynamic[1].shadowsActive = 0U;
+    width = ANativeWindow_getWidth(small3d_android_app->window);
+    height = ANativeWindow_getHeight(small3d_android_app->window);
 
   }
 
-  void Renderer::setLightIntensity() {
-    UboLight light = {};
-
-    light.lightIntensity = lightIntensity;
-
-    uint32_t lightIntensitySize = sizeof(UboLight);
-
-    if (lightIntensityBuffers.size() == 0) {
-      lightIntensityBuffers = std::vector<VkBuffer>(MAX_FRAMES_PREPARED);
-      lightIntensityBufferMemories =
-        std::vector<VkDeviceMemory>(MAX_FRAMES_PREPARED);
-
-      for (size_t i = 0; i < MAX_FRAMES_PREPARED; i++) {
-        vh_create_buffer(&lightIntensityBuffers[i],
-          VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-          lightIntensitySize,
-          &lightIntensityBufferMemories[i],
-          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-      }
+  void Renderer::initEGLContext() {
+    /* choose the config according to the format of the window. */
+    switch (windowFormat) {
+    case WINDOW_FORMAT_RGBA_8888:
+      config = config32bpp;
+      break;
+    case WINDOW_FORMAT_RGBX_8888:
+      config = config24bpp;
+      break;
+    case WINDOW_FORMAT_RGB_565:
+      config = config16bpp;
+      break;
+    default:
+      throw std::runtime_error("Unknown window format.");
     }
 
-    void* lightIntensityData;
-    vkMapMemory(vh_logical_device,
-      lightIntensityBufferMemories[currentFrameIndex],
-      0, lightIntensitySize, 0, &lightIntensityData);
-    memcpy(lightIntensityData, &light, lightIntensitySize);
-    vkUnmapMemory(vh_logical_device,
-      lightIntensityBufferMemories[currentFrameIndex]);
+    if (!eglChooseConfig(eglDisplay, config32bpp, &eglConfig, 1, &numConfigs)) {
+      throw std::runtime_error("eglChooseConfig failed. Error code: " + std::to_string(eglGetError()));
+    }
+
+    const EGLint context_attribs[] = { EGL_CONTEXT_CLIENT_VERSION,
+                                      2,  // Request opengl ES2.0
+                                      EGL_NONE };
+
+    eglContext = eglCreateContext(eglDisplay, eglConfig, EGL_NO_CONTEXT, context_attribs);
+    if (!eglContext) {
+      throw std::runtime_error("GL context creation error: " + std::to_string(eglGetError()));
+    }
+
+    eglContextValid = true;
   }
 
-  void Renderer::deleteImageFromGPU(VulkanImage& gpuImage) {
-    vkDeviceWaitIdle(vh_logical_device);
-    for (int idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
-      if (vkFreeDescriptorSets(vh_logical_device, descriptorPool, 1,
-        &gpuImage.descriptorSet[idx]) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to free texture descriptor set.");
+  void Renderer::terminateEGL() {
+
+
+    if (eglDisplay != EGL_NO_DISPLAY) {
+      eglMakeCurrent(eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+      if (eglContext != EGL_NO_CONTEXT) {
+        eglDestroyContext(eglDisplay, eglContext);
       }
+
+      if (eglSurface != EGL_NO_SURFACE) {
+        eglDestroySurface(eglDisplay, eglSurface);
+      }
+      eglTerminate(eglDisplay);
     }
 
-    vkDestroyImageView(vh_logical_device,
-      gpuImage.imageView, NULL);
-    vh_destroy_image(gpuImage.image,
-      gpuImage.imageMemory);
+    eglDisplay = EGL_NO_DISPLAY;
+    eglContext = EGL_NO_CONTEXT;
+    eglSurface = EGL_NO_SURFACE;
+    window = nullptr;
+    eglContextValid = false;
+
+
+  }
+#endif
+#endif
+  void Renderer::setWorldDetails(bool perspective) {
+
+    auto orthographicMatrix = glm::ortho(-shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize);
+    
+
+    GLint perspectiveMatrixUniform =
+      glGetUniformLocation(shaderProgram, "perspectiveMatrix");
+
+    glm::mat4x4 perspectiveMatrix = perspective && realScreenHeight != 0 ?
+      glm::perspective(fieldOfView, static_cast<float>(realScreenWidth / realScreenHeight), zNear, zFar) :
+      renderingDepthMap ? orthographicMatrix : glm::mat4x4(1.0f);
+
+    glUniformMatrix4fv(perspectiveMatrixUniform, 1, GL_FALSE,
+      glm::value_ptr(perspectiveMatrix));
+
+    GLint lightDirectionUniform = glGetUniformLocation(shaderProgram,
+      "lightDirection");
+    glm::vec3 lightDirectionOut = perspective ?
+      lightDirection : glm::vec3(0.0f, 0.0f, 0.0f);
+    glUniform3fv(lightDirectionUniform, 1,
+      glm::value_ptr(lightDirectionOut));
+
+    GLint lightIntensityUniform = glGetUniformLocation(shaderProgram,
+      "lightIntensity");
+#ifdef SMALL3D_OPENGLES
+    // In OpenGL ES we signal to the fragment shader that it is supposed to render a simulated
+    // depth map using the red colour, using light intensity = -2.0.
+    glUniform1f(lightIntensityUniform, renderingDepthMap ? -2.0f : lightIntensity);
+#else
+    glUniform1f(lightIntensityUniform, lightIntensity);
+#endif
+
+    GLint cameraTransformationUniform = glGetUniformLocation(shaderProgram,
+      "cameraTransformation");
+
+    glm::mat4x4 cameraTransformation = perspective || renderingDepthMap ?
+      this->cameraTransformation :
+      glm::mat4x4(1);
+
+    glUniformMatrix4fv(cameraTransformationUniform, 1, GL_FALSE,
+      glm::value_ptr(cameraTransformation));
+
+    GLint cameraOffsetUniform = glGetUniformLocation(shaderProgram,
+      "cameraOffset");
+
+    glm::vec3 cameraPositionOut = perspective || renderingDepthMap ?
+      cameraPosition : glm::vec3(0.0f, 0.0f, 0.0f);
+    glUniform3fv(cameraOffsetUniform, 1, glm::value_ptr(cameraPositionOut));
+
+    GLint lightSpaceMatrixUniform = glGetUniformLocation(shaderProgram,
+      "lightSpaceMatrix");
+
+    glUniformMatrix4fv(lightSpaceMatrixUniform, 1, GL_FALSE,
+      glm::value_ptr(lightSpaceMatrix));
+
+    GLint orthographicMatrixUniform = glGetUniformLocation(shaderProgram,
+      "orthographicMatrix");
+    glUniformMatrix4fv(orthographicMatrixUniform, 1, GL_FALSE,
+      glm::value_ptr(orthographicMatrix));
+
+  }
+
+  void Renderer::bindTexture(const std::string & name) {
+    GLuint textureHandle = getTextureHandle(name);
+
+    if (textureHandle == 0) {
+      throw std::runtime_error("Texture " + name +
+        " has not been generated");
+    }
+
+    glActiveTexture(GL_TEXTURE0);
+
+    glBindTexture(GL_TEXTURE_2D, textureHandle);
+    GLint loc = glGetUniformLocation(shaderProgram, "textureImage");
+
+    glUniform1i(loc, 0);
+
+  }
+
+  void Renderer::clearScreen() const {
+#if defined(__APPLE__) && !defined(SMALL3D_OPENGLES)
+    // Needed to avoid transparent rendering in Mojave by default
+    // (caused by the transparency hint in initWindow, which is
+    // a workaround for a GLFW problem on that platform)
+    // This used to be 0,0,0,1. Hopefully it still works.
+    glClearColor(clearColour.x, clearColour.y, clearColour.z, clearColour.w);
+#endif
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 
   Renderer::Renderer() {
-#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
+#ifdef __ANDROID__
     window = 0;
 #endif
-
+    shaderProgram = 0;
+    noShaders = false;
   }
 
-  void Renderer::drawNextModels(bool onlyShadows) {
-   
-    vh_destroy_draw_command_buffer(&commandBuffer[currentFrameIndex]);
-
-    modelPlacementMemIndex = 0;
-    colourMemIndex = 0;
-
-    // Store "normal" camera position and transformation (rotation)
-    auto tmpCamTr = cameraTransformation;
-    auto tmpCamPos = cameraPosition;
-    
-    auto orthographicMatrix = glm::ortho(-shadowSpaceSize, shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize);
-    
-    if (onlyShadows) {
-      
-      // Position camera at 0. Position (translation) stored with transformation.
-      cameraPosition = glm::vec3(0);
-      cameraTransformation = shadowCamTransformation;
-
-      setWorldDetails(orthographicMatrix);
-      uboWorldDetailsDynamic[0].lightSpaceMatrix = glm::mat4x4(0);
-      uboWorldDetailsDynamic[0].orthographicMatrix = glm::mat4x4(0);
-
-      cameraPosition = tmpCamPos;
-      cameraTransformation = tmpCamTr;
-    }
-    else {
-
-      setWorldDetails(realScreenHeight != 0 ?
-        glm::perspective(fieldOfView, static_cast<float>(realScreenWidth / realScreenHeight), zNear, zFar) :
-        glm::mat4x4(1));
-      uboWorldDetailsDynamic[0].lightSpaceMatrix = shadowCamTransformation;
-      uboWorldDetailsDynamic[0].orthographicMatrix = orthographicMatrix;
-    }
-
-    setLightIntensity();
-
-    // Updating object positioning 
-    void* modelPlacementData;
-    vkMapMemory(vh_logical_device,
-      renderModelPlacementBuffersDynamicMemory[currentFrameIndex],
-      0, uboModelPlacementDynamicSize, 0, &modelPlacementData);
-    memcpy(modelPlacementData, uboModelPlacementDynamic, uboModelPlacementDynamicSize);
-    vkUnmapMemory(vh_logical_device,
-      renderModelPlacementBuffersDynamicMemory[currentFrameIndex]);
-
-    // Updating world details
-    void* worldDetailsData;
-    vkMapMemory(vh_logical_device,
-      worldDetailsBuffersDynamicMemory[currentFrameIndex],
-      0, uboWorldDetailsDynamicSize, 0, &worldDetailsData);
-    memcpy(worldDetailsData, uboWorldDetailsDynamic, uboWorldDetailsDynamicSize);
-    vkUnmapMemory(vh_logical_device,
-      worldDetailsBuffersDynamicMemory[currentFrameIndex]);
-
-    // Updating colour
-    void* colourData;
-    vkMapMemory(vh_logical_device,
-      colourBuffersDynamicMemory[currentFrameIndex],
-      0, uboColourDynamicSize, 0, &colourData);
-    memcpy(colourData, uboColourDynamic, uboColourDynamicSize);
-    vkUnmapMemory(vh_logical_device,
-      colourBuffersDynamicMemory[currentFrameIndex]);
-    
-    if (vh_new_pipeline_state) {
-      updateDescriptorSets();
-    }
-
-    vh_begin_draw_command_buffer(&commandBuffer[currentFrameIndex]);
-
-    for (auto &mt : nextModelsToDraw) {
-
-      if (onlyShadows && (std::get<0>(mt)->noShadow || !std::get<0>(mt)->perspective)) {
-        continue;
-      }
-
-      vh_bind_pipeline_to_command_buffer(pipelineIndex,
-        &commandBuffer[currentFrameIndex]);
-      bindBuffers(commandBuffer[currentFrameIndex], *std::get<0>(mt));
-
-      if (!std::get<0>(mt)->perspective) {
-        vh_clear_depth_image(&commandBuffer[currentFrameIndex]);
-      }
-
-      recordDrawCommand(commandBuffer[currentFrameIndex],
-        vh_pipeline_layout[pipelineIndex],
-        *std::get<0>(mt), std::get<1>(mt), std::get<2>(mt), 
-        std::get<3>(mt), currentFrameIndex, std::get<0>(mt)->perspective);
-    }
-
-    vh_end_draw_command_buffer(&commandBuffer[currentFrameIndex]);
-
-    vh_draw(&commandBuffer[currentFrameIndex], onlyShadows? 1 : 0);
-
-    if (onlyShadows) {
-      vh_copy_depth_to_shadow_image();
-    }
-
-  }
-
-  Renderer::Renderer(const std::string& windowTitle, const int width,
+  Renderer::Renderer(const std::string & windowTitle, const int width,
     const int height, const float fieldOfView,
     const float zNear, const float zFar,
-    const std::string& shadersPath,
+    const std::string & shadersPath,
     const uint32_t objectsPerFrame,
     const uint32_t objectsPerFrameInc) {
 
-#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
+    start(windowTitle, width,
+		 height, fieldOfView,
+		 zNear,  zFar,
+		 shadersPath,
+		 objectsPerFrame,
+		 objectsPerFrameInc);
+
+    LOGDEBUG("Renderer constructor done.");
+  }
+
+  void Renderer::start(const std::string & windowTitle, const int width,
+    const int height, const float fieldOfView,
+    const float zNear, const float zFar,
+    const std::string & shadersPath,
+    const uint32_t objectsPerFrame,
+    const uint32_t objectsPerFrameInc) {
+#ifdef __ANDROID__
     window = 0;
 #endif
+    shaderProgram = 0;
 
-    this->objectsPerFrame = objectsPerFrame;
-    this->objectsPerFrameInc = objectsPerFrameInc;
+    noShaders = false;
+
     this->zNear = zNear;
     this->zFar = zFar;
     this->fieldOfView = fieldOfView;
-    this->windowTitle = windowTitle;
 
-    init(width, height, shadersPath);
+    init(width, height, windowTitle, shadersPath);
 
     FT_Error ftError = FT_Init_FreeType(&library);
 
     if (ftError != 0) {
       throw std::runtime_error("Unable to initialise font system");
     }
+
+#ifndef SMALL3D_OPENGLES
+    // Generate VAO
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+#endif
+    LOGDEBUG("start done");
+
   }
 
-  void Renderer::setCameraRotation(const glm::vec3& rotation) {
+  void Renderer::setCameraRotation(const glm::vec3 & rotation) {
     cameraRotationByMatrix = false;
     this->cameraRotationXYZ = rotation;
     this->cameraTransformation = glm::rotate(glm::mat4x4(1.0f), -rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
@@ -1128,7 +850,7 @@ namespace small3d {
       glm::rotate(glm::mat4x4(1.0f), -rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
   }
 
-  void Renderer::rotateCamera(const glm::vec3& rotation) {
+  void Renderer::rotateCamera(const glm::vec3 & rotation) {
     if (cameraRotationByMatrix) {
       throw std::runtime_error("Attempted x, y, z representation camera rotation, while having set the initial rotation by matrix.");
     }
@@ -1140,8 +862,8 @@ namespace small3d {
     }
   }
 
-  void Renderer::setCameraTransformation(const glm::mat4x4& transformation) {
-    this->cameraTransformation = glm::inverse(transformation);
+  void Renderer::setCameraTransformation(const glm::mat4x4 & rotation) {
+    this->cameraTransformation = glm::inverse(rotation);
     cameraRotationByMatrix = true;
     cameraRotationXYZ = glm::vec3(0.0f);
   }
@@ -1157,77 +879,114 @@ namespace small3d {
 
   const glm::vec3 Renderer::getCameraRotationXYZ() const {
     if (cameraRotationByMatrix) {
-      throw std::runtime_error("Attempted x, y, z representation camera rotation retrieval, while having set the initial rotation by matrix.");
+      throw std::runtime_error("Attempted x, y, z representation camera rotation retrieval, while having set the rotation by matrix.");
     }
     return this->cameraRotationXYZ;
   }
 
-  int Renderer::getScreenWidth() {
-    return realScreenWidth;
-  }
-
-  int Renderer::getScreenHeight() {
-    return realScreenHeight;
-  }
-
-  Renderer& Renderer::getInstance(const std::string& windowTitle,
+  Renderer& Renderer::getInstance(const std::string & windowTitle,
     const int width, const int height,
     const float fieldOfView,
     const float zNear, const float zFar,
-    const std::string& shadersPath,
+    const std::string & shadersPath,
     const uint32_t objectsPerFrame,
     const uint32_t objectsPerFrameInc) {
 
+    initLogger();
+
     static Renderer instance(windowTitle, width, height, fieldOfView, zNear,
       zFar, shadersPath, objectsPerFrame, objectsPerFrameInc);
-
     return instance;
   }
 
   Renderer::~Renderer() {
-
     LOGDEBUG("Renderer destructor running");
-
-    //With the following there is a crash sometimes when exiting the application.
-    //destroyVulkan();
-
-    for (auto& idFacePair : fontFaces) {
+    for (auto idFacePair : fontFaces) {
       FT_Done_Face(idFacePair.second);
     }
 
 #ifdef __ANDROID__
     for (auto& asset : fontAssets) {
       AAsset_close(asset);
-  }
+    }
 #endif
 
     FT_Done_FreeType(library);
+    
+    stop();
 
-    // The following causes an EXC_BAD_ACCESS,
-    // or a "Thread 1: signal SIABRT" exception on MacOS. In
-    // the latter case the following message is produced:
-    // objc[986]: Attempt to use unknown class 0x1008b4810.
-
-    // glfwDestroyWindow(window);
-
-    // On linux this causes a segmentation fault
-    // glfwTerminate();
+#ifndef __ANDROID__
+    //This was causing crashes on MacOS
+    //glfwTerminate();
+#endif
   }
 
-#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
+  void Renderer::stop() {
+
+    glDeleteFramebuffers(1, &depthMapFramebuffer);
+    depthMapFramebuffer = 0;
+
+#ifdef SMALL3D_OPENGLES
+    glDeleteRenderbuffers(1, &depthRenderBuffer);
+    depthRenderBuffer = 0;
+#endif
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+
+    glActiveTexture(GL_TEXTURE0 + 1);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glDeleteTextures(0, &depthMapTexture);
+#ifdef SMALL3D_OPENGLES
+    glDeleteTextures(1, &depthRenderColourTexture);
+#endif
+
+    //At times, this has caused crashes on MacOS
+    for (auto it = textures.begin();
+      it != textures.end(); ++it) {
+      LOGDEBUG("Deleting texture " + it->first);
+      glDeleteTextures(1, &it->second);
+    }
+    textures.clear();
+
+    if (!noShaders) {
+      glUseProgram(0);
+
+#ifndef SMALL3D_OPENGLES
+      glDeleteVertexArrays(1, &vao);
+      glBindVertexArray(0);
+#endif
+
+    }
+
+    if (shaderProgram != 0) {
+      glDeleteProgram(shaderProgram);
+    }
+#if defined(SMALL3D_OPENGLES) && defined(__ANDROID__)
+    terminateEGL();
+#endif
+  }
+
+#ifndef SMALL3D_OPENGLES
   GLFWwindow* Renderer::getWindow() const {
     return window;
   }
 #endif
 
-  void Renderer::generateTexture(const std::string& name, const Image& image) {
+  void Renderer::generateTexture(const std::string & name, const Image & image) {
+    LOGDEBUG("Sending image to GPU, dimensions " + std::to_string(image.getWidth()) +
+      ", " + std::to_string(image.getHeight()));
     this->generateTexture(name, image.getData(), image.getWidth(),
-      image.getHeight(), false);
+      image.getHeight(), true);
   }
 
-  void Renderer::generateTexture(const std::string& name, const std::string& text,
-    const glm::vec3& colour, const int fontSize,
-    const std::string& fontPath, const bool replace) {
+  void Renderer::generateTexture(const std::string & name, const std::string & text,
+    const glm::vec3 & colour, const int fontSize,
+    const std::string & fontPath,
+    const bool replace) {
 
     glm::ivec3 icolour(colour.r * 255, colour.g * 255, colour.b * 255);
 
@@ -1238,15 +997,12 @@ namespace small3d {
     FT_Error error;
 
     if (idFacePair == fontFaces.end()) {
-      std::string faceFullPath;
-
-      faceFullPath = getBasePath() + fontPath;
-
+      std::string faceFullPath = getBasePath() + fontPath;
       LOGDEBUG("Loading font from " + faceFullPath);
 #ifdef __ANDROID__
       AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
-                                         faceFullPath.c_str(),
-                                         AASSET_MODE_STREAMING);
+        faceFullPath.c_str(),
+        AASSET_MODE_STREAMING);
       if (!asset) throw std::runtime_error("Opening asset " + faceFullPath +
         " has failed!");
       off_t length;
@@ -1293,10 +1049,8 @@ namespace small3d {
 
     height = maxTop + static_cast<unsigned long>(0.3 * maxTop);
 
-    textMemory.resize(4 * static_cast<size_t>(width) *
-      static_cast<size_t>(height));
-    memset(&textMemory[0], 0, 4 * static_cast<size_t>(width) *
-      static_cast<size_t>(height));
+    textMemory.resize(4 * width * height);
+    memset(&textMemory[0], 0, 4 * width * height);
 
     unsigned long totalAdvance = 0;
 
@@ -1309,49 +1063,47 @@ namespace small3d {
       FT_GlyphSlot slot = face->glyph;
 
       if (slot->bitmap.width * slot->bitmap.rows > 0) {
-        for (size_t row = 0; row < static_cast<int>(slot->bitmap.rows); ++row) {
-          for (size_t col = 0; col < static_cast<int>(slot->bitmap.width);
-            ++col) {
+        for (int row = 0; row < static_cast<int>(slot->bitmap.rows); ++row) {
+          for (int col = 0; col < static_cast<int>(slot->bitmap.width); ++col) {
 
             glm::ivec4 colourAlpha = glm::ivec4(icolour, 0);
 
             colourAlpha.a = slot->bitmap.buffer[row * slot->bitmap.width + col];
 
             auto pos = 4 * (maxTop -
-              slot->bitmap_top
-              + row) * static_cast<size_t>(width) +
-              4 *
-              (static_cast<size_t>(slot->bitmap_left) +
-                static_cast<size_t>(col))
-              + totalAdvance;
+                            slot->bitmap_top
+                            + row) * static_cast<size_t>(width) +
+                       4 *
+                       (static_cast<size_t>(slot->bitmap_left) +
+                        static_cast<size_t>(col))
+                       + totalAdvance;
 
             textMemory[pos] = colourAlpha.r;
             textMemory[pos + 1] = colourAlpha.g;
             textMemory[pos + 2] = colourAlpha.b;
             textMemory[pos + 3] = colourAlpha.a;
+
           }
         }
       }
       totalAdvance += 4 * static_cast<unsigned long>(slot->advance.x / 64);
     }
-    generateTexture(name, &textMemory[0], static_cast<unsigned long>(width),
-      static_cast<unsigned long>(height), replace);
+    generateTexture(name, &textMemory[0], static_cast<unsigned long>(width), static_cast<unsigned long>(height), replace);
   }
 
-  void Renderer::deleteTexture(const std::string& name) {
+  void Renderer::deleteTexture(const std::string & name) {
     auto nameTexturePair = textures.find(name);
-
+    glActiveTexture(GL_TEXTURE0);
     if (nameTexturePair != textures.end()) {
-
-      deleteImageFromGPU(nameTexturePair->second);
-
+      glBindTexture(GL_TEXTURE_2D, 0);
+      glDeleteTextures(1, &(nameTexturePair->second));
       textures.erase(name);
     }
   }
 
-  void Renderer::createRectangle(Model& rect,
-    const glm::vec3& topLeft,
-    const glm::vec3& bottomRight) {
+  void Renderer::createRectangle(Model & rect,
+    const glm::vec3 & topLeft,
+    const glm::vec3 & bottomRight) {
 
     rect.vertexData = {
       bottomRight.x, bottomRight.y, bottomRight.z, 1.0f,
@@ -1381,637 +1133,418 @@ namespace small3d {
     rect.textureCoordsDataByteSize = 8 * sizeof(float);
   }
 
-  void Renderer::render(Model& model, const glm::vec3& offset,
-    const glm::vec3& rotation,
-    const glm::vec4& colour,
-    const std::string& textureName,
+  void Renderer::render(Model & model, const glm::vec3 & position, const glm::vec3 & rotation,
+    const glm::vec4 & colour, const std::string & textureName,
     const bool perspective) {
 
-    this->render(model, offset,
-      glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+    this->render(model, position, glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)),
-      colour, textureName,
-      perspective);
+      colour, textureName, perspective);
 
   }
 
-  void Renderer::render(Model& model, const glm::vec3& offset,
-    const glm::vec3& rotation,
-    const std::string& textureName) {
+  void Renderer::render(Model & model, const glm::vec3 & position, const glm::vec3 & rotation,
+    const std::string & textureName) {
 
-    this->render(model, offset,
-      glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+    this->render(model, position, glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)),
-      glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName);
 
   }
 
-  void Renderer::render(Model& model, const glm::vec3& offset,
-    const glm::mat4x4& rotation,
-    const glm::vec4& colour,
-    const std::string& textureName,
-    const bool perspective) {
+  void Renderer::renderTuple(std::tuple< Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool> tuple) {
 
-    
+    Model *model = std::get<0>(tuple);
+      glm::vec3 offset = std::get<1>(tuple);
+      glm::mat4x4 rotation = std::get<2>(tuple);
+      glm::vec4 colour = std::get<3>(tuple);
+      std::string textureName = std::get<4>(tuple);
+      bool perspective = std::get<5>(tuple);
 
-#if defined(DEBUG) || defined(_DEBUG) || !defined (NDEBUG)
-    if (model.indexData.size() == 0 ||
-      model.indexDataByteSize == 0 ||
-      model.vertexData.size() == 0 ||
-      model.vertexDataByteSize == 0) {
-      throw std::runtime_error("Model to be rendered has some empty values!");
+    if (!perspective && !renderingDepthMap) {
+      glClear(GL_DEPTH_BUFFER_BIT);
     }
+
+    glUseProgram(shaderProgram);
+
+    GLint bufSize = 0;
+    glBindBuffer(GL_ARRAY_BUFFER, model->positionBufferObjectId);
+    glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufSize);
+
+    bool alreadyInGPU = bufSize > 0;
+
+    if (!alreadyInGPU) {
+      glGenBuffers(1, &model->indexBufferObjectId);
+      glGenBuffers(1, &model->positionBufferObjectId);
+      glGenBuffers(1, &model->normalsBufferObjectId);
+      glGenBuffers(1, &model->uvBufferObjectId);
+      glGenBuffers(1, &model->jointBufferObjectId);
+      glGenBuffers(1, &model->weightBufferObjectId);
+    }
+
+    // Vertices
+    glBindBuffer(GL_ARRAY_BUFFER, model->positionBufferObjectId);
+    if (!alreadyInGPU) {
+      glBufferData(GL_ARRAY_BUFFER,
+        model->vertexDataByteSize,
+        model->vertexData.data(),
+        GL_STATIC_DRAW);
+    }
+
+    // Vertex indices
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->indexBufferObjectId);
+    if (!alreadyInGPU) {
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+        model->indexDataByteSize,
+        model->indexData.data(),
+        GL_STATIC_DRAW);
+    }
+
+    glEnableVertexAttribArray(attrib_position);
+    glVertexAttribPointer(attrib_position, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+    // Normals
+
+    glBindBuffer(GL_ARRAY_BUFFER, model->normalsBufferObjectId);
+
+    if (!alreadyInGPU) {
+      if (model->normalsDataByteSize > 0) {
+        glBufferData(GL_ARRAY_BUFFER,
+          model->normalsDataByteSize,
+          model->normalsData.data(),
+          GL_STATIC_DRAW);
+      }
+      else {
+        // The normals buffer is created with 0 values if the corresponding
+        // data does not exist, otherwise there can be a EXC_BAD_ACCESS
+        // when running glDrawElements on MacOS.
+        size_t ns = (model->vertexDataByteSize / 4) * 3;
+        std::unique_ptr<char[]> data = std::make_unique<char[]>(ns);
+        glBufferData(GL_ARRAY_BUFFER,
+          ns,
+          &data[0],
+          GL_STATIC_DRAW);
+      }
+    }
+
+    glEnableVertexAttribArray(attrib_normal);
+    glVertexAttribPointer(attrib_normal, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    if (model->jointDataByteSize != 0) {
+      glBindBuffer(GL_ARRAY_BUFFER, model->jointBufferObjectId);
+      if (!alreadyInGPU) {
+        glBufferData(GL_ARRAY_BUFFER,
+          model->jointDataByteSize,
+          model->jointData.data(),
+          GL_STATIC_DRAW);
+      }
+
+      glEnableVertexAttribArray(attrib_joint);
+#ifndef SMALL3D_OPENGLES
+      glVertexAttribIPointer(attrib_joint, 4, GL_UNSIGNED_BYTE, 0, 0);
+#else
+      glVertexAttribPointer(attrib_joint, 4, GL_UNSIGNED_BYTE, GL_FALSE, 0, 0);
 #endif
 
-    if (!(colourMemIndex < objectsPerFrame && modelPlacementMemIndex < objectsPerFrame)) {
+    }
 
-      LOGDEBUG("Max objects per pass number(" + std::to_string(objectsPerFrame) +
-        ") exceeded. Increasing number...");
+    if (model->weightDataByteSize != 0) {
+      glBindBuffer(GL_ARRAY_BUFFER, model->weightBufferObjectId);
+      if (!alreadyInGPU) {
+        glBufferData(GL_ARRAY_BUFFER,
+          model->weightDataByteSize,
+          model->weightData.data(),
+          GL_STATIC_DRAW);
+      }
 
-      increaseObjectsPerFrame(objectsPerFrameInc);
-      return;
+      glEnableVertexAttribArray(attrib_weight);
+      glVertexAttribPointer(attrib_weight, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
     }
 
-    if (model.renderIndex < memoryResetModelRenderIndex) {
-      model.alreadyInGPU = false;
-    }
+    // Find the colour uniform
+    GLint colourUniform = glGetUniformLocation(shaderProgram, "modelColour");
 
-    if (!model.alreadyInGPU) {
-      model.renderIndex = nextModelRenderIndex;
-      ++nextModelRenderIndex;
-
-      // Send vertex data to GPU
-
-      if (!vh_create_buffer(&model.positionBuffer,
-        VK_BUFFER_USAGE_TRANSFER_DST_BIT |
-        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-        model.vertexDataByteSize,
-        &model.positionBufferMemory,
-        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
-        throw std::runtime_error("Failed to create vertex buffer.");
-      }
-
-      allocatedBufferMemory.insert(std::make_pair(model.positionBuffer, model.positionBufferMemory));
-
-      VkBuffer stagingBuffer;
-      VkDeviceMemory stagingBufferMemory;
-
-      if (vh_create_buffer(&stagingBuffer,
-        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        model.vertexDataByteSize,
-        &stagingBufferMemory,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
-        void* stagingData;
-        vkMapMemory(vh_logical_device, stagingBufferMemory, 0,
-          VK_WHOLE_SIZE,
-          0, &stagingData);
-        memcpy(stagingData, &model.vertexData[0], model.vertexDataByteSize);
-        vkUnmapMemory(vh_logical_device, stagingBufferMemory);
-
-        vh_copy_buffer(stagingBuffer, model.positionBuffer,
-          model.vertexDataByteSize);
-
-        vh_destroy_buffer(stagingBuffer, stagingBufferMemory);
-      }
-      else {
-        throw std::runtime_error("Failed to create the staging buffer"
-          " for vertices.");
-      }
-
-      // Send index data
-
-      if (!vh_create_buffer(&model.indexBuffer,
-        VK_BUFFER_USAGE_TRANSFER_DST_BIT |
-        VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-        model.indexDataByteSize,
-        &model.indexBufferMemory,
-        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
-        throw std::runtime_error("Failed to create index buffer.");
-      }
-
-      allocatedBufferMemory.insert(std::make_pair(model.indexBuffer, model.indexBufferMemory));
-
-      if (vh_create_buffer(&stagingBuffer,
-        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        model.indexDataByteSize,
-        &stagingBufferMemory,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
-        void* stagingData;
-        vkMapMemory(vh_logical_device, stagingBufferMemory, 0,
-          VK_WHOLE_SIZE,
-          0, &stagingData);
-        memcpy(stagingData, &model.indexData[0], model.indexDataByteSize);
-        vkUnmapMemory(vh_logical_device, stagingBufferMemory);
-
-        vh_copy_buffer(stagingBuffer, model.indexBuffer,
-          model.indexDataByteSize);
-
-        vh_destroy_buffer(stagingBuffer, stagingBufferMemory);
-      }
-      else {
-        throw std::runtime_error("Failed to create the staging"
-          " buffer for indices.");
-      }
-
-      // The following buffers are created with 0 values if the corresponding
-      // data does not exist, otherwise there can be issues, especially
-      // with MoltenVK
-
-      // Send normals data
-
-      auto nrByteSize = model.normalsDataByteSize == 0 ? (model.vertexDataByteSize / 4) * 3 : model.normalsDataByteSize;
-
-      if (!vh_create_buffer(&model.normalsBuffer,
-        VK_BUFFER_USAGE_TRANSFER_DST_BIT |
-        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-        nrByteSize,
-        &model.normalsBufferMemory,
-        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
-        throw std::runtime_error("Failed to create normals buffer.");
-      }
-
-      allocatedBufferMemory.insert(std::make_pair(model.normalsBuffer, model.normalsBufferMemory));
-
-      if (vh_create_buffer(&stagingBuffer,
-        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        nrByteSize,
-        &stagingBufferMemory,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
-        void* normalsData;
-        vkMapMemory(vh_logical_device, stagingBufferMemory, 0,
-          VK_WHOLE_SIZE,
-          0, &normalsData);
-
-
-        if (model.normalsDataByteSize != 0) {
-          memcpy(normalsData, &model.normalsData[0], model.normalsDataByteSize);
-        }
-        else {
-          memset(normalsData, 0, nrByteSize);
-        }
-
-        vkUnmapMemory(vh_logical_device, stagingBufferMemory);
-
-        vh_copy_buffer(stagingBuffer, model.normalsBuffer,
-          nrByteSize);
-
-        vh_destroy_buffer(stagingBuffer, stagingBufferMemory);
-      }
-      else {
-        throw std::runtime_error("Failed to create the staging"
-          " buffer for indices.");
-      }
-
-      auto uvByteSize = model.textureCoordsDataByteSize == 0 ? model.vertexDataByteSize / 2 : model.textureCoordsDataByteSize;
-
-      if (!vh_create_buffer(&model.uvBuffer,
-        VK_BUFFER_USAGE_TRANSFER_DST_BIT |
-        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-        uvByteSize,
-        &model.uvBufferMemory,
-        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
-        throw std::runtime_error("Failed to create uv buffer.");
-      }
-
-      allocatedBufferMemory.insert(std::make_pair(model.uvBuffer, model.uvBufferMemory));
-
-      if (vh_create_buffer(&stagingBuffer,
-        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        uvByteSize,
-        &stagingBufferMemory,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
-        void* uvData;
-        vkMapMemory(vh_logical_device, stagingBufferMemory, 0,
-          VK_WHOLE_SIZE,
-          0, &uvData);
-
-        if (model.textureCoordsDataByteSize != 0) {
-          memcpy(uvData, &model.textureCoordsData[0],
-            uvByteSize);
-        }
-        else {
-          memset(uvData, 0, uvByteSize);
-        }
-
-        vkUnmapMemory(vh_logical_device, stagingBufferMemory);
-
-        vh_copy_buffer(stagingBuffer, model.uvBuffer,
-          uvByteSize);
-
-        vh_destroy_buffer(stagingBuffer, stagingBufferMemory);
-      }
-      else {
-        throw std::runtime_error("Failed to create the staging"
-          " buffer for texture coordinates.");
-      }
-
-      auto jointByteSize = model.jointDataByteSize == 0 ? model.vertexDataByteSize / 4 :
-        model.jointDataByteSize;
-
-      if (!vh_create_buffer(&model.jointBuffer,
-        VK_BUFFER_USAGE_TRANSFER_DST_BIT |
-        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-        jointByteSize,
-        &model.jointBufferMemory,
-        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
-        throw std::runtime_error("Failed to create joint buffer.");
-      }
-
-      allocatedBufferMemory.insert(std::make_pair(model.jointBuffer, model.jointBufferMemory));
-
-      if (vh_create_buffer(&stagingBuffer,
-        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        jointByteSize,
-        &stagingBufferMemory,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
-        void* jointData;
-        vkMapMemory(vh_logical_device, stagingBufferMemory, 0,
-          VK_WHOLE_SIZE,
-          0, &jointData);
-
-        if (model.jointDataByteSize > 0) {
-          memcpy(jointData, &model.jointData[0],
-            model.jointDataByteSize);
-        }
-        else {
-          memset(jointData, 0, jointByteSize);
-        }
-        vkUnmapMemory(vh_logical_device, stagingBufferMemory);
-
-        vh_copy_buffer(stagingBuffer, model.jointBuffer,
-          jointByteSize);
-
-        vh_destroy_buffer(stagingBuffer, stagingBufferMemory);
-      }
-      else {
-        throw std::runtime_error("Failed to create the staging"
-          " buffer for joints.");
-      }
-
-      auto weightByteSize = model.weightDataByteSize == 0 ? model.vertexDataByteSize :
-        model.weightDataByteSize;
-      if (!vh_create_buffer(&model.weightBuffer,
-        VK_BUFFER_USAGE_TRANSFER_DST_BIT |
-        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-        weightByteSize,
-        &model.weightBufferMemory,
-        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
-        throw std::runtime_error("Failed to create weight buffer.");
-      }
-
-      allocatedBufferMemory.insert(std::make_pair(model.weightBuffer, model.weightBufferMemory));
-
-      if (vh_create_buffer(&stagingBuffer,
-        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        weightByteSize,
-        &stagingBufferMemory,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
-        void* weightData;
-        vkMapMemory(vh_logical_device, stagingBufferMemory, 0,
-          VK_WHOLE_SIZE,
-          0, &weightData);
-
-        if (model.weightDataByteSize > 0) {
-          memcpy(weightData, &model.weightData[0],
-            model.weightDataByteSize);
-        }
-        else {
-          memset(weightData, 0, weightByteSize);
-        }
-
-        vkUnmapMemory(vh_logical_device, stagingBufferMemory);
-
-        vh_copy_buffer(stagingBuffer, model.weightBuffer,
-          weightByteSize);
-
-        vh_destroy_buffer(stagingBuffer, stagingBufferMemory);
-      }
-      else {
-        throw std::runtime_error("Failed to create the staging"
-          " buffer for weights.");
-      }
-
-      model.alreadyInGPU = true;
-    }
-
-    std::string thisTextureName = "";
     if (textureName != "") {
+
       // "Disable" colour since there is a texture
-      setColourBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), colourMemIndex);
-      thisTextureName = textureName;
+      glUniform4fv(colourUniform, 1,
+        glm::value_ptr(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)));
+
+      bindTexture(textureName);
+
+      // UV Coordinates
+
+      glBindBuffer(GL_ARRAY_BUFFER, model->uvBufferObjectId);
+
+      if (!alreadyInGPU) {
+        glBufferData(GL_ARRAY_BUFFER,
+          model->textureCoordsDataByteSize,
+          model->textureCoordsData.data(),
+          GL_STATIC_DRAW);
+      }
+
+      glEnableVertexAttribArray(attrib_uv);
+      glVertexAttribPointer(attrib_uv, 2, GL_FLOAT, GL_FALSE, 0, 0);
     }
     else {
       // If there is no texture, use the given colour
-      setColourBuffer(colour, colourMemIndex);
-      thisTextureName = "blank";
+      glUniform4fv(colourUniform, 1, glm::value_ptr(colour));
+      bindTexture("blank");
     }
 
-    auto thisColourMemIndex = colourMemIndex;
-    ++colourMemIndex;
 
-    model.perspective = perspective;
+    glActiveTexture(GL_TEXTURE0 + 1);
 
-    transform(model, offset, rotation, modelPlacementMemIndex);
-    auto thisModelPlacementMemIndex = modelPlacementMemIndex;
-    ++modelPlacementMemIndex;
+    if(!renderingDepthMap) {
+#ifndef SMALL3D_OPENGLES
+      glBindTexture(GL_TEXTURE_2D, depthMapTexture);
+#else
+      glBindTexture(GL_TEXTURE_2D, depthRenderColourTexture);
+#endif
+    } else {
+      glBindTexture(GL_TEXTURE_2D, 0);
+    }
 
-    nextModelsToDraw.push_back(std::tuple<Model*, uint32_t, uint32_t, std::string>{&model, thisColourMemIndex, thisModelPlacementMemIndex, thisTextureName});
+    setWorldDetails(perspective);
 
+    transform(*model, offset, rotation);
+
+
+
+    // Draw
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glDrawElements(GL_TRIANGLES,
+      static_cast<GLsizei>(model->indexData.size()),
+      GL_UNSIGNED_INT, 0);
+
+    glDisableVertexAttribArray(attrib_position);
+    glDisableVertexAttribArray(attrib_normal);
+    if (model->jointDataByteSize != 0) glDisableVertexAttribArray(attrib_joint);
+    if (model->weightDataByteSize != 0) glDisableVertexAttribArray(attrib_weight);
+    if (textureName != "") glDisableVertexAttribArray(attrib_uv);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    glUseProgram(0);
   }
 
-  void Renderer::render(Model& model, const glm::vec3& position,
-    const glm::mat4x4& rotation,
-    const std::string& textureName) {
-    this->render(model, position, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
+  void Renderer::render(Model & model, const glm::vec3 & offset,
+    const glm::mat4x4 & rotation,
+    const glm::vec4 & colour,
+    const std::string & textureName,
+    const bool perspective) {
+
+    renderList.push_back(std::tuple<Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool>{&model, offset, rotation, colour, textureName, perspective});
+    
+  }
+
+  void Renderer::render(Model & model, const glm::vec3 & offset,
+    const glm::mat4x4 & rotation,
+    const std::string & textureName) {
+    this->render(model, offset, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName);
   }
 
-  void Renderer::render(Model& model, const std::string& textureName,
+  void Renderer::render(Model & model, const std::string & textureName,
     const bool perspective) {
-    this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-      glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
+    this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName, perspective);
   }
 
-  void Renderer::render(Model& model, const glm::vec4& colour,
+  void Renderer::render(Model & model, const glm::vec4 & colour,
     const bool perspective) {
-    this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-      colour, "", perspective);
+    this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), colour,
+      "", perspective);
   }
 
-  void Renderer::render(SceneObject& sceneObject,
-    const glm::vec4& colour) {
+  void Renderer::render(SceneObject & sceneObject,
+    const glm::vec4 & colour) {
     this->render(sceneObject.getModel(), sceneObject.position,
       sceneObject.transformation, colour, "");
   }
 
-  void Renderer::render(SceneObject& sceneObject,
-    const std::string& textureName) {
+  void Renderer::render(SceneObject & sceneObject,
+    const std::string & textureName) {
     this->render(sceneObject.getModel(), sceneObject.position,
       sceneObject.transformation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName);
   }
 
-  void Renderer::clearBuffers(Model& model) {
-    vkDeviceWaitIdle(vh_logical_device);
-    if (model.alreadyInGPU) {
-      vh_destroy_buffer(model.positionBuffer, model.positionBufferMemory);
-      allocatedBufferMemory.erase(model.positionBuffer);
-      vh_destroy_buffer(model.indexBuffer, model.indexBufferMemory);
-      allocatedBufferMemory.erase(model.indexBuffer);
-      vh_destroy_buffer(model.normalsBuffer, model.normalsBufferMemory);
-      allocatedBufferMemory.erase(model.normalsBuffer);
-      vh_destroy_buffer(model.uvBuffer, model.uvBufferMemory);
-      allocatedBufferMemory.erase(model.uvBuffer);
-      vh_destroy_buffer(model.jointBuffer, model.jointBufferMemory);
-      allocatedBufferMemory.erase(model.jointBuffer);
-      vh_destroy_buffer(model.weightBuffer, model.weightBufferMemory);
-      allocatedBufferMemory.erase(model.weightBuffer);
-      model.alreadyInGPU = false;
+  void Renderer::clearBuffers(Model & model) const {
+    if (model.positionBufferObjectId != 0) {
+      glDeleteBuffers(1, &model.positionBufferObjectId);
+      model.positionBufferObjectId = 0;
+    }
+
+    if (model.indexBufferObjectId != 0) {
+      glDeleteBuffers(1, &model.indexBufferObjectId);
+      model.indexBufferObjectId = 0;
+    }
+    if (model.normalsBufferObjectId != 0) {
+      glDeleteBuffers(1, &model.normalsBufferObjectId);
+      model.normalsBufferObjectId = 0;
+    }
+
+    if (model.uvBufferObjectId != 0) {
+      glDeleteBuffers(1, &model.uvBufferObjectId);
+      model.uvBufferObjectId = 0;
     }
   }
 
-  void Renderer::clearBuffers(SceneObject& sceneObject) {
-    for (auto& model : *sceneObject.models) {
+  void Renderer::clearBuffers(SceneObject & sceneObject) const {
+    for (auto model : *sceneObject.models) {
       clearBuffers(model);
     }
   }
 
-  void Renderer::setBackgroundColour(const glm::vec4& colour) {
-    backgroundColour = colour;
-    vh_clear_colour.float32[0] = colour.r;
-    vh_clear_colour.float32[1] = colour.g;
-    vh_clear_colour.float32[2] = colour.b;
-    vh_clear_colour.float32[3] = colour.a;
+  void Renderer::setBackgroundColour(const glm::vec4 & colour) {
+    clearColour = colour;
+    glClearColor(clearColour.x, clearColour.y, clearColour.z, clearColour.w);
+    
   }
 
   void Renderer::swapBuffers() {
 
-    uint32_t imageIndexNotNeeded = 0;
+    lightSpaceMatrix = glm::mat4x4(0);
 
-    vh_acquire_next_image(pipelineIndex,
-      &imageIndexNotNeeded, &currentFrameIndex);
+    if (shadowsActive) {
+      glViewport(0, 0, depthMapTextureWidth, depthMapTextureHeight);
+      glBindFramebuffer(GL_FRAMEBUFFER, depthMapFramebuffer);
+      glClear(GL_DEPTH_BUFFER_BIT);
 
-    vh_wait_gpu_cpu_fence(currentFrameIndex);
-    
-    drawNextModels(true);
+      // Store "normal" camera position and transformation (rotation)
+      auto tmpCamTr = cameraTransformation;
+      auto tmpCamPos = cameraPosition;
 
-    drawNextModels(false);
+      // Position camera at 0. Position (translation) will be stored with transformation.
+      cameraPosition = glm::vec3(0);
 
-    vh_present_next_image();
+      cameraTransformation = shadowCamTransformation;
+      
+      // Render in orthographic mode on depth map framebuffer, only the models that are to be drawn using perspective
+      // (Orthographically rendered models will not produce shadows as they are mostly used for messages and interface
+      // components)
+      renderingDepthMap = true;
+      //glCullFace(GL_FRONT); // Avoid peter panning (but creates worse quality shadows)
 
-    nextModelsToDraw.clear();
+      for (auto& tuple : renderList) {
+        if (std::get<5>(tuple)) {
+          auto tmpt = tuple;
+	  if (std::get<0>(tuple)->noShadow) {
+	    continue;
+	  }
+          std::get<5>(tmpt) = false;
+          renderTuple(tmpt);
+        }
+      }
+      renderingDepthMap = false;
+      glCullFace(GL_BACK); // Back to normal culling (after avoiding peter panning)
 
-    for (auto& model : garbageModels) {
-      clearBuffers(model);
-    }
-    garbageModels.clear();
+      // Store the light space camera transformation to be used during normal rendering to position shadows
+      lightSpaceMatrix = cameraTransformation;
+      
+      // Return to "normal" camera rotation and position
+      cameraTransformation = tmpCamTr;
+      cameraPosition = tmpCamPos;
 
-  }
-
-  void Renderer::setupVulkan() {
-
-
-#if defined(__ANDROID__)
-    const char* exts[2];
-
-    exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
-    exts[1] = VK_KHR_ANDROID_SURFACE_EXTENSION_NAME;
-
-    uint32_t num = 2;
-
-    LOGDEBUG("Creating Vulkan instance...");
-
-    if (!vh_create_instance(windowTitle.c_str(), exts, num)) {
-      throw std::runtime_error("Failed to create Vulkan instance.");
-    }
-
-    VkAndroidSurfaceCreateInfoKHR sci;
-    sci.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
-    sci.pNext = nullptr;
-    sci.flags = 0;
-    sci.window = small3d_android_app->window;
-    LOGDEBUG("Creating surface...");
-    if (vkCreateAndroidSurfaceKHR(vh_instance, &sci, nullptr, &vh_surface) !=
-      VK_SUCCESS) {
-      throw std::runtime_error("Could not create surface.");
-    }
-#elif defined(SMALL3D_IOS)
-
-    const char* exts[2];
-
-    exts[0] = VK_KHR_SURFACE_EXTENSION_NAME;
-    exts[1] = "VK_MVK_ios_surface"; //VK_MVK_IOS_SURFACE_EXTENSION_NAME;
-    //This is not found on iOS and returns an error.
-    //The VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR is used
-    //for the instance creation without any issue though..
-    //exts[2] = "VK_KHR_portability_enumeration";
-
-    uint32_t num = 2;
-
-    LOGDEBUG("Creating Vulkan instance...");
-
-    if (!vh_create_instance(windowTitle.c_str(), exts, num)) {
-      throw std::runtime_error("Failed to create Vulkan instance.");
+      glBindFramebuffer(GL_FRAMEBUFFER, origFramebuffer);
+      glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
+        static_cast<GLsizei>(realScreenHeight));
     }
 
-    if (!create_ios_surface(vh_instance, &vh_surface)) {
-      throw std::runtime_error("Could not create surface.");
+    for (auto& tuple : renderList) {
+      renderTuple(tuple);
     }
+    renderList.clear();
 
+#ifndef SMALL3D_OPENGLES
+
+    glfwSwapBuffers(window);
+    clearScreen();
 #else
-
-    uint32_t glfwExtensionCount = 0;
-    const char** glfwExtensions;
-
-    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-#if defined(__APPLE__)
-    glfwExtensions[glfwExtensionCount] =  "VK_KHR_portability_enumeration";
-    ++glfwExtensionCount;
+#ifdef __ANDROID__
+    bool b = eglSwapBuffers(eglDisplay, eglSurface);
+    if (!b) {
+      EGLint err = eglGetError();
+      if (err == EGL_BAD_SURFACE) {
+        // Recreate surface
+        createEGLSurface(realScreenWidth, realScreenHeight);
+        throw std::runtime_error("Bad surcace.");
+      }
+      else if (err == EGL_CONTEXT_LOST || err == EGL_BAD_CONTEXT) {
+        // Context has been lost!!
+        eglContextValid = false;
+        terminateEGL();
+        initEGLContext();
+      }
+      throw std::runtime_error("Context has been lost.");
+    }
+    clearScreen();
 #endif
-    std::string requiredExtensions = "GLFW required extensions (";
-    requiredExtensions += std::to_string(glfwExtensionCount) + ")";
-    LOGDEBUG(requiredExtensions);
-
-    for (uint32_t n = 0; n < glfwExtensionCount; n++) {
-      LOGDEBUG(glfwExtensions[n]);
-    }
-    printf("\n\r");
-
-    if (!vh_create_instance(windowTitle.c_str(), glfwExtensions,
-      glfwExtensionCount)) {
-      throw std::runtime_error("Failed to create Vulkan instance.");
-    }
-
-    if (glfwCreateWindowSurface(vh_instance, window, NULL, &vh_surface) !=
-      VK_SUCCESS) {
-      throw std::runtime_error("Could not create surface.");
-    }
+#ifdef SMALL3D_IOS
+   // throw std::runtime_error("Swapping buffers must be handled in the ViewController on //iOS - OpenGL ES.");
 #endif
-
-    if (!vh_init(MAX_FRAMES_PREPARED)) {
-      throw std::runtime_error("Could not initialise Vulkan.");
-    }
-
-    if (realScreenWidth == 0) realScreenWidth = 1;
-    if (realScreenHeight == 0) realScreenHeight = 1;
-    vh_set_width_height(realScreenWidth, realScreenHeight);
-
-    if (!vh_create_sync_objects()) {
-      throw std::runtime_error("Failed to create sync objects.");
-    }
-
-    LOGDEBUG("Creating swapchain...");
-
-    if (!vh_create_swapchain()) {
-      throw std::runtime_error("Failed to create swapchain.");
-    }
-
-    LOGDEBUG("Creating descriptor pool...");
-
-    createDescriptorPool();
-    allocateDescriptorSets();
-
-    // Attention: Shader with joints does not compile on some Android GPUs
-    // like Adreno (Qualcomm)
-
-    std::string vertexShaderPath = this->shadersPath +
-      "perspectiveMatrixLightedShader.spv";
-
-    std::string fragmentShaderPath = this->shadersPath +
-      "textureShader.spv";
-
-    if (!vh_create_sampler(&textureSampler, VK_SAMPLER_ADDRESS_MODE_REPEAT)) {
-      throw std::runtime_error("Failed to create the texture sampler!");
-    }
-
-    if (!vh_create_sampler(&shadowMapSampler, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE)) {
-      throw std::runtime_error("Failed to create the shadow map sampler!");
-    }
-
-    if (!vh_create_pipeline(vertexShaderPath.c_str(), fragmentShaderPath.c_str(),
-      setInputStateCallback, setPipelineLayoutCallback,
-      &pipelineIndex)) {
-      throw std::runtime_error("Could not create the Vulkan pipeline!");
-    }
-
-    allocateDynamicBuffers();
-
-    // Re-generate textures if this is a re-creation of the pipeline
-    for (auto& t : textures) {
-      generateTexture(t.first, nullptr, 0, 0, false);
-    }
-
-    // If this is a re-creation of the pipeline, models have to be put
-    // back into memory.
-    memoryResetModelRenderIndex = nextModelRenderIndex;
-    currentFrameIndex = 0;
-
-    vh_clear_colour.float32[0] = backgroundColour.r;
-    vh_clear_colour.float32[1] = backgroundColour.g;
-    vh_clear_colour.float32[2] = backgroundColour.b;
-    vh_clear_colour.float32[3] = backgroundColour.a;
+#endif
+    
   }
 
-  void Renderer::destroyVulkan() {
+  /**
+   * Convert error enum returned from OpenGL to a readable string error message.
+   * @param error The error code returned from OpenGL
+   */
+  std::string openglErrorToString(GLenum error) {
 
-    vkDeviceWaitIdle(vh_logical_device);
-    
-    for (uint32_t idx = 0; idx < MAX_FRAMES_PREPARED; ++idx) {
-      vh_destroy_draw_command_buffer(&commandBuffer[idx]);
-      commandBuffer[idx] = VK_NULL_HANDLE;
+    std::string errorString;
+
+    switch (error) {
+    case GL_NO_ERROR:
+      errorString = "GL_NO_ERROR: No error has been recorded. "
+        "The value of this symbolic constant is guaranteed to be 0.";
+      break;
+    case GL_INVALID_ENUM:
+      errorString = "GL_INVALID_ENUM: An unacceptable value is specified for "
+        "an enumerated argument. The offending command is ignored and has no "
+        "other side effect than to set the error flag.";
+      break;
+    case GL_INVALID_VALUE:
+      errorString = "GL_INVALID_VALUE: A numeric argument is out of range. "
+        "The offending command is ignored and has no other side effect than "
+        "to set the error flag.";
+      break;
+    case GL_INVALID_OPERATION:
+      errorString = "GL_INVALID_OPERATION: The specified operation is not "
+        "allowed in the current state. The offending command is ignored "
+        "and has no other side effect than to set the error flag.";
+      break;
+    case GL_INVALID_FRAMEBUFFER_OPERATION:
+      errorString = "GL_INVALID_FRAMEBUFFER_OPERATION: The framebuffer "
+        "object is not complete. The offending command is ignored and has "
+        "no other side effect than to set the error flag.";
+      break;
+    case GL_OUT_OF_MEMORY:
+      errorString = "GL_OUT_OF_MEMORY: There is not enough memory left to "
+        "execute the command. The state of the GL is undefined, except for "
+        "the state of the error flags, after this error is recorded.";
+      break;
+#ifndef SMALL3D_OPENGLES
+    case GL_STACK_UNDERFLOW:
+      errorString = "GL_STACK_UNDERFLOW: An attempt has been made to perform "
+        "an operation that would cause an internal stack to underflow.";
+      break;
+    case GL_STACK_OVERFLOW:
+      errorString = "GL_STACK_OVERFLOW: An attempt has been made to perform "
+        "an operation that would cause an internal stack to overflow.";
+      break;
+#endif
+    default:
+      errorString = "Unknown error";
+      break;
     }
-
-    LOGDEBUG("Destroying buffers...");
-
-    for (auto& b : allocatedBufferMemory) {
-      vh_destroy_buffer(b.first, b.second);
-    }
-
-    allocatedBufferMemory.clear();
-
-    nextModelsToDraw.clear();
-
-    garbageModels.clear();
-
-    for (auto& t : textures) {
-      LOGDEBUG("Deleting texture " + t.first);
-      deleteImageFromGPU(t.second);
-    }
-
-    vh_destroy_pipeline(pipelineIndex);
-
-    vkDestroySampler(vh_logical_device, textureSampler, NULL);
-
-    vkDestroySampler(vh_logical_device, shadowMapSampler, NULL);
-
-    destroyDescriptorSets();
-
-    destroyDescriptorPool();
-
-    destroyDynamicBuffers();
-
-    vh_destroy_swapchain();
-
-    vh_destroy_sync_objects();
-
-    LOGDEBUG("Destroying surface.\n\r");
-
-    vkDestroySurfaceKHR(vh_instance, vh_surface, NULL);
-
-    vh_shutdown();
-
-    pipelineIndex = 100;
+    return errorString;
   }
 
 }
+
