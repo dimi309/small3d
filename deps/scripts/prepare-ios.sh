@@ -1,3 +1,5 @@
+set -e
+
 cd ..
 
 if [ -z $VULKAN_SDK ]
@@ -37,7 +39,7 @@ mkdir lib
 
 unzip glm-0.9.9.8.zip
 cp -rf glm/glm include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 rm -rf glm
 
 if [ $1 = "ios" ]
@@ -75,24 +77,24 @@ tar xvf zlib-1.2.11-noexample.tar.gz
 cd zlib-1.2.11
 ./configure
 make
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp zlib.h ../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp zconf.h ../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp libz.a ../lib/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cd ../
 rm -rf zlib-1.2.11
 
 tar xvf bzip2-1.0.8-use-env.tar.gz
 cd bzip2-1.0.8
 make bzip2
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp bzlib.h ../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp libbz2.a ../lib/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cd ..
 rm -rf bzip2-1.0.8
 
@@ -122,11 +124,11 @@ fi
 export CFLAGS=-isystem\ $VULKAN_SDK/../MoltenVK/include
 
 cp -rf $VULKAN_SDK/../MoltenVK/include/* include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp ios/interop.h include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp ios/interop.m lib/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 
 
 if [ $1 = "ios" ]
@@ -146,11 +148,11 @@ if [ "$3" != "opengles" ]; then
     cd build
     cmake .. -DVH_BUILD_TESTS=OFF $CMAKE_DEFINITIONS
     cmake --build . --config $2
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cp -rf include ../../
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cp lib/$2/libvulkan_helper.a ../../lib/
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cd ..
     rm -rf build
     cd ..
@@ -164,13 +166,13 @@ cd build
 # "PNG_ARM_NEON_FILE undefined: no support for run-time ARM NEON checks
 cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DPNG_ARM_NEON=off $CMAKE_DEFINITIONS
 cmake --build . --config $2
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp ../*.h ../../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp pnglibconf.h ../../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp $2-$SDK/libpng.a ../../lib/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cd ../../
 rm -rf libpng-1.6.37
 
@@ -180,13 +182,13 @@ mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTING=OFF $CMAKE_DEFINITIONS
 cmake --build . --config $2
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp -rf ../include/ogg ../../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp include/ogg/config_types.h ../../include/ogg/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp $2-$SDK/libogg.a ../../lib/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cd ../../
 rm -rf libogg-1.3.5
 
@@ -196,11 +198,11 @@ mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ -DOGG_INCLUDE_DIR=../../include -DOGG_LIBRARY=../../lib/libogg.a $CMAKE_DEFINITIONS
 cmake --build . --config $2
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp -rf ../include/vorbis ../../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp lib/$2-$SDK/*.a ../../lib/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cd ../../
 rm -rf libvorbis-1.3.7
 
@@ -212,16 +214,16 @@ mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS -DFT_DISABLE_ZLIB=ON
 cmake --build . --config $2
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp -rf ../include/* ../../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 
 if [ "$2" == "Release" ]; then
     cp $2-$SDK/libfreetype.a ../../lib/
 else
     cp $2-$SDK/libfreetyped.a ../../lib/libfreetype.a
 fi
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 
 cd ../..
 rm -rf freetype-2.12.1

@@ -1,3 +1,5 @@
+set -e
+
 cd ..
 
 if [ "$1" != "Debug" ] && [ "$1" != "Release" ]; then
@@ -20,17 +22,17 @@ if [ $(uname) == 'Linux' ]; then
 	sudo apt update
 	# Without Install-Recommends libvulkan-dev does not get installed on travis-ci...
 	sudo apt install -y -o APT::Install-Recommends=1 libgl1-mesa-dev libxinerama-dev glslang-tools libxcursor-dev libxi-dev libxrandr-dev libasound2-dev
-	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+	
 	if [ "$2" != "opengl" ]; then
 	    sudo apt install -y -o APT::Install-Recommends=1 libvulkan-dev
-	    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+	    
 	fi
     elif type -p "dnf" > /dev/null ; then
 	sudo dnf install -y mesa-libGL-devel
-	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+	
     elif type -p "yum" > /dev/null ; then
 	sudo yum install -y mesa-libGL-devel
-	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+	
     else
 	echo "No package manager found! Cannot install preprequisites."
 	exit 1
@@ -49,11 +51,11 @@ mkdir build
 cd build
 cmake .. -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF $CMAKE_DEFINITIONS
 cmake --build .
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp -rf ../include/GLFW ../../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp src/libglfw3.a ../../lib/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cd ../..
 rm -rf glfw-3.3.8
 
@@ -63,11 +65,11 @@ if [ "$2" == "opengl" ]; then
     cd glew-2.2.0
     cmake build/cmake -DBUILD_UTILS=OFF
     cmake --build .
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cp -rf include/GL ../include/
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cp lib/libGLEW.a ../lib/
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cd ..
     rm -rf glew-2.2.0
 else
@@ -76,11 +78,11 @@ else
     cd build
     cmake .. -DVH_BUILD_TESTS=OFF
     cmake --build .
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cp -rf include ../../
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cp lib/libvulkan_helper.a ../../lib/libvulkan_helper.a
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cd ..
     rm -rf build
     cd ..
@@ -88,7 +90,7 @@ fi
 
 unzip glm-0.9.9.8.zip
 cp -rf glm/glm include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 rm -rf glm
 
 tar xvf zlib-1.2.11-noexample.tar.gz
@@ -97,13 +99,13 @@ mkdir build
 cd build
 cmake .. $CMAKE_DEFINITIONS
 cmake --build .
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp ../zlib.h ../../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp zconf.h ../../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp libz.a ../../lib/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cd ../../
 rm -rf zlib-1.2.11
 
@@ -115,13 +117,13 @@ cd build
 # "PNG_ARM_NEON_FILE undefined: no support for run-time ARM NEON checks
 cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DPNG_ARM_NEON=off -DZLIB_LIBRARY=$(pwd)/../../lib/libza -DZLIB_INCLUDE_DIR=$(pwd)/../../include $CMAKE_DEFINITIONS
 cmake --build .
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp ../*.h ../../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp pnglibconf.h ../../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp libpng.a ../../lib/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cd ../../
 rm -rf libpng-1.6.37
 
@@ -131,13 +133,13 @@ mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF $CMAKE_DEFINITIONS
 cmake --build .
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp -rf ../include/ogg ../../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp include/ogg/config_types.h ../../include/ogg/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp libogg.a ../../lib/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cd ../../
 rm -rf libogg-1.3.5
 
@@ -147,11 +149,11 @@ mkdir build
 cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS
 cmake --build .
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp -rf ../include/vorbis ../../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp lib/*.a ../../lib/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cd ../../
 rm -rf libvorbis-1.3.7
 
@@ -161,22 +163,22 @@ mkdir build1
 cd build1
 cmake .. $CMAKE_DEFINITIONS $CMAKE_PORTAUDIO_DEFINITIONS
 cmake --build .
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp ../include/* ../../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp libportaudio.a ../../lib/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cd ../../
 rm -rf portaudio
 
 tar xvf bzip2-1.0.8-use-env.tar.gz
 cd bzip2-1.0.8
 make
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp bzlib.h ../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp libbz2.a ../lib/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cd ..
 rm -rf bzip2-1.0.8
 
@@ -188,15 +190,15 @@ cd build
 cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_DISABLE_FIND_PACKAGE_BrotliDec=TRUE -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINITIONS \
       -DZLIB_LIBRARY=../../lib/zlib.a -DZLIB_INCLUDE_DIR=../../include -DFT_DISABLE_ZLIB=ON -DFT_DISABLE_HARFBUZZ=ON
 cmake --build .
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cp -rf ../include/* ../../include/
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 if [ "$1" == "Release" ]; then
     cp libfreetype.a ../../lib/
 else
     cp libfreetyped.a ../../lib/libfreetype.a
 fi
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
 cd ../..
 rm -rf freetype-2.12.1
 

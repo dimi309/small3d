@@ -4,6 +4,8 @@
 # For OpenGL ES builds, an NDK version that works well is 22.1.7171670. There
 # can be some glitches on newer versions.
 
+set -e
+
 cd ..
 
 if [ "$1" != "Debug" ] && [ "$1" != "Release" ]; then
@@ -44,11 +46,11 @@ do
 	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
 	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
 	cmake --build .
-	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+	
 	cp -rf include ../../
-	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+	
 	cp lib/libvulkan_helper.a ../../lib/$androidabi
-	rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+	
 	cd ..
 	rm -rf build
 	cd ..
@@ -62,13 +64,13 @@ do
 	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
 	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
     cmake --build .
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cp ../*.h ../../include/
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cp pnglibconf.h ../../include/
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cp libpng.a ../../lib/$androidabi
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cd ../../
     rm -rf libpng-1.6.37
 
@@ -80,13 +82,13 @@ do
 	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
 	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
     cmake --build .
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cp -rf ../include/ogg ../../include/
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cp include/ogg/config_types.h ../../include/ogg/
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cp libogg.a ../../lib/$androidabi
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cd ../../
     rm -rf libogg-1.3.5
 
@@ -99,11 +101,11 @@ do
 	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
 	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS
     cmake --build .
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cp -rf ../include/vorbis ../../include/
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cp lib/*.a ../../lib/$androidabi
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cd ../../
     rm -rf libvorbis-1.3.7
 
@@ -115,16 +117,16 @@ do
 	  -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_PLATFORM=$platformstr \
 	  -DANDROID_ABI=$androidabi $CMAKE_DEFINITIONS -DFT_DISABLE_ZLIB=ON
     cmake --build .
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     cp -rf ../include/* ../../include/
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     
     if [ "$1" == "Release" ]; then
 	cp libfreetype.a ../../lib/$androidabi
     else
 	cp libfreetyped.a ../../lib/$androidabi/libfreetype.a
     fi
-    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+    
     
     cd ../..
     rm -rf freetype-2.12.1
