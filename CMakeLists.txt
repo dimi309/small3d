@@ -47,8 +47,6 @@ if(SMALL3D_OPENGL)
     file(COPY "opengl/resources/shaders" DESTINATION "./bin/resources")
     file(COPY "opengl/resources/shaders" DESTINATION ".")
   endif()
-elseif(DEFINED ANDROID_PLATFORM)
-  file(COPY "src/small3d_android.h" DESTINATION "./include")
 endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
