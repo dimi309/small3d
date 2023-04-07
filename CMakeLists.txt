@@ -28,6 +28,7 @@ file(COPY "include" DESTINATION ".")
 
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
   file(COPY "resources" DESTINATION "./bin")
+  file(COPY "resources/shaders" DESTINATION ".")
 endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
