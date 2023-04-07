@@ -4,8 +4,7 @@
 
 [[Source Code]](https://github.com/dimi309/small3d) [[API Documentation]](https://dimi309.github.io/small3d)
 
-Minimalistic, open source library for making 3D games in C++, with
-Vulkan, OpenGL and OpenGL ES support.
+Minimalistic, open source library for making 3D games in C++
 
 ## Sample games
 
@@ -46,23 +45,13 @@ The following need to be installed, with the relevant environment variables
 and tools accessible via the command line:
 
 - Some compiler, gcc, Visual Studio, clang, etc.
-- Vulkan SDK (if it will be used)
 - 7zip (only on Windows)
 - CMake
 
 ## Building and deploying
 
-If you are going to use vulkan, ensure that the vulkan_helper submodule has been
-retrieved:
-	
-	git submodule init
-	git submodule update
-	
-After executing the commands above, the `vulkan_helper` directory should contain 
-the source code of the vulkan_helper library.
-
-Back to the  main repository, run the build script which is suitable to your platform 
-from the `scripts` directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`).
+Run the build script which is suitable to your platform from the `scripts` 
+directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`).
 	
 Then, the unit tests can be run via the `unittests` binary from `build/bin`.
 
@@ -90,13 +79,11 @@ The small3d [conan](https://conan.io) package is now provided in a [separate rep
 
 ## small3d on mobile
 
-small3d runs on mobile devices using Vulkan and OpenGL ES. On Android, OpenGL ES 
-is recommended because Vulkan still has some issues on quite a few devices.
+small3d runs on mobile devices using OpenGL ES.
 
 Concerning iOS, it has to be mentioned that OpenGL ES has been deprecated by
 Apple. It is not a bad idea to use it though. It still works and it will run
-on older 32-bit devices for which the Vulkan build will not. Other than that, 
-small3d runs fine with Vulkan on 64-bit iOS devices (using MoltenVK).
+on older 32-bit devices for which the Vulkan build will notfor example.
 
 You can build small3d for mobile platforms by executing either `build-android` 
 or  `build-ios` from the `scripts` directory. Then you can use the test projects 
@@ -108,11 +95,10 @@ functionalities and I/O, on mobile I access the native infrastructure directly.
 
 ## Referenced libraries
 
-All small3d dependencies, apart from the Vulkan SDK, are distributed together 
-with its source code. They can be built by executing a single script 
-(see "Building", above).
+All small3d dependencies are distributed together with its source code. 
+They can be built by executing a single script (see "Building", above).
 
-- Vulkan SDK, or glew if building with OpenGL for PC
+- glew if building for PC
 - glfw 
 - glm 
 - png
