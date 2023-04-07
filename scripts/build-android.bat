@@ -59,6 +59,7 @@ for /r %%a in (*.*) do (
 echo Copying %%a to build\shaders
 copy /y "%%a" ..\..\build\shaders\
 if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
+)
 cd ..\..
 
 if exist android\app\src\main\assets\resources (
@@ -71,7 +72,6 @@ if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 )
 )
 cd ..\..
-)
 
 echo Copying small3d_android.h to build\include
 copy /y src\small3d_android.h build\include\
