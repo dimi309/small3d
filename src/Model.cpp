@@ -92,5 +92,3 @@ namespace small3d {
   }
 
 }
-
-

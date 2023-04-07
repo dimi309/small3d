@@ -12,7 +12,6 @@ if(IOS)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -x objective-c -fmodules")
 endif()
 
-add_compile_definitions(SMALL3D_OPENGL)
 if(DEFINED ANDROID_PLATFORM OR IOS)
   add_compile_definitions(SMALL3D_OPENGLES)
 endif()

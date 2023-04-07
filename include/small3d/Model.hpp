@@ -11,10 +11,6 @@
 #include <string>
 #include <vector>
 
-#ifndef SMALL3D_OPENGL
-#include <vulkan/vulkan.h>
-#endif
-
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -35,34 +31,12 @@ namespace small3d {
 
   private:
 
-#ifndef SMALL3D_OPENGL
-    bool alreadyInGPU = false;
-    VkBuffer positionBuffer = 0;
-    VkDeviceMemory positionBufferMemory = 0;
-    VkBuffer indexBuffer = 0;
-    VkDeviceMemory indexBufferMemory = 0;
-    VkBuffer normalsBuffer = 0;
-    VkDeviceMemory normalsBufferMemory = 0;
-    VkBuffer uvBuffer = 0;
-    VkDeviceMemory uvBufferMemory = 0;
-    VkBuffer jointBuffer = 0;
-    VkDeviceMemory jointBufferMemory = 0;
-    VkBuffer weightBuffer = 0;
-    VkDeviceMemory weightBufferMemory = 0;
-
-    bool perspective = false;
-
-    // Index number used to keep track of whether or not the model has been
-    // rendered after a reinitialisation of GPU memory.
-    uint32_t renderIndex = 0;
-#else
     uint32_t positionBufferObjectId = 0;
     uint32_t indexBufferObjectId = 0;
     uint32_t normalsBufferObjectId = 0;
     uint32_t uvBufferObjectId = 0;
     uint32_t jointBufferObjectId = 0;
     uint32_t weightBufferObjectId = 0;
-#endif
 
     uint64_t numPoses = 0;
     uint32_t currentPose = 0;
