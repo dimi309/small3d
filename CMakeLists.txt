@@ -18,6 +18,11 @@ endif()
 
 file(COPY "deps/include" DESTINATION ".")
 
+
+if(DEFINED ANDROID_PLATFORM)
+  file(COPY "src/small3d_android.h" DESTINATION "./include")
+endif()
+
 file(COPY "deps/lib" DESTINATION ".")
 
 if(MSVC)
