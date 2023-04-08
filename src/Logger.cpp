@@ -89,7 +89,7 @@ namespace small3d {
     }
 
   void initLogger() {
-    if (!logger) logger = std::shared_ptr<Logger>(new Logger());
+    if (!logger) logger = std::make_shared<Logger>();
   }
 
   void deleteLogger() {

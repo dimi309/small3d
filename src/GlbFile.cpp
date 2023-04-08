@@ -73,7 +73,7 @@ namespace small3d {
     bool inNumber = false;
     bool inTrueOrFalse = false;
 
-    jsonRootToken = std::shared_ptr<GlbFile::Token>(new GlbFile::Token);
+    jsonRootToken = std::make_shared<GlbFile::Token>();
     jsonRootToken->next = nullptr;
     jsonRootToken->valueType = GlbFile::ValueType::charstring;
     jsonRootToken->value = "root";
@@ -170,7 +170,7 @@ namespace small3d {
   }
 
   std::shared_ptr<GlbFile::Token> GlbFile::createToken(GlbFile::ValueType valueType, const std::string& value) {
-    std::shared_ptr<GlbFile::Token> newToken(new GlbFile::Token);
+    auto newToken = std::make_shared<GlbFile::Token>();
     newToken->next = nullptr;
     newToken->name = "";
     newToken->valueType = valueType;
@@ -898,7 +898,7 @@ namespace small3d {
                 auto imageData = getBufferByView(std::stoi(getChildToken(imageToken, "bufferView")->value));
 
                 try {
-                  model.defaultTextureImage = std::shared_ptr<Image>(new Image(imageData));
+                  model.defaultTextureImage = std::make_shared<Image>(imageData);
                 }
                 catch (std::runtime_error& e) {
                   if (e.what() == Image::NOTRGBA) {
