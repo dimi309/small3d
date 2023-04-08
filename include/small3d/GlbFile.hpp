@@ -29,12 +29,6 @@ namespace small3d {
    */
   class GlbFile : public File {
 
-  public:
-    /**
-     * @brief String saying that what comes before it is not a .glb file
-     */
-    static const std::string NOTGLTF;
-
   private:
 
     enum class ValueType { number = 0, charstring, character, MARKER };

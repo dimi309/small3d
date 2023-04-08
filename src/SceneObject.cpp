@@ -7,7 +7,6 @@
  */
 
 #include "SceneObject.hpp"
-#include "WavefrontFile.hpp"
 #include "GlbFile.hpp"
 #include <exception>
 
@@ -23,61 +22,9 @@ namespace small3d {
     currentFrame = 0;
     this->numFrames = 1;
     LOGDEBUG("Trying to load " + modelPath + " as glTF.");
-    try {
-      Model model1(GlbFile(modelPath), modelMeshName);
-      models->push_back(model1);
-      boundingBoxSet = std::make_shared<BoundingBoxSet>(model1.vertexData, model1.getOriginalScale(), boundingBoxSubdivisions);
-    }
-    catch (std::runtime_error& e) {
-      if (std::string(e.what()).find(GlbFile::NOTGLTF)) {
-        LOGDEBUG("Trying to load " + modelPath + " as Wavefront.");
-        try {
-          Model model1(WavefrontFile(modelPath), modelMeshName);
-          models->push_back(model1);
-          boundingBoxSet = std::make_shared<BoundingBoxSet>(model1.vertexData, model1.getOriginalScale(), boundingBoxSubdivisions);
-        }
-        catch (std::runtime_error& e2) {
-          LOGERROR(e2.what());
-          throw std::runtime_error("Failed to open " + modelPath + " both as .glb file and as .obj file.");
-        }
-      }
-      else throw e;
-    }
-  }
-
-  SceneObject::SceneObject(const std::string& name, const std::string& modelPath,
-    const int numFrames,
-    const int startFrameIndex,
-    const uint32_t boundingBoxSubdivisions) :
-    position(0, 0, 0) {
-
-    wavefront = true;
-
-    initLogger();
-    this->name = name;
-    animating = false;
-    framesWaited = 0;
-    frameDelay = 1;
-    currentFrame = 0;
-    this->numFrames = numFrames;
-
-    if (numFrames > 1) {
-      LOGINFO("Loading " + name + " animated model (this may take a while):");
-      for (int idx = 0; idx < numFrames; ++idx) {
-        std::stringstream lss;
-        lss << "Frame " << idx + 1 << " of " << numFrames << "...";
-        LOGINFO(lss.str());
-        std::stringstream ss;
-        ss << std::setfill('0') << std::setw(6) << idx + startFrameIndex;
-        std::string frameNum = ss.str();
-        Model model1(WavefrontFile(modelPath + "_" + frameNum + ".obj"), "");
-        models->push_back(model1);
-      }
-    }
-    else {
-      models->push_back(Model(WavefrontFile(modelPath), ""));
-    }
-    boundingBoxSet = std::make_shared<BoundingBoxSet>(getModel().vertexData, getModel().getOriginalScale(), boundingBoxSubdivisions);
+    Model model1(GlbFile(modelPath), modelMeshName);
+    models->push_back(model1);
+    boundingBoxSet = std::make_shared<BoundingBoxSet>(model1.vertexData, model1.getOriginalScale(), boundingBoxSubdivisions);
   }
 
   SceneObject::SceneObject(const std::string& name, const Model& model, const uint32_t boundingBoxSubdivisions) {

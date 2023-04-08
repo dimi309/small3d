@@ -16,6 +16,10 @@ v1.802 (still open)
   are officially deprecated. So I am pulling the plug on Vulkan, at least
   for now. This will also decrease the complexity of small3d, allowing for
   more efficient maintenance and evolution in directions that matter more.
+  
+- [BREAKING] Dropped wavefront (.obj) file support. Wavefront is an old format 
+  without animation. Since small3d can parse gltf (.glb) files, there is no 
+  point in spending time to also maintain the wavefront parser / loader.
 
 v1.801 2023-01-21
 

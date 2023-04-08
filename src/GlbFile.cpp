@@ -24,8 +24,6 @@ struct membuf : std::streambuf
 
 namespace small3d {
 
-  const std::string GlbFile::NOTGLTF = " is not a glTF v2 .glb file!";
-
   std::shared_ptr<GlbFile::Token> GlbFile::getToken(const std::string& name, size_t index) {
     std::shared_ptr<GlbFile::Token> foundToken = nullptr;
 
@@ -301,7 +299,7 @@ namespace small3d {
       fileOnDisk.close();
 #endif
       LOGDEBUG("Magic number found in .glb: " + magic);
-      throw std::runtime_error(fullPath + NOTGLTF);
+      throw std::runtime_error("File " + fullPath + " cannot be read as glb.");
     }
 
     fileOnDisk.read(reinterpret_cast<char*>(&length), 4);

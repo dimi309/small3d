@@ -11,7 +11,6 @@
 #include <stdexcept>
 #include <glm/gtc/matrix_transform.hpp>
 #include "BasePath.hpp"
-#include "WavefrontFile.hpp"
 
 #if defined(__ANDROID__)
 #include <streambuf>
