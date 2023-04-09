@@ -18,7 +18,7 @@ https://www.gamedev.net/tutorials/programming/engines-and-middleware/small3d-tut
 
 ## Features
 
-- 3D models loaded from glTF (glb) or Wavefront (obj) files
+- 3D models loaded from glTF (glb) files
 - Other customised meshes and shapes
 - Animation
 - Texture mapping
