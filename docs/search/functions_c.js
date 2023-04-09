@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['sceneobject_209',['SceneObject',['../classsmall3d_1_1_scene_object.html#a20fcbd437ff9d232e9a59b38152348e5',1,'small3d::SceneObject::SceneObject(const std::string &amp;name, const std::string &amp;modelPath, const std::string &amp;modelMeshName, const uint32_t boundingBoxSubdivisions=0)'],['../classsmall3d_1_1_scene_object.html#ad11ac06b60114c669aae289e88825c13',1,'small3d::SceneObject::SceneObject(const std::string &amp;name, const Model &amp;model, const uint32_t boundingBoxSubdivisions=0)']]],
+  ['sceneobject_209',['SceneObject',['../classsmall3d_1_1_scene_object.html#a7ffc0e811e0b98e67667d56881828deb',1,'small3d::SceneObject::SceneObject(const std::string &amp;name, const std::string &amp;modelPath, const std::string &amp;modelMeshName=&quot;&quot;, const uint32_t boundingBoxSubdivisions=0)'],['../classsmall3d_1_1_scene_object.html#ad11ac06b60114c669aae289e88825c13',1,'small3d::SceneObject::SceneObject(const std::string &amp;name, const Model &amp;model, const uint32_t boundingBoxSubdivisions=0)']]],
   ['setbackgroundcolour_210',['setBackgroundColour',['../classsmall3d_1_1_renderer.html#ab68576dfc33356d43722e83fadec55f4',1,'small3d::Renderer']]],
   ['setcamerarotation_211',['setCameraRotation',['../classsmall3d_1_1_renderer.html#a431380a4b28abb9a14c02c4535e49a1b',1,'small3d::Renderer']]],
   ['setcameratransformation_212',['setCameraTransformation',['../classsmall3d_1_1_renderer.html#ab895333eea762ecfab8fb2e902b2862e',1,'small3d::Renderer']]],
