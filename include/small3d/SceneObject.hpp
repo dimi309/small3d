@@ -65,7 +65,7 @@ namespace small3d
      *                        at the expense of performance.
      */
     SceneObject(const std::string& name, const std::string& modelPath,
-      const std::string& modelMeshName, const uint32_t boundingBoxSubdivisions = 0);
+      const std::string& modelMeshName = "", const uint32_t boundingBoxSubdivisions = 0);
 
     /**
      * @brief Model-based constructor

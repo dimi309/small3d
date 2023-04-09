@@ -176,7 +176,7 @@ namespace small3d {
      * @param meshName The name of the mesh to load
      * 
      */
-    void load(Model& model, const std::string& meshName);
+    void load(Model& model, const std::string& meshName = "");
 
     /**
      * @brief Get a list of the names of the meshes contained in the
