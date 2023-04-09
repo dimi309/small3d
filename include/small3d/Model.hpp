@@ -188,7 +188,7 @@ namespace small3d {
      * @param meshName The name of the model mesh in the file
      *
      */
-    Model(File& file, const std::string& meshName);
+    Model(File& file, const std::string& meshName = "");
 
     /**
      * @brief Constructor (rvalue file - helps for declaring the file on the fly
@@ -198,7 +198,7 @@ namespace small3d {
      * @param meshName The name of the model mesh in the file
      *
      */
-    Model(File&& file, const std::string& meshName);
+    Model(File&& file, const std::string& meshName = "");
 
     /**
      * @brief Get the index of the current animation pose
