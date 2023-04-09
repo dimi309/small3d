@@ -19,7 +19,7 @@ v1.802 (still open)
   
 - [BREAKING] Dropped wavefront (.obj) file support. Wavefront is an old format 
   without animation. Since small3d can parse gltf (.glb) files, there is no 
-  point in spending time to also maintain the wavefront parser / loader.
+  point in spending time to also maintain the wavefront parser / loader anymore.
 
 v1.801 2023-01-21
 

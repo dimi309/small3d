@@ -86,9 +86,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a20fcbd437ff9d232e9a59b38152348e5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a20fcbd437ff9d232e9a59b38152348e5">SceneObject</a> (const std::string &amp;name, const std::string &amp;modelPath, const std::string &amp;modelMeshName, const uint32_t boundingBoxSubdivisions=0)</td></tr>
 <tr class="memdesc:a20fcbd437ff9d232e9a59b38152348e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">File-loading constructor, supporting Wavefront and glTF .glb files.  <a href="classsmall3d_1_1_scene_object.html#a20fcbd437ff9d232e9a59b38152348e5">More...</a><br /></td></tr>
 <tr class="separator:a20fcbd437ff9d232e9a59b38152348e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9bd8135518bf200e140e73dac5cb680f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a9bd8135518bf200e140e73dac5cb680f">SceneObject</a> (const std::string &amp;name, const std::string &amp;modelPath, const int numFrames=1, const int startFrameIndex=1, const uint32_t boundingBoxSubdivisions=0)</td></tr>
-<tr class="memdesc:a9bd8135518bf200e140e73dac5cb680f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wavefront-only (.obj) loading constructor that also supports loading frame-based animation.  <a href="classsmall3d_1_1_scene_object.html#a9bd8135518bf200e140e73dac5cb680f">More...</a><br /></td></tr>
-<tr class="separator:a9bd8135518bf200e140e73dac5cb680f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad11ac06b60114c669aae289e88825c13"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#ad11ac06b60114c669aae289e88825c13">SceneObject</a> (const std::string &amp;name, const <a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;model, const uint32_t boundingBoxSubdivisions=0)</td></tr>
 <tr class="memdesc:ad11ac06b60114c669aae289e88825c13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Model-based constructor.  <a href="classsmall3d_1_1_scene_object.html#ad11ac06b60114c669aae289e88825c13">More...</a><br /></td></tr>
 <tr class="separator:ad11ac06b60114c669aae289e88825c13"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -167,7 +164,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
 <div class="textblock"><p>An object that appears on the 3D scene. It is made up of a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>, together with information for positioning, rotation and collision detection. Skeletal animation is supported for models loaded from glTF files. A constructor that loads multiple Wavefront files to construct a frame-based animation sequence is also provided. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a20fcbd437ff9d232e9a59b38152348e5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a20fcbd437ff9d232e9a59b38152348e5">&#9670;&nbsp;</a></span>SceneObject() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a20fcbd437ff9d232e9a59b38152348e5">&#9670;&nbsp;</a></span>SceneObject() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -217,66 +214,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
 
 </div>
 </div>
-<a id="a9bd8135518bf200e140e73dac5cb680f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9bd8135518bf200e140e73dac5cb680f">&#9670;&nbsp;</a></span>SceneObject() <span class="overload">[2/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">small3d::SceneObject::SceneObject </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>modelPath</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>numFrames</em> = <code>1</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>startFrameIndex</em> = <code>1</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const uint32_t&#160;</td>
-          <td class="paramname"><em>boundingBoxSubdivisions</em> = <code>0</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Wavefront-only (.obj) loading constructor that also supports loading frame-based animation. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">name</td><td>The name of the object </td></tr>
-    <tr><td class="paramname">modelPath</td><td>The path to the file containing the object's model. When animating (also see numFrames parameter) it is assumed that multiple files will be loaded, the name of which contains a 6 digit suffix (after an underscore) representing the animation sequence, and terminates with the .obj extension. This is also the format used by Blender when exporting animations to Wavefront files. When loading multiple models for animation do not enter a full filename. Skip the suffix and the extension. For example an animation sequence made up of files named frog_000001.obj, frog_000002.obj etc. should be loaded using the parameter "directory/frog" here. For exporting animations from Blender to a series of Wavefront files in a way that will allow this constructor class to load them, select "Animation" and "Apply Modifiers" when exporting to Wavefront.</td></tr>
-    <tr><td class="paramname">numFrames</td><td>The number of frames, if the object is animated. A single animation sequence is supported per object and the first frame is considered to be the non-moving state.</td></tr>
-    <tr><td class="paramname">startFrameIndex</td><td>The index number in the filename of the first file of the animation sequence. The default value is 1. If not loading an animation sequence, this parameter is ignored. </td></tr>
-    <tr><td class="paramname">boundingBoxSubdivisions</td><td>How many times to subdivide the initially created bounding box, getting more accurate collision detection at the expense of performance. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="ad11ac06b60114c669aae289e88825c13"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad11ac06b60114c669aae289e88825c13">&#9670;&nbsp;</a></span>SceneObject() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad11ac06b60114c669aae289e88825c13">&#9670;&nbsp;</a></span>SceneObject() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
