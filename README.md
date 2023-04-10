@@ -45,9 +45,9 @@ I have decided to remove the Vulkan renderer from small3d for now. Do not worry;
 despite the deprecation, OpenGL and OpenGL ES still work just fine on Apple. I 
 will reconsider implementing a Vulkan renderer or a Metal renderer in the future,
 or even a DirectX renderer (why not) if OpenGL ever does indeed get discontinued 
-on any platform small3d currently supports. In the meantime, my priority is that
-games made with small3d run on as many devices as possible and not that I use 
-the latest rendering technologies.
+on any platform small3d currently supports. My priority is always that games made 
+with small3d run on as many devices as possible and that the codebase remains pretty
+small - pun intended :) - and manageable.
 
 ---
 
