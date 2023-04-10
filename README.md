@@ -68,7 +68,7 @@ and tools accessible via the command line:
 - Android Studio if building for Android
 - Xcode if building for iOS
 
-## Deploying for PC
+## Deploying small3d for PC
 
 Run the build script which is suitable to your platform from the `scripts` 
 directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`).
