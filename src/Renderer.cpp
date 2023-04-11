@@ -313,7 +313,7 @@ namespace small3d {
     }
 
     auto jointTransformationsUniformLocation = glGetUniformLocation(shaderProgram, "jointTransformations");
-    glUniformMatrix4fv(jointTransformationsUniformLocation, 16, GL_FALSE, glm::value_ptr(jointTransformations[0]));
+    glUniformMatrix4fv(jointTransformationsUniformLocation, Model::MAX_JOINTS_SUPPORTED, GL_FALSE, glm::value_ptr(jointTransformations[0]));
 
     GLint offsetUniform = glGetUniformLocation(shaderProgram, "modelOffset");
     glUniform3fv(offsetUniform, 1, glm::value_ptr(offset));

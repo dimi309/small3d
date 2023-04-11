@@ -14,7 +14,7 @@ uniform vec3 cameraOffset;
 uniform mat4 lightSpaceMatrix;
 uniform mat4 orthographicMatrix;
 uniform mat4 modelTransformation;
-uniform mat4 jointTransformations[16];
+uniform mat4 jointTransformations[32];
 
 uniform vec3 modelOffset;
 uniform int hasJoints;
