@@ -7,11 +7,11 @@ if(DEFINED ANDROID_PLATFORM)
   list(APPEND SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/small3d_android.c)
 endif()
 
-file(GLOB HEADER_FILES ${CMAKE_SOURCE_DIR}/include/small3d/*.hpp)
+file(GLOB HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../include/small3d/*.hpp)
 
 add_library(small3d ${SOURCE_FILES} ${HEADER_FILES})
 
-include_directories(${CMAKE_SOURCE_DIR}/include/small3d)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include/small3d)
 
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
   include_directories(
@@ -49,7 +49,7 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
   add_executable(unittests unit_tests.cpp OctPyramid.hpp OctPyramid.cpp UnitTests.hpp UnitTests.cpp)
 
   target_include_directories(unittests PUBLIC
-    ${CMAKE_SOURCE_DIR}/include)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
   if(MSVC) # Visual Studio
     set_target_properties(unittests PROPERTIES LINK_FLAGS_DEBUG
