@@ -85,7 +85,7 @@ namespace small3d {
      * @brief Maximum number of supported joints
      *
      */
-    static const uint32_t MAX_JOINTS_SUPPORTED = 16;
+    static const uint32_t MAX_JOINTS_SUPPORTED = 32;
 
     /**
      * @brief Image found in the file the model was loaded from (empty image if not - check the size).
