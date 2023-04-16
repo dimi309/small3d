@@ -110,6 +110,13 @@ and input already set up, you are looking for this:
 
 https://github.com/dimi309/small3d-boilerplate
 
+It is highly recommended to use this boilerplate if you intend to port your
+game to Android and / or iOS. While it is pretty straightforward to get small3d
+working for the desktop and you might prefer the freedom and flexibility of
+working with a project set up from scratch, mobile platforms have many
+specificities and quirks to take care of and keep in mind, so the boilerplate
+can save you a lot of time in that respect.
+
 # Referenced libraries
 
 All small3d dependencies are distributed together with its source code. 
