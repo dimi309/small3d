@@ -328,7 +328,7 @@ namespace small3d {
     return handle;
   }
 
-  GLuint Renderer::generateTexture(const std::string & name, const uint8_t* data,
+  GLuint Renderer::generateTexture(const std::string & name, const uint8_t * data,
     const unsigned long width,
     const unsigned long height,
     const bool replace) {
@@ -369,7 +369,7 @@ namespace small3d {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGBA,
-                 GL_UNSIGNED_BYTE, data);
+      GL_UNSIGNED_BYTE, data);
 #endif
 
     textures.insert(make_pair(name, textureHandle));
@@ -453,7 +453,7 @@ namespace small3d {
     glUniform1i(colourTextureLocation, 0);
     glUniform1i(depthMapTextureLocation, 1);
 #endif
-    
+
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
@@ -467,27 +467,27 @@ namespace small3d {
     generateTexture("blank", blankImage);
     LOGDEBUG("Blank image generated");
 
-// OpenGL supports rendering without a colour image, only producing a depth map.
-// OpenGL ES 2.0 however does not support the glDrawBuffer and glReadBuffer commands
-// (see them used conditionally below) so in the following lines a render buffer with
-// a colour attachment and a depth attachment is created. The depth attachment might
-// be superfluous in OpenGL ES but I have left it there in case it is required (I have not checked).
-// But I am not using it in OpenGL ES; only in OpenGL. The reason is that, at least
-// with some Android devices, I could not feed it back as a texture to the normal
-// render pass. Checking with RenderDoc, I saw an error mentioning that the attached
-// texture is incomplete because "BASE_LEVEL 0 has invalid dimensions: 0x0". So in OpenGL ES
-// I am just outputting the z coordinate to the colour texture as the r component of each
-// texel, and informing the fragment shader that this is the case by setting light intensity to
-// -2. The fragment shader then adjusts the value accordingly (it needs to be translated to the
-// 0 - 1 range) before performing the shadow calculations.
+    // OpenGL supports rendering without a colour image, only producing a depth map.
+    // OpenGL ES 2.0 however does not support the glDrawBuffer and glReadBuffer commands
+    // (see them used conditionally below) so in the following lines a render buffer with
+    // a colour attachment and a depth attachment is created. The depth attachment might
+    // be superfluous in OpenGL ES but I have left it there in case it is required (I have not checked).
+    // But I am not using it in OpenGL ES; only in OpenGL. The reason is that, at least
+    // with some Android devices, I could not feed it back as a texture to the normal
+    // render pass. Checking with RenderDoc, I saw an error mentioning that the attached
+    // texture is incomplete because "BASE_LEVEL 0 has invalid dimensions: 0x0". So in OpenGL ES
+    // I am just outputting the z coordinate to the colour texture as the r component of each
+    // texel, and informing the fragment shader that this is the case by setting light intensity to
+    // -2. The fragment shader then adjusts the value accordingly (it needs to be translated to the
+    // 0 - 1 range) before performing the shadow calculations.
 
 #ifdef SMALL3D_OPENGLES
 
     glGenTextures(1, &depthRenderColourTexture);
     glBindTexture(GL_TEXTURE_2D, depthRenderColourTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-                 depthMapTextureWidth, depthMapTextureHeight, 0, GL_RGBA,
-                 GL_UNSIGNED_BYTE, NULL);
+      depthMapTextureWidth, depthMapTextureHeight, 0, GL_RGBA,
+      GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -513,7 +513,7 @@ namespace small3d {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    
+
     glGenFramebuffers(1, &depthMapFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFramebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMapTexture, 0);
@@ -625,11 +625,11 @@ namespace small3d {
     eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext);
 
     LOGDEBUG("Vendor " +
-        std::string(reinterpret_cast<const char *>(glGetString(GL_VENDOR))) +
-        ", Renderer " +
-        std::string(reinterpret_cast<const char *>(glGetString(GL_RENDERER))) +
-        ", Version " +
-        std::string(reinterpret_cast<const char *>(glGetString(GL_VERSION))));
+      std::string(reinterpret_cast<const char*>(glGetString(GL_VENDOR))) +
+      ", Renderer " +
+      std::string(reinterpret_cast<const char*>(glGetString(GL_RENDERER))) +
+      ", Version " +
+      std::string(reinterpret_cast<const char*>(glGetString(GL_VERSION))));
 
     width = ANativeWindow_getWidth(small3d_android_app->window);
     height = ANativeWindow_getHeight(small3d_android_app->window);
@@ -696,7 +696,7 @@ namespace small3d {
   void Renderer::setWorldDetails(bool perspective) {
 
     auto orthographicMatrix = glm::ortho(-shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize);
-    
+
 
     GLint perspectiveMatrixUniform =
       glGetUniformLocation(shaderProgram, "perspectiveMatrix");
@@ -799,11 +799,11 @@ namespace small3d {
     const uint32_t objectsPerFrameInc) {
 
     start(windowTitle, width,
-		 height, fieldOfView,
-		 zNear,  zFar,
-		 shadersPath,
-		 objectsPerFrame,
-		 objectsPerFrameInc);
+      height, fieldOfView,
+      zNear, zFar,
+      shadersPath,
+      objectsPerFrame,
+      objectsPerFrameInc);
 
     LOGDEBUG("Renderer constructor done.");
   }
@@ -912,7 +912,7 @@ namespace small3d {
 #endif
 
     FT_Done_FreeType(library);
-    
+
     stop();
 
 #ifndef __ANDROID__
@@ -930,7 +930,7 @@ namespace small3d {
     glDeleteRenderbuffers(1, &depthRenderBuffer);
     depthRenderBuffer = 0;
 #endif
-    
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -1071,12 +1071,12 @@ namespace small3d {
             colourAlpha.a = slot->bitmap.buffer[row * slot->bitmap.width + col];
 
             auto pos = 4 * (maxTop -
-                            slot->bitmap_top
-                            + row) * static_cast<size_t>(width) +
-                       4 *
-                       (static_cast<size_t>(slot->bitmap_left) +
-                        static_cast<size_t>(col))
-                       + totalAdvance;
+              slot->bitmap_top
+              + row) * static_cast<size_t>(width) +
+              4 *
+              (static_cast<size_t>(slot->bitmap_left) +
+                static_cast<size_t>(col))
+              + totalAdvance;
 
             textMemory[pos] = colourAlpha.r;
             textMemory[pos + 1] = colourAlpha.g;
@@ -1156,12 +1156,12 @@ namespace small3d {
 
   void Renderer::renderTuple(std::tuple< Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool> tuple) {
 
-    Model *model = std::get<0>(tuple);
-      glm::vec3 offset = std::get<1>(tuple);
-      glm::mat4x4 rotation = std::get<2>(tuple);
-      glm::vec4 colour = std::get<3>(tuple);
-      std::string textureName = std::get<4>(tuple);
-      bool perspective = std::get<5>(tuple);
+    Model* model = std::get<0>(tuple);
+    glm::vec3 offset = std::get<1>(tuple);
+    glm::mat4x4 rotation = std::get<2>(tuple);
+    glm::vec4 colour = std::get<3>(tuple);
+    std::string textureName = std::get<4>(tuple);
+    bool perspective = std::get<5>(tuple);
 
     if (!perspective && !renderingDepthMap) {
       glClear(GL_DEPTH_BUFFER_BIT);
@@ -1298,13 +1298,14 @@ namespace small3d {
 
     glActiveTexture(GL_TEXTURE0 + 1);
 
-    if(!renderingDepthMap) {
+    if (!renderingDepthMap) {
 #ifndef SMALL3D_OPENGLES
       glBindTexture(GL_TEXTURE_2D, depthMapTexture);
 #else
       glBindTexture(GL_TEXTURE_2D, depthRenderColourTexture);
 #endif
-    } else {
+    }
+    else {
       glBindTexture(GL_TEXTURE_2D, 0);
     }
 
@@ -1338,7 +1339,7 @@ namespace small3d {
     const bool perspective) {
 
     renderList.push_back(std::tuple<Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool>{&model, offset, rotation, colour, textureName, perspective});
-    
+
   }
 
   void Renderer::render(Model & model, const glm::vec3 & offset,
@@ -1395,15 +1396,13 @@ namespace small3d {
   }
 
   void Renderer::clearBuffers(SceneObject & sceneObject) const {
-    for (auto model : *sceneObject.models) {
-      clearBuffers(model);
-    }
+    clearBuffers(*sceneObject.model);
   }
 
   void Renderer::setBackgroundColour(const glm::vec4 & colour) {
     clearColour = colour;
     glClearColor(clearColour.x, clearColour.y, clearColour.z, clearColour.w);
-    
+
   }
 
   void Renderer::swapBuffers() {
@@ -1423,7 +1422,7 @@ namespace small3d {
       cameraPosition = glm::vec3(0);
 
       cameraTransformation = shadowCamTransformation;
-      
+
       // Render in orthographic mode on depth map framebuffer, only the models that are to be drawn using perspective
       // (Orthographically rendered models will not produce shadows as they are mostly used for messages and interface
       // components)
@@ -1433,9 +1432,9 @@ namespace small3d {
       for (auto& tuple : renderList) {
         if (std::get<5>(tuple)) {
           auto tmpt = tuple;
-	  if (std::get<0>(tuple)->noShadow) {
-	    continue;
-	  }
+          if (std::get<0>(tuple)->noShadow) {
+            continue;
+          }
           std::get<5>(tmpt) = false;
           renderTuple(tmpt);
         }
@@ -1445,7 +1444,7 @@ namespace small3d {
 
       // Store the light space camera transformation to be used during normal rendering to position shadows
       lightSpaceMatrix = cameraTransformation;
-      
+
       // Return to "normal" camera rotation and position
       cameraTransformation = tmpCamTr;
       cameraPosition = tmpCamPos;
@@ -1485,10 +1484,10 @@ namespace small3d {
     clearScreen();
 #endif
 #ifdef SMALL3D_IOS
-   // throw std::runtime_error("Swapping buffers must be handled in the ViewController on //iOS - OpenGL ES.");
+    // throw std::runtime_error("Swapping buffers must be handled in the ViewController on //iOS - OpenGL ES.");
 #endif
 #endif
-    
+
   }
 
   /**

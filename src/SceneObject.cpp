@@ -22,9 +22,8 @@ namespace small3d {
     currentFrame = 0;
     this->numFrames = 1;
     LOGDEBUG("Trying to load " + modelPath + " as glTF.");
-    Model model1(GlbFile(modelPath), modelMeshName);
-    models->push_back(model1);
-    boundingBoxSet = std::make_shared<BoundingBoxSet>(model1.vertexData, model1.getOriginalScale(), boundingBoxSubdivisions);
+    model = std::make_shared<Model>(GlbFile(modelPath), modelMeshName);
+    boundingBoxSet = std::make_shared<BoundingBoxSet>(model->vertexData, model->getOriginalScale(), boundingBoxSubdivisions);
   }
 
   SceneObject::SceneObject(const std::string& name, const Model& model, const uint32_t boundingBoxSubdivisions) {
@@ -35,12 +34,12 @@ namespace small3d {
     frameDelay = 1;
     currentFrame = 0;
     this->numFrames = 1;
-    models->push_back(model);
-    boundingBoxSet = std::make_shared<BoundingBoxSet>(getModel().vertexData, getModel().getOriginalScale(), boundingBoxSubdivisions);
+    this->model = std::make_shared<Model>(model);
+    boundingBoxSet = std::make_shared<BoundingBoxSet>(this->model->vertexData, this->model->getOriginalScale(), boundingBoxSubdivisions);
   }
 
   Model& SceneObject::getModel() {
-    return (*models)[currentFrame];
+    return *model;
   }
 
   std::vector<Model> SceneObject::getBoundingBoxSetModels() {
@@ -127,7 +126,7 @@ namespace small3d {
           }
         }
         else {
-          (*models)[0].animate();
+          model->animate();
         }
       }
     }

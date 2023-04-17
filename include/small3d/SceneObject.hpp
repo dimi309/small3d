@@ -48,7 +48,7 @@ namespace small3d
     glm::mat4x4 transformation = glm::mat4x4(1);
     glm::vec3 rotationXYZ = glm::vec3(0.0f);
     bool rotationByMatrix = false;
-    std::shared_ptr<std::vector<Model>> models = std::shared_ptr<std::vector<Model>>(new std::vector<Model>());
+    std::shared_ptr<Model> model = std::make_shared<Model>();
     std::shared_ptr<BoundingBoxSet> boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet());
   public:
 
