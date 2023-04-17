@@ -67,8 +67,6 @@ namespace small3d {
       glm::quat rotation = glm::quat(0.0f, 0.0f, 0.0f, 1.0f);
       glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
       glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
-      glm::quat currRotation = glm::quat(0.0f, 0.0f, 0.0f, 1.0f);
-      glm::vec3 currTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
       std::vector<uint32_t> children;
       std::vector<glm::quat> rotationAnimation;
       std::vector<glm::vec3> translationAnimation;

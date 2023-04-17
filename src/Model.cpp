@@ -38,14 +38,6 @@ namespace small3d {
       if (currentPose == numPoses) {
         currentPose = 0;
       }
-      for (auto& joint : joints) {
-        if (joint.rotationAnimation.size() > currentPose) {
-          joint.currRotation = joint.rotationAnimation[currentPose];
-        }
-        if (joint.translationAnimation.size() > currentPose) {
-          joint.currTranslation = joint.translationAnimation[currentPose];
-        }
-      }
     }
   }
 
