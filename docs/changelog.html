@@ -68,9 +68,9 @@ $(function() {
 <div class="contents">
 <div class="textblock"><p>v1.802 (still open)</p>
 <ul>
-<li>I have taken the difficult decision to stop supporting Vulkan, at least for now. The <a class="el" href="namespacesmall3d.html">small3d</a> Vulkan renderer was initially developed years ago. The goal was to perhaps drop support for OpenGL at some point. But things did not turn out as foreseen. It has now been a long time after the initial release of the Vulkan API. While using it I have spent much time chasing down obscure driver bugs on various devices, be that mobile or older PCs. The growing criticism of the Vulkan pipeline object and the recent introduction of the VK_EXT_shader_object extension has made me realise that it will still be very long before I can safely publish anything running on Vulkan in production guaranteed to execute on hardware that is not the latest and greatest. At the same time, OpenGL and OpenGL ES still run reliably, even on Apple devices on which they are officially deprecated. So I am pulling the plug on Vulkan, at least for now. This will also decrease the complexity of <a class="el" href="namespacesmall3d.html">small3d</a>, allowing for more efficient maintenance and evolution in directions that matter more.</li>
-<li>[BREAKING] Dropped wavefront (.obj) file support. Wavefront is an old format without animation. Since <a class="el" href="namespacesmall3d.html">small3d</a> can parse gltf (.glb) files, there is no point in spending time to also maintain the wavefront parser / loader anymore.</li>
-<li>[BREAKING] Model.animate method has been deleted. Added Model.getNumPoses method so that the total number of poses is known outside of Model. The Model can now be animated by specifying the current pose when calling getJointTransform (it has been added as a parameter). This allows for more flexibility. For example multiple SceneObjects can be created now by copying one to the other. They all share the same Model data, saving GPU memory, while they can each animate the Model differently when rendering it. The inconvenience of this change is that the current pose is now a parameter in all the Renderer.render functions and existing game code using <a class="el" href="namespacesmall3d.html">small3d</a> has to be updated, otherwise it can mix this current pose parameter with the perspective parameter, with undesirable consequences.</li>
+<li>I have taken the difficult decision to stop supporting Vulkan, at least for now. The small3d Vulkan renderer was initially developed years ago. The goal was to perhaps drop support for OpenGL at some point. But things did not turn out as foreseen. It has now been a long time after the initial release of the Vulkan API. While using it I have spent much time chasing down obscure driver bugs on various devices, be that mobile or older PCs. The growing criticism of the Vulkan pipeline object and the recent introduction of the VK_EXT_shader_object extension has made me realise that it will still be very long before I can safely publish anything running on Vulkan in production guaranteed to execute on hardware that is not the latest and greatest. At the same time, OpenGL and OpenGL ES still run reliably, even on Apple devices on which they are officially deprecated. So I am pulling the plug on Vulkan, at least for now. This will also decrease the complexity of small3d, allowing for more efficient maintenance and evolution in directions that matter more.</li>
+<li>[BREAKING] Dropped wavefront (.obj) file support. Wavefront is an old format without animation. Since small3d can parse gltf (.glb) files, there is no point in spending time to also maintain the wavefront parser / loader anymore.</li>
+<li>[BREAKING] Model.animate method has been deleted. Added Model.getNumPoses method so that the total number of poses is known outside of Model. The Model can now be animated by specifying the current pose when calling getJointTransform (it has been added as a parameter). This allows for more flexibility. For example multiple SceneObjects can be created now by copying one to the other. They all share the same Model data, saving GPU memory, while they can each animate the Model differently when rendering it. The inconvenience of this change is that the current pose is now a parameter in all the Renderer.render functions and existing game code using small3d has to be updated, otherwise it can mix up this current pose parameter with the perspective parameter, with undesirable consequences.</li>
 </ul>
 <p>v1.801 2023-01-21</p>
 <ul>
@@ -84,7 +84,7 @@ $(function() {
 <li>Texture colour components are now loaded and managed as 8-bit unsigned integers.</li>
 <li>On Android, using oboe for sound instead of aaudio.</li>
 <li>Implemented shadow mapping.</li>
-<li>Migrated conan package configuration to conan 2.0 and separated it from the main <a class="el" href="namespacesmall3d.html">small3d</a> repository (note: <a class="el" href="namespacesmall3d.html">small3d</a> is built with plain cmake - conan package manager use is optional)</li>
+<li>Migrated conan package configuration to conan 2.0 and separated it from the main small3d repository (note: small3d is built with plain cmake - conan package manager use is optional)</li>
 </ul>
 <p>v1.800 2022-01-03</p>
 <ul>
@@ -113,7 +113,7 @@ $(function() {
 <ul>
 <li>Elimination of compiler warnings and other code improvements.</li>
 <li>Upgraded to the latest versions of glfw, glm and freetype.</li>
-<li>Scripts now provided for preparing dependencies and building <a class="el" href="namespacesmall3d.html">small3d</a> on all supported platforms.</li>
+<li>Scripts now provided for preparing dependencies and building small3d on all supported platforms.</li>
 <li>The README has been greatly shortened since a lot of the information that was there is now unnecessary. It can be found in the build scripts and it actually <em>runs</em> :)</li>
 <li>My perspective matrix was (mistakenly) row-major all this time. After converting it to column-major, I decided to just use glm::perspective instead, since it is in effect the same thing and makes the code look simpler.</li>
 </ul>
@@ -205,7 +205,7 @@ $(function() {
 </ul>
 <p>v1.65 2018-10-20</p>
 <ul>
-<li>This project is now called the <a class="el" href="namespacesmall3d.html">small3d</a> framework, instead of the <a class="el" href="namespacesmall3d.html">small3d</a> game engine.</li>
+<li>This project is now called the small3d framework, instead of the small3d game engine.</li>
 <li>Documentation reorganisation.</li>
 </ul>
 <p>v1.64 2018-10-18</p>
@@ -225,11 +225,11 @@ $(function() {
 </ul>
 <p>v1.60 2018-09-15</p>
 <ul>
-<li>OpenGL v2.1 support dropped. <a class="el" href="namespacesmall3d.html">small3d</a> now only supports OpenGL v3.3 Core Profile.</li>
+<li>OpenGL v2.1 support dropped. small3d now only supports OpenGL v3.3 Core Profile.</li>
 </ul>
 <p>v1.51 2018-06-06</p>
 <ul>
-<li>History reset. Changes that have taken place up to this point have now endured for so long that they are considered <a class="el" href="namespacesmall3d.html">small3d</a>'s initial state. </li>
+<li>History reset. Changes that have taken place up to this point have now endured for so long that they are considered small3d's initial state. </li>
 </ul>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
