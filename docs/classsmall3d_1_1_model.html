@@ -101,16 +101,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:acc694ba2760a1a3fa8775e6abe1a0d0e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#acc694ba2760a1a3fa8775e6abe1a0d0e">Model</a> (<a class="el" href="classsmall3d_1_1_file.html">File</a> &amp;&amp;file, const std::string &amp;meshName=&quot;&quot;)</td></tr>
 <tr class="memdesc:acc694ba2760a1a3fa8775e6abe1a0d0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor (rvalue file - helps for declaring the file on the fly when using gcc)  <a href="classsmall3d_1_1_model.html#acc694ba2760a1a3fa8775e6abe1a0d0e">More...</a><br /></td></tr>
 <tr class="separator:acc694ba2760a1a3fa8775e6abe1a0d0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d501a1d394c08b7666a48d55736a5ab"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a5d501a1d394c08b7666a48d55736a5ab">getCurrentPoseIdx</a> ()</td></tr>
-<tr class="memdesc:a5d501a1d394c08b7666a48d55736a5ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the index of the current animation pose.  <a href="classsmall3d_1_1_model.html#a5d501a1d394c08b7666a48d55736a5ab">More...</a><br /></td></tr>
-<tr class="separator:a5d501a1d394c08b7666a48d55736a5ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a570d9db18d28fc5128812d0890881509"><td class="memItemLeft" align="right" valign="top"><a id="a570d9db18d28fc5128812d0890881509"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a570d9db18d28fc5128812d0890881509">animate</a> ()</td></tr>
-<tr class="memdesc:a570d9db18d28fc5128812d0890881509"><td class="mdescLeft">&#160;</td><td class="mdescRight">Advance joint animation pose (if joints are animated) <br /></td></tr>
-<tr class="separator:a570d9db18d28fc5128812d0890881509"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a80b1e60717a21ef51034f7f95751df"><td class="memItemLeft" align="right" valign="top">glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a7a80b1e60717a21ef51034f7f95751df">getJointTransform</a> (size_t jointIdx)</td></tr>
-<tr class="memdesc:a7a80b1e60717a21ef51034f7f95751df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a joint transform, also calculating the transorms of the parent joints in the same tree and the animations, if any exist.  <a href="classsmall3d_1_1_model.html#a7a80b1e60717a21ef51034f7f95751df">More...</a><br /></td></tr>
-<tr class="separator:a7a80b1e60717a21ef51034f7f95751df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab45b976e6906c2f86ae5d47d90ed3cd6"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#ab45b976e6906c2f86ae5d47d90ed3cd6">getNumPoses</a> ()</td></tr>
+<tr class="memdesc:ab45b976e6906c2f86ae5d47d90ed3cd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of animation poses.  <a href="classsmall3d_1_1_model.html#ab45b976e6906c2f86ae5d47d90ed3cd6">More...</a><br /></td></tr>
+<tr class="separator:ab45b976e6906c2f86ae5d47d90ed3cd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f38ad9c3a43795eb49d4fe42444e7ab"><td class="memItemLeft" align="right" valign="top">glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a8f38ad9c3a43795eb49d4fe42444e7ab">getJointTransform</a> (size_t jointIdx, uint64_t currentPose)</td></tr>
+<tr class="memdesc:a8f38ad9c3a43795eb49d4fe42444e7ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a joint transform, also calculating the transorms of the parent joints in the same tree and the animations, if any exist.  <a href="classsmall3d_1_1_model.html#a8f38ad9c3a43795eb49d4fe42444e7ab">More...</a><br /></td></tr>
+<tr class="separator:a8f38ad9c3a43795eb49d4fe42444e7ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0595f6078b8bddee06a33a11f46dadc"><td class="memItemLeft" align="right" valign="top"><a id="ac0595f6078b8bddee06a33a11f46dadc"></a>
 glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#ac0595f6078b8bddee06a33a11f46dadc">getOriginalScale</a> ()</td></tr>
 <tr class="memdesc:ac0595f6078b8bddee06a33a11f46dadc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>'s original scale (usually the one read from the file the <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> was loaded from. <br /></td></tr>
@@ -277,28 +273,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a5d501a1d394c08b7666a48d55736a5ab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5d501a1d394c08b7666a48d55736a5ab">&#9670;&nbsp;</a></span>getCurrentPoseIdx()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint32_t small3d::Model::getCurrentPoseIdx </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get the index of the current animation pose. </p>
-<dl class="section return"><dt>Returns</dt><dd>The index of the current animation pose </dd></dl>
-
-</div>
-</div>
-<a id="a7a80b1e60717a21ef51034f7f95751df"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7a80b1e60717a21ef51034f7f95751df">&#9670;&nbsp;</a></span>getJointTransform()</h2>
+<a id="a8f38ad9c3a43795eb49d4fe42444e7ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f38ad9c3a43795eb49d4fe42444e7ab">&#9670;&nbsp;</a></span>getJointTransform()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -307,8 +283,18 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
           <td class="memname">glm::mat4 small3d::Model::getJointTransform </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>jointIdx</em></td><td>)</td>
+          <td class="paramname"><em>jointIdx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>currentPose</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -317,10 +303,31 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">jointIdx</td><td>The index of the joint in the list of joints </td></tr>
+    <tr><td class="paramname">currentPose</td><td>The pose of the animation to calculate the joint transformation for. </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The transform </dd></dl>
+
+</div>
+</div>
+<a id="ab45b976e6906c2f86ae5d47d90ed3cd6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab45b976e6906c2f86ae5d47d90ed3cd6">&#9670;&nbsp;</a></span>getNumPoses()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t small3d::Model::getNumPoses </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the number of animation poses. </p>
+<dl class="section return"><dt>Returns</dt><dd>The number of animation poses </dd></dl>
 
 </div>
 </div>
