@@ -275,7 +275,7 @@ namespace small3d {
   }
 
   void Renderer::transform(Model & model, const glm::vec3 & offset,
-    const glm::mat4x4 & rotation) const {
+    const glm::mat4x4 & rotation, uint64_t currentPose) const {
 
     GLint modelTransformationUniformLocation = glGetUniformLocation(shaderProgram,
       "modelTransformation");
@@ -305,7 +305,7 @@ namespace small3d {
           glm::toMat4(model.origRotation) *
           glm::scale(glm::mat4x4(1.0f), model.origScale)) *
 
-        model.getJointTransform(idx) *
+        model.getJointTransform(idx, currentPose) *
 
         joint.inverseBindMatrix;
 
@@ -1134,27 +1134,27 @@ namespace small3d {
   }
 
   void Renderer::render(Model & model, const glm::vec3 & position, const glm::vec3 & rotation,
-    const glm::vec4 & colour, const std::string & textureName,
+    const glm::vec4 & colour, const std::string & textureName, const uint64_t currentPose,
     const bool perspective) {
 
     this->render(model, position, glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)),
-      colour, textureName, perspective);
+      colour, textureName, currentPose, perspective);
 
   }
 
   void Renderer::render(Model & model, const glm::vec3 & position, const glm::vec3 & rotation,
-    const std::string & textureName) {
+    const std::string & textureName, const uint64_t currentPose) {
 
     this->render(model, position, glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)),
-      textureName);
+      textureName, currentPose);
 
   }
 
-  void Renderer::renderTuple(std::tuple< Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool> tuple) {
+  void Renderer::renderTuple(std::tuple< Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool, uint64_t> tuple) {
 
     Model* model = std::get<0>(tuple);
     glm::vec3 offset = std::get<1>(tuple);
@@ -1162,6 +1162,7 @@ namespace small3d {
     glm::vec4 colour = std::get<3>(tuple);
     std::string textureName = std::get<4>(tuple);
     bool perspective = std::get<5>(tuple);
+    uint64_t currentPose = std::get<6>(tuple);
 
     if (!perspective && !renderingDepthMap) {
       glClear(GL_DEPTH_BUFFER_BIT);
@@ -1311,7 +1312,7 @@ namespace small3d {
 
     setWorldDetails(perspective);
 
-    transform(*model, offset, rotation);
+    transform(*model, offset, rotation, currentPose);
 
 
 
@@ -1332,46 +1333,48 @@ namespace small3d {
     glUseProgram(0);
   }
 
-  void Renderer::render(Model & model, const glm::vec3 & offset,
+  void Renderer::render(Model & model, const glm::vec3 & position,
     const glm::mat4x4 & rotation,
     const glm::vec4 & colour,
     const std::string & textureName,
+    const uint64_t currentPose,
     const bool perspective) {
 
-    renderList.push_back(std::tuple<Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool>{&model, offset, rotation, colour, textureName, perspective});
+    renderList.push_back(std::tuple<Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool, uint64_t>{&model, position, rotation, colour, textureName, perspective, currentPose});
 
   }
 
-  void Renderer::render(Model & model, const glm::vec3 & offset,
+  void Renderer::render(Model & model, const glm::vec3 & position,
     const glm::mat4x4 & rotation,
-    const std::string & textureName) {
-    this->render(model, offset, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
-      textureName);
+    const std::string & textureName,
+    const uint64_t currentPose) {
+    this->render(model, position, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
+      textureName, currentPose);
   }
 
-  void Renderer::render(Model & model, const std::string & textureName,
+  void Renderer::render(Model & model, const std::string & textureName, const uint64_t currentPose,
     const bool perspective) {
     this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
-      textureName, perspective);
+      textureName, currentPose, perspective);
   }
 
-  void Renderer::render(Model & model, const glm::vec4 & colour,
+  void Renderer::render(Model & model, const glm::vec4 & colour, const uint64_t currentPose,
     const bool perspective) {
     this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), colour,
-      "", perspective);
+      "", currentPose, perspective);
   }
 
   void Renderer::render(SceneObject & sceneObject,
     const glm::vec4 & colour) {
     this->render(sceneObject.getModel(), sceneObject.position,
-      sceneObject.transformation, colour, "");
+      sceneObject.transformation, colour, "", sceneObject.getCurrentPose());
   }
 
   void Renderer::render(SceneObject & sceneObject,
     const std::string & textureName) {
     this->render(sceneObject.getModel(), sceneObject.position,
       sceneObject.transformation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
-      textureName);
+      textureName, sceneObject.getCurrentPose());
   }
 
   void Renderer::clearBuffers(Model & model) const {

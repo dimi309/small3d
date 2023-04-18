@@ -39,7 +39,6 @@ namespace small3d {
     uint32_t weightBufferObjectId = 0;
 
     uint64_t numPoses = 0;
-    uint32_t currentPose = 0;
 
     // Original transformation matrix (from armature/skin),
     // as read from a file
@@ -199,24 +198,21 @@ namespace small3d {
     Model(File&& file, const std::string& meshName = "");
 
     /**
-     * @brief Get the index of the current animation pose
-     * @return The index of the current animation pose
+     * @brief Get the number of animation poses
+     * @return The number of animation poses
      */
 
-    uint32_t getCurrentPoseIdx();
-
-    /**
-     * @brief Advance joint animation pose (if joints are animated)
-     */
-    void animate();
+    uint64_t getNumPoses();
 
     /**
      * @brief Get a joint transform, also calculating the transorms of the parent
      *        joints in the same tree and the animations, if any exist.
      *  @param jointIdx The index of the joint in the list of joints
+     *  @param currentPose The pose of the animation to calculate the
+     *         joint transformation for.
      *  @return The transform
      */
-    glm::mat4 getJointTransform(size_t jointIdx);
+    glm::mat4 getJointTransform(size_t jointIdx, uint64_t currentPose);
 
     /**
      * @brief Get the Model's original scale (usually the one read from the file

@@ -20,6 +20,18 @@ v1.802 (still open)
 - [BREAKING] Dropped wavefront (.obj) file support. Wavefront is an old format 
   without animation. Since small3d can parse gltf (.glb) files, there is no 
   point in spending time to also maintain the wavefront parser / loader anymore.
+  
+- [BREAKING] Model.animate method has been deleted. Added Model.getNumPoses method
+  so that the total number of poses is known outside of Model. The Model can 
+  now be animated by specifying the current pose when calling getJointTransform 
+  (it has been added as a parameter). This allows for more flexibility.
+  For example multiple SceneObjects can be created now by copying one to the other.
+  They all share the same Model data, saving GPU memory, while they can 
+  each animate the Model differently when rendering it. 
+  The inconvenience of this change is that the current pose is now a parameter 
+  in all the Renderer.render functions and existing game code using small3d has
+  to be updated, otherwise it can mix this current pose parameter with the
+  perspective parameter, with undesirable consequences.
 
 v1.801 2023-01-21
 

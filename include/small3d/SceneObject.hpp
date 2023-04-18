@@ -40,11 +40,10 @@ namespace small3d
 
     bool animating;
     int frameDelay;
-    int currentFrame;
+    uint64_t currentPose;
     int framesWaited;
-    int numFrames;
+    uint64_t numPoses;
     std::string name;
-    bool wavefront = false;
     glm::mat4x4 transformation = glm::mat4x4(1);
     glm::vec3 rotationXYZ = glm::vec3(0.0f);
     bool rotationByMatrix = false;
@@ -89,6 +88,11 @@ namespace small3d
      */
     Model& getModel();
 
+    /**
+     * @brief Get the current animation pose
+     * @return The current animation pose
+     */
+    uint64_t getCurrentPose();
 
     /**
      * @brief Get the bounding box set as models (for debug-rendering)

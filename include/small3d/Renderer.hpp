@@ -126,7 +126,7 @@ namespace small3d
     void checkForOpenGLErrors(const std::string& when, const bool abort) const;
 
     void transform(Model& model, const glm::vec3& offset,
-      const glm::mat4x4& rotation) const;
+      const glm::mat4x4& rotation, uint64_t currentPose) const;
 
     uint32_t getTextureHandle(const std::string& name) const;
     uint32_t generateTexture(const std::string& name, const uint8_t* data,
@@ -153,9 +153,9 @@ namespace small3d
 
     Renderer();
 
-    std::vector<std::tuple< Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool>> renderList;
+    std::vector<std::tuple< Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool, uint64_t>> renderList;
 
-    void renderTuple(std::tuple< Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool> tuple);
+    void renderTuple(std::tuple< Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool, uint64_t> tuple);
 
     GLuint depthMapFramebuffer = 0;
     GLuint depthMapTexture = 0;
@@ -413,6 +413,7 @@ namespace small3d
      *                    (optional). The texture has to have been generated
      *                    already. If this is set, the colour parameter will
      *                    be ignored.
+     * @param currentPose The current animation pose
      * @param perspective If true perform perspective rendering, otherwise
      *                    orthographic. If false, the depth buffer is cleared.
      *                    Do not intermingle perspective and orthographic
@@ -421,6 +422,7 @@ namespace small3d
      */
     void render(Model& model, const glm::vec3& position, const glm::vec3& rotation,
       const glm::vec4& colour, const std::string& textureName = "",
+      const uint64_t currentPose = 0,
       const bool perspective = true);
 
     /**
@@ -430,9 +432,10 @@ namespace small3d
      * @param rotation    Rotation (x, y, z)
      * @param textureName The name of the texture to attach to the model.
      *                    The texture has to have been generated already.
+     * @param currentPose The current animation pose
      */
     void render(Model& model, const glm::vec3& position, const glm::vec3& rotation,
-      const std::string& textureName);
+      const std::string& textureName, const uint64_t currentPose = 0);
 
     /**
      * @brief Render a Model
@@ -444,6 +447,7 @@ namespace small3d
      *                    (optional). The texture has to have been generated
      *                    already. If this is set, the colour parameter will
      *                    be ignored.
+     * @param currentPose The current animation pose
      * @param perspective If true perform perspective rendering, otherwise 
      *                    orthographic. If false, the depth buffer is cleared.
      *                    Do not intermingle perspective and orthographic
@@ -452,6 +456,7 @@ namespace small3d
      */
     void render(Model& model, const glm::vec3& position, const glm::mat4x4& rotation,
       const glm::vec4& colour, const std::string& textureName = "",
+      const uint64_t currentPose = 0,
       const bool perspective = true);
 
     /**
@@ -461,35 +466,38 @@ namespace small3d
      * @param rotation    Rotation transformation matrix
      * @param textureName The name of the texture to attach to the model.
      *                    The texture has to have been generated already.
+     * @param currentPose The current animation pose
      */
     void render(Model& model, const glm::vec3& position, const glm::mat4x4& rotation,
-      const std::string& textureName);
+      const std::string& textureName, const uint64_t currentPose = 0);
 
     /**
      * @brief Render a Model.
      * @param model       The model
      * @param textureName The name of the texture to attach to the model.
      *                    The texture has to have been generated already.
+     * @param currentPose The current animation pose
      * @param perspective True = perspective drawing, otherwise orthographic
      *                    If false, the depth buffer is cleared.
      *                    Do not intermingle perspective and orthographic
      *                    rendering. Perform all the orthographic rendering in the
      *                    end.
      */
-    void render(Model& model, const std::string& textureName,
+    void render(Model& model, const std::string& textureName, const uint64_t currentPose = 0,
       const bool perspective = true);
 
     /**
      * @brief Render a Model
      * @param model       The model
      * @param colour      The colour of the model
+     * @param currentPose The current animation pose
      * @param perspective True = perspective drawing, otherwise orthographic
      *                    If false, the depth buffer is cleared.
      *                    Do not intermingle perspective and orthographic
      *                    rendering. Perform all the orthographic rendering in the
      *                    end.
      */
-    void render(Model& model, const glm::vec4& colour,
+    void render(Model& model, const glm::vec4& colour, const uint64_t currentPose = 0,
       const bool perspective = true);
 
     /**

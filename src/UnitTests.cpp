@@ -71,7 +71,7 @@ void write(std::string text, float elevation) {
   std::string textureName = "indication" + std::to_string(elevation);
   r->generateTexture(textureName, text, glm::vec3(1.0f, 1.0f, 1.0f), 24);
   r->render(indicator, glm::vec3(0.0f, elevation, 0.0f), glm::mat4(1.0f),
-    glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), textureName, false);
+    glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), textureName, 0, false);
 }
 
 void initRenderer(uint32_t width, uint32_t height) {
@@ -425,7 +425,7 @@ int FPStest() {
 
       r->render(texturedRect,
         glm::vec3(0.0f, 0.0f, -1.0f),
-        glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "frameRate", false);
+        glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "frameRate", 0, false);
 
       r->swapBuffers();
       ++numFrames;
@@ -483,23 +483,19 @@ int RendererTest() {
 
       r->render(singleColourRect,
         glm::vec3(0.0f, 0.0f, 0.0f),
-        glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), "", false);
-
-      r->generateTexture("small3dTexture", std::to_string(modelFromGlb.getCurrentPoseIdx()),
-        glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+        glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), "", 0, false);
 
       r->render(texturedRect,
         glm::vec3(0.0f, 0.0f, -2.0f),
-        glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "cubeTexture", true);
+        glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "cubeTexture", 0, true);
 
-      modelFromGlb.animate();
       rotation.y += 0.1f;
 
       r->render(modelFromGlb, glm::vec3(0.0f, 1.0f, -6.0f),
         rotation, glm::vec4(0.3f, 1.0f, 1.0f, 1.0f));
 
       r->render(textRect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-        glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", false);
+        glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", 0, false);
 
       r->swapBuffers();
       

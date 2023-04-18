@@ -28,20 +28,11 @@ namespace small3d {
     file.load(*this, meshName);
   }
 
-  uint32_t Model::getCurrentPoseIdx() {
-    return currentPose;
+  uint64_t Model::getNumPoses() {
+    return numPoses;
   }
 
-  void Model::animate() {
-    if (numPoses != 0) {
-      ++currentPose;
-      if (currentPose == numPoses) {
-        currentPose = 0;
-      }
-    }
-  }
-
-  glm::mat4 Model::getJointTransform(size_t joint) {
+  glm::mat4 Model::getJointTransform(size_t joint, uint64_t currentPose) {
 
     glm::mat4 parentTransform(1.0f);
     glm::mat4 transform(1.0f);
@@ -60,7 +51,7 @@ namespace small3d {
     }
 
     if (found) {
-      parentTransform = getJointTransform(idx);
+      parentTransform = getJointTransform(idx, currentPose);
     }
 
     if (currentPose < joints[joint].rotationAnimation.size() && currentPose < joints[joint].translationAnimation.size() &&

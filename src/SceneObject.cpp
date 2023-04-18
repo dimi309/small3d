@@ -19,11 +19,11 @@ namespace small3d {
     animating = false;
     framesWaited = 0;
     frameDelay = 1;
-    currentFrame = 0;
-    this->numFrames = 1;
     LOGDEBUG("Trying to load " + modelPath + " as glTF.");
     model = std::make_shared<Model>(GlbFile(modelPath), modelMeshName);
     boundingBoxSet = std::make_shared<BoundingBoxSet>(model->vertexData, model->getOriginalScale(), boundingBoxSubdivisions);
+    numPoses = model->getNumPoses();
+    currentPose = 0;
   }
 
   SceneObject::SceneObject(const std::string& name, const Model& model, const uint32_t boundingBoxSubdivisions) {
@@ -32,14 +32,18 @@ namespace small3d {
     animating = false;
     framesWaited = 0;
     frameDelay = 1;
-    currentFrame = 0;
-    this->numFrames = 1;
     this->model = std::make_shared<Model>(model);
     boundingBoxSet = std::make_shared<BoundingBoxSet>(this->model->vertexData, this->model->getOriginalScale(), boundingBoxSubdivisions);
+    numPoses = this->model->getNumPoses();
+    currentPose = 0;
   }
 
   Model& SceneObject::getModel() {
     return *model;
+  }
+
+  uint64_t SceneObject::getCurrentPose() {
+    return currentPose;
   }
 
   std::vector<Model> SceneObject::getBoundingBoxSetModels() {
@@ -107,7 +111,7 @@ namespace small3d {
   }
 
   void SceneObject::resetAnimation() {
-    currentFrame = 0;
+    currentPose = 0;
   }
 
   void SceneObject::setFrameDelay(const int delay) {
@@ -119,14 +123,9 @@ namespace small3d {
       ++framesWaited;
       if (framesWaited == frameDelay) {
         framesWaited = 0;
-        if (wavefront) {
-          ++currentFrame;
-          if (currentFrame == numFrames) {
-            currentFrame = 0;
-          }
-        }
-        else {
-          model->animate();
+        ++currentPose;
+        if (currentPose == numPoses) {
+          currentPose = 0;
         }
       }
     }
