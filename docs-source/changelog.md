@@ -32,6 +32,8 @@ v1.802 (still open)
   in all the Renderer.render functions and existing game code using %small3d has
   to be updated, otherwise it can mix up this current pose parameter with the
   perspective parameter, with undesirable consequences.
+  
+- CMakeLists.txt modernisation
 
 v1.801 2023-01-21
 

@@ -8,16 +8,10 @@ endif()
 
 if(IOS)
   message(STATUS "IOS build...")
-  add_compile_definitions(SMALL3D_IOS)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -x objective-c -fmodules")
 endif()
 
-if(DEFINED ANDROID_PLATFORM OR IOS)
-  add_compile_definitions(SMALL3D_OPENGLES)
-endif()
-
 file(COPY "deps/include" DESTINATION ".")
-
 
 if(DEFINED ANDROID_PLATFORM)
   file(COPY "src/small3d_android.h" DESTINATION "./include")
@@ -55,18 +49,6 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 set(DEPS_PATH "${CMAKE_SOURCE_DIR}/deps")
 set(CMAKE_PREFIX_PATH ${DEPS_PATH})
 
-if(MSVC)
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-elseif(WIN32)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-  set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
-elseif(APPLE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++")
-elseif(UNIX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-endif()
-
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
   find_package(OpenGL REQUIRED)
   find_package(GLEW REQUIRED)
@@ -86,11 +68,5 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
 elseif(DEFINED ANDROID_PLATFORM)
   find_package(ZLIB REQUIRED)
 endif()
-
-if(WIN32 AND NOT DEFINED ANDROID_PLATFORM AND NOT IOS)
-  add_definitions(-DGLEW_STATIC)
-endif()
-
-add_definitions(${PNG_DEFINITIONS})
 
 subdirs(src)
