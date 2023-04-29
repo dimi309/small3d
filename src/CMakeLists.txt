@@ -9,7 +9,7 @@ add_library(small3d BasePath.cpp BoundingBoxSet.cpp File.cpp GlbFile.cpp
   )
 
 if(DEFINED ANDROID_PLATFORM)
-  target_sources(small3d PRIVATE small3d_android.c small3d_android.h)
+  target_sources(small3d PRIVATE small3d_android.c)
 endif()
 
 target_include_directories(small3d PUBLIC ../include/small3d)
@@ -55,6 +55,8 @@ if(DEFINED ANDROID_PLATFORM) # native_app_glue for Android
   add_library(native_app_glue STATIC
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
   target_include_directories(native_app_glue PUBLIC
+    ${ANDROID_NDK}/sources/android/native_app_glue)
+  target_include_directories(small3d PUBLIC
     ${ANDROID_NDK}/sources/android/native_app_glue)
 endif()
 
