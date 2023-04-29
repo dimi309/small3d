@@ -10,7 +10,6 @@
 #include <small3d/Renderer.hpp>
 #include <small3d/Model.hpp>
 #include <small3d/SceneObject.hpp>
-#include <small3d/WavefrontFile.hpp>
 #include <small3d/GlbFile.hpp>
 
 #if defined(SMALL3D_OPENGL)
