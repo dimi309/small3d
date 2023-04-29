@@ -69,4 +69,8 @@ elseif(DEFINED ANDROID_PLATFORM)
   find_package(ZLIB REQUIRED)
 endif()
 
+if(APPLE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++")
+endif()
+
 subdirs(src)
