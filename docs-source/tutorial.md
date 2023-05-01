@@ -62,7 +62,6 @@ called resources and place ball.obj in it. Also add the following code to a
 CMakeFiles.txt within the ball directory:
 
 ```
-
 cmake_minimum_required(VERSION 3.0.2)
 
 project(ball)
@@ -85,13 +84,11 @@ set(CMAKE_PREFIX_PATH ${DEPS_PATH})
 find_package(SMALL3D REQUIRED)
 
 subdirs(src)
-
 ```
 
 Create a directory called src within the ball directory and, inside it, another CMakeLists.txt file:
 
 ```
-
 add_executable(ball main.cpp)
 
 target_include_directories(ball PUBLIC "${CMAKE_SOURCE_DIR}/include")
@@ -111,7 +108,6 @@ if(MSVC)
   set_target_properties(ball PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
     "${PROJECT_BINARY_DIR}/bin")
 endif()
-
 ```
 
 # The Code
@@ -119,44 +115,35 @@ endif()
 Inside ball/src, create the main.cpp file:
 
 ```
-
 int main(int argc, char **argv) {
 
  return 0;
 }
-
 ```
 
 Include %small3d's Renderer and SceneObject classes:
 
 ```
-
 #include <small3d/Renderer.hpp>
 #include <small3d/SceneObject.hpp>
-
 ```
 
 Now we need the GLFW header files:
 
 ```
-
 #include <GLFW/glfw3.h>
-
 ```
 
 We also need to be using the %small3d namespace, so this goes under our include 
 statements:
 
 ```
-
 using namespace small3d;
-
 ```
 
 We also need to write the logic that will be detecting key presses:
 
 ```
-
 bool downkey, leftkey, rightkey, upkey, esckey;
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action,
@@ -184,7 +171,6 @@ if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
      esckey = false;
 
 }
-
 ```
 
 And finally, we go to the main program, and we create the renderer. The renderer 
@@ -192,26 +178,20 @@ is a singleton, so it can only be retrieved via the getInstance method, and
 assigned to a pointer:
 
 ```
-
 Renderer *renderer = &Renderer::getInstance("Ball demo");
-
 ```
 
 We will later need to access the window of the application, in order to pick up 
 key events:
 
 ```
-
 GLFWwindow* window = renderer->getWindow();
-
 ```
 
 We create the ball:
 
 ```
-
 SceneObject ball("ball", "resources/ball.glb", "");
-
 ```
 
 %small3d uses vectors a lot as parameters for convenience. When positioning the 
@@ -219,25 +199,20 @@ ball, the components are in order, x (-left, +right), y(+up, -down), and z
 (-away from the camera, +towards the camera):
 
 ```
-
 ball.position = glm::vec3(0.0f, -1.0f, -8.0f);
-
 ```
 
 So let's start our main loop now. %small3d uses GLFW and you can use it too! First we need to declare the callback function, which will be the keyCallback
 method we wrote above.
 
 ```
-
 glfwSetKeyCallback(window, keyCallback);
-
 ```
 
 Now in every iteration, we need to check whether we want to exit the program. 
 Let's say that we'll be doing that with the Esc key:
 
 ```
-
 while (!glfwWindowShouldClose(window) && !esckey) {
 
 glfwPollEvents();
@@ -253,7 +228,6 @@ else if (leftkey)
   ball.position.x -= 0.001f;
 else if (rightkey)
   ball.position.x += 0.001f;
-
 ```
 
 Ok, the ball is positioned. Now we need to actually render it. The second 
@@ -261,26 +235,20 @@ parameter is the colour. Let's say it's yellow (the vector below symbolises an
 rgb colour, together with the alpha channel):
 
 ```
-
 renderer->render(ball, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
-
 ```
 
 We are using a buffered system (we draw on one buffer, while the user is looking 
 at the other one), so we also need to swap the buffers:
 
 ```
-
 renderer->swapBuffers();
-
 ```
 
 And we close the loop :)
 
 ```
-
 }
-
 ```
 
 That's it!
@@ -290,14 +258,12 @@ library copy the cmake, build/include, build/lib and build/shaders directories
 to this deps directory. Then, back from the root ball directory execute:
 
 ```
-
 mkdir build
 cd build
 cmake ..
 cmake --build .
 cd bin
 ./ball
-
 ```
 
 On Windows, you need to execute cmake .. -G"MinGW Makefiles", or with the 
