@@ -25,6 +25,7 @@
 var menudata={children:[
 {text:"Main Page",url:"index.html"},
 {text:"Topics",url:"topics.html",children:[
+{text:"small3d Tutorial",url:"subprojects.html"},
 {text:"Setting up small3d with Visual Studio",url:"vs.html"},
 {text:"Setting up small3d with Xcode",url:"xcode.html"},
 {text:"Developing a game in parallel with small3d",url:"subprojects.html"}]},

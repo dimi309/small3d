@@ -9,6 +9,7 @@
       <tab type="namespacemembers" visible="yes" title="" intro=""/>
     </tab>
     <tab type="user" visible="yes" title="Topics" url="@ref topics">
+      <tab type="user" visible="yes" title="small3d Tutorial" url="@ref subprojects"/>
       <tab type="user" visible="yes" title="Setting up small3d with Visual Studio" url="@ref vs"/>
       <tab type="user" visible="yes" title="Setting up small3d with Xcode" url="@ref xcode"/>
       <tab type="user" visible="yes" title="Developing a game in parallel with small3d" url="@ref subprojects"/>
