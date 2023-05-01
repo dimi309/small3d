@@ -53,7 +53,7 @@ small - pun intended :) - and manageable.
 
 # Tutorial
 
-https://github.com/dimi309/small3d/docs/tutorial.html
+https://dimi309.github.io/small3d/tutorial.html
 
 # Building and deploying
 
