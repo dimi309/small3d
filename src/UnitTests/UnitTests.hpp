@@ -13,7 +13,7 @@
 #include "vulkan_helper_android.h"
 #endif
 #endif
-#include "Renderer.hpp"
+#include <small3d/Renderer.hpp>
 extern small3d::Renderer *r;
 void pollEvents();
 void initRenderer(uint32_t width = 854, uint32_t height = 480);

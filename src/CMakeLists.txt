@@ -60,6 +60,35 @@ if(DEFINED ANDROID_PLATFORM) # native_app_glue for Android
     ${ANDROID_NDK}/sources/android/native_app_glue)
 endif()
 
+if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC, OpenGL
+  target_link_libraries(small3d PUBLIC
+    ${GLEW_LIBRARIES}
+    ${OPENGL_LIBRARIES}
+    ${GLFW_LIBRARIES}
+    ${PNG_LIBRARIES}
+    ${VORBIS_LIBRARIES}
+    ${OGG_LIBRARIES}
+    ${PORTAUDIO_LIBRARIES}
+    ${FREETYPE_LIBRARIES}
+    )
+endif()
+
+# on windows bzip2 is required for gcc version >= 10, otherwise a freetype associated
+# link error is produced
+if(UNIX OR (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT
+      CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10))
+  target_include_directories(small3d PUBLIC ${BZIP2_INCLUDE_DIRS})
+  target_link_libraries(small3d PUBLIC ${BZIP2_LIBRARIES})
+endif()
+
+if(WIN32) # Windows
+  target_link_libraries(small3d PUBLIC winmm)
+endif()
+
+if(UNIX AND NOT APPLE) # Linux
+  target_link_libraries(small3d PUBLIC m pthread rt asound X11 dl)
+endif()
+
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
   # Unit testing
 
@@ -67,13 +96,9 @@ if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
     UnitTests/OctPyramid.hpp UnitTests/unit_tests.cpp UnitTests/UnitTests.cpp)
 
   target_include_directories(unittests PUBLIC ../include)
+  target_include_directories(unittests PUBLIC ../deps/include)
 
   if(MSVC) # Visual Studio
-    set_target_properties(unittests PROPERTIES LINK_FLAGS_DEBUG
-      "-NODEFAULTLIB:LIBCMTD")
-    set_target_properties(unittests PROPERTIES LINK_FLAGS_RELEASE
-      "-NODEFAULTLIB:LIBCMT")
-    
     set_target_properties(unittests PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
       "${small3d_BINARY_DIR}/bin")
   endif()
@@ -85,33 +110,7 @@ AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
   endif()
 
   if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC, OpenGL
-    target_link_libraries(unittests PUBLIC
-      small3d
-      ${GLEW_LIBRARIES}
-      ${OPENGL_LIBRARIES}
-      ${GLFW_LIBRARIES}
-      ${PNG_LIBRARIES}
-      ${VORBIS_LIBRARIES}
-      ${OGG_LIBRARIES}
-      ${PORTAUDIO_LIBRARIES}
-      ${FREETYPE_LIBRARIES}
-      )
-  endif()
-
-  # on windows bzip2 is required for gcc version >= 10, otherwise a freetype associated
-  # link error is produced
-  if(UNIX OR (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT
-	CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10))
-    target_include_directories(unittests PUBLIC ${BZIP2_INCLUDE_DIRS})
-    target_link_libraries(unittests PUBLIC ${BZIP2_LIBRARIES})
-  endif()
-  
-  if(WIN32) # Windows
-    target_link_libraries(unittests PUBLIC winmm)
-  endif()
-  
-  if(UNIX AND NOT APPLE) # Linux
-    target_link_libraries(unittests PUBLIC m pthread rt asound X11 dl)
+    target_link_libraries(unittests PRIVATE small3d)
   endif()
 
 endif()
