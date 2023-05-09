@@ -98,7 +98,6 @@ target_include_directories(ball PUBLIC ${SMALL3D_INCLUDE_DIRS})
 target_link_libraries(ball PUBLIC ${SMALL3D_LIBRARIES})
 
 if(APPLE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++")
   set_target_properties(ball PROPERTIES LINK_FLAGS "-framework \
 		AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
 		-framework IOKit -framework CoreVideo")
@@ -268,6 +267,12 @@ cd bin
 
 On Windows, you need to execute cmake .. -G"MinGW Makefiles", or with the 
 preferred Visual Studio configuration (e.g. cmake .. -G"Visual Studio 17 2022").
+
+On some platforms where the C++ '14 (at least) standard is not supported by 
+default (this is the case on MacOS for example), in order to avoid compilation 
+errors, you need to pass it to cmake:
+	
+	cmake .. -DCMAKE_CXX_STANDARD=14
 
 Note that you have to be inside the build/bin directory in order to execute the 
 program, otherwise it will not find the necessary resource files (shaders, 

@@ -122,7 +122,6 @@ CMake Setup</h1>
 <div class="line">target_link_libraries(ball PUBLIC ${SMALL3D_LIBRARIES})</div>
 <div class="line"> </div>
 <div class="line">if(APPLE)</div>
-<div class="line">  set(CMAKE_CXX_FLAGS &quot;${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++&quot;)</div>
 <div class="line">  set_target_properties(ball PROPERTIES LINK_FLAGS &quot;-framework \</div>
 <div class="line">        AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \</div>
 <div class="line">        -framework IOKit -framework CoreVideo&quot;)</div>
@@ -215,7 +214,8 @@ The Code</h1>
 <div class="line">cd bin</div>
 <div class="line">./ball</div>
 </div><!-- fragment --><p>On Windows, you need to execute cmake .. -G"MinGW Makefiles", or with the preferred Visual Studio configuration (e.g. cmake .. -G"Visual Studio 17 2022").</p>
-<p>Note that you have to be inside the build/bin directory in order to execute the program, otherwise it will not find the necessary resource files (shaders, textures, etc).</p>
+<p>On some platforms where the C++ '14 (at least) standard is not supported by default (this is the case on MacOS for example), in order to avoid compilation errors, you need to pass it to cmake: </p><pre class="fragment">cmake .. -DCMAKE_CXX_STANDARD=14
+</pre><p>Note that you have to be inside the build/bin directory in order to execute the program, otherwise it will not find the necessary resource files (shaders, textures, etc).</p>
 <p>There's our ball:</p>
 <p><img src="tutorial08.png" alt="" class="inline" title="ball"/>   </p>
 <p>Try moving it around with the arrows. small3d supports a lot more features than those presented here, playing sounds, collision detection and building with the conan build system which is a lot faster and easier than plain cmake. A good way to learn about all that is to read the documentation and also to explore the source code of the sample games. </p>
