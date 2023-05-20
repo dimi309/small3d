@@ -53,7 +53,7 @@ small - pun intended :) - and manageable.
 
 # Tutorial
 
-https://dimi309.github.io/small3d/tutorial.html
+https://www.gamedev.net/tutorials/programming/engines-and-middleware/small3d-tutorial-r5655/
 
 # Building and deploying
 

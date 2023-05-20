@@ -1,9 +1,27 @@
 var searchData=
 [
-  ['topics_115',['topics',['../md_docs-source_topics.html',1,'(Global Namespace)'],['../topics.html',1,'(Global Namespace)']]],
-  ['tutorial_116',['tutorial',['../md_docs-source_tutorial.html',1,'']]],
-  ['texturecoordsdata_117',['textureCoordsData',['../classsmall3d_1_1_model.html#a3dc1c38f06ad7bd19126933197e7b443',1,'small3d::Model']]],
-  ['texturecoordsdatabytesize_118',['textureCoordsDataByteSize',['../classsmall3d_1_1_model.html#a3351123ddee47d7b81b9a020ca828061',1,'small3d::Model']]],
-  ['time_2ehpp_119',['Time.hpp',['../_time_8hpp.html',1,'']]],
-  ['tocolour_120',['toColour',['../classsmall3d_1_1_image.html#a619d1f2f4c5e4e8c973abcd6b7d03aa5',1,'small3d::Image']]]
+  ['scale_0',['scale',['../classsmall3d_1_1_model.html#a39352fd779afaef6ee5ef398a0481b31',1,'small3d::Model']]],
+  ['sceneobject_1',['SceneObject',['../classsmall3d_1_1_scene_object.html#a7ffc0e811e0b98e67667d56881828deb',1,'small3d::SceneObject::SceneObject(const std::string &amp;name, const std::string &amp;modelPath, const std::string &amp;modelMeshName=&quot;&quot;, const uint32_t boundingBoxSubdivisions=0)'],['../classsmall3d_1_1_scene_object.html#ad11ac06b60114c669aae289e88825c13',1,'small3d::SceneObject::SceneObject(const std::string &amp;name, const Model &amp;model, const uint32_t boundingBoxSubdivisions=0)'],['../classsmall3d_1_1_scene_object.html',1,'small3d::SceneObject']]],
+  ['sceneobject_2ehpp_2',['SceneObject.hpp',['../_scene_object_8hpp.html',1,'']]],
+  ['setbackgroundcolour_3',['setBackgroundColour',['../classsmall3d_1_1_renderer.html#ab68576dfc33356d43722e83fadec55f4',1,'small3d::Renderer']]],
+  ['setcamerarotation_4',['setCameraRotation',['../classsmall3d_1_1_renderer.html#a431380a4b28abb9a14c02c4535e49a1b',1,'small3d::Renderer']]],
+  ['setcameratransformation_5',['setCameraTransformation',['../classsmall3d_1_1_renderer.html#ab895333eea762ecfab8fb2e902b2862e',1,'small3d::Renderer']]],
+  ['setframedelay_6',['setFrameDelay',['../classsmall3d_1_1_scene_object.html#ac5597d21a46f7208fc92377f9cc8b631',1,'small3d::SceneObject']]],
+  ['setrotation_7',['setRotation',['../classsmall3d_1_1_scene_object.html#a25dd3597cb90bca03880e9727f64d8b0',1,'small3d::SceneObject']]],
+  ['setting_20up_20small3d_20with_20visual_20studio_8',['Setting up small3d with Visual Studio',['../vs.html',1,'']]],
+  ['setting_20up_20small3d_20with_20xcode_9',['Setting up small3d with Xcode',['../xcode.html',1,'']]],
+  ['settransformation_10',['setTransformation',['../classsmall3d_1_1_scene_object.html#ab2e256555d8f7befc6c51422d8a61853',1,'small3d::SceneObject']]],
+  ['shadowcamtransformation_11',['shadowCamTransformation',['../classsmall3d_1_1_renderer.html#a5c76d273924ca89a305f694eab55ba45',1,'small3d::Renderer']]],
+  ['shadowsactive_12',['shadowsActive',['../classsmall3d_1_1_renderer.html#ae41ab2c06a1a2c768c5a14aafbe79868',1,'small3d::Renderer']]],
+  ['shadowspacesize_13',['shadowSpaceSize',['../classsmall3d_1_1_renderer.html#a405fc8a2a37c88cec17aa49641cf50af',1,'small3d::Renderer']]],
+  ['small3d_14',['small3d',['../index.html',1,'(Global Namespace)'],['../namespacesmall3d.html',1,'small3d']]],
+  ['small3d_5fandroid_2eh_15',['small3d_android.h',['../small3d__android_8h.html',1,'']]],
+  ['sound_16',['Sound',['../classsmall3d_1_1_sound.html',1,'small3d::Sound'],['../classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219',1,'small3d::Sound::Sound()'],['../classsmall3d_1_1_sound.html#a5c0dcc69eba4f4f1993d3d8aa50b28f7',1,'small3d::Sound::Sound(const std::string soundFilePath)'],['../classsmall3d_1_1_sound.html#abe9fffa807136a82dba901f6c1b9aeb7',1,'small3d::Sound::Sound(const Sound &amp;other) noexcept'],['../classsmall3d_1_1_sound.html#aa6e96196c84086a30c9d02aa1a4aa358',1,'small3d::Sound::Sound(const Sound &amp;&amp;other) noexcept']]],
+  ['sound_2ehpp_17',['Sound.hpp',['../_sound_8hpp.html',1,'']]],
+  ['start_18',['start',['../classsmall3d_1_1_renderer.html#ab8b6dbd513c16e99f9f673f14e00409b',1,'small3d::Renderer']]],
+  ['startanimating_19',['startAnimating',['../classsmall3d_1_1_scene_object.html#a21bd126617420837019165e892b1ff6b',1,'small3d::SceneObject']]],
+  ['stop_20',['stop',['../classsmall3d_1_1_renderer.html#a15011351cd2207d0430b0ebb5a65bef8',1,'small3d::Renderer::stop()'],['../classsmall3d_1_1_sound.html#a3b239ef468eae9e89c48351127b329f3',1,'small3d::Sound::stop()']]],
+  ['stopanimating_21',['stopAnimating',['../classsmall3d_1_1_scene_object.html#a005d922b169d1922f2f28402cd7a0cf6',1,'small3d::SceneObject']]],
+  ['subprojects_22',['subprojects',['../md_docs_source_subprojects.html',1,'']]],
+  ['swapbuffers_23',['swapBuffers',['../classsmall3d_1_1_renderer.html#acdc83f2aaaf3f41f35e99c1eabc6ac98',1,'small3d::Renderer']]]
 ];
