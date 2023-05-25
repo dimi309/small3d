@@ -45,9 +45,9 @@ cp src/libglfw3.a ../../lib/
 cd ../..
 rm -rf glfw-3.3.8
 
-tar xvf glew-20190928.tgz
+tar xvf glew-2.2.0.tgz
 cd glew-2.2.0
-cmake build/cmake -DBUILD_UTILS=OFF
+cmake build/cmake -DBUILD_UTILS=OFF $CMAKE_DEFINITIONS
 cmake --build .
 cp -rf include/GL ../include/
 cp lib/libGLEW.a ../lib/

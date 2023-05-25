@@ -35,8 +35,8 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..
 rmdir /Q /S glfw-3.3.8
 
-7z x glew-20190928.tgz
-7z x glew-20190928.tar
+7z x glew-2.2.0.tgz
+7z x glew-2.2.0.tar
 if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 cd glew-2.2.0
 cmake -G"MinGW Makefiles" build/cmake -DBUILD_UTILS=OFF %CMAKE_DEFINITIONS%
@@ -49,7 +49,7 @@ if /I "%~1" == "Debug" set GLEWLIB=libglew32d.a
 copy lib\!GLEWLIB! ..\lib\libglew32.a
 if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 cd ..
-del glew-20190928.tar
+del glew-2.2.0.tar
 rmdir /Q /S glew-2.2.0
 
 7z x glm-0.9.9.8.zip
