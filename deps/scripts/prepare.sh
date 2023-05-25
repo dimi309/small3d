@@ -50,7 +50,11 @@ cd glew-2.2.0
 cmake build/cmake -DBUILD_UTILS=OFF $CMAKE_DEFINITIONS
 cmake --build .
 cp -rf include/GL ../include/
-cp lib/libGLEW.a ../lib/
+if [ "$1" == "Debug" ]; then
+    cp lib/libGLEWd.a ../lib/libGLEW.a
+else
+    cp lib/libGLEW.a ../lib/libGLEW.a
+fi
 cd ..
 rm -rf glew-2.2.0
 
