@@ -47,14 +47,15 @@ rm -rf glfw-3.3.8
 
 tar xvf glew-2.2.0.tgz
 cd glew-2.2.0
-cmake build/cmake -DBUILD_UTILS=OFF $CMAKE_DEFINITIONS
+# Always building GLEW on *nix in Release mode because when used in Debug mode the screen remains blank.
+cmake build/cmake -DBUILD_UTILS=OFF -DCMAKE_BUILD_TYPE=Release
 cmake --build .
 cp -rf include/GL ../include/
-if [ "$1" == "Debug" ]; then
-    cp lib/libGLEWd.a ../lib/libGLEW.a
-else
+# if [ "$1" == "Debug" ]; then
+#    cp lib/libGLEWd.a ../lib/libGLEW.a
+# else
     cp lib/libGLEW.a ../lib/libGLEW.a
-fi
+# fi
 cd ..
 rm -rf glew-2.2.0
 

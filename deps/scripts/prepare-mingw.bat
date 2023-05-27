@@ -39,13 +39,14 @@ rmdir /Q /S glfw-3.3.8
 7z x glew-2.2.0.tar
 if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 cd glew-2.2.0
-cmake -G"MinGW Makefiles" build/cmake -DBUILD_UTILS=OFF %CMAKE_DEFINITIONS%
+REM Always building GLEW on mingw in Release mode because when used in Debug mode the screen remains blank.
+cmake -G"MinGW Makefiles" build/cmake -DBUILD_UTILS=OFF -DCMAKE_BUILD_TYPE=Release
 cmake --build .
 if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 xcopy include\GL ..\include\GL /i /s
 if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 set GLEWLIB=libglew32.a
-if /I "%~1" == "Debug" set GLEWLIB=libglew32d.a 
+REM if /I "%~1" == "Debug" set GLEWLIB=libglew32d.a 
 copy lib\!GLEWLIB! ..\lib\libglew32.a
 if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 cd ..
