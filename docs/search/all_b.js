@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['normalsdata_0',['normalsData',['../classsmall3d_1_1_model.html#aa9e45810ced27f9336e2e77bca2f8ba6',1,'small3d::Model']]],
-  ['normalsdatabytesize_1',['normalsDataByteSize',['../classsmall3d_1_1_model.html#ab62bf9713060f68517cb7ec34186e884',1,'small3d::Model']]],
-  ['noshadow_2',['noShadow',['../classsmall3d_1_1_model.html#ac97a1368278ce6bf42d14470e8270dc9',1,'small3d::Model']]],
-  ['notrgba_3',['NOTRGBA',['../classsmall3d_1_1_image.html#ae8ebe48834ff700dff0f3f30983b70bd',1,'small3d::Image']]]
+  ['operator_3d_77',['operator=',['../classsmall3d_1_1_sound.html#a018a0b62cd18522e106dee4882e09538',1,'small3d::Sound::operator=(const Sound &amp;other) noexcept'],['../classsmall3d_1_1_sound.html#a0086ccfe2e98cf4ea36a65341e7fef54',1,'small3d::Sound::operator=(const Sound &amp;&amp;other) noexcept']]],
+  ['origframebuffer_78',['origFramebuffer',['../classsmall3d_1_1_renderer.html#a9b939a3e62a9b97bcec47357ca697a94',1,'small3d::Renderer']]],
+  ['origrenderbuffer_79',['origRenderbuffer',['../classsmall3d_1_1_renderer.html#adafec1db077603b5b1c4a12e291fa798',1,'small3d::Renderer']]]
 ];

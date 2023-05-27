@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['vertexdata_0',['vertexData',['../classsmall3d_1_1_model.html#adf9422b7594956d857bc9da9da7b13e4',1,'small3d::Model']]],
-  ['vertexdatabytesize_1',['vertexDataByteSize',['../classsmall3d_1_1_model.html#a06b724ca272d632f25098e25ab0137a4',1,'small3d::Model']]],
-  ['vertices_2',['vertices',['../classsmall3d_1_1_bounding_box_set.html#ad6565272cb69deaf226f4ae892975f93',1,'small3d::BoundingBoxSet']]],
-  ['vs_3',['vs',['../md_docs_source_vs.html',1,'']]]
+  ['weightdata_126',['weightData',['../classsmall3d_1_1_model.html#a41ca4152abcc719e9048258925999f10',1,'small3d::Model']]],
+  ['weightdatabytesize_127',['weightDataByteSize',['../classsmall3d_1_1_model.html#a0f8f0d5bf988d89b3cf7c6c16bc2871e',1,'small3d::Model']]]
 ];

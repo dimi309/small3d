@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_25small3d_20tutorial_0',['%small3d Tutorial',['../tutorial.html',1,'']]]
+  ['changelog_269',['changelog',['../md_docs-source_changelog.html',1,'(Global Namespace)'],['../changelog.html',1,'(Global Namespace)']]]
 ];

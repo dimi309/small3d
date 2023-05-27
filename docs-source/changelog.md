@@ -35,6 +35,11 @@ v1.802 (still open)
   
 - CMakeLists.txt modernisation
 
+- [BREAKING] The FindSMALL3D.cmake module has been renamed to Findsmall3d and it
+  now retrieves variables with small3d in lowercase, for example "small3d_LIBRARIES"
+  instead of "SMALL3D_LIBRARIES". It also provides the small3d::small3d target
+  which greatly diminishes the code needed in CMakeLists files using the library.
+
 v1.801 2023-01-21
 
 - VS build scripts switched to build with VS 2022 by default. In order to 

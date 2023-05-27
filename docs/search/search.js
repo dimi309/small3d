@@ -80,10 +80,9 @@ function getYPos(item)
           storing this instance.  Is needed to be able to set timeouts.
    resultPath - path to use for external files
 */
-function SearchBox(name, resultsPath, label, extension)
+function SearchBox(name, resultsPath, inFrame, label)
 {
   if (!name || !resultsPath) {  alert("Missing parameters to SearchBox."); }
-  if (!extension || extension == "") { extension = ".html"; }
 
   // ---------- Instance variables
   this.name                  = name;
@@ -96,8 +95,8 @@ function SearchBox(name, resultsPath, label, extension)
   this.hideTimeout           = 0;
   this.searchIndex           = 0;
   this.searchActive          = false;
+  this.insideFrame           = inFrame;
   this.searchLabel           = label;
-  this.extension             = extension;
 
   // ----------- DOM Elements
 
@@ -135,14 +134,30 @@ function SearchBox(name, resultsPath, label, extension)
     var searchSelectWindow = this.DOMSearchSelectWindow();
     var searchField        = this.DOMSearchSelect();
 
-    var left = getXPos(searchField);
-    var top  = getYPos(searchField);
-    top += searchField.offsetHeight;
+    if (this.insideFrame)
+    {
+      var left = getXPos(searchField);
+      var top  = getYPos(searchField);
+      left += searchField.offsetWidth + 6;
+      top += searchField.offsetHeight;
 
-    // show search selection popup
-    searchSelectWindow.style.display='block';
-    searchSelectWindow.style.left =  left + 'px';
-    searchSelectWindow.style.top  =  top  + 'px';
+      // show search selection popup
+      searchSelectWindow.style.display='block';
+      left -= searchSelectWindow.offsetWidth;
+      searchSelectWindow.style.left =  left + 'px';
+      searchSelectWindow.style.top  =  top  + 'px';
+    }
+    else
+    {
+      var left = getXPos(searchField);
+      var top  = getYPos(searchField);
+      top += searchField.offsetHeight;
+
+      // show search selection popup
+      searchSelectWindow.style.display='block';
+      searchSelectWindow.style.left =  left + 'px';
+      searchSelectWindow.style.top  =  top  + 'px';
+    }
 
     // stop selection hide timer
     if (this.hideTimeout)
@@ -332,13 +347,13 @@ function SearchBox(name, resultsPath, label, extension)
     if (idx!=-1)
     {
        var hexCode=idx.toString(16);
-       resultsPage = this.resultsPath + '/' + indexSectionNames[this.searchIndex] + '_' + hexCode + this.extension;
+       resultsPage = this.resultsPath + '/' + indexSectionNames[this.searchIndex] + '_' + hexCode + '.html';
        resultsPageWithSearch = resultsPage+'?'+escape(searchValue);
        hasResultsPage = true;
     }
     else // nothing available for this search term
     {
-       resultsPage = this.resultsPath + '/nomatches' + this.extension;
+       resultsPage = this.resultsPath + '/nomatches.html';
        resultsPageWithSearch = resultsPage;
        hasResultsPage = false;
     }
@@ -350,18 +365,25 @@ function SearchBox(name, resultsPath, label, extension)
     {
        var domSearchBox = this.DOMSearchBox();
        this.DOMSearchClose().style.display = 'inline-block';
-       var domPopupSearchResults = this.DOMPopupSearchResults();
-       var left = getXPos(domSearchBox) + 150; // domSearchBox.offsetWidth;
-       var top  = getYPos(domSearchBox) + 20;  // domSearchBox.offsetHeight + 1;
-       domPopupSearchResultsWindow.style.display = 'block';
-       left -= domPopupSearchResults.offsetWidth;
-       var maxWidth = document.body.clientWidth;
-       var width = 400;
-       if (left<10) left=10;
-       if (width+left+8>maxWidth) width=maxWidth-left-8;
-       domPopupSearchResultsWindow.style.top     = top  + 'px';
-       domPopupSearchResultsWindow.style.left    = left + 'px';
-       domPopupSearchResultsWindow.style.width   = width + 'px';
+       if (this.insideFrame)
+       {
+         var domPopupSearchResults = this.DOMPopupSearchResults();
+         domPopupSearchResultsWindow.style.position = 'relative';
+         domPopupSearchResultsWindow.style.display  = 'block';
+         var width = document.body.clientWidth - 8; // the -8 is for IE :-(
+         domPopupSearchResultsWindow.style.width    = width + 'px';
+         domPopupSearchResults.style.width          = width + 'px';
+       }
+       else
+       {
+         var domPopupSearchResults = this.DOMPopupSearchResults();
+         var left = getXPos(domSearchBox) + 150; // domSearchBox.offsetWidth;
+         var top  = getYPos(domSearchBox) + 20;  // domSearchBox.offsetHeight + 1;
+         domPopupSearchResultsWindow.style.display = 'block';
+         left -= domPopupSearchResults.offsetWidth;
+         domPopupSearchResultsWindow.style.top     = top  + 'px';
+         domPopupSearchResultsWindow.style.left    = left + 'px';
+       }
     }
 
     this.lastSearchValue = searchValue;
@@ -417,12 +439,12 @@ function SearchResults(name)
 
       while (element && element!=parentElement)
       {
-        if (element.nodeName.toLowerCase() == 'div' && element.className == 'SRChildren')
+        if (element.nodeName == 'DIV' && element.className == 'SRChildren')
         {
           return element;
         }
 
-        if (element.nodeName.toLowerCase() == 'div' && element.hasChildNodes())
+        if (element.nodeName == 'DIV' && element.hasChildNodes())
         {
            element = element.firstChild;
         }
@@ -740,7 +762,6 @@ function createResults()
     if (searchData[e][1].length==2) // single result
     {
       srLink.setAttribute('href',searchData[e][1][1][0]);
-      srLink.setAttribute('onclick','parent.searchBox.CloseResultsWindow()');
       if (searchData[e][1][1][1])
       {
        srLink.setAttribute('target','_parent');
@@ -762,7 +783,6 @@ function createResults()
         setKeyActions(srChild,'return searchResults.NavChild(event,'+e+','+c+')');
         setClassAttr(srChild,'SRScope');
         srChild.setAttribute('href',searchData[e][1][c+1][0]);
-        srChild.setAttribute('onclick','parent.searchBox.CloseResultsWindow()');
         if (searchData[e][1][c+1][1])
         {
          srChild.setAttribute('target','_parent');

@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['image_0',['Image',['../classsmall3d_1_1_image.html#afe8aec09a44cfc52975166d930466dea',1,'small3d::Image::Image(const std::string fileLocation=&quot;&quot;)'],['../classsmall3d_1_1_image.html#ae3c2a88cea4d2628cfb801f9ae414c8e',1,'small3d::Image::Image(std::vector&lt; char &gt; &amp;data)'],['../classsmall3d_1_1_image.html',1,'small3d::Image']]],
-  ['image_2ehpp_1',['Image.hpp',['../_image_8hpp.html',1,'']]],
-  ['indexdata_2',['indexData',['../classsmall3d_1_1_model.html#affb0aba31845367125ed2008e12f1cac',1,'small3d::Model']]],
-  ['indexdatabytesize_3',['indexDataByteSize',['../classsmall3d_1_1_model.html#a85d48b3995956a4ee42dc8c34b195ad7',1,'small3d::Model']]],
-  ['initlogger_4',['initLogger',['../namespacesmall3d.html#a7ffafe7a0562ca3c76da6bfb30a62e1b',1,'small3d']]]
+  ['joint_57',['Joint',['../structsmall3d_1_1_model_1_1_joint.html',1,'small3d::Model']]],
+  ['jointdata_58',['jointData',['../classsmall3d_1_1_model.html#aa75d379c3808bfce41889f918656b87f',1,'small3d::Model']]],
+  ['jointdatabytesize_59',['jointDataByteSize',['../classsmall3d_1_1_model.html#a6ed04786c848d0ef209c80973dfa26e2',1,'small3d::Model']]],
+  ['joints_60',['joints',['../classsmall3d_1_1_model.html#ab90cce419400675c73e1196cdcb679d8',1,'small3d::Model']]]
 ];
