@@ -20,7 +20,7 @@ find_package(PNG REQUIRED)
 find_package(GLM)
 find_package(OGG REQUIRED)
 find_package(VORBIS REQUIRED)
-find_package(Portaudio REQUIRED)
+find_package(PORTAUDIO REQUIRED)
 find_package(Freetype REQUIRED)
 
 if(UNIX OR (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT
@@ -55,6 +55,12 @@ set(small3d_INCLUDE_DIRS
   ${PORTAUDIO_INCLUDE_DIRS}
   ${FREETYPE_INCLUDE_DIRS}
   )
+
+if(APPLE)
+  set(small3d_LINKER_FLAGS "-framework \
+              AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
+              -framework IOKit -framework CoreVideo")
+endif()
 
 if(UNIX OR (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT
       CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10))
@@ -118,4 +124,9 @@ if(UNIX AND NOT APPLE) # Linux
     APPEND)
 endif()
 
-
+if(APPLE)
+  set_property(TARGET small3d::small3d
+  PROPERTY INTERFACE_LINK_LIBRARIES
+  ${small3d_LINKER_FLAGS}
+  APPEND)
+endif()
