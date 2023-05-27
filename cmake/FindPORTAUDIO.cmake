@@ -10,6 +10,8 @@ find_library(
   PORTAUDIO_LIBRARIES
   NAMES
   portaudio
+  portaudio_x86
+  portaudio_static
   PATHS
   lib
   /usr/lib
