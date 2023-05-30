@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['developing_20a_20game_20in_20parallel_20with_20_25small3d_270',['Developing a game in parallel with %small3d',['../subprojects.html',1,'']]]
+  ['small3d_268',['small3d',['../index.html',1,'']]],
+  ['setting_20up_20small3d_20with_20visual_20studio_269',['Setting up small3d with Visual Studio',['../vs.html',1,'']]],
+  ['setting_20up_20small3d_20with_20xcode_270',['Setting up small3d with Xcode',['../xcode.html',1,'']]]
 ];

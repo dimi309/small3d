@@ -27,8 +27,7 @@ var menudata={children:[
 {text:"Topics",url:"topics.html",children:[
 {text:"small3d Tutorial",url:"tutorial.html"},
 {text:"Setting up small3d with Visual Studio",url:"vs.html"},
-{text:"Setting up small3d with Xcode",url:"xcode.html"},
-{text:"Developing a game in parallel with small3d",url:"subprojects.html"}]},
+{text:"Setting up small3d with Xcode",url:"xcode.html"}]},
 {text:"Classes",url:"annotated.html",children:[
 {text:"Class List",url:"annotated.html"},
 {text:"Class Index",url:"classes.html"},

@@ -12,7 +12,6 @@
       <tab type="user" visible="yes" title="small3d Tutorial" url="@ref tutorial"/>
       <tab type="user" visible="yes" title="Setting up small3d with Visual Studio" url="@ref vs"/>
       <tab type="user" visible="yes" title="Setting up small3d with Xcode" url="@ref xcode"/>
-      <tab type="user" visible="yes" title="Developing a game in parallel with small3d" url="@ref subprojects"/>
     </tab>
     <tab type="classes" visible="yes" title="">
       <tab type="classlist" visible="yes" title="" intro=""/>
