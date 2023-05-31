@@ -31,12 +31,10 @@ Minimalistic, open source library for making 3D games in C++
 - MacOS (OpenGL)
 - Linux (OpenGL - Tested on Debian, Ubuntu and Fedora) 
 - Android (OpenGL ES 2.0)
-- iOS (OpenGL ES 2.0 - Extremely backwards compatible. It can run on iOS 9.3 and Android 4.2)
+- iOS (OpenGL ES 2.0 - Extremely backwards compatible. It can run on iOS 9.3 and
+  Android 4.2)
 
----
-**NOTE**
-
-I am aware that OpenGL and OpenGL ES have been deprecated by Apple in favour of 
+*I am aware that OpenGL and OpenGL ES have been deprecated by Apple in favour of 
 Metal. This was one of the reasons [I was also maintaining a Vulkan renderer in the past](https://github.com/dimi309/small3d/releases/tag/1.8015.last.vulkan), 
 which was also running on Apple devices via MoltenVK. I was hoping that, in the 
 near future, I could use Vulkan exclusively across all platforms. However, 
@@ -46,10 +44,8 @@ despite the deprecation, OpenGL and OpenGL ES still work just fine on Apple. I
 will reconsider implementing a Vulkan renderer or a Metal renderer in the future,
 or even a DirectX renderer (why not) if OpenGL ever does indeed get discontinued 
 on any platform small3d currently supports. My priority is always that games made 
-with small3d run on as many devices as possible and that the codebase remains pretty
-small - pun intended :) - and manageable.
-
----
+with small3d run on as many devices as possible and that the codebase remains 
+pretty small - pun intended :) - and manageable.*
 
 # Tutorial
 
@@ -97,8 +93,8 @@ provided in a [separate repository](https://github.com/dimi309/small3d-conan).
 
 You can build small3d for mobile platforms by executing either `build-android` 
 or  `build-ios` from the `scripts` directory. Then you can use the test projects 
-in the `android`, `ios` and `ios-opengles` directories to check if everything works, 
-or as a starting point for your own projects.
+in the `android`, `ios` and `ios-opengles` directories to check if everything 
+works, or as a starting point for your own projects.
 
 Note that, while with the desktop edition of small3d I use GLFW for windowing 
 functionalities and I/O, on mobile I access the native infrastructure directly.
