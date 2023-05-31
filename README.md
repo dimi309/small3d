@@ -39,12 +39,12 @@ Metal. This was one of the reasons [I was also maintaining a Vulkan renderer in 
 which was also running on Apple devices via MoltenVK. I was hoping that, in the 
 near future, I could use Vulkan exclusively across all platforms. However, 
 given the many glitches I have encountered with Vulkan drivers on many devices, 
-I have decided to remove the Vulkan renderer from %small3d for now. Do not worry;
+I have decided to remove the Vulkan renderer from small3d for now. Do not worry;
 despite the deprecation, OpenGL and OpenGL ES still work just fine on Apple. I 
 will reconsider implementing a Vulkan renderer or a Metal renderer in the future,
 or even a DirectX renderer (why not) if OpenGL ever does indeed get discontinued 
-on any platform %small3d currently supports. My priority is always that games made 
-with %small3d run on as many devices as possible and that the codebase remains 
+on any platform small3d currently supports. My priority is always that games made 
+with small3d run on as many devices as possible and that the codebase remains 
 pretty small - pun intended :) - and manageable.*
 
 # Tutorial
@@ -72,7 +72,7 @@ directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`).
 Then, the unit tests can be run via the `unittests` binary from `build/bin`.
 
 If any of this fails or you would simply like to restart the building
-procedure, the best way to clean the %small3d directories is by using git:
+procedure, the best way to clean the small3d directories is by using git:
 
 	git clean -fdx
 
@@ -86,17 +86,17 @@ If you are using cmake, the modules in `small3d/cmake` can be useful. Check the
 `CMakeLists.txt` and `src/CMakeLists.txt` files for other configuration details 
 (link flags, etc) that may also be required or useful.
 
-You can also deploy %small3d using [conan](https://conan.io). The conan package is 
+You can also deploy small3d using [conan](https://conan.io). The conan package is 
 provided in a [separate repository](https://github.com/dimi309/small3d-conan).
 
 ## Deploying small3d for mobile
 
-You can build %small3d for mobile platforms by executing either `build-android` 
+You can build small3d for mobile platforms by executing either `build-android` 
 or  `build-ios` from the `scripts` directory. Then you can use the test projects 
 in the `android`, `ios` and `ios-opengles` directories to check if everything 
 works, or as a starting point for your own projects.
 
-Note that, while with the desktop edition of %small3d I use GLFW for windowing 
+Note that, while with the desktop edition of small3d I use GLFW for windowing 
 functionalities and I/O, on mobile I access the native infrastructure directly.
 
 ## Boilerplate Project
@@ -107,7 +107,7 @@ and input already set up, you are looking for this:
 https://github.com/dimi309/small3d-boilerplate
 
 It is highly recommended to use this boilerplate if you intend to port your
-game to Android and / or iOS. While it is pretty straightforward to get %small3d
+game to Android and / or iOS. While it is pretty straightforward to get small3d
 working for the desktop and you might prefer the freedom and flexibility of
 working with a project set up from scratch, mobile platforms have many
 specificities and quirks to take care of and keep in mind, so the boilerplate
@@ -115,7 +115,7 @@ can save you a lot of time in that respect.
 
 # Referenced libraries
 
-All %small3d dependencies are distributed together with its source code. 
+All small3d dependencies are distributed together with its source code. 
 They can be built by executing a single script (see "Building", above).
 
 - glew if building for PC
