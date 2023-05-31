@@ -5,7 +5,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_library(log-lib log)
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
 
-add_compile_definitions(SMALL3D_OPENGL)
 add_compile_definitions(SMALL3D_OPENGLES)
 
 find_package (oboe REQUIRED CONFIG)

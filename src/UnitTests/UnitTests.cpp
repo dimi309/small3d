@@ -105,10 +105,6 @@ void handle_cmd(android_app *pApp, int32_t cmd) {
           initRenderer();
           instantiated = true;
 
-        } else {
-#ifndef SMALL3D_OPENGL
-          r->setupVulkan();
-#endif
         }
 
         get_screen_info();
@@ -121,9 +117,6 @@ void handle_cmd(android_app *pApp, int32_t cmd) {
     case APP_CMD_SAVE_STATE:
     case APP_CMD_STOP:
       if (appActive) {
-#ifndef SMALL3D_OPENGL
-        r->destroyVulkan();
-#endif
         appActive = false;
       }
       break;
@@ -282,10 +275,6 @@ int GlbTextureTestLookAtShadows() {
   topForShadows.y += 8.0f;
   topForShadows.z -= 0.1f; // for lookAt to work..
   auto up = glm::vec3(0.0f, 1.0f, 0.0f);
-  
-#ifndef SMALL3D_OPENGL
-  up.y *= -1.0f;
-#endif
 
   r->shadowCamTransformation = glm::lookAt(topForShadows, tree.position, up);
 
