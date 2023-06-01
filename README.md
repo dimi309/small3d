@@ -31,21 +31,22 @@ Minimalistic, open source library for making 3D games in C++
 - MacOS (OpenGL)
 - Linux (OpenGL - Tested on Debian, Ubuntu and Fedora) 
 - Android (OpenGL ES 2.0)
-- iOS (OpenGL ES 2.0 - Extremely backwards compatible. It can run on iOS 9.3 and
-  Android 4.2)
+- iOS (OpenGL ES 2.0) 
+
+This library is extremely backwards compatible. It can run on iOS 9.3 and 
+Android 4.2.
 
 *I am aware that OpenGL and OpenGL ES have been deprecated by Apple in favour of 
 Metal. This was one of the reasons [I was also maintaining a Vulkan renderer in the past](https://github.com/dimi309/small3d/releases/tag/1.8015.last.vulkan), 
 which was also running on Apple devices via MoltenVK. I was hoping that, in the 
 near future, I could use Vulkan exclusively across all platforms. However, 
 given the many glitches I have encountered with Vulkan drivers on many devices, 
-I have decided to remove the Vulkan renderer from small3d for now. Do not worry;
-despite the deprecation, OpenGL and OpenGL ES still work just fine on Apple. I 
-will reconsider implementing a Vulkan renderer or a Metal renderer in the future,
-or even a DirectX renderer (why not) if OpenGL ever does indeed get discontinued 
-on any platform small3d currently supports. My priority is always that games made 
-with small3d run on as many devices as possible and that the codebase remains 
-pretty small - pun intended :) - and manageable.*
+I have decided to remove the Vulkan renderer for now. In any case, OpenGL and 
+OpenGL ES still work just fine on Apple. I will reconsider implementing a Vulkan 
+renderer or a Metal renderer in the future, or even a DirectX renderer (why not) 
+if OpenGL ever does indeed get discontinued on any of the currently supported 
+platforms. My priority is always that games made with this library run on as 
+many devices as possible and that the codebase remains small - pun intended :)*
 
 # Tutorial
 
@@ -69,10 +70,10 @@ and tools accessible via the command line:
 Run the build script which is suitable to your platform from the `scripts` 
 directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`).
 	
-Then, the unit tests can be run via the `unittests` binary from `build/bin`.
+Then, the unit tests are executed by running `unittests` binary from `build/bin`.
 
 If any of this fails or you would simply like to restart the building
-procedure, the best way to clean the small3d directories is by using git:
+procedure, the best way to clean the repository is by using git:
 
 	git clean -fdx
 
@@ -81,23 +82,20 @@ For building your own project, you need:
 - The header files from the `build/include` directory
 - The libraries from the `build/lib` directory 
 - The shaders from `build/shaders` directory
+- The `small3d/cmake` directory if you will be using cmake
 
-If you are using cmake, the modules in `small3d/cmake` can be useful. Check the 
-`CMakeLists.txt` and `src/CMakeLists.txt` files for other configuration details 
-(link flags, etc) that may also be required or useful.
-
-You can also deploy small3d using [conan](https://conan.io). The conan package is 
+You can also deploy using [conan](https://conan.io). The conan package is 
 provided in a [separate repository](https://github.com/dimi309/small3d-conan).
 
 ## Deploying small3d for mobile
 
-You can build small3d for mobile platforms by executing either `build-android` 
-or  `build-ios` from the `scripts` directory. Then you can use the test projects 
+Builds for mobile platforms can be performed by executing either `build-android` 
+or  `build-ios` from the `scripts` directory. You can then use the test projects 
 in the `android`, `ios` and `ios-opengles` directories to check if everything 
 works, or as a starting point for your own projects.
 
-Note that, while with the desktop edition of small3d I use GLFW for windowing 
-functionalities and I/O, on mobile I access the native infrastructure directly.
+Note that, while on the PC edition I use GLFW for windowing functionalities and 
+I/O, on mobile I access the native infrastructure directly.
 
 ## Boilerplate Project
 
@@ -107,18 +105,15 @@ and input already set up, you are looking for this:
 https://github.com/dimi309/small3d-boilerplate
 
 It is highly recommended to use this boilerplate if you intend to port your
-game to Android and / or iOS. While it is pretty straightforward to get small3d
-working for the desktop and you might prefer the freedom and flexibility of
-working with a project set up from scratch, mobile platforms have many
-specificities and quirks to take care of and keep in mind, so the boilerplate
-can save you a lot of time in that respect.
+game to Android and / or iOS. While it is pretty straightforward to get this 
+library working for the desktop and you might prefer the freedom and flexibility 
+of working with a project set up from scratch, mobile platforms have many
+specificities and quirks to take care of, so the boilerplate can save you a lot 
+of time in that respect.
 
 # Referenced libraries
 
-All small3d dependencies are distributed together with its source code. 
-They can be built by executing a single script (see "Building", above).
-
-- glew if building for PC
+- glew when building for PC
 - glfw 
 - glm 
 - png
@@ -128,4 +123,8 @@ They can be built by executing a single script (see "Building", above).
 - portaudio
 - freetype
 - bzip
-- oboe if building for Android
+- oboe when building for Android
+
+All dependencies *source code* repositories (not binaries) are distributed
+in this same repository (in the `deps` directory). They can be built by 
+executing a single script (see "Building", above).
