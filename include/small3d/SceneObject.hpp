@@ -61,7 +61,13 @@ namespace small3d
      *                      as the model ("" to load the first object found).
      * @param boundingBoxSubdivisions How many times to subdivide the initially created
      *                        bounding box, getting more accurate collision detection
-     *                        at the expense of performance.
+     *                        at the expense of performance. This does not work perfectly
+     *                        especially for low-poly models. A set of adjacent boxes is
+     *                        created and the ones not containing a vertex of the model are
+     *                        eliminated. For models with few vertices this can create blanks
+     *                        in the middle of the mass of the model. Collision may still
+     *                        work decently enough though, but if not, it is best to just
+     *                        use a single bounding box (so 0 subdivisions).
      */
     SceneObject(const std::string& name, const std::string& modelPath,
       const std::string& modelMeshName = "", const uint32_t boundingBoxSubdivisions = 0);

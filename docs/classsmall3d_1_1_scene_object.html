@@ -210,7 +210,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
     <tr><td class="paramname">name</td><td>The name of the object </td></tr>
     <tr><td class="paramname">modelPath</td><td>The path to the file</td></tr>
     <tr><td class="paramname">modelMeshName</td><td>The name of the mesh / object in the file which will be loaded as the model ("" to load the first object found). </td></tr>
-    <tr><td class="paramname">boundingBoxSubdivisions</td><td>How many times to subdivide the initially created bounding box, getting more accurate collision detection at the expense of performance. </td></tr>
+    <tr><td class="paramname">boundingBoxSubdivisions</td><td>How many times to subdivide the initially created bounding box, getting more accurate collision detection at the expense of performance. This does not work perfectly especially for low-poly models. A set of adjacent boxes is created and the ones not containing a vertex of the model are eliminated. For models with few vertices this can create blanks in the middle of the mass of the model. Collision may still work decently enough though, but if not, it is best to just use a single bounding box (so 0 subdivisions). </td></tr>
   </table>
   </dd>
 </dl>
