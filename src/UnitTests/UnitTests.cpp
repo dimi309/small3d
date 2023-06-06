@@ -8,14 +8,14 @@
 
 #include "UnitTests.hpp"
 #include <iostream>
-#include <Time.hpp>
-#include <Logger.hpp>
-#include <Image.hpp>
-#include <Model.hpp>
-#include <SceneObject.hpp>
-#include <Sound.hpp>
-#include <BoundingBoxSet.hpp>
-#include <GlbFile.hpp>
+#include "Time.hpp"
+#include "Logger.hpp"
+#include "Image.hpp"
+#include "Model.hpp"
+#include "SceneObject.hpp"
+#include "Sound.hpp"
+#include "BoundingBoxSet.hpp"
+#include "GlbFile.hpp"
 #include "OctPyramid.hpp"
 #include <glm/gtx/string_cast.hpp>
 

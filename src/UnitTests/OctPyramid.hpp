@@ -6,7 +6,7 @@
  *     License: BSD 3-Clause License (see LICENSE file)
  */
 #pragma once
-#include <Model.hpp>
+#include "Model.hpp"
 class OctPyramid : public small3d::Model {
 
 private:

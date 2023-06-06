@@ -92,7 +92,7 @@ endif()
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
 
   if(APPLE) # MacOS
-    set_target_properties(small3d PROPERTIES LINK_FLAGS "-framework \
+    target_link_libraries(small3d PUBLIC "-framework \
 AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
 -framework IOKit -framework CoreVideo")
   endif()
