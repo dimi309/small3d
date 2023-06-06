@@ -8,7 +8,7 @@
 
 #include "UnitTests.hpp"
 #include <iostream>
-#include <small3d/Time.hpp>
+#include <Time.hpp>
 
 #if defined(__ANDROID__)
 #define RETURN1 std::terminate();

@@ -90,27 +90,22 @@ if(UNIX AND NOT APPLE) # Linux
 endif()
 
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
+
+  if(APPLE) # MacOS
+    set_target_properties(small3d PROPERTIES LINK_FLAGS "-framework \
+AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
+-framework IOKit -framework CoreVideo")
+  endif()
+
   # Unit testing
 
   add_executable(unittests UnitTests/UnitTests.hpp UnitTests/OctPyramid.cpp
     UnitTests/OctPyramid.hpp UnitTests/unit_tests.cpp UnitTests/UnitTests.cpp)
 
-  target_include_directories(unittests PUBLIC ../include)
-  target_include_directories(unittests PUBLIC ../deps/include)
-
+  target_link_libraries(unittests PRIVATE small3d)
   if(MSVC) # Visual Studio
     set_target_properties(unittests PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
       "${small3d_BINARY_DIR}/bin")
-  endif()
-
-  if(APPLE) # MacOS
-    set_target_properties(unittests PROPERTIES LINK_FLAGS "-framework \
-AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
--framework IOKit -framework CoreVideo")
-  endif()
-
-  if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC, OpenGL
-    target_link_libraries(unittests PRIVATE small3d)
   endif()
 
 endif()
