@@ -57,7 +57,7 @@ set(small3d_INCLUDE_DIRS
   )
 
 if(APPLE)
-  set(small3d_LINKER_FLAGS "-framework \
+  list(APPEND small3d_LIBRARIES  "-framework \
               AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
               -framework IOKit -framework CoreVideo")
 endif()
@@ -79,6 +79,7 @@ endif()
 add_library(small3d::small3d UNKNOWN IMPORTED)
 set_target_properties(small3d::small3d
   PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${small3d_INCLUDE_DIRS}")
+
 set_property(TARGET small3d::small3d
   APPEND
   PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
@@ -92,41 +93,5 @@ set_target_properties(small3d::small3d
 
 set_property(TARGET small3d::small3d
   PROPERTY INTERFACE_LINK_LIBRARIES
-  ${GLEW_LIBRARIES}
-  ${OPENGL_LIBRARIES}
-  ${GLFW_LIBRARIES}
-  ${PNG_LIBRARIES}
-  ${VORBIS_LIBRARIES}
-  ${OGG_LIBRARIES}
-  ${PORTAUDIO_LIBRARIES}
-  ${FREETYPE_LIBRARIES}
+  ${small3d_LIBRARIES}
   APPEND)
-
-if(UNIX OR (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT
-      CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10))
-  set_property(TARGET small3d::small3d
-    PROPERTY INTERFACE_LINK_LIBRARIES
-    ${BZIP2_LIBRARIES}
-    APPEND)
-endif()
-
-if(WIN32)
-  set_property(TARGET small3d::small3d
-    PROPERTY INTERFACE_LINK_LIBRARIES
-    winmm
-    APPEND)
-endif()
-
-if(UNIX AND NOT APPLE) # Linux
-  set_property(TARGET small3d::small3d
-    PROPERTY INTERFACE_LINK_LIBRARIES
-    m pthread rt asound X11 dl
-    APPEND)
-endif()
-
-if(APPLE)
-  set_property(TARGET small3d::small3d
-  PROPERTY INTERFACE_LINK_LIBRARIES
-  ${small3d_LINKER_FLAGS}
-  APPEND)
-endif()
