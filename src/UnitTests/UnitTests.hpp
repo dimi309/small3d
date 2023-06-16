@@ -32,6 +32,8 @@ extern uint32_t screenWidth, screenHeight;
 
 int LoggerTest();
 int ImageTest();
+int WavefrontTest();
+int WavefrontModelTest();
 int ScaleAndTransformTest();
 int GlbTextureTestDefaultShadows();
 int GlbTextureTestLookAtShadows();

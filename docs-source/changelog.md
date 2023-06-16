@@ -17,9 +17,8 @@ v1.802 (still open)
   least for now. This will also decrease the complexity of %small3d, allowing 
   for more efficient maintenance and evolution in directions that matter.
   
-- [BREAKING] Dropped wavefront (.obj) file support. Wavefront is an old format 
-  without animation. Since %small3d can parse gltf (.glb) files, there is no 
-  point in spending time to also maintain the wavefront parser / loader anymore.
+- [BREAKING] SceneObject constructors now only take Model object parameters, 
+  rather than paths to Model files.
   
 - [BREAKING] Model.animate method has been deleted. Added Model.getNumPoses
   method so that the total number of poses is known outside of Model. The Model 

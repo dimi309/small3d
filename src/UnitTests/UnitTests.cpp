@@ -16,6 +16,7 @@
 #include "Sound.hpp"
 #include "BoundingBoxSet.hpp"
 #include "GlbFile.hpp"
+#include "WavefrontFile.hpp"
 #include "OctPyramid.hpp"
 #include <glm/gtx/string_cast.hpp>
 
@@ -149,6 +150,90 @@ int ImageTest() {
   return 1;
 }
 
+int WavefrontTest() {
+
+  WavefrontFile wf(resourceDir + "/models/goat.glb");
+  bool threw = false;
+  try {
+    Model m;
+    wf.load(m, "");
+  }
+  catch (std::runtime_error& e) {
+    LOGINFO("WavefrontFile.load correctly threw a runtime error: " +
+      std::string(e.what()));
+    threw = true;
+  }
+
+  if (!threw) throw std::runtime_error("WavefrontFile.load has not thrown"
+    " a runtime error, as it should have.");
+
+  return 1;
+}
+
+int WavefrontModelTest() {
+  Model model(WavefrontFile(resourceDir + "/models/Cube/Cube.obj"), "");
+
+  if (model.vertexData.size() == 0) return 0;
+  if (model.indexData.size() == 0) return 0;
+  if (model.normalsData.size() == 0) return 0;
+  if (model.textureCoordsData.size() == 0) return 0;
+  
+  cout << "Vertex data component count: "
+    << model.vertexData.size() << endl << "Index count: "
+    << model.indexData.size() << endl
+    << "Normals data component count: "
+    << model.normalsData.size() << endl
+    << "Texture coordinates count: "
+    << model.textureCoordsData.size() << endl;
+
+  Model modelWithNoTexture(WavefrontFile(resourceDir + "/models/Cube/CubeNoTexture.obj"), "");
+
+  if (modelWithNoTexture.vertexData.size() == 0) return 0;
+  if (modelWithNoTexture.indexData.size() == 0) return 0;
+  if (modelWithNoTexture.normalsData.size() == 0) return 0;
+
+  cout << "Vertex data component count: "
+    << modelWithNoTexture.vertexData.size() << endl << "Index count: "
+    << modelWithNoTexture.indexData.size() << endl
+    << "Normals data component count: "
+    << modelWithNoTexture.normalsData.size() << endl
+    << "Texture coordinates count: "
+    << modelWithNoTexture.textureCoordsData.size() << endl;
+
+  WavefrontFile w2(resourceDir + "/models/goatAndTree.obj");
+
+  Model model2(w2, "Cube.001");
+  Model model3(w2, "Cube");
+  Model model4(w2, "");
+
+  initRenderer();
+
+  double startSeconds = getTimeInSeconds();
+  double seconds = getTimeInSeconds();
+  double prevSeconds = seconds;
+  const uint32_t framerate = 30;
+
+  constexpr double secondsInterval = 1.0 / framerate;
+
+  model3.scale += 0.3f;
+
+  while (seconds - startSeconds < 5.0) {
+    pollEvents();
+    seconds = getTimeInSeconds();
+    if (seconds - prevSeconds > secondsInterval) {
+      prevSeconds = seconds;
+      
+      r->render(model2, glm::vec3(-1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+      r->render(model3, glm::vec3(0.0f, -1.0f, -2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+      r->render(model4, glm::vec3(1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+
+      r->swapBuffers();
+    }
+  }
+
+  return 1;
+}
+
 int ScaleAndTransformTest() {
   initRenderer();
 
@@ -159,7 +244,7 @@ int ScaleAndTransformTest() {
   
   constexpr double secondsInterval = 1.0 / framerate;
 
-  SceneObject boxes("boxes", resourceDir + "/models/boxes.glb", "");
+  SceneObject boxes("boxes", Model(GlbFile(resourceDir + "/models/boxes.glb"), ""));
 
   boxes.position = glm::vec3(0.0f, 0.0f, -3.0f);
   
@@ -190,12 +275,10 @@ int GlbTextureTestDefaultShadows() {
   const uint32_t framerate = 30;
 
   constexpr double secondsInterval = 1.0 / framerate;
-
-  SceneObject goat("goat5", resourceDir + "/models/goatAndTree.glb", "Cube");
+  SceneObject goat("goat5", Model(GlbFile(resourceDir + "/models/goatAndTree.glb"), "Cube"));
 
   r->generateTexture("goatGlbTexture", *goat.getModel().defaultTextureImage);
-
-  SceneObject tree("tree5", resourceDir + "/models/goatAndTree.glb", "Cube.001");
+  SceneObject tree("tree5", Model(GlbFile(resourceDir + "/models/goatAndTree.glb"), "Cube.001"));
 
   r->generateTexture("treeGlbTexture", *tree.getModel().defaultTextureImage);
 
@@ -252,11 +335,11 @@ int GlbTextureTestLookAtShadows() {
 
   constexpr double secondsInterval = 1.0 / framerate;
 
-  SceneObject goat("goat5", resourceDir + "/models/goatAndTree.glb", "Cube");
+  SceneObject goat("goat5", Model(GlbFile(resourceDir + "/models/goatAndTree.glb"), "Cube"));
 
   r->generateTexture("goatGlbTexture", *goat.getModel().defaultTextureImage);
 
-  SceneObject tree("tree5", resourceDir + "/models/goatAndTree.glb", "Cube.001");
+  SceneObject tree("tree5", Model(GlbFile(resourceDir + "/models/goatAndTree.glb"), "Cube.001"));
 
   r->generateTexture("treeGlbTexture", *tree.getModel().defaultTextureImage);
 
@@ -317,8 +400,7 @@ int BoundingBoxesTest() {
   const uint32_t framerate = 30;
 
   constexpr double secondsInterval = 1.0 / framerate;
-
-  SceneObject goat("goat", resourceDir + "/models/goatUnscaled.glb", "Cube", 3);
+  SceneObject goat("goat", Model(GlbFile(resourceDir + "/models/goatUnscaled.glb"), "Cube"), 3);
   auto boundingBoxModels = goat.getBoundingBoxSetModels();
   goat.position = glm::vec3(0.0f, 0.0f, -3.0f);
   goat.startAnimating();
@@ -379,8 +461,7 @@ int FPStest() {
   double prevSeconds = seconds;
   uint32_t framerate = 0;
   uint32_t numFrames = 0;
-
-  SceneObject goat("goat", resourceDir + "/models/goatUnscaled.glb", "Cube", 3);
+  SceneObject goat("goat", Model(GlbFile(resourceDir + "/models/goatUnscaled.glb"), "Cube"), 3);
   auto boundingBoxModels = goat.getBoundingBoxSetModels();
   goat.position = glm::vec3(0.0f, 0.0f, -3.0f);
   goat.startAnimating();
@@ -433,6 +514,16 @@ int RendererTest() {
   // Here loading the mesh without providing a name is also tested.
   Model modelFromGlb(GlbFile(resourceDir + "/models/goatUnscaled.glb"), "");
 
+  WavefrontFile cubef(resourceDir + "/models/Cube/CubeNoTexture.obj");
+  SceneObject object("cube", cubef);
+  object.position = glm::vec3(0.0f, -1.0f, -8.0f);
+  r->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+  WavefrontFile texcubf(resourceDir + "/models/Cube/Cube.obj");
+  SceneObject object2("texutredCube", texcubf);
+  object2.position = glm::vec3(-2.0f, -1.0f, -7.0f);
+  object2.setRotation(glm::vec3(0.3f, 1.3f, 0.0f));
+
   Image cubeTexture(resourceDir + "/models/Cube/cubeTexture.png");
   r->generateTexture("cubeTexture", cubeTexture);
 
@@ -464,6 +555,23 @@ int RendererTest() {
 
   glm::vec3 rotation(0.0f, 0.0f, 0.0f);
 
+  std::vector<std::shared_ptr<Model>> bugwfanim;
+
+  bugwfanim.push_back(std::make_shared<Model>(WavefrontFile(resourceDir + "/models/Bug/bugAnim_000001.obj")));
+  bugwfanim.push_back(std::make_shared<Model>(WavefrontFile(resourceDir + "/models/Bug/bugAnim_000002.obj")));
+  bugwfanim.push_back(std::make_shared<Model>(WavefrontFile(resourceDir + "/models/Bug/bugAnim_000003.obj")));
+  bugwfanim.push_back(std::make_shared<Model>(WavefrontFile(resourceDir + "/models/Bug/bugAnim_000004.obj")));
+  bugwfanim.push_back(std::make_shared<Model>(WavefrontFile(resourceDir + "/models/Bug/bugAnim_000005.obj")));
+  bugwfanim.push_back(std::make_shared<Model>(WavefrontFile(resourceDir + "/models/Bug/bugAnim_000006.obj")));
+  bugwfanim.push_back(std::make_shared<Model>(WavefrontFile(resourceDir + "/models/Bug/bugAnim_000007.obj")));
+  bugwfanim.push_back(std::make_shared<Model>(WavefrontFile(resourceDir + "/models/Bug/bugAnim_000008.obj")));
+  bugwfanim.push_back(std::make_shared<Model>(WavefrontFile(resourceDir + "/models/Bug/bugAnim_000009.obj")));
+
+  SceneObject bug("bug", bugwfanim);
+
+  bug.position = glm::vec3(0.0f, 3.0f, -6.0f);
+  bug.startAnimating();
+
   while (seconds - startSeconds < 5.0) {
     pollEvents();
     seconds = getTimeInSeconds();
@@ -476,7 +584,10 @@ int RendererTest() {
 
       r->render(texturedRect,
         glm::vec3(0.0f, 0.0f, -2.0f),
-        glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "cubeTexture", 0, true);
+        glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "cubeTexture", true);
+
+      r->render(object2, "cubeTexture");
+
 
       rotation.y += 0.1f;
 
@@ -486,10 +597,16 @@ int RendererTest() {
       r->render(textRect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", 0, false);
 
+      r->render(bug, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+      
+      bug.animate();
+
       r->swapBuffers();
       
     }
   }
+  r->clearBuffers(object);
+  r->clearBuffers(object2);
   r->clearBuffers(texturedRect);
   r->clearBuffers(textRect);
   r->deleteTexture("cubeTexture");
@@ -556,11 +673,11 @@ int GlbTest() {
 
 int GenericSceneObjectConstructorTest() {
 
-  SceneObject so1("goat1", resourceDir + "/models/goat.glb", "");
-  
+  SceneObject so1("goat1", Model(GlbFile(resourceDir + "/models/goat.glb"), ""));
+  SceneObject so2("goat2", Model(WavefrontFile(resourceDir + "/models/goat.obj"), ""));
 
   if (so1.getModel().vertexDataByteSize == 0) return 0;
-  
+  if (so2.getModel().vertexDataByteSize == 0) return 0;
 
   return 1;
 }

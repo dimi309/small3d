@@ -7,43 +7,65 @@
  */
 
 #include "SceneObject.hpp"
-#include "GlbFile.hpp"
 #include <exception>
 
 namespace small3d {
 
-  SceneObject::SceneObject(const std::string& name, const std::string& modelPath,
-    const std::string& modelMeshName, const uint32_t boundingBoxSubdivisions) {
-    initLogger();
+  void SceneObject::init(const std::string& name, const uint32_t boundingBoxSubdivisions) {
+    
     this->name = name;
     animating = false;
     framesWaited = 0;
     frameDelay = 1;
-    LOGDEBUG("Trying to load " + modelPath + " as glTF.");
-    model = std::make_shared<Model>(GlbFile(modelPath), modelMeshName);
-    boundingBoxSet = std::make_shared<BoundingBoxSet>(model->vertexData, model->getOriginalScale(), boundingBoxSubdivisions);
-    numPoses = model->getNumPoses();
+    
+    boundingBoxSet = std::make_shared<BoundingBoxSet>(this->models[0]->vertexData, this->models[0]->getOriginalScale(), boundingBoxSubdivisions);
+    if (skeletal) {
+      numPoses = this->models[0]->getNumPoses();
+    }
+    else {
+      numPoses = this->models.size();
+    }
     currentPose = 0;
   }
 
   SceneObject::SceneObject(const std::string& name, const Model& model, const uint32_t boundingBoxSubdivisions) {
     initLogger();
-    this->name = name;
-    animating = false;
-    framesWaited = 0;
-    frameDelay = 1;
-    this->model = std::make_shared<Model>(model);
-    boundingBoxSet = std::make_shared<BoundingBoxSet>(this->model->vertexData, this->model->getOriginalScale(), boundingBoxSubdivisions);
-    numPoses = this->model->getNumPoses();
-    currentPose = 0;
+    skeletal = true;
+    this->models.push_back(std::make_shared<Model>(model));
+    init(name, boundingBoxSubdivisions);
+  }
+
+  SceneObject::SceneObject(const std::string& name, const Model&& model, const uint32_t boundingBoxSubdivisions) {
+    initLogger();
+    skeletal = true;
+    this->models.push_back(std::make_shared<Model>(model));
+    init(name, boundingBoxSubdivisions);
+  }
+
+  SceneObject::SceneObject(const std::string& name, const std::vector<std::shared_ptr<Model>> models, 
+    const uint32_t boundingBoxSubdivisions) {
+    initLogger();
+    skeletal = false;
+    this->models = models;
+    init(name, boundingBoxSubdivisions);
   }
 
   Model& SceneObject::getModel() {
-    return *model;
+    if (skeletal) {
+      return *models[0];
+    }
+    else {
+      return *models[currentPose];
+    }
   }
 
   uint64_t SceneObject::getCurrentPose() {
-    return currentPose;
+    if (skeletal) {
+      return currentPose;
+    }
+    else {
+      return 0;
+    }
   }
 
   std::vector<Model> SceneObject::getBoundingBoxSetModels() {

@@ -45,6 +45,16 @@ int main(int argc, char** argv) {
       printf("*** Failing ImageTest.\n\r");
       RETURN1
     }
+
+    if (!WavefrontTest()) {
+      printf("*** Failing ImageTest.\n\r");
+      RETURN1
+    }
+
+    if (!WavefrontModelTest()) {
+      printf("*** Failing ImageTest.\n\r");
+      RETURN1
+    }
     
     if (!ScaleAndTransformTest()) {
       printf("*** Failing GlbTextureText.\n\r");

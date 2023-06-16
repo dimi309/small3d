@@ -1399,7 +1399,9 @@ namespace small3d {
   }
 
   void Renderer::clearBuffers(SceneObject & sceneObject) const {
-    clearBuffers(*sceneObject.model);
+    for (auto m : sceneObject.models) {
+      clearBuffers(*m);
+    }
   }
 
   void Renderer::setBackgroundColour(const glm::vec4 & colour) {

@@ -20,6 +20,7 @@
 #include "Image.hpp"
 #include "BoundingBoxSet.hpp"
 #include <glm/glm.hpp>
+#include "File.hpp"
 
 namespace small3d
 {
@@ -28,16 +29,16 @@ namespace small3d
    *
    * @brief An object that appears on the 3D scene. It is made up of a Model,
    *        together with information for positioning, rotation and collision 
-   *        detection. Skeletal animation is supported for models loaded from
-   *        glTF files. A constructor that loads multiple Wavefront files to 
-   *        construct a frame-based animation sequence is also provided.
-   *
+   *        detection. Skeletal animation is supported if contained in the Model.
+   *        Otherwise, frame based animation can be used if the SceneObject is
+   *        constructed with a vector of Models, each of which will be used as
+   *        an animation frame.
    */
 
   class SceneObject
   {
   private:
-
+    bool skeletal;
     bool animating;
     int frameDelay;
     uint64_t currentPose;
@@ -47,41 +48,44 @@ namespace small3d
     glm::mat4x4 transformation = glm::mat4x4(1);
     glm::vec3 rotationXYZ = glm::vec3(0.0f);
     bool rotationByMatrix = false;
-    std::shared_ptr<Model> model = std::make_shared<Model>();
+    std::vector<std::shared_ptr<Model>> models;
     std::shared_ptr<BoundingBoxSet> boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet());
+    void init(const std::string& name, const uint32_t boundingBoxSubdivisions);
   public:
 
-    /**
-     * @brief File-loading constructor, supporting Wavefront and glTF .glb files.
-     *
-     * @param name      The name of the object 
-     * @param modelPath The path to the file
-     *
-     * @param modelMeshName The name of the mesh / object in the file which will be loaded
-     *                      as the model ("" to load the first object found).
-     * @param boundingBoxSubdivisions How many times to subdivide the initially created
-     *                        bounding box, getting more accurate collision detection
-     *                        at the expense of performance. This does not work perfectly
-     *                        especially for low-poly models. A set of adjacent boxes is
-     *                        created and the ones not containing a vertex of the model are
-     *                        eliminated. For models with few vertices this can create blanks
-     *                        in the middle of the mass of the model. Collision may still
-     *                        work decently enough though, but if not, it is best to just
-     *                        use a single bounding box (so 0 subdivisions).
-     */
-    SceneObject(const std::string& name, const std::string& modelPath,
-      const std::string& modelMeshName = "", const uint32_t boundingBoxSubdivisions = 0);
-
-    /**
-     * @brief Model-based constructor
+    /** 
+     * @brief Model based constructor (skeletal animation)
      * 
      * @param name  The name of the object
-     * @param model The Model for which to create the object
+     * @param model The Model for which to create the object (lvalue)
      * @param boundingBoxSubdivisions How many times to subdivide the initially created
      *              bounding box, getting more accurate collision detection
      *              at the expense of performance.
      */
     SceneObject(const std::string& name, const Model& model, const uint32_t boundingBoxSubdivisions = 0);
+
+    /**
+     * @brief Model based constructor (skeletal animation)
+     *
+     * @param name  The name of the object
+     * @param model The Model for which to create the object (rvalue)
+     * @param boundingBoxSubdivisions How many times to subdivide the initially created
+     *              bounding box, getting more accurate collision detection
+     *              at the expense of performance.
+     */
+    SceneObject(const std::string& name, const Model&& model, const uint32_t boundingBoxSubdivisions = 0);
+
+
+    /**
+     * @brief Model vector based constructor (animation using frames)
+     *
+     * @param name  The name of the object
+     * @param models The Model for which to create the object (rvalue)
+     * @param boundingBoxSubdivisions How many times to subdivide the initially created
+     *              bounding box, getting more accurate collision detection
+     *              at the expense of performance.
+     */
+    SceneObject(const std::string& name, const std::vector<std::shared_ptr<Model>> models, const uint32_t boundingBoxSubdivisions = 0);
 
     /**
      * @brief Destructor
