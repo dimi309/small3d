@@ -18,6 +18,7 @@
 		8C06D2CE28DF0E83008E9BE5 /* File.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C06D2BF28DF0E82008E9BE5 /* File.cpp */; };
 		8C06D2CF28DF0E83008E9BE5 /* Model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C06D2C028DF0E82008E9BE5 /* Model.cpp */; };
 		8C097A8029DF7DA60084C00F /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C097A7F29DF7DA60084C00F /* Renderer.cpp */; };
+		8C2B17292A3D898500098DD6 /* WavefrontFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C2B17282A3D898500098DD6 /* WavefrontFile.cpp */; };
 		8C4A03E028E69767007953E3 /* interop.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C4A03DF28E69767007953E3 /* interop.m */; };
 		8C4CF6BE2788365F00F9F4E8 /* libbz2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CF6BB2788364A00F9F4E8 /* libbz2.a */; };
 		8C4CF6BF2788365F00F9F4E8 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4CF6B92788364A00F9F4E8 /* libfreetype.a */; };
@@ -71,6 +72,8 @@
 		8C0BD1B828E0183300B21659 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8C0BD1BA28E018C500B21659 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		8C0BD1BC28E0198F00B21659 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		8C2B17272A3D896900098DD6 /* WavefrontFile.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = WavefrontFile.hpp; path = ../../include/small3d/WavefrontFile.hpp; sourceTree = "<group>"; };
+		8C2B17282A3D898500098DD6 /* WavefrontFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = WavefrontFile.cpp; path = ../../src/WavefrontFile.cpp; sourceTree = "<group>"; };
 		8C2FC02D27BE1D16003566FC /* libvkzos.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvkzos.a; path = deps/lib/libvkzos.a; sourceTree = "<group>"; };
 		8C4A03DE28E69767007953E3 /* interop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interop.h; path = ../../deps/ios/interop.h; sourceTree = "<group>"; };
 		8C4A03DF28E69767007953E3 /* interop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = interop.m; path = ../../deps/ios/interop.m; sourceTree = "<group>"; };
@@ -178,6 +181,8 @@
 		8C4EB25C27881BB3000DD6DF /* small3d-Tests-ios */ = {
 			isa = PBXGroup;
 			children = (
+				8C2B17282A3D898500098DD6 /* WavefrontFile.cpp */,
+				8C2B17272A3D896900098DD6 /* WavefrontFile.hpp */,
 				8CD48B1D29FD149E003A3FC6 /* OctPyramid.cpp */,
 				8CD48B1C29FD149E003A3FC6 /* OctPyramid.hpp */,
 				8CD48B1B29FD149E003A3FC6 /* UnitTests.cpp */,
@@ -302,6 +307,7 @@
 				8C06D2C728DF0E83008E9BE5 /* GlbFile.cpp in Sources */,
 				8C4A03E028E69767007953E3 /* interop.m in Sources */,
 				8C06D2C628DF0E83008E9BE5 /* SceneObject.cpp in Sources */,
+				8C2B17292A3D898500098DD6 /* WavefrontFile.cpp in Sources */,
 				8C06D2C328DF0E83008E9BE5 /* Image.cpp in Sources */,
 				8C06D2CC28DF0E83008E9BE5 /* Time.cpp in Sources */,
 				8C06D2CD28DF0E83008E9BE5 /* Sound.cpp in Sources */,
