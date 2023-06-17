@@ -86,13 +86,14 @@ $(function() {
 <code>#include &quot;<a class="el" href="_image_8hpp_source.html">Image.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_bounding_box_set_8hpp_source.html">BoundingBoxSet.hpp</a>&quot;</code><br />
 <code>#include &lt;glm/glm.hpp&gt;</code><br />
+<code>#include &quot;<a class="el" href="_file_8hpp_source.html">File.hpp</a>&quot;</code><br />
 </div>
 <p><a href="_scene_object_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html">small3d::SceneObject</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An object that appears on the 3D scene. It is made up of a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>, together with information for positioning, rotation and collision detection. Skeletal animation is supported for models loaded from glTF files. A constructor that loads multiple Wavefront files to construct a frame-based animation sequence is also provided.  <a href="classsmall3d_1_1_scene_object.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An object that appears on the 3D scene. It is made up of a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>, together with information for positioning, rotation and collision detection. Skeletal animation is supported if contained in the <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>. Otherwise, frame based animation can be used if the <a class="el" href="classsmall3d_1_1_scene_object.html" title="An object that appears on the 3D scene. It is made up of a Model, together with information for posit...">SceneObject</a> is constructed with a vector of Models, each of which will be used as an animation frame.  <a href="classsmall3d_1_1_scene_object.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>

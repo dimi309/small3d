@@ -76,19 +76,22 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>An object that appears on the 3D scene. It is made up of a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>, together with information for positioning, rotation and collision detection. Skeletal animation is supported for models loaded from glTF files. A constructor that loads multiple Wavefront files to construct a frame-based animation sequence is also provided.  
+<p>An object that appears on the 3D scene. It is made up of a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>, together with information for positioning, rotation and collision detection. Skeletal animation is supported if contained in the <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>. Otherwise, frame based animation can be used if the <a class="el" href="classsmall3d_1_1_scene_object.html" title="An object that appears on the 3D scene. It is made up of a Model, together with information for posit...">SceneObject</a> is constructed with a vector of Models, each of which will be used as an animation frame.  
  <a href="classsmall3d_1_1_scene_object.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_scene_object_8hpp_source.html">SceneObject.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7ffc0e811e0b98e67667d56881828deb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a7ffc0e811e0b98e67667d56881828deb">SceneObject</a> (const std::string &amp;name, const std::string &amp;modelPath, const std::string &amp;modelMeshName=&quot;&quot;, const uint32_t boundingBoxSubdivisions=0)</td></tr>
-<tr class="memdesc:a7ffc0e811e0b98e67667d56881828deb"><td class="mdescLeft">&#160;</td><td class="mdescRight">File-loading constructor, supporting Wavefront and glTF .glb files.  <a href="classsmall3d_1_1_scene_object.html#a7ffc0e811e0b98e67667d56881828deb">More...</a><br /></td></tr>
-<tr class="separator:a7ffc0e811e0b98e67667d56881828deb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad11ac06b60114c669aae289e88825c13"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#ad11ac06b60114c669aae289e88825c13">SceneObject</a> (const std::string &amp;name, const <a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;model, const uint32_t boundingBoxSubdivisions=0)</td></tr>
-<tr class="memdesc:ad11ac06b60114c669aae289e88825c13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Model-based constructor.  <a href="classsmall3d_1_1_scene_object.html#ad11ac06b60114c669aae289e88825c13">More...</a><br /></td></tr>
+<tr class="memdesc:ad11ac06b60114c669aae289e88825c13"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> based constructor (skeletal animation)  <a href="classsmall3d_1_1_scene_object.html#ad11ac06b60114c669aae289e88825c13">More...</a><br /></td></tr>
 <tr class="separator:ad11ac06b60114c669aae289e88825c13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8bf6c0a962de303eed7173d926281681"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a8bf6c0a962de303eed7173d926281681">SceneObject</a> (const std::string &amp;name, const <a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;&amp;model, const uint32_t boundingBoxSubdivisions=0)</td></tr>
+<tr class="memdesc:a8bf6c0a962de303eed7173d926281681"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> based constructor (skeletal animation)  <a href="classsmall3d_1_1_scene_object.html#a8bf6c0a962de303eed7173d926281681">More...</a><br /></td></tr>
+<tr class="separator:a8bf6c0a962de303eed7173d926281681"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f67b124c2aa48133144c4c77a1e6077"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a6f67b124c2aa48133144c4c77a1e6077">SceneObject</a> (const std::string &amp;name, const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classsmall3d_1_1_model.html">Model</a> &gt;&gt; models, const uint32_t boundingBoxSubdivisions=0)</td></tr>
+<tr class="memdesc:a6f67b124c2aa48133144c4c77a1e6077"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> vector based constructor (animation using frames)  <a href="classsmall3d_1_1_scene_object.html#a6f67b124c2aa48133144c4c77a1e6077">More...</a><br /></td></tr>
+<tr class="separator:a6f67b124c2aa48133144c4c77a1e6077"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ec4802e84b93ec67e858998e6ae2773"><td class="memItemLeft" align="right" valign="top"><a id="a6ec4802e84b93ec67e858998e6ae2773"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a6ec4802e84b93ec67e858998e6ae2773">~SceneObject</a> ()=default</td></tr>
 <tr class="memdesc:a6ec4802e84b93ec67e858998e6ae2773"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br /></td></tr>
@@ -164,61 +167,10 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
 <tr class="separator:a70538530bc36e033e360880ef311df61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>An object that appears on the 3D scene. It is made up of a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>, together with information for positioning, rotation and collision detection. Skeletal animation is supported for models loaded from glTF files. A constructor that loads multiple Wavefront files to construct a frame-based animation sequence is also provided. </p>
+<div class="textblock"><p>An object that appears on the 3D scene. It is made up of a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>, together with information for positioning, rotation and collision detection. Skeletal animation is supported if contained in the <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>. Otherwise, frame based animation can be used if the <a class="el" href="classsmall3d_1_1_scene_object.html" title="An object that appears on the 3D scene. It is made up of a Model, together with information for posit...">SceneObject</a> is constructed with a vector of Models, each of which will be used as an animation frame. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a7ffc0e811e0b98e67667d56881828deb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ffc0e811e0b98e67667d56881828deb">&#9670;&nbsp;</a></span>SceneObject() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">small3d::SceneObject::SceneObject </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>modelPath</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>modelMeshName</em> = <code>&quot;&quot;</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const uint32_t&#160;</td>
-          <td class="paramname"><em>boundingBoxSubdivisions</em> = <code>0</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>File-loading constructor, supporting Wavefront and glTF .glb files. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">name</td><td>The name of the object </td></tr>
-    <tr><td class="paramname">modelPath</td><td>The path to the file</td></tr>
-    <tr><td class="paramname">modelMeshName</td><td>The name of the mesh / object in the file which will be loaded as the model ("" to load the first object found). </td></tr>
-    <tr><td class="paramname">boundingBoxSubdivisions</td><td>How many times to subdivide the initially created bounding box, getting more accurate collision detection at the expense of performance. This does not work perfectly especially for low-poly models. A set of adjacent boxes is created and the ones not containing a vertex of the model are eliminated. For models with few vertices this can create blanks in the middle of the mass of the model. Collision may still work decently enough though, but if not, it is best to just use a single bounding box (so 0 subdivisions). </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="ad11ac06b60114c669aae289e88825c13"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad11ac06b60114c669aae289e88825c13">&#9670;&nbsp;</a></span>SceneObject() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad11ac06b60114c669aae289e88825c13">&#9670;&nbsp;</a></span>SceneObject() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -249,11 +201,99 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
       </table>
 </div><div class="memdoc">
 
-<p>Model-based constructor. </p>
+<p><a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> based constructor (skeletal animation) </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">name</td><td>The name of the object </td></tr>
-    <tr><td class="paramname">model</td><td>The <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> for which to create the object </td></tr>
+    <tr><td class="paramname">model</td><td>The <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> for which to create the object (lvalue) </td></tr>
+    <tr><td class="paramname">boundingBoxSubdivisions</td><td>How many times to subdivide the initially created bounding box, getting more accurate collision detection at the expense of performance. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8bf6c0a962de303eed7173d926281681"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8bf6c0a962de303eed7173d926281681">&#9670;&nbsp;</a></span>SceneObject() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">small3d::SceneObject::SceneObject </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;&amp;&#160;</td>
+          <td class="paramname"><em>model</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t&#160;</td>
+          <td class="paramname"><em>boundingBoxSubdivisions</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> based constructor (skeletal animation) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the object </td></tr>
+    <tr><td class="paramname">model</td><td>The <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> for which to create the object (rvalue) </td></tr>
+    <tr><td class="paramname">boundingBoxSubdivisions</td><td>How many times to subdivide the initially created bounding box, getting more accurate collision detection at the expense of performance. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6f67b124c2aa48133144c4c77a1e6077"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f67b124c2aa48133144c4c77a1e6077">&#9670;&nbsp;</a></span>SceneObject() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">small3d::SceneObject::SceneObject </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classsmall3d_1_1_model.html">Model</a> &gt;&gt;&#160;</td>
+          <td class="paramname"><em>models</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t&#160;</td>
+          <td class="paramname"><em>boundingBoxSubdivisions</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> vector based constructor (animation using frames) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the object </td></tr>
+    <tr><td class="paramname">models</td><td>The <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> for which to create the object (rvalue) </td></tr>
     <tr><td class="paramname">boundingBoxSubdivisions</td><td>How many times to subdivide the initially created bounding box, getting more accurate collision detection at the expense of performance. </td></tr>
   </table>
   </dd>
