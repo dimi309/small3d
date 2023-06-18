@@ -59,6 +59,13 @@ xcopy glm\glm include\glm /i /s
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 rmdir /Q /S glm
 
+7z x cereal-1.3.2.tar.gz
+7z x cereal-1.3.2.tar
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+xcopy cereal-1.3.2\include\cereal include\cereal /i /s
+del 7z x cereal-1.3.2.tar
+rmdir /Q /S cereal-1.3.2
+
 7z x zlib-1.2.11-noexample.tar.gz
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 7z x zlib-1.2.11-noexample.tar

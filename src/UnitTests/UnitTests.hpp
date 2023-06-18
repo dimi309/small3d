@@ -41,6 +41,7 @@ int BoundingBoxesTest();
 int FPStest();
 int GenericSceneObjectConstructorTest();
 int RendererTest();
+int BinaryModelTest();
 int SoundTest();
 int SoundTest2();
 int SoundTest3();

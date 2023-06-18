@@ -30,6 +30,10 @@ unzip glm-0.9.9.8.zip
 cp -rf glm/glm include/
 rm -rf glm
 
+tar xvf cereal-1.3.2.tar.gz
+cp -rf cereal-1.3.2/include/cereal include/
+rm -rf cereal-1.3.2
+
 tar xvf oboe-1.6.1.tar.gz
 cp -rf oboe-1.6.1/include/oboe include/
 rm -rf oboe-1.6.1

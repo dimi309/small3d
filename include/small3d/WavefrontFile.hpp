@@ -75,20 +75,14 @@ namespace small3d {
      * @param model The model to load the data to
      * @param meshName The name of the mesh to load
      */
-    void load(Model& model, const std::string& meshName);
-
-    /**
-     * @brief Load data from the Wavefront file into a BoundingBoxSet
-     * @param boundingBoxSet The BoundingBoxSet to load the data to
-     */
-    void load(BoundingBoxSet& boundingBoxSet);
+    void load(Model& model, const std::string& meshName) override;
 
     /**
      * @brief Get a list of the names of the meshes contained in the
      *        file.
      * @return The list of mesh names
      */
-    std::vector<std::string> getMeshNames();
+    std::vector<std::string> getMeshNames() override;
 
   };
 }

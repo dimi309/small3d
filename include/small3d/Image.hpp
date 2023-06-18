@@ -32,6 +32,10 @@ namespace small3d {
     struct memoryDataAndPos_ {
       std::vector<char> data;
       uint64_t pos = 0;
+      template <class Archive>
+      void serialize(Archive& archive) {
+        archive(data, pos);
+      }
     };
 
     memoryDataAndPos_ memoryDataAndPos;
@@ -99,6 +103,11 @@ namespace small3d {
      * @return The image data
      */
     const uint8_t* getData() const;
+
+    template <class Archive>
+    void serialize(Archive& archive) {
+      archive(memoryDataAndPos, width, height, imageData, imageDataSize);
+    }
 
   };
 

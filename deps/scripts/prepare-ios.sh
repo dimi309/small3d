@@ -33,8 +33,11 @@ mkdir lib
 
 unzip glm-0.9.9.8.zip
 cp -rf glm/glm include/
-
 rm -rf glm
+
+tar xvf cereal-1.3.2.tar.gz
+cp -rf cereal-1.3.2/include/cereal include/
+rm -rf cereal-1.3.2
 
 if [ $1 = "ios" ]
 then

@@ -17,7 +17,16 @@
 #include "Image.hpp"
 #include "File.hpp"
 
+namespace glm {
+  template<class Archive> void serialize(Archive& archive, glm::vec3& v) { archive(v.x, v.y, v.z); }
+  template<class Archive> void serialize(Archive& archive, glm::vec4& v) { archive(v.x, v.y, v.z, v.w); }
+  template<class Archive> void serialize(Archive& archive, glm::mat4& m) { archive(m[0], m[1], m[2], m[3]); }
+  template<class Archive> void serialize(Archive& archive, glm::quat& q) { archive(q.x, q.y, q.z, q.w); }
+}
+
 namespace small3d {
+
+  
 
   /**
    * @class	Model
@@ -71,6 +80,13 @@ namespace small3d {
       std::vector<glm::vec3> translationAnimation;
       std::vector<glm::vec3> scaleAnimation;
       std::vector<float> animTime;
+
+      template <class Archive>
+      void serialize(Archive& archive) {
+        archive(node, name, inverseBindMatrix, rotation, scale, translation,
+          children, rotationAnimation, translationAnimation, scaleAnimation, animTime);
+      }
+
     };
 
     /**
@@ -219,6 +235,29 @@ namespace small3d {
      *        the Model was loaded from.
      */
     glm::vec3 getOriginalScale();
+
+    template <class Archive>
+    void serialize(Archive& archive) {
+      archive(numPoses, origTransformation,
+        origRotation,
+        origTranslation,
+        origScale,
+        defaultTextureImage,
+        vertexData,
+        vertexDataByteSize,
+        indexData,
+        indexDataByteSize,
+        normalsData,
+        normalsDataByteSize,
+        textureCoordsData,
+        textureCoordsDataByteSize,
+        jointData,
+        jointDataByteSize,
+        weightData,
+        weightDataByteSize,
+        joints
+        );
+    }
 
     friend class GlbFile;
     friend class Renderer;

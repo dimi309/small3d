@@ -17,6 +17,7 @@ add_library(small3d_tests
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/File.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/GlbFile.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/WavefrontFile.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/BinaryFile.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/Image.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/Logger.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/Model.cpp
@@ -32,6 +33,7 @@ add_library(small3d_tests
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/small3d/File.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/small3d/GlbFile.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/small3d/WavefrontFile.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../include/small3d/BinaryFile.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/small3d/Image.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/small3d/Logger.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/small3d/Model.hpp
