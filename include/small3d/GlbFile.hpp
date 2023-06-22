@@ -176,14 +176,14 @@ namespace small3d {
      * @param meshName The name of the mesh to load
      * 
      */
-    void load(Model& model, const std::string& meshName = "");
+    void load(Model& model, const std::string& meshName = "") override;
 
     /**
      * @brief Get a list of the names of the meshes contained in the
      *        file.
      * @return The list of mesh names
      */
-    std::vector<std::string> getMeshNames();
+    std::vector<std::string> getMeshNames() override;
 
   };
 

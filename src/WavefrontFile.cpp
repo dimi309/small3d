@@ -438,11 +438,6 @@ namespace small3d {
     
   }
 
-  void WavefrontFile::load(BoundingBoxSet& boundingBoxSet) {
-    boundingBoxSet.vertices = this->vertices;
-    boundingBoxSet.facesVertexIndexes = this->facesVertexIndices;
-  }
-
   std::vector<std::string> WavefrontFile::getMeshNames() {
     return objectNames;
   }

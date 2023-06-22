@@ -91,6 +91,11 @@ int main(int argc, char** argv) {
       RETURN1
     }
     
+    if (!BinaryModelTest()) {
+      printf("*** Failing BinaryModelTest.\n\r");
+      RETURN1
+    }
+    
     if (!SoundTest()) {
       printf("*** Failing SoundTest.\n\r");
       RETURN1
@@ -105,7 +110,7 @@ int main(int argc, char** argv) {
       printf("*** Failing SoundTest3.\n\r");
       RETURN1
     }
-
+    
     if (!GlbTest()) {
       printf("*** Failing GlbTest.\n\r");
       RETURN1

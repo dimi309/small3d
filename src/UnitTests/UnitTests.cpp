@@ -17,6 +17,7 @@
 #include "BoundingBoxSet.hpp"
 #include "GlbFile.hpp"
 #include "WavefrontFile.hpp"
+#include "BinaryFile.hpp"
 #include "OctPyramid.hpp"
 #include <glm/gtx/string_cast.hpp>
 
@@ -513,6 +514,7 @@ int RendererTest() {
   
   // Here loading the mesh without providing a name is also tested.
   Model modelFromGlb(GlbFile(resourceDir + "/models/goatUnscaled.glb"), "");
+  
 
   WavefrontFile cubef(resourceDir + "/models/Cube/CubeNoTexture.obj");
   SceneObject object("cube", cubef);
@@ -594,6 +596,7 @@ int RendererTest() {
       r->render(modelFromGlb, glm::vec3(0.0f, 1.0f, -6.0f),
         rotation, glm::vec4(0.3f, 1.0f, 1.0f, 1.0f));
 
+
       r->render(textRect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", 0, false);
 
@@ -611,6 +614,47 @@ int RendererTest() {
   r->clearBuffers(textRect);
   r->deleteTexture("cubeTexture");
 
+  return 1;
+}
+
+int BinaryModelTest() {
+
+  initRenderer();
+
+  r->setCameraRotation(glm::vec3(0.4f, 0.1f, 0.1f));
+  const std::string textureName = "goatbintexture";
+#if defined(_WIN32) || defined(__ANDROID__) // This is probably because I usually run android on windows
+                                            // Maybe the "linux" model binary needs to be loaded on MacOS
+  Model modelFromBin(BinaryFile(resourceDir + "/models/goatWithTexture.bin"), "");
+#else
+  Model modelFromBin(BinaryFile(resourceDir + "/models/goatWithTextureLinux.bin"), "");
+#endif
+  r->generateTexture(textureName, *modelFromBin.defaultTextureImage);
+  double startSeconds = getTimeInSeconds();
+  double seconds = getTimeInSeconds();
+  double prevSeconds = seconds;
+  const uint32_t framerate = 30;
+
+  constexpr double secondsInterval = 1.0 / framerate;
+
+  SceneObject so("goat", modelFromBin);
+  
+  so.position = glm::vec3(0.0f, 1.0f, -6.0f);
+  so.startAnimating();
+
+  glm::vec3 rotation(0.0f, 0.0f, 0.0f);
+  while (seconds - startSeconds < 5.0) {
+    pollEvents();
+    seconds = getTimeInSeconds();
+    if (seconds - prevSeconds > secondsInterval) {
+      prevSeconds = seconds;
+
+      so.rotate(glm::vec3(0.0f, 0.1f, 0.0f));
+      so.animate();
+      r->render(so, textureName);
+      r->swapBuffers();
+    }
+  }
   return 1;
 }
 
@@ -676,8 +720,16 @@ int GenericSceneObjectConstructorTest() {
   SceneObject so1("goat1", Model(GlbFile(resourceDir + "/models/goat.glb"), ""));
   SceneObject so2("goat2", Model(WavefrontFile(resourceDir + "/models/goat.obj"), ""));
 
+#if defined(_WIN32) || defined(__ANDROID__) // This is probably because I usually run android on windows
+                                            // Maybe the "linux" model binary needs to be loaded on MacOS
+  SceneObject so3("goat3", Model(BinaryFile(resourceDir + "/models/goatWithTexture.bin"), ""));
+#else
+  SceneObject so3("goat3", Model(BinaryFile(resourceDir + "/models/goatWithTextureLinux.bin"), ""));
+#endif
+
   if (so1.getModel().vertexDataByteSize == 0) return 0;
   if (so2.getModel().vertexDataByteSize == 0) return 0;
+  if (so3.getModel().vertexDataByteSize == 0) return 0;
 
   return 1;
 }

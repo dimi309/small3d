@@ -41,6 +41,14 @@ if "%errorlevel%" neq "0" endlocal & exit /b %errorlevel%
 xcopy glm\glm include\glm /i /s /y
 rmdir /Q /S glm
 
+7z x cereal-1.3.2.tar.gz
+7z x cereal-1.3.2.tar
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+xcopy cereal-1.3.2\include\cereal include\cereal /i /s
+del 7z x cereal-1.3.2.tar
+rmdir /Q /S cereal-1.3.2
+del pax_global_header
+
 7z x oboe-1.6.1.tar.gz
 if "!errorlevel!" neq "0" endlocal & exit /b !errorlevel!
 7z x oboe-1.6.1.tar

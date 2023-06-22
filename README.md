@@ -14,7 +14,7 @@ Minimalistic, open source library for making 3D games in C++
 
 # Features
 
-- 3D models loaded from glTF (glb) or Wavefront (obj) files
+- 3D models loaded from glTF (glb files), Wavefront (obj files) or from a native format
 - Other customised meshes and shapes
 - Animation
 - Texture mapping
@@ -123,6 +123,7 @@ of time in that respect.
 - portaudio
 - freetype
 - bzip
+- cereal
 - oboe when building for Android
 
 All dependencies *source code* repositories (not binaries) are distributed

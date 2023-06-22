@@ -1,12 +1,12 @@
 add_library(small3d BasePath.cpp BoundingBoxSet.cpp File.cpp GlbFile.cpp
-  WavefrontFile.cpp Image.cpp Logger.cpp Model.cpp Renderer.cpp SceneObject.cpp
-  Sound.cpp Time.cpp ../include/small3d/SceneObject.hpp
+  WavefrontFile.cpp BinaryFile.cpp Image.cpp Logger.cpp Model.cpp Renderer.cpp
+  SceneObject.cpp  Sound.cpp Time.cpp ../include/small3d/SceneObject.hpp
   ../include/small3d/Sound.hpp ../include/small3d/Time.hpp
   ../include/small3d/BasePath.hpp ../include/small3d/BoundingBoxSet.hpp
   ../include/small3d/File.hpp ../include/small3d/GlbFile.hpp
-  ../include/small3d/WavefrontFile.hpp ../include/small3d/Image.hpp
-  ../include/small3d/Logger.hpp ../include/small3d/Model.hpp
-  ../include/small3d/Renderer.hpp
+  ../include/small3d/WavefrontFile.hpp ../include/small3d/BinaryFile.hpp
+  ../include/small3d/Image.hpp ../include/small3d/Logger.hpp
+  ../include/small3d/Model.hpp ../include/small3d/Renderer.hpp
   )
 
 if(DEFINED ANDROID_PLATFORM)
@@ -98,15 +98,6 @@ AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
 -framework IOKit -framework CoreVideo")
   endif()
 
-  # Unit testing
-
-  add_executable(unittests UnitTests/UnitTests.hpp UnitTests/OctPyramid.cpp
-    UnitTests/OctPyramid.hpp UnitTests/unit_tests.cpp UnitTests/UnitTests.cpp)
-
-  target_link_libraries(unittests PRIVATE small3d)
-  if(MSVC) # Visual Studio
-    set_target_properties(unittests PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
-      "${small3d_BINARY_DIR}/bin")
-  endif()
+  subdirs(UnitTests ModelConverter)
 
 endif()
