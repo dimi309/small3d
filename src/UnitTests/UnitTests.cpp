@@ -623,8 +623,9 @@ int BinaryModelTest() {
 
   r->setCameraRotation(glm::vec3(0.4f, 0.1f, 0.1f));
   const std::string textureName = "goatbintexture";
-#if defined(_WIN32) || defined(__ANDROID__) // This is probably because I usually run android on windows
-                                            // Maybe the "linux" model binary needs to be loaded on MacOS
+#if defined(_WIN32) || defined(__ANDROID__) // Android seems to need the binary file
+                                            // created in windows. This is a bit
+                                            // strange.
   Model modelFromBin(BinaryFile(resourceDir + "/models/goatWithTexture.bin"), "");
 #else
   Model modelFromBin(BinaryFile(resourceDir + "/models/goatWithTextureLinux.bin"), "");
@@ -720,8 +721,9 @@ int GenericSceneObjectConstructorTest() {
   SceneObject so1("goat1", Model(GlbFile(resourceDir + "/models/goat.glb"), ""));
   SceneObject so2("goat2", Model(WavefrontFile(resourceDir + "/models/goat.obj"), ""));
 
-#if defined(_WIN32) || defined(__ANDROID__) // This is probably because I usually run android on windows
-                                            // Maybe the "linux" model binary needs to be loaded on MacOS
+#if defined(_WIN32) || defined(__ANDROID__) // Android seems to need the binary file
+                                            // created in windows. This is a bit
+                                            // strange.
   SceneObject so3("goat3", Model(BinaryFile(resourceDir + "/models/goatWithTexture.bin"), ""));
 #else
   SceneObject so3("goat3", Model(BinaryFile(resourceDir + "/models/goatWithTextureLinux.bin"), ""));
