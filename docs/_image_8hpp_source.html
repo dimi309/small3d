@@ -88,46 +88,55 @@ $(function() {
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">struct </span>memoryDataAndPos_ {</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;      std::vector&lt;char&gt; data;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;      uint64_t pos = 0;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    };</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    memoryDataAndPos_ memoryDataAndPos;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> width = 0, height = 0;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    std::vector&lt;uint8_t&gt; imageData;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> imageDataSize = 0;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">void</span> load(<span class="keyword">const</span> std::string fileLocation, std::vector&lt;char&gt;&amp; data);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> readDataFromMemory(png_structp png_ptr, png_bytep outBytes,</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;      png_size_t byteCountToRead);</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classsmall3d_1_1_image.html#ae8ebe48834ff700dff0f3f30983b70bd">   52</a></span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> std::string <a class="code" href="classsmall3d_1_1_image.html#ae8ebe48834ff700dff0f3f30983b70bd">NOTRGBA</a>;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <a class="code" href="classsmall3d_1_1_image.html#afe8aec09a44cfc52975166d930466dea">Image</a>(<span class="keyword">const</span> std::string fileLocation = <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <a class="code" href="classsmall3d_1_1_image.html#afe8aec09a44cfc52975166d930466dea">Image</a>(std::vector&lt;char&gt;&amp; data);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="classsmall3d_1_1_image.html#afd4336c0afa2ec91f144da3bb17dc9ef">   71</a></span>&#160;    <a class="code" href="classsmall3d_1_1_image.html#afd4336c0afa2ec91f144da3bb17dc9ef">~Image</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_image.html#a619d1f2f4c5e4e8c973abcd6b7d03aa5">toColour</a>(glm::vec4 colour);</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classsmall3d_1_1_image.html#a335588f99053b1f55c15c60c76c26624">getWidth</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classsmall3d_1_1_image.html#adf097899bb8212b43a6e620ff0d15007">getHeight</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classsmall3d_1_1_image.html#a2ca91e211b1f2eb978def755cb1821f3">getByteSize</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keyword">const</span> uint8_t* <a class="code" href="classsmall3d_1_1_image.html#a5d3226c747156c0176eef8082d55753c">getData</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  };</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;}</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;      <span class="keyword">template</span> &lt;<span class="keyword">class</span> Archive&gt;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;      <span class="keywordtype">void</span> serialize(Archive&amp; archive) {</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        archive(data, pos);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;      }</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    };</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    memoryDataAndPos_ memoryDataAndPos;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> width = 0, height = 0;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    std::vector&lt;uint8_t&gt; imageData;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> imageDataSize = 0;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">void</span> load(<span class="keyword">const</span> std::string fileLocation, std::vector&lt;char&gt;&amp; data);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> readDataFromMemory(png_structp png_ptr, png_bytep outBytes,</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;      png_size_t byteCountToRead);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classsmall3d_1_1_image.html#ae8ebe48834ff700dff0f3f30983b70bd">   56</a></span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> std::string <a class="code" href="classsmall3d_1_1_image.html#ae8ebe48834ff700dff0f3f30983b70bd">NOTRGBA</a>;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <a class="code" href="classsmall3d_1_1_image.html#afe8aec09a44cfc52975166d930466dea">Image</a>(<span class="keyword">const</span> std::string fileLocation = <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <a class="code" href="classsmall3d_1_1_image.html#afe8aec09a44cfc52975166d930466dea">Image</a>(std::vector&lt;char&gt;&amp; data);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="classsmall3d_1_1_image.html#afd4336c0afa2ec91f144da3bb17dc9ef">   75</a></span>&#160;    <a class="code" href="classsmall3d_1_1_image.html#afd4336c0afa2ec91f144da3bb17dc9ef">~Image</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_image.html#a619d1f2f4c5e4e8c973abcd6b7d03aa5">toColour</a>(glm::vec4 colour);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classsmall3d_1_1_image.html#a335588f99053b1f55c15c60c76c26624">getWidth</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classsmall3d_1_1_image.html#adf097899bb8212b43a6e620ff0d15007">getHeight</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classsmall3d_1_1_image.html#a2ca91e211b1f2eb978def755cb1821f3">getByteSize</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keyword">const</span> uint8_t* <a class="code" href="classsmall3d_1_1_image.html#a5d3226c747156c0176eef8082d55753c">getData</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">class</span> Archive&gt;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keywordtype">void</span> serialize(Archive&amp; archive) {</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;      archive(memoryDataAndPos, width, height, imageData, imageDataSize);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    }</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  };</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclasssmall3d_1_1_image_html_a2ca91e211b1f2eb978def755cb1821f3"><div class="ttname"><a href="classsmall3d_1_1_image.html#a2ca91e211b1f2eb978def755cb1821f3">small3d::Image::getByteSize</a></div><div class="ttdeci">unsigned long getByteSize() const</div><div class="ttdoc">Get the size of the image, in bytes.</div><div class="ttdef"><b>Definition:</b> Image.cpp:289</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_image_html_a619d1f2f4c5e4e8c973abcd6b7d03aa5"><div class="ttname"><a href="classsmall3d_1_1_image.html#a619d1f2f4c5e4e8c973abcd6b7d03aa5">small3d::Image::toColour</a></div><div class="ttdeci">void toColour(glm::vec4 colour)</div><div class="ttdoc">Convert to a coloured 10 x 10 pixel image.</div><div class="ttdef"><b>Definition:</b> Image.cpp:60</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_image_html_afe8aec09a44cfc52975166d930466dea"><div class="ttname"><a href="classsmall3d_1_1_image.html#afe8aec09a44cfc52975166d930466dea">small3d::Image::Image</a></div><div class="ttdeci">Image(const std::string fileLocation=&quot;&quot;)</div><div class="ttdoc">File-reading constructor.</div><div class="ttdef"><b>Definition:</b> Image.cpp:22</div></div>
-<div class="ttc" id="aclasssmall3d_1_1_image_html_ae8ebe48834ff700dff0f3f30983b70bd"><div class="ttname"><a href="classsmall3d_1_1_image.html#ae8ebe48834ff700dff0f3f30983b70bd">small3d::Image::NOTRGBA</a></div><div class="ttdeci">static const std::string NOTRGBA</div><div class="ttdoc">String saying that the colour encoding of the image being read is not RGB/RGBA.</div><div class="ttdef"><b>Definition:</b> Image.hpp:52</div></div>
-<div class="ttc" id="anamespacesmall3d_html"><div class="ttname"><a href="namespacesmall3d.html">small3d</a></div><div class="ttdef"><b>Definition:</b> BoundingBoxSet.hpp:19</div></div>
+<div class="ttc" id="aclasssmall3d_1_1_image_html_ae8ebe48834ff700dff0f3f30983b70bd"><div class="ttname"><a href="classsmall3d_1_1_image.html#ae8ebe48834ff700dff0f3f30983b70bd">small3d::Image::NOTRGBA</a></div><div class="ttdeci">static const std::string NOTRGBA</div><div class="ttdoc">String saying that the colour encoding of the image being read is not RGB/RGBA.</div><div class="ttdef"><b>Definition:</b> Image.hpp:56</div></div>
+<div class="ttc" id="anamespacesmall3d_html"><div class="ttname"><a href="namespacesmall3d.html">small3d</a></div><div class="ttdef"><b>Definition:</b> BinaryFile.hpp:15</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_image_html_a335588f99053b1f55c15c60c76c26624"><div class="ttname"><a href="classsmall3d_1_1_image.html#a335588f99053b1f55c15c60c76c26624">small3d::Image::getWidth</a></div><div class="ttdeci">unsigned long getWidth() const</div><div class="ttdoc">Get the image width.</div><div class="ttdef"><b>Definition:</b> Image.cpp:281</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_image_html"><div class="ttname"><a href="classsmall3d_1_1_image.html">small3d::Image</a></div><div class="ttdoc">An image, loaded from a .png file, which can be used for generating textures.</div><div class="ttdef"><b>Definition:</b> Image.hpp:29</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_image_html_a5d3226c747156c0176eef8082d55753c"><div class="ttname"><a href="classsmall3d_1_1_image.html#a5d3226c747156c0176eef8082d55753c">small3d::Image::getData</a></div><div class="ttdeci">const uint8_t * getData() const</div><div class="ttdoc">Get the image data.</div><div class="ttdef"><b>Definition:</b> Image.cpp:293</div></div>
