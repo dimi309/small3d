@@ -3,9 +3,17 @@ environment:
     - job_name: Windows VS 2022 builds
       appveyor_build_worker_image: Visual Studio 2022
       
-    - job_name: Ubuntu Linux builds
-      appveyor_build_worker_image: Ubuntu2004
-      
+#    - job_name: Ubuntu Linux builds
+#      appveyor_build_worker_image: Ubuntu2004
+# There seems to be a problem on appveyor and the Linux virtual machine does not work for the moment:
+# [00:00:17] N: Skipping acquire of configured file 'contrib/binary-i386/Packages' as repository 'http://download.virtualbox.org/virtualbox/debian focal InRelease' doesn't support architecture 'i386'
+# [00:00:17] N: Skipping acquire of configured file 'main/binary-i386/Packages' as repository 'http://apt.postgresql.org/pub/repos/apt focal-pgdg InRelease' doesn't support architecture 'i386'
+# [00:00:17] N: Skipping acquire of configured file 'main/binary-i386/Packages' as repository 'http://download.mono-project.com/repo/ubuntu stable-focal InRelease' doesn't support architecture 'i386'
+# [00:00:17] E: Repository 'http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu focal InRelease' changed its 'Label' value from 'Modern Erlang packages for Ubuntu and Debian' to 'Latest (26.x) Erlang packages for Ubuntu and Debian'
+# [00:00:17] N: This must be accepted explicitly before updates for this repository can be applied. See apt-secure(8) manpage for details.
+# [00:00:17] Command exited with code 100
+# [00:00:17] Build failed
+
     - job_name: MacOS builds
       appveyor_build_worker_image: macos-bigsur
       

@@ -16,7 +16,13 @@ namespace small3d {
 
   /**
    * @class BinaryFile
-   * @brief small3d native model file loader
+   * @brief Native model file loader. The model file loaded has to have been
+            produced by converting file in a supported format to a small3d
+	    native binary file using the model converter program, s3dmc,
+	    produced by this project's build scripts, for example by running
+	    s3dmc car.glb car.bin
+	    (this would convert a car gltf (.glb) model file to a native
+	    binary model file)
    */
   class BinaryFile : public File {
 
