@@ -16,14 +16,25 @@ Minimalistic, open source library for making 3D games in C++
 
 - 3D models loaded from glTF (glb files), Wavefront (obj files) or from a native format
 - Other customised meshes and shapes
-- Animation
 - Texture mapping
 - Gouraud shading
+- Shadow mapping
 - Image rendering
 - Font rendering
 - Sound
 - Collision detection
-- Shadow mapping
+- Frame-based animation
+- Skeletal animation
+
+# Partly humorous list of things NOT supported
+
+- Scenes - no Scene data structure, just SceneObjects rendered in an infinite space
+- Materials
+- Lighting other than Gouraud shading
+- Ray tracing
+- ECS
+- AI
+- Crypto
 
 # Supported platforms
 
