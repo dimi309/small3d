@@ -232,7 +232,7 @@ namespace small3d {
     if (file.is_open()) {
       while (std::getline(file, line)) {
 #endif
-        if (line[0] == 'o' || line[0] == 'g') {
+        if (line[0] == 'o') {
           std::vector<std::string> tokens;
           uint32_t numTokens = getTokens(line, ' ', tokens);
           if (numTokens > 1) {
