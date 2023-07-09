@@ -386,7 +386,7 @@ namespace small3d {
 
     if (objectNames.size() != 0 || meshName != "") {
       size_t startFaceIdx = 0;
-      size_t endFaceIdx = facesVertexIndices.size() - 1;
+      size_t numFaces = facesVertexIndices.size();
       if (meshName != "") {
         bool found = false;
         for (size_t idx = 0; idx < objectNames.size(); ++idx) {
@@ -394,7 +394,7 @@ namespace small3d {
             found = true;
             startFaceIdx = objectStartFaceIdx.find(meshName)->second;
             if (idx != objectNames.size() - 1) {
-              endFaceIdx = objectStartFaceIdx.find(objectNames[idx + 1])->second - 1;
+              numFaces = objectStartFaceIdx.find(objectNames[idx + 1])->second;
             }
             break;
           }
@@ -403,11 +403,11 @@ namespace small3d {
       }
       else if (objectNames.size() > 1) {
         // Will just load the first mesh (object in Wavefront)
-        endFaceIdx = objectStartFaceIdx.find(objectNames[1])->second - 1;
+        numFaces = objectStartFaceIdx.find(objectNames[1])->second;
       }
 
       model.indexData = std::vector<uint32_t>(model.indexData.begin() + startFaceIdx * 3,
-        model.indexData.begin() + endFaceIdx * 3);
+        model.indexData.begin() + numFaces * 3);
 
       size_t minIndex = model.indexData[0];
       for (auto i : model.indexData) if (i < minIndex) minIndex = i;
