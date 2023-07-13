@@ -734,6 +734,35 @@ namespace small3d {
           }
           channel.target = target;
         }
+        
+        // skip armature
+        auto nodeTokens = getChildTokens(getToken("nodes"));
+        auto channelTargetNode = nodeTokens[channel.target.node];
+        if (getChildToken(channelTargetNode, "rotation") == nullptr &&
+          getChildToken(channelTargetNode, "scale") == nullptr &&
+          getChildToken(channelTargetNode, "translation") == nullptr)
+        {
+          auto n = getNode(channel.target.node);
+          if (n.children.size() == 2) {
+            for (auto& cidx : n.children) {
+             
+
+              if (getChildToken(nodeTokens[cidx], "rotation") == nullptr &&
+                getChildToken(nodeTokens[cidx], "scale") == nullptr &&
+                getChildToken(nodeTokens[cidx], "translation") == nullptr) {
+                continue;
+              }
+
+              channel.target.node = cidx;
+
+            }
+          }
+        }
+        
+        
+        auto targetNode = getNode(channel.target.node);
+
+
         ret.channels.push_back(channel);
       }
     }
@@ -999,8 +1028,9 @@ namespace small3d {
             }
             else {
               if (sampler.input != firstInput) {
-                LOGDEBUG("Animation with multiple inputs ignored.");
-                animAbort = true;
+                LOGDEBUG("Animation starting from new input ignored. First input " + std::to_string(firstInput) + " current input " + std::to_string(sampler.input));
+                //animAbort = true;
+                continue;
                 break;
               }
             }
