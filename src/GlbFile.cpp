@@ -266,8 +266,8 @@ namespace small3d {
 
 #ifdef __ANDROID__
     AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
-                                       fullPath.c_str(),
-                                       AASSET_MODE_STREAMING);
+      fullPath.c_str(),
+      AASSET_MODE_STREAMING);
     if (!asset) throw std::runtime_error("Opening asset " + fullPath +
       " has failed!");
     off_t assetLength;
@@ -734,7 +734,7 @@ namespace small3d {
           }
           channel.target = target;
         }
-        
+
         // skip armature
         auto nodeTokens = getChildTokens(getToken("nodes"));
         auto channelTargetNode = nodeTokens[channel.target.node];
@@ -745,7 +745,7 @@ namespace small3d {
           auto n = getNode(channel.target.node);
           if (n.children.size() == 2) {
             for (auto& cidx : n.children) {
-             
+
 
               if (getChildToken(nodeTokens[cidx], "rotation") == nullptr &&
                 getChildToken(nodeTokens[cidx], "scale") == nullptr &&
@@ -758,8 +758,8 @@ namespace small3d {
             }
           }
         }
-        
-        
+
+
         auto targetNode = getNode(channel.target.node);
 
 
@@ -838,7 +838,7 @@ namespace small3d {
             auto numFloatsInData = data.size() / 4;
 
             model.vertexData.resize(numFloatsInData + numFloatsInData / 3); // Add 1 float for each 3 for 
-                                                                      // the w component of each vector
+            // the w component of each vector
 
             model.vertexDataByteSize = static_cast<uint32_t>(model.vertexData.size() * 4); // Each vertex component is 4 bytes
             size_t vertexPos = 0;
@@ -900,7 +900,7 @@ namespace small3d {
           model.indexData.resize(data.size() / 2);
           model.indexDataByteSize =
             static_cast<uint32_t>(model.indexData.size() * 4); // 4 because, even though each index is read in 16 bits,
-                                                       // it is stored in 32 bits
+          // it is stored in 32 bits
           uint16_t indexBuf = 0;
           for (size_t idx = 0; idx < model.indexData.size(); ++idx) {
             memcpy(&indexBuf, &data[2 * idx], 2);
@@ -952,8 +952,6 @@ namespace small3d {
     if (!loaded) throw std::runtime_error("Could not load mesh " + meshName + " from " + fullPath);
 
     LOGDEBUG("Loaded mesh " + actualName + " from " + fullPath);
-
-    bool animAbort = false;
 
     if (existNode(actualName) || existNodeForMesh(meshIndex)) {
       Node meshNode;
@@ -1022,6 +1020,10 @@ namespace small3d {
           for (auto& channel : animation.channels) {
 
             auto sampler = animation.samplers[channel.sampler];
+            if (sampler.interpolation != "LINEAR") {
+              LOGDEBUG("Non-linear interpolation sampler for animation (input " + std::to_string(sampler.input) + ") ignored.");
+              continue;
+            }
             if (animFirstRun) {
               firstInput = sampler.input;
               animFirstRun = false;
@@ -1029,7 +1031,6 @@ namespace small3d {
             else {
               if (sampler.input != firstInput) {
                 LOGDEBUG("Animation starting from new input ignored. First input " + std::to_string(firstInput) + " current input " + std::to_string(sampler.input));
-                //animAbort = true;
                 continue;
                 break;
               }
@@ -1091,19 +1092,8 @@ namespace small3d {
                 }
               }
             }
-
-            if (animAbort) break;
-
           }
-
-          if (animAbort) break;
         }
-      }
-    }
-    if (animAbort) {
-      for (auto& joint : model.joints) {
-        joint.rotationAnimation.clear();
-        joint.translationAnimation.clear();
       }
     }
   }

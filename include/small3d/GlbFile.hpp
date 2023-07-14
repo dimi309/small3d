@@ -25,11 +25,9 @@ namespace small3d {
 
   /**
    * @class GlbFile
-   * @brief .glb (glTF) file parser class. It can load meshes and textures. It can
-   *        also load animations but it is not perfect in that respect. Linear
-   *        animations work best and if there are more than one inputs across the
-   *        various animation channels only the input referenced by the first channel
-   *        will be used and the channels containing a different one will be ignored.
+   * @brief .glb (glTF) file parser class. It can load meshes, textures
+   *        and linear animations from samplers with a common input (the
+   *        rest are ignored).
    */
   class GlbFile : public File {
 
