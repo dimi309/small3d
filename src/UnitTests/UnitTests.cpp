@@ -681,6 +681,15 @@ int SoundTest() {
   return 1;
 }
 
+int BinSoundTest() {
+  Sound snd(resourceDir + "/sounds/bah.bin");
+  snd.play();
+  double startSeconds = getTimeInSeconds();
+  while (getTimeInSeconds() - startSeconds < 0.5);
+  snd.stop();
+  return 1;
+}
+
 int SoundTest2() {
   Sound snd1(resourceDir + "/sounds/bah.ogg");
   Sound snd2(snd1);

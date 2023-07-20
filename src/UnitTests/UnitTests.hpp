@@ -43,6 +43,7 @@ int GenericSceneObjectConstructorTest();
 int RendererTest();
 int BinaryModelTest();
 int SoundTest();
+int BinSoundTest();
 int SoundTest2();
 int SoundTest3();
 int GlbTest();

@@ -54,6 +54,21 @@ namespace small3d {
       unsigned long currentFrame = 0;
       std::vector<char> data;
       bool playingRepeat = false;
+
+      template <class Archive>
+      void serialize(Archive& archive) {
+        archive(channels,
+        rate,
+        samples,
+        size,
+        duration,
+        startTime,
+        repeat,
+        currentFrame,
+        data,
+        playingRepeat
+        );
+      }
     };
 
     SoundData soundData;
@@ -177,6 +192,12 @@ static ALCcontext *openalContext;
      * @brief Move assignment
      */
     Sound& operator=(const Sound&& other) noexcept;
+
+    /**
+     * @brief Save sound data in binary format
+     * @param binaryFilePath Path of file to save binary data to.
+     */
+    void saveBinary(const std::string binaryFilePath);
     
   };
 

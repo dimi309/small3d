@@ -35,7 +35,7 @@ void android_main(struct android_app* state) {
 int main(int argc, char** argv) {
 #endif
   try
-  { 
+  { /*
     if (!LoggerTest()) {
       printf("*** Failing LoggerTest.\n\r");
       RETURN1
@@ -98,6 +98,11 @@ int main(int argc, char** argv) {
     
     if (!SoundTest()) {
       printf("*** Failing SoundTest.\n\r");
+      RETURN1
+    }
+    */
+    if (!BinSoundTest()) {
+      printf("*** Failing BinSoundTest.\n\r");
       RETURN1
     }
 

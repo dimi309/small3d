@@ -15,7 +15,7 @@
 #include <cereal/types/memory.hpp>
 
 #include "BinaryFile.hpp"
-#include "zlib.h"
+#include <zlib.h>
 
 #ifdef __ANDROID__
 #include "small3d_android.h"
