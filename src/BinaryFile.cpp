@@ -15,6 +15,7 @@
 #include <cereal/types/memory.hpp>
 
 #include "BinaryFile.hpp"
+#include "zlib.h"
 
 #ifdef __ANDROID__
 #include "small3d_android.h"
@@ -59,8 +60,55 @@ void BinaryFile::load(Model& model, const std::string& meshName) {
   }
 #endif
 
-  cereal::BinaryInputArchive iarchive(is);
+  std::string readData = "";
+  const uint32_t CHUNK = 16384;
+
+  char rd[CHUNK];
+  while (!is.eof()) {
+    memset(rd, 0, CHUNK);
+    is.read(rd, CHUNK);
+    for (uint32_t idx = 0; idx < is.gcount(); ++idx) {
+      readData += rd[idx];
+    }
+  }
+  is.close();
+
+  unsigned char out[CHUNK];
+  uint32_t have = 0;
+  z_stream strm;
+  int flush;
+  strm.zalloc = Z_NULL;
+  strm.zfree = Z_NULL;
+  strm.opaque = Z_NULL;
+
+  if (inflateInit(&strm) != Z_OK) {
+    throw std::runtime_error("Failed to initialise inflate stream.");
+  }
+
+  strm.avail_in = readData.length();
+  strm.next_in = reinterpret_cast<Bytef*>(const_cast<char*>(readData.c_str()));
+  std::string uncompressedData = "";
+
+  do {
+    strm.avail_out = CHUNK;
+    strm.next_out = out;
+    if (inflate(&strm, Z_NO_FLUSH) == Z_STREAM_ERROR) {
+      LOGERROR("Stream error");
+    }
+    have = CHUNK - strm.avail_out;
+    for (uint32_t idx = 0; idx < have; ++idx) {
+      uncompressedData += out[idx];
+    }
+  } while (strm.avail_out == 0);
+  deflateEnd(&strm);
+  
+  std::istringstream iss(uncompressedData, std::ios::binary);
+
+  cereal::BinaryInputArchive iarchive(iss);
   iarchive(model);
+  iss.clear();
+  uncompressedData.clear();
+
 #ifdef __ANDROID__
   AAsset_close(asset);
 #else
