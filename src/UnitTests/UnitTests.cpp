@@ -682,7 +682,14 @@ int SoundTest() {
 }
 
 int BinSoundTest() {
+#if defined(_WIN32) || defined(__ANDROID__) // Android seems to need the binary file
+                                            // created in windows. This is a bit
+                                            // strange.
   Sound snd(resourceDir + "/sounds/bah.bin");
+#else
+  Sound snd(resourceDir + "/sounds/bahLinux.bin");
+#endif
+  
   snd.play();
   double startSeconds = getTimeInSeconds();
   while (getTimeInSeconds() - startSeconds < 0.2);
