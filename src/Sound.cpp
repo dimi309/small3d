@@ -301,8 +301,8 @@ namespace small3d {
         if (ov_open_callbacks((void*)fp, &vorbisFile, NULL, 0,
           OV_CALLBACKS_NOCLOSE) < 0) {
           fclose(fp);
-          throw std::runtime_error("Could not load sound from file " +
-            soundFilePath);
+          throw std::runtime_error("Could not read file " +
+            soundFilePath + " as ogg.");
         }
         else {
           LOGDEBUG("Opened OV callbacks for " + soundFilePath + ".");
@@ -385,19 +385,11 @@ namespace small3d {
         AAsset_close(asset);
 #endif
 
-        char soundInfo[100];
-        sprintf(soundInfo, "Loaded sound - channels %d - rate %d - samples %ld "
-          "- size in bytes %ld", this->soundData.channels,
-          this->soundData.rate, this->soundData.samples,
-          this->soundData.size);
-        LOGDEBUG(std::string(soundInfo));
+
       }
       catch (std::exception& ex) {
-        LOGDEBUG("Could not open " + soundFilePath + " as OGG file: ");
         LOGDEBUG(ex.what());
         LOGDEBUG("Opening as binary...");
-
-
 
 #ifdef __ANDROID__
         AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
@@ -478,6 +470,18 @@ namespace small3d {
         LOGDEBUG("Loaded sound from binary file " + soundFilePath);
 
       }
+
+      LOGDEBUG("Loaded sound - channels " + std::to_string(this->soundData.channels) +
+        " - rate " + std::to_string(this->soundData.rate) + " - samples " +
+        std::to_string(this->soundData.samples) + " - size in bytes " +
+        std::to_string(this->soundData.size) + " - duration " +
+        std::to_string(this->soundData.duration) +
+        + " - start time " + std::to_string(this->soundData.startTime) +
+        + " - repeat? " + std::to_string(this->soundData.repeat) +
+        + " - current frame " + std::to_string(this->soundData.currentFrame) +
+        + " - data vector size " + std::to_string(this->soundData.data.size()) +
+        + " - playing repeat? " + std::to_string(this->soundData.playingRepeat)
+      );
 
     }
 
@@ -623,7 +627,7 @@ namespace small3d {
       this->soundData.currentFrame = 0;
       this->soundData.startTime = 0;
     }
-    }
+  }
 
   Sound::Sound(const Sound & other) noexcept : Sound() {
     this->soundData = other.soundData;
@@ -682,7 +686,7 @@ namespace small3d {
 #endif
     this->openStream();
     return *this;
-    }
+  }
 
   void Sound::saveBinary(const std::string binaryFilePath) {
 
@@ -731,4 +735,4 @@ namespace small3d {
     ofstr.close();
 
   }
-  }
+}
