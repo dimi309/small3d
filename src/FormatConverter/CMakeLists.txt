@@ -1,4 +1,4 @@
-gadd_executable(s3dfc format_converter.cpp)
+add_executable(s3dfc format_converter.cpp)
 
 target_link_libraries(s3dfc PRIVATE small3d)
 if(MSVC) # Visual Studio
