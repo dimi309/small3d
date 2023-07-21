@@ -21,7 +21,7 @@ Minimalistic, open source library for making 3D games in C++
 - Shadow mapping
 - Image rendering
 - Font rendering
-- Sound
+- Sound (ogg and native files)
 - Collision detection
 - Frame-based animation
 - Skeletal animation
