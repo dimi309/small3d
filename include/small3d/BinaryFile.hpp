@@ -17,12 +17,18 @@ namespace small3d {
   /**
    * @class BinaryFile
    * @brief Native model file loader. The model file loaded has to have been
-            produced by converting a file in a supported format to a small3d
-	    native binary file using the format converter program, s3dfc,
-	    produced by this project's build scripts, for example by running
-	    s3dfc car.glb car.bin
-	    (this would convert a car gltf (.glb) model file to a native
-	    binary model file)
+   *        produced by converting a file in a supported format to a small3d
+   *        native binary file using the format converter program, s3dfc,
+   *        produced by this project's build scripts, for example by running
+   *        s3dfc car.glb car.bin
+   *        (this would convert a car gltf (.glb) model file to a native
+   *        binary model file)
+   *        ATTENTION: The native binary file has to be generated in Windows
+   *        (using s3dfc) if it is going to be loaded in Windows or in Android
+   *        and in Linux or in MacOS if it is going to be loaded anywhere else.
+   *        This could be a limitation of the cereal library I am using to
+   *        serialise the data, or something I am doing wrong. I have not been
+   *        able to figure it out yet :/	    
    */
   class BinaryFile : public File {
 

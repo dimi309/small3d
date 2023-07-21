@@ -74,7 +74,8 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Native model file loader. The model file loaded has to have been produced by converting file in a supported format to a <a class="el" href="namespacesmall3d.html">small3d</a> native binary file using the model converter program, s3dmc, produced by this project's build scripts, for example by running s3dmc car.glb car.bin (this would convert a car gltf (.glb) model file to a native binary model file)  
+<p>Native model file loader. The model file loaded has to have been produced by converting a file in a supported format to a <a class="el" href="namespacesmall3d.html">small3d</a> native binary file using the format converter program, s3dfc, produced by this project's build scripts, for example by running s3dfc car.glb car.bin (this would convert a car gltf (.glb) model file to a native binary model file) ATTENTION: The native binary file has to be generated in Windows (using s3dfc) if it is going to be loaded in Windows or in Android and in Linux or in MacOS if it is going to be loaded anywhere else. This could be a limitation of the cereal library I am using to serialise the data, or something I am doing wrong. I have not been able to figure it out yet :/ <br  />
+  
  <a href="classsmall3d_1_1_binary_file.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_binary_file_8hpp_source.html">BinaryFile.hpp</a>&gt;</code></p>
@@ -113,7 +114,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:af2a429b0fc4ae0911a18043da131f2a0 inherit pro_attribs_classsmall3d_1_1_file"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Native model file loader. The model file loaded has to have been produced by converting file in a supported format to a <a class="el" href="namespacesmall3d.html">small3d</a> native binary file using the model converter program, s3dmc, produced by this project's build scripts, for example by running s3dmc car.glb car.bin (this would convert a car gltf (.glb) model file to a native binary model file) </p>
+<div class="textblock"><p>Native model file loader. The model file loaded has to have been produced by converting a file in a supported format to a <a class="el" href="namespacesmall3d.html">small3d</a> native binary file using the format converter program, s3dfc, produced by this project's build scripts, for example by running s3dfc car.glb car.bin (this would convert a car gltf (.glb) model file to a native binary model file) ATTENTION: The native binary file has to be generated in Windows (using s3dfc) if it is going to be loaded in Windows or in Android and in Linux or in MacOS if it is going to be loaded anywhere else. This could be a limitation of the cereal library I am using to serialise the data, or something I am doing wrong. I have not been able to figure it out yet :/ <br  />
+ </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ac8812b09eb0d378eef2eb388855fc2a7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac8812b09eb0d378eef2eb388855fc2a7">&#9670;&nbsp;</a></span>BinaryFile()</h2>
