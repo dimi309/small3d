@@ -37,7 +37,16 @@ namespace small3d {
   /**
    * @class Sound
    *
-   * @brief Class that loads and plays a sound from an ogg file.
+   * @brief Class that loads and plays a sound from an ogg file,
+   *        or a native sound file. In the latter case, the file
+   *        loaded has to have been produced by converting an .ogg
+   *        file to a small3d native binary file using the
+   *        format converter program, s3dfc, produced by this project's
+   *        build scripts, for example by running
+   *        s3dfc engine.ogg engine.bin
+   *        (this would convert an engine sound .ogg file to a native
+   *        binary sound file)
+   *
    */
   class Sound {
     
