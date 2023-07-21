@@ -41,10 +41,15 @@ v1.802 (still open)
   files using the library.
   
 - Model files in supported formats (gltf and wavefront at the time of writing)
-  can now be converted to a native small3d binary format, using a new model
-  converter program produced by the project's build script, named s3dmc. The
+  can now be converted to a native small3d binary format, using a new format
+  converter program produced by the project's build script, named s3dfc. The
   produced binary files can then be read by a new file access class called
   BinaryFile and loaded into Models.
+  
+- Sound files (.ogg) can also be converted by s3dfc to native small3d sound 
+  files and used as such. In the case of sound files, both ogg and native
+  binaries are just loaded by the Sound class (there is no separate loader
+  class).
 
 v1.801 2023-01-21
 
