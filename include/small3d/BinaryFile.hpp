@@ -26,9 +26,6 @@ namespace small3d {
    *        ATTENTION: The native binary file has to be generated in Windows
    *        (using s3dfc) if it is going to be loaded in Windows or in Android
    *        and in Linux or in MacOS if it is going to be loaded anywhere else.
-   *        This could be a limitation of the cereal library I am using to
-   *        serialise the data, or something I am doing wrong. I have not been
-   *        able to figure it out yet :/	    
    */
   class BinaryFile : public File {
 

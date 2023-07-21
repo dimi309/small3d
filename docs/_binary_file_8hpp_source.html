@@ -78,30 +78,30 @@ $(function() {
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
 <div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="namespacesmall3d.html">   15</a></span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacesmall3d.html">small3d</a> {</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classsmall3d_1_1_binary_file.html">   33</a></span>&#160;  <span class="keyword">class </span><a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a> : <span class="keyword">public</span> <a class="code" href="classsmall3d_1_1_file.html">File</a> {</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classsmall3d_1_1_binary_file.html">   30</a></span>&#160;  <span class="keyword">class </span><a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a> : <span class="keyword">public</span> <a class="code" href="classsmall3d_1_1_file.html">File</a> {</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a>(); <span class="comment">// No default constructor</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a>(); <span class="comment">// No default constructor</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="comment">// Forbid moving and copying</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a>(<a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a> <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">void</span> operator=(<a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a> <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a>(<a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">void</span> operator=(<a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a>(<span class="keyword">const</span> std::string&amp; fileLocation);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_binary_file.html#a614beda4f638a892e0adc34951446101">load</a>(<a class="code" href="classsmall3d_1_1_model.html">Model</a>&amp; model, <span class="keyword">const</span> std::string&amp; meshName) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    std::vector&lt;std::string&gt; <a class="code" href="classsmall3d_1_1_binary_file.html#a2a14df9465b86d38d00bb58bb4022494">getMeshNames</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  };</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="comment">// Forbid moving and copying</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a>(<a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a> <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">void</span> operator=(<a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a> <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a>(<a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">void</span> operator=(<a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <a class="code" href="classsmall3d_1_1_binary_file.html">BinaryFile</a>(<span class="keyword">const</span> std::string&amp; fileLocation);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_binary_file.html#a614beda4f638a892e0adc34951446101">load</a>(<a class="code" href="classsmall3d_1_1_model.html">Model</a>&amp; model, <span class="keyword">const</span> std::string&amp; meshName) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    std::vector&lt;std::string&gt; <a class="code" href="classsmall3d_1_1_binary_file.html#a2a14df9465b86d38d00bb58bb4022494">getMeshNames</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  };</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclasssmall3d_1_1_binary_file_html"><div class="ttname"><a href="classsmall3d_1_1_binary_file.html">small3d::BinaryFile</a></div><div class="ttdoc">Native model file loader. The model file loaded has to have been produced by converting a file in a s...</div><div class="ttdef"><b>Definition:</b> BinaryFile.hpp:33</div></div>
+<div class="ttc" id="aclasssmall3d_1_1_binary_file_html"><div class="ttname"><a href="classsmall3d_1_1_binary_file.html">small3d::BinaryFile</a></div><div class="ttdoc">Native model file loader. The model file loaded has to have been produced by converting a file in a s...</div><div class="ttdef"><b>Definition:</b> BinaryFile.hpp:30</div></div>
 <div class="ttc" id="a_model_8hpp_html"><div class="ttname"><a href="_model_8hpp.html">Model.hpp</a></div><div class="ttdoc">A 3D model class.</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_model_html"><div class="ttname"><a href="classsmall3d_1_1_model.html">small3d::Model</a></div><div class="ttdoc">A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...</div><div class="ttdef"><b>Definition:</b> Model.hpp:39</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_binary_file_html_a2a14df9465b86d38d00bb58bb4022494"><div class="ttname"><a href="classsmall3d_1_1_binary_file.html#a2a14df9465b86d38d00bb58bb4022494">small3d::BinaryFile::getMeshNames</a></div><div class="ttdeci">std::vector&lt; std::string &gt; getMeshNames() override</div><div class="ttdoc">Get a list of the names of the meshes contained in the file.</div><div class="ttdef"><b>Definition:</b> BinaryFile.cpp:121</div></div>
