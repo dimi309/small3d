@@ -11,6 +11,7 @@
 #include <small3d/Model.hpp>
 #include <small3d/SceneObject.hpp>
 #include <small3d/GlbFile.hpp>
+#include <small3d/BinaryFile.hpp>
 
 #if defined(SMALL3D_OPENGL)
 #include <OpenGLES/ES2/gl.h>
@@ -19,7 +20,7 @@
 
 small3d::Model texturedRect;
 small3d::Model goat(small3d::GlbFile("resources1/models/goatAndTree.glb"), "Cube");
-
+small3d::Model goatWithTexture(small3d::BinaryFile("resources1/models/goatWithTextureLinux.bin"));
 @implementation ViewController {
   CADisplayLink* _displayLink;
 }
@@ -103,8 +104,10 @@ small3d::Model goat(small3d::GlbFile("resources1/models/goatAndTree.glb"), "Cube
     r->createRectangle(texturedRect, glm::vec3(-0.8f, 0.1f, -1.0f),
       glm::vec3(0.8f, -0.1f, -1.0f));
     r->generateTexture("message_ios", "No extended testing due to ios render loop control", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-
+    r->generateTexture("goat_texture", *goatWithTexture.defaultTextureImage);
     SoundTest();
+    BinSoundTest();
+    
     
   }
   catch (std::exception& e) {
@@ -158,6 +161,7 @@ small3d::Model goat(small3d::GlbFile("resources1/models/goatAndTree.glb"), "Cube
   glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
   r->render(goat, glm::vec3(-1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
   r->render(goat, glm::vec3(-1.5f, 1.0f, -4.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+  r->render(goatWithTexture, glm::vec3(1.5f, 1.0f, -4.0f), glm::vec3(0.0f, 0.0f, 0.0f), "goat_texture");
   r->render(texturedRect, "message_ios");
   r->swapBuffers();
   const GLenum discards[]  = {GL_DEPTH_ATTACHMENT};
