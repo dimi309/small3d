@@ -23,9 +23,9 @@ namespace small3d {
    *        s3dfc car.glb car.bin
    *        (this would convert a car gltf (.glb) model file to a native
    *        binary model file)
-   *        ATTENTION: The native binary file has to be generated in Windows
-   *        (using s3dfc) if it is going to be loaded in Windows or in Android
-   *        and in Linux or in MacOS if it is going to be loaded anywhere else.
+   *        ATTENTION: Unfortunately the native binary files have issues across
+   *        architectures. So for example binaries created on Windows do not work
+   *        on Linux. They need to be created and tested separately for each.
    */
   class BinaryFile : public File {
 
