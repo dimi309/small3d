@@ -455,7 +455,7 @@ namespace small3d {
         } while (strm.avail_out == 0);
         deflateEnd(&strm);
 
-        std::istringstream iss(uncompressedData, std::ios::binary);
+        std::istringstream iss(uncompressedData, std::ios::binary | std::ios::in);
 
         cereal::BinaryInputArchive iarchive(iss);
         iarchive(this->soundData);
@@ -692,7 +692,7 @@ namespace small3d {
 
     const uint32_t CHUNK = 16384;
 
-    std::stringstream ss("", std::ios::out | std::ios::binary);
+    std::stringstream ss(std::ios::out | std::ios::binary | std::ios::trunc);
     cereal::BinaryOutputArchive oarchive(ss);
     oarchive(soundData);
 

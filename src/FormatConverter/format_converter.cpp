@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
       }
 
       if (!isSound) {
-        std::stringstream ss("", std::ios::out | std::ios::binary);
+        std::stringstream ss(std::ios::out | std::ios::binary | std::ios::trunc);
 
         cereal::BinaryOutputArchive oarchive(ss);
         oarchive(model);

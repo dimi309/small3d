@@ -102,7 +102,7 @@ void BinaryFile::load(Model& model, const std::string& meshName) {
   } while (strm.avail_out == 0);
   deflateEnd(&strm);
   
-  std::istringstream iss(uncompressedData, std::ios::binary);
+  std::istringstream iss(uncompressedData, std::ios::binary | std::ios::in);
 
   cereal::BinaryInputArchive iarchive(iss);
   iarchive(model);
