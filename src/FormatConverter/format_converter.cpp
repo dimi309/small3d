@@ -1,19 +1,12 @@
 #include "Model.hpp"
 #include "GlbFile.hpp"
 #include "WavefrontFile.hpp"
-#include <cereal/archives/binary.hpp>
-#include <sstream>
-#include <ostream>
-#include <cereal/types/vector.hpp>
-#include <cereal/types/string.hpp>
-#include <cereal/types/memory.hpp>
 #include "BinaryFile.hpp"
 #include "Sound.hpp"
-#include <zlib.h>
 
 using namespace small3d;
 
-const uint32_t CHUNK = 16384;
+
 bool isSound = false;
 
 int main(int argc, char** argv) {
@@ -49,49 +42,8 @@ int main(int argc, char** argv) {
       }
 
       if (!isSound) {
-        std::stringstream ss(std::ios::out | std::ios::binary | std::ios::trunc);
-
-        cereal::BinaryOutputArchive oarchive(ss);
-        oarchive(model);
-
-        unsigned char out[CHUNK];
-        uint32_t have = 0;
-        z_stream strm;
-        int flush;
-
-        strm.zalloc = Z_NULL;
-        strm.zfree = Z_NULL;
-        strm.opaque = Z_NULL;
-
-        if (deflateInit(&strm, Z_DEFAULT_COMPRESSION) != Z_OK) {
-          std::cout << "Failed to initialise deflate stream." << std::endl;;
-          return 1;
-        }
-
-        auto strBuffer = ss.str();
-
-        strm.next_in = reinterpret_cast<Bytef*>(const_cast<char*>(strBuffer.c_str()));
-        strm.avail_in = strBuffer.length();
-        std::string compressedData = "";
-        int defRet = 0;
-        do {
-          strm.avail_out = CHUNK;
-          strm.next_out = out;
-
-          defRet = deflate(&strm, strm.avail_in > 0 ? Z_NO_FLUSH : Z_FINISH);
-          if (defRet == Z_STREAM_ERROR) {
-            LOGERROR("Stream error");
-          }
-          have = CHUNK - strm.avail_out;
-          for (uint32_t idx = 0; idx < have; ++idx) {
-            compressedData += out[idx];
-          }
-        } while (defRet != Z_STREAM_END);
-        deflateEnd(&strm);
-
-        std::ofstream ofstr(binpath, std::ios::out | std::ios::binary);
-        ofstr.write(compressedData.c_str(), compressedData.length());
-        ofstr.close();
+        model.saveBinary(binpath);
+        
       }
       else {
         sound.saveBinary(binpath);

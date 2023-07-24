@@ -623,13 +623,11 @@ int BinaryModelTest() {
 
   r->setCameraRotation(glm::vec3(0.4f, 0.1f, 0.1f));
   const std::string textureName = "goatbintexture";
-#if defined(_WIN32) || defined(__ANDROID__) // Android seems to need the binary file
-                                            // created in windows. This is a bit
-                                            // strange.
-  Model modelFromBin(BinaryFile(resourceDir + "/models/goatWithTexture.bin"), "");
-#else
-  Model modelFromBin(BinaryFile(resourceDir + "/models/goatWithTextureLinux.bin"), "");
-#endif
+
+  Model modelFromGlb(GlbFile(resourceDir + "/models/goatWithTexture.glb"), "");
+  modelFromGlb.saveBinary("testGoatWithTexture.bin");
+  Model modelFromBin(BinaryFile("testGoatWithTexture.bin"), "");
+
   r->generateTexture(textureName, *modelFromBin.defaultTextureImage);
   double startSeconds = getTimeInSeconds();
   double seconds = getTimeInSeconds();
@@ -682,13 +680,10 @@ int SoundTest() {
 }
 
 int BinSoundTest() {
-#if defined(_WIN32) || defined(__ANDROID__) // Android seems to need the binary file
-                                            // created in windows. This is a bit
-                                            // strange.
-  Sound snd(resourceDir + "/sounds/bah.bin");
-#else
-  Sound snd(resourceDir + "/sounds/bahLinux.bin");
-#endif
+
+  Sound srcsnd(resourceDir + "/sounds/bah.ogg");
+  srcsnd.saveBinary("testBah.bin");
+  Sound snd("testBah.bin");
   
   snd.play();
   double startSeconds = getTimeInSeconds();
@@ -737,13 +732,10 @@ int GenericSceneObjectConstructorTest() {
   SceneObject so1("goat1", Model(GlbFile(resourceDir + "/models/goat.glb"), ""));
   SceneObject so2("goat2", Model(WavefrontFile(resourceDir + "/models/goat.obj"), ""));
 
-#if defined(_WIN32) || defined(__ANDROID__) // Android seems to need the binary file
-                                            // created in windows. This is a bit
-                                            // strange.
-  SceneObject so3("goat3", Model(BinaryFile(resourceDir + "/models/goatWithTexture.bin"), ""));
-#else
-  SceneObject so3("goat3", Model(BinaryFile(resourceDir + "/models/goatWithTextureLinux.bin"), ""));
-#endif
+  Model modelFromGlb(GlbFile(resourceDir + "/models/goatWithTexture.glb"), "");
+  modelFromGlb.saveBinary("testGoatWithTexture1.bin");
+  
+  SceneObject so3("goat3", Model(BinaryFile("testGoatWithTexture1.bin"), ""));
 
   if (so1.getModel().vertexDataByteSize == 0) return 0;
   if (so2.getModel().vertexDataByteSize == 0) return 0;

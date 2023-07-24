@@ -236,6 +236,12 @@ namespace small3d {
      */
     glm::vec3 getOriginalScale();
 
+    /**
+     * @brief Save model data in binary format
+     * @param binaryFilePath Path of file to save binary data to.
+     */
+    void saveBinary(const std::string binaryFilePath);
+
     template <class Archive>
     void serialize(Archive& archive) {
       archive(numPoses, origTransformation,
