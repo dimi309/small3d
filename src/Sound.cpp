@@ -22,6 +22,14 @@
 
 #if defined(__ANDROID__)
 #include "small3d_android.h"
+
+struct membuf : std::streambuf
+{
+  membuf(char* begin, char* end) {
+    this->setg(begin, begin, end);
+  }
+};
+
 #endif
 
 #include "Time.hpp"
@@ -393,7 +401,7 @@ namespace small3d {
 
 #ifdef __ANDROID__
         AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
-          fullPath.c_str(),
+          soundFilePath.c_str(),
           AASSET_MODE_STREAMING);
         if (!asset) throw std::runtime_error("Opening asset " + soundFilePath +
           " has failed!");
@@ -424,8 +432,11 @@ namespace small3d {
             readData += rd[idx];
           }
         }
+#ifdef __ANDROID__
+        AAsset_close(asset);
+#else
         is.close();
-
+#endif
         unsigned char out[CHUNK];
         uint32_t have = 0;
         z_stream strm;

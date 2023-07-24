@@ -71,8 +71,11 @@ void BinaryFile::load(Model& model, const std::string& meshName) {
       readData += rd[idx];
     }
   }
-  is.close();
-
+#ifdef __ANDROID__
+        AAsset_close(asset);
+#else
+        is.close();
+#endif
   unsigned char out[CHUNK];
   uint32_t have = 0;
   z_stream strm;
