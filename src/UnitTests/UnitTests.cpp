@@ -626,6 +626,8 @@ int BinaryModelTest() {
 
   Model modelFromGlb(GlbFile(resourceDir + "/models/goatWithTexture.glb"), "");
   modelFromGlb.saveBinary("testGoatWithTexture.bin");
+  // On android only asset reading is supported for the moment
+#ifndef __ANDROID__
   Model modelFromBin(BinaryFile("testGoatWithTexture.bin"), "");
 
   r->generateTexture(textureName, *modelFromBin.defaultTextureImage);
@@ -654,6 +656,7 @@ int BinaryModelTest() {
       r->swapBuffers();
     }
   }
+#endif
   return 1;
 }
 
@@ -683,6 +686,8 @@ int BinSoundTest() {
 
   Sound srcsnd(resourceDir + "/sounds/bah.ogg");
   srcsnd.saveBinary("testBah.bin");
+  // On android only asset reading is supported for the moment
+#ifndef __ANDROID__
   Sound snd("testBah.bin");
   
   snd.play();
@@ -690,6 +695,7 @@ int BinSoundTest() {
   while (getTimeInSeconds() - startSeconds < 0.2);
   snd.stop();
   return 1;
+#endif
 }
 
 int SoundTest2() {
@@ -734,12 +740,16 @@ int GenericSceneObjectConstructorTest() {
 
   Model modelFromGlb(GlbFile(resourceDir + "/models/goatWithTexture.glb"), "");
   modelFromGlb.saveBinary("testGoatWithTexture1.bin");
-  
+  // On android only asset reading is supported for the moment
+#ifndef __ANDROID__
   SceneObject so3("goat3", Model(BinaryFile("testGoatWithTexture1.bin"), ""));
-
+#endif
   if (so1.getModel().vertexDataByteSize == 0) return 0;
   if (so2.getModel().vertexDataByteSize == 0) return 0;
+
+#ifndef __ANDROID__
   if (so3.getModel().vertexDataByteSize == 0) return 0;
+#endif
 
   return 1;
 }
