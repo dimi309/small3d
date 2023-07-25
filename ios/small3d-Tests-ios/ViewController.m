@@ -20,7 +20,8 @@
 
 small3d::Model texturedRect;
 small3d::Model goat(small3d::GlbFile("resources1/models/goatAndTree.glb"), "Cube");
-small3d::Model goatWithTexture(small3d::BinaryFile("resources1/models/goatWithTextureLinux.bin"));
+small3d::Model goatWithTexture;
+
 @implementation ViewController {
   CADisplayLink* _displayLink;
 }
@@ -104,10 +105,13 @@ small3d::Model goatWithTexture(small3d::BinaryFile("resources1/models/goatWithTe
     r->createRectangle(texturedRect, glm::vec3(-0.8f, 0.1f, -1.0f),
       glm::vec3(0.8f, -0.1f, -1.0f));
     r->generateTexture("message_ios", "No extended testing due to ios render loop control", glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+    small3d::Model gwtsrc(small3d::GlbFile("resources1/models/goatWithTexture.glb"));
+    std::string writePath = get_ios_writeable_path();
+    gwtsrc.saveBinary(writePath + "/goatWithTexture.bin");
+    goatWithTexture = small3d::Model(small3d::BinaryFile(writePath + "/goatWithTexture.bin"));
+    
     r->generateTexture("goat_texture", *goatWithTexture.defaultTextureImage);
     SoundTest();
-    BinSoundTest();
-    
     
   }
   catch (std::exception& e) {

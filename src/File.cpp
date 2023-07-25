@@ -11,7 +11,7 @@
 
 namespace small3d {
   File::File(const std::string& fileLocation) {
-    this->fullPath = getBasePath() + fileLocation;
+    this->fullPath = fileLocation[0] == '/' ? fileLocation : getBasePath() + fileLocation;
   }
 
  

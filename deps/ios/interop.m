@@ -46,6 +46,12 @@ extern "C" {
     
   }
   
+  const char* get_ios_writeable_path() {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    return [documentsDirectory cStringUsingEncoding:[NSString defaultCStringEncoding]];
+  }
+  
   int get_app_width() {
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     return screenRect.size.width;

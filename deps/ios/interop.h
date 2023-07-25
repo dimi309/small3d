@@ -28,6 +28,8 @@ void log_error(const char *msg);
 
 const char* get_ios_base_path();
 
+const char* get_ios_writeable_path();
+
 int get_app_width();
 
 int get_app_height();
