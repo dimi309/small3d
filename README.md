@@ -105,6 +105,9 @@ or  `build-ios` from the `scripts` directory. You can then use the test projects
 in the `android`, `ios` and `ios-opengles` directories to check if everything 
 works, or as a starting point for your own projects.
 
+If the Android project produces an NDK or SDK related error when opened in Android
+Studio, just close it without exiting Android Studio and open it again.
+
 Note that, while on the PC edition I use GLFW for windowing functionalities and 
 I/O, on mobile I access the native infrastructure directly.
 
