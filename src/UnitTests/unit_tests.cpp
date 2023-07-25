@@ -23,9 +23,6 @@ extern "C" {
 void android_main(struct android_app* state) {
 
   small3d_android_app = state;
-#ifndef SMALL3D_OPENGLES
-  vh_android_app = state;
-#endif
   
   small3d_android_app->onAppCmd = handle_cmd;
   while(!appActive) {
@@ -35,7 +32,7 @@ void android_main(struct android_app* state) {
 int main(int argc, char** argv) {
 #endif
   try
-  { 
+  {
     if (!LoggerTest()) {
       printf("*** Failing LoggerTest.\n\r");
       RETURN1
@@ -90,12 +87,12 @@ int main(int argc, char** argv) {
       printf("*** Failing RendererTest.\n\r");
       RETURN1
     }
-    
+
     if (!BinaryModelTest()) {
       printf("*** Failing BinaryModelTest.\n\r");
       RETURN1
     }
-    
+
     if (!SoundTest()) {
       printf("*** Failing SoundTest.\n\r");
       RETURN1

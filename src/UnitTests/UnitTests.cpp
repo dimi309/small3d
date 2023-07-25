@@ -625,9 +625,13 @@ int BinaryModelTest() {
   const std::string textureName = "goatbintexture";
 
   Model modelFromGlb(GlbFile(resourceDir + "/models/goatWithTexture.glb"), "");
-  modelFromGlb.saveBinary("testGoatWithTexture.bin");
+
+
   // On android only asset reading is supported for the moment
-#ifndef __ANDROID__
+#ifdef __ANDROID__
+  modelFromGlb.saveBinary("/data/data/com.dimi309.small3d_tests/files/testGoatWithTexture.bin");
+#else
+  modelFromGlb.saveBinary("testGoatWithTexture.bin");
   Model modelFromBin(BinaryFile("testGoatWithTexture.bin"), "");
 
   r->generateTexture(textureName, *modelFromBin.defaultTextureImage);
@@ -685,9 +689,12 @@ int SoundTest() {
 int BinSoundTest() {
 
   Sound srcsnd(resourceDir + "/sounds/bah.ogg");
+
+  // On android only asset writing is supported for the moment
+#ifdef __ANDROID__
+  srcsnd.saveBinary("/data/data/com.dimi309.small3d_tests/files/testBah.bin");
+#else
   srcsnd.saveBinary("testBah.bin");
-  // On android only asset reading is supported for the moment
-#ifndef __ANDROID__
   Sound snd("testBah.bin");
   
   snd.play();
@@ -739,9 +746,12 @@ int GenericSceneObjectConstructorTest() {
   SceneObject so2("goat2", Model(WavefrontFile(resourceDir + "/models/goat.obj"), ""));
 
   Model modelFromGlb(GlbFile(resourceDir + "/models/goatWithTexture.glb"), "");
+
+  // On android only asset writing is supported for the moment
+#ifdef __ANDROID__
+  modelFromGlb.saveBinary("/data/data/com.dimi309.small3d_tests/files/testGoatWithTexture1.bin");
+#else
   modelFromGlb.saveBinary("testGoatWithTexture1.bin");
-  // On android only asset reading is supported for the moment
-#ifndef __ANDROID__
   SceneObject so3("goat3", Model(BinaryFile("testGoatWithTexture1.bin"), ""));
 #endif
   if (so1.getModel().vertexDataByteSize == 0) return 0;
