@@ -144,6 +144,7 @@ Deploying small3d for PC</h2>
 Deploying small3d for mobile</h2>
 <p>Builds for mobile platforms can be performed by executing either <code>build-android</code> or <code>build-ios</code> from the <code>scripts</code> directory. You can then use the test projects in the <code>android</code>, <code>ios</code> and <code>ios-opengles</code> directories to check if everything works, or as a starting point for your own projects.</p>
 <p>If the Android project produces an NDK or SDK related error when opened in Android Studio, just close it without exiting Android Studio and open it again.</p>
+<p>Also on Android, while a game or the unit tests are running, the error <code>.../GL2Encoder.cpp:s_glGetBufferParameteriv:3386 GL error 0x502</code> might appear in the log. You can ignore it. It is produced when glGetBufferParameteriv is called in the Renderer to check if a model has already been copied to the GPU and the model is not found (as expected when it has been newly loaded).</p>
 <p>Note that, while on the PC edition I use GLFW for windowing functionalities and I/O, on mobile I access the native infrastructure directly.</p>
 <h2><a class="anchor" id="autotoc_md10"></a>
 Boilerplate Project</h2>
