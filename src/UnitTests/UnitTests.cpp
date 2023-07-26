@@ -701,8 +701,8 @@ int BinSoundTest() {
   double startSeconds = getTimeInSeconds();
   while (getTimeInSeconds() - startSeconds < 0.2);
   snd.stop();
-  return 1;
 #endif
+  return 1;
 }
 
 int SoundTest2() {

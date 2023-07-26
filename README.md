@@ -105,8 +105,14 @@ or  `build-ios` from the `scripts` directory. You can then use the test projects
 in the `android`, `ios` and `ios-opengles` directories to check if everything 
 works, or as a starting point for your own projects.
 
-If the Android project produces an NDK or SDK related error when opened in Android
-Studio, just close it without exiting Android Studio and open it again.
+If the Android project produces an NDK or SDK related error when opened in 
+Android Studio, just close it without exiting Android Studio and open it again.
+
+Also on Android, while a game or the unit tests are running, the error 
+`.../GL2Encoder.cpp:s_glGetBufferParameteriv:3386 GL error 0x502` might appear
+in the log. You can ignore it. It is produced when glGetBufferParameteriv is 
+called in the Renderer to check if a model has already been copied to the GPU 
+and the model is not found (as expected when it has been newly loaded).
 
 Note that, while on the PC edition I use GLFW for windowing functionalities and 
 I/O, on mobile I access the native infrastructure directly.

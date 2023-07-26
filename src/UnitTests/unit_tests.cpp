@@ -11,8 +11,8 @@
 #include <Time.hpp>
 
 #if defined(__ANDROID__)
-#define RETURN1 std::terminate();
-#define RETURN0 std::terminate();
+#define RETURN1
+#define RETURN0
 #else
 #define RETURN1 return 1;
 #define RETURN0 return 0;
@@ -38,94 +38,119 @@ int main(int argc, char** argv) {
       RETURN1
     }
 
+    small3d::initLogger();
+    LOGINFO("LoggerTest OK");
+
     if (!ImageTest()) {
-      printf("*** Failing ImageTest.\n\r");
+      LOGINFO("*** Failing ImageTest.");
       RETURN1
     }
+    LOGINFO("ImageTest OK");
 
     if (!WavefrontTest()) {
-      printf("*** Failing ImageTest.\n\r");
+      LOGINFO("*** Failing ImageTest.");
       RETURN1
     }
+    LOGINFO("WavefrontTest OK");
 
     if (!WavefrontModelTest()) {
-      printf("*** Failing ImageTest.\n\r");
+      LOGINFO("*** Failing ImageTest.");
       RETURN1
     }
+    LOGINFO("WavefrontModelTest OK");
     
     if (!ScaleAndTransformTest()) {
-      printf("*** Failing GlbTextureText.\n\r");
+      LOGINFO("*** Failing GlbTextureText.");
       RETURN1
     }
+    LOGINFO("ScaleAndTransformTest OK");
     
     if (!GlbTextureTestDefaultShadows()) {
-      printf("*** Failing GlbTextureText.\n\r");
+      LOGINFO("*** Failing GlbTextureText.");
       RETURN1
     }
+    LOGINFO("GlbTextureTestDefaultShadows OK");
     
     if (!GlbTextureTestLookAtShadows()) {
-      printf("*** Failing GlbTextureText.\n\r");
+      LOGINFO("*** Failing GlbTextureText.");
       RETURN1
     }
+    LOGINFO("GlbTextureTestLookAtShadows OK");
     
     if (!BoundingBoxesTest()) {
-      printf("*** Failing BoundingBoxesTest.\n\r");
+      LOGINFO("*** Failing BoundingBoxesTest.");
       RETURN1
     }
+    LOGINFO("BoundingBoxesTest OK");
     
     if (!FPStest()) {
-      printf("*** Failing FPStest.\n\r");
+      LOGINFO("*** Failing FPStest.");
       RETURN1
     }
+    LOGINFO("FPStest OK");
 
     if (!GenericSceneObjectConstructorTest()) {
-      printf("*** Failing GenericSceneObjectConstructorTest.\n\r");
+      LOGINFO("*** Failing GenericSceneObjectConstructorTest.");
       RETURN1
-    } 
+    }
+    LOGINFO("GenericSceneObjectConstructorTest OK");
     
     if (!RendererTest()) {
-      printf("*** Failing RendererTest.\n\r");
+      LOGINFO("*** Failing RendererTest.");
       RETURN1
     }
+    LOGINFO("RendererTest OK");
 
     if (!BinaryModelTest()) {
-      printf("*** Failing BinaryModelTest.\n\r");
+      LOGINFO("*** Failing BinaryModelTest.");
       RETURN1
     }
+    LOGINFO("BinaryModelTest OK");
 
     if (!SoundTest()) {
-      printf("*** Failing SoundTest.\n\r");
+      LOGINFO("*** Failing SoundTest.");
       RETURN1
     }
-    
+    LOGINFO("SoundTest OK");
+
     if (!BinSoundTest()) {
-      printf("*** Failing BinSoundTest.\n\r");
+      LOGINFO("*** Failing BinSoundTest.");
       RETURN1
     }
+    LOGINFO("BinSoundTest OK");
+
 
     if (!SoundTest2()) {
-      printf("*** Failing SoundTest2.\n\r");
+      LOGINFO("*** Failing SoundTest2.");
       RETURN1
     }
+    LOGINFO("SoundTest2 OK");
 
     if (!SoundTest3()) {
-      printf("*** Failing SoundTest3.\n\r");
+      LOGINFO("*** Failing SoundTest3.");
       RETURN1
     }
+    LOGINFO("SoundTest3 OK");
     
     if (!GlbTest()) {
-      printf("*** Failing GlbTest.\n\r");
+      LOGINFO("*** Failing GlbTest.");
       RETURN1
-    } 
-    
+    }
+    LOGINFO("GlbTest OK");
   }
   catch (std::exception& e) {
     printf("*** %s\n\r", e.what());
     RETURN1
   }
-  printf("All tests have executed successfully.\n\r");
+  LOGINFO("All tests have executed successfully.\n\r");
+
+#ifdef __ANDROID__
+  while(appActive) {
+    pollEvents();
+  }
+#endif
   RETURN0
 }
 #if defined(__ANDROID__)
-}
+} // end extern "C"
 #endif
