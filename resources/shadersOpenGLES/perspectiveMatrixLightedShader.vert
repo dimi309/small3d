@@ -20,6 +20,7 @@ varying mediump vec2 textureCoords;
 varying mediump vec4 posLightSpace;
 varying mediump float zValue;
 mediump int rdm;
+
 void main(void)
 {
   mat4 skinMat = mat4(1.0);
@@ -35,7 +36,6 @@ void main(void)
   vec4 worldPos = modelTransformation * skinMat * position + vec4(modelOffset, 0);
 
   vec4 cameraPos = cameraTransformation * (worldPos - vec4(cameraOffset, 0));
-
   
   if (perspectiveMatrix != mat4(1.0)) {
     posLightSpace = lightSpaceMatrix * worldPos * orthographicMatrix;
@@ -43,17 +43,14 @@ void main(void)
     posLightSpace = vec4(0.0);
   }
   
-
   gl_Position = cameraPos * perspectiveMatrix;
 
   zValue = gl_Position.z;
 
   vec4 normalInWorld = normalize(modelTransformation * vec4(normal, 1) * perspectiveMatrix);
 
-
   vec4 lightDirectionWorld = normalize(vec4(lightDirection, 1) *  perspectiveMatrix);
 
-  //cosAngIncidence = clamp(dot(normalInWorld, lightDirectionWorld), 0.5, 1);
   cosAngIncidence = dot(normalInWorld, lightDirectionWorld);
 
   textureCoords = uvCoords;
