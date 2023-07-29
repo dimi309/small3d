@@ -12,7 +12,10 @@
 
 /**
  * @brief Helper function that returns the current time
- *        in seconds.
+ *        in seconds. On PC, the Renderer has to have been
+ *        instantiated at least once (it is a singleton) for
+ *        this function to work because getTimeInSeconds uses 
+ *        glfwGetTime and the renderer initialises glfw.
  */
 
 double getTimeInSeconds();

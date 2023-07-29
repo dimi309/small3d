@@ -32,7 +32,7 @@ void android_main(struct android_app* state) {
 int main(int argc, char** argv) {
 #endif
   try
-  {
+  { 
     if (!LoggerTest()) {
       printf("*** Failing LoggerTest.\n\r");
       RETURN1
@@ -136,6 +136,12 @@ int main(int argc, char** argv) {
       LOGINFO("*** Failing GlbTest.");
       RETURN1
     }
+
+    if (!ModelsTimeToLoad()) {
+      LOGINFO("*** Failing GlbTest.");
+      RETURN1
+    }
+
     LOGINFO("GlbTest OK");
   }
   catch (std::exception& e) {

@@ -740,6 +740,19 @@ int GlbTest() {
   return 1;
 }
 
+int ModelsTimeToLoad() {
+  initLogger();
+  auto startTime = getTimeInSeconds();
+  Model glb(GlbFile(resourceDir + "/models/goat.glb"), "");
+  LOGINFO("Read glTF model in " + std::to_string(getTimeInSeconds() - startTime) + " seconds.");
+  
+  startTime = getTimeInSeconds();
+  Model wf(WavefrontFile(resourceDir + "/models/goat.obj"), "");
+  LOGINFO("Read Wavefront model in " + std::to_string(getTimeInSeconds() - startTime) + " seconds.");
+
+  return 1;
+}
+
 int GenericSceneObjectConstructorTest() {
 
   SceneObject so1("goat1", Model(GlbFile(resourceDir + "/models/goat.glb"), ""));

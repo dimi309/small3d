@@ -235,7 +235,7 @@ namespace small3d {
           }
         } while (poppedTokenFirstChar != matching_bracket);
 
-        token_queues.push_back(poppedToken);
+        token_queues.emplace_back(poppedToken);
         std::shared_ptr<GlbFile::Token> marker = createToken(GlbFile::ValueType::MARKER, std::to_string(markerPoint));
         ++markerPoint;
         marker->next = jsonRootToken;
@@ -255,7 +255,7 @@ namespace small3d {
     do {
       if (currentToken->value != "[" && currentToken->value != "]" &&
         currentToken->value != "{" && currentToken->value != "}") {
-        ret.push_back(currentToken);
+        ret.emplace_back(currentToken);
       }
       currentToken = currentToken->next;
     } while (currentToken != nullptr);
@@ -494,7 +494,7 @@ namespace small3d {
     if (propToken != nullptr) {
       auto values = getChildTokens(propToken);
       for (auto& val : values) {
-        ret.children.push_back(std::stoi(val->value));
+        ret.children.emplace_back(std::stoi(val->value));
       }
     }
 
@@ -658,7 +658,7 @@ namespace small3d {
     if (propToken != nullptr) {
       auto jointTokens = getChildTokens(propToken);
       for (auto& jointToken : jointTokens) {
-        ret.joints.push_back(std::stoi(jointToken->value));
+        ret.joints.emplace_back(std::stoi(jointToken->value));
       }
     }
 
@@ -763,7 +763,7 @@ namespace small3d {
         auto targetNode = getNode(channel.target.node);
 
 
-        ret.channels.push_back(channel);
+        ret.channels.emplace_back(channel);
       }
     }
 
@@ -787,7 +787,7 @@ namespace small3d {
           sampler.output = std::stoi(outputToken->value);
         }
 
-        ret.samplers.push_back(sampler);
+        ret.samplers.emplace_back(sampler);
 
       }
 
@@ -1004,7 +1004,7 @@ namespace small3d {
           j.scale = jointNode.scale;
           j.translation = jointNode.translation;
           j.children = jointNode.children;
-          model.joints.push_back(j);
+          model.joints.emplace_back(j);
 
           ++idx;
         }
@@ -1104,7 +1104,7 @@ namespace small3d {
     for (auto& meshToken : getChildTokens(getToken("meshes"))) {
       auto nameToken = getChildToken(meshToken, "name");
       if (nameToken != nullptr) {
-        names.push_back(nameToken->value);
+        names.emplace_back(nameToken->value);
       }
     }
     return names;

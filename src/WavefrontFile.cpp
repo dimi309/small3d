@@ -45,12 +45,12 @@ namespace small3d {
     for (int idx = 0; idx < count; ++idx) {
       // last one
       if (idx == count - 1) {
-        tokens.push_back(input.substr(curPos));
+        tokens.emplace_back(input.substr(curPos));
       }
       else {
 
         size_t foundPos = input.find(sep, curPos);
-        tokens.push_back(input.substr(curPos, foundPos - curPos));
+        tokens.emplace_back(input.substr(curPos, foundPos - curPos));
         curPos = foundPos + 1;
       }
     }
@@ -64,10 +64,10 @@ namespace small3d {
     int idx = 0;
     for (auto vertex = vertices.begin(); vertex != vertices.end(); ++vertex) {
       for (unsigned long coordIdx = 0; coordIdx != 3; ++coordIdx) {
-        vertexData.push_back(vertex->at(coordIdx));
+        vertexData.emplace_back(vertex->at(coordIdx));
         ++idx;
       }
-      vertexData.push_back(1.0f);
+      vertexData.emplace_back(1.0f);
       ++idx;
     }
   }
@@ -85,7 +85,7 @@ namespace small3d {
       face != facesVertexIndices.end(); ++face) {
 
       for (int indexIdx = 0; indexIdx != 3; ++indexIdx) {
-        indexData.push_back(face->at((unsigned long)indexIdx)
+        indexData.emplace_back(face->at((unsigned long)indexIdx)
           - 1); // -1 because Wavefront indices
                 // are not 0 based
       }
@@ -182,10 +182,10 @@ namespace small3d {
             std::vector<float> v;
             // -1 because at this stage the indices are still as exported from
             // Blender, meaning 1-based and not 0-based
-            v.push_back(vertices[static_cast<uint64_t>(facesVertexIndices[idx][vertexIndex] - 1)][0]);
-            v.push_back(vertices[static_cast<uint64_t>(facesVertexIndices[idx][vertexIndex] - 1)][1]);
-            v.push_back(vertices[static_cast<uint64_t>(facesVertexIndices[idx][vertexIndex] - 1)][2]);
-            vertices.push_back(v);
+            v.emplace_back(vertices[static_cast<uint64_t>(facesVertexIndices[idx][vertexIndex] - 1)][0]);
+            v.emplace_back(vertices[static_cast<uint64_t>(facesVertexIndices[idx][vertexIndex] - 1)][1]);
+            v.emplace_back(vertices[static_cast<uint64_t>(facesVertexIndices[idx][vertexIndex] - 1)][2]);
+            vertices.emplace_back(v);
 
             facesVertexIndices[idx][vertexIndex] = static_cast<int>
               (vertices.size());
@@ -237,7 +237,7 @@ namespace small3d {
           uint32_t numTokens = getTokens(line, ' ', tokens);
           if (numTokens > 1) {
             std::string objName = std::regex_replace(tokens[1], std::regex("\\r"), "");
-            objectNames.push_back(objName);
+            objectNames.emplace_back(objName);
             objectStartFaceIdx.insert(std::pair<std::string, size_t>(objName, facesVertexIndices.size()));
           }
         }
@@ -256,11 +256,11 @@ namespace small3d {
               std::string t = tokens[tokenIdx];
               if (idx > 0)   // The first token is the vertex normal indicator
               {
-                vn.push_back(static_cast<float>(atof(t.c_str())));
+                vn.emplace_back(static_cast<float>(atof(t.c_str())));
               }
               ++idx;
             }
-            normals.push_back(vn);
+            normals.emplace_back(vn);
           }
           else if (line[0] == 'v' && line[1] == 't') {
             std::vector<float> vt;
@@ -270,7 +270,7 @@ namespace small3d {
               if (idx > 0)   // The first token is the vertex texture
                  // coordinate indicator.
               {
-                vt.push_back(static_cast<float>(atof(t.c_str())));
+                vt.emplace_back(static_cast<float>(atof(t.c_str())));
               }
               ++idx;
             }
@@ -278,7 +278,7 @@ namespace small3d {
             vt[1] = 1.0f - vt[1]; // OpenGL's y direction for textures is the
                                   // opposite of that of Blender's, so an
                                   // inversion is needed
-            textureCoords.push_back(vt);
+            textureCoords.emplace_back(vt);
           }
           else if (line[0] == 'v') {
             // get vertex
@@ -288,11 +288,11 @@ namespace small3d {
               std::string t = tokens[tokenIdx];
               if (idx > 0)   // The first token is the vertex indicator
               {
-                v.push_back(static_cast<float>(atof(t.c_str())));
+                v.emplace_back(static_cast<float>(atof(t.c_str())));
               }
               ++idx;
             }
-            vertices.push_back(v);
+            vertices.emplace_back(v);
           }
           else {
             // get vertex index
@@ -309,9 +309,9 @@ namespace small3d {
                   // contained in the
                   // string
                 {
-                  v.push_back(atoi(
+                  v.emplace_back(atoi(
                     t.substr(0, t.find("//")).c_str()));
-                  n.push_back(atoi(
+                  n.emplace_back(atoi(
                     t.substr(t.find("//") + 2).c_str()));
                 }
                 else if (t.find("/") != std::string::npos
@@ -328,14 +328,14 @@ namespace small3d {
                     std::string component = components[compIdx];
                     switch (componentIdx) {
                     case 0:
-                      v.push_back(atoi(component.c_str()));
+                      v.emplace_back(atoi(component.c_str()));
                       break;
                     case 1:
-                      textC.push_back(atoi(
+                      textC.emplace_back(atoi(
                         component.c_str()));
                       break;
                     case 2:
-                      n.push_back(atoi(component.c_str()));
+                      n.emplace_back(atoi(component.c_str()));
                       break;
                     default:
                       throw std::runtime_error("Unexpected component index "
@@ -348,18 +348,18 @@ namespace small3d {
                 }
                 else   // just the vertex index is contained in the string
                 {
-                  v.push_back(atoi(t.c_str()));
+                  v.emplace_back(atoi(t.c_str()));
                 }
               }
               ++idx;
             }
-            facesVertexIndices.push_back(v);
+            facesVertexIndices.emplace_back(v);
             if (v.size() != 3) onlyTriangles = false;
 
             if (!n.empty())
-              facesNormalIndices.push_back(n);
+              facesNormalIndices.emplace_back(n);
             if (!textC.empty())
-              textureCoordsIndices.push_back(textC);
+              textureCoordsIndices.emplace_back(textC);
           }
         }
       }
