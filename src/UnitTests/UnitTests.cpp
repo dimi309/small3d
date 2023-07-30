@@ -151,7 +151,7 @@ int ImageTest() {
   return 1;
 }
 
-int WavefrontTest() {
+int WavefrontFailTest() {
 
   WavefrontFile wf(resourceDir + "/models/goat.glb");
   bool threw = false;

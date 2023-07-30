@@ -39,40 +39,41 @@ int main(int argc, char** argv) {
     }
 
     small3d::initLogger();
-    LOGINFO("LoggerTest OK");
 
+    LOGINFO("LoggerTest OK");
+    
     if (!ImageTest()) {
       LOGINFO("*** Failing ImageTest.");
       RETURN1
     }
     LOGINFO("ImageTest OK");
 
-    if (!WavefrontTest()) {
-      LOGINFO("*** Failing ImageTest.");
+    if (!WavefrontFailTest()) {
+      LOGINFO("*** Failing WavefrontFailTest.");
       RETURN1
     }
-    LOGINFO("WavefrontTest OK");
-
+    LOGINFO("WavefrontFailTest OK");
+    
     if (!WavefrontModelTest()) {
-      LOGINFO("*** Failing ImageTest.");
+      LOGINFO("*** Failing WavefrontModelTest.");
       RETURN1
     }
     LOGINFO("WavefrontModelTest OK");
     
     if (!ScaleAndTransformTest()) {
-      LOGINFO("*** Failing GlbTextureText.");
+      LOGINFO("*** Failing ScaleAndTransformTest.");
       RETURN1
     }
     LOGINFO("ScaleAndTransformTest OK");
     
     if (!GlbTextureTestDefaultShadows()) {
-      LOGINFO("*** Failing GlbTextureText.");
+      LOGINFO("*** Failing GlbTextureTestDefaultShadows.");
       RETURN1
     }
     LOGINFO("GlbTextureTestDefaultShadows OK");
     
     if (!GlbTextureTestLookAtShadows()) {
-      LOGINFO("*** Failing GlbTextureText.");
+      LOGINFO("*** Failing GlbTextureTestLookAtShadows.");
       RETURN1
     }
     LOGINFO("GlbTextureTestLookAtShadows OK");
@@ -119,7 +120,6 @@ int main(int argc, char** argv) {
     }
     LOGINFO("BinSoundTest OK");
 
-
     if (!SoundTest2()) {
       LOGINFO("*** Failing SoundTest2.");
       RETURN1
@@ -136,16 +136,17 @@ int main(int argc, char** argv) {
       LOGINFO("*** Failing GlbTest.");
       RETURN1
     }
+    LOGINFO("GlbTest OK");
 
     if (!ModelsTimeToLoad()) {
-      LOGINFO("*** Failing GlbTest.");
+      LOGINFO("*** Failing ModelsTimeToLoad.");
       RETURN1
     }
-
-    LOGINFO("GlbTest OK");
+    LOGINFO("ModelsTimeToLoad OK");
+    
   }
   catch (std::exception& e) {
-    printf("*** %s\n\r", e.what());
+    printf("*** Exception thrown during unit tests: %s\n\r", e.what());
     RETURN1
   }
   LOGINFO("All tests have executed successfully.\n\r");
