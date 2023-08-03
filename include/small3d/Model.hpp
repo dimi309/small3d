@@ -79,14 +79,12 @@ namespace small3d {
       std::vector<glm::quat> rotationAnimation;
       std::vector<glm::vec3> translationAnimation;
       std::vector<glm::vec3> scaleAnimation;
-      std::vector<float> animTime;
 
       template <class Archive>
       void serialize(Archive& archive) {
         archive(node, name, inverseBindMatrix, rotation, scale, translation,
-          children, rotationAnimation, translationAnimation, scaleAnimation, animTime);
+          children, rotationAnimation, translationAnimation, scaleAnimation);
       }
-
     };
 
     /**

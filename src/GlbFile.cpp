@@ -1032,7 +1032,6 @@ namespace small3d {
               if (sampler.input != firstInput) {
                 LOGDEBUG("Animation starting from new input ignored. First input " + std::to_string(firstInput) + " current input " + std::to_string(sampler.input));
                 continue;
-                break;
               }
             }
 
@@ -1045,12 +1044,6 @@ namespace small3d {
                   memcpy(&joint.rotationAnimation[0], &output[0], output.size());
                   if (model.numPoses < joint.rotationAnimation.size())
                     model.numPoses = joint.rotationAnimation.size();
-
-                  if (joint.animTime.size() == 0) {
-                    auto input = getBufferByAccessor(sampler.input);
-                    joint.animTime.resize(input.size() / 4);
-                    memcpy(&joint.animTime[0], &input[0], input.size());
-                  }
                 }
               }
             }
@@ -1064,12 +1057,6 @@ namespace small3d {
                   memcpy(&joint.translationAnimation[0], &output[0], output.size());
                   if (model.numPoses < joint.translationAnimation.size())
                     model.numPoses = joint.translationAnimation.size();
-
-                  if (joint.animTime.size() == 0) {
-                    auto input = getBufferByAccessor(sampler.input);
-                    joint.animTime.resize(input.size() / 4);
-                    memcpy(&joint.animTime[0], &input[0], input.size());
-                  }
                 }
               }
             }
@@ -1083,12 +1070,6 @@ namespace small3d {
                   memcpy(&joint.scaleAnimation[0], &output[0], output.size());
                   if (model.numPoses < joint.scaleAnimation.size())
                     model.numPoses = joint.scaleAnimation.size();
-
-                  if (joint.animTime.size() == 0) {
-                    auto input = getBufferByAccessor(sampler.input);
-                    joint.animTime.resize(input.size() / 4);
-                    memcpy(&joint.animTime[0], &input[0], input.size());
-                  }
                 }
               }
             }
