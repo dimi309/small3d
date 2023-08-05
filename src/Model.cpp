@@ -26,11 +26,11 @@ namespace small3d {
   Model::Model() {
   }
 
-  Model::Model(File &file, const std::string& meshName) {
+  Model::Model(File& file, const std::string& meshName) {
     file.load(*this, meshName);
   }
 
-  Model::Model(File &&file, const std::string& meshName) {
+  Model::Model(File&& file, const std::string& meshName) {
     file.load(*this, meshName);
   }
 
@@ -38,31 +38,49 @@ namespace small3d {
     return numPoses;
   }
 
-  glm::mat4 Model::getJointTransform(size_t joint, uint64_t currentPose) {
-    
+  glm::mat4 Model::getJointTransform(size_t joint, uint64_t currentPose, uint32_t input) {
+
     glm::mat4 parentTransform(1.0f);
     glm::mat4 transform(1.0f);
 
+    if (input == 0 && joints[joint].animations.size() > 0) {
+      input = joints[joint].animations[0].input;
+    }
+
     size_t idx = 0;
-    bool found = false;
+    bool parentFound = false;
     for (auto& j : joints) {
       for (auto c : j.children) {
         if (c == joints[joint].node) {
-          found = true;
+          parentFound = true;
           break;
         }
       }
-      if (found) break;
+      if (parentFound) break;
       ++idx;
     }
 
-    if (found) {
-      parentTransform = getJointTransform(idx, currentPose);
+    if (parentFound) {
+      parentTransform = getJointTransform(idx, currentPose, input);
     }
 
-    auto pTranslation = currentPose < joints[joint].translationAnimation.size() ? joints[joint].translationAnimation[currentPose] : joints[joint].translation;
-    auto pRotation = currentPose < joints[joint].rotationAnimation.size() ? joints[joint].rotationAnimation[currentPose] : joints[joint].rotation;
-    auto pScale = currentPose < joints[joint].scaleAnimation.size() ? joints[joint].scaleAnimation[currentPose] : joints[joint].scale;
+    auto pTranslation = joints[joint].translation;
+    auto pRotation = joints[joint].rotation;
+    auto pScale = joints[joint].scale;
+
+    for (auto& animation : joints[joint].animations) {
+      if (animation.input == input) {
+        if (currentPose < animation.translationAnimation.size()) {
+          pTranslation = animation.translationAnimation[currentPose];
+        }
+        if (currentPose < animation.rotationAnimation.size()) {
+          pRotation = animation.rotationAnimation[currentPose];
+        }
+       if (currentPose < animation.scaleAnimation.size()) {
+          pScale = animation.scaleAnimation[currentPose];
+        }
+      }
+    }
 
     transform = glm::translate(glm::mat4(1.0f), pTranslation) *
       glm::toMat4(pRotation) *

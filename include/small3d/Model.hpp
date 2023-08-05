@@ -66,6 +66,21 @@ namespace small3d {
   public:
 
     /**
+     * @brief animation for joint
+     */
+    struct JointAnimation {
+      uint32_t input;
+      std::vector<glm::quat> rotationAnimation;
+      std::vector<glm::vec3> translationAnimation;
+      std::vector<glm::vec3> scaleAnimation;
+      std::vector<float> times;
+      template <class Archive>
+      void serialize(Archive& archive) {
+        archive(input, rotationAnimation, translationAnimation, scaleAnimation, times);
+      }
+    };
+
+    /**
      * @brief animation joint
      */
     struct Joint {
@@ -76,14 +91,12 @@ namespace small3d {
       glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
       glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
       std::vector<uint32_t> children;
-      std::vector<glm::quat> rotationAnimation;
-      std::vector<glm::vec3> translationAnimation;
-      std::vector<glm::vec3> scaleAnimation;
+      std::vector<JointAnimation> animations;
 
       template <class Archive>
       void serialize(Archive& archive) {
         archive(node, name, inverseBindMatrix, rotation, scale, translation,
-          children, rotationAnimation, translationAnimation, scaleAnimation);
+          children, animations);
       }
     };
 
@@ -226,7 +239,7 @@ namespace small3d {
      *         joint transformation for.
      *  @return The transform
      */
-    glm::mat4 getJointTransform(size_t jointIdx, uint64_t currentPose);
+    glm::mat4 getJointTransform(size_t jointIdx, uint64_t currentPose, uint32_t input = 0);
 
     /**
      * @brief Get the Model's original scale (usually the one read from the file

@@ -992,7 +992,7 @@ namespace small3d {
 
         auto inverseBindMatrices = getBufferByAccessor(skin.inverseBindMatrices);
         uint64_t idx = 0;
-        
+
         for (auto jointIdx : skin.joints) {
           Model::Joint j;
 
@@ -1011,8 +1011,9 @@ namespace small3d {
 
         uint32_t animationIdx = 0;
         bool animFirstRun = true;
-        auto multipleInputsWarningEmitted = false;
-        uint32_t firstInput = 0;
+        bool nonLinearIgnoreWarningEmitted = false;
+
+        uint32_t currentInput = 0;
         while (existAnimation(animationIdx)) {
           auto animation = getAnimation(animationIdx);
           ++animationIdx;
@@ -1021,59 +1022,66 @@ namespace small3d {
 
             auto sampler = animation.samplers[channel.sampler];
             if (sampler.interpolation != "LINEAR") {
-              LOGDEBUG("Non-linear interpolation sampler for animation (input " + std::to_string(sampler.input) + ") ignored.");
+              if (!nonLinearIgnoreWarningEmitted) {
+                LOGDEBUG("Non-linear interpolation samplers for animations ignored.");
+                nonLinearIgnoreWarningEmitted = true;
+              }
               continue;
             }
-            if (animFirstRun) {
-              firstInput = sampler.input;
+
+            if (sampler.input != currentInput || animFirstRun) {
+              currentInput = sampler.input;
               animFirstRun = false;
-            }
-            else {
-              if (sampler.input != firstInput) {
-                if (!multipleInputsWarningEmitted) {
-                  multipleInputsWarningEmitted = true;
-                  LOGDEBUG("Ignoring all animation inputs but the first one.");
-                }
-                continue;
-              }
+              // detected change of input
             }
 
-            if (channel.target.path == "rotation") {
+            auto input = getBufferByAccessor(sampler.input);
+            std::vector<float>times(input.size() / 4);
+            memcpy(&times[0], &input[0], input.size());
 
-              auto output = getBufferByAccessor(sampler.output);
-              for (auto& joint : model.joints) {
-                if (joint.node == channel.target.node) {
-                  joint.rotationAnimation.resize(output.size() / sizeof(glm::quat));
-                  memcpy(&joint.rotationAnimation[0], &output[0], output.size());
-                  if (model.numPoses < joint.rotationAnimation.size())
-                    model.numPoses = joint.rotationAnimation.size();
+            auto output = getBufferByAccessor(sampler.output);
+
+            for (auto& joint : model.joints) {
+              if (joint.node == channel.target.node) {
+                bool found = false;
+                uint32_t animIndex = 0;
+                for (auto& animation : joint.animations) {
+                  if (animation.input == sampler.input) {
+                    found = true;
+                    break;
+                    ++animIndex;
+                  }
                 }
-              }
-            }
 
-            if (channel.target.path == "translation") {
-
-              auto output = getBufferByAccessor(sampler.output);
-              for (auto& joint : model.joints) {
-                if (joint.node == channel.target.node) {
-                  joint.translationAnimation.resize(output.size() / sizeof(glm::vec3));
-                  memcpy(&joint.translationAnimation[0], &output[0], output.size());
-                  if (model.numPoses < joint.translationAnimation.size())
-                    model.numPoses = joint.translationAnimation.size();
+                if (!found) {
+                  joint.animations.emplace_back(Model::JointAnimation());
+                  joint.animations[animIndex].times = times;
+                  joint.animations[animIndex].input = sampler.input;
                 }
-              }
-            }
 
-            if (channel.target.path == "scale") {
-
-              auto output = getBufferByAccessor(sampler.output);
-              for (auto& joint : model.joints) {
-                if (joint.node == channel.target.node) {
-                  joint.scaleAnimation.resize(output.size() / sizeof(glm::vec3));
-                  memcpy(&joint.scaleAnimation[0], &output[0], output.size());
-                  if (model.numPoses < joint.scaleAnimation.size())
-                    model.numPoses = joint.scaleAnimation.size();
+                if (channel.target.path == "rotation") {
+                  joint.animations[animIndex].rotationAnimation.resize(output.size() / sizeof(glm::quat));
+                  memcpy(&joint.animations[animIndex].rotationAnimation[0], &output[0], output.size());
+                  if (model.numPoses < joint.animations[animIndex].rotationAnimation.size())
+                    model.numPoses = joint.animations[animIndex].rotationAnimation.size();
                 }
+
+
+
+                if (channel.target.path == "translation") {
+                  joint.animations[animIndex].translationAnimation.resize(output.size() / sizeof(glm::vec3));
+                  memcpy(&joint.animations[animIndex].translationAnimation[0], &output[0], output.size());
+                  if (model.numPoses < joint.animations[animIndex].translationAnimation.size())
+                    model.numPoses = joint.animations[animIndex].translationAnimation.size();
+                }
+
+                if (channel.target.path == "scale") {
+                  joint.animations[animIndex].scaleAnimation.resize(output.size() / sizeof(glm::vec3));
+                  memcpy(&joint.animations[animIndex].scaleAnimation[0], &output[0], output.size());
+                  if (model.numPoses < joint.animations[animIndex].scaleAnimation.size())
+                    model.numPoses = joint.animations[animIndex].scaleAnimation.size();
+                }
+
               }
             }
           }
