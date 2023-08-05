@@ -817,7 +817,6 @@ namespace small3d {
 
   void GlbFile::load(Model& model, const std::string& meshName) {
 
-
     bool loaded = false;
     std::string actualName = "";
     uint32_t meshIndex = 0;
@@ -993,6 +992,7 @@ namespace small3d {
 
         auto inverseBindMatrices = getBufferByAccessor(skin.inverseBindMatrices);
         uint64_t idx = 0;
+        
         for (auto jointIdx : skin.joints) {
           Model::Joint j;
 
@@ -1011,7 +1011,7 @@ namespace small3d {
 
         uint32_t animationIdx = 0;
         bool animFirstRun = true;
-
+        auto multipleInputsWarningEmitted = false;
         uint32_t firstInput = 0;
         while (existAnimation(animationIdx)) {
           auto animation = getAnimation(animationIdx);
@@ -1030,7 +1030,10 @@ namespace small3d {
             }
             else {
               if (sampler.input != firstInput) {
-                LOGDEBUG("Animation starting from new input ignored. First input " + std::to_string(firstInput) + " current input " + std::to_string(sampler.input));
+                if (!multipleInputsWarningEmitted) {
+                  multipleInputsWarningEmitted = true;
+                  LOGDEBUG("Ignoring all animation inputs but the first one.");
+                }
                 continue;
               }
             }
