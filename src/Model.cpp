@@ -38,7 +38,7 @@ namespace small3d {
     return numPoses;
   }
 
-  glm::mat4 Model::getJointTransform(size_t joint, uint64_t currentPose) {
+  glm::mat4 Model::getJointTransform(size_t joint, uint64_t currentPose, float seconds) {
 
     glm::mat4 parentTransform(1.0f);
     glm::mat4 transform(1.0f);
@@ -56,8 +56,19 @@ namespace small3d {
       ++idx;
     }
 
+    float secondsUsed = seconds;
+
+    if (seconds == 0.0f) {
+      for (auto& anim : joints[joint].animations) {
+        if (anim.times.size() > currentPose) {
+          secondsUsed = anim.times[currentPose];
+          break;
+        }
+      }
+    }
+
     if (parentFound) {
-      parentTransform = getJointTransform(idx, currentPose);
+      parentTransform = getJointTransform(idx, currentPose, secondsUsed);
     }
 
     auto pTranslation = joints[joint].translation;
@@ -65,15 +76,26 @@ namespace small3d {
     auto pScale = joints[joint].scale;
 
     for (auto& animation : joints[joint].animations) {
-        if (currentPose < animation.translationAnimation.size()) {
-          pTranslation = animation.translationAnimation[currentPose];
+      auto poseUsed = currentPose;
+      if (secondsUsed != 0) {
+        uint32_t tidx = 0;
+        for (auto& time : animation.times) {
+          if (time >= secondsUsed) {
+            poseUsed = tidx;
+            break;
+          }
+          ++tidx;
         }
-        if (currentPose < animation.rotationAnimation.size()) {
-          pRotation = animation.rotationAnimation[currentPose];
-        }
-       if (currentPose < animation.scaleAnimation.size()) {
-          pScale = animation.scaleAnimation[currentPose];
-        }
+      }
+      if (poseUsed < animation.translationAnimation.size()) {
+        pTranslation = animation.translationAnimation[poseUsed];
+      }
+      if (poseUsed < animation.rotationAnimation.size()) {
+        pRotation = animation.rotationAnimation[poseUsed];
+      }
+      if (poseUsed < animation.scaleAnimation.size()) {
+        pScale = animation.scaleAnimation[poseUsed];
+      }
     }
 
     transform = glm::translate(glm::mat4(1.0f), pTranslation) *

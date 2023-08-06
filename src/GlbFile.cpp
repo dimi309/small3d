@@ -1039,10 +1039,10 @@ namespace small3d {
 
             if (sampler.input != storedInput) {
               if (!multipleInputWarningEmitted) {
-                LOGDEBUG("Multiple animation inputs not supported. Ignoring all but " + std::to_string(storedInput) + ".");
+                LOGDEBUG("WARNING: Multiple animation inputs not supported well.");
                 multipleInputWarningEmitted = true;
               }
-              continue;
+              //continue; // Uncomment to only read animations based on the first input found
             }
 
             auto input = getBufferByAccessor(sampler.input);
