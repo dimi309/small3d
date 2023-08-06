@@ -1010,10 +1010,13 @@ namespace small3d {
         }
 
         uint32_t animationIdx = 0;
-        bool animFirstRun = true;
+        
         bool nonLinearIgnoreWarningEmitted = false;
+        
+        bool inputStored = false;
+        uint32_t storedInput = 0;
+        bool multipleInputWarningEmitted = false;
 
-        uint32_t currentInput = 0;
         while (existAnimation(animationIdx)) {
           auto animation = getAnimation(animationIdx);
           ++animationIdx;
@@ -1029,10 +1032,17 @@ namespace small3d {
               continue;
             }
 
-            if (sampler.input != currentInput || animFirstRun) {
-              currentInput = sampler.input;
-              animFirstRun = false;
-              // detected change of input
+            if (!inputStored) {
+              storedInput = sampler.input;
+              inputStored = true;
+            }
+
+            if (sampler.input != storedInput) {
+              if (!multipleInputWarningEmitted) {
+                LOGDEBUG("Multiple animation inputs not supported. Ignoring all but " + std::to_string(storedInput) + ".");
+                multipleInputWarningEmitted = true;
+              }
+              continue;
             }
 
             auto input = getBufferByAccessor(sampler.input);
@@ -1055,6 +1065,7 @@ namespace small3d {
 
                 if (!found) {
                   joint.animations.emplace_back(Model::JointAnimation());
+                  animIndex = joint.animations.size() - 1;
                   joint.animations[animIndex].times = times;
                   joint.animations[animIndex].input = sampler.input;
                 }
@@ -1065,8 +1076,6 @@ namespace small3d {
                   if (model.numPoses < joint.animations[animIndex].rotationAnimation.size())
                     model.numPoses = joint.animations[animIndex].rotationAnimation.size();
                 }
-
-
 
                 if (channel.target.path == "translation") {
                   joint.animations[animIndex].translationAnimation.resize(output.size() / sizeof(glm::vec3));

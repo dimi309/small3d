@@ -239,7 +239,7 @@ namespace small3d {
      *         joint transformation for.
      *  @return The transform
      */
-    glm::mat4 getJointTransform(size_t jointIdx, uint64_t currentPose, uint32_t input = 0);
+    glm::mat4 getJointTransform(size_t jointIdx, uint64_t currentPose);
 
     /**
      * @brief Get the Model's original scale (usually the one read from the file
