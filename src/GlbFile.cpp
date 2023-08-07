@@ -298,8 +298,7 @@ namespace small3d {
 #else
       fileOnDisk.close();
 #endif
-      LOGDEBUG("Magic number found in .glb: " + magic);
-      throw std::runtime_error("File " + fullPath + " cannot be read as glb.");
+      throw std::runtime_error("Magic number found: '" + magic + "'. File " + fullPath + " cannot be read as glb.");
     }
 
     fileOnDisk.read(reinterpret_cast<char*>(&length), 4);
@@ -662,6 +661,12 @@ namespace small3d {
       }
     }
 
+    propToken = getChildToken(skinToken, "skeleton");
+    if (propToken != nullptr) {
+      ret.skeleton = std::stoi(propToken->value);
+      ret.foundSkeleton = true;
+    }
+
     return ret;
   }
 
@@ -734,34 +739,6 @@ namespace small3d {
           }
           channel.target = target;
         }
-
-        // skip armature
-        auto nodeTokens = getChildTokens(getToken("nodes"));
-        auto channelTargetNode = nodeTokens[channel.target.node];
-        if (getChildToken(channelTargetNode, "rotation") == nullptr &&
-          getChildToken(channelTargetNode, "scale") == nullptr &&
-          getChildToken(channelTargetNode, "translation") == nullptr)
-        {
-          auto n = getNode(channel.target.node);
-          if (n.children.size() == 2) {
-            for (auto& cidx : n.children) {
-
-
-              if (getChildToken(nodeTokens[cidx], "rotation") == nullptr &&
-                getChildToken(nodeTokens[cidx], "scale") == nullptr &&
-                getChildToken(nodeTokens[cidx], "translation") == nullptr) {
-                continue;
-              }
-
-              channel.target.node = cidx;
-
-            }
-          }
-        }
-
-
-        auto targetNode = getNode(channel.target.node);
-
 
         ret.channels.emplace_back(channel);
       }
@@ -968,8 +945,18 @@ namespace small3d {
 
       auto tmpNode = meshNode;
 
+
+      // Getting armature and z_up transformations if they exist
+      uint32_t parentCount = 0;
       while (existParentNode(tmpNode.index)) {
         tmpNode = getParentNode(tmpNode.index);
+        ++parentCount;
+        LOGDEBUG("Parent of mesh found (" + std::to_string(parentCount) + "): " + tmpNode.name);
+        model.origRotation = tmpNode.rotation * model.origRotation;
+        model.origTranslation += tmpNode.translation;
+        model.origScale.x *= tmpNode.scale.x;
+        model.origScale.y *= tmpNode.scale.y;
+        model.origScale.z *= tmpNode.scale.z;
         model.origTransformation = tmpNode.transformation * model.origTransformation;
       }
 
@@ -977,12 +964,11 @@ namespace small3d {
 
         auto skin = getSkin(meshNode.skin);
 
-        if (existNode(skin.name)) {
+        /*if (existNode(skin.name)) {
           auto skinNode = getNode(skin.name);
           model.origRotation = skinNode.rotation;
           model.origTranslation = skinNode.translation;
-          model.origScale = skinNode.scale;
-        }
+        }*/
 
         if (skin.joints.size() > Model::MAX_JOINTS_SUPPORTED) {
           LOGDEBUG("Found more than the maximum of " +
@@ -1009,28 +995,28 @@ namespace small3d {
           ++idx;
         }
 
-        uint32_t animationIdx = 0;
-        
-        bool nonLinearIgnoreWarningEmitted = false;
-        
+
+
+
         bool inputStored = false;
         uint32_t storedInput = 0;
+        //bool cubicSplineWarningEmitted = false;
         bool multipleInputWarningEmitted = false;
 
-        while (existAnimation(animationIdx)) {
-          auto animation = getAnimation(animationIdx);
-          ++animationIdx;
+        if (existAnimation(0)) {
+          auto animation = getAnimation(0);
+
 
           for (auto& channel : animation.channels) {
 
             auto sampler = animation.samplers[channel.sampler];
-            if (sampler.interpolation != "LINEAR") {
-              if (!nonLinearIgnoreWarningEmitted) {
-                LOGDEBUG("Non-linear interpolation samplers for animations ignored.");
-                nonLinearIgnoreWarningEmitted = true;
+            /*if (sampler.interpolation == "CUBICSPLINE") {
+              if (!cubicSplineWarningEmitted) {
+                LOGDEBUG("Cubic spline interpolation samplers for animations ignored.");
+                cubicSplineWarningEmitted = true;
               }
               continue;
-            }
+            }*/
 
             if (!inputStored) {
               storedInput = sampler.input;

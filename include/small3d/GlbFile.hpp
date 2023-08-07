@@ -59,6 +59,8 @@ namespace small3d {
       std::string name;
       uint32_t inverseBindMatrices = 0;
       std::vector<uint32_t> joints;
+      uint32_t skeleton = 0;
+      bool foundSkeleton = false;
     };
 
     struct AnimationSampler {

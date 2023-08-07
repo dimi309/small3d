@@ -300,15 +300,8 @@ namespace small3d {
     for (auto& joint : model.joints) {
 
       jointTransformations[idx] =
-
-        glm::inverse(glm::translate(glm::mat4x4(1.0f), model.origTranslation) *
-          glm::toMat4(model.origRotation) *
-          glm::scale(glm::mat4x4(1.0f), model.origScale)) *
-
         model.getJointTransform(idx, currentPose) *
-
         joint.inverseBindMatrix;
-
       ++idx;
     }
 
@@ -753,7 +746,7 @@ namespace small3d {
     glUniformMatrix4fv(orthographicMatrixUniform, 1, GL_FALSE,
       glm::value_ptr(orthographicMatrix));
 
-  }
+    }
 
   void Renderer::bindTexture(const std::string & name) {
     GLuint textureHandle = getTextureHandle(name);
@@ -1020,8 +1013,8 @@ namespace small3d {
       else {
         LOGDEBUG("Font loaded successfully");
         fontFaces.insert(make_pair(faceId, face));
-      }
     }
+  }
     else {
       face = idFacePair->second;
     }
@@ -1258,12 +1251,12 @@ namespace small3d {
           model->weightDataByteSize,
           model->weightData.data(),
           GL_STATIC_DRAW);
-      }
+    }
 
       glEnableVertexAttribArray(attrib_weight);
       glVertexAttribPointer(attrib_weight, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-    }
+  }
 
     // Find the colour uniform
     GLint colourUniform = glGetUniformLocation(shaderProgram, "modelColour");
@@ -1550,5 +1543,5 @@ namespace small3d {
     return errorString;
   }
 
-}
+      }
 

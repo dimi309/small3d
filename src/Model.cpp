@@ -40,8 +40,16 @@ namespace small3d {
 
   glm::mat4 Model::getJointTransform(size_t joint, uint64_t currentPose, float seconds) {
 
-    glm::mat4 parentTransform(1.0f);
-    glm::mat4 transform(1.0f);
+    float secondsUsed = seconds;
+
+    if (seconds == 0.0f) {
+      for (auto& anim : joints[joint].animations) {
+        if (anim.times.size() > currentPose) {
+          secondsUsed = anim.times[currentPose];
+          break;
+        }
+      }
+    }
 
     size_t idx = 0;
     bool parentFound = false;
@@ -56,53 +64,62 @@ namespace small3d {
       ++idx;
     }
 
-    float secondsUsed = seconds;
-
-    if (seconds == 0.0f) {
-      for (auto& anim : joints[joint].animations) {
-        if (anim.times.size() > currentPose) {
-          secondsUsed = anim.times[currentPose];
-          break;
-        }
-      }
-    }
-
+    glm::mat4 parentTransform(1.0f);
     if (parentFound) {
       parentTransform = getJointTransform(idx, currentPose, secondsUsed);
     }
 
-    auto pTranslation = joints[joint].translation;
-    auto pRotation = joints[joint].rotation;
-    auto pScale = joints[joint].scale;
+    glm::mat4 translation = glm::translate(glm::mat4(1.0f), joints[joint].translation);
+    glm::mat4 rotation = glm::toMat4(joints[joint].rotation);
+    glm::mat4 scale = glm::scale(glm::mat4(1.0f), joints[joint].scale);
 
+    bool firstT = true, firstR = true, firstS = true;
     for (auto& animation : joints[joint].animations) {
       auto poseUsed = currentPose;
-      if (secondsUsed != 0) {
-        uint32_t tidx = 0;
-        for (auto& time : animation.times) {
-          if (time >= secondsUsed) {
-            poseUsed = tidx;
-            break;
-          }
-          ++tidx;
+      bool foundPose = false;
+
+      uint32_t tidx = 0;
+      for (auto& time : animation.times) {
+        if (time >= secondsUsed) {
+          poseUsed = tidx;
+          foundPose = true;
+          break;
         }
+        ++tidx;
       }
-      if (poseUsed < animation.translationAnimation.size()) {
-        pTranslation = animation.translationAnimation[poseUsed];
-      }
-      if (poseUsed < animation.rotationAnimation.size()) {
-        pRotation = animation.rotationAnimation[poseUsed];
-      }
-      if (poseUsed < animation.scaleAnimation.size()) {
-        pScale = animation.scaleAnimation[poseUsed];
+
+      if (foundPose) {
+        if (animation.translationAnimation.size() > poseUsed) {
+          if (firstT) {
+            translation = glm::translate(glm::mat4(1.0f), animation.translationAnimation[poseUsed]);
+            firstT = false;
+          }
+          else {
+            translation *= glm::translate(glm::mat4(1.0f), animation.translationAnimation[poseUsed]);
+          }
+        }
+        if (animation.rotationAnimation.size() > poseUsed) {
+          if (firstR) {
+            rotation = glm::toMat4(animation.rotationAnimation[poseUsed]);
+            firstR = false;
+          }
+          else {
+            rotation *= glm::toMat4(animation.rotationAnimation[poseUsed]);
+          }
+        }
+        if (animation.scaleAnimation.size() > poseUsed) {
+          if (firstS) {
+            scale = glm::scale(glm::mat4(1.0f), animation.scaleAnimation[poseUsed]);
+            firstS = false;
+          }
+          else {
+            scale *= glm::scale(glm::mat4(1.0f), animation.scaleAnimation[poseUsed]);
+          }
+        }
       }
     }
 
-    transform = glm::translate(glm::mat4(1.0f), pTranslation) *
-      glm::toMat4(pRotation) *
-      glm::scale(glm::mat4(1.0f), pScale);
-
-    return parentTransform * transform;
+    return parentTransform * translation * rotation * scale;
   }
 
   glm::vec3 Model::getOriginalScale() {

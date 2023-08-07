@@ -69,7 +69,7 @@ namespace small3d {
      * @brief animation for joint
      */
     struct JointAnimation {
-      uint32_t input;
+      uint32_t input = 0;
       std::vector<glm::quat> rotationAnimation;
       std::vector<glm::vec3> translationAnimation;
       std::vector<glm::vec3> scaleAnimation;
