@@ -964,12 +964,6 @@ namespace small3d {
 
         auto skin = getSkin(meshNode.skin);
 
-        /*if (existNode(skin.name)) {
-          auto skinNode = getNode(skin.name);
-          model.origRotation = skinNode.rotation;
-          model.origTranslation = skinNode.translation;
-        }*/
-
         if (skin.joints.size() > Model::MAX_JOINTS_SUPPORTED) {
           LOGDEBUG("Found more than the maximum of " +
             std::to_string(Model::MAX_JOINTS_SUPPORTED) + " supported joints. Ignoring all.");
@@ -995,40 +989,22 @@ namespace small3d {
           ++idx;
         }
 
-
-
-
         bool inputStored = false;
         uint32_t storedInput = 0;
-        //bool cubicSplineWarningEmitted = false;
-        bool multipleInputWarningEmitted = false;
 
         if (existAnimation(0)) {
           auto animation = getAnimation(0);
 
-
           for (auto& channel : animation.channels) {
 
             auto sampler = animation.samplers[channel.sampler];
-            /*if (sampler.interpolation == "CUBICSPLINE") {
-              if (!cubicSplineWarningEmitted) {
-                LOGDEBUG("Cubic spline interpolation samplers for animations ignored.");
-                cubicSplineWarningEmitted = true;
-              }
-              continue;
-            }*/
+
+            // sampler.interpolation ignored, just using everything
+            // as STEP
 
             if (!inputStored) {
               storedInput = sampler.input;
               inputStored = true;
-            }
-
-            if (sampler.input != storedInput) {
-              if (!multipleInputWarningEmitted) {
-                LOGDEBUG("WARNING: Multiple animation inputs not supported well.");
-                multipleInputWarningEmitted = true;
-              }
-              //continue; // Uncomment to only read animations based on the first input found
             }
 
             auto input = getBufferByAccessor(sampler.input);

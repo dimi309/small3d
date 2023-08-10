@@ -42,6 +42,12 @@ namespace small3d {
 
     float secondsUsed = seconds;
 
+    // If parameter seconds == 0, it looks like
+    // this function has been called for the 
+    // first time in the stack sequence.
+    // Find in one of the animation sequences
+    // a seconds value that corresponds to 
+    // the current pose.
     if (seconds == 0.0f) {
       for (auto& anim : joints[joint].animations) {
         if (anim.times.size() > currentPose) {
@@ -50,7 +56,8 @@ namespace small3d {
         }
       }
     }
-
+ 
+    // Find the parent node, if it exists
     size_t idx = 0;
     bool parentFound = false;
     for (auto& j : joints) {
@@ -64,22 +71,35 @@ namespace small3d {
       ++idx;
     }
 
+    // If parent node exists, get the transform
+    // of the parent node that corresponds to the seconds
+    // value used
     glm::mat4 parentTransform(1.0f);
     if (parentFound) {
       parentTransform = getJointTransform(idx, currentPose, secondsUsed);
     }
 
+    // By default, the joint is in its initial state
     glm::mat4 translation = glm::translate(glm::mat4(1.0f), joints[joint].translation);
     glm::mat4 rotation = glm::toMat4(joints[joint].rotation);
     glm::mat4 scale = glm::scale(glm::mat4(1.0f), joints[joint].scale);
 
+    // First time a translation, rotation or scale frame
+    // are being assigned?
     bool firstT = true, firstR = true, firstS = true;
+    
+    // For each animation sequence
     for (auto& animation : joints[joint].animations) {
       auto poseUsed = currentPose;
       bool foundPose = false;
 
+      // Find the pose that corresonds to the seconds
+      // used
       uint32_t tidx = 0;
       for (auto& time : animation.times) {
+
+        // Using == it has been observed that at least one sample
+        // model used for testing gets deformed.
         if (time >= secondsUsed) {
           poseUsed = tidx;
           foundPose = true;
@@ -88,6 +108,8 @@ namespace small3d {
         ++tidx;
       }
 
+      // Replace initial joint translation, scale and / or rotation
+      // if such transformations are found in the pose used.
       if (foundPose) {
         if (animation.translationAnimation.size() > poseUsed) {
           if (firstT) {
