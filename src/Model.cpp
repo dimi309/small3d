@@ -141,7 +141,7 @@ namespace small3d {
       }
     }
 
-    return parentTransform * translation * rotation * scale;
+    return parentTransform * translation * rotation * scale * joints[joint].transformation;
   }
 
   glm::vec3 Model::getOriginalScale() {

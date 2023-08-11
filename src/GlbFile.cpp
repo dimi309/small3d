@@ -983,6 +983,7 @@ namespace small3d {
           j.rotation = jointNode.rotation;
           j.scale = jointNode.scale;
           j.translation = jointNode.translation;
+          j.transformation = jointNode.transformation;
           j.children = jointNode.children;
           model.joints.emplace_back(j);
 

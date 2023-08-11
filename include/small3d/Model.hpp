@@ -90,13 +90,14 @@ namespace small3d {
       glm::quat rotation = glm::quat(0.0f, 0.0f, 0.0f, 1.0f);
       glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
       glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
+      glm::mat4 transformation = glm::mat4(1.0f);
       std::vector<uint32_t> children;
       std::vector<JointAnimation> animations;
 
       template <class Archive>
       void serialize(Archive& archive) {
         archive(node, name, inverseBindMatrix, rotation, scale, translation,
-          children, animations);
+          transformation, children, animations);
       }
     };
 
