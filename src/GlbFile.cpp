@@ -851,7 +851,7 @@ namespace small3d {
           if (attribute->name == "JOINTS_0") {
             int componentType = 0;
             auto data = getBufferByAccessor(std::stoi(attribute->value), componentType);
-            
+
             if (componentType < 5122) {
               model.jointData.resize(data.size());
               model.jointDataByteSize = static_cast<uint32_t>(data.size());
@@ -863,7 +863,7 @@ namespace small3d {
               uint32_t idx = 0;
               uint16_t tmp = 0;
               for (auto& d : model.jointData) {
-                memcpy(&tmp, &data[2*idx], 2);
+                memcpy(&tmp, &data[2 * idx], 2);
                 d = static_cast<uint8_t>(tmp);
                 ++idx;
               }
@@ -1015,8 +1015,12 @@ namespace small3d {
         bool inputStored = false;
         uint32_t storedInput = 0;
 
-        if (existAnimation(0)) {
-          auto animation = getAnimation(0);
+        uint32_t animationIdx = 0;
+        while (existAnimation(animationIdx)) {
+          auto animation = getAnimation(animationIdx);
+
+          
+
 
           for (auto& channel : animation.channels) {
 
@@ -1037,10 +1041,15 @@ namespace small3d {
             auto output = getBufferByAccessor(sampler.output);
 
             for (auto& joint : model.joints) {
+              if (joint.animations.size() < animationIdx + 1) {
+                joint.animations.emplace_back(Model::JointAnimation());
+                joint.animations[animationIdx].name = animation.name;
+              }
+
               if (joint.node == channel.target.node) {
                 bool found = false;
                 uint32_t animIndex = 0;
-                for (auto& animation : joint.animations) {
+                for (auto& animation : joint.animations[animationIdx].animationComponents) {
                   if (animation.input == sampler.input) {
                     found = true;
                     break;
@@ -1049,36 +1058,37 @@ namespace small3d {
                 }
 
                 if (!found) {
-                  joint.animations.emplace_back(Model::JointAnimation());
-                  animIndex = joint.animations.size() - 1;
-                  joint.animations[animIndex].times = times;
-                  joint.animations[animIndex].input = sampler.input;
+                  joint.animations[animationIdx].animationComponents.emplace_back(Model::JointAnimationComponent());
+                  animIndex = joint.animations[animationIdx].animationComponents.size() - 1;
+                  joint.animations[animationIdx].animationComponents[animIndex].times = times;
+                  joint.animations[animationIdx].animationComponents[animIndex].input = sampler.input;
                 }
 
                 if (channel.target.path == "rotation") {
-                  joint.animations[animIndex].rotationAnimation.resize(output.size() / sizeof(glm::quat));
-                  memcpy(&joint.animations[animIndex].rotationAnimation[0], &output[0], output.size());
-                  if (model.numPoses < joint.animations[animIndex].rotationAnimation.size())
-                    model.numPoses = joint.animations[animIndex].rotationAnimation.size();
+                  joint.animations[animationIdx].animationComponents[animIndex].rotationAnimation.resize(output.size() / sizeof(glm::quat));
+                  memcpy(&joint.animations[animationIdx].animationComponents[animIndex].rotationAnimation[0], &output[0], output.size());
+                  if (model.numPoses < joint.animations[animationIdx].animationComponents[animIndex].rotationAnimation.size())
+                    model.numPoses = joint.animations[animationIdx].animationComponents[animIndex].rotationAnimation.size();
                 }
 
                 if (channel.target.path == "translation") {
-                  joint.animations[animIndex].translationAnimation.resize(output.size() / sizeof(glm::vec3));
-                  memcpy(&joint.animations[animIndex].translationAnimation[0], &output[0], output.size());
-                  if (model.numPoses < joint.animations[animIndex].translationAnimation.size())
-                    model.numPoses = joint.animations[animIndex].translationAnimation.size();
+                  joint.animations[animationIdx].animationComponents[animIndex].translationAnimation.resize(output.size() / sizeof(glm::vec3));
+                  memcpy(&joint.animations[animationIdx].animationComponents[animIndex].translationAnimation[0], &output[0], output.size());
+                  if (model.numPoses < joint.animations[animationIdx].animationComponents[animIndex].translationAnimation.size())
+                    model.numPoses = joint.animations[animationIdx].animationComponents[animIndex].translationAnimation.size();
                 }
 
                 if (channel.target.path == "scale") {
-                  joint.animations[animIndex].scaleAnimation.resize(output.size() / sizeof(glm::vec3));
-                  memcpy(&joint.animations[animIndex].scaleAnimation[0], &output[0], output.size());
-                  if (model.numPoses < joint.animations[animIndex].scaleAnimation.size())
-                    model.numPoses = joint.animations[animIndex].scaleAnimation.size();
+                  joint.animations[animationIdx].animationComponents[animIndex].scaleAnimation.resize(output.size() / sizeof(glm::vec3));
+                  memcpy(&joint.animations[animationIdx].animationComponents[animIndex].scaleAnimation[0], &output[0], output.size());
+                  if (model.numPoses < joint.animations[animationIdx].animationComponents[animIndex].scaleAnimation.size())
+                    model.numPoses = joint.animations[animationIdx].animationComponents[animIndex].scaleAnimation.size();
                 }
               }
             }
           }
-        }
+          ++animationIdx;
+        } // end existAnimation loop
       }
     }
   }

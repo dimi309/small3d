@@ -300,7 +300,7 @@ namespace small3d {
     for (auto& joint : model.joints) {
 
       jointTransformations[idx] =
-        model.getJointTransform(idx, currentPose) *
+        model.getJointTransform(idx, 2, currentPose) *
         joint.inverseBindMatrix;
       ++idx;
     }

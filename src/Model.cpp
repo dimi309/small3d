@@ -38,7 +38,7 @@ namespace small3d {
     return numPoses;
   }
 
-  glm::mat4 Model::getJointTransform(size_t joint, uint64_t currentPose, float seconds) {
+  glm::mat4 Model::getJointTransform(size_t joint, uint32_t animationIdx, uint64_t currentPose, float seconds) {
 
     float secondsUsed = seconds;
 
@@ -49,7 +49,7 @@ namespace small3d {
     // a seconds value that corresponds to 
     // the current pose.
     if (seconds == 0.0f) {
-      for (auto& anim : joints[joint].animations) {
+      for (auto& anim : joints[joint].animations[animationIdx].animationComponents) {
         if (anim.times.size() > currentPose) {
           secondsUsed = anim.times[currentPose];
           break;
@@ -76,7 +76,7 @@ namespace small3d {
     // value used
     glm::mat4 parentTransform(1.0f);
     if (parentFound) {
-      parentTransform = getJointTransform(idx, currentPose, secondsUsed);
+      parentTransform = getJointTransform(idx, animationIdx, currentPose, secondsUsed);
     }
 
     // By default, the joint is in its initial state
@@ -88,15 +88,14 @@ namespace small3d {
     // are being assigned?
     bool firstT = true, firstR = true, firstS = true;
     
-    // For each animation sequence
-    for (auto& animation : joints[joint].animations) {
+    for (auto& animationComponent : joints[joint].animations[animationIdx].animationComponents) {
       auto poseUsed = currentPose;
       bool foundPose = false;
 
       // Find the pose that corresonds to the seconds
       // used
       uint32_t tidx = 0;
-      for (auto& time : animation.times) {
+      for (auto& time : animationComponent.times) {
 
         // Using == it has been observed that at least one sample
         // model used for testing gets deformed.
@@ -111,31 +110,31 @@ namespace small3d {
       // Replace initial joint translation, scale and / or rotation
       // if such transformations are found in the pose used.
       if (foundPose) {
-        if (animation.translationAnimation.size() > poseUsed) {
+        if (animationComponent.translationAnimation.size() > poseUsed) {
           if (firstT) {
-            translation = glm::translate(glm::mat4(1.0f), animation.translationAnimation[poseUsed]);
+            translation = glm::translate(glm::mat4(1.0f), animationComponent.translationAnimation[poseUsed]);
             firstT = false;
           }
           else {
-            translation *= glm::translate(glm::mat4(1.0f), animation.translationAnimation[poseUsed]);
+            translation *= glm::translate(glm::mat4(1.0f), animationComponent.translationAnimation[poseUsed]);
           }
         }
-        if (animation.rotationAnimation.size() > poseUsed) {
+        if (animationComponent.rotationAnimation.size() > poseUsed) {
           if (firstR) {
-            rotation = glm::toMat4(animation.rotationAnimation[poseUsed]);
+            rotation = glm::toMat4(animationComponent.rotationAnimation[poseUsed]);
             firstR = false;
           }
           else {
-            rotation *= glm::toMat4(animation.rotationAnimation[poseUsed]);
+            rotation *= glm::toMat4(animationComponent.rotationAnimation[poseUsed]);
           }
         }
-        if (animation.scaleAnimation.size() > poseUsed) {
+        if (animationComponent.scaleAnimation.size() > poseUsed) {
           if (firstS) {
-            scale = glm::scale(glm::mat4(1.0f), animation.scaleAnimation[poseUsed]);
+            scale = glm::scale(glm::mat4(1.0f), animationComponent.scaleAnimation[poseUsed]);
             firstS = false;
           }
           else {
-            scale *= glm::scale(glm::mat4(1.0f), animation.scaleAnimation[poseUsed]);
+            scale *= glm::scale(glm::mat4(1.0f), animationComponent.scaleAnimation[poseUsed]);
           }
         }
       }
