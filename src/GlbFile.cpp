@@ -385,14 +385,13 @@ namespace small3d {
 
   std::vector<char> GlbFile::getBufferByView(const size_t viewIndex) {
     std::vector<std::shared_ptr<GlbFile::Token>> bufferViews = getChildTokens(getToken("bufferViews"));
-
     uint32_t byteLength = std::stoi(getChildToken(bufferViews[viewIndex], "byteLength")->value);
     auto offsetToken = getChildToken(bufferViews[viewIndex], "byteOffset");
     uint32_t byteOffset = offsetToken == nullptr ? 0U : std::stoi(offsetToken->value);
     return std::vector<char>(binBuffer.begin() + byteOffset, binBuffer.begin() + byteOffset + byteLength);
   }
 
-  std::vector<char> GlbFile::getBufferByAccessor(const size_t index) {
+  std::vector<char> GlbFile::getBufferByAccessor(const size_t index, int& componentType) {
 
     auto accessorToken = getChildTokens(getToken("accessors"))[index];
     auto bufferViewNumber = std::stoi(getChildToken(accessorToken, "bufferView")->value);
@@ -406,7 +405,7 @@ namespace small3d {
     else {
       size_t cnt = 0;
 
-      auto componentType = std::stoi(getChildToken(accessorToken, "componentType")->value);
+      componentType = std::stoi(getChildToken(accessorToken, "componentType")->value);
 
       switch (componentType) {
       case 5120:  // byte
@@ -450,6 +449,11 @@ namespace small3d {
       return std::vector<char>(data.begin() + byteOffset, data.begin() + byteOffset + cnt);
     }
 
+  }
+
+  std::vector<char> GlbFile::getBufferByAccessor(const size_t index) {
+    int dummy = 0;
+    return getBufferByAccessor(index, dummy);
   }
 
   bool GlbFile::existNode(const uint32_t index) {
@@ -845,10 +849,28 @@ namespace small3d {
           }
 
           if (attribute->name == "JOINTS_0") {
-            auto data = getBufferByAccessor(std::stoi(attribute->value));
-            model.jointData.resize(data.size());
-            model.jointDataByteSize = static_cast<uint32_t>(data.size());
-            memcpy(&model.jointData[0], &data[0], data.size());
+            int componentType = 0;
+            auto data = getBufferByAccessor(std::stoi(attribute->value), componentType);
+            
+            if (componentType < 5122) {
+              model.jointData.resize(data.size());
+              model.jointDataByteSize = static_cast<uint32_t>(data.size());
+              memcpy(&model.jointData[0], &data[0], data.size());
+            }
+            else if (componentType < 5125) {
+              model.jointData.resize(data.size() / 2);
+              model.jointDataByteSize = static_cast<uint32_t>(data.size() / 2);
+              uint32_t idx = 0;
+              uint16_t tmp = 0;
+              for (auto& d : model.jointData) {
+                memcpy(&tmp, &data[2*idx], 2);
+                d = static_cast<uint8_t>(tmp);
+                ++idx;
+              }
+            }
+            else {
+              throw std::runtime_error("Unforeseen datatype for joint data.");
+            }
           }
 
           if (attribute->name == "WEIGHTS_0") {
@@ -1053,7 +1075,6 @@ namespace small3d {
                   if (model.numPoses < joint.animations[animIndex].scaleAnimation.size())
                     model.numPoses = joint.animations[animIndex].scaleAnimation.size();
                 }
-
               }
             }
           }

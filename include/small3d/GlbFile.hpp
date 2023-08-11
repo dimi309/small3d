@@ -114,6 +114,8 @@ namespace small3d {
 
     std::vector<char> getBufferByView(const size_t index);
 
+    std::vector<char> getBufferByAccessor(const size_t index, int& componentType);
+
     std::vector<char> getBufferByAccessor(const size_t index);
 
     bool existNode(const uint32_t index);
