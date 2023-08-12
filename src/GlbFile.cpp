@@ -1019,9 +1019,6 @@ namespace small3d {
         while (existAnimation(animationIdx)) {
           auto animation = getAnimation(animationIdx);
 
-          
-
-
           for (auto& channel : animation.channels) {
 
             auto sampler = animation.samplers[channel.sampler];
@@ -1046,6 +1043,10 @@ namespace small3d {
                 joint.animations[animationIdx].name = animation.name;
               }
 
+              if (model.numPoses.size() < animationIdx + 1) {
+                model.numPoses.push_back(0);
+              }
+
               if (joint.node == channel.target.node) {
                 bool found = false;
                 uint32_t animIndex = 0;
@@ -1067,22 +1068,22 @@ namespace small3d {
                 if (channel.target.path == "rotation") {
                   joint.animations[animationIdx].animationComponents[animIndex].rotationAnimation.resize(output.size() / sizeof(glm::quat));
                   memcpy(&joint.animations[animationIdx].animationComponents[animIndex].rotationAnimation[0], &output[0], output.size());
-                  if (model.numPoses < joint.animations[animationIdx].animationComponents[animIndex].rotationAnimation.size())
-                    model.numPoses = joint.animations[animationIdx].animationComponents[animIndex].rotationAnimation.size();
+                  if (model.numPoses[animationIdx] < joint.animations[animationIdx].animationComponents[animIndex].rotationAnimation.size())
+                    model.numPoses[animationIdx] = joint.animations[animationIdx].animationComponents[animIndex].rotationAnimation.size();
                 }
 
                 if (channel.target.path == "translation") {
                   joint.animations[animationIdx].animationComponents[animIndex].translationAnimation.resize(output.size() / sizeof(glm::vec3));
                   memcpy(&joint.animations[animationIdx].animationComponents[animIndex].translationAnimation[0], &output[0], output.size());
-                  if (model.numPoses < joint.animations[animationIdx].animationComponents[animIndex].translationAnimation.size())
-                    model.numPoses = joint.animations[animationIdx].animationComponents[animIndex].translationAnimation.size();
+                  if (model.numPoses[animationIdx] < joint.animations[animationIdx].animationComponents[animIndex].translationAnimation.size())
+                    model.numPoses[animationIdx] = joint.animations[animationIdx].animationComponents[animIndex].translationAnimation.size();
                 }
 
                 if (channel.target.path == "scale") {
                   joint.animations[animationIdx].animationComponents[animIndex].scaleAnimation.resize(output.size() / sizeof(glm::vec3));
                   memcpy(&joint.animations[animationIdx].animationComponents[animIndex].scaleAnimation[0], &output[0], output.size());
-                  if (model.numPoses < joint.animations[animationIdx].animationComponents[animIndex].scaleAnimation.size())
-                    model.numPoses = joint.animations[animationIdx].animationComponents[animIndex].scaleAnimation.size();
+                  if (model.numPoses[animationIdx] < joint.animations[animationIdx].animationComponents[animIndex].scaleAnimation.size())
+                    model.numPoses[animationIdx] = joint.animations[animationIdx].animationComponents[animIndex].scaleAnimation.size();
                 }
               }
             }

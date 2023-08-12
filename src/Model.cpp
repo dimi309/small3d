@@ -24,18 +24,32 @@
 namespace small3d {
 
   Model::Model() {
+    numPoses.resize(1);
+    numPoses[0] = 0;
   }
 
   Model::Model(File& file, const std::string& meshName) {
     file.load(*this, meshName);
+    numPoses.resize(1);
+    numPoses[0] = 0;
   }
 
   Model::Model(File&& file, const std::string& meshName) {
     file.load(*this, meshName);
+    numPoses.resize(1);
+    numPoses[0] = 0;
   }
 
   uint64_t Model::getNumPoses() {
-    return numPoses;
+    return numPoses[currentAnimation];
+  }
+
+  size_t Model::getNumAnimations() {
+    return numPoses.size();
+  }
+  
+  void Model::setAnimation(uint32_t animationIdx) {
+    currentAnimation = animationIdx;
   }
 
   glm::mat4 Model::getJointTransform(size_t joint, uint32_t animationIdx, uint64_t currentPose, float seconds) {

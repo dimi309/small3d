@@ -47,7 +47,8 @@ namespace small3d {
     uint32_t jointBufferObjectId = 0;
     uint32_t weightBufferObjectId = 0;
 
-    uint64_t numPoses = 0;
+    uint32_t currentAnimation = 0;
+    std::vector<uint64_t> numPoses;
 
     // Original transformation matrix (from armature/skin),
     // as read from a file
@@ -238,11 +239,23 @@ namespace small3d {
     Model(File&& file, const std::string& meshName = "");
 
     /**
-     * @brief Get the number of animation poses
+     * @brief Get the number of animation poses in the current animation
      * @return The number of animation poses
      */
 
     uint64_t getNumPoses();
+    
+    /**
+     * @brief Get the number of available animations
+     * @return The number of animations
+     */
+    size_t getNumAnimations();
+
+    /**
+     * @brief Set the current animation
+     * @param The index of the current animation
+     */
+    void setAnimation(uint32_t animationIdx);
 
     /**
      * @brief Get a joint transform, also calculating the transorms of the parent
@@ -269,7 +282,9 @@ namespace small3d {
 
     template <class Archive>
     void serialize(Archive& archive) {
-      archive(numPoses, origTransformation,
+      archive(currentAnimation,
+        numPoses, 
+        origTransformation,
         origRotation,
         origTranslation,
         origScale,
