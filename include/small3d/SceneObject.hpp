@@ -43,7 +43,7 @@ namespace small3d
     int frameDelay;
     uint64_t currentPose;
     int framesWaited;
-    uint64_t numPoses;
+    uint64_t getNumPoses();
     std::string name;
     glm::mat4x4 transformation = glm::mat4x4(1);
     glm::vec3 rotationXYZ = glm::vec3(0.0f);
@@ -103,6 +103,12 @@ namespace small3d
      * @return The current animation pose
      */
     uint64_t getCurrentPose();
+
+    /**
+     * @brief Set the current animation
+     * @param The index of the current animation
+     */
+    void setAnimation(uint32_t animationIdx);
 
     /**
      * @brief Get the bounding box set as models (for debug-rendering)

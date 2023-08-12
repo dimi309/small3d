@@ -11,6 +11,17 @@
 
 namespace small3d {
 
+  uint64_t SceneObject::getNumPoses() {
+
+    if (skeletal) {
+      return this->models[0]->getNumPoses();
+    }
+    else {
+      return this->models.size();
+    }
+
+  }
+
   void SceneObject::init(const std::string& name, const uint32_t boundingBoxSubdivisions) {
     
     this->name = name;
@@ -19,12 +30,7 @@ namespace small3d {
     frameDelay = 1;
     
     boundingBoxSet = std::make_shared<BoundingBoxSet>(this->models[0]->vertexData, this->models[0]->getOriginalScale(), boundingBoxSubdivisions);
-    if (skeletal) {
-      numPoses = this->models[0]->getNumPoses();
-    }
-    else {
-      numPoses = this->models.size();
-    }
+   
     currentPose = 0;
   }
 
@@ -66,6 +72,20 @@ namespace small3d {
     else {
       return 0;
     }
+  }
+
+  void SceneObject::setAnimation(uint32_t animationIdx) {
+    if (!skeletal) {
+      throw new std::runtime_error("Cannot select animation for non-skeletal object.");
+    }
+
+    if (animationIdx >= models[0]->getNumAnimations()) {
+      throw new std::runtime_error("Cannot select animation index " + std::to_string(animationIdx) + ". Index too large.");
+    }
+
+    models[0]->setAnimation(animationIdx);
+    currentPose = 0;
+
   }
 
   std::vector<Model> SceneObject::getBoundingBoxSetModels() {
@@ -146,7 +166,7 @@ namespace small3d {
       if (framesWaited == frameDelay) {
         framesWaited = 0;
         ++currentPose;
-        if (currentPose == numPoses) {
+        if (currentPose == getNumPoses()) {
           currentPose = 0;
         }
       }
