@@ -32,6 +32,11 @@
 #include <vector>
 #include <string>
 
+// This avoids a glitch on archlinux
+#ifdef __linux__
+#include <cstdint>
+#endif
+
 namespace small3d {
 
   /**
