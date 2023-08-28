@@ -22,6 +22,9 @@ if [ $(uname) == 'Linux' ]; then
     elif type -p "yum" > /dev/null ; then
 	sudo yum install -y mesa-libGL-devel
 	
+    elif type -p "pacman" > /dev/null ; then
+	sudo pacman -S libxcb libfontenc libice libsm libxaw libxcomposite libxcursor libxss libxvmc mesa
+	
     else
 	echo "No package manager found! Cannot install preprequisites."
 	exit 1
