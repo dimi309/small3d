@@ -23,14 +23,14 @@ namespace small3d {
   }
 
   void SceneObject::init(const std::string& name, const uint32_t boundingBoxSubdivisions) {
-    
+
     this->name = name;
     animating = false;
     framesWaited = 0;
     frameDelay = 1;
-    
+
     boundingBoxSet = std::make_shared<BoundingBoxSet>(this->models[0]->vertexData, this->models[0]->getOriginalScale(), boundingBoxSubdivisions);
-   
+
     currentPose = 0;
   }
 
@@ -48,7 +48,7 @@ namespace small3d {
     init(name, boundingBoxSubdivisions);
   }
 
-  SceneObject::SceneObject(const std::string& name, const std::vector<std::shared_ptr<Model>> models, 
+  SceneObject::SceneObject(const std::string& name, const std::vector<std::shared_ptr<Model>> models,
     const uint32_t boundingBoxSubdivisions) {
     initLogger();
     skeletal = false;
@@ -166,7 +166,7 @@ namespace small3d {
       if (framesWaited == frameDelay) {
         framesWaited = 0;
         ++currentPose;
-        if (currentPose == getNumPoses()) {
+        if (currentPose >= getNumPoses()) {
           currentPose = 0;
         }
       }

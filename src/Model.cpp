@@ -35,9 +35,9 @@ namespace small3d {
   }
 
   Model::Model(File&& file, const std::string& meshName) {
-    file.load(*this, meshName);
     numPoses.resize(1);
     numPoses[0] = 0;
+    file.load(*this, meshName);
   }
 
   uint64_t Model::getNumPoses() {
@@ -49,6 +49,10 @@ namespace small3d {
   }
   
   void Model::setAnimation(uint32_t animationIdx) {
+    if (numPoses.size() <= animationIdx) {
+      throw new std::runtime_error("Cannot set animation to " + std::to_string(animationIdx) + 
+        ". There are only " + std::to_string(numPoses.size()) + " animations.");
+    }
     currentAnimation = animationIdx;
   }
 
@@ -62,7 +66,7 @@ namespace small3d {
     // Find in one of the animation sequences
     // a seconds value that corresponds to 
     // the current pose.
-    if (seconds == 0.0f) {
+    if (seconds == 0.0f && joints[joint].animations.size() > 0) {
       for (auto& anim : joints[joint].animations[animationIdx].animationComponents) {
         if (anim.times.size() > currentPose) {
           secondsUsed = anim.times[currentPose];
@@ -102,58 +106,59 @@ namespace small3d {
     // are being assigned?
     bool firstT = true, firstR = true, firstS = true;
     
-    for (auto& animationComponent : joints[joint].animations[animationIdx].animationComponents) {
-      auto poseUsed = currentPose;
-      bool foundPose = false;
+    if (joints[joint].animations.size() > 0) {
+      for (auto& animationComponent : joints[joint].animations[animationIdx].animationComponents) {
+        auto poseUsed = currentPose;
+        bool foundPose = false;
 
-      // Find the pose that corresonds to the seconds
-      // used
-      uint32_t tidx = 0;
-      for (auto& time : animationComponent.times) {
+        // Find the pose that corresonds to the seconds
+        // used
+        uint32_t tidx = 0;
+        for (auto& time : animationComponent.times) {
 
-        // Using == it has been observed that at least one sample
-        // model used for testing gets deformed.
-        if (time >= secondsUsed) {
-          poseUsed = tidx;
-          foundPose = true;
-          break;
+          // Using == it has been observed that at least one sample
+          // model used for testing gets deformed.
+          if (time >= secondsUsed) {
+            poseUsed = tidx;
+            foundPose = true;
+            break;
+          }
+          ++tidx;
         }
-        ++tidx;
-      }
 
-      // Replace initial joint translation, scale and / or rotation
-      // if such transformations are found in the pose used.
-      if (foundPose) {
-        if (animationComponent.translationAnimation.size() > poseUsed) {
-          if (firstT) {
-            translation = glm::translate(glm::mat4(1.0f), animationComponent.translationAnimation[poseUsed]);
-            firstT = false;
+        // Replace initial joint translation, scale and / or rotation
+        // if such transformations are found in the pose used.
+        if (foundPose) {
+          if (animationComponent.translationAnimation.size() > poseUsed) {
+            if (firstT) {
+              translation = glm::translate(glm::mat4(1.0f), animationComponent.translationAnimation[poseUsed]);
+              firstT = false;
+            }
+            else {
+              translation *= glm::translate(glm::mat4(1.0f), animationComponent.translationAnimation[poseUsed]);
+            }
           }
-          else {
-            translation *= glm::translate(glm::mat4(1.0f), animationComponent.translationAnimation[poseUsed]);
+          if (animationComponent.rotationAnimation.size() > poseUsed) {
+            if (firstR) {
+              rotation = glm::toMat4(animationComponent.rotationAnimation[poseUsed]);
+              firstR = false;
+            }
+            else {
+              rotation *= glm::toMat4(animationComponent.rotationAnimation[poseUsed]);
+            }
           }
-        }
-        if (animationComponent.rotationAnimation.size() > poseUsed) {
-          if (firstR) {
-            rotation = glm::toMat4(animationComponent.rotationAnimation[poseUsed]);
-            firstR = false;
-          }
-          else {
-            rotation *= glm::toMat4(animationComponent.rotationAnimation[poseUsed]);
-          }
-        }
-        if (animationComponent.scaleAnimation.size() > poseUsed) {
-          if (firstS) {
-            scale = glm::scale(glm::mat4(1.0f), animationComponent.scaleAnimation[poseUsed]);
-            firstS = false;
-          }
-          else {
-            scale *= glm::scale(glm::mat4(1.0f), animationComponent.scaleAnimation[poseUsed]);
+          if (animationComponent.scaleAnimation.size() > poseUsed) {
+            if (firstS) {
+              scale = glm::scale(glm::mat4(1.0f), animationComponent.scaleAnimation[poseUsed]);
+              firstS = false;
+            }
+            else {
+              scale *= glm::scale(glm::mat4(1.0f), animationComponent.scaleAnimation[poseUsed]);
+            }
           }
         }
       }
     }
-
     return parentTransform * translation * rotation * scale * joints[joint].transformation;
   }
 

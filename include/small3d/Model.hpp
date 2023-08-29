@@ -26,8 +26,6 @@ namespace glm {
 
 namespace small3d {
 
-  
-
   /**
    * @class	Model
    *
