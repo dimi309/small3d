@@ -106,7 +106,7 @@ namespace small3d
 
     /**
      * @brief Set the current animation
-     * @param The index of the current animation
+     * @param animationIdx The index of the current animation
      */
     void setAnimation(uint32_t animationIdx);
 

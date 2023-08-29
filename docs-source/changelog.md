@@ -50,6 +50,8 @@ v1.802 (still open)
   files and used as such. In the case of sound files, both ogg and native
   binaries are just loaded by the Sound class (there is no separate loader
   class).
+  
+- Multiple animations can now be loaded from .glb files and used.
 
 v1.801 2023-01-21
 
