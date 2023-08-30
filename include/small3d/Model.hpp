@@ -251,7 +251,7 @@ namespace small3d {
 
     /**
      * @brief Set the current animation
-     * @param The index of the current animation
+     * @param animationIdx The index of the current animation
      */
     void setAnimation(uint32_t animationIdx);
 
@@ -262,6 +262,7 @@ namespace small3d {
      *  @param animationIdx The index of the animation to use
      *  @param currentPose The pose of the animation to calculate the
      *         joint transformation for.
+     *  @param seconds The animation moment (in seconds) - mostly used internally
      *  @return The transform
      */
     glm::mat4 getJointTransform(size_t jointIdx, uint32_t animationIdx, uint64_t currentPose, float seconds = 0.0f);
