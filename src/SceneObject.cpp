@@ -142,8 +142,9 @@ namespace small3d {
     return this->rotationXYZ;
   }
 
-  void SceneObject::startAnimating() {
+  void SceneObject::startAnimating(bool repeat) {
     animating = true;
+    repeatAnimation = repeat;
     framesWaited = 0;
   }
 
@@ -168,6 +169,9 @@ namespace small3d {
         ++currentPose;
         if (currentPose >= getNumPoses()) {
           currentPose = 0;
+          if (!repeatAnimation) {
+            stopAnimating();
+          }
         }
       }
     }

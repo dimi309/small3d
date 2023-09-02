@@ -132,10 +132,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a13b47e78ca853f3e88544656f10d5aa1"><td class="memItemLeft" align="right" valign="top">const glm::vec3 &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a13b47e78ca853f3e88544656f10d5aa1">getRotationXYZ</a> () const</td></tr>
 <tr class="memdesc:a13b47e78ca853f3e88544656f10d5aa1"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the rotation of the object in x, y, z representation. This will NOT work if the rotation was set via the setTransformation function.  <a href="classsmall3d_1_1_scene_object.html#a13b47e78ca853f3e88544656f10d5aa1">More...</a><br /></td></tr>
 <tr class="separator:a13b47e78ca853f3e88544656f10d5aa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21bd126617420837019165e892b1ff6b"><td class="memItemLeft" align="right" valign="top"><a id="a21bd126617420837019165e892b1ff6b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a21bd126617420837019165e892b1ff6b">startAnimating</a> ()</td></tr>
-<tr class="memdesc:a21bd126617420837019165e892b1ff6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start animating the object. <br /></td></tr>
-<tr class="separator:a21bd126617420837019165e892b1ff6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa75dd89ad5771b91c9f9232fc1541c7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#aa75dd89ad5771b91c9f9232fc1541c7f">startAnimating</a> (bool repeat=true)</td></tr>
+<tr class="memdesc:aa75dd89ad5771b91c9f9232fc1541c7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start animating the object.  <a href="classsmall3d_1_1_scene_object.html#aa75dd89ad5771b91c9f9232fc1541c7f">More...</a><br /></td></tr>
+<tr class="separator:aa75dd89ad5771b91c9f9232fc1541c7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a005d922b169d1922f2f28402cd7a0cf6"><td class="memItemLeft" align="right" valign="top"><a id="a005d922b169d1922f2f28402cd7a0cf6"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_scene_object.html#a005d922b169d1922f2f28402cd7a0cf6">stopAnimating</a> ()</td></tr>
 <tr class="memdesc:a005d922b169d1922f2f28402cd7a0cf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop animating the object. <br /></td></tr>
@@ -643,6 +642,32 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">rotation</td><td>The tranformation matrix </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa75dd89ad5771b91c9f9232fc1541c7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa75dd89ad5771b91c9f9232fc1541c7f">&#9670;&nbsp;</a></span>startAnimating()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void small3d::SceneObject::startAnimating </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>repeat</em> = <code>true</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Start animating the object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">repeat</td><td>Repeat the animation after it has finished? </td></tr>
   </table>
   </dd>
 </dl>

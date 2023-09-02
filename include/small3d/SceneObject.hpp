@@ -40,6 +40,7 @@ namespace small3d
   private:
     bool skeletal;
     bool animating;
+    bool repeatAnimation = true;
     int frameDelay;
     uint64_t currentPose;
     int framesWaited;
@@ -181,8 +182,9 @@ namespace small3d
 
     /**
      * @brief Start animating the object
+     * @param repeat Repeat the animation after it has finished?
      */
-    void startAnimating();
+    void startAnimating(bool repeat = true);
 
     /**
      * @brief Stop animating the object

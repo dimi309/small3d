@@ -20,7 +20,7 @@ var searchData=
   ['sound_111',['Sound',['../classsmall3d_1_1_sound.html',1,'small3d::Sound'],['../classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219',1,'small3d::Sound::Sound()'],['../classsmall3d_1_1_sound.html#a5c0dcc69eba4f4f1993d3d8aa50b28f7',1,'small3d::Sound::Sound(const std::string soundFilePath)'],['../classsmall3d_1_1_sound.html#abe9fffa807136a82dba901f6c1b9aeb7',1,'small3d::Sound::Sound(const Sound &amp;other) noexcept'],['../classsmall3d_1_1_sound.html#aa6e96196c84086a30c9d02aa1a4aa358',1,'small3d::Sound::Sound(const Sound &amp;&amp;other) noexcept']]],
   ['sound_2ehpp_112',['Sound.hpp',['../_sound_8hpp.html',1,'']]],
   ['start_113',['start',['../classsmall3d_1_1_renderer.html#ab8b6dbd513c16e99f9f673f14e00409b',1,'small3d::Renderer']]],
-  ['startanimating_114',['startAnimating',['../classsmall3d_1_1_scene_object.html#a21bd126617420837019165e892b1ff6b',1,'small3d::SceneObject']]],
+  ['startanimating_114',['startAnimating',['../classsmall3d_1_1_scene_object.html#aa75dd89ad5771b91c9f9232fc1541c7f',1,'small3d::SceneObject']]],
   ['stop_115',['stop',['../classsmall3d_1_1_renderer.html#a15011351cd2207d0430b0ebb5a65bef8',1,'small3d::Renderer::stop()'],['../classsmall3d_1_1_sound.html#a3b239ef468eae9e89c48351127b329f3',1,'small3d::Sound::stop()']]],
   ['stopanimating_116',['stopAnimating',['../classsmall3d_1_1_scene_object.html#a005d922b169d1922f2f28402cd7a0cf6',1,'small3d::SceneObject']]],
   ['swapbuffers_117',['swapBuffers',['../classsmall3d_1_1_renderer.html#acdc83f2aaaf3f41f35e99c1eabc6ac98',1,'small3d::Renderer']]],
