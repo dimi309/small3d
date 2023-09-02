@@ -4,7 +4,7 @@ plugins {
 
 android {
 
-    compileSdk 30
+    compileSdk 33
 
     buildFeatures {
         prefab true // For Oboe
@@ -12,8 +12,8 @@ android {
 
     defaultConfig {
         applicationId 'com.dimi309.small3d_tests'
-        minSdk 26 // set to 16 if building with OpenGL ES and to 26 if building with Vulkan
-        targetSdk 30
+        minSdk 16 // set to 16 if building with OpenGL ES and to 26 if building with Vulkan
+        targetSdk 33
         versionCode 1
         versionName "1.00"
        // multiDexEnabled false
