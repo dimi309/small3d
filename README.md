@@ -24,17 +24,23 @@ Minimalistic, open source library for making 3D games in C++
 - Sound (ogg and native files)
 - Collision detection
 - Frame-based animation
-- Skeletal animation
+- Skeletal animation (only based on rigs read from glb files; animation linked directly to models without bones/joints is ignored)
 
 # Partly humorous list of things NOT supported
 
-- Scenes - no Scene data structure, just SceneObjects rendered in an infinite space
+- Scenes - no Scene data structure; just SceneObjects rendered in an infinite space
 - Materials
 - Lighting other than Gouraud shading
 - Ray tracing
 - ECS
 - AI
 - Crypto
+
+The purpose of this project is to provide a minimal set of features, allowing
+C++ developers to build cross-platform games based on a single code-base.
+Supporting as many platforms as possible while minimising the amount of code 
+and time needed for maintenance is favoured over richness of features and using
+cutting edge methods and technologies.
 
 # Supported platforms
 
