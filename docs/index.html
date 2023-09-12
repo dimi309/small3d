@@ -108,9 +108,11 @@ Supported platforms</h1>
 <li>Windows (OpenGL)</li>
 <li>MacOS (OpenGL)</li>
 <li>Linux (OpenGL - Tested on Debian, Ubuntu and Fedora)</li>
+<li>FreeBSD (OpenGL)</li>
 <li>Android (OpenGL ES 2.0)</li>
 <li>iOS (OpenGL ES 2.0)</li>
 </ul>
+<p><em>On FreeBSD it is likely that the sound does not work. I have only tested it on VirtualBox, not linking to alsa like in Linux, but not replacing alsa with something else either. I do not know if Portaudio can produce sound under these conditions.</em></p>
 <p>This library is extremely backwards compatible. It can run on iOS 9.3 and Android 4.2.</p>
 <p><em>I am aware that OpenGL and OpenGL ES have been deprecated by Apple in favour of Metal. This was one of the reasons <a href="https://github.com/dimi309/small3d/releases/tag/1.8015.last.vulkan">I was also maintaining a Vulkan renderer in the past</a>, which was also running on Apple devices via MoltenVK. I was hoping that, in the near future, I could use Vulkan exclusively across all platforms. However, given the many glitches I have encountered with Vulkan drivers on many devices, I have decided to remove the Vulkan renderer for now. In any case, OpenGL and OpenGL ES still work just fine on Apple. I will reconsider implementing a Vulkan renderer or a Metal renderer in the future, or even a DirectX renderer (why not) if OpenGL ever does indeed get discontinued on any of the currently supported platforms. My priority is always that games made with this library run on as many devices as possible and that the codebase remains small - pun intended :)</em></p>
 <h1><a class="anchor" id="autotoc_md5"></a>
