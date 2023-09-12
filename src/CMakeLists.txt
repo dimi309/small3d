@@ -15,6 +15,10 @@ endif()
 
 target_include_directories(small3d PUBLIC ../include/small3d)
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+target_include_directories(small3d PUBLIC /usr/local/include)
+endif()
+
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
   target_include_directories(small3d PUBLIC
     ${PNG_INCLUDE_DIRS}
@@ -86,8 +90,14 @@ if(WIN32) # Windows
   target_link_libraries(small3d PUBLIC winmm)
 endif()
 
-if(UNIX AND NOT APPLE) # Linux
-  target_link_libraries(small3d PUBLIC m pthread rt asound X11 dl)
+if(UNIX AND NOT APPLE) # FreeBSD or Linux
+  message(STATUS "System: ${CMAKE_SYSTEM_NAME}")
+  if(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+    link_directories(/usr/local/lib)
+    target_link_libraries(small3d PUBLIC m pthread rt X11 dl)
+  else() 
+    target_link_libraries(small3d PUBLIC m pthread rt asound X11 dl)
+  endif()
 endif()
 
 if(NOT DEFINED ANDROID_PLATFORM AND NOT IOS) # PC
