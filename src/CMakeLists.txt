@@ -94,7 +94,7 @@ if(UNIX AND NOT APPLE) # FreeBSD or Linux
   message(STATUS "System: ${CMAKE_SYSTEM_NAME}")
   if(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
     link_directories(/usr/local/lib)
-    target_link_libraries(small3d PUBLIC m pthread rt X11 dl)
+    target_link_libraries(small3d PUBLIC m pthread rt jack X11 dl)
   else() 
     target_link_libraries(small3d PUBLIC m pthread rt asound X11 dl)
   endif()

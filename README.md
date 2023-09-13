@@ -51,11 +51,6 @@ cutting edge methods and technologies.
 - Android (OpenGL ES 2.0)
 - iOS (OpenGL ES 2.0) 
 
-*On FreeBSD it is likely that the sound does not work. I have only tested it
-on VirtualBox, not linking to alsa like in Linux, but not replacing alsa with
-something else either. I do not know if Portaudio can produce sound under
-these conditions.*
-
 This library is extremely backwards compatible. It can run on iOS 9.3 and 
 Android 4.2.
 

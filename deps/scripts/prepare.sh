@@ -29,6 +29,10 @@ if [ $(uname) == 'Linux' ]; then
 	echo "No package manager found! Cannot install preprequisites."
 	exit 1
     fi
+elif [ $(uname) == 'FreeBSD' ]; then
+        echo "Installing jackit, using pkg and sudo (you might be required to enter your password..."
+	sudo pkg install jackit
+    	CMAKE_PORTAUDIO_DEFINITIONS="-DPA_USE_JACK=ON -DPA_BUILD_SHARED=OFF"
 fi
 
 CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=$1 
