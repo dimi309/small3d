@@ -46,7 +46,7 @@ cutting edge methods and technologies.
 
 - Windows (OpenGL)
 - MacOS (OpenGL)
-- Linux (OpenGL - Tested on Debian, Ubuntu and Fedora) 
+- Linux (OpenGL - Tested on Debian, Ubuntu, Fedora and Arch) 
 - FreeBSD (OpenGL)
 - Android (OpenGL ES 2.0)
 - iOS (OpenGL ES 2.0) 
