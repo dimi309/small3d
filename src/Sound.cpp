@@ -175,6 +175,11 @@ namespace small3d {
       i += static_cast<unsigned long>(soundData->channels)) {
       for (int c = 0; c < soundData->channels; ++c) {
         *out++ = (reinterpret_cast<short*>(soundData->data.data()))[i + c];
+	// Write two channels if there is only one in the file,
+	// otherwise the sound will only play on one speaker when using jack.
+	if (soundData->channels == 1) {
+	  *out++ = (reinterpret_cast<short*>(soundData->data.data()))[i + c];
+	}
       }
     }
 
@@ -507,7 +512,11 @@ namespace small3d {
 
     memset(&outputParams, 0, sizeof(PaStreamParameters));
     outputParams.device = defaultOutput;
-    outputParams.channelCount = this->soundData.channels;
+    // Declare two channels if there is only one. This is
+    // so that we can send the sound to both speakers when
+    // using jack and not alsa on Linux. For the rest of the
+    // cases, it will still work.
+    outputParams.channelCount = this->soundData.channels == 1 ? 2 : this->soundData.channels;
     outputParams.hostApiSpecificStreamInfo = NULL;
 
     outputParams.sampleFormat = PORTAUDIO_SAMPLE_FORMAT;
