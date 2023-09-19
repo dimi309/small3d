@@ -12,6 +12,7 @@
 #include "File.hpp"
 #include "BoundingBoxSet.hpp"
 #include <unordered_map>
+#include "Material.hpp"
 
 namespace small3d {
 
@@ -27,6 +28,8 @@ namespace small3d {
   class WavefrontFile : public File {
 
   private:
+    std::string materialFile = "";
+    Material material;
 
     int getTokens(const std::string& input, const char sep,
       std::vector<std::string>& tokens);
@@ -49,6 +52,8 @@ namespace small3d {
     void loadNormalsData(std::vector<float>& normalsData, const std::vector<float>& vertexData);
     void loadTextureCoordsData(std::vector<float>& textureCoordsData, const std::vector<float>& vertexData);
 
+    void loadMaterial(const std::string filePath, const std::string name);
+
     // Make sure that no texture coordinate information is lost when the data
     // buffers get created (vertexData, indexData, normalsData and
     // textureCoordsData) by realigning the data vectors, in order to ensure
@@ -66,9 +71,9 @@ namespace small3d {
   public:
     /**
      * @brief Constructor
-     * @param fileLocation Path to wavefront file
+     * @param filePath Path to wavefront file
      */
-    WavefrontFile(const std::string& fileLocation);
+    WavefrontFile(const std::string& filePath);
 
     /**
      * @brief Load data from the Wavefront file into a Model

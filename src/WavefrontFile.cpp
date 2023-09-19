@@ -56,7 +56,7 @@ namespace small3d {
     }
     return count;
   }
-  
+
   void WavefrontFile::loadVertexData(std::vector<float>& vertexData) {
 
     vertexData.clear();
@@ -76,7 +76,7 @@ namespace small3d {
 
     if (!onlyTriangles) {
       throw std::runtime_error("Cannot load indices from " + fullPath + " because"
-      " it does not only contain triangles.");
+        " it does not only contain triangles.");
     }
 
     indexData.clear();
@@ -87,7 +87,7 @@ namespace small3d {
       for (int indexIdx = 0; indexIdx != 3; ++indexIdx) {
         indexData.emplace_back(face->at((unsigned long)indexIdx)
           - 1); // -1 because Wavefront indices
-                // are not 0 based
+        // are not 0 based
       }
     }
 
@@ -130,7 +130,7 @@ namespace small3d {
 
     // Create an array of texture coordinates components which corresponds
     // by index to the array of vertex components
-    
+
     if (vertexData.size() == 0) {
       throw std::runtime_error("Cannot create texture coords data when there is no vertex data.");
     }
@@ -154,11 +154,87 @@ namespace small3d {
                 static_cast<unsigned long>
                 (textureCoordsIndices.at(faceVertexArrayIndex)
                   [vertexIndex]
-            - 1))[textureCoordsComponent];
+                  - 1))[textureCoordsComponent];
           }
         }
         ++faceVertexArrayIndex;
       }
+    }
+  }
+
+  void WavefrontFile::loadMaterial(const std::string filePath, const std::string name) {
+
+    std::string line;
+    bool inMaterial = false;
+
+#ifdef __ANDROID__
+    AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
+      filePath.c_str(),
+      AASSET_MODE_STREAMING);
+    if (!asset) throw std::runtime_error("Opening asset " + filePath +
+      " has failed!");
+    off_t length;
+    length = AAsset_getLength(asset);
+    const void* buffer = AAsset_getBuffer(asset);
+    membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * length);
+    std::istream in(&sbuf);
+    if (in) {
+      while (std::getline(in, line)) {
+#else
+
+    std::ifstream file(filePath.c_str());
+
+    if (file.is_open()) {
+      while (std::getline(file, line)) {
+
+#endif
+        if (inMaterial) {
+          if (line.substr(0, 6) == "newmtl") {
+            inMaterial = false;
+          }
+          else {
+            std::vector<std::string> tokens;
+            uint32_t numTokens = getTokens(line, ' ', tokens);
+            if (tokens.size() > 0) {
+
+              if (tokens[0] == "Ns") {
+                material.specularExponent = atof(tokens[1].c_str());
+              }
+              else if (tokens[0] == "Ka") {
+                material.ambientColour = glm::vec3(atof(tokens[1].c_str()), atof(tokens[2].c_str()), atof(tokens[3].c_str()));
+              }
+              else if (tokens[0] == "Kd") {
+                material.diffuseColour = glm::vec3(atof(tokens[1].c_str()), atof(tokens[2].c_str()), atof(tokens[3].c_str()));
+              }
+              else if (tokens[0] == "Ks") {
+                material.specularColour = glm::vec3(atof(tokens[1].c_str()), atof(tokens[2].c_str()), atof(tokens[3].c_str()));
+              }
+              else if (tokens[0] == "Ke") {
+                material.emissiveCoefficient = glm::vec3(atof(tokens[1].c_str()), atof(tokens[2].c_str()), atof(tokens[3].c_str()));
+              }
+              else if (tokens[0] == "Ni") {
+                material.optDensIndexRef = atof(tokens[1].c_str());
+              }
+              else if (tokens[0] == "d" || tokens[0] == "Tr") {
+                material.alpha = atof(tokens[1].c_str());
+              }
+            }
+          }
+        }
+        else if (line.substr(0, 6) == "newmtl") {
+          inMaterial = true;
+        }
+
+      }
+#ifdef __ANDROID__
+      AAsset_close(asset);
+#else
+      file.close();
+#endif
+     
+    }
+    else {
+      throw std::runtime_error("Could not open file " + filePath);
     }
   }
 
@@ -208,14 +284,14 @@ namespace small3d {
     }
   }
 
-  WavefrontFile::WavefrontFile(const std::string& fileLocation) : File(fileLocation){
-    
+  WavefrontFile::WavefrontFile(const std::string & filePath) : File(filePath) {
+
     std::string line;
-   
+
 #ifdef __ANDROID__
     AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
-                                       fullPath.c_str(),
-                                       AASSET_MODE_STREAMING);
+      fullPath.c_str(),
+      AASSET_MODE_STREAMING);
     if (!asset) throw std::runtime_error("Opening asset " + fullPath +
       " has failed!");
     off_t length;
@@ -269,7 +345,7 @@ namespace small3d {
             for (uint32_t tokenIdx = 0; tokenIdx < numTokens; ++tokenIdx) {
               std::string t = tokens[tokenIdx];
               if (idx > 0)   // The first token is the vertex texture
-                 // coordinate indicator.
+                // coordinate indicator.
               {
                 vt.emplace_back(static_cast<float>(atof(t.c_str())));
               }
@@ -277,8 +353,8 @@ namespace small3d {
             }
 
             vt[1] = 1.0f - vt[1]; // OpenGL's y direction for textures is the
-                                  // opposite of that of Blender's, so an
-                                  // inversion is needed
+            // opposite of that of Blender's, so an
+            // inversion is needed
             textureCoords.emplace_back(vt);
           }
           else if (line[0] == 'v') {
@@ -318,7 +394,7 @@ namespace small3d {
                 else if (t.find("/") != std::string::npos
                   && t.find("//") ==
                   std::string::npos) // normal and texture coordinate
-                 // index are contained in the string
+                  // index are contained in the string
                 {
                   std::vector<std::string> components;
                   int numComponents = getTokens(t, '/', components);
@@ -363,6 +439,20 @@ namespace small3d {
               textureCoordsIndices.emplace_back(textC);
           }
         }
+        else if (line.compare(0, 6, "mtllib") == 0) {
+          if (materialFile != "") {
+            LOGDEBUG("More than one material files detected. Ignoring.");
+          }
+          else {
+            materialFile = line.substr(7);
+          }
+        }
+        else if (line.compare(0, 6, "usemtl") == 0) {
+          auto l = fullPath.find_last_of("/");
+          auto m = fullPath.find_last_of("\\");
+          auto dirLength = (l > m ? l : m) + 1;
+          loadMaterial(fullPath.substr(0, dirLength) + materialFile, line.substr(7));
+        }
       }
 #ifdef __ANDROID__
       AAsset_close(asset);
@@ -372,14 +462,16 @@ namespace small3d {
       if (textureCoords.size() > 0) {
         this->correctDataVectors();
       }
-      
+
     }
-    else
+    else {
       throw std::runtime_error("Could not open file " + fullPath);
+    }
+
   }
 
-  void WavefrontFile::load(Model& model, const std::string& meshName) {
-    
+  void WavefrontFile::load(Model & model, const std::string & meshName) {
+
     loadVertexData(model.vertexData);
     loadIndexData(model.indexData);
     loadNormalsData(model.normalsData, model.vertexData);
@@ -412,7 +504,7 @@ namespace small3d {
 
       size_t minIndex = model.indexData[0];
       for (auto i : model.indexData) if (i < minIndex) minIndex = i;
-      
+
       size_t maxIndex = model.indexData[0];
       for (auto i : model.indexData) if (i > maxIndex) maxIndex = i;
 
@@ -424,7 +516,7 @@ namespace small3d {
 
       model.textureCoordsData = std::vector<float>(model.textureCoordsData.begin() + minIndex * 2,
         model.textureCoordsData.begin() + (maxIndex + 1) * 2);
-  
+
       for (size_t idx = 0; idx < model.indexData.size(); ++idx) {
         model.indexData[idx] -= static_cast<uint32_t>(minIndex);
       }
@@ -434,9 +526,9 @@ namespace small3d {
     model.indexDataByteSize = static_cast<uint32_t>(model.indexData.size() * sizeof(uint32_t));
     model.normalsDataByteSize = static_cast<uint32_t>(model.normalsData.size() * sizeof(float));
     model.textureCoordsDataByteSize = static_cast<uint32_t>(model.textureCoordsData.size() * sizeof(float));
-
+    model.material = material;
     LOGDEBUG("Loaded mesh " + meshName + " from " + fullPath);
-    
+
   }
 
   std::vector<std::string> WavefrontFile::getMeshNames() {

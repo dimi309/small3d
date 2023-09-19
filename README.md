@@ -18,6 +18,7 @@ Minimalistic, open source library for making 3D games in C++
 - Other customised meshes and shapes
 - Texture mapping
 - Gouraud shading
+- Basic materials support (colour, transparency)
 - Shadow mapping
 - Image rendering
 - Font rendering
@@ -29,8 +30,6 @@ Minimalistic, open source library for making 3D games in C++
 # Partly humorous list of things NOT supported
 
 - Scenes - no Scene data structure; just SceneObjects rendered in an infinite space
-- Materials
-- Lighting other than Gouraud shading
 - Ray tracing
 - ECS
 - AI

@@ -938,6 +938,15 @@ namespace small3d {
                 LOGINFO("Warning! Only PNG images embedded in .glb files can be read. Texture ignored.");
               }
             }
+            auto baseColorFactorToken = getChildToken(metallicRoughnessToken, "baseColorFactor");
+            if (baseColorFactorToken != nullptr) {
+              auto colourTokens = getChildTokens(baseColorFactorToken);
+
+              model.material.ambientColour = glm::vec3(atof(colourTokens[0]->value.c_str()),
+                atof(colourTokens[1]->value.c_str()),
+                atof(colourTokens[2]->value.c_str()));
+              model.material.alpha = atof(colourTokens[3]->value.c_str());
+            }
           }
         }
 

@@ -16,6 +16,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include "Image.hpp"
 #include "File.hpp"
+#include "Material.hpp"
 
 namespace glm {
   template<class Archive> void serialize(Archive& archive, glm::vec3& v) { archive(v.x, v.y, v.z); }
@@ -63,6 +64,11 @@ namespace small3d {
     glm::vec3 origScale = glm::vec3(1.0f, 1.0f, 1.0f);
 
   public:
+
+    /**
+     *  @brief The material of the Model
+     */
+    Material material;
 
     /**
      * @brief animation component for joint
@@ -287,6 +293,8 @@ namespace small3d {
         origRotation,
         origTranslation,
         origScale,
+        material,
+        scale,
         defaultTextureImage,
         vertexData,
         vertexDataByteSize,
