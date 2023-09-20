@@ -234,7 +234,7 @@ namespace small3d {
      
     }
     else {
-      throw std::runtime_error("Could not open file " + filePath);
+      LOGDEBUG("Could not open file " + filePath);
     }
   }
 
