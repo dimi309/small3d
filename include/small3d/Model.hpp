@@ -66,7 +66,7 @@ namespace small3d {
   public:
 
     /**
-     *  @brief The material of the Model
+     *  @brief The material of the model
      */
     Material material;
 

@@ -90,9 +90,9 @@ Inheritance diagram for small3d::WavefrontFile:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a98eb0ec7965cefe49b948ca611825b56"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_wavefront_file.html#a98eb0ec7965cefe49b948ca611825b56">WavefrontFile</a> (const std::string &amp;fileLocation)</td></tr>
-<tr class="memdesc:a98eb0ec7965cefe49b948ca611825b56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classsmall3d_1_1_wavefront_file.html#a98eb0ec7965cefe49b948ca611825b56">More...</a><br /></td></tr>
-<tr class="separator:a98eb0ec7965cefe49b948ca611825b56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a249e3ce25f371e68910f231ffbb24531"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_wavefront_file.html#a249e3ce25f371e68910f231ffbb24531">WavefrontFile</a> (const std::string &amp;filePath)</td></tr>
+<tr class="memdesc:a249e3ce25f371e68910f231ffbb24531"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classsmall3d_1_1_wavefront_file.html#a249e3ce25f371e68910f231ffbb24531">More...</a><br /></td></tr>
+<tr class="separator:a249e3ce25f371e68910f231ffbb24531"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a50ffe10fc5c4ed87ad2c6ce5dbf1b5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_wavefront_file.html#a7a50ffe10fc5c4ed87ad2c6ce5dbf1b5">load</a> (<a class="el" href="classsmall3d_1_1_model.html">Model</a> &amp;model, const std::string &amp;meshName) override</td></tr>
 <tr class="memdesc:a7a50ffe10fc5c4ed87ad2c6ce5dbf1b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load data from the Wavefront file into a <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>.  <a href="classsmall3d_1_1_wavefront_file.html#a7a50ffe10fc5c4ed87ad2c6ce5dbf1b5">More...</a><br /></td></tr>
 <tr class="separator:a7a50ffe10fc5c4ed87ad2c6ce5dbf1b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -115,8 +115,8 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>.obj (Wavefront) file parser class. The file format has to be somewhat specific, with triangulated faces and containing the normals. Such a file can be exported from Blender for example (see blender.org). From the file menu, select Export &gt; Wavefront (.obj). Then from the "Export OBJ" menu, only select "Write Normals", "Triangulate Faces" and "Keep Vertex Order". </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a98eb0ec7965cefe49b948ca611825b56"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a98eb0ec7965cefe49b948ca611825b56">&#9670;&nbsp;</a></span>WavefrontFile()</h2>
+<a id="a249e3ce25f371e68910f231ffbb24531"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a249e3ce25f371e68910f231ffbb24531">&#9670;&nbsp;</a></span>WavefrontFile()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -125,7 +125,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
           <td class="memname">small3d::WavefrontFile::WavefrontFile </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>fileLocation</em></td><td>)</td>
+          <td class="paramname"><em>filePath</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -134,7 +134,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Constructor. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">fileLocation</td><td>Path to wavefront file </td></tr>
+    <tr><td class="paramname">filePath</td><td>Path to wavefront file </td></tr>
   </table>
   </dd>
 </dl>

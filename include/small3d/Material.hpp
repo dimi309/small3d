@@ -29,6 +29,10 @@ namespace small3d {
     glm::vec3 diffuseColour = glm::vec3(0.0f);
     glm::vec3 specularColour = glm::vec3(0.0f);
     glm::vec3 emissiveCoefficient = glm::vec3(0.0f);
+    /**
+     * @brief Optical density / index of refraction
+     *
+     */
     float optDensIndexRef = 0.0f;
     float alpha = 1.0f;
 

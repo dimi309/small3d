@@ -53,9 +53,9 @@ v1.802 (still open)
   
 - Multiple animations can now be loaded from .glb files and used.
 
-- Added FreeBSD support
+- Added FreeBSD support.
 
-- Added basic materials support (colour, transparency)
+- Added basic materials support (colour, transparency).
 
 v1.801 2023-01-21
 
