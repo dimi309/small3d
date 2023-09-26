@@ -6,6 +6,12 @@
 
 Minimalistic, open source library for making 3D games in C++
 
+This project provides a sufficient level of game development functionalities 
+for C++ developers to be able to build cross-platform games based on a single 
+code-base. Supporting as many platforms as possible while minimising the amount 
+of code and time needed for maintenance is favoured over richness of features 
+and the use of cutting edge methods and technologies.
+
 ## Sample games
 
 - [Gloom](https://github.com/dimi309/gloom) (open source)
@@ -35,35 +41,30 @@ Minimalistic, open source library for making 3D games in C++
 - AI
 - Crypto
 
-The purpose of this project is to provide a minimal set of features, allowing
-C++ developers to build cross-platform games based on a single code-base.
-Supporting as many platforms as possible while minimising the amount of code 
-and time needed for maintenance is favoured over richness of features and using
-cutting edge methods and technologies.
-
 # Supported platforms
 
-- Windows (OpenGL)
-- MacOS (OpenGL)
-- Linux (OpenGL - Tested on Debian, Ubuntu, Fedora and Arch) 
-- FreeBSD (OpenGL)
-- Android (OpenGL ES 2.0)
-- iOS (OpenGL ES 2.0) 
+- Windows
+- MacOS
+- Linux (Tested on Debian, Ubuntu, Fedora and Arch) 
+- FreeBSD
+- Android
+- iOS
 
-This library is extremely backwards compatible. It can run on iOS 9.3 and 
-Android 4.2.
+Running on OpenGL on PC and OpenGL ES on mobile, this library is extremely 
+backwards compatible. It can run on iOS 9.3 and Android 4.2.
 
-*I am aware that OpenGL and OpenGL ES have been deprecated by Apple in favour of 
-Metal. This was one of the reasons [I was also maintaining a Vulkan renderer in the past](https://github.com/dimi309/small3d/releases/tag/1.8015.last.vulkan), 
-which was also running on Apple devices via MoltenVK. I was hoping that, in the 
-near future, I could use Vulkan exclusively across all platforms. However, 
-given the many glitches I have encountered with Vulkan drivers on many devices, 
-I have decided to remove the Vulkan renderer for now. In any case, OpenGL and 
-OpenGL ES still work just fine on Apple. I will reconsider implementing a Vulkan 
-renderer or a Metal renderer in the future, or even a DirectX renderer (why not) 
-if OpenGL ever does indeed get discontinued on any of the currently supported 
-platforms. My priority is always that games made with this library run on as 
-many devices as possible and that the codebase remains small - pun intended :)*
+Note: There used to be Vulkan support too, but it has been discontinued. Here is
+an article on the reasons for this decision:
+
+https://www.gamedev.net/blogs/entry/2275791-abandoning-vulkan/
+
+And here is the last Vulkan commit before the Vulkan renderer got removed:
+
+https://github.com/dimi309/small3d/releases/tag/1.8015.last.vulkan
+
+Note that despite the official deprecation of OpenGL on Apple devices,
+OpenGL and OpenGL ES still work just fine there. If and when that changes, 
+I will implement a renderer in Metal or something.
 
 # Tutorial
 
