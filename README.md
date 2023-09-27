@@ -6,7 +6,7 @@
 
 Minimalistic, open source library for making 3D games in C++
 
-This project provides a sufficient level of game development functionalities 
+This library provides a sufficient level of game development functionalities 
 for C++ developers to be able to build cross-platform games based on a single 
 code-base. Supporting as many platforms as possible while minimising the amount 
 of code and time needed for maintenance is favoured over richness of features 
@@ -54,7 +54,7 @@ Running on OpenGL on PC and OpenGL ES on mobile, this library is extremely
 backwards compatible. It can run on iOS 9.3 and Android 4.2.
 
 Note: There used to be Vulkan support too, but it has been discontinued. Here is
-an article on the reasons for this decision:
+an article on the reasons for this:
 
 https://www.gamedev.net/blogs/entry/2275791-abandoning-vulkan/
 
@@ -77,7 +77,8 @@ https://www.gamedev.net/tutorials/programming/engines-and-middleware/small3d-tut
 The following need to be installed, with the relevant environment variables
 and tools accessible via the command line:
 
-- Some compiler, gcc, Visual Studio, clang, etc.
+- Some compiler (e.g. gcc, Visual Studio, clang) with C++14 support recommended
+  as a minimum.
 - 7zip (only on Windows)
 - CMake
 - Android Studio if building for Android
@@ -140,6 +141,11 @@ of time in that respect.
 
 # Referenced libraries
 
+The following dependencies' *source code* repositories (not binaries) are 
+distributed in this same repository (in the `deps` directory). They can be built
+by executing a single script (see "Building", above) and they can also be used 
+directly in your application / game code.
+
 - glew when building for PC
 - glfw 
 - glm 
@@ -153,6 +159,4 @@ of time in that respect.
 - cereal
 - oboe when building for Android
 
-All dependencies *source code* repositories (not binaries) are distributed
-in this same repository (in the `deps` directory). They can be built by 
-executing a single script (see "Building", above).
+

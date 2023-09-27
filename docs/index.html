@@ -69,7 +69,7 @@ $(function() {
 <div class="textblock"><p><a class="anchor" id="md_README"></a> <a href="https://ci.appveyor.com/project/dimi309/small3d"><img src="https://ci.appveyor.com/api/projects/status/qpm3qekslivm3kjb?svg=true" alt="Build status" class="inline"/></a></p>
 <p><a href="https://github.com/dimi309/small3d">[Source Code]</a> <a href="https://dimi309.github.io/small3d">[API Documentation]</a></p>
 <p>Minimalistic, open source library for making 3D games in C++</p>
-<p>This project provides a sufficient level of game development functionalities for C++ developers to be able to build cross-platform games based on a single code-base. Supporting as many platforms as possible while minimising the amount of code and time needed for maintenance is favoured over richness of features and the use of cutting edge methods and technologies.</p>
+<p>This library provides a sufficient level of game development functionalities for C++ developers to be able to build cross-platform games based on a single code-base. Supporting as many platforms as possible while minimising the amount of code and time needed for maintenance is favoured over richness of features and the use of cutting edge methods and technologies.</p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Sample games</h1>
 <ul>
@@ -112,7 +112,7 @@ Supported platforms</h1>
 <li>iOS</li>
 </ul>
 <p>Running on OpenGL on PC and OpenGL ES on mobile, this library is extremely backwards compatible. It can run on iOS 9.3 and Android 4.2.</p>
-<p>Note: There used to be Vulkan support too, but it has been discontinued. Here is an article on the reasons for this decision:</p>
+<p>Note: There used to be Vulkan support too, but it has been discontinued. Here is an article on the reasons for this:</p>
 <p><a href="https://www.gamedev.net/blogs/entry/2275791-abandoning-vulkan/">https://www.gamedev.net/blogs/entry/2275791-abandoning-vulkan/</a></p>
 <p>And here is the last Vulkan commit before the Vulkan renderer got removed:</p>
 <p><a href="https://github.com/dimi309/small3d/releases/tag/1.8015.last.vulkan">https://github.com/dimi309/small3d/releases/tag/1.8015.last.vulkan</a></p>
@@ -126,7 +126,7 @@ Building and deploying</h1>
 Prerequisites</h2>
 <p>The following need to be installed, with the relevant environment variables and tools accessible via the command line:</p>
 <ul>
-<li>Some compiler, gcc, Visual Studio, clang, etc.</li>
+<li>Some compiler (e.g. gcc, Visual Studio, clang) with C++14 support recommended as a minimum.</li>
 <li>7zip (only on Windows)</li>
 <li>CMake</li>
 <li>Android Studio if building for Android</li>
@@ -158,6 +158,7 @@ Boilerplate Project</h2>
 <p>It is highly recommended to use this boilerplate if you intend to port your game to Android and / or iOS. While it is pretty straightforward to get this library working for the desktop and you might prefer the freedom and flexibility of working with a project set up from scratch, mobile platforms have many specificities and quirks to take care of, so the boilerplate can save you a lot of time in that respect.</p>
 <h1><a class="anchor" id="autotoc_md11"></a>
 Referenced libraries</h1>
+<p>The following dependencies' <em>source code</em> repositories (not binaries) are distributed in this same repository (in the <code>deps</code> directory). They can be built by executing a single script (see "Building", above) and they can also be used directly in your application / game code.</p>
 <ul>
 <li>glew when building for PC</li>
 <li>glfw</li>
@@ -170,9 +171,8 @@ Referenced libraries</h1>
 <li>freetype</li>
 <li>bzip</li>
 <li>cereal</li>
-<li>oboe when building for Android</li>
+<li>oboe when building for Android </li>
 </ul>
-<p>All dependencies <em>source code</em> repositories (not binaries) are distributed in this same repository (in the <code>deps</code> directory). They can be built by executing a single script (see "Building", above). </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->

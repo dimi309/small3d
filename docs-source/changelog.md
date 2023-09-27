@@ -39,8 +39,10 @@ v1.802 (still open)
   "small3d_LIBRARIES" instead of "SMALL3D_LIBRARIES". It also provides the 
   small3d::small3d target which greatly diminishes the code needed in CMakeLists 
   files using the library.
+
+- Reintroduced Wavefront support.
   
-- Model files in supported formats (gltf and wavefront at the time of writing)
+- Model files in supported formats (glTF and Wavefront at the time of writing)
   can now be converted to a native small3d binary format, using a new format
   converter program produced by the project's build script, named s3dfc. The
   produced binary files can then be read by a new file access class called
