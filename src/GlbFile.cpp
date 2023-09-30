@@ -991,6 +991,24 @@ namespace small3d {
         model.origTransformation = tmpNode.transformation * model.origTransformation;
       }
 
+
+      uint32_t animationIdx = 0;
+      bool warnedNonSkeletal = false;
+      while (existAnimation(animationIdx)) {
+        auto animation = getAnimation(animationIdx);
+        for (auto& channel : animation.channels) {
+          if (channel.target.node == meshNode.index) {
+            LOGDEBUG("Non-skeletal animation ignored.");
+            warnedNonSkeletal = true;
+            break;
+          }
+        }
+        if (warnedNonSkeletal) {
+          break;
+        }
+        ++animationIdx;
+      }
+
       if (!meshNode.noSkin && existSkin(meshNode.skin)) {
 
         auto skin = getSkin(meshNode.skin);
@@ -1024,7 +1042,7 @@ namespace small3d {
         bool inputStored = false;
         uint32_t storedInput = 0;
 
-        uint32_t animationIdx = 0;
+        animationIdx = 0;
         while (existAnimation(animationIdx)) {
           auto animation = getAnimation(animationIdx);
 
@@ -1045,6 +1063,7 @@ namespace small3d {
             memcpy(&times[0], &input[0], input.size());
 
             auto output = getBufferByAccessor(sampler.output);
+
 
             for (auto& joint : model.joints) {
               if (joint.animations.size() < animationIdx + 1) {
@@ -1096,6 +1115,7 @@ namespace small3d {
                 }
               }
             }
+            
           }
           ++animationIdx;
         } // end existAnimation loop

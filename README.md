@@ -30,11 +30,13 @@ and the use of cutting edge methods and technologies.
 - Font rendering
 - Sound (ogg and native files)
 - Collision detection
-- Frame-based animation
-- Skeletal animation (only based on rigs read from glb files; animation linked directly to models without bones/joints is ignored)
+- Frame-based animation (Wavefront)
+- Skeletal animation (glTF)
 
 # Partly humorous list of things NOT supported
 
+- Animation read from glTF and linked directly to models without bones/joints
+- Non-PNG images
 - Scenes - no Scene data structure; just SceneObjects rendered in an infinite space
 - Ray tracing
 - ECS
