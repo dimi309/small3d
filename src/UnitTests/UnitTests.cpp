@@ -20,11 +20,12 @@
 #include "BinaryFile.hpp"
 #include "OctPyramid.hpp"
 #include <glm/gtx/string_cast.hpp>
+#include <thread>
 
 using namespace small3d;
 using namespace std;
 
-Renderer *r = nullptr;
+Renderer* r = nullptr;
 
 #if defined(SMALL3D_IOS)
 std::string resourceDir = "resources1";
@@ -45,10 +46,10 @@ void pollEvents() {
 #elif defined(__ANDROID__)
 
 int events;
-android_poll_source *pSource;
+android_poll_source* pSource;
 
 void pollEvents() {
-  if (ALooper_pollAll(0, nullptr, &events, (void **) &pSource) >= 0) {
+  if (ALooper_pollAll(0, nullptr, &events, (void**)&pSource) >= 0) {
     if (pSource != NULL) {
       pSource->process(small3d_android_app, pSource);
       if (small3d_android_app->destroyRequested) {
@@ -59,7 +60,7 @@ void pollEvents() {
 }
 #elif defined(SMALL3D_IOS)
 void pollEvents() {
-  
+
 }
 #endif
 
@@ -80,7 +81,7 @@ void initRenderer(uint32_t width, uint32_t height) {
 #if defined(__ANDROID__) || defined(SMALL3D_IOS)
   if (r == nullptr) {
     r = &small3d::Renderer::getInstance("small3d Tests", width, height, 0.785f, 1.0f, 24.0f,
-                                        resourceDir + "/shaders/", 5000);
+      resourceDir + "/shaders/", 5000);
   }
 #else
 #if !defined(NDEBUG) 
@@ -98,33 +99,33 @@ void get_screen_info() {
   screenHeight = r->getScreenHeight();
 }
 
-void handle_cmd(android_app *pApp, int32_t cmd) {
+void handle_cmd(android_app* pApp, int32_t cmd) {
   switch (cmd) {
-    case APP_CMD_INIT_WINDOW:
-    case APP_CMD_GAINED_FOCUS:
-      if (!appActive) {
-        if (!instantiated) {
-          initRenderer();
-          instantiated = true;
+  case APP_CMD_INIT_WINDOW:
+  case APP_CMD_GAINED_FOCUS:
+    if (!appActive) {
+      if (!instantiated) {
+        initRenderer();
+        instantiated = true;
 
-        }
-
-        get_screen_info();
-        appActive = true;
       }
-      break;
 
-    case APP_CMD_TERM_WINDOW:
-    case APP_CMD_LOST_FOCUS:
-    case APP_CMD_SAVE_STATE:
-    case APP_CMD_STOP:
-      if (appActive) {
-        appActive = false;
-      }
-      break;
+      get_screen_info();
+      appActive = true;
+    }
+    break;
 
-    default:
-      LOGDEBUG("event not handled: " + std::to_string(cmd));
+  case APP_CMD_TERM_WINDOW:
+  case APP_CMD_LOST_FOCUS:
+  case APP_CMD_SAVE_STATE:
+  case APP_CMD_STOP:
+    if (appActive) {
+      appActive = false;
+    }
+    break;
+
+  default:
+    LOGDEBUG("event not handled: " + std::to_string(cmd));
   }
 }
 
@@ -141,7 +142,7 @@ int LoggerTest() {
 }
 
 int ImageTest() {
-  
+
   Image image(resourceDir + "/images/testImage.png");
 
   cout << "Image width " << image.getWidth() << ", height " <<
@@ -178,7 +179,7 @@ int WavefrontModelTest() {
   if (model.indexData.size() == 0) return 0;
   if (model.normalsData.size() == 0) return 0;
   if (model.textureCoordsData.size() == 0) return 0;
-  
+
   cout << "Vertex data component count: "
     << model.vertexData.size() << endl << "Index count: "
     << model.indexData.size() << endl
@@ -223,12 +224,13 @@ int WavefrontModelTest() {
     seconds = getTimeInSeconds();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
-      
+
       r->render(model2, glm::vec3(-1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
       r->render(model3, glm::vec3(0.0f, -1.0f, -2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
       r->render(model4, glm::vec3(1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 
       r->swapBuffers();
+     
     }
   }
 
@@ -242,13 +244,13 @@ int ScaleAndTransformTest() {
   double seconds = getTimeInSeconds();
   double prevSeconds = seconds;
   const uint32_t framerate = 30;
-  
+
   constexpr double secondsInterval = 1.0 / framerate;
 
   SceneObject boxes("boxes", Model(GlbFile(resourceDir + "/models/boxes.glb"), ""));
 
   boxes.position = glm::vec3(0.0f, 0.0f, -3.0f);
-  
+
   while (seconds - startSeconds < 5.0) {
     pollEvents();
     seconds = getTimeInSeconds();
@@ -287,7 +289,7 @@ int GlbTextureTestDefaultShadows() {
 
   r->createRectangle(rect, glm::vec3(-5.0f, -1.5f, -14.0f),
     glm::vec3(5.0f, -1.5f, 4.0f));
-  
+
   goat.position = glm::vec3(-1.1f, -1.0f, -7.0f);
   goat.startAnimating();
   tree.position = glm::vec3(1.0f, -1.0f, -7.0f);
@@ -295,14 +297,14 @@ int GlbTextureTestDefaultShadows() {
   auto rectRot = glm::vec3(0.0, 0.0, 0.0);
 
   while (seconds - startSeconds < 4.0) {
-    
+
     pollEvents();
     seconds = getTimeInSeconds();
-    
+
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
       goat.animate();
-       
+
       r->render(rect, rectPos, rectRot, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
       r->render(goat, "goatGlbTexture");
 
@@ -482,27 +484,51 @@ int FPStest() {
       prevSeconds = seconds;
     }
 
-      goat.animate(); 
+    goat.animate();
 
-      r->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    r->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-      for (auto& m : boundingBoxModels) {
-        r->render(m, goat.position,
-          goat.getTransformation(), glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
-      }
+    for (auto& m : boundingBoxModels) {
+      r->render(m, goat.position,
+        goat.getTransformation(), glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
+    }
 
-      r->generateTexture("frameRate", std::to_string(framerate) + " FPS",
-        glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+    r->generateTexture("frameRate", std::to_string(framerate) + " FPS",
+      glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
-      r->render(texturedRect,
-        glm::vec3(0.0f, 0.0f, -1.0f),
-        glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "frameRate", 0, false);
+    r->render(texturedRect,
+      glm::vec3(0.0f, 0.0f, -1.0f),
+      glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "frameRate", 0, false);
 
-      r->swapBuffers();
-      ++numFrames;
-      goat.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
-    
+    r->swapBuffers();
+    ++numFrames;
+    goat.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
+
   }
+
+  return 1;
+}
+
+int GenericSceneObjectConstructorTest() {
+
+  SceneObject so1("goat1", Model(GlbFile(resourceDir + "/models/goat.glb"), ""));
+  SceneObject so2("goat2", Model(WavefrontFile(resourceDir + "/models/goat.obj"), ""));
+
+  Model modelFromGlb(GlbFile(resourceDir + "/models/goatWithTexture.glb"), "");
+
+  // On android only asset writing is supported for the moment
+#ifdef __ANDROID__
+  modelFromGlb.saveBinary("/data/data/com.dimi309.small3d_tests/files/testGoatWithTexture1.bin");
+#else
+  modelFromGlb.saveBinary("testGoatWithTexture1.bin");
+  SceneObject so3("goat3", Model(BinaryFile("testGoatWithTexture1.bin"), ""));
+#endif
+  if (so1.getModel().vertexDataByteSize == 0) return 0;
+  if (so2.getModel().vertexDataByteSize == 0) return 0;
+
+#ifndef __ANDROID__
+  if (so3.getModel().vertexDataByteSize == 0) return 0;
+#endif
 
   return 1;
 }
@@ -511,10 +537,10 @@ int RendererTest() {
   initRenderer();
 
   r->setCameraRotation(glm::vec3(0.4f, 0.1f, 0.1f));
-  
+
   // Here loading the mesh without providing a name is also tested.
   Model modelFromGlb(GlbFile(resourceDir + "/models/goatUnscaled.glb"), "");
-  
+
 
   WavefrontFile cubef(resourceDir + "/models/Cube/CubeNoTexture.obj");
   SceneObject object("cube", cubef);
@@ -601,11 +627,11 @@ int RendererTest() {
         glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", 0, false);
 
       r->render(bug, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-      
+
       bug.animate();
 
       r->swapBuffers();
-      
+
     }
   }
   r->clearBuffers(object);
@@ -643,7 +669,7 @@ int BinaryModelTest() {
   constexpr double secondsInterval = 1.0 / framerate;
 
   SceneObject so("goat", modelFromBin);
-  
+
   so.position = glm::vec3(0.0f, 1.0f, -6.0f);
   so.startAnimating();
 
@@ -682,7 +708,7 @@ int SoundTest() {
   snd.play();
   // Make sure the sound is stopped by the stop function and not the destructor.
   startSeconds = getTimeInSeconds();
-  while(getTimeInSeconds() - startSeconds < 2.0);
+  while (getTimeInSeconds() - startSeconds < 2.0);
   return 1;
 }
 
@@ -696,7 +722,7 @@ int BinSoundTest() {
 #else
   srcsnd.saveBinary("testBah.bin");
   Sound snd("testBah.bin");
-  
+
   snd.play();
   double startSeconds = getTimeInSeconds();
   while (getTimeInSeconds() - startSeconds < 0.2);
@@ -717,7 +743,7 @@ int SoundTest2() {
   while (getTimeInSeconds() - startSeconds < 0.3);
   snd3.play();
   startSeconds = getTimeInSeconds();
-  while(getTimeInSeconds() - startSeconds < 1.0);
+  while (getTimeInSeconds() - startSeconds < 1.0);
   return 1;
 }
 
@@ -725,7 +751,7 @@ int SoundTest3() {
   Sound snd(resourceDir + "/sounds/bah.ogg");
   snd.play(true);
   double startSeconds = getTimeInSeconds();
-  while(getTimeInSeconds() - startSeconds < 6.0);
+  while (getTimeInSeconds() - startSeconds < 6.0);
   return 1;
 }
 
@@ -745,7 +771,7 @@ int ModelsTimeToLoad() {
   auto startTime = getTimeInSeconds();
   Model glb(GlbFile(resourceDir + "/models/goat.glb"), "");
   LOGINFO("Read glTF model in " + std::to_string(getTimeInSeconds() - startTime) + " seconds.");
-  
+
   startTime = getTimeInSeconds();
   Model wf(WavefrontFile(resourceDir + "/models/goat.obj"), "");
   LOGINFO("Read Wavefront model in " + std::to_string(getTimeInSeconds() - startTime) + " seconds.");
@@ -753,26 +779,21 @@ int ModelsTimeToLoad() {
   return 1;
 }
 
-int GenericSceneObjectConstructorTest() {
+#ifdef _WIN32
+int ScreenCaptureTest() {
 
-  SceneObject so1("goat1", Model(GlbFile(resourceDir + "/models/goat.glb"), ""));
-  SceneObject so2("goat2", Model(WavefrontFile(resourceDir + "/models/goat.obj"), ""));
+  initRenderer();
 
-  Model modelFromGlb(GlbFile(resourceDir + "/models/goatWithTexture.glb"), "");
-
-  // On android only asset writing is supported for the moment
-#ifdef __ANDROID__
-  modelFromGlb.saveBinary("/data/data/com.dimi309.small3d_tests/files/testGoatWithTexture1.bin");
-#else
-  modelFromGlb.saveBinary("testGoatWithTexture1.bin");
-  SceneObject so3("goat3", Model(BinaryFile("testGoatWithTexture1.bin"), ""));
-#endif
-  if (so1.getModel().vertexDataByteSize == 0) return 0;
-  if (so2.getModel().vertexDataByteSize == 0) return 0;
-
-#ifndef __ANDROID__
-  if (so3.getModel().vertexDataByteSize == 0) return 0;
-#endif
+  SceneObject boxes("boxes", Model(GlbFile(resourceDir + "/models/boxes.glb"), ""));
+  boxes.position = glm::vec3(0.0f, 0.0f, -3.0f);
+  r->render(boxes, glm::vec4(0.5f, 0.3f, 0.0f, 1.0f));
+  r->swapBuffers();
+  std::this_thread::sleep_for(std::chrono::seconds(1));
+  r->render(boxes, glm::vec4(0.5f, 0.3f, 0.0f, 1.0f));
+  r->screenCapture = true;
+  r->swapBuffers();
 
   return 1;
+
 }
+#endif

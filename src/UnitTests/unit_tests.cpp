@@ -41,7 +41,15 @@ int main(int argc, char** argv) {
     small3d::initLogger();
 
     LOGINFO("LoggerTest OK");
-    
+
+#ifdef _WIN32
+    if (!ScreenCaptureTest()) {
+      LOGINFO("*** Failing ScreenCaptureTest.");
+      RETURN1
+    }
+    LOGINFO("ScreenCaptureTest OK");
+#endif
+
     if (!ImageTest()) {
       LOGINFO("*** Failing ImageTest.");
       RETURN1

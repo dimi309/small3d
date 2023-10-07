@@ -14,6 +14,10 @@
 #define GLEW_NO_GLU
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#ifdef _WIN32
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
+#endif
 #else
 #ifdef __ANDROID__
 #include <EGL/egl.h>
@@ -54,7 +58,7 @@ namespace small3d
   {
 
   private:
-    
+
 #ifndef SMALL3D_OPENGLES
     GLFWwindow* window;
 #else
@@ -62,15 +66,15 @@ namespace small3d
     EGLContext eglContext;
     EGLConfig eglConfig;
     EGLint format;
-    const EGLint* config = NULL ;
+    const EGLint* config = NULL;
     int numConfigs;
     int windowFormat;
 
     EGLDisplay eglDisplay;
     EGLSurface eglSurface;
-  
+
     bool eglContextValid = false;
-    
+
 
     void createEGLSurface(int& width, int& height);
     void initEGLContext();
@@ -82,11 +86,11 @@ namespace small3d
     NativeWindowType  window;
     std::vector<AAsset*> fontAssets;
 #endif
-    
+
     static int realScreenWidth, realScreenHeight;
 
     uint32_t shaderProgram = 0;
-   
+
     uint32_t vao = 0;
 
     uint32_t renderOrientation = 0;
@@ -103,7 +107,7 @@ namespace small3d
     float zFar = 0.0f;
 
     glm::vec4 clearColour = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-    
+
     std::unordered_map<std::string, uint32_t> textures;
 
     FT_Library library = 0;
@@ -115,7 +119,7 @@ namespace small3d
     bool cameraRotationByMatrix = false;
 #ifndef SMALL3D_OPENGLES
     static void framebufferSizeCallback(GLFWwindow* window, int width,
-					int height);
+      int height);
 #endif
     std::string loadShaderFromFile(const std::string& fileLocation) const;
     uint32_t compileShader(const std::string& shaderSourceFile,
@@ -169,7 +173,11 @@ namespace small3d
 #ifdef SMALL3D_OPENGLES
     GLuint depthRenderBuffer;
 #endif
-    
+
+#ifdef _WIN32
+    void captureScreen();
+#endif
+
   public:
     /**
     * @brief: Set to the id of the original renderbuffer, in case it
@@ -177,14 +185,14 @@ namespace small3d
     *             This is mostly useful on iOS.
     */
     GLint origRenderbuffer = 0;
-    
+
     /**
     * @brief: Set to the id of the original framebuffer, in case it
     *             is temporarily replaced during shadow mapping.
     *             This is mostly useful on iOS.
     */
     GLint origFramebuffer = 0;
-    
+
     /**
     * @brief: Render shadows?
     */
@@ -205,7 +213,7 @@ namespace small3d
      *         when they lose focus.
      */
     void stop();
-    
+
     /**
      * @brief Vector, indicating the direction of the light in the scene.
      *        It points towards a directional light source.
@@ -229,7 +237,7 @@ namespace small3d
      * @brief The camera position in world space. Ignored for orthographic
      *        rendering.
      */
-    glm::vec3 cameraPosition  = glm::vec3(0, 0, 0);
+    glm::vec3 cameraPosition = glm::vec3(0, 0, 0);
 
     /**
      * @brief: Set the rotation of the camera
@@ -355,7 +363,7 @@ namespace small3d
      */
     GLFWwindow* getWindow() const;
 #endif
-    
+
     /**
      * @brief Generate a texture on the GPU from the given image
      * @param name The name by which the texture will be known
@@ -448,7 +456,7 @@ namespace small3d
      *                    already. If this is set, the colour parameter will
      *                    be ignored.
      * @param currentPose The current animation pose
-     * @param perspective If true perform perspective rendering, otherwise 
+     * @param perspective If true perform perspective rendering, otherwise
      *                    orthographic. If false, the depth buffer is cleared.
      *                    Do not intermingle perspective and orthographic
      *                    rendering. Perform all the orthographic rendering in the
@@ -540,6 +548,18 @@ namespace small3d
      * the buffers.
      */
     void swapBuffers();
+
+#ifdef _WIN32
+    /**
+     * @brief Only for Windows, this can be used to take over screen
+     * capturing, which does not work very well at O/S level for OpenGL.
+     * Set this variable to true and the game screen will be captured at
+     * the next swapBuffers call. It might not work upon rendering the first
+     * frame at the startup of the game. Once the screen has been captured,
+     * the variable is automatically set to false again.
+     */
+    bool screenCapture = false;
+#endif
 
     Renderer(Renderer const&) = delete;
     void operator=(Renderer const&) = delete;

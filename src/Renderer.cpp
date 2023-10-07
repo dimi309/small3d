@@ -8,6 +8,10 @@
 
 #include "Renderer.hpp"
 
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+
 #include <stdexcept>
 #ifndef __ANDROID__
 #include <fstream>
@@ -262,10 +266,20 @@ namespace small3d {
     const {
     GLenum errorCode = glGetError();
     if (errorCode != GL_NO_ERROR) {
-      LOGERROR("OpenGL error while " + when);
+      if (abort) {
+        LOGERROR("OpenGL error while " + when);
+      }
+      else {
+        LOGDEBUG("OpenGL error while " + when);
+      }
 
       do {
-        LOGERROR(openglErrorToString(errorCode));
+        if (abort) {
+          LOGERROR(openglErrorToString(errorCode));
+        }
+        else {
+          LOGDEBUG(openglErrorToString(errorCode));
+        }
         errorCode = glGetError();
       } while (errorCode != GL_NO_ERROR);
 
@@ -520,7 +534,6 @@ namespace small3d {
 #endif
     glBindFramebuffer(GL_FRAMEBUFFER, origFramebuffer);
 
-
   }
 
   void Renderer::initWindow(int& width, int& height,
@@ -746,7 +759,7 @@ namespace small3d {
     glUniformMatrix4fv(orthographicMatrixUniform, 1, GL_FALSE,
       glm::value_ptr(orthographicMatrix));
 
-    }
+  }
 
   void Renderer::bindTexture(const std::string & name) {
     GLuint textureHandle = getTextureHandle(name);
@@ -1013,8 +1026,8 @@ namespace small3d {
       else {
         LOGDEBUG("Font loaded successfully");
         fontFaces.insert(make_pair(faceId, face));
+      }
     }
-  }
     else {
       face = idFacePair->second;
     }
@@ -1167,6 +1180,8 @@ namespace small3d {
     glBindBuffer(GL_ARRAY_BUFFER, model->positionBufferObjectId);
     glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufSize);
 
+    checkForOpenGLErrors("checking GPU for model (this is normal)", false);
+
     bool alreadyInGPU = bufSize > 0;
 
     if (!alreadyInGPU) {
@@ -1251,12 +1266,12 @@ namespace small3d {
           model->weightDataByteSize,
           model->weightData.data(),
           GL_STATIC_DRAW);
-    }
+      }
 
       glEnableVertexAttribArray(attrib_weight);
       glVertexAttribPointer(attrib_weight, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-  }
+    }
 
     // Find the colour uniform
     GLint colourUniform = glGetUniformLocation(shaderProgram, "modelColour");
@@ -1448,6 +1463,7 @@ namespace small3d {
       cameraPosition = tmpCamPos;
 
       glBindFramebuffer(GL_FRAMEBUFFER, origFramebuffer);
+
       glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
         static_cast<GLsizei>(realScreenHeight));
     }
@@ -1457,9 +1473,17 @@ namespace small3d {
     }
     renderList.clear();
 
+#ifdef _WIN32
+    if (screenCapture) {
+
+      captureScreen();
+    }
+#endif
+
 #ifndef SMALL3D_OPENGLES
 
     glfwSwapBuffers(window);
+
     clearScreen();
 #else
 #ifdef __ANDROID__
@@ -1487,6 +1511,74 @@ namespace small3d {
 #endif
 
   }
+
+#ifdef _WIN32
+
+  void Renderer::captureScreen() {
+
+    auto imgSizeRGBA = 4 * realScreenWidth * realScreenHeight;
+    GLubyte* pixelsRGBA = new GLubyte[imgSizeRGBA];
+    memset(pixelsRGBA, 255, imgSizeRGBA);
+    auto imgSize = 3 * realScreenWidth * realScreenHeight;
+    GLubyte* pixels = new GLubyte[imgSize];
+
+    glReadBuffer(GL_BACK);
+    glReadPixels(0, 0, realScreenWidth, realScreenHeight, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, pixelsRGBA);
+    checkForOpenGLErrors("capturing screen", true);
+
+    uint32_t idxRGBA = 0, idxRGB = 0;
+
+    while (idxRGBA < imgSizeRGBA) {
+      pixels[idxRGB] = pixelsRGBA[idxRGBA + 2];
+      ++idxRGB;
+      pixels[idxRGB] = pixelsRGBA[idxRGBA + 3];
+      ++idxRGB;
+      pixels[idxRGB] = pixelsRGBA[idxRGBA + 1];
+      ++idxRGB;
+      idxRGBA += 4;
+    }
+
+    BITMAPINFOHEADER biheader;
+    memset(&biheader, 0, sizeof(BITMAPINFOHEADER));
+    biheader.biSize = sizeof(BITMAPINFOHEADER);
+    biheader.biWidth = realScreenWidth;
+    biheader.biHeight = realScreenHeight;
+    biheader.biPlanes = 1;
+    biheader.biBitCount = 24;
+    biheader.biCompression = BI_RGB;
+    biheader.biSizeImage = 0;
+    biheader.biClrUsed = 0;
+    biheader.biClrImportant = 0;
+
+    BITMAPINFO biinfo;
+    memset(&biinfo, 0, sizeof(BITMAPINFO));
+    biinfo.bmiHeader = biheader;
+
+    HGLOBAL mem = GlobalAlloc(GMEM_MOVEABLE, sizeof(BITMAPINFO) + imgSize);
+    if (mem != NULL) {
+      HWND win = glfwGetWin32Window(window);
+      if (OpenClipboard(win)) {
+        EmptyClipboard();
+        void* memLocked = GlobalLock(mem);
+        if (memLocked) {
+          memcpy((char*)memLocked, &biinfo, sizeof(BITMAPINFO));
+          memcpy((char*)memLocked + sizeof(BITMAPINFO), pixels, imgSize);
+          GlobalUnlock(mem);
+          SetClipboardData(CF_DIB, mem);
+          CloseClipboard();
+        }
+      }
+      else {
+        GlobalFree(mem);
+      }
+    }
+
+    delete[] pixels;
+    screenCapture = false;
+
+  }
+
+#endif
 
   /**
    * Convert error enum returned from OpenGL to a readable string error message.
@@ -1543,5 +1635,5 @@ namespace small3d {
     return errorString;
   }
 
-      }
+}
 

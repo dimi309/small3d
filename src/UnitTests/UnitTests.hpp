@@ -48,4 +48,6 @@ int SoundTest2();
 int SoundTest3();
 int GlbTest();
 int ModelsTimeToLoad();
-
+#ifdef _WIN32
+int ScreenCaptureTest();
+#endif
