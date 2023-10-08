@@ -1523,10 +1523,15 @@ namespace small3d {
     GLubyte* pixels = new GLubyte[imgSize];
 
     glReadBuffer(GL_BACK);
+    glPixelStorei(GL_PACK_ALIGNMENT, 4);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
     glReadPixels(0, 0, realScreenWidth, realScreenHeight, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, pixelsRGBA);
     checkForOpenGLErrors("capturing screen", true);
 
     uint32_t idxRGBA = 0, idxRGB = 0;
+
+    // The colour format for GL_UNSIGNED_INT_8_8_8_8 is ABGR
+    // See https://www.khronos.org/opengl/wiki/Pixel_Transfer#Pixel_layout
 
     while (idxRGBA < imgSizeRGBA) {
       pixels[idxRGB] = pixelsRGBA[idxRGBA + 2];
