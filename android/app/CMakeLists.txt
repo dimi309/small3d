@@ -21,6 +21,7 @@ add_library(small3d_tests
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/Image.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/Logger.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/Model.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/Material.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/Renderer.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/SceneObject.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/Sound.cpp
@@ -37,6 +38,7 @@ add_library(small3d_tests
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/small3d/Image.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/small3d/Logger.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/small3d/Model.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../include/small3d/Material.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/small3d/Renderer.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/UnitTests/UnitTests.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../../src/UnitTests/UnitTests.hpp

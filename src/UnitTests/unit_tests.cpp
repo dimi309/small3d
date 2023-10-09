@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
       RETURN1
     }
     LOGINFO("WavefrontModelTest OK");
-    
+
     if (!ScaleAndTransformTest()) {
       LOGINFO("*** Failing ScaleAndTransformTest.");
       RETURN1

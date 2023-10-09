@@ -171,8 +171,11 @@ namespace small3d {
     AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
       filePath.c_str(),
       AASSET_MODE_STREAMING);
-    if (!asset) throw std::runtime_error("Opening asset " + filePath +
-      " has failed!");
+    if (!asset) {
+      LOGDEBUG("Could not open file " + filePath);
+      return;
+    }
+
     off_t length;
     length = AAsset_getLength(asset);
     const void* buffer = AAsset_getBuffer(asset);
@@ -448,10 +451,17 @@ namespace small3d {
           }
         }
         else if (line.compare(0, 6, "usemtl") == 0) {
-          auto l = fullPath.find_last_of("/");
-          auto m = fullPath.find_last_of("\\");
-          auto dirLength = (l > m ? l : m) + 1;
-          loadMaterial(fullPath.substr(0, dirLength) + materialFile, line.substr(7));
+#ifdef _WIN32
+          auto dirLength = fullPath.find_last_of("\\");
+#else
+          auto dirLength = fullPath.find_last_of("/");
+#endif
+          if (dirLength > 0) {
+            loadMaterial(fullPath.substr(0, dirLength + 1) + materialFile, line.substr(7));
+          } else {
+            loadMaterial(materialFile, line.substr(7));
+          }
+
         }
       }
 #ifdef __ANDROID__
