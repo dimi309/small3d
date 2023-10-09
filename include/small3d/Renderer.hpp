@@ -182,14 +182,12 @@ namespace small3d
     /**
     * @brief: Set to the id of the original renderbuffer, in case it
     *             is temporarily replaced during shadow mapping.
-    *             This is mostly useful on iOS.
     */
     GLint origRenderbuffer = 0;
 
     /**
     * @brief: Set to the id of the original framebuffer, in case it
     *             is temporarily replaced during shadow mapping.
-    *             This is mostly useful on iOS.
     */
     GLint origFramebuffer = 0;
 

@@ -37,6 +37,7 @@
 		8C6E64532A44045A00BDB5F5 /* BinaryFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C6E64522A44045A00BDB5F5 /* BinaryFile.cpp */; };
 		8C7B72F628E5574B005E1635 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C0BD1BC28E0198F00B21659 /* QuartzCore.framework */; };
 		8C7B72F828E55994005E1635 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C0BD1B828E0183300B21659 /* UIKit.framework */; };
+		8C808D592AD3AE5900DE3FCC /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C808D582AD3AE5900DE3FCC /* Material.cpp */; };
 		8CD48B2029FD149E003A3FC6 /* UnitTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8CD48B1B29FD149E003A3FC6 /* UnitTests.cpp */; };
 		8CD48B2129FD149E003A3FC6 /* OctPyramid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8CD48B1D29FD149E003A3FC6 /* OctPyramid.cpp */; };
 		8CE54A2A28E40E3600EC474D /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CE54A2928E40E3600EC474D /* GLKit.framework */; };
@@ -102,6 +103,8 @@
 		8C4EB26F27881BB5000DD6DF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8C6E64512A44044400BDB5F5 /* BinaryFile.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = BinaryFile.hpp; path = ../../include/small3d/BinaryFile.hpp; sourceTree = "<group>"; };
 		8C6E64522A44045A00BDB5F5 /* BinaryFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BinaryFile.cpp; path = ../../src/BinaryFile.cpp; sourceTree = "<group>"; };
+		8C808D572AD3AE3700DE3FCC /* Material.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Material.hpp; path = ../../include/small3d/Material.hpp; sourceTree = "<group>"; };
+		8C808D582AD3AE5900DE3FCC /* Material.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Material.cpp; path = ../../src/Material.cpp; sourceTree = "<group>"; };
 		8CCF87D328DEA8F500BDEF3A /* small3d-Tests-ios copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "small3d-Tests-ios copy-Info.plist"; path = "/Users/me/Source/small3d/ios/small3d-Tests-ios copy-Info.plist"; sourceTree = "<absolute>"; };
 		8CD48B1B29FD149E003A3FC6 /* UnitTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UnitTests.cpp; path = ../../src/UnitTests/UnitTests.cpp; sourceTree = "<group>"; };
 		8CD48B1C29FD149E003A3FC6 /* OctPyramid.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = OctPyramid.hpp; path = ../../src/UnitTests/OctPyramid.hpp; sourceTree = "<group>"; };
@@ -184,6 +187,8 @@
 		8C4EB25C27881BB3000DD6DF /* small3d-Tests-ios */ = {
 			isa = PBXGroup;
 			children = (
+				8C808D582AD3AE5900DE3FCC /* Material.cpp */,
+				8C808D572AD3AE3700DE3FCC /* Material.hpp */,
 				8C6E64522A44045A00BDB5F5 /* BinaryFile.cpp */,
 				8C6E64512A44044400BDB5F5 /* BinaryFile.hpp */,
 				8C2B17282A3D898500098DD6 /* WavefrontFile.cpp */,
@@ -306,6 +311,7 @@
 				8C06D2C828DF0E83008E9BE5 /* Logger.cpp in Sources */,
 				8C06D2C928DF0E83008E9BE5 /* BoundingBoxSet.cpp in Sources */,
 				8C06D2C428DF0E83008E9BE5 /* BasePath.cpp in Sources */,
+				8C808D592AD3AE5900DE3FCC /* Material.cpp in Sources */,
 				8C4EB25F27881BB3000DD6DF /* AppDelegate.m in Sources */,
 				8C4EB27027881BB5000DD6DF /* main.m in Sources */,
 				8C06D2CF28DF0E83008E9BE5 /* Model.cpp in Sources */,
