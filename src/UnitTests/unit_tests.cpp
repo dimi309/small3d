@@ -151,13 +151,15 @@ int main(int argc, char** argv) {
       RETURN1
     }
     LOGINFO("ModelsTimeToLoad OK");
-    
+
+    LOGINFO("All tests have executed successfully.\n\r");
   }
   catch (std::exception& e) {
+    // Also use printf in case the logger has not been initialised properly
     printf("*** Exception thrown during unit tests: %s\n\r", e.what());
+    LOGERROR("*** Exception thrown during unit tests: " + std::string(e.what()));
     RETURN1
   }
-  LOGINFO("All tests have executed successfully.\n\r");
 
 #ifdef __ANDROID__
   while(appActive) {
