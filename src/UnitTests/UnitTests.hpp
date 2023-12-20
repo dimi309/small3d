@@ -9,9 +9,6 @@
 
 #ifdef __ANDROID__
 #include "small3d_android.h"
-#ifndef SMALL3D_OPENGLES
-#include "vulkan_helper_android.h"
-#endif
 #endif
 #include "Renderer.hpp"
 extern small3d::Renderer *r;
