@@ -1,17 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DesignSurface">
-    <option name="filePathToZoomLevelMap">
-      <map>
-        <entry key="..\:/Users/dimko/Source/islet-hell-android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2708333333333333" />
-        <entry key="..\:/Users/dimko/Source/islet-hell-android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2708333333333333" />
-        <entry key="..\:/Users/dimko/Source/islet-hell/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1935" />
-      </map>
-    </option>
-  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
-  </component>
-  <component name="ProjectType">
-    <option name="id" value="Android" />
   </component>
 </project>
