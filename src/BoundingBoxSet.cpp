@@ -361,7 +361,7 @@ namespace small3d {
       for (auto faceIndexIdx = 0; faceIndexIdx < 12; ++faceIndexIdx) {
         for (auto vertexIndex : facesVertexIndexesTriangulated[boxIdx * (size_t)12 + faceIndexIdx]) {
           m.indexData.push_back(vertexIndex - boxIdx * 8);
-          m.indexDataByteSize += sizeof(uint32_t);
+          m.indexDataByteSize += sizeof(uint16_t);
         }
       }
 

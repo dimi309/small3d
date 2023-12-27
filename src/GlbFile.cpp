@@ -897,7 +897,7 @@ namespace small3d {
           auto data = getBufferByAccessor(std::stoi(indicesToken->value));
           model.indexData.resize(data.size() / 2);
           model.indexDataByteSize =
-            static_cast<uint32_t>(model.indexData.size() * 4); // 4 because, even though each index is read in 16 bits,
+            static_cast<uint32_t>(model.indexData.size() * sizeof(uint16_t)); // 4 because, even though each index is read in 16 bits,
           // it is stored in 32 bits
           uint16_t indexBuf = 0;
           for (size_t idx = 0; idx < model.indexData.size(); ++idx) {

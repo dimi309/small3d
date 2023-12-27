@@ -57,7 +57,8 @@ OctPyramid::OctPyramid(const float height, const float radius) {
     this->vertexData.insert(vertexData.end(), { pos.x, pos.y, pos.z, 1.0f });
     
     // Add triangle indices
-    this->indexData.insert(indexData.end(), { 0, i + 1, i + 2 });
+    this->indexData.insert(indexData.end(), { 0, static_cast<unsigned short>(i + 1),
+                                              static_cast<unsigned short>(i + 2) });
 
     // Add normal (beginning normal left out to be calculated using 
     // the first and last triangle)
@@ -76,7 +77,7 @@ OctPyramid::OctPyramid(const float height, const float radius) {
   this->normalsData.insert(normalsData.begin() + 3, { nm.x, nm.y, nm.z });
 
   this->vertexDataByteSize = static_cast<uint32_t>(this->vertexData.size() * sizeof(float));
-  this->indexDataByteSize = static_cast<uint32_t>(this->indexData.size() * sizeof(float));
+  this->indexDataByteSize = static_cast<uint32_t>(this->indexData.size() * sizeof(uint16_t));
   this->normalsDataByteSize = static_cast<uint32_t>(this->normalsData.size() * sizeof(float));
 
 }

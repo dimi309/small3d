@@ -53,7 +53,7 @@ and the use of cutting edge methods and technologies.
 - iOS
 
 Running on OpenGL on PC and OpenGL ES on mobile, this library is extremely 
-backwards compatible. It can run on iOS 9.3 and Android 4.2.
+backwards compatible. It can run on iOS 9.3 and Android 4.1.
 
 Note: There used to be Vulkan support too, but it has been discontinued. Here is
 an article on the reasons for this:

@@ -152,7 +152,7 @@ namespace small3d {
      *        table. Each "row" in the index data table forms a triangle.
      *
      */
-    std::vector<uint32_t> indexData;
+    std::vector<uint16_t> indexData;
 
     /**
      * @brief Size of the index data, in bytes

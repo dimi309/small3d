@@ -1125,7 +1125,7 @@ namespace small3d {
       2, 3, 0
     };
 
-    rect.indexDataByteSize = 6 * sizeof(uint32_t);
+    rect.indexDataByteSize = 6 * sizeof(uint16_t);
 
     rect.normalsData = std::vector<float>(12);
     rect.normalsDataByteSize = 12 * sizeof(float);
@@ -1328,7 +1328,7 @@ namespace small3d {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glDrawElements(GL_TRIANGLES,
       static_cast<GLsizei>(model->indexData.size()),
-      GL_UNSIGNED_INT, 0);
+      GL_UNSIGNED_SHORT, 0);
 
     glDisableVertexAttribArray(attrib_position);
     glDisableVertexAttribArray(attrib_normal);

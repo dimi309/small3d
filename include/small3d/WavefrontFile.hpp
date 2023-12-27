@@ -48,7 +48,7 @@ namespace small3d {
     std::unordered_map<std::string, size_t> objectStartFaceIdx;
 
     void loadVertexData(std::vector<float>& vertexData);
-    void loadIndexData(std::vector<uint32_t>& indexData);
+    void loadIndexData(std::vector<uint16_t>& indexData);
     void loadNormalsData(std::vector<float>& normalsData, const std::vector<float>& vertexData);
     void loadTextureCoordsData(std::vector<float>& textureCoordsData, const std::vector<float>& vertexData);
 

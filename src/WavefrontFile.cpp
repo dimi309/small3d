@@ -72,7 +72,7 @@ namespace small3d {
     }
   }
 
-  void WavefrontFile::loadIndexData(std::vector<uint32_t>& indexData) {
+  void WavefrontFile::loadIndexData(std::vector<uint16_t>& indexData) {
 
     if (!onlyTriangles) {
       throw std::runtime_error("Cannot load indices from " + fullPath + " because"
@@ -509,7 +509,7 @@ namespace small3d {
         numFaces = objectStartFaceIdx.find(objectNames[1])->second;
       }
 
-      model.indexData = std::vector<uint32_t>(model.indexData.begin() + startFaceIdx * 3,
+      model.indexData = std::vector<uint16_t>(model.indexData.begin() + startFaceIdx * 3,
         model.indexData.begin() + numFaces * 3);
 
       size_t minIndex = model.indexData[0];
@@ -533,7 +533,7 @@ namespace small3d {
     }
 
     model.vertexDataByteSize = static_cast<uint32_t>(model.vertexData.size() * sizeof(float));
-    model.indexDataByteSize = static_cast<uint32_t>(model.indexData.size() * sizeof(uint32_t));
+    model.indexDataByteSize = static_cast<uint32_t>(model.indexData.size() * sizeof(uint16_t));
     model.normalsDataByteSize = static_cast<uint32_t>(model.normalsData.size() * sizeof(float));
     model.textureCoordsDataByteSize = static_cast<uint32_t>(model.textureCoordsData.size() * sizeof(float));
     model.material = material;
