@@ -55,7 +55,7 @@ fi
 
 export CHOST=aarch64-apple-darwin* # Never used arm-apple-darwin*
 
-export SDKVERSION=9 #$(xcrun --sdk $SDK --show-sdk-version) # current version
+export SDKVERSION=12 #$(xcrun --sdk $SDK --show-sdk-version) # current version
 export SDKROOT=$(xcrun --sdk $SDK --show-sdk-path) # current version
 export PREFIX="/opt/$SDK-$SDKVERSION/$ARCH"
 
@@ -114,19 +114,21 @@ cp ios/interop.h include/
 
 cp ios/interop.m lib/
 
+
+
 if [ $1 = "ios" ]
 then
-    CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64"
+    CMAKE_DEFINITIONS="-GXcode -T buildsystem=12 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64"
 elif [ $1 = "ios32" ]
 then
-    CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS -DARCHS=armv7"
+    CMAKE_DEFINITIONS="-GXcode -T buildsystem=12 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS -DARCHS=armv7"
 elif [ $1 = "simulator" ]
 then
-    CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64"
+    CMAKE_DEFINITIONS="-GXcode -T buildsystem=12 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64"
 fi
 
-tar xvf libpng-1.6.37.tar.gz
-cd libpng-1.6.37
+tar xvf libpng-1.6.40.tar.gz
+cd libpng-1.6.40
 mkdir build
 cd build
 # Disabling PNG_ARM_NEON because on macOS arm64 it produces the error
@@ -141,7 +143,7 @@ cp pnglibconf.h ../../include/
 cp $2-$SDK/libpng.a ../../lib/
 
 cd ../../
-rm -rf libpng-1.6.37
+rm -rf libpng-1.6.40
 
 tar xvf libogg-1.3.5.tar.gz
 cd libogg-1.3.5
