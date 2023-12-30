@@ -110,23 +110,9 @@ unset CXXFLAGS
 unset LDFLAGS
 unset PKG_CONFIG_PATH
 
-if [ $1 = "ios" ]
-then
-    cp $VULKAN_SDK/../MoltenVK/MoltenVK.xcframework/ios-arm64/libMoltenVK.a lib/
-elif [ $1 = "simulator" ]
-then
-    cp $VULKAN_SDK/../MoltenVK/MoltenVK.xcframework/ios-arm64_x86_64-simulator/libMoltenVK.a lib/
-fi
-
-export CFLAGS=-isystem\ $VULKAN_SDK/../MoltenVK/include
-
-cp -rf $VULKAN_SDK/../MoltenVK/include/* include/
-
 cp ios/interop.h include/
 
 cp ios/interop.m lib/
-
-
 
 if [ $1 = "ios" ]
 then
