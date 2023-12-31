@@ -10,9 +10,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <CoreGraphics/CoreGraphics.h>
-#ifndef SMALL3D_OPENGL
-#import <MoltenVK/mvk_vulkan.h>
-#endif
 #import <OSLog/OSLog.h>
 
 #ifdef SMALL3D_USING_XCODE
@@ -61,24 +58,6 @@ extern "C" {
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     return screenRect.size.height;
   }
-#ifndef SMALL3D_OPENGL
-  void* app_window;
-  
-  int create_ios_surface(VkInstance instance, VkSurfaceKHR *surface) {
-    VkIOSSurfaceCreateInfoMVK surface_ci;
-    surface_ci.sType = VK_STRUCTURE_TYPE_IOS_SURFACE_CREATE_INFO_MVK;
-    surface_ci.pNext = NULL;
-    surface_ci.flags = 0;
-    surface_ci.pView = app_window;
-    
-    if (vkCreateIOSSurfaceMVK(instance, &surface_ci, NULL, surface) !=
-        VK_SUCCESS) {
-      return 0;
-    }
-    
-    return 1;
-  }
-#endif
   
 #ifdef SMALL3D_USING_XCODE
 // Needed for compiling within Xcode (see extern "C" at the top of the file)
