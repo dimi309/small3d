@@ -8,9 +8,9 @@ else
     if [ $1 = "ios" ]
     then
 	echo "Building for iOS devices..."
-    elif [ $1 = "simulator" ]
+    elif [ $1 = "simulator" ] || [ $1 = "simulatornew" ] 
     then
-	echo "Building for Xcode iOS Simulator..."
+	echo "building for Xcode iOS Simulator..."
     elif [ $1 = "ios32" ]
     then
 	echo "Building for 32-bit iOS devices..."
@@ -48,7 +48,12 @@ then
 elif [ $1 = "simulator" ]
 then
     cmake .. -GXcode -DCMAKE_TOOLCHAIN_FILE=../deps/ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64
+elif [ $1 = "simulatornew" ]
+then
+    cmake .. -GXcode -DCMAKE_TOOLCHAIN_FILE=../deps/ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64 -DDEPLOYMENT_TARGET="12.0"
 fi
+
+
 
 cmake --build . --config $2
 

@@ -10,7 +10,7 @@ else
     if [ $1 = "ios" ]
     then
 	echo "Building for iOS devices..."
-    elif [ $1 = "simulator" ]
+    elif [ $1 = "simulator" ] || [ $1 = "simulatornew" ] 
     then
 	echo "Building for Xcode iOS Simulator..."
     elif [ $1 = "ios32" ]
@@ -51,11 +51,20 @@ elif [ $1 = "simulator" ]
 then
     export ARCH=x86_64
     export SDK=iphonesimulator
+elif [ $1 = "simulatornew" ]
+then
+    export ARCH=x86_64
+    export SDK=iphonesimulator
 fi
 
 export CHOST=aarch64-apple-darwin* # Never used arm-apple-darwin*
+if [ $1 = "simulatornew" ]
+then
+    export SDKVERSION=$(xcrun --sdk $SDK --show-sdk-version) # current version
+else
+    export SDKVERSION=9
+fi
 
-export SDKVERSION=12 #$(xcrun --sdk $SDK --show-sdk-version) # current version
 export SDKROOT=$(xcrun --sdk $SDK --show-sdk-path) # current version
 export PREFIX="/opt/$SDK-$SDKVERSION/$ARCH"
 
@@ -118,13 +127,16 @@ cp ios/interop.m lib/
 
 if [ $1 = "ios" ]
 then
-    CMAKE_DEFINITIONS="-GXcode -T buildsystem=12 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64"
+    CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64"
 elif [ $1 = "ios32" ]
 then
-    CMAKE_DEFINITIONS="-GXcode -T buildsystem=12 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS -DARCHS=armv7"
+    CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS -DARCHS=armv7"
 elif [ $1 = "simulator" ]
 then
-    CMAKE_DEFINITIONS="-GXcode -T buildsystem=12 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64"
+    CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64"
+elif [ $1 = "simulatornew" ]
+then
+    CMAKE_DEFINITIONS="-GXcode -T buildsystem=12 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64 -DDEPLOYMENT_TARGET="12.0""
 fi
 
 tar xvf libpng-1.6.40.tar.gz
