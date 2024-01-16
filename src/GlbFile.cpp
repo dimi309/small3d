@@ -891,7 +891,7 @@ namespace small3d {
             point = cnt;
             cnt++;
           }
-          model.indexDataByteSize = static_cast<uint32_t>(model.indexData.size() * 4);
+          model.indexDataByteSize = static_cast<uint32_t>(model.indexData.size() * sizeof(uint16_t));
         }
         else {
           auto data = getBufferByAccessor(std::stoi(indicesToken->value));
