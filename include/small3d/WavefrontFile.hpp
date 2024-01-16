@@ -52,7 +52,7 @@ namespace small3d {
     void loadNormalsData(std::vector<float>& normalsData, const std::vector<float>& vertexData);
     void loadTextureCoordsData(std::vector<float>& textureCoordsData, const std::vector<float>& vertexData);
 
-    void loadMaterial(const std::string filePath, const std::string name);
+    void loadMaterial(const std::string& filePath, const std::string& name);
 
     // Make sure that no texture coordinate information is lost when the data
     // buffers get created (vertexData, indexData, normalsData and

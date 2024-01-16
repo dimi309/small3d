@@ -162,7 +162,7 @@ namespace small3d {
     }
   }
 
-  void WavefrontFile::loadMaterial(const std::string filePath, const std::string name) {
+  void WavefrontFile::loadMaterial(const std::string& filePath, const std::string& name) {
 
     std::string line;
     bool inMaterial = false;

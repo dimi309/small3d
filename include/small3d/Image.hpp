@@ -43,7 +43,7 @@ namespace small3d {
     unsigned long width = 0, height = 0;
     std::vector<uint8_t> imageData;
     unsigned long imageDataSize = 0;
-    void load(const std::string fileLocation, std::vector<char>& data);
+    void load(const std::string& fileLocation, std::vector<char>& data);
     static void readDataFromMemory(png_structp png_ptr, png_bytep outBytes,
       png_size_t byteCountToRead);
 
@@ -60,7 +60,7 @@ namespace small3d {
      *
      * @param fileLocation Location of the png image file
      */
-    Image(const std::string fileLocation = "");
+    Image(const std::string& fileLocation = "");
 
     /**
      * @brief Memory-based constructor

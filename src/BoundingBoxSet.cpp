@@ -41,7 +41,7 @@ namespace small3d {
 
     pointInBoxSpace = reverseRotationMatrix * pointInBoxSpace;
 
-    for (auto& ex : boxExtremes) {
+    for (const auto& ex : boxExtremes) {
       // Very strange behaviour when trying to do this with a function
       // declared in the struct on VS 2019. The function would not accept
       // ex as a parameter, even though the parameter was declared to be
@@ -58,7 +58,7 @@ namespace small3d {
     return doesContain;
   }
 
-  bool BoundingBoxSet::containsCorners(const BoundingBoxSet otherBoxSet,
+  bool BoundingBoxSet::containsCorners(const BoundingBoxSet& otherBoxSet,
     const glm::vec3 thisOffset,
     const glm::mat4x4 thisRotation,
     const glm::vec3 otherOffset,
@@ -228,7 +228,7 @@ namespace small3d {
     generateBoxesFromExtremes();
   }
 
-  void BoundingBoxSet::generateSubExtremes(std::vector<float>& vertexData, const glm::vec3& scale) {
+  void BoundingBoxSet::generateSubExtremes(const std::vector<float>& vertexData, const glm::vec3& scale) {
 
     // Move all extremes to a temporary buffer
     std::vector<extremes> extBuffer;
@@ -236,7 +236,7 @@ namespace small3d {
     std::move(boxExtremes.begin(), boxExtremes.end(), std::back_inserter(extBuffer));
     boxExtremes.clear();
     // Break each extreme into 8
-    for (auto& ext : extBuffer) {
+    for (const auto& ext : extBuffer) {
 
       float xSplit = ext.minX + (ext.maxX - ext.minX) / 2.0f;
       float zSplit = ext.minZ + (ext.maxZ - ext.minZ) / 2.0f;

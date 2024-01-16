@@ -283,7 +283,7 @@ namespace small3d {
      * @brief Save model data in binary format
      * @param binaryFilePath Path of file to save binary data to.
      */
-    void saveBinary(const std::string binaryFilePath);
+    void saveBinary(const std::string& binaryFilePath);
 
     template <class Archive>
     void serialize(Archive& archive) {

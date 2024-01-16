@@ -32,7 +32,7 @@ namespace small3d {
     void calcExtremes();
     void generateBoxesFromExtremes();
     void generateExtremes(std::vector<float>& vertexData, const glm::vec3& scale, uint32_t subdivisions);
-    void generateSubExtremes(std::vector<float>& vertexData, const glm::vec3& scale);
+    void generateSubExtremes(const std::vector<float>& vertexData, const glm::vec3& scale);
 
   public:
 
@@ -120,7 +120,7 @@ namespace small3d {
      *         this set, False otherwise.
      */
 
-    bool containsCorners(const BoundingBoxSet otherBoxSet,
+    bool containsCorners(const BoundingBoxSet& otherBoxSet,
       const glm::vec3 thisOffset,
       const glm::mat4x4 thisRotation,
       const glm::vec3 otherOffset,

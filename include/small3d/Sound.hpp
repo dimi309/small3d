@@ -151,7 +151,7 @@ static ALCcontext *openalContext;
 
 #endif
 
-    void load(const std::string soundFilePath);
+    void load(const std::string& soundFilePath);
     void openStream();
 
   public:
@@ -164,7 +164,7 @@ static ALCcontext *openalContext;
      * @brief Ogg file loading constructor
      * @param soundFilePath The path to the ogg file from which to load the sound.
      */
-    explicit Sound(const std::string soundFilePath);
+    explicit Sound(const std::string& soundFilePath);
 
     /**
      * @brief Destructor
@@ -213,7 +213,7 @@ static ALCcontext *openalContext;
      * @brief Save sound data in binary format
      * @param binaryFilePath Path of file to save binary data to.
      */
-    void saveBinary(const std::string binaryFilePath);
+    void saveBinary(const std::string& binaryFilePath);
     
   };
 

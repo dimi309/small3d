@@ -48,7 +48,7 @@ namespace small3d {
     init(name, boundingBoxSubdivisions);
   }
 
-  SceneObject::SceneObject(const std::string& name, const std::vector<std::shared_ptr<Model>> models,
+  SceneObject::SceneObject(const std::string& name, const std::vector<std::shared_ptr<Model>>& models,
     const uint32_t boundingBoxSubdivisions) {
     initLogger();
     skeletal = false;

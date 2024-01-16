@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
         Model m(GlbFile(modelpath), "");
         model = m;
       }
-      catch (std::exception& ex) {
+      catch (const std::exception& ex) {
         try {
           Model m1(WavefrontFile(modelpath), "");
           model = m1;
@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
             sound = s1;
             isSound = true;
           }
-          catch (std::exception& ex2) {
+          catch (const std::exception& ex2) {
             throw std::runtime_error("Could not parse " + modelpath + ".");
           }
         }
@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
         }
         std::cout << "ok" << std::endl;
       }
-      catch (std::exception ex) {
+      catch (const std::exception& ex) {
         std::cout << "Something went wrong while testing the file " << binpath << ": " << ex.what() << std::endl;
       }
     }
@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
       std::cout << "Please provide source and target filename / path." << std::endl;
     }
   }
-  catch (std::exception& ex) {
+  catch (const std::exception& ex) {
     std::cout << ex.what() << std::endl;
     return 1;
   }

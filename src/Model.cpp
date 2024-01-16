@@ -166,7 +166,7 @@ namespace small3d {
     return origScale;
   }
 
-  void Model::saveBinary(const std::string binaryFilePath) {
+  void Model::saveBinary(const std::string& binaryFilePath) {
 
     const uint32_t CHUNK = 16384;
 

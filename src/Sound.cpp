@@ -255,7 +255,7 @@ namespace small3d {
     ++numInstances;
   }
 
-  Sound::Sound(const std::string soundFilePath) : Sound() {
+  Sound::Sound(const std::string& soundFilePath) : Sound() {
 
     this->load(getBasePath() + soundFilePath);
 
@@ -296,7 +296,7 @@ namespace small3d {
     }
   }
 
-  void Sound::load(const std::string soundFilePath) {
+  void Sound::load(const std::string& soundFilePath) {
 
     if (!noOutputDevice) {
 
@@ -708,7 +708,7 @@ namespace small3d {
     return *this;
   }
 
-  void Sound::saveBinary(const std::string binaryFilePath) {
+  void Sound::saveBinary(const std::string& binaryFilePath) {
 
     const uint32_t CHUNK = 16384;
 

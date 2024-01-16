@@ -86,7 +86,7 @@ namespace small3d
      *              bounding box, getting more accurate collision detection
      *              at the expense of performance.
      */
-    SceneObject(const std::string& name, const std::vector<std::shared_ptr<Model>> models, const uint32_t boundingBoxSubdivisions = 0);
+    SceneObject(const std::string& name, const std::vector<std::shared_ptr<Model>>& models, const uint32_t boundingBoxSubdivisions = 0);
 
     /**
      * @brief Destructor

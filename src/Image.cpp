@@ -19,7 +19,7 @@ namespace small3d {
 
   const std::string Image::NOTRGBA = "Image format not recognised. Only RGB / RGBA png images are supported.";
 
-  Image::Image(const std::string fileLocation) : imageData() {
+  Image::Image(const std::string& fileLocation) : imageData() {
     initLogger();
     width = 0;
     height = 0;
@@ -75,7 +75,7 @@ namespace small3d {
   }
 #endif
 
-  void Image::load(const std::string fileLocation, std::vector<char>& data) {
+  void Image::load(const std::string& fileLocation, std::vector<char>& data) {
     // Developed based on information and examples at
     // http://zarb.org/~gc/html/libpng.html
     // http://pulsarengine.com/2009/01/reading-png-images-from-memory/
