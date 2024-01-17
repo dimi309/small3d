@@ -59,7 +59,7 @@ namespace small3d {
 
       time(&now);
 
-      tm *t = localtime(&now);
+      const tm *t = localtime(&now);
 
       char buf[20];
 

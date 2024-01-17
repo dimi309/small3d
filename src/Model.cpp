@@ -20,6 +20,7 @@
 #include <cereal/types/string.hpp>
 #include <cereal/types/memory.hpp>
 #include <zlib.h>
+#include <algorithm>
 
 namespace small3d {
 
@@ -67,24 +68,32 @@ namespace small3d {
     // a seconds value that corresponds to 
     // the current pose.
     if (seconds == 0.0f && joints[joint].animations.size() > 0) {
-      for (auto& anim : joints[joint].animations[animationIdx].animationComponents) {
-        if (anim.times.size() > currentPose) {
-          secondsUsed = anim.times[currentPose];
-          break;
-        }
+
+      
+
+      if (auto animFound = std::find_if(joints[joint].animations[animationIdx].animationComponents.begin(),
+        joints[joint].animations[animationIdx].animationComponents.end(),
+        [&currentPose](const auto& anim) {return anim.times.size() > currentPose; }); animFound != std::end(joints[joint].animations[animationIdx].animationComponents)) {
+        secondsUsed = (*animFound).times[currentPose];
       }
+
     }
  
     // Find the parent node, if it exists
     size_t idx = 0;
     bool parentFound = false;
-    for (auto& j : joints) {
-      for (auto c : j.children) {
-        if (c == joints[joint].node) {
-          parentFound = true;
-          break;
-        }
+    for (const auto& j : joints) {
+
+      auto jointnode = joints[joint].node;
+
+      if (std::any_of(j.children.begin(), j.children.end(), [&jointnode](const auto& c) {
+        return c == jointnode;
+        })) {
+        parentFound = true;
       }
+
+
+
       if (parentFound) break;
       ++idx;
     }
@@ -107,14 +116,14 @@ namespace small3d {
     bool firstT = true, firstR = true, firstS = true;
     
     if (joints[joint].animations.size() > 0) {
-      for (auto& animationComponent : joints[joint].animations[animationIdx].animationComponents) {
+      for (const auto& animationComponent : joints[joint].animations[animationIdx].animationComponents) {
         auto poseUsed = currentPose;
         bool foundPose = false;
 
         // Find the pose that corresonds to the seconds
         // used
         uint32_t tidx = 0;
-        for (auto& time : animationComponent.times) {
+        for (const auto& time : animationComponent.times) {
 
           // Using == it has been observed that at least one sample
           // model used for testing gets deformed.
@@ -178,7 +187,7 @@ namespace small3d {
     unsigned char out[CHUNK];
     uint32_t have = 0;
     z_stream strm;
-    int flush;
+    
 
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;

@@ -8,6 +8,7 @@
 
 #include "GlbFile.hpp"
 #include "Logger.hpp"
+#include <algorithm>
 
 #ifdef __ANDROID__
 #include "small3d_android.h"
@@ -225,10 +226,7 @@ namespace small3d {
             }
           }
 
-          if (namedToken) {
-            namedToken = false;
-          }
-          else {
+          if (!namedToken) {
             poppedToken->next = prevToken;
             antePrevToken = prevToken;
             prevToken = poppedToken;
@@ -330,7 +328,7 @@ namespace small3d {
 
       if (!doneReading) {
         bytesLeft -= chunkLength;
-        if (fileOnDisk.eof() || bytesLeft <= 0) doneReading = true;
+        if (fileOnDisk.eof() || bytesLeft == 0) doneReading = true;
       }
     }
 
@@ -496,7 +494,7 @@ namespace small3d {
     propToken = getChildToken(nodeToken, "children");
     if (propToken != nullptr) {
       auto values = getChildTokens(propToken);
-      for (auto& val : values) {
+      for (const auto& val : values) {
         ret.children.emplace_back(std::stoi(val->value));
       }
     }
@@ -518,7 +516,7 @@ namespace small3d {
     if (propToken != nullptr) {
       auto values = getChildTokens(propToken);
       uint32_t idx = 0;
-      for (auto& val : values) {
+      for (const auto& val : values) {
         ret.transformation[idx / 4][idx % 4] = std::stof(val->value);
         ++idx;
       }
@@ -529,15 +527,13 @@ namespace small3d {
   bool GlbFile::existParentNode(const uint32_t index) {
     bool found = false;
     auto nodeTokens = getChildTokens(getToken("nodes"));
-    for (auto& nodeToken : nodeTokens) {
+    for (const auto& nodeToken : nodeTokens) {
       auto childrenToken = getChildToken(nodeToken, "children");
       if (childrenToken != nullptr) {
         auto children = getChildTokens(childrenToken);
-        for (auto& childToken : children) {
-          if (std::stoi(childToken->value) == index) {
-            found = true;
-            break;
-          }
+
+        if (std::any_of(children.begin(), children.end(), [&index](const auto& childToken) {return std::stoi(childToken->value) == index; })) {
+          found = true;
         }
       }
     }
@@ -550,17 +546,16 @@ namespace small3d {
     GlbFile::Node ret;
     uint32_t nodeIdx = 0;
     auto nodeTokens = getChildTokens(getToken("nodes"));
-    for (auto& nodeToken : nodeTokens) {
+    for (const auto& nodeToken : nodeTokens) {
       auto childrenToken = getChildToken(nodeToken, "children");
       if (childrenToken != nullptr) {
         auto children = getChildTokens(childrenToken);
-        for (auto& childToken : children) {
-          if (std::stoi(childToken->value) == index) {
-            found = true;
-            ret = getNode(nodeIdx);
-            break;
-          }
+
+        if (std::any_of(children.begin(), children.end(), [&index](const auto& childToken) {return std::stoi(childToken->value) == index; })) {
+          found = true;
+          ret = getNode(nodeIdx);
         }
+
       }
       ++nodeIdx;
     }
@@ -572,7 +567,7 @@ namespace small3d {
 
   bool GlbFile::existNodeForMesh(const uint32_t meshIndex) {
     bool found = false;
-    for (auto& nodeToken : getChildTokens(getToken("nodes"))) {
+    for (const auto& nodeToken : getChildTokens(getToken("nodes"))) {
       auto nodeMeshToken = getChildToken(nodeToken, "mesh");
       if (nodeMeshToken != nullptr) {
         if (meshIndex == std::stof(nodeMeshToken->value)) {
@@ -588,7 +583,7 @@ namespace small3d {
     Node nodeForMesh;
     uint32_t nodeIdx = 0;
     bool found = false;
-    for (auto& nodeToken : getChildTokens(getToken("nodes"))) {
+    for (const auto& nodeToken : getChildTokens(getToken("nodes"))) {
       auto nodeMeshToken = getChildToken(nodeToken, "mesh");
       if (nodeMeshToken != nullptr) {
         if (meshIndex == std::stof(nodeMeshToken->value)) {
@@ -607,12 +602,13 @@ namespace small3d {
 
   bool GlbFile::existNode(const std::string& name) {
     auto nodeTokens = getChildTokens(getToken("nodes"));
-    for (auto& nodeToken : nodeTokens) {
-      auto nameToken = getChildToken(nodeToken, "name");
-      if (nameToken != nullptr && nameToken->value == name) {
-        return true;
-      }
+    
+    if (std::any_of(nodeTokens.begin(), nodeTokens.end(), [this, &name](const auto& nodeToken) {
+      auto nameToken = getChildToken(nodeToken, "name"); 
+      return nameToken != nullptr && nameToken->value == name; })) {
+      return true;
     }
+
     return false;
   }
 
@@ -623,7 +619,7 @@ namespace small3d {
     bool found = false;
     uint32_t nodeIndex = 0;
 
-    for (auto& nodeToken : nodeTokens) {
+    for (const auto& nodeToken : nodeTokens) {
       if (getChildToken(nodeToken, "name")->value == name) {
         found = true;
         break;
@@ -660,7 +656,7 @@ namespace small3d {
     propToken = getChildToken(skinToken, "joints");
     if (propToken != nullptr) {
       auto jointTokens = getChildTokens(propToken);
-      for (auto& jointToken : jointTokens) {
+      for (const auto& jointToken : jointTokens) {
         ret.joints.emplace_back(std::stoi(jointToken->value));
       }
     }
@@ -676,11 +672,14 @@ namespace small3d {
 
   bool GlbFile::existSkin(const std::string& name) {
     auto skinTokens = getChildTokens(getToken("skins"));
-    for (auto& skinToken : skinTokens) {
-      if (getChildToken(skinToken, "name")->value == name) {
-        return true;
-      }
+
+    
+    if (std::any_of(skinTokens.begin(), skinTokens.end(), [this, &name](const auto& skinToken) {
+      return getChildToken(skinToken, "name")->value == name;
+      })) {
+      return true;
     }
+
     return false;
   }
 
@@ -691,7 +690,7 @@ namespace small3d {
     bool found = false;
     uint32_t nodeIndex = 0;
 
-    for (auto& skinToken : skinTokens) {
+    for (const auto& skinToken : skinTokens) {
       if (getChildToken(skinToken, "name")->value == name) {
         found = true;
         break;
@@ -723,7 +722,7 @@ namespace small3d {
     propToken = getChildToken(animationToken, "channels");
     if (propToken != nullptr) {
       auto channelTokens = getChildTokens(propToken);
-      for (auto& channelToken : channelTokens) {
+      for (const auto& channelToken : channelTokens) {
         AnimationChannel channel;
         auto samplerToken = getChildToken(channelToken, "sampler");
         if (samplerToken != nullptr) {
@@ -751,7 +750,7 @@ namespace small3d {
     propToken = getChildToken(animationToken, "samplers");
     if (propToken != nullptr) {
       auto samplerTokens = getChildTokens(propToken);
-      for (auto& samplerToken : samplerTokens) {
+      for (const auto& samplerToken : samplerTokens) {
         AnimationSampler sampler;
         auto inputToken = getChildToken(samplerToken, "input");
         if (inputToken != nullptr) {
@@ -783,7 +782,7 @@ namespace small3d {
     bool found = false;
     uint32_t nodeIndex = 0;
 
-    for (auto& animationToken : animationTokens) {
+    for (const auto& animationToken : animationTokens) {
       if (getChildToken(animationToken, "name")->value == name) {
         found = true;
         break;
@@ -801,7 +800,7 @@ namespace small3d {
     bool loaded = false;
     std::string actualName = "";
     uint32_t meshIndex = 0;
-    for (auto& meshToken : getChildTokens(getToken("meshes"))) {
+    for (const auto& meshToken : getChildTokens(getToken("meshes"))) {
 
       actualName = getChildToken(meshToken, "name")->value;
       if (actualName == meshName || meshName == "") { // Just get the first mesh if no name is given.
@@ -905,10 +904,10 @@ namespace small3d {
             model.indexData[idx] = static_cast<uint32_t>(indexBuf);
           }
         }
-        auto materialToken = getChildToken(primitives[0], "material");
-        if (materialToken != nullptr) {
+        auto materialsToken = getChildToken(primitives[0], "material");
+        if (materialsToken != nullptr) {
 
-          uint32_t materialIndex = std::stoi(materialToken->value);
+          uint32_t materialIndex = std::stoi(materialsToken->value);
 
           auto materialToken = getChildTokens(getToken("materials"))[materialIndex];
 
@@ -991,21 +990,18 @@ namespace small3d {
         model.origTransformation = tmpNode.transformation * model.origTransformation;
       }
 
-
       uint32_t animationIdx = 0;
-      bool warnedNonSkeletal = false;
+      
       while (existAnimation(animationIdx)) {
         auto animation = getAnimation(animationIdx);
-        for (auto& channel : animation.channels) {
-          if (channel.target.node == meshNode.index) {
-            LOGDEBUG("Non-skeletal animation ignored.");
-            warnedNonSkeletal = true;
-            break;
-          }
-        }
-        if (warnedNonSkeletal) {
+
+        if (std::any_of(animation.channels.begin(), animation.channels.end(), [&meshNode](const auto& channel) {
+          return channel.target.node == meshNode.index;
+          })) {
+          LOGDEBUG("Non-skeletal animation ignored.");
           break;
         }
+        
         ++animationIdx;
       }
 
@@ -1039,24 +1035,16 @@ namespace small3d {
           ++idx;
         }
 
-        bool inputStored = false;
-        uint32_t storedInput = 0;
-
         animationIdx = 0;
         while (existAnimation(animationIdx)) {
           auto animation = getAnimation(animationIdx);
 
-          for (auto& channel : animation.channels) {
+          for (const auto& channel : animation.channels) {
 
             auto sampler = animation.samplers[channel.sampler];
 
             // sampler.interpolation ignored, just using everything
             // as STEP
-
-            if (!inputStored) {
-              storedInput = sampler.input;
-              inputStored = true;
-            }
 
             auto input = getBufferByAccessor(sampler.input);
             std::vector<float>times(input.size() / 4);
@@ -1078,12 +1066,13 @@ namespace small3d {
               if (joint.node == channel.target.node) {
                 bool found = false;
                 uint32_t animIndex = 0;
-                for (auto& animation : joint.animations[animationIdx].animationComponents) {
-                  if (animation.input == sampler.input) {
-                    found = true;
-                    break;
-                    ++animIndex;
-                  }
+
+
+                if (std::any_of(joint.animations[animationIdx].animationComponents.begin(),
+                  joint.animations[animationIdx].animationComponents.end(), [&sampler](const auto& animationj) {
+                    return animationj.input == sampler.input;
+                  })) {
+                  found = true;
                 }
 
                 if (!found) {
@@ -1126,7 +1115,7 @@ namespace small3d {
   std::vector<std::string> GlbFile::getMeshNames() {
     std::vector<std::string> names;
 
-    for (auto& meshToken : getChildTokens(getToken("meshes"))) {
+    for (const auto& meshToken : getChildTokens(getToken("meshes"))) {
       auto nameToken = getChildToken(meshToken, "name");
       if (nameToken != nullptr) {
         names.emplace_back(nameToken->value);

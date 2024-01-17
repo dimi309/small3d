@@ -79,7 +79,7 @@ void BinaryFile::load(Model& model, const std::string& meshName) {
   unsigned char out[CHUNK];
   uint32_t have = 0;
   z_stream strm;
-  int flush;
+  
   strm.zalloc = Z_NULL;
   strm.zfree = Z_NULL;
   strm.opaque = Z_NULL;

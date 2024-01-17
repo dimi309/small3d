@@ -311,7 +311,7 @@ namespace small3d {
     glm::mat4 jointTransformations[Model::MAX_JOINTS_SUPPORTED];
 
     uint64_t idx = 0;
-    for (auto& joint : model.joints) {
+    for (const auto& joint : model.joints) {
 
       jointTransformations[idx] =
         model.getJointTransform(idx, model.currentAnimation, currentPose) *
@@ -344,7 +344,7 @@ namespace small3d {
 
     GLuint textureHandle;
 
-    for (auto& nameTexturePair : textures) {
+    for (const auto& nameTexturePair : textures) {
       if (nameTexturePair.first == name) {
         if (!replace) {
           throw std::runtime_error("Texture with name " + name +
@@ -734,12 +734,12 @@ namespace small3d {
     GLint cameraTransformationUniform = glGetUniformLocation(shaderProgram,
       "cameraTransformation");
 
-    glm::mat4x4 cameraTransformation = perspective || renderingDepthMap ?
+    glm::mat4x4 usedCameraTransformation = perspective || renderingDepthMap ?
       this->cameraTransformation :
       glm::mat4x4(1);
 
     glUniformMatrix4fv(cameraTransformationUniform, 1, GL_FALSE,
-      glm::value_ptr(cameraTransformation));
+      glm::value_ptr(usedCameraTransformation));
 
     GLint cameraOffsetUniform = glGetUniformLocation(shaderProgram,
       "cameraOffset");
@@ -1468,7 +1468,7 @@ namespace small3d {
         static_cast<GLsizei>(realScreenHeight));
     }
 
-    for (auto& tuple : renderList) {
+    for (const auto& tuple : renderList) {
       renderTuple(tuple);
     }
     renderList.clear();

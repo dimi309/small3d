@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <glm/gtc/matrix_transform.hpp>
 #include "BasePath.hpp"
+#include <algorithm>
 
 #if defined(__ANDROID__)
 #include <streambuf>
@@ -40,21 +41,14 @@ namespace small3d {
       glm::vec4(thisOffset, 0.0f);
 
     pointInBoxSpace = reverseRotationMatrix * pointInBoxSpace;
+    
 
-    for (const auto& ex : boxExtremes) {
-      // Very strange behaviour when trying to do this with a function
-      // declared in the struct on VS 2019. The function would not accept
-      // ex as a parameter, even though the parameter was declared to be
-      // glm::vec4 and even though, when the same function was used in 
-      // generateSubExtremes it worked.
-      if (pointInBoxSpace.x > ex.minX && pointInBoxSpace.x < ex.maxX &&
-        pointInBoxSpace.y > ex.minY && pointInBoxSpace.y < ex.maxY &&
-        pointInBoxSpace.z > ex.minZ && pointInBoxSpace.z < ex.maxZ) {
-        doesContain = true;
-        break;
-      }
-
+    if (std::any_of(boxExtremes.begin(), boxExtremes.end(), [&pointInBoxSpace](auto& ex) {return pointInBoxSpace.x > ex.minX && pointInBoxSpace.x < ex.maxX &&
+      pointInBoxSpace.y > ex.minY && pointInBoxSpace.y < ex.maxY &&
+      pointInBoxSpace.z > ex.minZ && pointInBoxSpace.z < ex.maxZ; })) {
+      doesContain = true;
     }
+
     return doesContain;
   }
 

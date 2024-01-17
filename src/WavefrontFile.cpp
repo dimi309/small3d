@@ -197,7 +197,7 @@ namespace small3d {
           }
           else {
             std::vector<std::string> tokens;
-            uint32_t numTokens = getTokens(line, ' ', tokens);
+            getTokens(line, ' ', tokens);
             if (tokens.size() > 0) {
 
               if (tokens[0] == "Ns") {

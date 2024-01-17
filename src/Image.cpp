@@ -39,7 +39,7 @@ namespace small3d {
       throw std::runtime_error("Could not get png reader from memory.");
     }
 
-    memoryDataAndPos_& md = *(memoryDataAndPos_*)io_ptr;
+    memoryDataAndPos_& md = *reinterpret_cast<memoryDataAndPos_*>(io_ptr);
 
     if (byteCountToRead > md.data.size() - md.pos) {
       throw std::runtime_error("Tried to read more png bytes than those left in memory.");
@@ -147,6 +147,16 @@ namespace small3d {
     }
 
     if (png_sig_cmp(header, 0, 8)) {
+
+      if (!fromMemory) {
+
+#ifdef __ANDROID__
+        AAsset_read(asset, header, 8);
+#else
+        fread(header, 1, 8, fp);
+#endif
+      }
+
       throw std::runtime_error(
         "Image data not recognised as PNG.");
     }
@@ -156,6 +166,15 @@ namespace small3d {
 
     if (!pngStructure) {
 
+      if (!fromMemory) {
+
+#ifdef __ANDROID__
+        AAsset_read(asset, header, 8);
+#else
+        fread(header, 1, 8, fp);
+#endif
+      }
+
       throw std::runtime_error("Could not create PNG read structure.");
     }
 
@@ -164,6 +183,15 @@ namespace small3d {
     if (!pngInformation) {
       png_destroy_read_struct(&pngStructure, nullptr, nullptr);
 
+      if (!fromMemory) {
+
+#ifdef __ANDROID__
+        AAsset_read(asset, header, 8);
+#else
+        fread(header, 1, 8, fp);
+#endif
+      }
+
       throw std::runtime_error("Could not create PNG information structure.");
     }
 
@@ -171,6 +199,15 @@ namespace small3d {
       png_destroy_read_struct(&pngStructure, &pngInformation, nullptr);
       pngStructure = nullptr;
       pngInformation = nullptr;
+
+      if (!fromMemory) {
+
+#ifdef __ANDROID__
+        AAsset_read(asset, header, 8);
+#else
+        fread(header, 1, 8, fp);
+#endif
+      }
 
       throw std::runtime_error("PNG read: Error calling setjmp. (1)");
     }
