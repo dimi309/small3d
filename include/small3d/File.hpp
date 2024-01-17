@@ -41,7 +41,7 @@ namespace small3d {
      * @brief Constructor
      * @param fileLocation Path to the file
      */
-    File(const std::string& fileLocation);
+    explicit File(const std::string& fileLocation);
     
     /**
     * @brief Load data from the file into a Model

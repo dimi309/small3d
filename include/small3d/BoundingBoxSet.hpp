@@ -31,7 +31,7 @@ namespace small3d {
     void triangulate();
     void calcExtremes();
     void generateBoxesFromExtremes();
-    void generateExtremes(std::vector<float>& vertexData, const glm::vec3& scale, uint32_t subdivisions);
+    void generateExtremes(const std::vector<float>& vertexData, const glm::vec3& scale, uint32_t subdivisions);
     void generateSubExtremes(const std::vector<float>& vertexData, const glm::vec3& scale);
 
   public:

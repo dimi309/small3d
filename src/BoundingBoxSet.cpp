@@ -180,7 +180,7 @@ namespace small3d {
     triangulate();
   }
 
-  void BoundingBoxSet::generateExtremes(std::vector<float>& vertexData, const glm::vec3& scale, uint32_t subdivisions) {
+  void BoundingBoxSet::generateExtremes(const std::vector<float>& vertexData, const glm::vec3& scale, uint32_t subdivisions) {
     vertices.clear();
     facesVertexIndexes.clear();
     facesVertexIndexesTriangulated.clear();
@@ -325,11 +325,9 @@ namespace small3d {
         }
       }
 
-      for (auto& ex : newExtremes) {
-        if (ex.tagged) {
-          boxExtremes.push_back(ex);
-        }
-      }
+      std::copy_if(newExtremes.begin(), newExtremes.end(), std::back_inserter(boxExtremes),
+        [](const auto& ex) {return ex.tagged; });
+
     }
 
   }

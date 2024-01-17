@@ -162,7 +162,7 @@ namespace small3d {
      * @brief Constructor of the GlbFile class.
      * @param fileLocation The name and path of the GLB file to be parsed
      */
-    GlbFile(const std::string& fileLocation);
+    explicit GlbFile(const std::string& fileLocation);
 
     /**
      * @brief Recursively print all tokens, starting from the head

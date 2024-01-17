@@ -60,14 +60,14 @@ namespace small3d {
      *
      * @param fileLocation Location of the png image file
      */
-    Image(const std::string& fileLocation = "");
+    explicit Image(const std::string& fileLocation = "");
 
     /**
      * @brief Memory-based constructor
      * 
      * @param data PNG bytes already read into memory
      */
-    Image(std::vector<char>& data);
+    explicit Image(std::vector<char>& data);
 
     /**
      * @brief Destructor

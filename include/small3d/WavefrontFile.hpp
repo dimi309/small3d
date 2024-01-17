@@ -73,7 +73,7 @@ namespace small3d {
      * @brief Constructor
      * @param filePath Path to wavefront file
      */
-    WavefrontFile(const std::string& filePath);
+    explicit WavefrontFile(const std::string& filePath);
 
     /**
      * @brief Load data from the Wavefront file into a Model

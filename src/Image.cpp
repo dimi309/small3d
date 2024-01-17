@@ -151,9 +151,9 @@ namespace small3d {
       if (!fromMemory) {
 
 #ifdef __ANDROID__
-        AAsset_read(asset, header, 8);
+        AAsset_close(asset);
 #else
-        fread(header, 1, 8, fp);
+        fclose(fp);
 #endif
       }
 
@@ -169,9 +169,9 @@ namespace small3d {
       if (!fromMemory) {
 
 #ifdef __ANDROID__
-        AAsset_read(asset, header, 8);
+        AAsset_close(asset);
 #else
-        fread(header, 1, 8, fp);
+        fclose(fp);
 #endif
       }
 
@@ -186,9 +186,9 @@ namespace small3d {
       if (!fromMemory) {
 
 #ifdef __ANDROID__
-        AAsset_read(asset, header, 8);
+        AAsset_close(asset);
 #else
-        fread(header, 1, 8, fp);
+        fclose(fp);
 #endif
       }
 
@@ -203,9 +203,9 @@ namespace small3d {
       if (!fromMemory) {
 
 #ifdef __ANDROID__
-        AAsset_read(asset, header, 8);
+        AAsset_close(asset);
 #else
-        fread(header, 1, 8, fp);
+        fclose(fp);
 #endif
       }
 
