@@ -86,9 +86,9 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219">Sound</a> ()</td></tr>
 <tr class="memdesc:a3bf41af25f517dc9489d795402b18219"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor. <br /></td></tr>
 <tr class="separator:a3bf41af25f517dc9489d795402b18219"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c0dcc69eba4f4f1993d3d8aa50b28f7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_sound.html#a5c0dcc69eba4f4f1993d3d8aa50b28f7">Sound</a> (const std::string soundFilePath)</td></tr>
-<tr class="memdesc:a5c0dcc69eba4f4f1993d3d8aa50b28f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ogg file loading constructor.  <a href="classsmall3d_1_1_sound.html#a5c0dcc69eba4f4f1993d3d8aa50b28f7">More...</a><br /></td></tr>
-<tr class="separator:a5c0dcc69eba4f4f1993d3d8aa50b28f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a557b0d23184250c623178ee1103bb56d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_sound.html#a557b0d23184250c623178ee1103bb56d">Sound</a> (const std::string &amp;soundFilePath)</td></tr>
+<tr class="memdesc:a557b0d23184250c623178ee1103bb56d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ogg file loading constructor.  <a href="classsmall3d_1_1_sound.html#a557b0d23184250c623178ee1103bb56d">More...</a><br /></td></tr>
+<tr class="separator:a557b0d23184250c623178ee1103bb56d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad099eea274cd698016aa32e40abc1b00"><td class="memItemLeft" align="right" valign="top"><a id="ad099eea274cd698016aa32e40abc1b00"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_sound.html#ad099eea274cd698016aa32e40abc1b00">~Sound</a> ()</td></tr>
 <tr class="memdesc:ad099eea274cd698016aa32e40abc1b00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br /></td></tr>
@@ -119,15 +119,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <a class="el" href="classsmall3d_1_1_sound.html">Sound</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_sound.html#a0086ccfe2e98cf4ea36a65341e7fef54">operator=</a> (const <a class="el" href="classsmall3d_1_1_sound.html">Sound</a> &amp;&amp;other) noexcept</td></tr>
 <tr class="memdesc:a0086ccfe2e98cf4ea36a65341e7fef54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move assignment. <br /></td></tr>
 <tr class="separator:a0086ccfe2e98cf4ea36a65341e7fef54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9a6af59d139e57e095925d919efc476b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_sound.html#a9a6af59d139e57e095925d919efc476b">saveBinary</a> (const std::string binaryFilePath)</td></tr>
-<tr class="memdesc:a9a6af59d139e57e095925d919efc476b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save sound data in binary format.  <a href="classsmall3d_1_1_sound.html#a9a6af59d139e57e095925d919efc476b">More...</a><br /></td></tr>
-<tr class="separator:a9a6af59d139e57e095925d919efc476b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62c971023a9abbb16661ce3dec8f0340"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_sound.html#a62c971023a9abbb16661ce3dec8f0340">saveBinary</a> (const std::string &amp;binaryFilePath)</td></tr>
+<tr class="memdesc:a62c971023a9abbb16661ce3dec8f0340"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save sound data in binary format.  <a href="classsmall3d_1_1_sound.html#a62c971023a9abbb16661ce3dec8f0340">More...</a><br /></td></tr>
+<tr class="separator:a62c971023a9abbb16661ce3dec8f0340"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class that loads and plays a sound from an ogg file, or a native sound file. In the latter case, the file loaded has to have been produced by converting an .ogg file to a <a class="el" href="namespacesmall3d.html">small3d</a> native binary file using the format converter program, s3dfc, produced by this project's build scripts, for example by running s3dfc engine.ogg engine.bin (this would convert an engine sound .ogg file to a native binary sound file) ATTENTION: Unfortunately the native binary files have issues across architectures. So for example binaries created on Windows do not work on Linux. They need to be created and tested separately for each. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a5c0dcc69eba4f4f1993d3d8aa50b28f7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c0dcc69eba4f4f1993d3d8aa50b28f7">&#9670;&nbsp;</a></span>Sound()</h2>
+<a id="a557b0d23184250c623178ee1103bb56d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a557b0d23184250c623178ee1103bb56d">&#9670;&nbsp;</a></span>Sound()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -138,7 +138,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         <tr>
           <td class="memname">small3d::Sound::Sound </td>
           <td>(</td>
-          <td class="paramtype">const std::string&#160;</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>soundFilePath</em></td><td>)</td>
           <td></td>
         </tr>
@@ -213,8 +213,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="a9a6af59d139e57e095925d919efc476b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9a6af59d139e57e095925d919efc476b">&#9670;&nbsp;</a></span>saveBinary()</h2>
+<a id="a62c971023a9abbb16661ce3dec8f0340"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62c971023a9abbb16661ce3dec8f0340">&#9670;&nbsp;</a></span>saveBinary()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -222,7 +222,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         <tr>
           <td class="memname">void small3d::Sound::saveBinary </td>
           <td>(</td>
-          <td class="paramtype">const std::string&#160;</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>binaryFilePath</em></td><td>)</td>
           <td></td>
         </tr>

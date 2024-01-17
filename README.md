@@ -79,7 +79,7 @@ https://www.gamedev.net/tutorials/programming/engines-and-middleware/small3d-tut
 The following need to be installed, with the relevant environment variables
 and tools accessible via the command line:
 
-- Some compiler (e.g. gcc, Visual Studio, clang) with C++14 support recommended
+- Some compiler (e.g. gcc, Visual Studio, clang) with C++17 support recommended
   as a minimum.
 - 7zip (only on Windows)
 - CMake

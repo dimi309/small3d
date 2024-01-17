@@ -13,7 +13,7 @@ endlocal & exit /b 1
 if /I "%~1" == "debug" set BUILDTYPE=Debug
 if /I "%~1" == "release" set BUILDTYPE=Release
 
-set VSCONFIG=-G"Visual Studio 17 2022" -A x64
+set VSCONFIG=-G"Visual Studio 17 2022" -A x64 -DCMAKE_CXX_STANDARD=17
 
 cd ..\deps\scripts
 if exist include rmdir /Q /S include
