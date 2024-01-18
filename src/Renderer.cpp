@@ -792,6 +792,8 @@ namespace small3d {
   Renderer::Renderer() {
 #ifdef __ANDROID__
     window = 0;
+#else
+    window = {};
 #endif
     shaderProgram = 0;
     noShaders = false;
@@ -1566,8 +1568,8 @@ namespace small3d {
         EmptyClipboard();
         void* memLocked = GlobalLock(mem);
         if (memLocked) {
-          memcpy((char*)memLocked, &biinfo, sizeof(BITMAPINFO));
-          memcpy((char*)memLocked + sizeof(BITMAPINFO), pixels, imgSize);
+          memcpy(reinterpret_cast<char*>(memLocked), &biinfo, sizeof(BITMAPINFO));
+          memcpy(reinterpret_cast<char*>(memLocked) + sizeof(BITMAPINFO), pixels, imgSize);
           GlobalUnlock(mem);
           SetClipboardData(CF_DIB, mem);
           CloseClipboard();

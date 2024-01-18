@@ -66,7 +66,7 @@ void pollEvents() {
 
 static small3d::Model indicator;
 
-void write(std::string text, float elevation) {
+void write(const std::string& text, float elevation) {
   if (indicator.vertexData.empty()) {
     r->createRectangle(indicator, glm::vec3(-0.4f, -0.4f, 0.1f),
       glm::vec3(0.4f, -0.50f, 0.1f));

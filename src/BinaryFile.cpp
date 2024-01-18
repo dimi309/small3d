@@ -77,7 +77,6 @@ void BinaryFile::load(Model& model, const std::string& meshName) {
         is.close();
 #endif
   unsigned char out[CHUNK];
-  uint32_t have = 0;
   z_stream strm;
   
   strm.zalloc = Z_NULL;
@@ -98,7 +97,7 @@ void BinaryFile::load(Model& model, const std::string& meshName) {
     if (inflate(&strm, Z_NO_FLUSH) == Z_STREAM_ERROR) {
       LOGERROR("Stream error");
     }
-    have = CHUNK - strm.avail_out;
+    uint32_t have = CHUNK - strm.avail_out;
     for (uint32_t idx = 0; idx < have; ++idx) {
       uncompressedData += out[idx];
     }

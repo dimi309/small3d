@@ -73,7 +73,7 @@ namespace small3d {
      *                     at the expense of performance.
      */
 
-    BoundingBoxSet(std::vector<float>& vertexData, const glm::vec3& scale, uint32_t subdivisions);
+    BoundingBoxSet(const std::vector<float>& vertexData, const glm::vec3& scale, uint32_t subdivisions);
 
     /**
      * @brief Destructor

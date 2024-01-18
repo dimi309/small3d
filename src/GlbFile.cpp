@@ -68,7 +68,6 @@ namespace small3d {
     std::string tokenNumber = "";
 
     bool inQuotes = false;
-    char c;
     bool inNumber = false;
     bool inTrueOrFalse = false;
 
@@ -80,7 +79,7 @@ namespace small3d {
     std::shared_ptr<GlbFile::Token> current = jsonRootToken;
 
     while (charsLeft != 0) {
-      c = json[length - charsLeft];
+      char c = json[length - charsLeft];
 
       // end number
       if (inNumber && strchr("0123456789.-e", c) == nullptr) {
@@ -211,12 +210,14 @@ namespace small3d {
       if (matching_bracket != ' ') {
         prevToken = nullptr;
         antePrevToken = nullptr;
-        do {
 
+        do {
           poppedToken = st.top();
           poppedTokenFirstChar = poppedToken->value[0];
           st.pop();
+
           bool namedToken = false;
+
           if (antePrevToken != nullptr) {
             if (prevToken->valueType == GlbFile::ValueType::character && prevToken->value == ":" && poppedToken->valueType == GlbFile::ValueType::charstring) {
               antePrevToken->name = poppedToken->value;

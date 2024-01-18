@@ -24,7 +24,7 @@ namespace small3d {
 
   }
 
-  BoundingBoxSet::BoundingBoxSet(std::vector<float>& vertexData,
+  BoundingBoxSet::BoundingBoxSet(const std::vector<float>& vertexData,
     const glm::vec3& scale, uint32_t subdivisions) {
     generateExtremes(vertexData, scale, subdivisions);
 

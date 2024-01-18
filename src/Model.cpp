@@ -185,9 +185,7 @@ namespace small3d {
     oarchive(*this);
 
     unsigned char out[CHUNK];
-    uint32_t have = 0;
     z_stream strm;
-    
 
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;
@@ -210,7 +208,7 @@ namespace small3d {
       if (defRet == Z_STREAM_ERROR) {
         LOGERROR("Stream error");
       }
-      have = CHUNK - strm.avail_out;
+      uint32_t have = CHUNK - strm.avail_out;
       for (uint32_t idx = 0; idx < have; ++idx) {
         compressedData += out[idx];
       }

@@ -192,22 +192,22 @@ static ALCcontext *openalContext;
     /**
      * @brief Copy constructor
      */
-    Sound(const Sound& other) noexcept;
+    Sound(const Sound& other);
 
     /**
      * @brief Move constructor
      */
-    Sound(const Sound&& other) noexcept;
+    Sound(const Sound&& other);
 
     /**
      * @brief Copy assignment
      */
-    Sound& operator=(const Sound& other) noexcept;
+    Sound& operator=(const Sound& other);
 
     /** 
      * @brief Move assignment
      */
-    Sound& operator=(const Sound&& other) noexcept;
+    Sound& operator=(const Sound&& other);
 
     /**
      * @brief Save sound data in binary format

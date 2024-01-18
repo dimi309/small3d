@@ -311,7 +311,7 @@ namespace small3d {
           throw std::runtime_error("Could not open file " + soundFilePath);
         }
 
-        if (ov_open_callbacks((void*)fp, &vorbisFile, NULL, 0,
+        if (ov_open_callbacks(reinterpret_cast<void*>(fp), &vorbisFile, NULL, 0,
           OV_CALLBACKS_NOCLOSE) < 0) {
           fclose(fp);
           throw std::runtime_error("Could not read file " +
@@ -443,9 +443,8 @@ namespace small3d {
         is.close();
 #endif
         unsigned char out[CHUNK];
-        uint32_t have = 0;
         z_stream strm;
-        int flush;
+        
         strm.zalloc = Z_NULL;
         strm.zfree = Z_NULL;
         strm.opaque = Z_NULL;
@@ -464,7 +463,7 @@ namespace small3d {
           if (inflate(&strm, Z_NO_FLUSH) == Z_STREAM_ERROR) {
             LOGERROR("Stream error");
           }
-          have = CHUNK - strm.avail_out;
+          uint32_t have = CHUNK - strm.avail_out;
           for (uint32_t idx = 0; idx < have; ++idx) {
             uncompressedData += out[idx];
           }
@@ -508,9 +507,9 @@ namespace small3d {
   void Sound::openStream() {
     if (noOutputDevice) return;
 #if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
-    PaStreamParameters outputParams;
-
-    memset(&outputParams, 0, sizeof(PaStreamParameters));
+    
+    PaStreamParameters outputParams = {};
+    
     outputParams.device = defaultOutput;
     // Declare two channels if there is only one. This is
     // so that we can send the sound to both speakers when
@@ -649,7 +648,7 @@ namespace small3d {
     }
   }
 
-  Sound::Sound(const Sound & other) noexcept : Sound() {
+  Sound::Sound(const Sound & other) : Sound() {
     this->soundData = other.soundData;
 
 #if !defined(SMALL3D_IOS)
@@ -659,7 +658,7 @@ namespace small3d {
     ++numInstances;
   }
 
-  Sound::Sound(const Sound && other) noexcept : Sound() {
+  Sound::Sound(const Sound && other) : Sound() {
     this->soundData = other.soundData;
 #if !defined(SMALL3D_IOS)
     this->stream = nullptr;
@@ -668,7 +667,7 @@ namespace small3d {
     ++numInstances;
   }
 
-  Sound& Sound::operator=(const Sound & other) noexcept {
+  Sound& Sound::operator=(const Sound & other) {
 #if  !defined(__ANDROID__) && !defined(SMALL3D_IOS)
     if (this->stream != nullptr) {
 
@@ -688,7 +687,7 @@ namespace small3d {
     return *this;
   }
 
-  Sound& Sound::operator=(const Sound && other) noexcept {
+  Sound& Sound::operator=(const Sound && other) {
 #if !defined(SMALL3D_IOS)
     if (this->stream != nullptr) {
 #else
@@ -717,9 +716,8 @@ namespace small3d {
     oarchive(soundData);
 
     unsigned char out[CHUNK];
-    uint32_t have = 0;
+
     z_stream strm;
-    int flush;
 
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;
@@ -743,7 +741,7 @@ namespace small3d {
       if (defRet == Z_STREAM_ERROR) {
         LOGERROR("Stream error");
       }
-      have = CHUNK - strm.avail_out;
+      uint32_t have = CHUNK - strm.avail_out;
       for (uint32_t idx = 0; idx < have; ++idx) {
         compressedData += out[idx];
       }
