@@ -793,7 +793,9 @@ namespace small3d {
 #ifdef __ANDROID__
     window = 0;
 #else
+#if !(defined(__APPLE__) && defined(SMALL3D_OPENGLES))
     window = {};
+#endif
 #endif
     shaderProgram = 0;
     noShaders = false;
