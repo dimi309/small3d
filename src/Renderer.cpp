@@ -1181,8 +1181,9 @@ namespace small3d {
     GLint bufSize = 0;
     glBindBuffer(GL_ARRAY_BUFFER, model->positionBufferObjectId);
     glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufSize);
-
-    checkForOpenGLErrors("checking GPU for model (this is normal)", false);
+    // Flush invalid operation error (this is normal when the model has not
+    // been loaded into the GPU).
+    while(glGetError() == GL_INVALID_OPERATION);
 
     bool alreadyInGPU = bufSize > 0;
 
