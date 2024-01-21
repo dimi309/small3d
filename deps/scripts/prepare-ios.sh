@@ -4,10 +4,10 @@ cd ..
 
 if [ -z $1 ]
 then
-    echo "Please indicate what we are building for, './build-ios.sh ios' for iOS devices or './build-ios.sh simulator' for the Xcode iOS Simulator."
+    echo "Please indicate what we are building for. For example './build-ios.sh ios', or './build-ios.sh iosnew / ios32 / simulator / simulatornew'"
     exit 1
 else
-    if [ $1 = "ios" ]
+    if [ $1 = "ios" ] || [ $1 = "iosnew" ]
     then
 	echo "Building for iOS devices..."
     elif [ $1 = "simulator" ] || [ $1 = "simulatornew" ] 
@@ -39,7 +39,7 @@ tar xvf cereal-1.3.2.tar.gz
 cp -rf cereal-1.3.2/include/cereal include/
 rm -rf cereal-1.3.2
 
-if [ $1 = "ios" ]
+if [ $1 = "ios" ] || [ $1 = "iosnew" ] 
 then
     export ARCH=arm64 
     export SDK=iphoneos
@@ -58,7 +58,7 @@ then
 fi
 
 export CHOST=aarch64-apple-darwin* # Never used arm-apple-darwin*
-if [ $1 = "simulatornew" ]
+if [ $1 = "simulatornew" ] || [ $1 = "iosnew" ]
 then
     export SDKVERSION=$(xcrun --sdk $SDK --show-sdk-version) # current version
 else
@@ -128,6 +128,9 @@ cp ios/interop.m lib/
 if [ $1 = "ios" ]
 then
     CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64"
+elif [ $1 = "iosnew" ]
+then
+    CMAKE_DEFINITIONS="-GXcode -T buildsystem=12 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64 -DDEPLOYMENT_TARGET="12.0""
 elif [ $1 = "ios32" ]
 then
     CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS -DARCHS=armv7"
