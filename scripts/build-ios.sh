@@ -30,7 +30,13 @@ cd ..
 
 if [ "$3" != "skipdeps" ]; then
 cd deps/scripts
-./prepare-ios.sh $1 $2
+if [ $1 = "simulatornewarm" ]
+then  
+    ./prepare-ios-new.sh $1 $2
+else
+    ./prepare-ios.sh $1 $2
+fi
+
 cd ..
 cd ..
 else

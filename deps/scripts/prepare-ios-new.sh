@@ -4,18 +4,15 @@ cd ..
 
 if [ -z $1 ]
 then
-    echo "Please indicate what we are building for. For example './build-ios.sh ios', or './build-ios.sh iosnew / ios32 / simulator / simulatornew'"
+    echo "Please indicate what we are building for. For example './build-ios.sh ios', or './build-ios.sh iosnew / simulator / simulatornew / simulatornewarm'"
     exit 1
 else
     if [ $1 = "ios" ] || [ $1 = "iosnew" ]
     then
 	echo "Building for iOS devices..."
-    elif [ $1 = "simulator" ] || [ $1 = "simulatornew" ] 
+    elif [ $1 = "simulator" ] || [ $1 = "simulatornew" ] || [ $1 = "simulatornewarm" ]
     then
 	echo "Building for Xcode iOS Simulator..."
-    elif [ $1 = "ios32" ]
-    then
-	echo "Building for 32-bit iOS devices..."
     else
 	echo $1 "not supported"
 	exit 1
@@ -26,7 +23,6 @@ if [ "$2" != "Debug" ] && [ "$2" != "Release" ]; then
     echo "Please indicate build type: Debug or Release (second argument, e.g. ./build-ios.sh simulator Debug)"
     exit 1
 fi
-
 
 mkdir include
 mkdir lib
@@ -41,88 +37,21 @@ rm -rf cereal-1.3.2
 
 if [ $1 = "ios" ] || [ $1 = "iosnew" ] 
 then
-    export ARCH=arm64 
-    export SDK=iphoneos
-elif [ $1 = "ios32" ]
-then
-    export ARCH=armv7
     export SDK=iphoneos
 elif [ $1 = "simulator" ]
 then
-    export ARCH=x86_64
     export SDK=iphonesimulator
 elif [ $1 = "simulatornew" ]
 then
-    export ARCH=x86_64
+    export SDK=iphonesimulator
+elif [ $1 = "simulatornewarm" ]
+then
     export SDK=iphonesimulator
 fi
-
-export CHOST=aarch64-apple-darwin* # Never used arm-apple-darwin*
-if [ $1 = "simulatornew" ] || [ $1 = "iosnew" ]
-then
-    export SDKVERSION=$(xcrun --sdk $SDK --show-sdk-version) # current version
-else
-    export SDKVERSION=9
-fi
-
-export SDKROOT=$(xcrun --sdk $SDK --show-sdk-path) # current version
-export PREFIX="/opt/$SDK-$SDKVERSION/$ARCH"
-
-export CC=$(xcrun --sdk $SDK --find gcc)" -fembed-bitcode"
-export CPP=$(xcrun --sdk $SDK --find gcc)" -E"
-export CXX=$(xcrun --sdk $SDK --find g++)
-export LD=$(xcrun --sdk $SDK --find ld)
-
-export CFLAGS="$CFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include -miphoneos-version-min=$SDKVERSION"
-export CPPFLAGS="$CPPFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include -miphoneos-version-min=$SDKVERSION"
-export CXXFLAGS="$CXXFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include"
-export LDFLAGS="$LDFLAGS -arch $ARCH -isysroot $SDKROOT -L$PREFIX/lib"
-export PKG_CONFIG_PATH="$PKG_CONFIG_PATH":"$SDKROOT/usr/lib/pkgconfig":"$PREFIX/lib/pkgconfig"
-
-tar xvf zlib-1.2.11-noexample.tar.gz
-cd zlib-1.2.11
-./configure
-make
-
-cp zlib.h ../include/
-
-cp zconf.h ../include/
-
-cp libz.a ../lib/
-
-cd ../
-rm -rf zlib-1.2.11
-
-tar xvf bzip2-1.0.8-use-env.tar.gz
-cd bzip2-1.0.8
-make bzip2
-
-cp bzlib.h ../include/
-
-cp libbz2.a ../lib/
-
-cd ..
-rm -rf bzip2-1.0.8
-
-unset ARCH
-unset CHOST
-unset SDKVERSION
-unset SDKROOT
-unset PREFIX
-unset CC
-unset CPP
-unset CXX
-unset LD
-unset CFLAGS
-unset CPPFLAGS
-unset CXXFLAGS
-unset LDFLAGS
-unset PKG_CONFIG_PATH
 
 cp ios/interop.h include/
 
 cp ios/interop.m lib/
-
 
 
 if [ $1 = "ios" ]
@@ -131,15 +60,15 @@ then
 elif [ $1 = "iosnew" ]
 then
     CMAKE_DEFINITIONS="-GXcode -T buildsystem=12 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64 -DDEPLOYMENT_TARGET="12.0""
-elif [ $1 = "ios32" ]
-then
-    CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS -DARCHS=armv7"
 elif [ $1 = "simulator" ]
 then
     CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64"
 elif [ $1 = "simulatornew" ]
 then
     CMAKE_DEFINITIONS="-GXcode -T buildsystem=12 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64 -DDEPLOYMENT_TARGET="12.0""
+elif [ $1 = "simulatornewarm" ]
+then
+    CMAKE_DEFINITIONS="-GXcode -T buildsystem=12 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATORARM64 -DDEPLOYMENT_TARGET="12.0""
 fi
 
 tar xvf libpng-1.6.40.tar.gz
