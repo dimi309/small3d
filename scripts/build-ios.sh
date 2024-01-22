@@ -2,13 +2,13 @@ set -e
 
 if [ -z $1 ]
 then
-    echo "Please indicate what we are building for. For example './build-ios.sh ios', or './build-ios.sh iosnew / ios32 / simulator / simulatornew'"
+    echo "Please indicate what we are building for. For example './build-ios.sh ios', or './build-ios.sh iosnew / ios32 / simulator / simulatornew / simulatornewarm'"
     exit 1
 else
     if [ $1 = "ios" ] || [ $1 = "iosnew" ]
     then
 	echo "Building for iOS devices..."
-    elif [ $1 = "simulator" ] || [ $1 = "simulatornew" ] 
+    elif [ $1 = "simulator" ] || [ $1 = "simulatornew" ] || [ $1 = "simulatornewarm" ]
     then
 	echo "building for Xcode iOS Simulator..."
     elif [ $1 = "ios32" ]
@@ -54,6 +54,9 @@ then
 elif [ $1 = "simulatornew" ]
 then
     cmake .. -GXcode -DCMAKE_TOOLCHAIN_FILE=../deps/ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64 -DDEPLOYMENT_TARGET="12.0"
+elif [ $1 = "simulatornewarm" ]
+then
+    cmake .. -GXcode -DCMAKE_TOOLCHAIN_FILE=../deps/ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATORARM64 -DDEPLOYMENT_TARGET="12.0"
 fi
 
 cmake --build . --config $2
@@ -88,5 +91,5 @@ fi
 echo "small3d built successfully for $1 ($2 mode)"
 if [ $1 = "simulatornew" ]
 then
-    echo "WARNING: The simulator builds only work on x86 cpus!"
+    echo "WARNING: The simulatornew builds only work on x86 cpus! Use simulatornewarm for Apple M1, M2 etc."
 fi
