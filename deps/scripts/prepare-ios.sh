@@ -27,6 +27,8 @@ if [ "$2" != "Debug" ] && [ "$2" != "Release" ]; then
     exit 1
 fi
 
+rm -rf include
+rm -rf lib
 
 mkdir include
 mkdir lib
@@ -65,75 +67,19 @@ else
     export SDKVERSION=9
 fi
 
-export SDKROOT=$(xcrun --sdk $SDK --show-sdk-path) # current version
-export PREFIX="/opt/$SDK-$SDKVERSION/$ARCH"
-
-export CC=$(xcrun --sdk $SDK --find gcc)" -fembed-bitcode"
-export CPP=$(xcrun --sdk $SDK --find gcc)" -E"
-export CXX=$(xcrun --sdk $SDK --find g++)
-export LD=$(xcrun --sdk $SDK --find ld)
-
-export CFLAGS="$CFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include -miphoneos-version-min=$SDKVERSION"
-export CPPFLAGS="$CPPFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include -miphoneos-version-min=$SDKVERSION"
-export CXXFLAGS="$CXXFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include"
-export LDFLAGS="$LDFLAGS -arch $ARCH -isysroot $SDKROOT -L$PREFIX/lib"
-export PKG_CONFIG_PATH="$PKG_CONFIG_PATH":"$SDKROOT/usr/lib/pkgconfig":"$PREFIX/lib/pkgconfig"
-
-tar xvf zlib-1.2.11-noexample.tar.gz
-cd zlib-1.2.11
-./configure
-make
-
-cp zlib.h ../include/
-
-cp zconf.h ../include/
-
-cp libz.a ../lib/
-
-cd ../
-rm -rf zlib-1.2.11
-
-tar xvf bzip2-1.0.8-use-env.tar.gz
-cd bzip2-1.0.8
-make bzip2
-
-cp bzlib.h ../include/
-
-cp libbz2.a ../lib/
-
-cd ..
-rm -rf bzip2-1.0.8
-
-unset ARCH
-unset CHOST
-unset SDKVERSION
-unset SDKROOT
-unset PREFIX
-unset CC
-unset CPP
-unset CXX
-unset LD
-unset CFLAGS
-unset CPPFLAGS
-unset CXXFLAGS
-unset LDFLAGS
-unset PKG_CONFIG_PATH
-
 cp ios/interop.h include/
 
 cp ios/interop.m lib/
 
-
-
 if [ $1 = "ios" ]
 then
-    CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64"
+    CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64 -DDEPLOYMENT_TARGET="12.0""
 elif [ $1 = "iosnew" ]
 then
     CMAKE_DEFINITIONS="-GXcode -T buildsystem=12 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS64 -DDEPLOYMENT_TARGET="12.0""
 elif [ $1 = "ios32" ]
 then
-    CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS -DARCHS=armv7"
+    CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=OS -DARCHS=armv7 -DDEPLOYMENT_TARGET="9.0""
 elif [ $1 = "simulator" ]
 then
     CMAKE_DEFINITIONS="-GXcode -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE=../../ios-cmake/ios.toolchain.cmake -DPLATFORM=SIMULATOR64 -DARCHS=x86_64"

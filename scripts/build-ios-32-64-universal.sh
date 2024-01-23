@@ -10,12 +10,12 @@ echo "Building universal (OpenGL ES for arm64 and armv7) for iOS"
 rm -rf tmp1
 rm -rf tmp2
 
-./build-ios.sh ios32 $1
+./build-ios.sh ios32 $1 opengles
 mkdir tmp1
 mv ../build/lib tmp1/
 rm -rf ../build
 
-./build-ios.sh ios $1
+./build-ios.sh ios $1 opengles
 mkdir tmp2
 mv ../build/lib tmp2/
 
