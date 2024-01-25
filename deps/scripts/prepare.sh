@@ -134,14 +134,6 @@ cp libportaudio.a ../../lib/
 cd ../../
 rm -rf portaudio
 
-tar xvf bzip2-1.0.8-use-env.tar.gz
-cd bzip2-1.0.8
-make
-cp bzlib.h ../include/
-cp libbz2.a ../lib/
-cd ..
-rm -rf bzip2-1.0.8
-
 tar xvf freetype-2.12.1.tar.gz
 cd freetype-2.12.1
 mkdir build

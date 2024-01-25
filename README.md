@@ -157,7 +157,6 @@ directly in your application / game code.
 - vorbis
 - portaudio
 - freetype
-- bzip
 - cereal
 - oboe when building for Android
 
