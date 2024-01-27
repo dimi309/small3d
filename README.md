@@ -33,15 +33,12 @@ and the use of cutting edge methods and technologies.
 - Frame-based animation (Wavefront)
 - Skeletal animation (glTF)
 
-# Partly humorous list of things NOT supported
+# Partly humorous list of limitations
 
-- Animation read from glTF and linked directly to models without bones/joints
-- Non-PNG images
-- Scenes - no Scene data structure; just SceneObjects rendered in an infinite space
-- Ray tracing
-- ECS
-- AI
-- Crypto
+- Non-PNG images are not supported.
+- There are no scenes, just SceneObjects rendered in an infinite space.
+- The 3D model parsers are far from feature-complete but pretty robust nonetheless.
+- ECS, Ray tracing, AI and Crypto are not supported.
 
 # Supported platforms
 

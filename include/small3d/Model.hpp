@@ -63,6 +63,7 @@ namespace small3d {
     // brief Original scale, as read from a file
     glm::vec3 origScale = glm::vec3(1.0f, 1.0f, 1.0f);
 
+
   public:
 
     /**
@@ -71,9 +72,9 @@ namespace small3d {
     Material material;
 
     /**
-     * @brief animation component for joint
+     * @brief animation component
      */
-    struct JointAnimationComponent {
+    struct AnimationComponent {
       uint32_t input = 0;
       std::vector<glm::quat> rotationAnimation;
       std::vector<glm::vec3> translationAnimation;
@@ -86,11 +87,11 @@ namespace small3d {
     };
 
     /**
-     *  @brief animation for joint
+     *  @brief animation
      */
-    struct JointAnimation {
+    struct Animation {
       std::string name;
-      std::vector<JointAnimationComponent> animationComponents;
+      std::vector<AnimationComponent> animationComponents;
       template <class Archive>
       void serialize(Archive& archive) {
         archive(name, animationComponents);
@@ -98,7 +99,7 @@ namespace small3d {
     };
 
     /**
-     * @brief animation joint
+     * @brief joint
      */
     struct Joint {
       uint32_t node = 0;
@@ -109,7 +110,7 @@ namespace small3d {
       glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
       glm::mat4 transformation = glm::mat4(1.0f);
       std::vector<uint32_t> children;
-      std::vector<JointAnimation> animations;
+      std::vector<Animation> animations;
 
       template <class Archive>
       void serialize(Archive& archive) {
@@ -213,6 +214,11 @@ namespace small3d {
     std::vector<Joint> joints;
 
     /**
+     * @brief Animations of the model (there are also joint animations)
+     */
+    std::vector<Animation> animations;
+
+    /**
      * @brief Should the model produce a shadow?
      */
     bool noShadow = false;
@@ -261,6 +267,17 @@ namespace small3d {
      */
     void setAnimation(uint32_t animationIdx);
 
+
+    /**
+     * @brief Get a transform of the model.
+     *  @param animationIdx The index of the animation to use
+     *  @param currentPose The pose of the animation to calculate the
+     *         joint transformation for.
+     *  @param seconds The animation moment (in seconds) - mostly used internally
+     *  @return The transform
+     */
+    glm::mat4 getTransform(uint32_t animationIdx, uint64_t currentPose, float seconds = 0.0f);
+
     /**
      * @brief Get a joint transform, also calculating the transorms of the parent
      *        joints in the same tree and the animations, if any exist.
@@ -288,7 +305,7 @@ namespace small3d {
     template <class Archive>
     void serialize(Archive& archive) {
       archive(currentAnimation,
-        numPoses, 
+        numPoses,
         origTransformation,
         origRotation,
         origTranslation,
@@ -308,12 +325,13 @@ namespace small3d {
         jointDataByteSize,
         weightData,
         weightDataByteSize,
-        joints
+        joints,
+        animations
         );
     }
 
     friend class GlbFile;
     friend class Renderer;
-
+   
   };
 }

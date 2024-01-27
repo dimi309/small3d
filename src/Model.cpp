@@ -57,6 +57,91 @@ namespace small3d {
     currentAnimation = animationIdx;
   }
 
+  glm::mat4 Model::getTransform(uint32_t animationIdx, uint64_t currentPose, float seconds) {
+    float secondsUsed = seconds;
+
+    // If parameter seconds == 0, it looks like
+    // this function has been called for the 
+    // first time in the stack sequence.
+    // Find in one of the animation sequences
+    // a seconds value that corresponds to 
+    // the current pose.
+    if (seconds == 0.0f && animations.size() > 0) {
+
+      if (auto animFound = std::find_if(animations[animationIdx].animationComponents.begin(),
+        animations[animationIdx].animationComponents.end(),
+        [&currentPose](const auto& anim) {return anim.times.size() > currentPose; });
+        animFound != std::end(animations[animationIdx].animationComponents)) {
+        secondsUsed = (*animFound).times[currentPose];
+      }
+    }
+
+    // By default, the joint is in its initial state
+    glm::mat4 translation(1.0f);
+    glm::mat4 rotation(1.0f);
+    glm::mat4 scale(1.0f);
+
+    // First time a translation, rotation or scale frame
+    // are being assigned?
+    bool firstT = true, firstR = true, firstS = true;
+
+    if (animations.size() > 0) {
+      for (const auto& animationComponent : animations[animationIdx].animationComponents) {
+        auto poseUsed = currentPose;
+        bool foundPose = false;
+
+        // Find the pose that corresonds to the seconds
+        // used
+        uint32_t tidx = 0;
+        for (const auto& time : animationComponent.times) {
+
+          // Using == it has been observed that at least one sample
+          // model used for testing gets deformed.
+          if (time >= secondsUsed) {
+            poseUsed = tidx;
+            foundPose = true;
+            break;
+          }
+          ++tidx;
+        }
+
+        // Replace initial joint translation, scale and / or rotation
+        // if such transformations are found in the pose used.
+        if (foundPose) {
+          if (animationComponent.translationAnimation.size() > poseUsed) {
+            if (firstT) {
+              translation = glm::translate(glm::mat4(1.0f), animationComponent.translationAnimation[poseUsed]);
+              firstT = false;
+            }
+            else {
+              translation *= glm::translate(glm::mat4(1.0f), animationComponent.translationAnimation[poseUsed]);
+            }
+          }
+          if (animationComponent.rotationAnimation.size() > poseUsed) {
+            if (firstR) {
+              rotation = glm::toMat4(animationComponent.rotationAnimation[poseUsed]);
+              firstR = false;
+            }
+            else {
+              rotation *= glm::toMat4(animationComponent.rotationAnimation[poseUsed]);
+            }
+          }
+          if (animationComponent.scaleAnimation.size() > poseUsed) {
+            if (firstS) {
+              scale = glm::scale(glm::mat4(1.0f), animationComponent.scaleAnimation[poseUsed]);
+              firstS = false;
+            }
+            else {
+              scale *= glm::scale(glm::mat4(1.0f), animationComponent.scaleAnimation[poseUsed]);
+            }
+          }
+        }
+      }
+    }
+    return translation * rotation * scale;
+
+  }
+
   glm::mat4 Model::getJointTransform(size_t joint, uint32_t animationIdx, uint64_t currentPose, float seconds) {
 
     float secondsUsed = seconds;
@@ -69,14 +154,12 @@ namespace small3d {
     // the current pose.
     if (seconds == 0.0f && joints[joint].animations.size() > 0) {
 
-      
-
       if (auto animFound = std::find_if(joints[joint].animations[animationIdx].animationComponents.begin(),
         joints[joint].animations[animationIdx].animationComponents.end(),
-        [&currentPose](const auto& anim) {return anim.times.size() > currentPose; }); animFound != std::end(joints[joint].animations[animationIdx].animationComponents)) {
+        [&currentPose](const auto& anim) {return anim.times.size() > currentPose; }); 
+        animFound != std::end(joints[joint].animations[animationIdx].animationComponents)) {
         secondsUsed = (*animFound).times[currentPose];
       }
-
     }
  
     // Find the parent node, if it exists
@@ -90,11 +173,9 @@ namespace small3d {
         return c == jointnode;
         })) {
         parentFound = true;
+        break;
       }
 
-
-
-      if (parentFound) break;
       ++idx;
     }
 
@@ -219,5 +300,4 @@ namespace small3d {
     ofstr.write(compressedData.c_str(), compressedData.length());
     ofstr.close();
   }
-
 }

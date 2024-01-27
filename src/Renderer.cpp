@@ -299,7 +299,8 @@ namespace small3d {
       glm::scale(glm::mat4x4(1.0f), model.scale) *
       glm::translate(glm::mat4x4(1.0f), model.origTranslation) *
       glm::toMat4(model.origRotation) *
-      glm::scale(glm::mat4x4(1.0f), model.origScale) * model.origTransformation;
+      glm::scale(glm::mat4x4(1.0f), model.origScale) * model.origTransformation *
+      model.getTransform(model.currentAnimation, currentPose);
 
     glUniformMatrix4fv(modelTransformationUniformLocation, 1, GL_FALSE,
       glm::value_ptr(modelTranformation));

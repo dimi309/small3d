@@ -180,7 +180,7 @@ namespace small3d {
      * @brief Load a mesh from the file into a Model
      * @param model The Model into which to load the data
      * @param meshName The name of the mesh to load
-     * 
+     *
      */
     void load(Model& model, const std::string& meshName = "") override;
 
@@ -190,6 +190,13 @@ namespace small3d {
      * @return The list of mesh names
      */
     std::vector<std::string> getMeshNames() override;
+
+  private:
+
+    // Add an animation to an animation vector
+    void addAnimation(std::vector<Model::Animation>& animations, uint32_t animationIdx, const Animation& animation, 
+      const AnimationChannel& channel, Model& model);
+
 
   };
 

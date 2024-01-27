@@ -976,7 +976,6 @@ namespace small3d {
 
       auto tmpNode = meshNode;
 
-
       // Getting armature and z_up transformations if they exist
       uint32_t parentCount = 0;
       while (existParentNode(tmpNode.index)) {
@@ -991,21 +990,19 @@ namespace small3d {
         model.origTransformation = tmpNode.transformation * model.origTransformation;
       }
 
+      // Get mesh animation
       uint32_t animationIdx = 0;
-      
       while (existAnimation(animationIdx)) {
         auto animation = getAnimation(animationIdx);
-
-        if (std::any_of(animation.channels.begin(), animation.channels.end(), [&meshNode](const auto& channel) {
-          return channel.target.node == meshNode.index;
-          })) {
-          LOGDEBUG("Non-skeletal animation ignored.");
-          break;
+        for (const auto& channel : animation.channels) {
+          if (meshNode.index == channel.target.node) {
+            addAnimation(model.animations, animationIdx, animation, channel, model);
+          }
         }
-        
         ++animationIdx;
       }
 
+      // Get joints animation
       if (!meshNode.noSkin && existSkin(meshNode.skin)) {
 
         auto skin = getSkin(meshNode.skin);
@@ -1040,72 +1037,22 @@ namespace small3d {
         while (existAnimation(animationIdx)) {
           auto animation = getAnimation(animationIdx);
 
+          if (model.animations.size() < animationIdx + 1) {
+            model.animations.emplace_back(Model::Animation());
+            model.animations[animationIdx].name = animation.name;
+          }
+
+          if (model.numPoses.size() < animationIdx + 1) {
+            model.numPoses.push_back(0);
+          }
+
           for (const auto& channel : animation.channels) {
-
-            auto sampler = animation.samplers[channel.sampler];
-
-            // sampler.interpolation ignored, just using everything
-            // as STEP
-
-            auto input = getBufferByAccessor(sampler.input);
-            std::vector<float>times(input.size() / 4);
-            memcpy(&times[0], &input[0], input.size());
-
-            auto output = getBufferByAccessor(sampler.output);
-
-
+            
             for (auto& joint : model.joints) {
-              if (joint.animations.size() < animationIdx + 1) {
-                joint.animations.emplace_back(Model::JointAnimation());
-                joint.animations[animationIdx].name = animation.name;
-              }
-
-              if (model.numPoses.size() < animationIdx + 1) {
-                model.numPoses.push_back(0);
-              }
-
               if (joint.node == channel.target.node) {
-                bool found = false;
-                uint32_t animIndex = 0;
-
-
-                if (std::any_of(joint.animations[animationIdx].animationComponents.begin(),
-                  joint.animations[animationIdx].animationComponents.end(), [&sampler](const auto& animationj) {
-                    return animationj.input == sampler.input;
-                  })) {
-                  found = true;
-                }
-
-                if (!found) {
-                  joint.animations[animationIdx].animationComponents.emplace_back(Model::JointAnimationComponent());
-                  animIndex = joint.animations[animationIdx].animationComponents.size() - 1;
-                  joint.animations[animationIdx].animationComponents[animIndex].times = times;
-                  joint.animations[animationIdx].animationComponents[animIndex].input = sampler.input;
-                }
-
-                if (channel.target.path == "rotation") {
-                  joint.animations[animationIdx].animationComponents[animIndex].rotationAnimation.resize(output.size() / sizeof(glm::quat));
-                  memcpy(&joint.animations[animationIdx].animationComponents[animIndex].rotationAnimation[0], &output[0], output.size());
-                  if (model.numPoses[animationIdx] < joint.animations[animationIdx].animationComponents[animIndex].rotationAnimation.size())
-                    model.numPoses[animationIdx] = joint.animations[animationIdx].animationComponents[animIndex].rotationAnimation.size();
-                }
-
-                if (channel.target.path == "translation") {
-                  joint.animations[animationIdx].animationComponents[animIndex].translationAnimation.resize(output.size() / sizeof(glm::vec3));
-                  memcpy(&joint.animations[animationIdx].animationComponents[animIndex].translationAnimation[0], &output[0], output.size());
-                  if (model.numPoses[animationIdx] < joint.animations[animationIdx].animationComponents[animIndex].translationAnimation.size())
-                    model.numPoses[animationIdx] = joint.animations[animationIdx].animationComponents[animIndex].translationAnimation.size();
-                }
-
-                if (channel.target.path == "scale") {
-                  joint.animations[animationIdx].animationComponents[animIndex].scaleAnimation.resize(output.size() / sizeof(glm::vec3));
-                  memcpy(&joint.animations[animationIdx].animationComponents[animIndex].scaleAnimation[0], &output[0], output.size());
-                  if (model.numPoses[animationIdx] < joint.animations[animationIdx].animationComponents[animIndex].scaleAnimation.size())
-                    model.numPoses[animationIdx] = joint.animations[animationIdx].animationComponents[animIndex].scaleAnimation.size();
-                }
+                addAnimation(joint.animations, animationIdx, animation, channel, model);
               }
             }
-            
           }
           ++animationIdx;
         } // end existAnimation loop
@@ -1123,5 +1070,65 @@ namespace small3d {
       }
     }
     return names;
+  }
+
+  void GlbFile::addAnimation(std::vector<Model::Animation>& animations, uint32_t animationIdx, const Animation& animation, 
+    const AnimationChannel& channel, Model& model) {
+
+    auto sampler = animation.samplers[channel.sampler];
+    // sampler.interpolation ignored, just using everything
+    // as STEP
+
+    auto input = getBufferByAccessor(sampler.input);
+    std::vector<float>times(input.size() / 4);
+    memcpy(&times[0], &input[0], input.size());
+
+    auto output = getBufferByAccessor(sampler.output);
+
+    if (animations.size() < animationIdx + 1) {
+      animations.emplace_back(Model::Animation());
+      animations[animationIdx].name = animation.name;
+    }
+
+    
+      bool found = false;
+      uint32_t animIndex = 0;
+
+      if (std::any_of(animations[animationIdx].animationComponents.begin(),
+        animations[animationIdx].animationComponents.end(), [&sampler](const auto& animationj) {
+          return animationj.input == sampler.input;
+        })) {
+        found = true;
+      }
+
+      if (!found) {
+        animations[animationIdx].animationComponents.emplace_back(Model::AnimationComponent());
+        animIndex = animations[animationIdx].animationComponents.size() - 1;
+        animations[animationIdx].animationComponents[animIndex].times = times;
+        animations[animationIdx].animationComponents[animIndex].input = sampler.input;
+      }
+
+      if (channel.target.path == "rotation") {
+        animations[animationIdx].animationComponents[animIndex].rotationAnimation.resize(output.size() / sizeof(glm::quat));
+        memcpy(&animations[animationIdx].animationComponents[animIndex].rotationAnimation[0], &output[0], output.size());
+        if (model.numPoses[animationIdx] < animations[animationIdx].animationComponents[animIndex].rotationAnimation.size())
+          model.numPoses[animationIdx] = animations[animationIdx].animationComponents[animIndex].rotationAnimation.size();
+      }
+
+      if (channel.target.path == "translation") {
+        animations[animationIdx].animationComponents[animIndex].translationAnimation.resize(output.size() / sizeof(glm::vec3));
+        memcpy(&animations[animationIdx].animationComponents[animIndex].translationAnimation[0], &output[0], output.size());
+        if (model.numPoses[animationIdx] < animations[animationIdx].animationComponents[animIndex].translationAnimation.size())
+          model.numPoses[animationIdx] = animations[animationIdx].animationComponents[animIndex].translationAnimation.size();
+      }
+
+      if (channel.target.path == "scale") {
+        animations[animationIdx].animationComponents[animIndex].scaleAnimation.resize(output.size() / sizeof(glm::vec3));
+        memcpy(&animations[animationIdx].animationComponents[animIndex].scaleAnimation[0], &output[0], output.size());
+        if (model.numPoses[animationIdx] < animations[animationIdx].animationComponents[animIndex].scaleAnimation.size())
+          model.numPoses[animationIdx] = animations[animationIdx].animationComponents[animIndex].scaleAnimation.size();
+      }
+    
+
   }
 }
