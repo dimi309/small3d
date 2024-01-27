@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['binaryfile_145',['BinaryFile',['../classsmall3d_1_1_binary_file.html',1,'small3d']]],
-  ['boundingboxset_146',['BoundingBoxSet',['../classsmall3d_1_1_bounding_box_set.html',1,'small3d']]]
+  ['animation_147',['Animation',['../structsmall3d_1_1_model_1_1_animation.html',1,'small3d::Model']]],
+  ['animationcomponent_148',['AnimationComponent',['../structsmall3d_1_1_model_1_1_animation_component.html',1,'small3d::Model']]]
 ];

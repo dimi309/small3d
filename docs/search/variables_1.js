@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cameraposition_257',['cameraPosition',['../classsmall3d_1_1_renderer.html#a98e23bfad9181afafcf6f64655698c35',1,'small3d::Renderer']]]
+  ['boxextremes_260',['boxExtremes',['../classsmall3d_1_1_bounding_box_set.html#a954fb0543919362f873e9f59f61c83b8',1,'small3d::BoundingBoxSet']]]
 ];

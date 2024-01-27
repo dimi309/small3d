@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['uvbuffer_314',['uvBuffer',['../classsmall3d_1_1_model.html#a77d6e46a357f5216c27dec374582d4f0',1,'small3d::Model']]],
-  ['uvbuffermemory_315',['uvBufferMemory',['../classsmall3d_1_1_model.html#a9628ad75022570c3fdda0c449790cd5f',1,'small3d::Model']]]
+  ['weightdata_293',['weightData',['../classsmall3d_1_1_model.html#a41ca4152abcc719e9048258925999f10',1,'small3d::Model']]],
+  ['weightdatabytesize_294',['weightDataByteSize',['../classsmall3d_1_1_model.html#a0f8f0d5bf988d89b3cf7c6c16bc2871e',1,'small3d::Model']]]
 ];

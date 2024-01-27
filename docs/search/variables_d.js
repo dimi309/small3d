@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['vertexdata_286',['vertexData',['../classsmall3d_1_1_model.html#adf9422b7594956d857bc9da9da7b13e4',1,'small3d::Model']]],
-  ['vertexdatabytesize_287',['vertexDataByteSize',['../classsmall3d_1_1_model.html#a06b724ca272d632f25098e25ab0137a4',1,'small3d::Model']]],
-  ['vertices_288',['vertices',['../classsmall3d_1_1_bounding_box_set.html#ad6565272cb69deaf226f4ae892975f93',1,'small3d::BoundingBoxSet']]]
+  ['texturecoordsdata_288',['textureCoordsData',['../classsmall3d_1_1_model.html#a3dc1c38f06ad7bd19126933197e7b443',1,'small3d::Model']]],
+  ['texturecoordsdatabytesize_289',['textureCoordsDataByteSize',['../classsmall3d_1_1_model.html#a3351123ddee47d7b81b9a020ca828061',1,'small3d::Model']]]
 ];

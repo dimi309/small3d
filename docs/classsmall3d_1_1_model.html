@@ -85,14 +85,14 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model_1_1_animation.html">Animation</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">animation  <a href="structsmall3d_1_1_model_1_1_animation.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model_1_1_animation_component.html">AnimationComponent</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">animation component  <a href="structsmall3d_1_1_model_1_1_animation_component.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model_1_1_joint.html">Joint</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">animation joint  <a href="structsmall3d_1_1_model_1_1_joint.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model_1_1_joint_animation.html">JointAnimation</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">animation for joint  <a href="structsmall3d_1_1_model_1_1_joint_animation.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmall3d_1_1_model_1_1_joint_animation_component.html">JointAnimationComponent</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">animation component for joint  <a href="structsmall3d_1_1_model_1_1_joint_animation_component.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">joint  <a href="structsmall3d_1_1_model_1_1_joint.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -116,6 +116,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7ae390be2c19fcbd81829341fc8cafa3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a7ae390be2c19fcbd81829341fc8cafa3">setAnimation</a> (uint32_t animationIdx)</td></tr>
 <tr class="memdesc:a7ae390be2c19fcbd81829341fc8cafa3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the current animation.  <a href="classsmall3d_1_1_model.html#a7ae390be2c19fcbd81829341fc8cafa3">More...</a><br /></td></tr>
 <tr class="separator:a7ae390be2c19fcbd81829341fc8cafa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a755291d29ecc8368cf7bfa9247a168ad"><td class="memItemLeft" align="right" valign="top">glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a755291d29ecc8368cf7bfa9247a168ad">getTransform</a> (uint32_t animationIdx, uint64_t currentPose, float seconds=0.0f)</td></tr>
+<tr class="memdesc:a755291d29ecc8368cf7bfa9247a168ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a transform of the model.  <a href="classsmall3d_1_1_model.html#a755291d29ecc8368cf7bfa9247a168ad">More...</a><br /></td></tr>
+<tr class="separator:a755291d29ecc8368cf7bfa9247a168ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6100343932704c5e7a647a13aaae7586"><td class="memItemLeft" align="right" valign="top">glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a6100343932704c5e7a647a13aaae7586">getJointTransform</a> (size_t jointIdx, uint32_t animationIdx, uint64_t currentPose, float seconds=0.0f)</td></tr>
 <tr class="memdesc:a6100343932704c5e7a647a13aaae7586"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a joint transform, also calculating the transorms of the parent joints in the same tree and the animations, if any exist.  <a href="classsmall3d_1_1_model.html#a6100343932704c5e7a647a13aaae7586">More...</a><br /></td></tr>
 <tr class="separator:a6100343932704c5e7a647a13aaae7586"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -197,6 +200,10 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 std::vector&lt; <a class="el" href="structsmall3d_1_1_model_1_1_joint.html">Joint</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#ab90cce419400675c73e1196cdcb679d8">joints</a></td></tr>
 <tr class="memdesc:ab90cce419400675c73e1196cdcb679d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">The model's joints. <br /></td></tr>
 <tr class="separator:ab90cce419400675c73e1196cdcb679d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6ab7d804d978b808c7cc1b065260f70"><td class="memItemLeft" align="right" valign="top"><a id="ab6ab7d804d978b808c7cc1b065260f70"></a>
+std::vector&lt; <a class="el" href="structsmall3d_1_1_model_1_1_animation.html">Animation</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#ab6ab7d804d978b808c7cc1b065260f70">animations</a></td></tr>
+<tr class="memdesc:ab6ab7d804d978b808c7cc1b065260f70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Animations of the model (there are also joint animations) <br /></td></tr>
+<tr class="separator:ab6ab7d804d978b808c7cc1b065260f70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac97a1368278ce6bf42d14470e8270dc9"><td class="memItemLeft" align="right" valign="top"><a id="ac97a1368278ce6bf42d14470e8270dc9"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#ac97a1368278ce6bf42d14470e8270dc9">noShadow</a> = false</td></tr>
 <tr class="memdesc:ac97a1368278ce6bf42d14470e8270dc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Should the model produce a shadow? <br /></td></tr>
@@ -385,6 +392,51 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
 
 <p>Get the number of animation poses in the current animation. </p>
 <dl class="section return"><dt>Returns</dt><dd>The number of animation poses </dd></dl>
+
+</div>
+</div>
+<a id="a755291d29ecc8368cf7bfa9247a168ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a755291d29ecc8368cf7bfa9247a168ad">&#9670;&nbsp;</a></span>getTransform()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">glm::mat4 small3d::Model::getTransform </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>animationIdx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>currentPose</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>seconds</em> = <code>0.0f</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a transform of the model. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">animationIdx</td><td>The index of the animation to use </td></tr>
+    <tr><td class="paramname">currentPose</td><td>The pose of the animation to calculate the joint transformation for. </td></tr>
+    <tr><td class="paramname">seconds</td><td>The animation moment (in seconds) - mostly used internally </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The transform </dd></dl>
 
 </div>
 </div>

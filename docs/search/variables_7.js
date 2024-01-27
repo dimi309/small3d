@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['material_270',['material',['../classsmall3d_1_1_model.html#a809cd09097b9e123813565008add1fe6',1,'small3d::Model']]],
-  ['max_5fjoints_5fsupported_271',['MAX_JOINTS_SUPPORTED',['../classsmall3d_1_1_model.html#ad2b52d176f49562bca07f9b238b84854',1,'small3d::Model']]]
+  ['lightdirection_271',['lightDirection',['../classsmall3d_1_1_renderer.html#a77353e63ccea1c4f33ff9cba9eb81978',1,'small3d::Renderer']]],
+  ['lightintensity_272',['lightIntensity',['../classsmall3d_1_1_renderer.html#a16cad6462cacc418e9d470fa90677c40',1,'small3d::Renderer']]],
+  ['logger_273',['logger',['../_logger_8hpp.html#a1c25b235eec67110b8a55e850bbec26e',1,'Logger.cpp']]]
 ];
