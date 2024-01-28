@@ -34,7 +34,7 @@ and the use of cutting edge methods and technologies.
 - Frame-based animation (Wavefront)
 - Skeletal animation (glTF)
 
-# Partly humorous list of limitations
+# Limitations
 
 - Non-PNG images are not supported.
 - There are no scenes, just SceneObjects rendered in an infinite space.
@@ -42,7 +42,6 @@ and the use of cutting edge methods and technologies.
   nonetheless. The goal is not to be able to read a complete node structure
   from a gltf file for example, but to extract individual models and their
   animations, in order to use them in a game.
-- ECS, Ray tracing, AI and Crypto are not supported.
 
 # Supported platforms
 
