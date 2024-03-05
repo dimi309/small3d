@@ -23,6 +23,7 @@ set VSCONFIG=-G"Visual Studio 17 2022" -A x64
 mkdir include
 mkdir lib
 mkdir bin
+mkdir licenses
 
 7z x glfw-3.3.8.zip
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
@@ -37,6 +38,8 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy src\%BUILDTYPE%\glfw3.lib ..\..\lib\
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
+copy ..\LICENSE.md ..\..\licenses\GLFW_LICENSE
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..
 rmdir /Q /S glfw-3.3.8
 
@@ -53,6 +56,8 @@ if %BUILDTYPE%==Debug (copy lib\%BUILDTYPE%\libglew32d.lib ..\lib\glew.lib) else
 if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 for /r %%a in (*.pdb) do @copy /y "%%a" ..\bin
 if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
+copy LICENSE.txt ..\licenses\GLEW_LICENSE
+if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 cd ..
 del glew-2.2.0.tar
 rmdir /Q /S glew-2.2.0
@@ -67,6 +72,9 @@ rmdir /Q /S glm
 7z x cereal-1.3.2.tar
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 xcopy cereal-1.3.2\include\cereal include\cereal /i /s
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy cereal-1.3.2\LICENSE licenses\CEREAL_LICENSE
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 del 7z x cereal-1.3.2.tar
 rmdir /Q /S cereal-1.3.2
 
@@ -86,6 +94,9 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 if %BUILDTYPE%==Debug (copy %BUILDTYPE%\zlibstaticd.lib ..\..\lib\zlib.lib) else (copy %BUILDTYPE%\zlibstatic.lib ..\..\lib\zlib.lib)
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy ..\zlib.3.pdf ..\..\licenses\ZLIB_README_LICENSE.pdf
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S zlib-1.2.11
 del zlib-1.2.11-noexample.tar
@@ -104,6 +115,8 @@ copy pnglibconf.h ..\..\include
 if %BUILDTYPE%==Debug (copy %BUILDTYPE%\libpng16_staticd.lib ..\..\lib\png.lib) else (copy %BUILDTYPE%\libpng16_static.lib ..\..\lib\png.lib)
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy ..\LICENSE ..\..\licenses\LIBPNG_LICENSE
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S libpng-1.6.37
@@ -127,6 +140,8 @@ copy %BUILDTYPE%\ogg.lib ..\..\lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy ..\COPYING ..\..\licenses\OGG_LICENSE
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S libogg-1.3.5
 del libogg-1.3.5.tar
@@ -149,6 +164,8 @@ copy lib\%BUILDTYPE%\*.lib ..\..\lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy ..\COPYING ..\..\licenses\VORBIS_LICENSE
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S libvorbis-1.3.7
 del libvorbis-1.3.7.tar
@@ -169,6 +186,8 @@ move %BUILDTYPE%\portaudio_static*.lib ..\..\lib\portaudio_static.lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy ..\LICENSE.txt ..\..\PORTAUDIO_LICENSE
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S portaudio
 del pa_stable_v190700_20210406.tar
@@ -187,6 +206,8 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy %BUILDTYPE%\freetype*.lib ..\..\lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy ..\LICENSE.TXT ..\..\licenses\FREETYPE_LICENSE
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..
 rmdir /Q /S freetype-2.12.1
