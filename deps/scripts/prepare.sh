@@ -14,7 +14,7 @@ if [ $(uname) == 'Linux' ]; then
     if type -p "apt" > /dev/null ; then
 	sudo apt update
 	# Without Install-Recommends libvulkan-dev does not get installed on travis-ci...
-	sudo apt install -y -o APT::Install-Recommends=1 libgl1-mesa-dev libxinerama-dev glslang-tools libxcursor-dev libxi-dev libxrandr-dev libasound2-dev
+	sudo apt install -y -o APT::Install-Recommends=1 libgl1-mesa-dev libxinerama-dev glslang-tools libxcursor-dev libxi-dev libxrandr-dev libasound2-dev libbz2-dev
 	
     elif type -p "dnf" > /dev/null ; then
 	sudo dnf install -y mesa-libGL-devel
@@ -39,7 +39,7 @@ CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=$1
 
 mkdir include
 mkdir lib
-
+mkdir licenses
 
 unzip glfw-3.3.8.zip
 cd glfw-3.3.8
@@ -49,6 +49,7 @@ cmake .. -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF 
 cmake --build .
 cp -rf ../include/GLFW ../../include/
 cp src/libglfw3.a ../../lib/
+cp ../LICENSE.md ../../licenses/GLFW_LICENSE
 cd ../..
 rm -rf glfw-3.3.8
 
@@ -63,13 +64,14 @@ cp -rf include/GL ../include/
 # else
     cp lib/libGLEW.a ../lib/libGLEW.a
 # fi
+cp LICENSE.txt ../licenses/GLEW_LICENSE
 cd ..
 rm -rf glew-2.2.0
 
 unzip glm-0.9.9.8.zip
 cp -rf glm/glm include/
+cp glm/copying.txt licenses/GLM_LICENSE
 rm -rf glm
-
 tar xvf cereal-1.3.2.tar.gz
 cp -rf cereal-1.3.2/include/cereal include/
 rm -rf cereal-1.3.2
@@ -83,6 +85,7 @@ cmake --build .
 cp ../zlib.h ../../include/
 cp zconf.h ../../include/
 cp libz.a ../../lib/
+cp ../zlib.3.pdf ../../licenses/ZLIB_README_LICENSE.pdf
 cd ../../
 rm -rf zlib-1.2.11
 
@@ -97,6 +100,7 @@ cmake --build .
 cp ../*.h ../../include/
 cp pnglibconf.h ../../include/
 cp libpng.a ../../lib/
+cp ../LICENSE ../../licenses/LIBPNG_LICENSE
 cd ../../
 rm -rf libpng-1.6.37
 
@@ -109,6 +113,7 @@ cmake --build .
 cp -rf ../include/ogg ../../include/
 cp include/ogg/config_types.h ../../include/ogg/
 cp libogg.a ../../lib/
+cp ../COPYING ../../licenses/OGG_LICENSE
 cd ../../
 rm -rf libogg-1.3.5
 
@@ -120,6 +125,7 @@ cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_PREFIX_PATH=$(pwd)/../../ $CMAKE_DEFINI
 cmake --build .
 cp -rf ../include/vorbis ../../include/
 cp lib/*.a ../../lib/
+cp ../COPYING ../../licenses/VORBIS_LICENSE
 cd ../../
 rm -rf libvorbis-1.3.7
 
@@ -131,6 +137,7 @@ cmake .. $CMAKE_DEFINITIONS $CMAKE_PORTAUDIO_DEFINITIONS
 cmake --build .
 cp ../include/* ../../include/
 cp libportaudio.a ../../lib/
+cp ../LICENSE.txt ../../licenses/PORTAUDIO_LICENSE
 cd ../../
 rm -rf portaudio
 
@@ -150,7 +157,7 @@ if [ "$1" == "Release" ]; then
 else
     cp libfreetyped.a ../../lib/libfreetype.a
 fi
-
+cp ../LICENSE.TXT ../../licenses/FREETYPE_LICENSE
 cd ../..
 rm -rf freetype-2.12.1
 
