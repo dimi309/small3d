@@ -66,7 +66,7 @@ rmdir /Q /S glew-2.2.0
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 xcopy glm\glm include\glm /i /s
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-xcopy glm\copying.txt licenses\GLM_LICENSE
+copy glm\copying.txt licenses\GLM_LICENSE
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 rmdir /Q /S glm
 
@@ -188,7 +188,7 @@ move %BUILDTYPE%\portaudio_static*.lib ..\..\lib\portaudio_static.lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-copy ..\LICENSE.txt ..\..\PORTAUDIO_LICENSE
+copy ..\LICENSE.txt ..\..\licenses\PORTAUDIO_LICENSE
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S portaudio

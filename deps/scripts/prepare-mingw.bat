@@ -20,6 +20,8 @@ if /I "%~1" == "release" set CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=Release
 
 mkdir include
 mkdir lib
+mkdir licenses
+
 7z x glfw-3.3.8.zip
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd glfw-3.3.8
@@ -31,6 +33,8 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 xcopy ..\include\GLFW ..\..\include\GLFW /i /s
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy src\libglfw3.a ..\..\lib\
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy ..\LICENSE.md ..\..\licenses\GLFW_LICENSE
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..
 rmdir /Q /S glfw-3.3.8
@@ -49,6 +53,8 @@ set GLEWLIB=libglew32.a
 REM if /I "%~1" == "Debug" set GLEWLIB=libglew32d.a 
 copy lib\!GLEWLIB! ..\lib\libglew32.a
 if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
+copy LICENSE.txt ..\licenses\GLEW_LICENSE
+if !errorlevel! neq 0 endlocal & exit /b !errorlevel!
 cd ..
 del glew-2.2.0.tar
 rmdir /Q /S glew-2.2.0
@@ -57,12 +63,17 @@ rmdir /Q /S glew-2.2.0
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel% 
 xcopy glm\glm include\glm /i /s
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy glm\copying.txt licenses\GLM_LICENSE
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 rmdir /Q /S glm
 
 7z x cereal-1.3.2.tar.gz
 7z x cereal-1.3.2.tar
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 xcopy cereal-1.3.2\include\cereal include\cereal /i /s
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy cereal-1.3.2\LICENSE licenses\CEREAL_LICENSE
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 del 7z x cereal-1.3.2.tar
 rmdir /Q /S cereal-1.3.2
 
@@ -80,6 +91,8 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy zconf.h ..\..\include
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy libzlibstatic.a ..\..\lib\zlib.a
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy ..\zlib.3.pdf ..\..\licenses\ZLIB_README_LICENSE.pdf
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S zlib-1.2.11
@@ -99,6 +112,8 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy pnglibconf.h ..\..\include
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy libpng.a ..\..\lib
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy ..\LICENSE ..\..\licenses\LIBPNG_LICENSE
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S libpng-1.6.37
@@ -120,6 +135,8 @@ copy include\ogg\config_types.h ..\..\include\ogg
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy libogg.a ..\..\lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy ..\COPYING ..\..\licenses\OGG_LICENSE
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S libogg-1.3.5
 del libogg-1.3.5.tar
@@ -140,6 +157,8 @@ xcopy ..\include\vorbis ..\..\include\vorbis /i /s
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy lib\*.a ..\..\lib
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy ..\COPYING ..\..\licenses\VORBIS_LICENSE
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S libvorbis-1.3.7
 del libvorbis-1.3.7.tar
@@ -157,6 +176,8 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy ..\include\* ..\..\include
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy libportaudio.a ..\..\lib
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy ..\LICENSE.txt ..\..\licenses\PORTAUDIO_LICENSE
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S portaudio
@@ -176,6 +197,8 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 set FREETYPELIB=libfreetype.a
 if /I "%~1" == "Debug" set FREETYPELIB=libfreetyped.a 
 copy %FREETYPELIB% ..\..\lib\libfreetype.a
+if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
+copy ..\LICENSE.TXT ..\..\licenses\FREETYPE_LICENSE
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..
 rmdir /Q /S freetype-2.12.1
