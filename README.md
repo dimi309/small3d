@@ -12,11 +12,27 @@ code-base. Supporting as many platforms as possible while minimising the amount
 of code and time needed for maintenance is favoured over richness of features 
 and the use of cutting edge methods and technologies.
 
-## Sample games
+# Games 
+
+## First little games
+
+- Avoid the Bug
+
+- Chase the Goat
+
+- Frog Remixed
+
+All of the above can be found here: https://github.com/dimi309/small3d-first-games
+
+## More "evolved" titles
 
 - [Gloom](https://github.com/dimi309/gloom) (open source)
 
 - [Islet Hell](https://store.steampowered.com/app/2069750/Islet_Hell/) (once commercially released, now free of charge, also available for [Android](https://play.google.com/store/apps/details?id=dimi309.islethelladroid) and [Apple iOS](https://apps.apple.com/us/app/islet-hell/id1631875184))
+
+# Non-game project
+
+- [Serial Model Renderer](https://github.com/dimi309/serial-model-renderer), used to test the 3D model reading and rendering functionality of small3d
 
 # Features
 

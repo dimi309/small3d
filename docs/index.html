@@ -71,12 +71,27 @@ $(function() {
 <p>Minimalistic, open source library for making 3D games in C++</p>
 <p>This library provides a sufficient level of game development functionalities for C++ developers to be able to build cross-platform games based on a single code-base. Supporting as many platforms as possible while minimising the amount of code and time needed for maintenance is favoured over richness of features and the use of cutting edge methods and technologies.</p>
 <h1><a class="anchor" id="autotoc_md1"></a>
-Sample games</h1>
+Games</h1>
+<h2><a class="anchor" id="autotoc_md2"></a>
+First little games</h2>
+<ul>
+<li>Avoid the Bug</li>
+<li>Chase the Goat</li>
+<li>Frog Remixed</li>
+</ul>
+<p>All of the above can be found here: <a href="https://github.com/dimi309/small3d-first-games">https://github.com/dimi309/small3d-first-games</a></p>
+<h2><a class="anchor" id="autotoc_md3"></a>
+More "evolved" titles</h2>
 <ul>
 <li><a href="https://github.com/dimi309/gloom">Gloom</a> (open source)</li>
 <li><a href="https://store.steampowered.com/app/2069750/Islet_Hell/">Islet Hell</a> (once commercially released, now free of charge, also available for <a href="https://play.google.com/store/apps/details?id=dimi309.islethelladroid">Android</a> and <a href="https://apps.apple.com/us/app/islet-hell/id1631875184">Apple iOS</a>)</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md2"></a>
+<h1><a class="anchor" id="autotoc_md4"></a>
+Non-game project</h1>
+<ul>
+<li><a href="https://github.com/dimi309/serial-model-renderer">Serial Model Renderer</a>, used to test the 3D model reading and rendering functionality of <a class="el" href="namespacesmall3d.html">small3d</a></li>
+</ul>
+<h1><a class="anchor" id="autotoc_md5"></a>
 Features</h1>
 <ul>
 <li>3D models loaded from glTF (glb files), Wavefront (obj files) or from a native format</li>
@@ -92,14 +107,14 @@ Features</h1>
 <li>Frame-based animation (Wavefront)</li>
 <li>Skeletal animation (glTF)</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md3"></a>
+<h1><a class="anchor" id="autotoc_md6"></a>
 Limitations</h1>
 <ul>
 <li>Non-PNG images are not supported.</li>
 <li>There are no scenes, just SceneObjects rendered in an infinite space.</li>
 <li>The 3D model parsers are far from feature-complete but pretty robust nonetheless. The goal is not to be able to read a complete node structure from a gltf file for example, but to extract individual models and their animations, in order to use them in a game.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md4"></a>
+<h1><a class="anchor" id="autotoc_md7"></a>
 Supported platforms</h1>
 <ul>
 <li>Windows</li>
@@ -115,12 +130,12 @@ Supported platforms</h1>
 <p>And here is the last Vulkan commit before the Vulkan renderer got removed:</p>
 <p><a href="https://github.com/dimi309/small3d/releases/tag/1.8015.last.vulkan">https://github.com/dimi309/small3d/releases/tag/1.8015.last.vulkan</a></p>
 <p>Note that despite the official deprecation of OpenGL on Apple devices, OpenGL and OpenGL ES still work just fine there. If and when that changes, I will implement a renderer in Metal or something.</p>
-<h1><a class="anchor" id="autotoc_md5"></a>
+<h1><a class="anchor" id="autotoc_md8"></a>
 Tutorial</h1>
 <p><a href="https://www.gamedev.net/tutorials/programming/engines-and-middleware/small3d-tutorial-r5655/">https://www.gamedev.net/tutorials/programming/engines-and-middleware/small3d-tutorial-r5655/</a></p>
-<h1><a class="anchor" id="autotoc_md6"></a>
+<h1><a class="anchor" id="autotoc_md9"></a>
 Building and deploying</h1>
-<h2><a class="anchor" id="autotoc_md7"></a>
+<h2><a class="anchor" id="autotoc_md10"></a>
 Prerequisites</h2>
 <p>The following need to be installed, with the relevant environment variables and tools accessible via the command line:</p>
 <ul>
@@ -130,7 +145,7 @@ Prerequisites</h2>
 <li>Android Studio if building for Android</li>
 <li>Xcode if building for iOS</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md8"></a>
+<h2><a class="anchor" id="autotoc_md11"></a>
 Deploying small3d for PC</h2>
 <p>Run the build script which is suitable to your platform from the <code>scripts</code> directory (<code>build-vs.bat</code>, <code>build-mingw.bat</code> or <code>build.sh</code>).</p>
 <p>Then, the unit tests are executed by running <code>unittests</code> binary from <code>build/bin</code>.</p>
@@ -143,18 +158,18 @@ Deploying small3d for PC</h2>
 <li>The <code>small3d/cmake</code> directory if you will be using cmake</li>
 </ul>
 <p>You can also deploy using <a href="https://conan.io">conan</a>. The conan package is provided in a <a href="https://github.com/dimi309/small3d-conan">separate repository</a>.</p>
-<h2><a class="anchor" id="autotoc_md9"></a>
+<h2><a class="anchor" id="autotoc_md12"></a>
 Deploying small3d for mobile</h2>
 <p>Builds for mobile platforms can be performed by executing either <code>build-android</code> or <code>build-ios</code> from the <code>scripts</code> directory. You can then use the test projects in the <code>android</code>, <code>ios</code> and <code>ios-opengles</code> directories to check if everything works, or as a starting point for your own projects.</p>
 <p>If the Android project produces an NDK or SDK related error when opened in Android Studio, just close it without exiting Android Studio and open it again.</p>
 <p>Also on Android, while a game or the unit tests are running, the error <code>.../GL2Encoder.cpp:s_glGetBufferParameteriv:3386 GL error 0x502</code> might appear in the log. You can ignore it. It is produced when glGetBufferParameteriv is called in the Renderer to check if a model has already been copied to the GPU and the model is not found (as expected when it has been newly loaded).</p>
 <p>Note that, while on the PC edition I use GLFW for windowing functionalities and I/O, on mobile I access the native infrastructure directly.</p>
-<h2><a class="anchor" id="autotoc_md10"></a>
+<h2><a class="anchor" id="autotoc_md13"></a>
 Boilerplate Project</h2>
 <p>If you would like to start with an empty project that has the basic game loop and input already set up, you are looking for this:</p>
 <p><a href="https://github.com/dimi309/small3d-boilerplate">https://github.com/dimi309/small3d-boilerplate</a></p>
 <p>It is highly recommended to use this boilerplate if you intend to port your game to Android and / or iOS. While it is pretty straightforward to get this library working for the desktop and you might prefer the freedom and flexibility of working with a project set up from scratch, mobile platforms have many specificities and quirks to take care of, so the boilerplate can save you a lot of time in that respect.</p>
-<h1><a class="anchor" id="autotoc_md11"></a>
+<h1><a class="anchor" id="autotoc_md14"></a>
 Referenced libraries</h1>
 <p>The following dependencies' <em>source code</em> repositories (not binaries) are distributed in this same repository (in the <code>deps</code> directory). They can be built by executing a single script (see "Building", above) and they can also be used directly in your application / game code.</p>
 <ul>
