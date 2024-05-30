@@ -15,7 +15,7 @@ private:
   glm::vec3 normalBetween(uint64_t triangle1, uint64_t triangle2);
 
 public:
-  OctPyramid(const float height = 3.9f, const float radius = 1.5f);
+  explicit OctPyramid(const float height = 3.9f, const float radius = 1.5f);
 
 };
 
