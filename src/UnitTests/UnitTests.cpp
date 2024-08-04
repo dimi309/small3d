@@ -796,4 +796,34 @@ int ScreenCaptureTest() {
   return 1;
 
 }
+
+int ControllerTest() {
+
+  if (glfwJoystickPresent(GLFW_JOYSTICK_1)) {
+
+    LOGINFO("Found joystick: " + std::string(glfwGetJoystickName(GLFW_JOYSTICK_1)));
+
+    int axes_count;
+    const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axes_count);
+    LOGINFO("Axes count: " + std::to_string(axes_count));
+
+    if (glfwJoystickIsGamepad(GLFW_JOYSTICK_1)) {
+      
+      LOGINFO("The joystick is a gamepad: " + std::string(glfwGetGamepadName(GLFW_JOYSTICK_1)));
+
+      GLFWgamepadstate state;
+      
+      if (glfwGetGamepadState(GLFW_JOYSTICK_1, &state)) {
+
+        LOGINFO("Retrieved gamepad state.");
+      }
+
+    }
+
+  }
+
+  return 1;
+
+}
+
 #endif

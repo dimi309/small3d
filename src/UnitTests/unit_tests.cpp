@@ -48,6 +48,12 @@ int main(int argc, char** argv) {
       RETURN1
     }
     LOGINFO("ScreenCaptureTest OK");
+
+    if (!ControllerTest()) {
+      LOGINFO("*** Failing ControllerTest.");
+      RETURN1
+    }
+    LOGINFO("ControllerTest OK");
 #endif
 
     if (!ImageTest()) {

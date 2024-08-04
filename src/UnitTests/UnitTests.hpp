@@ -47,4 +47,5 @@ int GlbTest();
 int ModelsTimeToLoad();
 #ifdef _WIN32
 int ScreenCaptureTest();
+int ControllerTest();
 #endif
