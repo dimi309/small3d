@@ -25,9 +25,9 @@ mkdir lib
 mkdir bin
 mkdir licenses
 
-7z x glfw-3.3.8.zip
+7z x glfw-3.4.zip
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-cd glfw-3.3.8
+cd glfw-3.4
 mkdir build
 cd build
 cmake .. %VSCONFIG% -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF
@@ -41,7 +41,7 @@ for /r %%a in (*.pdb) do @copy /y "%%a" ..\..\bin
 copy ..\LICENSE.md ..\..\licenses\GLFW_LICENSE
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..
-rmdir /Q /S glfw-3.3.8
+rmdir /Q /S glfw-3.4
 
 7z x glew-2.2.0.tgz
 7z x glew-2.2.0.tar

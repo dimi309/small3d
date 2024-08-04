@@ -41,8 +41,8 @@ mkdir include
 mkdir lib
 mkdir licenses
 
-unzip glfw-3.3.8.zip
-cd glfw-3.3.8
+unzip glfw-3.4.zip
+cd glfw-3.4
 mkdir build
 cd build
 cmake .. -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF $CMAKE_DEFINITIONS
@@ -51,7 +51,7 @@ cp -rf ../include/GLFW ../../include/
 cp src/libglfw3.a ../../lib/
 cp ../LICENSE.md ../../licenses/GLFW_LICENSE
 cd ../..
-rm -rf glfw-3.3.8
+rm -rf glfw-3.4
 
 tar xvf glew-2.2.0.tgz
 cd glew-2.2.0
