@@ -28,7 +28,7 @@ All of the above can be found here: https://github.com/dimi309/small3d-first-gam
 
 - [Gloom](https://github.com/dimi309/gloom) (open source)
 
-- [Islet Hell](https://store.steampowered.com/app/2069750/Islet_Hell/) (once commercially released, now free of charge, also available for [Android](https://play.google.com/store/apps/details?id=dimi309.islethelladroid) and [Apple iOS](https://apps.apple.com/us/app/islet-hell/id1631875184))
+- [Islet Hell](https://store.steampowered.com/app/2069750/Islet_Hell/) (once commercially released, now free of charge, also available for [Apple iOS](https://apps.apple.com/us/app/islet-hell/id1631875184) - it used to be available for Android too, but it was getting a little complicated to manage my presence on Google Play so I have removed it from there)
 
 # Non-game project
 
