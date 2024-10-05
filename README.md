@@ -12,6 +12,8 @@ code-base. Supporting as many platforms as possible while minimising the amount
 of code and time needed for maintenance is favoured over richness of features 
 and the use of cutting edge methods and technologies.
 
+*Mobile devices are no longer supported. Please read further below for details.*
+
 # Games 
 
 ## First little games
@@ -65,13 +67,8 @@ All of the above can be found here: https://github.com/dimi309/small3d-first-gam
 - MacOS
 - Linux (Tested on Debian, Ubuntu, Fedora and Arch) 
 - FreeBSD
-- Android
-- iOS
 
-Running on OpenGL on PC and OpenGL ES on mobile, this library is extremely 
-backwards compatible. It can run on iOS 9.3 and Android 4.1.
-
-Note: There used to be Vulkan support too, but it has been discontinued. Here is
+There used to be Vulkan support too, but it has been discontinued. Here is
 an article on the reasons for this:
 
 https://www.gamedev.net/blogs/entry/2275791-abandoning-vulkan/
@@ -80,9 +77,17 @@ And here is the last Vulkan commit before the Vulkan renderer got removed:
 
 https://github.com/dimi309/small3d/releases/tag/1.8015.last.vulkan
 
-Note that despite the official deprecation of OpenGL on Apple devices,
-OpenGL and OpenGL ES still work just fine there. If and when that changes, 
-I will implement a renderer in Metal or something.
+There used to be iOS and Android support as well. As a matter of fact the game
+Islet Hell mentioned above had also been released for these two platforms.
+However, it was getting a little complicated maintaining my presence on the
+respective app stores (costs, new legislation) and I decided to stop publishing
+there. And since this is a personal project, I have thought to make it more
+manageable by removing support from mobile platforms altogether. If you would
+like to use it for mobile, you can download the last release in which that
+was possible:
+
+https://github.com/dimi309/small3d/releases/tag/1.8016.last.mobile
+
 
 # Tutorial
 
@@ -99,10 +104,8 @@ and tools accessible via the command line:
   as a minimum.
 - 7zip (only on Windows)
 - CMake
-- Android Studio if building for Android
-- Xcode if building for iOS
 
-## Deploying small3d for PC
+## Deploying small3d
 
 Run the build script which is suitable to your platform from the `scripts` 
 directory (`build-vs.bat`, `build-mingw.bat` or `build.sh`).
@@ -124,39 +127,6 @@ For building your own project, you need:
 You can also deploy using [conan](https://conan.io). The conan package is 
 provided in a [separate repository](https://github.com/dimi309/small3d-conan).
 
-## Deploying small3d for mobile
-
-Builds for mobile platforms can be performed by executing either `build-android` 
-or  `build-ios` from the `scripts` directory. You can then use the test projects 
-in the `android`, `ios` and `ios-opengles` directories to check if everything 
-works, or as a starting point for your own projects.
-
-If the Android project produces an NDK or SDK related error when opened in 
-Android Studio, just close it without exiting Android Studio and open it again.
-
-Also on Android, while a game or the unit tests are running, the error 
-`.../GL2Encoder.cpp:s_glGetBufferParameteriv:3386 GL error 0x502` might appear
-in the log. You can ignore it. It is produced when glGetBufferParameteriv is 
-called in the Renderer to check if a model has already been copied to the GPU 
-and the model is not found (as expected when it has been newly loaded).
-
-Note that, while on the PC edition I use GLFW for windowing functionalities and 
-I/O, on mobile I access the native infrastructure directly.
-
-## Boilerplate Project
-
-If you would like to start with an empty project that has the basic game loop 
-and input already set up, you are looking for this:
-
-https://github.com/dimi309/small3d-boilerplate
-
-It is highly recommended to use this boilerplate if you intend to port your
-game to Android and / or iOS. While it is pretty straightforward to get this 
-library working for the desktop and you might prefer the freedom and flexibility 
-of working with a project set up from scratch, mobile platforms have many
-specificities and quirks to take care of, so the boilerplate can save you a lot 
-of time in that respect.
-
 # Referenced libraries
 
 The following dependencies' *source code* repositories (not binaries) are 
@@ -164,7 +134,7 @@ distributed in this same repository (in the `deps` directory). They can be built
 by executing a single script (see "Building", above) and they can also be used 
 directly in your application / game code.
 
-- glew when building for PC
+- glew
 - glfw 
 - glm 
 - png
@@ -174,6 +144,3 @@ directly in your application / game code.
 - portaudio
 - freetype
 - cereal
-- oboe when building for Android
-
-
