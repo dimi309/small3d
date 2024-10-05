@@ -18,19 +18,8 @@
 #define RETURN0 return 0;
 #endif
 
-#if defined(__ANDROID__)
-extern "C" {
-void android_main(struct android_app* state) {
-
-  small3d_android_app = state;
-  
-  small3d_android_app->onAppCmd = handle_cmd;
-  while(!appActive) {
-    pollEvents();
-  }
-#else
 int main(int argc, char** argv) {
-#endif
+
   try
   { 
     if (!LoggerTest()) {
@@ -167,13 +156,6 @@ int main(int argc, char** argv) {
     RETURN1
   }
 
-#ifdef __ANDROID__
-  while(appActive) {
-    pollEvents();
-  }
-#endif
   RETURN0
 }
-#if defined(__ANDROID__)
-} // end extern "C"
-#endif
+

@@ -13,19 +13,8 @@
 #endif
 
 #include <stdexcept>
-#ifndef __ANDROID__
+
 #include <fstream>
-#else
-#include <android/asset_manager.h>
-#include <streambuf>
-#include <istream>
-struct membuf : std::streambuf
-{
-  membuf(char* begin, char* end) {
-    this->setg(begin, begin, end);
-  }
-};
-#endif
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -39,46 +28,6 @@ unsigned const attrib_joint = 2;
 unsigned const attrib_weight = 3;
 unsigned const attrib_uv = 4;
 
-#ifdef SMALL3D_OPENGLES
-#define glDepthRange glDepthRangef
-#define glClearDepth glClearDepthf
-
-#ifdef __ANDROID__
-const EGLint config16bpp[] = {
-    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
-    EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
-    EGL_RED_SIZE,   5,
-    EGL_GREEN_SIZE, 6,
-    EGL_BLUE_SIZE,  5,
-    EGL_DEPTH_SIZE, 16,
-    EGL_NONE
-};
-
-
-const EGLint config24bpp[] = {
-    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
-    EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
-    EGL_RED_SIZE,   8,
-    EGL_GREEN_SIZE, 8,
-    EGL_BLUE_SIZE,  8,
-    EGL_DEPTH_SIZE, 16,
-    EGL_NONE
-};
-
-const EGLint config32bpp[] = {
-    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
-    EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
-    EGL_RED_SIZE,   8,
-    EGL_GREEN_SIZE, 8,
-    EGL_BLUE_SIZE,  8,
-    EGL_ALPHA_SIZE, 8,
-    EGL_DEPTH_SIZE, 16,
-    EGL_NONE
-};
-#else
-#include "interop.h"
-#endif
-#endif
 
 namespace small3d {
 #ifndef SMALL3D_OPENGLES
