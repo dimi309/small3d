@@ -81,10 +81,9 @@ There used to be iOS and Android support as well. As a matter of fact the game
 Islet Hell mentioned above had also been released for these two platforms.
 However, it was getting a little complicated maintaining my presence on the
 respective app stores (costs, new legislation) and I decided to stop publishing
-there. And since this is a personal project, I have thought to make it more
-manageable by removing support from mobile platforms altogether. If you would
-like to use it for mobile, you can download the last release in which that
-was possible:
+there. So I also though to make this project more manageable by removing support 
+for mobile platforms altogether. If you would like to use it for mobile, you 
+can download the last release in which that was possible:
 
 https://github.com/dimi309/small3d/releases/tag/1.8016.last.mobile
 
