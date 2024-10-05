@@ -81,7 +81,7 @@ There used to be iOS and Android support as well. As a matter of fact the game
 Islet Hell mentioned above had also been released for these two platforms.
 However, it was getting a little complicated maintaining my presence on the
 respective app stores (costs, new legislation) and I decided to stop publishing
-there. So I also though to make this project more manageable by removing support 
+there. So I also thought to make this project more manageable by removing support 
 for mobile platforms altogether. If you would like to use it for mobile, you 
 can download the last release in which that was possible:
 
