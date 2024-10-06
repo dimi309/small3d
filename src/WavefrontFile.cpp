@@ -12,25 +12,12 @@
 #include <fstream>
 #include <regex>
 
-#ifdef __ANDROID__
-#include "small3d_android.h"
-#include <streambuf>
-#include <istream>
-
-
-struct membuf : std::streambuf
-{
-  membuf(char* begin, char* end) {
-    this->setg(begin, begin, end);
-  }
-};
-#endif
-
 namespace small3d {
 
   int WavefrontFile::getTokens(const std::string& input, const char sep,
     std::vector<std::string>& tokens) {
-    size_t curPos = 0;
+    
+      size_t curPos = 0; 
     int count = 0;
 
     size_t length = input.length();
@@ -167,30 +154,12 @@ namespace small3d {
     std::string line;
     bool inMaterial = false;
 
-#ifdef __ANDROID__
-    AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
-      filePath.c_str(),
-      AASSET_MODE_STREAMING);
-    if (!asset) {
-      LOGDEBUG("Could not open file " + filePath);
-      return;
-    }
-
-    off_t length;
-    length = AAsset_getLength(asset);
-    const void* buffer = AAsset_getBuffer(asset);
-    membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * length);
-    std::istream in(&sbuf);
-    if (in) {
-      while (std::getline(in, line)) {
-#else
 
     std::ifstream file(filePath.c_str());
 
     if (file.is_open()) {
       while (std::getline(file, line)) {
 
-#endif
         if (inMaterial) {
           if (line.substr(0, 6) == "newmtl") {
             inMaterial = false;
@@ -229,12 +198,10 @@ namespace small3d {
         }
 
       }
-#ifdef __ANDROID__
-      AAsset_close(asset);
-#else
+
       file.close();
-#endif
-     
+
+
     }
     else {
       LOGDEBUG("Could not open file " + filePath);
@@ -287,30 +254,15 @@ namespace small3d {
     }
   }
 
-  WavefrontFile::WavefrontFile(const std::string & filePath) : File(filePath) {
+  WavefrontFile::WavefrontFile(const std::string& filePath) : File(filePath) {
 
     std::string line;
 
-#ifdef __ANDROID__
-    AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
-      fullPath.c_str(),
-      AASSET_MODE_STREAMING);
-    if (!asset) throw std::runtime_error("Opening asset " + fullPath +
-      " has failed!");
-    off_t length;
-    length = AAsset_getLength(asset);
-    const void* buffer = AAsset_getBuffer(asset);
-    membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * length);
-    std::istream in(&sbuf);
-    if (in) {
-      while (std::getline(in, line)) {
-#else
 
     std::ifstream file(fullPath.c_str());
 
     if (file.is_open()) {
       while (std::getline(file, line)) {
-#endif
 
         if (line[0] == 'o') {
           std::vector<std::string> tokens;
@@ -458,17 +410,16 @@ namespace small3d {
 #endif
           if (dirLength > 0) {
             loadMaterial(fullPath.substr(0, dirLength + 1) + materialFile, line.substr(7));
-          } else {
+          }
+          else {
             loadMaterial(materialFile, line.substr(7));
           }
 
         }
       }
-#ifdef __ANDROID__
-      AAsset_close(asset);
-#else
+
       file.close();
-#endif
+
       if (textureCoords.size() > 0) {
         this->correctDataVectors();
       }
@@ -480,7 +431,7 @@ namespace small3d {
 
   }
 
-  void WavefrontFile::load(Model & model, const std::string & meshName) {
+  void WavefrontFile::load(Model& model, const std::string& meshName) {
 
     loadVertexData(model.vertexData);
     loadIndexData(model.indexData);

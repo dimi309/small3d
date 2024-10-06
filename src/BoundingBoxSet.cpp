@@ -13,11 +13,6 @@
 #include "BasePath.hpp"
 #include <algorithm>
 
-#if defined(__ANDROID__)
-#include <streambuf>
-#include <istream>
-#endif
-
 namespace small3d {
 
   BoundingBoxSet::BoundingBoxSet() {
@@ -41,7 +36,7 @@ namespace small3d {
       glm::vec4(thisOffset, 0.0f);
 
     pointInBoxSpace = reverseRotationMatrix * pointInBoxSpace;
-    
+
 
     if (std::any_of(boxExtremes.begin(), boxExtremes.end(), [&pointInBoxSpace](auto& ex) {return pointInBoxSpace.x > ex.minX && pointInBoxSpace.x < ex.maxX &&
       pointInBoxSpace.y > ex.minY && pointInBoxSpace.y < ex.maxY &&

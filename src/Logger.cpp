@@ -11,10 +11,6 @@
 #include <ctime>
 #include <iostream>
 
-#ifdef __ANDROID__
-#include <android/log.h>
-#endif
-
 std::shared_ptr<small3d::Logger> logger;
 
 namespace small3d {
@@ -31,28 +27,6 @@ namespace small3d {
       if (!logger) return;
 
 
-#ifdef __ANDROID__
-
-      android_LogPriority lp;
-
-      switch (level) {
-        case LogLevel::loggerinfo:
-          lp = ANDROID_LOG_INFO;
-              break;
-        case LogLevel::loggerdebug:
-          lp = ANDROID_LOG_DEBUG;
-              break;
-        case LogLevel::loggererror:
-          lp = ANDROID_LOG_ERROR;
-              break;
-        default:
-          lp = ANDROID_LOG_UNKNOWN;
-              break;
-      }
-
-      __android_log_write(lp, "small3d logger", message.c_str());
-    
-#else
       std::ostringstream dateTimeOstringstream;
 
       time_t now;
@@ -84,7 +58,6 @@ namespace small3d {
       }
       std::cout << dateTimeOstringstream.str().c_str() << " - " << indicator
              << ": " << message.c_str() << std::endl;
-#endif
 
     }
 

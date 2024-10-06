@@ -30,18 +30,18 @@ unsigned const attrib_uv = 4;
 
 
 namespace small3d {
-#ifndef SMALL3D_OPENGLES
+
   static void error_callback(int error, const char* description)
   {
     LOGERROR(std::string(description));
   }
-#endif
+
   static std::string openglErrorToString(GLenum error);
 
   int Renderer::realScreenWidth;
   int Renderer::realScreenHeight;
 
-#ifndef SMALL3D_OPENGLES
+
   void Renderer::framebufferSizeCallback(GLFWwindow* window, int width,
     int height) {
     realScreenWidth = width;
@@ -54,7 +54,6 @@ namespace small3d {
       std::to_string(height));
 
   }
-#endif
 
   int Renderer::getScreenWidth() {
     return realScreenWidth;
@@ -69,39 +68,22 @@ namespace small3d {
     std::string shaderSource = "";
     std::string fullPath = getBasePath() + fileLocation;
     std::string line;
-#ifdef __ANDROID__
-    AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
-      fullPath.c_str(),
-      AASSET_MODE_STREAMING);
-    if (!asset) throw std::runtime_error("Opening asset " + fullPath +
-      " has failed!");
-    off_t length;
-    length = AAsset_getLength(asset);
-    const void* buffer = AAsset_getBuffer(asset);
-    membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * length);
-    std::istream in(&sbuf);
-    if (in) {
-      while (std::getline(in, line)) {
-#else
+
     std::ifstream file(fullPath.c_str());
     if (file.is_open()) {
       while (std::getline(file, line)) {
-#endif
+
         shaderSource += line + "\n";
 
       }
     }
 
-#ifdef __ANDROID__
-    AAsset_close(asset);
-#else
     file.close();
-#endif
 
     return shaderSource;
   }
 
-  GLuint Renderer::compileShader(const std::string & shaderSourceFile,
+  GLuint Renderer::compileShader(const std::string& shaderSourceFile,
     const uint32_t shaderType) const {
     GLuint shader = glCreateShader(shaderType);
 
@@ -169,7 +151,7 @@ namespace small3d {
   }
 
   void Renderer::initOpenGL() {
-#ifndef SMALL3D_OPENGLES
+
     glewExperimental = GL_TRUE;
 
     GLenum initResult = glewInit();
@@ -188,17 +170,8 @@ namespace small3d {
     LOGINFO("OpenGL version: " +
       std::string(reinterpret_cast<char*>
         (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
-#else
-#ifdef __ANDROID__
-    EGLint majorVersion, minorVersion;
-    eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-    eglInitialize(eglDisplay, &majorVersion, &minorVersion);
-    LOGDEBUG("EGL version: " + std::to_string(majorVersion) + "." +
-      std::to_string(minorVersion));
-#endif
-#endif
 
-#if defined(__APPLE__) && !defined(SMALL3D_OPENGLES)
+#if defined(__APPLE__) 
     GLboolean clientStorage = 0;
     glGetBooleanv(GL_APPLE_client_storage, &clientStorage);
     if (clientStorage == GL_TRUE) {
@@ -211,7 +184,7 @@ namespace small3d {
 
   }
 
-  void Renderer::checkForOpenGLErrors(const std::string & when, const bool abort)
+  void Renderer::checkForOpenGLErrors(const std::string& when, const bool abort)
     const {
     GLenum errorCode = glGetError();
     if (errorCode != GL_NO_ERROR) {
@@ -237,8 +210,8 @@ namespace small3d {
     }
   }
 
-  void Renderer::transform(Model & model, const glm::vec3 & offset,
-    const glm::mat4x4 & rotation, uint64_t currentPose) const {
+  void Renderer::transform(Model& model, const glm::vec3& offset,
+    const glm::mat4x4& rotation, uint64_t currentPose) const {
 
     GLint modelTransformationUniformLocation = glGetUniformLocation(shaderProgram,
       "modelTransformation");
@@ -276,7 +249,7 @@ namespace small3d {
     glUniform3fv(offsetUniform, 1, glm::value_ptr(offset));
   }
 
-  GLuint Renderer::getTextureHandle(const std::string & name) const {
+  GLuint Renderer::getTextureHandle(const std::string& name) const {
     GLuint handle = 0;
     auto nameTexturePair = textures.find(name);
     if (nameTexturePair != textures.end()) {
@@ -285,7 +258,7 @@ namespace small3d {
     return handle;
   }
 
-  GLuint Renderer::generateTexture(const std::string & name, const uint8_t * data,
+  GLuint Renderer::generateTexture(const std::string& name, const uint8_t* data,
     const unsigned long width,
     const unsigned long height,
     const bool replace) {
@@ -313,21 +286,11 @@ namespace small3d {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureHandle);
 
-#ifndef SMALL3D_OPENGLES
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
       GL_UNSIGNED_BYTE, data);
-#else
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, GL_RGBA,
-      GL_UNSIGNED_BYTE, data);
-#endif
 
     textures.insert(make_pair(name, textureHandle));
 
@@ -337,20 +300,16 @@ namespace small3d {
   }
 
   void Renderer::init(const int width, const int height,
-    const std::string & windowTitle,
-    const std::string & shadersPath) {
+    const std::string& windowTitle,
+    const std::string& shadersPath) {
 
     realScreenWidth = width;
     realScreenHeight = height;
 
-#ifdef SMALL3D_OPENGLES
-    this->initOpenGL();
-#endif
-
     this->initWindow(realScreenWidth, realScreenHeight, windowTitle);
-#ifndef SMALL3D_OPENGLES
+
     this->initOpenGL();
-#endif
+
     glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
       static_cast<GLsizei>(realScreenHeight));
 
@@ -371,14 +330,6 @@ namespace small3d {
       GL_FRAGMENT_SHADER);
 
     shaderProgram = glCreateProgram();
-
-#ifdef SMALL3D_OPENGLES
-    glBindAttribLocation(shaderProgram, attrib_position, "position");
-    glBindAttribLocation(shaderProgram, attrib_normal, "normal");
-    glBindAttribLocation(shaderProgram, attrib_joint, "joint");
-    glBindAttribLocation(shaderProgram, attrib_weight, "weight");
-    glBindAttribLocation(shaderProgram, attrib_uv, "uvCoords");
-#endif
 
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
@@ -402,14 +353,9 @@ namespace small3d {
 
     GLint colourTextureLocation = glGetUniformLocation(shaderProgram, "textureImage");
     GLint depthMapTextureLocation = glGetUniformLocation(shaderProgram, "shadowMap");
-#ifndef SMALL3D_OPENGLES
+
     glProgramUniform1i(shaderProgram, colourTextureLocation, 0);
     glProgramUniform1i(shaderProgram, depthMapTextureLocation, 1);
-#else
-    glUseProgram(shaderProgram);
-    glUniform1i(colourTextureLocation, 0);
-    glUniform1i(depthMapTextureLocation, 1);
-#endif
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -424,38 +370,6 @@ namespace small3d {
     generateTexture("blank", blankImage);
     LOGDEBUG("Blank image generated");
 
-    // OpenGL supports rendering without a colour image, only producing a depth map.
-    // OpenGL ES 2.0 however does not support the glDrawBuffer and glReadBuffer commands
-    // (see them used conditionally below) so in the following lines a render buffer with
-    // a colour attachment and a depth attachment is created. The depth attachment might
-    // be superfluous in OpenGL ES but I have left it there in case it is required (I have not checked).
-    // But I am not using it in OpenGL ES; only in OpenGL. The reason is that, at least
-    // with some Android devices, I could not feed it back as a texture to the normal
-    // render pass. Checking with RenderDoc, I saw an error mentioning that the attached
-    // texture is incomplete because "BASE_LEVEL 0 has invalid dimensions: 0x0". So in OpenGL ES
-    // I am just outputting the z coordinate to the colour texture as the r component of each
-    // texel, and informing the fragment shader that this is the case by setting light intensity to
-    // -2. The fragment shader then adjusts the value accordingly (it needs to be translated to the
-    // 0 - 1 range) before performing the shadow calculations.
-
-#ifdef SMALL3D_OPENGLES
-
-    glGenTextures(1, &depthRenderColourTexture);
-    glBindTexture(GL_TEXTURE_2D, depthRenderColourTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-      depthMapTextureWidth, depthMapTextureHeight, 0, GL_RGBA,
-      GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glGenRenderbuffers(1, &depthRenderBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, depthMapTextureWidth, depthMapTextureHeight);
-
-#endif
 
     glGenTextures(1, &depthMapTexture);
 
@@ -474,21 +388,17 @@ namespace small3d {
     glGenFramebuffers(1, &depthMapFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFramebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMapTexture, 0);
-#ifndef SMALL3D_OPENGLES
+
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
-#else
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthRenderColourTexture, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, origRenderbuffer);
-#endif
+
     glBindFramebuffer(GL_FRAMEBUFFER, origFramebuffer);
 
   }
 
   void Renderer::initWindow(int& width, int& height,
-    const std::string & windowTitle) {
-#ifndef SMALL3D_OPENGLES
+    const std::string& windowTitle) {
+
     glfwSetErrorCallback(error_callback);
 
     if (!glfwInit()) {
@@ -556,99 +466,10 @@ namespace small3d {
 
     LOGINFO("Framebuffer width " + std::to_string(width) + " height " +
       std::to_string(height));
-#else
-#ifdef __ANDROID__
-    window = small3d_android_app->window;
-
-    /* get the format of the window. */
-    windowFormat = ANativeWindow_getFormat(window);
-
-    initEGLContext();
-
-    createEGLSurface(realScreenWidth, realScreenHeight);
-#endif
-#endif
-  }
-#ifdef SMALL3D_OPENGLES
-#ifdef __ANDROID__
-  void Renderer::createEGLSurface(int& width, int& height) {
-    eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, window, NULL);
-
-    if (eglSurface == 0) {
-      throw std::runtime_error("Error creating surface");
-    }
-
-    eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext);
-
-    LOGDEBUG("Vendor " +
-      std::string(reinterpret_cast<const char*>(glGetString(GL_VENDOR))) +
-      ", Renderer " +
-      std::string(reinterpret_cast<const char*>(glGetString(GL_RENDERER))) +
-      ", Version " +
-      std::string(reinterpret_cast<const char*>(glGetString(GL_VERSION))));
-
-    width = ANativeWindow_getWidth(small3d_android_app->window);
-    height = ANativeWindow_getHeight(small3d_android_app->window);
 
   }
 
-  void Renderer::initEGLContext() {
-    /* choose the config according to the format of the window. */
-    switch (windowFormat) {
-    case WINDOW_FORMAT_RGBA_8888:
-      config = config32bpp;
-      break;
-    case WINDOW_FORMAT_RGBX_8888:
-      config = config24bpp;
-      break;
-    case WINDOW_FORMAT_RGB_565:
-      config = config16bpp;
-      break;
-    default:
-      throw std::runtime_error("Unknown window format.");
-    }
 
-    if (!eglChooseConfig(eglDisplay, config32bpp, &eglConfig, 1, &numConfigs)) {
-      throw std::runtime_error("eglChooseConfig failed. Error code: " + std::to_string(eglGetError()));
-    }
-
-    const EGLint context_attribs[] = { EGL_CONTEXT_CLIENT_VERSION,
-                                      2,  // Request opengl ES2.0
-                                      EGL_NONE };
-
-    eglContext = eglCreateContext(eglDisplay, eglConfig, EGL_NO_CONTEXT, context_attribs);
-    if (!eglContext) {
-      throw std::runtime_error("GL context creation error: " + std::to_string(eglGetError()));
-    }
-
-    eglContextValid = true;
-  }
-
-  void Renderer::terminateEGL() {
-
-
-    if (eglDisplay != EGL_NO_DISPLAY) {
-      eglMakeCurrent(eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-      if (eglContext != EGL_NO_CONTEXT) {
-        eglDestroyContext(eglDisplay, eglContext);
-      }
-
-      if (eglSurface != EGL_NO_SURFACE) {
-        eglDestroySurface(eglDisplay, eglSurface);
-      }
-      eglTerminate(eglDisplay);
-    }
-
-    eglDisplay = EGL_NO_DISPLAY;
-    eglContext = EGL_NO_CONTEXT;
-    eglSurface = EGL_NO_SURFACE;
-    window = nullptr;
-    eglContextValid = false;
-
-
-  }
-#endif
-#endif
   void Renderer::setWorldDetails(bool perspective) {
 
     auto orthographicMatrix = glm::ortho(-shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize);
@@ -673,13 +494,8 @@ namespace small3d {
 
     GLint lightIntensityUniform = glGetUniformLocation(shaderProgram,
       "lightIntensity");
-#ifdef SMALL3D_OPENGLES
-    // In OpenGL ES we signal to the fragment shader that it is supposed to render a simulated
-    // depth map using the red colour, using light intensity = -2.0.
-    glUniform1f(lightIntensityUniform, renderingDepthMap ? -2.0f : lightIntensity);
-#else
+
     glUniform1f(lightIntensityUniform, lightIntensity);
-#endif
 
     GLint cameraTransformationUniform = glGetUniformLocation(shaderProgram,
       "cameraTransformation");
@@ -711,7 +527,7 @@ namespace small3d {
 
   }
 
-  void Renderer::bindTexture(const std::string & name) {
+  void Renderer::bindTexture(const std::string& name) {
     GLuint textureHandle = getTextureHandle(name);
 
     if (textureHandle == 0) {
@@ -729,7 +545,7 @@ namespace small3d {
   }
 
   void Renderer::clearScreen() const {
-#if defined(__APPLE__) && !defined(SMALL3D_OPENGLES)
+#if defined(__APPLE__) 
     // Needed to avoid transparent rendering in Mojave by default
     // (caused by the transparency hint in initWindow, which is
     // a workaround for a GLFW problem on that platform)
@@ -740,21 +556,15 @@ namespace small3d {
   }
 
   Renderer::Renderer() {
-#ifdef __ANDROID__
-    window = 0;
-#else
-#if !(defined(__APPLE__) && defined(SMALL3D_OPENGLES))
-    window = {};
-#endif
-#endif
+
     shaderProgram = 0;
     noShaders = false;
   }
 
-  Renderer::Renderer(const std::string & windowTitle, const int width,
+  Renderer::Renderer(const std::string& windowTitle, const int width,
     const int height, const float fieldOfView,
     const float zNear, const float zFar,
-    const std::string & shadersPath,
+    const std::string& shadersPath,
     const uint32_t objectsPerFrame,
     const uint32_t objectsPerFrameInc) {
 
@@ -768,15 +578,13 @@ namespace small3d {
     LOGDEBUG("Renderer constructor done.");
   }
 
-  void Renderer::start(const std::string & windowTitle, const int width,
+  void Renderer::start(const std::string& windowTitle, const int width,
     const int height, const float fieldOfView,
     const float zNear, const float zFar,
-    const std::string & shadersPath,
+    const std::string& shadersPath,
     const uint32_t objectsPerFrame,
     const uint32_t objectsPerFrameInc) {
-#ifdef __ANDROID__
-    window = 0;
-#endif
+
     shaderProgram = 0;
 
     noShaders = false;
@@ -793,16 +601,16 @@ namespace small3d {
       throw std::runtime_error("Unable to initialise font system");
     }
 
-#ifndef SMALL3D_OPENGLES
+
     // Generate VAO
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
-#endif
+
     LOGDEBUG("start done");
 
   }
 
-  void Renderer::setCameraRotation(const glm::vec3 & rotation) {
+  void Renderer::setCameraRotation(const glm::vec3& rotation) {
     cameraRotationByMatrix = false;
     this->cameraRotationXYZ = rotation;
     this->cameraTransformation = glm::rotate(glm::mat4x4(1.0f), -rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
@@ -810,7 +618,7 @@ namespace small3d {
       glm::rotate(glm::mat4x4(1.0f), -rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
   }
 
-  void Renderer::rotateCamera(const glm::vec3 & rotation) {
+  void Renderer::rotateCamera(const glm::vec3& rotation) {
     if (cameraRotationByMatrix) {
       throw std::runtime_error("Attempted x, y, z representation camera rotation, while having set the initial rotation by matrix.");
     }
@@ -822,7 +630,7 @@ namespace small3d {
     }
   }
 
-  void Renderer::setCameraTransformation(const glm::mat4x4 & rotation) {
+  void Renderer::setCameraTransformation(const glm::mat4x4& rotation) {
     this->cameraTransformation = glm::inverse(rotation);
     cameraRotationByMatrix = true;
     cameraRotationXYZ = glm::vec3(0.0f);
@@ -844,11 +652,11 @@ namespace small3d {
     return this->cameraRotationXYZ;
   }
 
-  Renderer& Renderer::getInstance(const std::string & windowTitle,
+  Renderer& Renderer::getInstance(const std::string& windowTitle,
     const int width, const int height,
     const float fieldOfView,
     const float zNear, const float zFar,
-    const std::string & shadersPath,
+    const std::string& shadersPath,
     const uint32_t objectsPerFrame,
     const uint32_t objectsPerFrameInc) {
 
@@ -865,31 +673,21 @@ namespace small3d {
       FT_Done_Face(idFacePair.second);
     }
 
-#ifdef __ANDROID__
-    for (auto& asset : fontAssets) {
-      AAsset_close(asset);
-    }
-#endif
 
     FT_Done_FreeType(library);
 
     stop();
 
-#ifndef __ANDROID__
+
     //This was causing crashes on MacOS
     //glfwTerminate();
-#endif
+
   }
 
   void Renderer::stop() {
 
     glDeleteFramebuffers(1, &depthMapFramebuffer);
     depthMapFramebuffer = 0;
-
-#ifdef SMALL3D_OPENGLES
-    glDeleteRenderbuffers(1, &depthRenderBuffer);
-    depthRenderBuffer = 0;
-#endif
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -900,9 +698,6 @@ namespace small3d {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     glDeleteTextures(0, &depthMapTexture);
-#ifdef SMALL3D_OPENGLES
-    glDeleteTextures(1, &depthRenderColourTexture);
-#endif
 
     //At times, this has caused crashes on MacOS
     for (auto it = textures.begin();
@@ -915,37 +710,31 @@ namespace small3d {
     if (!noShaders) {
       glUseProgram(0);
 
-#ifndef SMALL3D_OPENGLES
       glDeleteVertexArrays(1, &vao);
       glBindVertexArray(0);
-#endif
 
     }
 
     if (shaderProgram != 0) {
       glDeleteProgram(shaderProgram);
     }
-#if defined(SMALL3D_OPENGLES) && defined(__ANDROID__)
-    terminateEGL();
-#endif
+
   }
 
-#ifndef SMALL3D_OPENGLES
   GLFWwindow* Renderer::getWindow() const {
     return window;
   }
-#endif
 
-  void Renderer::generateTexture(const std::string & name, const Image & image) {
+  void Renderer::generateTexture(const std::string& name, const Image& image) {
     LOGDEBUG("Sending image to GPU, dimensions " + std::to_string(image.getWidth()) +
       ", " + std::to_string(image.getHeight()));
     this->generateTexture(name, image.getData(), image.getWidth(),
       image.getHeight(), true);
   }
 
-  void Renderer::generateTexture(const std::string & name, const std::string & text,
-    const glm::vec3 & colour, const int fontSize,
-    const std::string & fontPath,
+  void Renderer::generateTexture(const std::string& name, const std::string& text,
+    const glm::vec3& colour, const int fontSize,
+    const std::string& fontPath,
     const bool replace) {
 
     glm::ivec3 icolour(colour.r * 255, colour.g * 255, colour.b * 255);
@@ -959,21 +748,9 @@ namespace small3d {
     if (idFacePair == fontFaces.end()) {
       std::string faceFullPath = getBasePath() + fontPath;
       LOGDEBUG("Loading font from " + faceFullPath);
-#ifdef __ANDROID__
-      AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
-        faceFullPath.c_str(),
-        AASSET_MODE_STREAMING);
-      if (!asset) throw std::runtime_error("Opening asset " + faceFullPath +
-        " has failed!");
-      off_t length;
-      length = AAsset_getLength(asset);
-      const void* buffer = AAsset_getBuffer(asset);
-      error = FT_New_Memory_Face(library, (const FT_Byte*)buffer,
-        length, 0, &face);
-      fontAssets.push_back(asset);
-#else
+
       error = FT_New_Face(library, faceFullPath.c_str(), 0, &face);
-#endif
+
       if (error != 0) {
         throw std::runtime_error("Failed to load font from " + faceFullPath);
       }
@@ -1051,7 +828,7 @@ namespace small3d {
     generateTexture(name, &textMemory[0], static_cast<unsigned long>(width), static_cast<unsigned long>(height), replace);
   }
 
-  void Renderer::deleteTexture(const std::string & name) {
+  void Renderer::deleteTexture(const std::string& name) {
     auto nameTexturePair = textures.find(name);
     glActiveTexture(GL_TEXTURE0);
     if (nameTexturePair != textures.end()) {
@@ -1061,9 +838,9 @@ namespace small3d {
     }
   }
 
-  void Renderer::createRectangle(Model & rect,
-    const glm::vec3 & topLeft,
-    const glm::vec3 & bottomRight) {
+  void Renderer::createRectangle(Model& rect,
+    const glm::vec3& topLeft,
+    const glm::vec3& bottomRight) {
 
     rect.vertexData = {
       bottomRight.x, bottomRight.y, bottomRight.z, 1.0f,
@@ -1093,8 +870,8 @@ namespace small3d {
     rect.textureCoordsDataByteSize = 8 * sizeof(float);
   }
 
-  void Renderer::render(Model & model, const glm::vec3 & position, const glm::vec3 & rotation,
-    const glm::vec4 & colour, const std::string & textureName, const uint64_t currentPose,
+  void Renderer::render(Model& model, const glm::vec3& position, const glm::vec3& rotation,
+    const glm::vec4& colour, const std::string& textureName, const uint64_t currentPose,
     const bool perspective) {
 
     this->render(model, position, glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
@@ -1104,8 +881,8 @@ namespace small3d {
 
   }
 
-  void Renderer::render(Model & model, const glm::vec3 & position, const glm::vec3 & rotation,
-    const std::string & textureName, const uint64_t currentPose) {
+  void Renderer::render(Model& model, const glm::vec3& position, const glm::vec3& rotation,
+    const std::string& textureName, const uint64_t currentPose) {
 
     this->render(model, position, glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
       glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
@@ -1135,7 +912,7 @@ namespace small3d {
     glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufSize);
     // Flush invalid operation error (this is normal when the model has not
     // been loaded into the GPU).
-    while(glGetError() == GL_INVALID_OPERATION);
+    while (glGetError() == GL_INVALID_OPERATION);
 
     bool alreadyInGPU = bufSize > 0;
 
@@ -1206,11 +983,7 @@ namespace small3d {
       }
 
       glEnableVertexAttribArray(attrib_joint);
-#ifndef SMALL3D_OPENGLES
       glVertexAttribIPointer(attrib_joint, 4, GL_UNSIGNED_BYTE, 0, 0);
-#else
-      glVertexAttribPointer(attrib_joint, 4, GL_UNSIGNED_BYTE, GL_FALSE, 0, 0);
-#endif
 
     }
 
@@ -1263,11 +1036,9 @@ namespace small3d {
     glActiveTexture(GL_TEXTURE0 + 1);
 
     if (!renderingDepthMap) {
-#ifndef SMALL3D_OPENGLES
+
       glBindTexture(GL_TEXTURE_2D, depthMapTexture);
-#else
-      glBindTexture(GL_TEXTURE_2D, depthRenderColourTexture);
-#endif
+
     }
     else {
       glBindTexture(GL_TEXTURE_2D, 0);
@@ -1296,10 +1067,10 @@ namespace small3d {
     glUseProgram(0);
   }
 
-  void Renderer::render(Model & model, const glm::vec3 & position,
-    const glm::mat4x4 & rotation,
-    const glm::vec4 & colour,
-    const std::string & textureName,
+  void Renderer::render(Model& model, const glm::vec3& position,
+    const glm::mat4x4& rotation,
+    const glm::vec4& colour,
+    const std::string& textureName,
     const uint64_t currentPose,
     const bool perspective) {
 
@@ -1307,40 +1078,40 @@ namespace small3d {
 
   }
 
-  void Renderer::render(Model & model, const glm::vec3 & position,
-    const glm::mat4x4 & rotation,
-    const std::string & textureName,
+  void Renderer::render(Model& model, const glm::vec3& position,
+    const glm::mat4x4& rotation,
+    const std::string& textureName,
     const uint64_t currentPose) {
     this->render(model, position, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName, currentPose);
   }
 
-  void Renderer::render(Model & model, const std::string & textureName, const uint64_t currentPose,
+  void Renderer::render(Model& model, const std::string& textureName, const uint64_t currentPose,
     const bool perspective) {
     this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName, currentPose, perspective);
   }
 
-  void Renderer::render(Model & model, const glm::vec4 & colour, const uint64_t currentPose,
+  void Renderer::render(Model& model, const glm::vec4& colour, const uint64_t currentPose,
     const bool perspective) {
     this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), colour,
       "", currentPose, perspective);
   }
 
-  void Renderer::render(SceneObject & sceneObject,
-    const glm::vec4 & colour) {
+  void Renderer::render(SceneObject& sceneObject,
+    const glm::vec4& colour) {
     this->render(sceneObject.getModel(), sceneObject.position,
       sceneObject.transformation, colour, "", sceneObject.getCurrentPose());
   }
 
-  void Renderer::render(SceneObject & sceneObject,
-    const std::string & textureName) {
+  void Renderer::render(SceneObject& sceneObject,
+    const std::string& textureName) {
     this->render(sceneObject.getModel(), sceneObject.position,
       sceneObject.transformation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName, sceneObject.getCurrentPose());
   }
 
-  void Renderer::clearBuffers(Model & model) const {
+  void Renderer::clearBuffers(Model& model) const {
     if (model.positionBufferObjectId != 0) {
       glDeleteBuffers(1, &model.positionBufferObjectId);
       model.positionBufferObjectId = 0;
@@ -1361,13 +1132,13 @@ namespace small3d {
     }
   }
 
-  void Renderer::clearBuffers(SceneObject & sceneObject) const {
+  void Renderer::clearBuffers(SceneObject& sceneObject) const {
     for (auto m : sceneObject.models) {
       clearBuffers(*m);
     }
   }
 
-  void Renderer::setBackgroundColour(const glm::vec4 & colour) {
+  void Renderer::setBackgroundColour(const glm::vec4& colour) {
     clearColour = colour;
     glClearColor(clearColour.x, clearColour.y, clearColour.z, clearColour.w);
 
@@ -1435,35 +1206,9 @@ namespace small3d {
     }
 #endif
 
-#ifndef SMALL3D_OPENGLES
-
     glfwSwapBuffers(window);
 
     clearScreen();
-#else
-#ifdef __ANDROID__
-    bool b = eglSwapBuffers(eglDisplay, eglSurface);
-    if (!b) {
-      EGLint err = eglGetError();
-      if (err == EGL_BAD_SURFACE) {
-        // Recreate surface
-        createEGLSurface(realScreenWidth, realScreenHeight);
-        throw std::runtime_error("Bad surcace.");
-      }
-      else if (err == EGL_CONTEXT_LOST || err == EGL_BAD_CONTEXT) {
-        // Context has been lost!!
-        eglContextValid = false;
-        terminateEGL();
-        initEGLContext();
-      }
-      throw std::runtime_error("Context has been lost.");
-    }
-    clearScreen();
-#endif
-#ifdef SMALL3D_IOS
-    // throw std::runtime_error("Swapping buffers must be handled in the ViewController on //iOS - OpenGL ES.");
-#endif
-#endif
 
   }
 
@@ -1578,7 +1323,7 @@ namespace small3d {
         "execute the command. The state of the GL is undefined, except for "
         "the state of the error flags, after this error is recorded.";
       break;
-#ifndef SMALL3D_OPENGLES
+
     case GL_STACK_UNDERFLOW:
       errorString = "GL_STACK_UNDERFLOW: An attempt has been made to perform "
         "an operation that would cause an internal stack to underflow.";
@@ -1587,7 +1332,7 @@ namespace small3d {
       errorString = "GL_STACK_OVERFLOW: An attempt has been made to perform "
         "an operation that would cause an internal stack to overflow.";
       break;
-#endif
+
     default:
       errorString = "Unknown error";
       break;

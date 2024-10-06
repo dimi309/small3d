@@ -17,19 +17,6 @@
 #include "BinaryFile.hpp"
 #include <zlib.h>
 
-#ifdef __ANDROID__
-#include "small3d_android.h"
-#include <streambuf>
-#include <istream>
-
-struct membuf : std::streambuf
-{
-  membuf(char* begin, char* end) {
-    this->setg(begin, begin, end);
-  }
-};
-#endif
-
 using namespace small3d;
 BinaryFile::BinaryFile(const std::string& fileLocation) : File(fileLocation) {
 
@@ -38,27 +25,13 @@ BinaryFile::BinaryFile(const std::string& fileLocation) : File(fileLocation) {
 
 void BinaryFile::load(Model& model, const std::string& meshName) {
 
-#ifdef __ANDROID__
-  AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
-                                     fullPath.c_str(),
-                                     AASSET_MODE_STREAMING);
-  if (!asset) throw std::runtime_error("Opening asset " + fullPath +
-                                       " has failed!");
-  off_t assetLength;
-  assetLength = AAsset_getLength(asset);
-  const void* buffer = AAsset_getBuffer(asset);
-  membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * assetLength);
-  std::istream is(&sbuf);
-  if (!is) {
-    throw std::runtime_error("Could not open file " + fullPath);
-  }
-#else
+
   std::ifstream is;
   is.open(fullPath, std::ios::in | std::ios::binary);
   if (!is.is_open()) {
     throw std::runtime_error("Could not open file " + fullPath);
   }
-#endif
+
 
   std::string readData = "";
   const uint32_t CHUNK = 16384;
@@ -71,14 +44,12 @@ void BinaryFile::load(Model& model, const std::string& meshName) {
       readData += rd[idx];
     }
   }
-#ifdef __ANDROID__
-        AAsset_close(asset);
-#else
-        is.close();
-#endif
+
+  is.close();
+
   unsigned char out[CHUNK];
   z_stream strm;
-  
+
   strm.zalloc = Z_NULL;
   strm.zfree = Z_NULL;
   strm.opaque = Z_NULL;
@@ -103,7 +74,7 @@ void BinaryFile::load(Model& model, const std::string& meshName) {
     }
   } while (strm.avail_out == 0);
   deflateEnd(&strm);
-  
+
   std::istringstream iss(uncompressedData, std::ios::binary | std::ios::in);
 
   cereal::BinaryInputArchive iarchive(iss);
@@ -111,11 +82,8 @@ void BinaryFile::load(Model& model, const std::string& meshName) {
   iss.clear();
   uncompressedData.clear();
 
-#ifdef __ANDROID__
-  AAsset_close(asset);
-#else
   is.close();
-#endif
+
   LOGDEBUG("Loaded model from binary file " + fullPath);
 }
 

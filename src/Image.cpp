@@ -11,10 +11,6 @@
 #include <cstring>
 #include "BasePath.hpp"
 
-#ifdef __ANDROID__
-#include "small3d_android.h"
-#endif
-
 namespace small3d {
 
   const std::string Image::NOTRGBA = "Image format not recognised. Only RGB / RGBA png images are supported.";
@@ -68,13 +64,6 @@ namespace small3d {
     }
   }
 
-#ifdef __ANDROID__
-  static AAsset* asset;
-  void png_asset_read(png_structp png_ptr, png_bytep data, png_size_t length) {
-    AAsset_read(asset, data, length);
-  }
-#endif
-
   void Image::load(const std::string& fileLocation, std::vector<char>& data) {
     // Developed based on information and examples at
     // http://zarb.org/~gc/html/libpng.html
@@ -97,29 +86,14 @@ namespace small3d {
       fromMemory = false;
     }
 
-#ifndef __ANDROID__
     FILE* fp = 0;
-#endif
 
     if (!fromMemory) {
 
-#ifdef __ANDROID__
-
-      LOGDEBUG("About to open image asset " + fileLocation);
-
-      asset = AAssetManager_open(small3d_android_app->activity->assetManager,
-                                 fileLocation.c_str(), AASSET_MODE_STREAMING);
-
-      if (!asset) {
-        throw std::runtime_error("Opening asset " + fileLocation + " has failed!");
-      }
-      LOGDEBUG("Image asset opened, continuing...");
-#else
       fp = fopen(fileLocation.c_str(), "rb");
       if (!fp) {
         throw std::runtime_error("Could not open file " + fileLocation);
       }
-#endif
 
     }
     else {
@@ -136,11 +110,8 @@ namespace small3d {
 
     if (!fromMemory) {
 
-#ifdef __ANDROID__
-      AAsset_read(asset, header, 8);
-#else
       fread(header, 1, 8, fp);
-#endif
+
     }
     else {
       memcpy(header, &memoryDataAndPos.data[0], 8);
@@ -150,11 +121,8 @@ namespace small3d {
 
       if (!fromMemory) {
 
-#ifdef __ANDROID__
-        AAsset_close(asset);
-#else
         fclose(fp);
-#endif
+
       }
 
       throw std::runtime_error(
@@ -168,11 +136,9 @@ namespace small3d {
 
       if (!fromMemory) {
 
-#ifdef __ANDROID__
-        AAsset_close(asset);
-#else
+
         fclose(fp);
-#endif
+
       }
 
       throw std::runtime_error("Could not create PNG read structure.");
@@ -185,11 +151,9 @@ namespace small3d {
 
       if (!fromMemory) {
 
-#ifdef __ANDROID__
-        AAsset_close(asset);
-#else
+
         fclose(fp);
-#endif
+
       }
 
       throw std::runtime_error("Could not create PNG information structure.");
@@ -202,32 +166,28 @@ namespace small3d {
 
       if (!fromMemory) {
 
-#ifdef __ANDROID__
-        AAsset_close(asset);
-#else
+
         fclose(fp);
-#endif
+
       }
 
       throw std::runtime_error("PNG read: Error calling setjmp. (1)");
     }
 
     if (!fromMemory) {
-#ifdef __ANDROID__
-      png_set_read_fn(pngStructure, NULL, png_asset_read);
-#else
+
       png_init_io(pngStructure, fp);
-#endif
+
     }
     else {
       png_set_read_fn(pngStructure, &memoryDataAndPos, &readDataFromMemory);
     }
-    
+
     // Only when reading from a file because, when reading from memory, 
     // we start reading at byte 0.
     if (!fromMemory) {
       png_set_sig_bytes(pngStructure, 8);
-      
+
     }
 
     png_read_info(pngStructure, pngInformation);
@@ -265,7 +225,7 @@ namespace small3d {
     imageDataSize = 4 * width * height;
 
     LOGDEBUG("Reading " + std::to_string(imageDataSize * sizeof(uint8_t)) + " bytes of image data. uint8_t size " +
-	     std::to_string(sizeof(uint8_t)) + ", dimensions " + std::to_string(width) + ", " + std::to_string(height));
+      std::to_string(sizeof(uint8_t)) + ", dimensions " + std::to_string(width) + ", " + std::to_string(height));
 
     imageData.resize(imageDataSize);
 
@@ -294,11 +254,8 @@ namespace small3d {
 
     if (!fromMemory) {
 
-#ifdef __ANDROID__
-      AAsset_close(asset);
-#else
       fclose(fp);
-#endif
+
     }
     else {
       memoryDataAndPos.data.clear();

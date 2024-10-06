@@ -21,7 +21,7 @@ std::string getBasePath() {
   std::string basePath = "";
 
 #ifdef __APPLE__
-#ifndef SMALL3D_IOS
+
   char execPath[2048];
   uint32_t execPathSize = sizeof(execPath);
   _NSGetExecutablePath(&execPath[0], &execPathSize);
@@ -35,9 +35,6 @@ std::string getBasePath() {
 				 basePath[basePath.size() - 1] == '.')) {
     basePath = basePath.substr(0, basePath.size() - 1);
   }
-#else
-  basePath = get_ios_base_path();
-#endif
   basePath = basePath + '/';
 #endif
   return basePath;

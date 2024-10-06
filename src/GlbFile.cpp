@@ -10,19 +10,6 @@
 #include "Logger.hpp"
 #include <algorithm>
 
-#ifdef __ANDROID__
-#include "small3d_android.h"
-#include <streambuf>
-#include <istream>
-
-struct membuf : std::streambuf
-{
-  membuf(char* begin, char* end) {
-    this->setg(begin, begin, end);
-  }
-};
-#endif
-
 namespace small3d {
 
   std::shared_ptr<GlbFile::Token> GlbFile::getToken(const std::string& name, size_t index) {
@@ -263,28 +250,12 @@ namespace small3d {
 
   GlbFile::GlbFile(const std::string& fileLocation) : File(fileLocation) {
 
-#ifdef __ANDROID__
-    AAsset* asset = AAssetManager_open(small3d_android_app->activity->assetManager,
-      fullPath.c_str(),
-      AASSET_MODE_STREAMING);
-    if (!asset) throw std::runtime_error("Opening asset " + fullPath +
-      " has failed!");
-    off_t assetLength;
-    assetLength = AAsset_getLength(asset);
-    const void* buffer = AAsset_getBuffer(asset);
-    membuf sbuf((char*)buffer, (char*)buffer + sizeof(char) * assetLength);
-    std::istream fileOnDisk(&sbuf);
-    if (!fileOnDisk) {
-      throw std::runtime_error("Reading file " + fullPath +
-        " has failed!");
-    }
-#else
+
     std::ifstream fileOnDisk;
     fileOnDisk.open(fullPath, std::ios::binary);
     if (!fileOnDisk.is_open()) {
       throw std::runtime_error("Could not open .glb file " + fullPath);
     }
-#endif
 
     std::string magic(4, '\0');
     uint32_t version = 0, length = 0;
@@ -292,11 +263,9 @@ namespace small3d {
     fileOnDisk.read(reinterpret_cast<char*>(&version), 4);
 
     if (magic != "glTF" || version != 2) {
-#ifdef __ANDROID__
-      AAsset_close(asset);
-#else
+
       fileOnDisk.close();
-#endif
+
       throw std::runtime_error("Magic number found: '" + magic + "'. File " + fullPath + " cannot be read as glb.");
     }
 
@@ -333,11 +302,7 @@ namespace small3d {
       }
     }
 
-#ifdef __ANDROID__
-    AAsset_close(asset);
-#else
     fileOnDisk.close();
-#endif
 
     parseJson(jsonRootToken);
 
@@ -603,9 +568,9 @@ namespace small3d {
 
   bool GlbFile::existNode(const std::string& name) {
     auto nodeTokens = getChildTokens(getToken("nodes"));
-    
+
     if (std::any_of(nodeTokens.begin(), nodeTokens.end(), [this, &name](const auto& nodeToken) {
-      auto nameToken = getChildToken(nodeToken, "name"); 
+      auto nameToken = getChildToken(nodeToken, "name");
       return nameToken != nullptr && nameToken->value == name; })) {
       return true;
     }
@@ -674,7 +639,7 @@ namespace small3d {
   bool GlbFile::existSkin(const std::string& name) {
     auto skinTokens = getChildTokens(getToken("skins"));
 
-    
+
     if (std::any_of(skinTokens.begin(), skinTokens.end(), [this, &name](const auto& skinToken) {
       return getChildToken(skinToken, "name")->value == name;
       })) {
@@ -1047,7 +1012,7 @@ namespace small3d {
           }
 
           for (const auto& channel : animation.channels) {
-            
+
             for (auto& joint : model.joints) {
               if (joint.node == channel.target.node) {
                 addAnimation(joint.animations, animationIdx, animation, channel, model);
@@ -1072,7 +1037,7 @@ namespace small3d {
     return names;
   }
 
-  void GlbFile::addAnimation(std::vector<Model::Animation>& animations, uint32_t animationIdx, const Animation& animation, 
+  void GlbFile::addAnimation(std::vector<Model::Animation>& animations, uint32_t animationIdx, const Animation& animation,
     const AnimationChannel& channel, Model& model) {
 
     auto sampler = animation.samplers[channel.sampler];
@@ -1090,45 +1055,45 @@ namespace small3d {
       animations[animationIdx].name = animation.name;
     }
 
-    
-      bool found = false;
-      uint32_t animIndex = 0;
 
-      if (std::any_of(animations[animationIdx].animationComponents.begin(),
-        animations[animationIdx].animationComponents.end(), [&sampler](const auto& animationj) {
-          return animationj.input == sampler.input;
-        })) {
-        found = true;
-      }
+    bool found = false;
+    uint32_t animIndex = 0;
 
-      if (!found) {
-        animations[animationIdx].animationComponents.emplace_back(Model::AnimationComponent());
-        animIndex = animations[animationIdx].animationComponents.size() - 1;
-        animations[animationIdx].animationComponents[animIndex].times = times;
-        animations[animationIdx].animationComponents[animIndex].input = sampler.input;
-      }
+    if (std::any_of(animations[animationIdx].animationComponents.begin(),
+      animations[animationIdx].animationComponents.end(), [&sampler](const auto& animationj) {
+        return animationj.input == sampler.input;
+      })) {
+      found = true;
+    }
 
-      if (channel.target.path == "rotation") {
-        animations[animationIdx].animationComponents[animIndex].rotationAnimation.resize(output.size() / sizeof(glm::quat));
-        memcpy(&animations[animationIdx].animationComponents[animIndex].rotationAnimation[0], &output[0], output.size());
-        if (model.numPoses[animationIdx] < animations[animationIdx].animationComponents[animIndex].rotationAnimation.size())
-          model.numPoses[animationIdx] = animations[animationIdx].animationComponents[animIndex].rotationAnimation.size();
-      }
+    if (!found) {
+      animations[animationIdx].animationComponents.emplace_back(Model::AnimationComponent());
+      animIndex = animations[animationIdx].animationComponents.size() - 1;
+      animations[animationIdx].animationComponents[animIndex].times = times;
+      animations[animationIdx].animationComponents[animIndex].input = sampler.input;
+    }
 
-      if (channel.target.path == "translation") {
-        animations[animationIdx].animationComponents[animIndex].translationAnimation.resize(output.size() / sizeof(glm::vec3));
-        memcpy(&animations[animationIdx].animationComponents[animIndex].translationAnimation[0], &output[0], output.size());
-        if (model.numPoses[animationIdx] < animations[animationIdx].animationComponents[animIndex].translationAnimation.size())
-          model.numPoses[animationIdx] = animations[animationIdx].animationComponents[animIndex].translationAnimation.size();
-      }
+    if (channel.target.path == "rotation") {
+      animations[animationIdx].animationComponents[animIndex].rotationAnimation.resize(output.size() / sizeof(glm::quat));
+      memcpy(&animations[animationIdx].animationComponents[animIndex].rotationAnimation[0], &output[0], output.size());
+      if (model.numPoses[animationIdx] < animations[animationIdx].animationComponents[animIndex].rotationAnimation.size())
+        model.numPoses[animationIdx] = animations[animationIdx].animationComponents[animIndex].rotationAnimation.size();
+    }
 
-      if (channel.target.path == "scale") {
-        animations[animationIdx].animationComponents[animIndex].scaleAnimation.resize(output.size() / sizeof(glm::vec3));
-        memcpy(&animations[animationIdx].animationComponents[animIndex].scaleAnimation[0], &output[0], output.size());
-        if (model.numPoses[animationIdx] < animations[animationIdx].animationComponents[animIndex].scaleAnimation.size())
-          model.numPoses[animationIdx] = animations[animationIdx].animationComponents[animIndex].scaleAnimation.size();
-      }
-    
+    if (channel.target.path == "translation") {
+      animations[animationIdx].animationComponents[animIndex].translationAnimation.resize(output.size() / sizeof(glm::vec3));
+      memcpy(&animations[animationIdx].animationComponents[animIndex].translationAnimation[0], &output[0], output.size());
+      if (model.numPoses[animationIdx] < animations[animationIdx].animationComponents[animIndex].translationAnimation.size())
+        model.numPoses[animationIdx] = animations[animationIdx].animationComponents[animIndex].translationAnimation.size();
+    }
+
+    if (channel.target.path == "scale") {
+      animations[animationIdx].animationComponents[animIndex].scaleAnimation.resize(output.size() / sizeof(glm::vec3));
+      memcpy(&animations[animationIdx].animationComponents[animIndex].scaleAnimation[0], &output[0], output.size());
+      if (model.numPoses[animationIdx] < animations[animationIdx].animationComponents[animIndex].scaleAnimation.size())
+        model.numPoses[animationIdx] = animations[animationIdx].animationComponents[animIndex].scaleAnimation.size();
+    }
+
 
   }
 }
