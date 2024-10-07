@@ -235,7 +235,7 @@ namespace small3d {
 
       for (uint64_t x = 0; x < width; x++) {
 
-        png_byte* ptr = &(row[x * numComponents]);
+        png_byte const * const ptr = &(row[x * numComponents]);
 
         uint8_t rgb[4];
 

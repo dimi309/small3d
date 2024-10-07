@@ -151,13 +151,11 @@ namespace small3d {
 
   void WavefrontFile::loadMaterial(const std::string& filePath, const std::string& name) {
 
-    std::string line;
-    bool inMaterial = false;
-
-
     std::ifstream file(filePath.c_str());
 
     if (file.is_open()) {
+      std::string line;
+      bool inMaterial = false;
       while (std::getline(file, line)) {
 
         if (inMaterial) {

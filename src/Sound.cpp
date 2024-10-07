@@ -180,7 +180,7 @@ namespace small3d {
         }
 
 
-        vorbis_info* vi = ov_info(&vorbisFile, -1);
+        const vorbis_info* vi = ov_info(&vorbisFile, -1);
 
         this->soundData.channels = vi->channels;
         this->soundData.rate = (int)vi->rate;

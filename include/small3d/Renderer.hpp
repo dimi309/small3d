@@ -10,28 +10,12 @@
 #pragma once
 #include <vector>
 
-#ifndef SMALL3D_OPENGLES
 #define GLEW_NO_GLU
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #ifdef _WIN32
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
-#endif
-#else
-#ifdef __ANDROID__
-#include <EGL/egl.h>
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-#else
-#include <OpenGLES/ES2/gl.h>
-#include <OpenGLES/ES2/glext.h>
-#endif
-#endif
-
-#ifdef __ANDROID__
-#include "small3d_android.h"
-
 #endif
 
 #include "Logger.hpp"
@@ -40,7 +24,6 @@
 #include "SceneObject.hpp"
 
 #include <unordered_map>
-
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -59,33 +42,7 @@ namespace small3d
 
   private:
 
-#ifndef SMALL3D_OPENGLES
     GLFWwindow* window;
-#else
-#ifdef __ANDROID__
-    EGLContext eglContext;
-    EGLConfig eglConfig;
-    EGLint format;
-    const EGLint* config = NULL;
-    int numConfigs;
-    int windowFormat;
-
-    EGLDisplay eglDisplay;
-    EGLSurface eglSurface;
-
-    bool eglContextValid = false;
-
-
-    void createEGLSurface(int& width, int& height);
-    void initEGLContext();
-    void terminateEGL();
-#endif
-#endif
-
-#ifdef __ANDROID__
-    NativeWindowType  window;
-    std::vector<AAsset*> fontAssets;
-#endif
 
     static int realScreenWidth, realScreenHeight;
 
@@ -117,10 +74,10 @@ namespace small3d
     glm::mat4x4 cameraTransformation = glm::mat4x4(1.0f);
     glm::vec3 cameraRotationXYZ = glm::vec3(0.0f);
     bool cameraRotationByMatrix = false;
-#ifndef SMALL3D_OPENGLES
+
     static void framebufferSizeCallback(GLFWwindow* window, int width,
       int height);
-#endif
+
     std::string loadShaderFromFile(const std::string& fileLocation) const;
     uint32_t compileShader(const std::string& shaderSourceFile,
       const uint32_t shaderType) const;
@@ -163,16 +120,12 @@ namespace small3d
 
     GLuint depthMapFramebuffer = 0;
     GLuint depthMapTexture = 0;
-#ifdef SMALL3D_OPENGLES
-    GLuint depthRenderColourTexture = 0;
-#endif
+
     const uint32_t depthMapTextureWidth = 2048;
     const uint32_t depthMapTextureHeight = 2048;
     glm::mat4x4 lightSpaceMatrix = glm::mat4x4(0);
     bool renderingDepthMap = false;
-#ifdef SMALL3D_OPENGLES
-    GLuint depthRenderBuffer;
-#endif
+
 
 #ifdef _WIN32
     void captureScreen();
@@ -197,8 +150,8 @@ namespace small3d
     bool shadowsActive = false;
 
     /**
-     * @brief: Used to re-initialise the Renderer, for example in Android apps
-     *         after they come back into focus.
+     * @brief: Used to re-initialise the Renderer. When Android was supported
+     *          it was used in apps after they came back into focus.
      */
     void start(const std::string& windowTitle, const int width, const int height,
       const float fieldOfView, const float zNear, const float zFar,
@@ -207,8 +160,8 @@ namespace small3d
       const uint32_t objectsPerFrameInc);
 
     /**
-     * @brief: Used to shutdown the renderer, for example in Android apps
-     *         when they lose focus.
+     * @brief: Used to shutdown the renderer. When Android was supported
+     *          it was used in apps when they lost focus.
      */
     void stop();
 
@@ -342,11 +295,9 @@ namespace small3d
       const float zNear = 1.0f,
       const float zFar = 24.0f,
       const std::string& shadersPath =
-#if defined(SMALL3D_OPENGLES) && defined(__APPLE__)
-      "resources1/shaders/",
-#else
+
       "resources/shaders/",
-#endif
+
       const uint32_t objectsPerFrame = 200,
       const uint32_t objectsPerFrameInc = 1000);
 
@@ -355,12 +306,10 @@ namespace small3d
      */
     ~Renderer();
 
-#ifndef SMALL3D_OPENGLES
     /**
      * @brief Get the GLFW window object, associated with the Renderer.
      */
     GLFWwindow* getWindow() const;
-#endif
 
     /**
      * @brief Generate a texture on the GPU from the given image
@@ -384,11 +333,9 @@ namespace small3d
       const glm::vec3& colour,
       const int fontSize = 48,
       const std::string& fontPath =
-#if defined(SMALL3D_OPENGLES) && defined(__APPLE__)
-      "resources1/fonts/CrusoeText/CrusoeText-Regular.ttf",
-#else
+
       "resources/fonts/CrusoeText/CrusoeText-Regular.ttf",
-#endif
+
       const bool replace = true);
 
     /**

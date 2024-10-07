@@ -48,10 +48,10 @@ namespace small3d {
   size_t Model::getNumAnimations() {
     return numPoses.size();
   }
-  
+
   void Model::setAnimation(uint32_t animationIdx) {
     if (numPoses.size() <= animationIdx) {
-      throw new std::runtime_error("Cannot set animation to " + std::to_string(animationIdx) + 
+      throw new std::runtime_error("Cannot set animation to " + std::to_string(animationIdx) +
         ". There are only " + std::to_string(numPoses.size()) + " animations.");
     }
     currentAnimation = animationIdx;
@@ -81,11 +81,12 @@ namespace small3d {
     glm::mat4 rotation(1.0f);
     glm::mat4 scale(1.0f);
 
-    // First time a translation, rotation or scale frame
-    // are being assigned?
-    bool firstT = true, firstR = true, firstS = true;
-
     if (animations.size() > 0) {
+
+      // First time a translation, rotation or scale frame
+      // are being assigned?
+      bool firstT = true, firstR = true, firstS = true;
+
       for (const auto& animationComponent : animations[animationIdx].animationComponents) {
         auto poseUsed = currentPose;
         bool foundPose = false;
@@ -156,12 +157,12 @@ namespace small3d {
 
       if (auto animFound = std::find_if(joints[joint].animations[animationIdx].animationComponents.begin(),
         joints[joint].animations[animationIdx].animationComponents.end(),
-        [&currentPose](const auto& anim) {return anim.times.size() > currentPose; }); 
+        [&currentPose](const auto& anim) {return anim.times.size() > currentPose; });
         animFound != std::end(joints[joint].animations[animationIdx].animationComponents)) {
         secondsUsed = (*animFound).times[currentPose];
       }
     }
- 
+
     // Find the parent node, if it exists
     size_t idx = 0;
     bool parentFound = false;
@@ -192,11 +193,13 @@ namespace small3d {
     glm::mat4 rotation = glm::toMat4(joints[joint].rotation);
     glm::mat4 scale = glm::scale(glm::mat4(1.0f), joints[joint].scale);
 
-    // First time a translation, rotation or scale frame
-    // are being assigned?
-    bool firstT = true, firstR = true, firstS = true;
-    
+
     if (joints[joint].animations.size() > 0) {
+
+      // First time a translation, rotation or scale frame
+      // are being assigned?
+      bool firstT = true, firstR = true, firstS = true;
+
       for (const auto& animationComponent : joints[joint].animations[animationIdx].animationComponents) {
         auto poseUsed = currentPose;
         bool foundPose = false;

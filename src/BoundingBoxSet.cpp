@@ -38,7 +38,7 @@ namespace small3d {
     pointInBoxSpace = reverseRotationMatrix * pointInBoxSpace;
 
 
-    if (std::any_of(boxExtremes.begin(), boxExtremes.end(), [&pointInBoxSpace](auto& ex) {return pointInBoxSpace.x > ex.minX && pointInBoxSpace.x < ex.maxX &&
+    if (std::any_of(boxExtremes.begin(), boxExtremes.end(), [&pointInBoxSpace](const auto& ex) {return pointInBoxSpace.x > ex.minX && pointInBoxSpace.x < ex.maxX &&
       pointInBoxSpace.y > ex.minY && pointInBoxSpace.y < ex.maxY &&
       pointInBoxSpace.z > ex.minZ && pointInBoxSpace.z < ex.maxZ; })) {
       doesContain = true;
@@ -135,39 +135,25 @@ namespace small3d {
     facesVertexIndexesTriangulated.clear();
     numBoxes = 0;
     uint32_t base = 0;
-    std::vector<float> v;
-    std::vector<unsigned int> i;
+     
     for (auto& ext : boxExtremes) {
 
-      v = { ext.minX, ext.minY, ext.maxZ, 1.0f };
-      vertices.push_back(v);
-      v = { ext.minX, ext.minY, ext.minZ, 1.0f };
-      vertices.push_back(v);
-      v = { ext.maxX, ext.minY, ext.minZ, 1.0f };
-      vertices.push_back(v);
-      v = { ext.maxX, ext.minY, ext.maxZ, 1.0f };
-      vertices.push_back(v);
-      v = { ext.minX, ext.maxY, ext.maxZ, 1.0f };
-      vertices.push_back(v);
-      v = { ext.minX, ext.maxY, ext.minZ, 1.0f };
-      vertices.push_back(v);
-      v = { ext.maxX, ext.maxY, ext.minZ, 1.0f };
-      vertices.push_back(v);
-      v = { ext.maxX, ext.maxY, ext.maxZ, 1.0f };
-      vertices.push_back(v);
+      vertices.emplace_back(std::vector<float>{ ext.minX, ext.minY, ext.maxZ, 1.0f });
+      vertices.emplace_back(std::vector<float>{ ext.minX, ext.minY, ext.minZ, 1.0f });
+      vertices.emplace_back(std::vector<float>{ ext.maxX, ext.minY, ext.minZ, 1.0f });
+      vertices.emplace_back(std::vector<float>{ ext.maxX, ext.minY, ext.maxZ, 1.0f });
+      vertices.emplace_back(std::vector<float>{ ext.minX, ext.maxY, ext.maxZ, 1.0f });
+      vertices.emplace_back(std::vector<float>{ ext.minX, ext.maxY, ext.minZ, 1.0f });
+      vertices.emplace_back(std::vector<float>{ ext.maxX, ext.maxY, ext.minZ, 1.0f });
+      vertices.emplace_back(std::vector<float>{ ext.maxX, ext.maxY, ext.maxZ, 1.0f });
 
-      i = { base + 4, base + 5, base + 1 , base + 0 };
-      facesVertexIndexes.push_back(i);
-      i = { base + 5, base + 6, base + 2 ,base + 1 };
-      facesVertexIndexes.push_back(i);
-      i = { base + 6, base + 7, base + 3 ,base + 2 };
-      facesVertexIndexes.push_back(i);
-      i = { base + 7, base + 4, base + 0 ,base + 3 };
-      facesVertexIndexes.push_back(i);
-      i = { base + 0, base + 1, base + 2 ,base + 3 };
-      facesVertexIndexes.push_back(i);
-      i = { base + 7, base + 6, base + 5 ,base + 4 };
-      facesVertexIndexes.push_back(i);
+
+      facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 4, base + 5, base + 1, base + 0 });
+      facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 5, base + 6, base + 2 ,base + 1 });
+      facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 6, base + 7, base + 3 ,base + 2 });
+      facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 7, base + 4, base + 0 ,base + 3 });
+      facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 0, base + 1, base + 2 ,base + 3 });
+      facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 7, base + 6, base + 5 ,base + 4 });
 
       base += 8;
       ++numBoxes;

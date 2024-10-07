@@ -27,42 +27,12 @@ using namespace std;
 
 Renderer* r = nullptr;
 
-#if defined(SMALL3D_IOS)
-std::string resourceDir = "resources1";
-#else
 std::string resourceDir = "resources";
-#endif
 
-#if defined(__ANDROID__)
-bool appActive = false;
-bool instantiated = false;
-uint32_t screenWidth, screenHeight;
-#endif
 
-#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
 void pollEvents() {
   glfwPollEvents();
 }
-#elif defined(__ANDROID__)
-
-int events;
-android_poll_source* pSource;
-
-void pollEvents() {
-  if (ALooper_pollAll(0, nullptr, &events, (void**)&pSource) >= 0) {
-    if (pSource != NULL) {
-      pSource->process(small3d_android_app, pSource);
-      if (small3d_android_app->destroyRequested) {
-        std::terminate();
-      }
-    }
-  }
-}
-#elif defined(SMALL3D_IOS)
-void pollEvents() {
-
-}
-#endif
 
 static small3d::Model indicator;
 
@@ -78,58 +48,14 @@ void write(const std::string& text, float elevation) {
 }
 
 void initRenderer(uint32_t width, uint32_t height) {
-#if defined(__ANDROID__) || defined(SMALL3D_IOS)
-  if (r == nullptr) {
-    r = &small3d::Renderer::getInstance("small3d Tests", width, height, 0.785f, 1.0f, 24.0f,
-      resourceDir + "/shaders/", 5000);
-  }
-#else
+
 #if !defined(NDEBUG) 
   r = &small3d::Renderer::getInstance("small3d Tests", 1024, 768);
 #else
   r = &small3d::Renderer::getInstance("small3d Tests");
 #endif
-#endif
+
 }
-
-#if defined(__ANDROID__)
-
-void get_screen_info() {
-  screenWidth = r->getScreenWidth();
-  screenHeight = r->getScreenHeight();
-}
-
-void handle_cmd(android_app* pApp, int32_t cmd) {
-  switch (cmd) {
-  case APP_CMD_INIT_WINDOW:
-  case APP_CMD_GAINED_FOCUS:
-    if (!appActive) {
-      if (!instantiated) {
-        initRenderer();
-        instantiated = true;
-
-      }
-
-      get_screen_info();
-      appActive = true;
-    }
-    break;
-
-  case APP_CMD_TERM_WINDOW:
-  case APP_CMD_LOST_FOCUS:
-  case APP_CMD_SAVE_STATE:
-  case APP_CMD_STOP:
-    if (appActive) {
-      appActive = false;
-    }
-    break;
-
-  default:
-    LOGDEBUG("event not handled: " + std::to_string(cmd));
-  }
-}
-
-#endif
 
 int LoggerTest() {
   deleteLogger();
@@ -515,20 +441,14 @@ int GenericSceneObjectConstructorTest() {
   SceneObject so2("goat2", Model(WavefrontFile(resourceDir + "/models/goat.obj"), ""));
 
   Model modelFromGlb(GlbFile(resourceDir + "/models/goatWithTexture.glb"), "");
-
-  // On android only asset writing is supported for the moment
-#ifdef __ANDROID__
-  modelFromGlb.saveBinary("/data/data/com.dimi309.small3d_tests/files/testGoatWithTexture1.bin");
-#else
+  
   modelFromGlb.saveBinary("testGoatWithTexture1.bin");
   SceneObject so3("goat3", Model(BinaryFile("testGoatWithTexture1.bin"), ""));
-#endif
+
   if (so1.getModel().vertexDataByteSize == 0) return 0;
   if (so2.getModel().vertexDataByteSize == 0) return 0;
 
-#ifndef __ANDROID__
   if (so3.getModel().vertexDataByteSize == 0) return 0;
-#endif
 
   return 1;
 }
@@ -555,9 +475,8 @@ int RendererTest() {
   Image cubeTexture(resourceDir + "/models/Cube/cubeTexture.png");
   r->generateTexture("cubeTexture", cubeTexture);
 
-#if !defined(__ANDROID__) && !defined(SMALL3D_IOS)
   glfwShowWindow(r->getWindow());
-#endif
+
   Model singleColourRect;
   r->createRectangle(singleColourRect, glm::vec3(-1.0f, 0.0f, 0.0f),
     glm::vec3(-0.5f, -0.5f, 0.0f));
@@ -652,11 +571,6 @@ int BinaryModelTest() {
 
   Model modelFromGlb(GlbFile(resourceDir + "/models/goatWithTexture.glb"), "");
 
-
-  // On android only asset reading is supported for the moment
-#ifdef __ANDROID__
-  modelFromGlb.saveBinary("/data/data/com.dimi309.small3d_tests/files/testGoatWithTexture.bin");
-#else
   modelFromGlb.saveBinary("testGoatWithTexture.bin");
   Model modelFromBin(BinaryFile("testGoatWithTexture.bin"), "");
 
@@ -686,7 +600,7 @@ int BinaryModelTest() {
       r->swapBuffers();
     }
   }
-#endif
+
   return 1;
 }
 
@@ -715,11 +629,7 @@ int SoundTest() {
 int BinSoundTest() {
 
   Sound srcsnd(resourceDir + "/sounds/bah.ogg");
-
-  // On android only asset writing is supported for the moment
-#ifdef __ANDROID__
-  srcsnd.saveBinary("/data/data/com.dimi309.small3d_tests/files/testBah.bin");
-#else
+  
   srcsnd.saveBinary("testBah.bin");
   Sound snd("testBah.bin");
 
@@ -727,7 +637,7 @@ int BinSoundTest() {
   double startSeconds = getTimeInSeconds();
   while (getTimeInSeconds() - startSeconds < 0.2);
   snd.stop();
-#endif
+
   return 1;
 }
 
