@@ -59,7 +59,7 @@ void initRenderer(uint32_t width, uint32_t height) {
 
 int LoggerTest() {
   deleteLogger();
-  ostringstream oss;
+  
   initLogger();
   LOGINFO("Logger info test works");
   LOGERROR("Logger error test works");
@@ -716,6 +716,7 @@ int ControllerTest() {
     int axes_count;
     const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axes_count);
     LOGINFO("Axes count: " + std::to_string(axes_count));
+    LOGINFO("Axes value: " + std::to_string(*axes));
 
     if (glfwJoystickIsGamepad(GLFW_JOYSTICK_1)) {
       

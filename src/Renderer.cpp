@@ -67,10 +67,11 @@ namespace small3d {
     const {
     std::string shaderSource = "";
     std::string fullPath = getBasePath() + fileLocation;
-    std::string line;
+    
 
     std::ifstream file(fullPath.c_str());
     if (file.is_open()) {
+      std::string line;
       while (std::getline(file, line)) {
 
         shaderSource += line + "\n";
