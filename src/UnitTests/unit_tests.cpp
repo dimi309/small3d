@@ -10,21 +10,13 @@
 #include <iostream>
 #include <Time.hpp>
 
-#if defined(__ANDROID__)
-#define RETURN1
-#define RETURN0
-#else
-#define RETURN1 return 1;
-#define RETURN0 return 0;
-#endif
-
 int main(int argc, char** argv) {
 
   try
   { 
     if (!LoggerTest()) {
       printf("*** Failing LoggerTest.\n\r");
-      RETURN1
+      return 1;
     }
 
     small3d::initLogger();
@@ -34,116 +26,116 @@ int main(int argc, char** argv) {
 #ifdef _WIN32
     if (!ScreenCaptureTest()) {
       LOGINFO("*** Failing ScreenCaptureTest.");
-      RETURN1
+      return 1;
     }
     LOGINFO("ScreenCaptureTest OK");
 
     if (!ControllerTest()) {
       LOGINFO("*** Failing ControllerTest.");
-      RETURN1
+      return 1;
     }
     LOGINFO("ControllerTest OK");
 #endif
 
     if (!ImageTest()) {
       LOGINFO("*** Failing ImageTest.");
-      RETURN1
+      return 1;
     }
     LOGINFO("ImageTest OK");
 
     if (!WavefrontFailTest()) {
       LOGINFO("*** Failing WavefrontFailTest.");
-      RETURN1
+      return 1;
     }
     LOGINFO("WavefrontFailTest OK");
     
     if (!WavefrontModelTest()) {
       LOGINFO("*** Failing WavefrontModelTest.");
-      RETURN1
+      return 1;
     }
     LOGINFO("WavefrontModelTest OK");
 
     if (!ScaleAndTransformTest()) {
       LOGINFO("*** Failing ScaleAndTransformTest.");
-      RETURN1
+      return 1;
     }
     LOGINFO("ScaleAndTransformTest OK");
     
     if (!GlbTextureTestDefaultShadows()) {
       LOGINFO("*** Failing GlbTextureTestDefaultShadows.");
-      RETURN1
+      return 1;
     }
     LOGINFO("GlbTextureTestDefaultShadows OK");
     
     if (!GlbTextureTestLookAtShadows()) {
       LOGINFO("*** Failing GlbTextureTestLookAtShadows.");
-      RETURN1
+      return 1;
     }
     LOGINFO("GlbTextureTestLookAtShadows OK");
     
     if (!BoundingBoxesTest()) {
       LOGINFO("*** Failing BoundingBoxesTest.");
-      RETURN1
+      return 1;
     }
     LOGINFO("BoundingBoxesTest OK");
     
     if (!FPStest()) {
       LOGINFO("*** Failing FPStest.");
-      RETURN1
+      return 1;
     }
     LOGINFO("FPStest OK");
 
     if (!GenericSceneObjectConstructorTest()) {
       LOGINFO("*** Failing GenericSceneObjectConstructorTest.");
-      RETURN1
+      return 1;
     }
     LOGINFO("GenericSceneObjectConstructorTest OK");
     
     if (!RendererTest()) {
       LOGINFO("*** Failing RendererTest.");
-      RETURN1
+      return 1;
     }
     LOGINFO("RendererTest OK");
 
     if (!BinaryModelTest()) {
       LOGINFO("*** Failing BinaryModelTest.");
-      RETURN1
+      return 1;
     }
     LOGINFO("BinaryModelTest OK");
 
     if (!SoundTest()) {
       LOGINFO("*** Failing SoundTest.");
-      RETURN1
+      return 1;
     }
     LOGINFO("SoundTest OK");
 
     if (!BinSoundTest()) {
       LOGINFO("*** Failing BinSoundTest.");
-      RETURN1
+      return 1;
     }
     LOGINFO("BinSoundTest OK");
 
     if (!SoundTest2()) {
       LOGINFO("*** Failing SoundTest2.");
-      RETURN1
+      return 1;
     }
     LOGINFO("SoundTest2 OK");
 
     if (!SoundTest3()) {
       LOGINFO("*** Failing SoundTest3.");
-      RETURN1
+      return 1;
     }
     LOGINFO("SoundTest3 OK");
     
     if (!GlbTest()) {
       LOGINFO("*** Failing GlbTest.");
-      RETURN1
+      return 1;
     }
     LOGINFO("GlbTest OK");
 
     if (!ModelsTimeToLoad()) {
       LOGINFO("*** Failing ModelsTimeToLoad.");
-      RETURN1
+      return 1;
     }
     LOGINFO("ModelsTimeToLoad OK");
 
@@ -153,9 +145,8 @@ int main(int argc, char** argv) {
     // Also use printf in case the logger has not been initialised properly
     printf("*** Exception thrown during unit tests: %s\n\r", e.what());
     LOGERROR("*** Exception thrown during unit tests: " + std::string(e.what()));
-    RETURN1
+    return 1;
   }
 
-  RETURN0
+  return 0;
 }
-
