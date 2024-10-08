@@ -87,6 +87,10 @@ can download the last release in which that was possible:
 
 https://github.com/dimi309/small3d/releases/tag/1.8016.last.mobile
 
+You could also just use the small3d boilerplate project which is set to
+reference the abovementioned version:
+
+https://github.com/dimi309/small3d-boilerplate
 
 # Tutorial
 
