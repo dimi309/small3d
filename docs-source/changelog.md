@@ -1,9 +1,23 @@
 /*! \page changelog changes per version
 
-v1.802 (still open)
+v1.8017 (still open)
 
-- I have taken the difficult decision to stop supporting Vulkan, at least
-  for now. The %small3d Vulkan renderer was initially developed years ago. The
+- Dropped mobile device (Android and iOS) support.
+
+v1.8016 2024-08-10
+
+- Dropped Vulkan support.
+
+- This is the last version supporting mobile devices. It has gotten a little
+  complicated to maintain my presence on the Apple and Google mobile app stores,
+  so since I will not be publishing anything there any more, I have decided
+  to drop support from this project too after this one, making the code more 
+  manageable.
+
+v1.8015 2023-04-07
+
+- This is the last version supporting Vulkan.
+  The %small3d Vulkan renderer was initially developed years ago. The
   goal was to perhaps drop support for OpenGL at some point. But things did not
   turn out as foreseen. It has now been a long time after the initial release of 
   the Vulkan API. While using it I have spent much time chasing down obscure 

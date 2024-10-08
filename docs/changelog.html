@@ -66,9 +66,18 @@ $(function() {
 <div class="title">changes per version </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>v1.802 (still open)</p>
+<div class="textblock"><p>v1.8017 (still open)</p>
 <ul>
-<li>I have taken the difficult decision to stop supporting Vulkan, at least for now. The small3d Vulkan renderer was initially developed years ago. The goal was to perhaps drop support for OpenGL at some point. But things did not turn out as foreseen. It has now been a long time after the initial release of the Vulkan API. While using it I have spent much time chasing down obscure driver bugs on various devices, be that mobile or older PCs. The growing criticism of the Vulkan pipeline object and the recent introduction of the VK_EXT_shader_object extension has made me realise that it will still be very long before I can safely publish anything running on Vulkan in production guaranteed to execute on hardware that is not the latest and greatest. At the same time, OpenGL and OpenGL ES still run reliably, even on Apple devices on which they are officially deprecated. So I am pulling the plug on Vulkan, at least for now. This will also decrease the complexity of small3d, allowing for more efficient maintenance and evolution in directions that matter.</li>
+<li>Dropped mobile device (Android and iOS) support.</li>
+</ul>
+<p>v1.8016 2024-08-10</p>
+<ul>
+<li>Dropped Vulkan support.</li>
+<li>This is the last version supporting mobile devices. It has gotten a little complicated to maintain my presence on the Apple and Google mobile app stores, so since I will not be publishing anything there any more, I have decided to drop support from this project too after this one, making the code more manageable.</li>
+</ul>
+<p>v1.8015 2023-04-07</p>
+<ul>
+<li>This is the last version supporting Vulkan. The small3d Vulkan renderer was initially developed years ago. The goal was to perhaps drop support for OpenGL at some point. But things did not turn out as foreseen. It has now been a long time after the initial release of the Vulkan API. While using it I have spent much time chasing down obscure driver bugs on various devices, be that mobile or older PCs. The growing criticism of the Vulkan pipeline object and the recent introduction of the VK_EXT_shader_object extension has made me realise that it will still be very long before I can safely publish anything running on Vulkan in production guaranteed to execute on hardware that is not the latest and greatest. At the same time, OpenGL and OpenGL ES still run reliably, even on Apple devices on which they are officially deprecated. So I am pulling the plug on Vulkan, at least for now. This will also decrease the complexity of small3d, allowing for more efficient maintenance and evolution in directions that matter.</li>
 <li>[BREAKING] SceneObject constructors now only take Model object parameters, rather than paths to Model files.</li>
 <li>[BREAKING] Model.animate method has been deleted. Added Model.getNumPoses method so that the total number of poses is known outside of Model. The Model can now be animated by specifying the current pose when calling getJointTransform (it has been added as a parameter). This allows for more flexibility. For example multiple SceneObjects can be created now by copying one to the other. They all share the same Model data, saving GPU memory, while they can each animate the Model differently when rendering it. The inconvenience of this change is that the current pose is now a parameter in all the Renderer.render functions and existing game code using small3d has to be updated, otherwise it can mix up this current pose parameter with the perspective parameter, with undesirable consequences.</li>
 <li>CMakeLists.txt modernisation</li>
