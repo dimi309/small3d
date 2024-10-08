@@ -83,8 +83,8 @@ $(function() {
 <li>CMakeLists.txt modernisation</li>
 <li>[BREAKING] The FindSMALL3D.cmake module has been renamed to Findsmall3d and it now retrieves variables with "small3d" in lowercase, for example "small3d_LIBRARIES" instead of "SMALL3D_LIBRARIES". It also provides the small3d::small3d target which greatly diminishes the code needed in CMakeLists files using the library.</li>
 <li>Reintroduced Wavefront support.</li>
-<li>Model files in supported formats (glTF and Wavefront at the time of writing) can now be converted to a native <a class="el" href="namespacesmall3d.html">small3d</a> binary format, using a new format converter program produced by the project's build script, named s3dfc. The produced binary files can then be read by a new file access class called BinaryFile and loaded into Models.</li>
-<li>Sound files (.ogg) can also be converted by s3dfc to native <a class="el" href="namespacesmall3d.html">small3d</a> sound files and used as such. In the case of sound files, both ogg and native binaries are just loaded by the Sound class (there is no separate loader class).</li>
+<li>Model files in supported formats (glTF and Wavefront at the time of writing) can now be converted to a native small3d binary format, using a new format converter program produced by the project's build script, named s3dfc. The produced binary files can then be read by a new file access class called BinaryFile and loaded into Models.</li>
+<li>Sound files (.ogg) can also be converted by s3dfc to native small3d sound files and used as such. In the case of sound files, both ogg and native binaries are just loaded by the Sound class (there is no separate loader class).</li>
 <li>Multiple animations can now be loaded from .glb files and used.</li>
 <li>Added FreeBSD support.</li>
 <li>Added basic materials support (colour, transparency).</li>

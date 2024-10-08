@@ -57,12 +57,12 @@ v1.8015 2023-04-07
 - Reintroduced Wavefront support.
   
 - Model files in supported formats (glTF and Wavefront at the time of writing)
-  can now be converted to a native small3d binary format, using a new format
+  can now be converted to a native %small3d binary format, using a new format
   converter program produced by the project's build script, named s3dfc. The
   produced binary files can then be read by a new file access class called
   BinaryFile and loaded into Models.
   
-- Sound files (.ogg) can also be converted by s3dfc to native small3d sound 
+- Sound files (.ogg) can also be converted by s3dfc to native %small3d sound 
   files and used as such. In the case of sound files, both ogg and native
   binaries are just loaded by the Sound class (there is no separate loader
   class).
