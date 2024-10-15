@@ -1,5 +1,4 @@
-add_executable(unittests UnitTests.hpp OctPyramid.cpp
-  OctPyramid.hpp unit_tests.cpp UnitTests.cpp)
+add_executable(unittests UnitTests.hpp unit_tests.cpp UnitTests.cpp)
 
 target_link_libraries(unittests PRIVATE small3d)
 

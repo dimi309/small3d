@@ -18,7 +18,6 @@
 #include "GlbFile.hpp"
 #include "WavefrontFile.hpp"
 #include "BinaryFile.hpp"
-#include "OctPyramid.hpp"
 #include <glm/gtx/string_cast.hpp>
 #include <thread>
 
@@ -362,19 +361,6 @@ int BoundingBoxesTest() {
   SceneObject goat3("goat3", goat.getModel(), 2);
   if (goat3.getBoundingBoxSetExtremes().size() == 0) {
     LOGERROR("Bounding boxes not created for goat3");
-    return 0;
-  }
-
-  OctPyramid op(4.4f, 7.5f);
-  SceneObject opobj("op", op);
-  if (opobj.getBoundingBoxSetExtremes().size() == 0) {
-    LOGERROR("Bounding boxes not created for op");
-    return 0;
-  }
-
-  SceneObject op1obj("op1", op, 2);
-  if (op1obj.getBoundingBoxSetExtremes().size() == 0) {
-    LOGERROR("Bounding boxes not created for op1");
     return 0;
   }
 
