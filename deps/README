@@ -1,0 +1,6 @@
+libpng v1.6.40 is used instead of v1.6.44 for Linux, FreeBSD and MacOS because v1.6.44 would not build on MacOS. Error:
+
+[ 94%] Building C object CMakeFiles/png_framework.dir/intel/filter_sse2_intrinsics.c.o
+make[2]: *** No rule to make target `../../lib/libza', needed by `png.framework/Versions/1.6.44/png'.  Stop.
+make[1]: *** [CMakeFiles/png_framework.dir/all] Error 2
+make: *** [all] Error 2

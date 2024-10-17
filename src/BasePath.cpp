@@ -9,7 +9,7 @@
 #include "BasePath.hpp"
 
 #ifdef __APPLE__
-#include "interop.h"
+#include <mach-o/dyld.h>
 #endif
 
 std::string getBasePath() {
