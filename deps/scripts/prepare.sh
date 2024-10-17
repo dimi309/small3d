@@ -90,8 +90,8 @@ cp ../zlib.3.pdf ../../licenses/ZLIB_README_LICENSE.pdf
 cd ../../
 rm -rf zlib-1.3.1
 
-tar xvf libpng-1.6.44.tar.gz
-cd libpng-1.6.44
+tar xvf libpng-1.6.40.tar.gz
+cd libpng-1.6.40
 mkdir build
 cd build
 # Disabling PNG_ARM_NEON because on macOS arm64 it produces the error
@@ -103,7 +103,7 @@ cp pnglibconf.h ../../include/
 cp libpng.a ../../lib/
 cp ../LICENSE ../../licenses/LIBPNG_LICENSE
 cd ../../
-rm -rf libpng-1.6.44
+rm -rf libpng-1.6.40
 
 tar xvf libogg-1.3.5.tar.gz
 cd libogg-1.3.5
