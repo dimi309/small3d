@@ -142,8 +142,8 @@ cp ../LICENSE.txt ../../licenses/PORTAUDIO_LICENSE
 cd ../../
 rm -rf portaudio
 
-tar xvf freetype-2.12.1.tar.gz
-cd freetype-2.12.1
+tar xvf freetype-2.13.3.tar.gz
+cd freetype-2.13.3
 mkdir build
 cd build
 # Not using BrotliDec because it causes linking issues on Linux
@@ -160,6 +160,6 @@ else
 fi
 cp ../LICENSE.TXT ../../licenses/FREETYPE_LICENSE
 cd ../..
-rm -rf freetype-2.12.1
+rm -rf freetype-2.13.3
 
 echo "small3d dependencies built successfully ($1 mode)"
