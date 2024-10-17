@@ -102,6 +102,7 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
 rmdir /Q /S zlib-1.3.1
 del zlib-1.3.1.tar
+del pax_global_header
 
 7z x libpng-1.6.44.tar.gz
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
