@@ -64,11 +64,11 @@ rmdir /Q /S glew-2.2.0
 
 7z x glm-1.0.1.zip
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-xcopy glm\glm include\glm /i /s
+xcopy glm-1.0.1\glm include\glm /i /s
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-copy glm\copying.txt licenses\GLM_LICENSE
+copy glm-1.0.1\copying.txt licenses\GLM_LICENSE
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-rmdir /Q /S glm
+rmdir /Q /S glm-1.0.1
 
 7z x cereal-1.3.2.tar.gz
 7z x cereal-1.3.2.tar

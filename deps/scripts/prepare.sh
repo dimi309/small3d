@@ -69,9 +69,9 @@ cd ..
 rm -rf glew-2.2.0
 
 unzip glm-1.0.1.zip
-cp -rf glm/glm include/
-cp glm/copying.txt licenses/GLM_LICENSE
-rm -rf glm
+cp -rf glm-1.0.1/glm include/
+cp glm-1.0.1/copying.txt licenses/GLM_LICENSE
+rm -rf glm-1.0.1
 
 tar xvf cereal-1.3.2.tar.gz
 cp -rf cereal-1.3.2/include/cereal include/
