@@ -68,7 +68,7 @@ cp LICENSE.txt ../licenses/GLEW_LICENSE
 cd ..
 rm -rf glew-2.2.0
 
-unzip glm-1.0.1-light.zip
+unzip glm-1.0.1.zip
 cp -rf glm/glm include/
 cp glm/copying.txt licenses/GLM_LICENSE
 rm -rf glm

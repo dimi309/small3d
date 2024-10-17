@@ -62,7 +62,7 @@ cd ..
 del glew-2.2.0.tar
 rmdir /Q /S glew-2.2.0
 
-7z x glm-1.0.1-light.zip
+7z x glm-1.0.1.zip
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 xcopy glm\glm include\glm /i /s
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
