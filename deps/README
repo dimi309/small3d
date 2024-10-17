@@ -1,8 +1,0 @@
-portaudio and glfw are not used on mobile platforms, where sound and windowing facilities are referenced directly by small3d.
-
-glew is also not used on mobile platforms.
-
-In zlib-1.2.11-noexample.tar.gz, the part of the standard zlib CMakeLists.txt file that configures the builds of some example binaries has been deleted, because it was failing on the small3d ios build.
-
-zlib-1.2.11-noexample.tar.gz is not used for Android builds, where zlib is referenced from the platform infrastructure.
-

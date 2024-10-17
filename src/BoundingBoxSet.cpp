@@ -9,7 +9,6 @@
 #include "BoundingBoxSet.hpp"
 #include <fstream>
 #include <stdexcept>
-#include <glm/gtc/matrix_transform.hpp>
 #include "BasePath.hpp"
 #include <algorithm>
 

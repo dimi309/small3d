@@ -16,7 +16,6 @@
 #include <memory>
 #include <cstring>
 #include <glm/glm.hpp>
-#define GLM_FORCE_RADIANS
 #include <glm/gtc/quaternion.hpp>
 #include "Model.hpp"
 #include "File.hpp"

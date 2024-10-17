@@ -10,9 +10,8 @@
 
 #include <string>
 #include <vector>
-
-#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 #include "Image.hpp"
 #include "File.hpp"

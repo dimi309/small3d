@@ -9,11 +9,7 @@
 #include "BasePath.hpp"
 
 #ifdef __APPLE__
-#ifndef SMALL3D_IOS
-#include <mach-o/dyld.h>
-#else
 #include "interop.h"
-#endif
 #endif
 
 std::string getBasePath() {
@@ -26,13 +22,13 @@ std::string getBasePath() {
   uint32_t execPathSize = sizeof(execPath);
   _NSGetExecutablePath(&execPath[0], &execPathSize);
   basePath = std::string(execPath);
-  
+
   while (basePath.size() > 0 && basePath[basePath.size() - 1] != '/') {
     basePath = basePath.substr(0, basePath.size() - 1);
   }
 
   while (basePath.size() > 0 && (basePath[basePath.size() - 1] == '/' ||
-				 basePath[basePath.size() - 1] == '.')) {
+    basePath[basePath.size() - 1] == '.')) {
     basePath = basePath.substr(0, basePath.size() - 1);
   }
   basePath = basePath + '/';

@@ -22,10 +22,7 @@
 #include "Image.hpp"
 #include "Model.hpp"
 #include "SceneObject.hpp"
-
 #include <unordered_map>
-
-#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <ft2build.h>
 #include FT_FREETYPE_H

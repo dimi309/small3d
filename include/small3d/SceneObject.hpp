@@ -14,7 +14,6 @@
 #include <iomanip>
 #include <stdexcept>
 #include <memory>
-
 #include "Model.hpp"
 #include "Logger.hpp"
 #include "Image.hpp"

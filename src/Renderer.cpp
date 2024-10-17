@@ -13,13 +13,8 @@
 #endif
 
 #include <stdexcept>
-
 #include <fstream>
-
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/quaternion.hpp>
-
 #include "BasePath.hpp"
 
 unsigned const attrib_position = 0;
@@ -27,7 +22,6 @@ unsigned const attrib_normal = 1;
 unsigned const attrib_joint = 2;
 unsigned const attrib_weight = 3;
 unsigned const attrib_uv = 4;
-
 
 namespace small3d {
 

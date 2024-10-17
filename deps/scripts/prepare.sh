@@ -68,16 +68,17 @@ cp LICENSE.txt ../licenses/GLEW_LICENSE
 cd ..
 rm -rf glew-2.2.0
 
-unzip glm-0.9.9.8.zip
+unzip glm-1.0.1-light.zip
 cp -rf glm/glm include/
 cp glm/copying.txt licenses/GLM_LICENSE
 rm -rf glm
+
 tar xvf cereal-1.3.2.tar.gz
 cp -rf cereal-1.3.2/include/cereal include/
 rm -rf cereal-1.3.2
 
-tar xvf zlib-1.2.11-noexample.tar.gz
-cd zlib-1.2.11
+tar xvf zlib-1.3.1.tar.gz
+cd zlib-1.3.1
 mkdir build
 cd build
 cmake .. $CMAKE_DEFINITIONS
@@ -87,7 +88,7 @@ cp zconf.h ../../include/
 cp libz.a ../../lib/
 cp ../zlib.3.pdf ../../licenses/ZLIB_README_LICENSE.pdf
 cd ../../
-rm -rf zlib-1.2.11
+rm -rf zlib-1.3.1
 
 tar xvf libpng-1.6.37.tar.gz
 cd libpng-1.6.37

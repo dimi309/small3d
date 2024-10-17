@@ -62,7 +62,7 @@ cd ..
 del glew-2.2.0.tar
 rmdir /Q /S glew-2.2.0
 
-7z x glm-0.9.9.8.zip
+7z x glm-1.0.1-light.zip
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 xcopy glm\glm include\glm /i /s
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
@@ -80,10 +80,10 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 del 7z x cereal-1.3.2.tar
 rmdir /Q /S cereal-1.3.2
 
-7z x zlib-1.2.11-noexample.tar.gz
-7z x zlib-1.2.11-noexample.tar
+7z x zlib-1.3.1.tar.gz
+7z x zlib-1.3.1.tar
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-cd zlib-1.2.11
+cd zlib-1.3.1
 mkdir build
 cd build
 cmake .. %VSCONFIG%
@@ -100,8 +100,8 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy ..\zlib.3.pdf ..\..\licenses\ZLIB_README_LICENSE.pdf
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
-rmdir /Q /S zlib-1.2.11
-del zlib-1.2.11-noexample.tar
+rmdir /Q /S zlib-1.3.1
+del zlib-1.3.1.tar
 
 7z x libpng-1.6.37.tar.gz
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
