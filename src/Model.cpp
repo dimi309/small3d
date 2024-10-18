@@ -10,8 +10,6 @@
 #include <memory>
 #include "Model.hpp"
 #include "Logger.hpp"
-
-#include <glm/gtx/quaternion.hpp>
 #include "GlbFile.hpp"
 #include <cereal/archives/binary.hpp>
 #include <sstream>
