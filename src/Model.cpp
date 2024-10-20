@@ -20,6 +20,8 @@
 #include <zlib.h>
 #include <algorithm>
 
+#include <glm/gtc/matrix_transform.hpp>
+
 namespace small3d {
 
   Model::Model() {
@@ -118,11 +120,14 @@ namespace small3d {
           }
           if (animationComponent.rotationAnimation.size() > poseUsed) {
             if (firstR) {
-              rotation = glm::toMat4(animationComponent.rotationAnimation[poseUsed]);
+
+              rotation = animationComponent.rotationAnimation[poseUsed].toMatrix();
+
               firstR = false;
             }
             else {
-              rotation *= glm::toMat4(animationComponent.rotationAnimation[poseUsed]);
+              rotation *= animationComponent.rotationAnimation[poseUsed].toMatrix();
+
             }
           }
           if (animationComponent.scaleAnimation.size() > poseUsed) {
@@ -188,7 +193,10 @@ namespace small3d {
 
     // By default, the joint is in its initial state
     glm::mat4 translation = glm::translate(glm::mat4(1.0f), joints[joint].translation);
-    glm::mat4 rotation = glm::toMat4(joints[joint].rotation);
+
+    auto rotation = joints[joint].rotation.toMatrix();
+
+
     glm::mat4 scale = glm::scale(glm::mat4(1.0f), joints[joint].scale);
 
 
@@ -231,11 +239,11 @@ namespace small3d {
           }
           if (animationComponent.rotationAnimation.size() > poseUsed) {
             if (firstR) {
-              rotation = glm::toMat4(animationComponent.rotationAnimation[poseUsed]);
+              rotation = animationComponent.rotationAnimation[poseUsed].toMatrix();
               firstR = false;
             }
             else {
-              rotation *= glm::toMat4(animationComponent.rotationAnimation[poseUsed]);
+              rotation *= animationComponent.rotationAnimation[poseUsed].toMatrix();
             }
           }
           if (animationComponent.scaleAnimation.size() > poseUsed) {

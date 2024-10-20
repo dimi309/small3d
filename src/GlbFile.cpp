@@ -439,8 +439,8 @@ namespace small3d {
     propToken = getChildToken(nodeToken, "rotation");
     if (propToken != nullptr) {
       auto values = getChildTokens(propToken);
-      ret.rotation = glm::quat(std::stof(values[3]->value), std::stof(values[0]->value),
-        std::stof(values[1]->value), std::stof(values[2]->value));
+      ret.rotation = { std::stof(values[0]->value),
+        std::stof(values[1]->value), std::stof(values[2]->value), std::stof(values[3]->value)};
     }
 
     propToken = getChildToken(nodeToken, "scale");
@@ -1074,7 +1074,7 @@ namespace small3d {
     }
 
     if (channel.target.path == "rotation") {
-      animations[animationIdx].animationComponents[animIndex].rotationAnimation.resize(output.size() / sizeof(glm::quat));
+      animations[animationIdx].animationComponents[animIndex].rotationAnimation.resize(output.size() / sizeof(Quaternion));
       memcpy(&animations[animationIdx].animationComponents[animIndex].rotationAnimation[0], &output[0], output.size());
       if (model.numPoses[animationIdx] < animations[animationIdx].animationComponents[animIndex].rotationAnimation.size())
         model.numPoses[animationIdx] = animations[animationIdx].animationComponents[animIndex].rotationAnimation.size();

@@ -16,9 +16,9 @@
 #include <memory>
 #include <cstring>
 #include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
 #include "Model.hpp"
 #include "File.hpp"
+#include "Quaternion.hpp"
 
 namespace small3d {
 
@@ -45,7 +45,7 @@ namespace small3d {
       uint32_t index = 0;
       std::string name = "";
       glm::mat4 transformation = glm::mat4(1.0f);
-      glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+      small3d::Quaternion rotation = { 0.0f, 0.0f, 0.0f, 1.0f }; 
       glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
       glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
       uint32_t skin = 0;

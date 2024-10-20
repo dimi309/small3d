@@ -8,6 +8,7 @@
 
 #include "SceneObject.hpp"
 #include <exception>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace small3d {
 

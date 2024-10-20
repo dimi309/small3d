@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include "BasePath.hpp"
 #include <algorithm>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace small3d {
 

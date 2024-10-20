@@ -18,7 +18,6 @@
 #include "GlbFile.hpp"
 #include "WavefrontFile.hpp"
 #include "BinaryFile.hpp"
-#include <glm/gtx/string_cast.hpp>
 #include <thread>
 
 using namespace small3d;

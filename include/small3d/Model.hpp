@@ -11,17 +11,15 @@
 #include <string>
 #include <vector>
 #include <glm/glm.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/quaternion.hpp>
 #include "Image.hpp"
 #include "File.hpp"
 #include "Material.hpp"
+#include "Quaternion.hpp"
 
 namespace glm {
   template<class Archive> void serialize(Archive& archive, glm::vec3& v) { archive(v.x, v.y, v.z); }
   template<class Archive> void serialize(Archive& archive, glm::vec4& v) { archive(v.x, v.y, v.z, v.w); }
-  template<class Archive> void serialize(Archive& archive, glm::mat4& m) { archive(m[0], m[1], m[2], m[3]); }
-  template<class Archive> void serialize(Archive& archive, glm::quat& q) { archive(q.x, q.y, q.z, q.w); }
+  template<class Archive> void serialize(Archive& archive, glm::mat4& m) { archive(m[0], m[1], m[2], m[3]); } 
 }
 
 namespace small3d {
@@ -54,7 +52,7 @@ namespace small3d {
 
     // Original rotation (from armature/skin), as read from a
     // file (in quaternion form)
-    glm::quat origRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+    Quaternion origRotation = { 0.0f, 0.0f, 0.0f, 1.0f };
 
     // brief Original translation, as read from a file
     glm::vec3 origTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -75,7 +73,7 @@ namespace small3d {
      */
     struct AnimationComponent {
       uint32_t input = 0;
-      std::vector<glm::quat> rotationAnimation;
+      std::vector<Quaternion> rotationAnimation;
       std::vector<glm::vec3> translationAnimation;
       std::vector<glm::vec3> scaleAnimation;
       std::vector<float> times;
@@ -104,7 +102,7 @@ namespace small3d {
       uint32_t node = 0;
       std::string name;
       glm::mat4 inverseBindMatrix = glm::mat4(1.0f);
-      glm::quat rotation = glm::quat(0.0f, 0.0f, 0.0f, 1.0f);
+      Quaternion rotation = { 1.0f, 0.0f, 0.0f, 0.0f };
       glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
       glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
       glm::mat4 transformation = glm::mat4(1.0f);

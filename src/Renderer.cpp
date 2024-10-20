@@ -215,7 +215,7 @@ namespace small3d {
       rotation *
       glm::scale(glm::mat4x4(1.0f), model.scale) *
       glm::translate(glm::mat4x4(1.0f), model.origTranslation) *
-      glm::toMat4(model.origRotation) *
+      model.origRotation.toMatrix() *
       glm::scale(glm::mat4x4(1.0f), model.origScale) * model.origTransformation *
       model.getTransform(model.currentAnimation, currentPose);
 
