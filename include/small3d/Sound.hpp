@@ -13,21 +13,10 @@
 
 #define WORD_SIZE 2
 
-#if defined(__ANDROID__)
-#define SAMPLE_DATATYPE uint8_t
-#else
 #define SAMPLE_DATATYPE short
-#endif
 
-#if defined(__ANDROID__)
-#include <oboe/Oboe.h>
-#define SAMPLES_PER_FRAME 1
-#elif defined(SMALL3D_IOS)
-#include <OpenAL/al.h>
-#include <OpenAL/alc.h>
-#else
 #include <portaudio.h>
-#endif
+
 
 #include <vector>
 #include <string>
