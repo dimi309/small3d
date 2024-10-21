@@ -22,16 +22,16 @@ and the use of cutting edge methods and technologies.
 
 Avoid the Bug
 
-![AvoidTheBug](https://github.com/dimi309/small3d-first-games/blob/master/avoidthebug/screenshot.png?raw=true)
+![AvoidTheBug](img/avoidthebug.png)
 
 
 Chase the Goat
 
-![ChaseTheGoat](https://github.com/dimi309/small3d-first-games/raw/master/chasethegoat/screenshot.png)
+![ChaseTheGoat](img/chasethegoat.png)
 
 Frog Remixed
 
-![FrogRemixed](https://github.com/dimi309/small3d-first-games/raw/master/frogremixed/screenshot.png)
+![FrogRemixed](img/frogremixed.png)
 
 All of the above can be found here: https://github.com/dimi309/small3d-first-games
 
@@ -39,7 +39,7 @@ All of the above can be found here: https://github.com/dimi309/small3d-first-gam
 
 [Gloom](https://github.com/dimi309/gloom) (open source)
 
-![Gloom](https://github.com/dimi309/gloom/blob/master/screenshot.png?raw=true)
+![Gloom](img/gloom.png)
 
 [Islet Hell](https://store.steampowered.com/app/2069750/Islet_Hell/) (once commercially released, now free of charge)
 
