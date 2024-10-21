@@ -16,34 +16,32 @@ and the use of cutting edge methods and technologies.
 
 *Mobile devices are no longer supported. Please read further below for details.*
 
-# Games 
+# First Little Games 
 
-## First little games
+## Avoid the Bug
 
-Avoid the Bug
-
-![AvoidTheBug](img/avoidthebug.png)
+[![AvoidTheBug](img/avoidthebug.png)](https://github.com/dimi309/small3d-first-games/tree/master/avoidthebug)
 
 
-Chase the Goat
+## Chase the Goat
 
-![ChaseTheGoat](img/chasethegoat.png)
+[![ChaseTheGoat](img/chasethegoat.png)](https://github.com/dimi309/small3d-first-games/tree/master/chasethegoat)
 
-Frog Remixed
+## Frog Remixed
 
-![FrogRemixed](img/frogremixed.png)
+[![FrogRemixed](img/frogremixed.png)](https://github.com/dimi309/small3d-first-games/tree/master/frogremixed)
 
 All of the above can be found here: https://github.com/dimi309/small3d-first-games
 
-## More "evolved" titles
+# More "Evolved" Titles
+ 
+## Gloom (open source)
 
-[Gloom](https://github.com/dimi309/gloom) (open source)
+[![Gloom](img/gloom.png)](https://github.com/dimi309/gloom)
 
-![Gloom](img/gloom.png)
+## Islet Hell (once commercially released, now free of charge)
 
-[Islet Hell](https://store.steampowered.com/app/2069750/Islet_Hell/) (once commercially released, now free of charge)
-
-![IsletHell](img/islethell.png)
+[![IsletHell](img/islethell.png)](https://store.steampowered.com/app/2069750/Islet_Hell/)
 
 # Non-game project
 
