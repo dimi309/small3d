@@ -6,6 +6,8 @@
 
 Minimalistic, open source library for making 3D games in C++
 
+![small3dlogo](img/logo.png)
+
 This library provides a sufficient level of game development functionalities 
 for C++ developers to be able to build cross-platform games based on a single 
 code-base. Supporting as many platforms as possible while minimising the amount 
@@ -18,19 +20,30 @@ and the use of cutting edge methods and technologies.
 
 ## First little games
 
-- Avoid the Bug
+Avoid the Bug
 
-- Chase the Goat
+![AvoidTheBug](https://github.com/dimi309/small3d-first-games/blob/master/avoidthebug/screenshot.png?raw=true)
 
-- Frog Remixed
+
+Chase the Goat
+
+![ChaseTheGoat](https://github.com/dimi309/small3d-first-games/raw/master/chasethegoat/screenshot.png)
+
+Frog Remixed
+
+![FrogRemixed](https://github.com/dimi309/small3d-first-games/raw/master/frogremixed/screenshot.png)
 
 All of the above can be found here: https://github.com/dimi309/small3d-first-games
 
 ## More "evolved" titles
 
-- [Gloom](https://github.com/dimi309/gloom) (open source)
+[Gloom](https://github.com/dimi309/gloom) (open source)
 
-- [Islet Hell](https://store.steampowered.com/app/2069750/Islet_Hell/) (once commercially released, now free of charge)
+![Gloom](https://github.com/dimi309/gloom/blob/master/screenshot.png?raw=true)
+
+[Islet Hell](https://store.steampowered.com/app/2069750/Islet_Hell/) (once commercially released, now free of charge)
+
+![IsletHell](img/islethell.png)
 
 # Non-game project
 

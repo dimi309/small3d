@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['wavefrontfile_136',['WavefrontFile',['../classsmall3d_1_1_wavefront_file.html',1,'small3d::WavefrontFile'],['../classsmall3d_1_1_wavefront_file.html#a249e3ce25f371e68910f231ffbb24531',1,'small3d::WavefrontFile::WavefrontFile()']]],
-  ['wavefrontfile_2ehpp_137',['WavefrontFile.hpp',['../_wavefront_file_8hpp.html',1,'']]],
-  ['weightdata_138',['weightData',['../classsmall3d_1_1_model.html#a41ca4152abcc719e9048258925999f10',1,'small3d::Model']]],
-  ['weightdatabytesize_139',['weightDataByteSize',['../classsmall3d_1_1_model.html#a0f8f0d5bf988d89b3cf7c6c16bc2871e',1,'small3d::Model']]]
+  ['vs_134',['vs',['../md_docs-source_vs.html',1,'']]],
+  ['vertexdata_135',['vertexData',['../classsmall3d_1_1_model.html#adf9422b7594956d857bc9da9da7b13e4',1,'small3d::Model']]],
+  ['vertexdatabytesize_136',['vertexDataByteSize',['../classsmall3d_1_1_model.html#a06b724ca272d632f25098e25ab0137a4',1,'small3d::Model']]],
+  ['vertices_137',['vertices',['../classsmall3d_1_1_bounding_box_set.html#ad6565272cb69deaf226f4ae892975f93',1,'small3d::BoundingBoxSet']]]
 ];
