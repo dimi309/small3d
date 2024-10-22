@@ -45,7 +45,7 @@ All of the above can be found here: https://github.com/dimi309/small3d-first-gam
 
 # Non-game project
 
-- [Serial Model Renderer](https://github.com/dimi309/serial-model-renderer), used to test the 3D model reading and rendering functionality of small3d
+- [Serial Model Renderer](https://github.com/dimi309/serial-model-renderer), used to test the 3D model reading and rendering functionality of the library
 
 # Features
 
