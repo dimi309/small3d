@@ -141,6 +141,10 @@ For building your own project, you need:
 You can also deploy using [conan](https://conan.io). The conan package is 
 provided in a [separate repository](https://github.com/dimi309/small3d-conan).
 
+A [boilerplate project](https://github.com/dimi309/small3d-boilerplate) is also 
+available. It provides a basic setup of a game loop with user inputs so that you 
+start coding your game right away.
+
 # Referenced libraries
 
 The following dependencies' *source code* repositories (not binaries) are 
