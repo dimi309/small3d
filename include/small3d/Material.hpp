@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <glm/glm.hpp>
+#include "Math.hpp"
 
 namespace small3d {
 
@@ -25,10 +25,10 @@ namespace small3d {
   public:
 
     float specularExponent = 0.0f;
-    glm::vec3 ambientColour = glm::vec3(0.5f);
-    glm::vec3 diffuseColour = glm::vec3(0.0f);
-    glm::vec3 specularColour = glm::vec3(0.0f);
-    glm::vec3 emissiveCoefficient = glm::vec3(0.0f);
+    Vec3 ambientColour = Vec3(0.5f);
+    Vec3 diffuseColour = Vec3(0.0f);
+    Vec3 specularColour = Vec3(0.0f);
+    Vec3 emissiveCoefficient = Vec3(0.0f);
     /**
      * @brief Optical density / index of refraction
      *

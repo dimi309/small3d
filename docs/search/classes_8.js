@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['quaternion_159',['Quaternion',['../structsmall3d_1_1_quaternion.html',1,'small3d']]]
+  ['quat_165',['Quat',['../structsmall3d_1_1_quat.html',1,'small3d']]]
 ];

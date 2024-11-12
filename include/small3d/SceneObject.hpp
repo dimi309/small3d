@@ -18,7 +18,7 @@
 #include "Logger.hpp"
 #include "Image.hpp"
 #include "BoundingBoxSet.hpp"
-#include <glm/glm.hpp>
+#include "Math.hpp"
 #include "File.hpp"
 
 namespace small3d
@@ -45,8 +45,8 @@ namespace small3d
     int framesWaited;
     uint64_t getNumPoses();
     std::string name;
-    glm::mat4x4 transformation = glm::mat4x4(1);
-    glm::vec3 rotationXYZ = glm::vec3(0.0f);
+    Mat4 transformation = Mat4(1);
+    Vec3 rotationXYZ = Vec3(0.0f);
     bool rotationByMatrix = false;
     std::vector<std::shared_ptr<Model>> models;
     std::shared_ptr<BoundingBoxSet> boundingBoxSet = std::shared_ptr<BoundingBoxSet>(new BoundingBoxSet());
@@ -131,7 +131,7 @@ namespace small3d
     /**
      * Position of the object
      */
-    glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+    Vec3 position = Vec3(0.0f, 0.0f, 0.0f);
     
     /**
      * @brief: Set the rotation of the object. (Overwrites
@@ -139,14 +139,14 @@ namespace small3d
      * 
      * @param rotation The rotation (x, y, z)
      */
-    void setRotation(const glm::vec3& rotation);
+    void setRotation(const Vec3& rotation);
 
     /**
      * @brief: Modify the rotation of the object
      *
      * @param rotation The rotation to modify by (x, y, z)
      */
-    void rotate(const glm::vec3& rotation);
+    void rotate(const Vec3& rotation);
 
     /**
      * @brief: Set the transformation matrix of the object. (Overwrites
@@ -154,21 +154,21 @@ namespace small3d
      *    
      * @param rotation The tranformation matrix
      */
-    void setTransformation(const glm::mat4x4& rotation);
+    void setTransformation(const Mat4& rotation);
 
     /**
      * @brief: Get the orientation of the object
      *
      * @return The orientation of the object
      */
-    const glm::vec3 getOrientation() const;
+    const Vec3 getOrientation() const;
 
     /**
      * @brief: Get the tranformation matrix of the object
      *
      * @return The tranformation matrix
      */
-    const glm::mat4x4& getTransformation() const;
+    const Mat4& getTransformation() const;
 
     /**
      * @brief: Get the rotation of the object in x, y, z representation.
@@ -177,7 +177,7 @@ namespace small3d
      *
      * @return The rotation in x, y, z representation
      */
-    const glm::vec3& getRotationXYZ() const;
+    const Vec3& getRotationXYZ() const;
 
     /**
      * @brief Start animating the object
@@ -215,7 +215,7 @@ namespace small3d
      *         of the object, False otherwise.
      */
 
-    bool contains(const glm::vec3& point) const;
+    bool contains(const Vec3& point) const;
 
     /**
      *

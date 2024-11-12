@@ -149,7 +149,6 @@ directly in your application / game code.
 
 - glew
 - glfw 
-- glm 
 - png
 - zlib
 - ogg

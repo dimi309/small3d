@@ -20,8 +20,6 @@
 #include <zlib.h>
 #include <algorithm>
 
-#include <glm/gtc/matrix_transform.hpp>
-
 namespace small3d {
 
   Model::Model() {
@@ -57,7 +55,7 @@ namespace small3d {
     currentAnimation = animationIdx;
   }
 
-  glm::mat4 Model::getTransform(uint32_t animationIdx, uint64_t currentPose, float seconds) {
+  Mat4 Model::getTransform(uint32_t animationIdx, uint64_t currentPose, float seconds) {
     float secondsUsed = seconds;
 
     // If parameter seconds == 0, it looks like
@@ -77,9 +75,9 @@ namespace small3d {
     }
 
     // By default, the joint is in its initial state
-    glm::mat4 translation(1.0f);
-    glm::mat4 rotation(1.0f);
-    glm::mat4 scale(1.0f);
+    Mat4 translation(1.0f);
+    Mat4 rotation(1.0f);
+    Mat4 scale(1.0f);
 
     if (animations.size() > 0) {
 
@@ -111,11 +109,11 @@ namespace small3d {
         if (foundPose) {
           if (animationComponent.translationAnimation.size() > poseUsed) {
             if (firstT) {
-              translation = glm::translate(glm::mat4(1.0f), animationComponent.translationAnimation[poseUsed]);
+              translation = translate(Mat4(1.0f), animationComponent.translationAnimation[poseUsed]);
               firstT = false;
             }
             else {
-              translation *= glm::translate(glm::mat4(1.0f), animationComponent.translationAnimation[poseUsed]);
+              translation *= translate(Mat4(1.0f), animationComponent.translationAnimation[poseUsed]);
             }
           }
           if (animationComponent.rotationAnimation.size() > poseUsed) {
@@ -132,11 +130,11 @@ namespace small3d {
           }
           if (animationComponent.scaleAnimation.size() > poseUsed) {
             if (firstS) {
-              scale = glm::scale(glm::mat4(1.0f), animationComponent.scaleAnimation[poseUsed]);
+              scale = small3d::scale(Mat4(1.0f), animationComponent.scaleAnimation[poseUsed]);
               firstS = false;
             }
             else {
-              scale *= glm::scale(glm::mat4(1.0f), animationComponent.scaleAnimation[poseUsed]);
+              scale *= small3d::scale(Mat4(1.0f), animationComponent.scaleAnimation[poseUsed]);
             }
           }
         }
@@ -146,7 +144,7 @@ namespace small3d {
 
   }
 
-  glm::mat4 Model::getJointTransform(size_t joint, uint32_t animationIdx, uint64_t currentPose, float seconds) {
+  Mat4 Model::getJointTransform(size_t joint, uint32_t animationIdx, uint64_t currentPose, float seconds) {
 
     float secondsUsed = seconds;
 
@@ -186,18 +184,18 @@ namespace small3d {
     // If parent node exists, get the transform
     // of the parent node that corresponds to the seconds
     // value used
-    glm::mat4 parentTransform(1.0f);
+    Mat4 parentTransform(1.0f);
     if (parentFound) {
       parentTransform = getJointTransform(idx, animationIdx, currentPose, secondsUsed);
     }
 
     // By default, the joint is in its initial state
-    glm::mat4 translation = glm::translate(glm::mat4(1.0f), joints[joint].translation);
+    Mat4 translation = translate(Mat4(1.0f), joints[joint].translation);
 
     auto rotation = joints[joint].rotation.toMatrix();
 
 
-    glm::mat4 scale = glm::scale(glm::mat4(1.0f), joints[joint].scale);
+    Mat4 scale = small3d::scale(Mat4(1.0f), joints[joint].scale);
 
 
     if (joints[joint].animations.size() > 0) {
@@ -230,11 +228,11 @@ namespace small3d {
         if (foundPose) {
           if (animationComponent.translationAnimation.size() > poseUsed) {
             if (firstT) {
-              translation = glm::translate(glm::mat4(1.0f), animationComponent.translationAnimation[poseUsed]);
+              translation = translate(Mat4(1.0f), animationComponent.translationAnimation[poseUsed]);
               firstT = false;
             }
             else {
-              translation *= glm::translate(glm::mat4(1.0f), animationComponent.translationAnimation[poseUsed]);
+              translation *= translate(Mat4(1.0f), animationComponent.translationAnimation[poseUsed]);
             }
           }
           if (animationComponent.rotationAnimation.size() > poseUsed) {
@@ -248,20 +246,20 @@ namespace small3d {
           }
           if (animationComponent.scaleAnimation.size() > poseUsed) {
             if (firstS) {
-              scale = glm::scale(glm::mat4(1.0f), animationComponent.scaleAnimation[poseUsed]);
+              scale = small3d::scale(Mat4(1.0f), animationComponent.scaleAnimation[poseUsed]);
               firstS = false;
             }
             else {
-              scale *= glm::scale(glm::mat4(1.0f), animationComponent.scaleAnimation[poseUsed]);
+              scale *= small3d::scale(Mat4(1.0f), animationComponent.scaleAnimation[poseUsed]);
             }
           }
         }
       }
     }
-    return parentTransform * translation * rotation * scale * joints[joint].transformation;
+    return  parentTransform * translation * rotation * scale * joints[joint].transformation;
   }
 
-  glm::vec3 Model::getOriginalScale() {
+  Vec3 Model::getOriginalScale() {
     return origScale;
   }
 

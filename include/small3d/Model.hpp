@@ -10,16 +10,15 @@
 
 #include <string>
 #include <vector>
-#include <glm/glm.hpp>
+#include "Math.hpp"
 #include "Image.hpp"
 #include "File.hpp"
 #include "Material.hpp"
-#include "Quaternion.hpp"
 
 namespace glm {
-  template<class Archive> void serialize(Archive& archive, glm::vec3& v) { archive(v.x, v.y, v.z); }
-  template<class Archive> void serialize(Archive& archive, glm::vec4& v) { archive(v.x, v.y, v.z, v.w); }
-  template<class Archive> void serialize(Archive& archive, glm::mat4& m) { archive(m[0], m[1], m[2], m[3]); } 
+  template<class Archive> void serialize(Archive& archive, small3d::Vec3& v) { archive(v.x, v.y, v.z); }
+  template<class Archive> void serialize(Archive& archive, small3d::Vec4& v) { archive(v.x, v.y, v.z, v.w); }
+  template<class Archive> void serialize(Archive& archive, small3d::Mat4& m) { archive(m[0], m[1], m[2], m[3]); }
 }
 
 namespace small3d {
@@ -48,17 +47,17 @@ namespace small3d {
 
     // Original transformation matrix (from armature/skin),
     // as read from a file
-    glm::mat4 origTransformation = glm::mat4(1.0f);
+    Mat4 origTransformation = Mat4(1.0f);
 
     // Original rotation (from armature/skin), as read from a
     // file (in quaternion form)
-    Quaternion origRotation = { 0.0f, 0.0f, 0.0f, 1.0f };
+    Quat origRotation = { 0.0f, 0.0f, 0.0f, 1.0f };
 
     // brief Original translation, as read from a file
-    glm::vec3 origTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
+    Vec3 origTranslation = Vec3(0.0f, 0.0f, 0.0f);
 
     // brief Original scale, as read from a file
-    glm::vec3 origScale = glm::vec3(1.0f, 1.0f, 1.0f);
+    Vec3 origScale = Vec3(1.0f, 1.0f, 1.0f);
 
 
   public:
@@ -73,9 +72,9 @@ namespace small3d {
      */
     struct AnimationComponent {
       uint32_t input = 0;
-      std::vector<Quaternion> rotationAnimation;
-      std::vector<glm::vec3> translationAnimation;
-      std::vector<glm::vec3> scaleAnimation;
+      std::vector<Quat> rotationAnimation;
+      std::vector<Vec3> translationAnimation;
+      std::vector<Vec3> scaleAnimation;
       std::vector<float> times;
       template <class Archive>
       void serialize(Archive& archive) {
@@ -101,11 +100,11 @@ namespace small3d {
     struct Joint {
       uint32_t node = 0;
       std::string name;
-      glm::mat4 inverseBindMatrix = glm::mat4(1.0f);
-      Quaternion rotation = { 1.0f, 0.0f, 0.0f, 0.0f };
-      glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
-      glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
-      glm::mat4 transformation = glm::mat4(1.0f);
+      Mat4 inverseBindMatrix = Mat4(1.0f);
+      Quat rotation = { 1.0f, 0.0f, 0.0f, 0.0f };
+      Vec3 scale = Vec3(1.0f, 1.0f, 1.0f);
+      Vec3 translation = Vec3(0.0f, 0.0f, 0.0f);
+      Mat4 transformation = Mat4(1.0f);
       std::vector<uint32_t> children;
       std::vector<Animation> animations;
 
@@ -119,7 +118,7 @@ namespace small3d {
     /**
      * @brief Use this to scale the model and not origScale
      */
-    glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    Vec3 scale = Vec3(1.0f, 1.0f, 1.0f);
 
     /**
      * @brief Maximum number of supported joints
@@ -273,7 +272,7 @@ namespace small3d {
      *  @param seconds The animation moment (in seconds) - mostly used internally
      *  @return The transform
      */
-    glm::mat4 getTransform(uint32_t animationIdx, uint64_t currentPose, float seconds = 0.0f);
+    Mat4 getTransform(uint32_t animationIdx, uint64_t currentPose, float seconds = 0.0f);
 
     /**
      * @brief Get a joint transform, also calculating the transorms of the parent
@@ -285,13 +284,13 @@ namespace small3d {
      *  @param seconds The animation moment (in seconds) - mostly used internally
      *  @return The transform
      */
-    glm::mat4 getJointTransform(size_t jointIdx, uint32_t animationIdx, uint64_t currentPose, float seconds = 0.0f);
+    Mat4 getJointTransform(size_t jointIdx, uint32_t animationIdx, uint64_t currentPose, float seconds = 0.0f);
 
     /**
      * @brief Get the Model's original scale (usually the one read from the file
      *        the Model was loaded from.
      */
-    glm::vec3 getOriginalScale();
+    Vec3 getOriginalScale();
 
     /**
      * @brief Save model data in binary format

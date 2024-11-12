@@ -15,10 +15,9 @@
 #include <vector>
 #include <memory>
 #include <cstring>
-#include <glm/glm.hpp>
+#include "Math.hpp"
 #include "Model.hpp"
 #include "File.hpp"
-#include "Quaternion.hpp"
 
 namespace small3d {
 
@@ -44,10 +43,10 @@ namespace small3d {
     struct Node {
       uint32_t index = 0;
       std::string name = "";
-      glm::mat4 transformation = glm::mat4(1.0f);
-      small3d::Quaternion rotation = { 0.0f, 0.0f, 0.0f, 1.0f }; 
-      glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
-      glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
+      Mat4 transformation = Mat4(1.0f);
+      small3d::Quat rotation = { 0.0f, 0.0f, 0.0f, 1.0f }; 
+      Vec3 scale = Vec3(1.0f, 1.0f, 1.0f);
+      Vec3 translation = Vec3(0.0f, 0.0f, 0.0f);
       uint32_t skin = 0;
       bool noSkin = false;
       uint32_t mesh = 0;

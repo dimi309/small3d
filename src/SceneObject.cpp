@@ -8,7 +8,6 @@
 
 #include "SceneObject.hpp"
 #include <exception>
-#include <glm/gtc/matrix_transform.hpp>
 
 namespace small3d {
 
@@ -101,42 +100,42 @@ namespace small3d {
     return name;
   }
 
-  void SceneObject::setRotation(const glm::vec3& rotation) {
+  void SceneObject::setRotation(const Vec3& rotation) {
     rotationByMatrix = false;
     this->rotationXYZ = rotation;
-    this->transformation = glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+    this->transformation = small3d::rotate(Mat4(1.0f), rotation.y, Vec3(0.0f, 1.0f, 0.0f)) *
+      small3d::rotate(Mat4(1.0f), rotation.x, Vec3(1.0f, 0.0f, 0.0f)) *
+      small3d::rotate(Mat4(1.0f), rotation.z, Vec3(0.0f, 0.0f, 1.0f));
   }
 
-  void SceneObject::rotate(const glm::vec3& rotation) {
+  void SceneObject::rotate(const Vec3& rotation) {
     if (rotationByMatrix) {
       throw std::runtime_error("Attempted x, y, z representation rotation, while having set the initial rotation by matrix.");
     }
     else {
       this->rotationXYZ += rotation;
-      this->transformation = glm::rotate(glm::mat4x4(1.0f), this->rotationXYZ.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
-        glm::rotate(glm::mat4x4(1.0f), this->rotationXYZ.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-        glm::rotate(glm::mat4x4(1.0f), this->rotationXYZ.z, glm::vec3(0.0f, 0.0f, 1.0f));
+      this->transformation = small3d::rotate(Mat4(1.0f), this->rotationXYZ.y, Vec3(0.0f, 1.0f, 0.0f)) *
+        small3d::rotate(Mat4(1.0f), this->rotationXYZ.x, Vec3(1.0f, 0.0f, 0.0f)) *
+        small3d::rotate(Mat4(1.0f), this->rotationXYZ.z, Vec3(0.0f, 0.0f, 1.0f));
     }
   }
 
-  void SceneObject::setTransformation(const glm::mat4x4& rotation) {
+  void SceneObject::setTransformation(const Mat4& rotation) {
     this->transformation = rotation;
     rotationByMatrix = true;
-    this->rotationXYZ = glm::vec3(0.0f);
+    this->rotationXYZ = Vec3(0.0f);
   }
 
-  const glm::vec3 SceneObject::getOrientation() const {
-    auto orientationVec4 = this->transformation * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
-    return glm::vec3(orientationVec4.x, orientationVec4.y, orientationVec4.z);
+  const Vec3 SceneObject::getOrientation() const {
+    auto orientationVec4 = this->transformation * Vec4(0.0f, 0.0f, -1.0f, 1.0f);
+    return Vec3(orientationVec4.x, orientationVec4.y, orientationVec4.z);
   }
 
-  const glm::mat4x4& SceneObject::getTransformation() const {
+  const Mat4& SceneObject::getTransformation() const {
     return this->transformation;
   }
 
-  const glm::vec3& SceneObject::getRotationXYZ() const {
+  const Vec3& SceneObject::getRotationXYZ() const {
     if (rotationByMatrix) {
       throw std::runtime_error("Attempted x, y, z representation rotation retrieval. This cannot be done if the setTransformation function has been used on the object.");
     }
@@ -178,7 +177,7 @@ namespace small3d {
     }
   }
 
-  bool SceneObject::contains(const glm::vec3& point) const {
+  bool SceneObject::contains(const Vec3& point) const {
     if (boundingBoxSet->vertices.size() == 0) {
       throw std::runtime_error("No bounding boxes have been provided for " +
         name +

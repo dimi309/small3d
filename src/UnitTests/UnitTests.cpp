@@ -10,6 +10,7 @@
 #include <iostream>
 #include "Time.hpp"
 #include "Logger.hpp"
+#include "Math.hpp"
 #include "Image.hpp"
 #include "Model.hpp"
 #include "SceneObject.hpp"
@@ -36,13 +37,13 @@ static small3d::Model indicator;
 
 void write(const std::string& text, float elevation) {
   if (indicator.vertexData.empty()) {
-    r->createRectangle(indicator, glm::vec3(-0.4f, -0.4f, 0.1f),
-      glm::vec3(0.4f, -0.50f, 0.1f));
+    r->createRectangle(indicator, Vec3(-0.4f, -0.4f, 0.1f),
+      Vec3(0.4f, -0.50f, 0.1f));
   }
   std::string textureName = "indication" + std::to_string(elevation);
-  r->generateTexture(textureName, text, glm::vec3(1.0f, 1.0f, 1.0f), 24);
-  r->render(indicator, glm::vec3(0.0f, elevation, 0.0f), glm::mat4(1.0f),
-    glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), textureName, 0, false);
+  r->generateTexture(textureName, text, Vec3(1.0f, 1.0f, 1.0f), 24);
+  r->render(indicator, Vec3(0.0f, elevation, 0.0f), Mat4(1.0f),
+    Vec4(0.0f, 0.0f, 0.0f, 0.0f), textureName, 0, false);
 }
 
 void initRenderer(uint32_t width, uint32_t height) {
@@ -62,6 +63,25 @@ int LoggerTest() {
   LOGINFO("Logger info test works");
   LOGERROR("Logger error test works");
   deleteLogger();
+  return 1;
+}
+
+int MathTest() {
+  Mat4 m1;
+  Mat4 m2;
+  m1[0].x = 1.0f;
+  m2[0].x = 1.0f;
+  auto m3 = m1 * m2;
+  if (m3[0].x != 1.0f || m3[0].y != 0.0f || m3[1].x != 0.0f)  {
+    LOGINFO("Multiplication test failed.");
+    return 0;
+  }
+
+  Mat4 m4(1.0f);
+  if (m4[0].x != 1.0f || m4[1].x != 0.0f) {
+    LOGINFO("Diagonal matrix creation test failed.");
+    return 0;
+  }
   return 1;
 }
 
@@ -149,9 +169,9 @@ int WavefrontModelTest() {
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
 
-      r->render(model2, glm::vec3(-1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-      r->render(model3, glm::vec3(0.0f, -1.0f, -2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-      r->render(model4, glm::vec3(1.5f, -1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+      r->render(model2, Vec3(-1.5f, -1.0f, -3.0f), Vec3(0.0f, 0.0f, 0.0f), Vec4(1.0f, 0.0f, 0.0f, 1.0f));
+      r->render(model3, Vec3(0.0f, -1.0f, -2.0f), Vec3(0.0f, 0.0f, 0.0f), Vec4(0.0f, 1.0f, 0.0f, 1.0f));
+      r->render(model4, Vec3(1.5f, -1.0f, -3.0f), Vec3(0.0f, 0.0f, 0.0f), Vec4(0.0f, 0.0f, 1.0f, 1.0f));
 
       r->swapBuffers();
      
@@ -173,7 +193,7 @@ int ScaleAndTransformTest() {
 
   SceneObject boxes("boxes", Model(GlbFile(resourceDir + "/models/boxes.glb"), ""));
 
-  boxes.position = glm::vec3(0.0f, 0.0f, -3.0f);
+  boxes.position = Vec3(0.0f, 0.0f, -3.0f);
 
   while (seconds - startSeconds < 5.0) {
     pollEvents();
@@ -181,10 +201,10 @@ int ScaleAndTransformTest() {
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
 
-      r->render(boxes, glm::vec4(0.5f, 0.3f, 0.0f, 1.0f));
+      r->render(boxes, Vec4(0.5f, 0.3f, 0.0f, 1.0f));
 
       r->swapBuffers();
-      boxes.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
+      boxes.rotate(Vec3(0.0f, 0.01f, 0.0f));
     }
   }
 
@@ -211,14 +231,14 @@ int GlbTextureTestDefaultShadows() {
 
   Model rect;
 
-  r->createRectangle(rect, glm::vec3(-5.0f, -1.5f, -14.0f),
-    glm::vec3(5.0f, -1.5f, 4.0f));
+  r->createRectangle(rect, Vec3(-5.0f, -1.5f, -14.0f),
+    Vec3(5.0f, -1.5f, 4.0f));
 
-  goat.position = glm::vec3(-1.1f, -1.0f, -7.0f);
+  goat.position = Vec3(-1.1f, -1.0f, -7.0f);
   goat.startAnimating();
-  tree.position = glm::vec3(1.0f, -1.0f, -7.0f);
-  auto rectPos = glm::vec3(0.0, 0.6, -5.6);
-  auto rectRot = glm::vec3(0.0, 0.0, 0.0);
+  tree.position = Vec3(1.0f, -1.0f, -7.0f);
+  auto rectPos = Vec3(0.0, 0.6, -5.6);
+  auto rectRot = Vec3(0.0, 0.0, 0.0);
 
   while (seconds - startSeconds < 4.0) {
 
@@ -229,17 +249,17 @@ int GlbTextureTestDefaultShadows() {
       prevSeconds = seconds;
       goat.animate();
 
-      r->render(rect, rectPos, rectRot, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
+      r->render(rect, rectPos, rectRot, Vec4(0.7f, 0.7f, 0.7f, 1.0f));
       r->render(goat, "goatGlbTexture");
 
-      goat.position = glm::vec3(1.1f, -1.0f, -7.0f);
+      goat.position = Vec3(1.1f, -1.0f, -7.0f);
       r->render(goat, "goatGlbTexture");
-      goat.position = glm::vec3(-1.1f, -1.0f, -7.0f);
+      goat.position = Vec3(-1.1f, -1.0f, -7.0f);
 
       r->render(tree, "treeGlbTexture");
       write("Shadows using simple transformation", 0.0f);
       r->swapBuffers();
-      goat.rotate(glm::vec3(0.0f, 0.03f, 0.0f));
+      goat.rotate(Vec3(0.0f, 0.03f, 0.0f));
     }
   }
 
@@ -247,73 +267,6 @@ int GlbTextureTestDefaultShadows() {
   r->deleteTexture("goatGlbTexture");
   r->deleteTexture("treeGlbTexture");
 
-  return 1;
-}
-
-int GlbTextureTestLookAtShadows() {
-  initRenderer();
-
-  r->shadowsActive = true;
-
-  double startSeconds = getTimeInSeconds();
-  double seconds = getTimeInSeconds();
-  double prevSeconds = seconds;
-  const uint32_t framerate = 30;
-
-  constexpr double secondsInterval = 1.0 / framerate;
-
-  SceneObject goat("goat5", Model(GlbFile(resourceDir + "/models/goatAndTree.glb"), "Cube"));
-
-  r->generateTexture("goatGlbTexture", *goat.getModel().defaultTextureImage);
-
-  SceneObject tree("tree5", Model(GlbFile(resourceDir + "/models/goatAndTree.glb"), "Cube.001"));
-
-  r->generateTexture("treeGlbTexture", *tree.getModel().defaultTextureImage);
-
-  Model rect;
-
-  r->createRectangle(rect, glm::vec3(-5.0f, -1.5f, -14.0f),
-    glm::vec3(5.0f, -1.5f, 4.0f));
-
-  goat.position = glm::vec3(-1.1f, -1.0f, -7.0f);
-  goat.startAnimating();
-  tree.position = glm::vec3(1.0f, -1.0f, -7.0f);
-  auto rectPos = glm::vec3(0.0, 0.6, -5.6);
-  auto rectRot = glm::vec3(0.0, 0.0, 0.0);
-
-  auto topForShadows = tree.position;
-  topForShadows.y += 8.0f;
-  topForShadows.z -= 0.1f; // for lookAt to work..
-  auto up = glm::vec3(0.0f, 1.0f, 0.0f);
-
-  r->shadowCamTransformation = glm::lookAt(topForShadows, tree.position, up);
-
-  while (seconds - startSeconds < 4.0) {
-
-    pollEvents();
-    seconds = getTimeInSeconds();
-
-    if (seconds - prevSeconds > secondsInterval) {
-      prevSeconds = seconds;
-      goat.animate();
-
-      r->render(rect, rectPos, rectRot, glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
-      r->render(goat, "goatGlbTexture");
-
-      goat.position = glm::vec3(1.1f, -1.0f, -7.0f);
-      r->render(goat, "goatGlbTexture");
-      goat.position = glm::vec3(-1.1f, -1.0f, -7.0f);
-
-      r->render(tree, "treeGlbTexture");
-      write("Shadows using glm::lookAt", 0.0f);
-      r->swapBuffers();
-      goat.rotate(glm::vec3(0.0f, 0.03f, 0.0f));
-    }
-  }
-
-  r->shadowsActive = false;
-  r->deleteTexture("goatGlbTexture");
-  r->deleteTexture("treeGlbTexture");
   return 1;
 }
 
@@ -329,7 +282,7 @@ int BoundingBoxesTest() {
   constexpr double secondsInterval = 1.0 / framerate;
   SceneObject goat("goat", Model(GlbFile(resourceDir + "/models/goatUnscaled.glb"), "Cube"), 3);
   auto boundingBoxModels = goat.getBoundingBoxSetModels();
-  goat.position = glm::vec3(0.0f, 0.0f, -3.0f);
+  goat.position = Vec3(0.0f, 0.0f, -3.0f);
   goat.startAnimating();
 
   while (seconds - startSeconds < 5.0) {
@@ -340,14 +293,14 @@ int BoundingBoxesTest() {
 
       goat.animate();
 
-      r->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+      r->render(goat, Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
       for (auto& m : boundingBoxModels) {
         r->render(m, goat.position,
-          goat.getTransformation(), glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
+          goat.getTransformation(), Vec4(5.0f, 5.0f, 1.0f, 0.5f));
       }
       r->swapBuffers();
-      goat.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
+      goat.rotate(Vec3(0.0f, 0.01f, 0.0f));
     }
   }
 
@@ -377,13 +330,13 @@ int FPStest() {
   uint32_t numFrames = 0;
   SceneObject goat("goat", Model(GlbFile(resourceDir + "/models/goatUnscaled.glb"), "Cube"), 3);
   auto boundingBoxModels = goat.getBoundingBoxSetModels();
-  goat.position = glm::vec3(0.0f, 0.0f, -3.0f);
+  goat.position = Vec3(0.0f, 0.0f, -3.0f);
   goat.startAnimating();
 
   Model texturedRect;
 
-  r->createRectangle(texturedRect, glm::vec3(0.0f, 0.5f, 0.0f),
-    glm::vec3(1.0f, -1.0f, 0.0f));
+  r->createRectangle(texturedRect, Vec3(0.0f, 0.5f, 0.0f),
+    Vec3(1.0f, -1.0f, 0.0f));
 
 
   while (seconds - startSeconds < 10.0) {
@@ -397,23 +350,23 @@ int FPStest() {
 
     goat.animate();
 
-    r->render(goat, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    r->render(goat, Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
     for (auto& m : boundingBoxModels) {
       r->render(m, goat.position,
-        goat.getTransformation(), glm::vec4(5.0f, 5.0f, 1.0f, 0.5f));
+        goat.getTransformation(), Vec4(5.0f, 5.0f, 1.0f, 0.5f));
     }
 
     r->generateTexture("frameRate", std::to_string(framerate) + " FPS",
-      glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+      Vec3(0.0f, 1.0f, 0.0f));
 
     r->render(texturedRect,
-      glm::vec3(0.0f, 0.0f, -1.0f),
-      glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "frameRate", 0, false);
+      Vec3(0.0f, 0.0f, -1.0f),
+      Vec3(0.0f, 0.0f, 0.0f), Vec4(0.0f, 0.0f, 0.0f, 0.0f), "frameRate", 0, false);
 
     r->swapBuffers();
     ++numFrames;
-    goat.rotate(glm::vec3(0.0f, 0.01f, 0.0f));
+    goat.rotate(Vec3(0.0f, 0.01f, 0.0f));
 
   }
 
@@ -441,7 +394,7 @@ int GenericSceneObjectConstructorTest() {
 int RendererTest() {
   initRenderer();
 
-  r->setCameraRotation(glm::vec3(0.4f, 0.1f, 0.1f));
+  r->setCameraRotation(Vec3(0.4f, 0.1f, 0.1f));
 
   // Here loading the mesh without providing a name is also tested.
   Model modelFromGlb(GlbFile(resourceDir + "/models/goatUnscaled.glb"), "");
@@ -449,13 +402,13 @@ int RendererTest() {
 
   WavefrontFile cubef(resourceDir + "/models/Cube/CubeNoTexture.obj");
   SceneObject object("cube", cubef);
-  object.position = glm::vec3(0.0f, -1.0f, -8.0f);
-  r->render(object, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  object.position = Vec3(0.0f, -1.0f, -8.0f);
+  r->render(object, Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
   WavefrontFile texcubf(resourceDir + "/models/Cube/Cube.obj");
   SceneObject object2("texutredCube", texcubf);
-  object2.position = glm::vec3(-2.0f, -1.0f, -7.0f);
-  object2.setRotation(glm::vec3(0.3f, 1.3f, 0.0f));
+  object2.position = Vec3(-2.0f, -1.0f, -7.0f);
+  object2.setRotation(Vec3(0.3f, 1.3f, 0.0f));
 
   Image cubeTexture(resourceDir + "/models/Cube/cubeTexture.png");
   r->generateTexture("cubeTexture", cubeTexture);
@@ -463,20 +416,20 @@ int RendererTest() {
   glfwShowWindow(r->getWindow());
 
   Model singleColourRect;
-  r->createRectangle(singleColourRect, glm::vec3(-1.0f, 0.0f, 0.0f),
-    glm::vec3(-0.5f, -0.5f, 0.0f));
+  r->createRectangle(singleColourRect, Vec3(-1.0f, 0.0f, 0.0f),
+    Vec3(-0.5f, -0.5f, 0.0f));
 
   Model texturedRect;
 
-  r->createRectangle(texturedRect, glm::vec3(0.0f, 0.5f, 0.0f),
-    glm::vec3(1.0f, -1.0f, 0.0f));
+  r->createRectangle(texturedRect, Vec3(0.0f, 0.5f, 0.0f),
+    Vec3(1.0f, -1.0f, 0.0f));
 
   r->generateTexture("small3dTexture", "small3d :)",
-    glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+    Vec3(0.0f, 1.0f, 0.0f));
 
   Model textRect;
 
-  r->createRectangle(textRect, glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.5f, -0.5f, 0.0f));
+  r->createRectangle(textRect, Vec3(-1.0f, 0.0f, 0.0f), Vec3(0.5f, -0.5f, 0.0f));
 
   double startSeconds = getTimeInSeconds();
   double seconds = getTimeInSeconds();
@@ -485,7 +438,7 @@ int RendererTest() {
 
   constexpr double secondsInterval = 1.0 / framerate;
 
-  glm::vec3 rotation(0.0f, 0.0f, 0.0f);
+  Vec3 rotation(0.0f, 0.0f, 0.0f);
 
   std::vector<std::shared_ptr<Model>> bugwfanim;
 
@@ -501,7 +454,7 @@ int RendererTest() {
 
   SceneObject bug("bug", bugwfanim);
 
-  bug.position = glm::vec3(0.0f, 3.0f, -6.0f);
+  bug.position = Vec3(0.0f, 3.0f, -6.0f);
   bug.startAnimating();
 
   while (seconds - startSeconds < 5.0) {
@@ -511,26 +464,26 @@ int RendererTest() {
       prevSeconds = seconds;
 
       r->render(singleColourRect,
-        glm::vec3(0.0f, 0.0f, 0.0f),
-        glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), "", 0, false);
+        Vec3(0.0f, 0.0f, 0.0f),
+        Vec3(0.0f, 0.0f, 0.0f), Vec4(0.0f, 0.0f, 1.0f, 1.0f), "", 0, false);
 
       r->render(texturedRect,
-        glm::vec3(0.0f, 0.0f, -2.0f),
-        glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "cubeTexture", true);
+        Vec3(0.0f, 0.0f, -2.0f),
+        Vec3(0.0f, 0.0f, 0.0f), Vec4(0.0f, 0.0f, 0.0f, 0.0f), "cubeTexture", true);
 
       r->render(object2, "cubeTexture");
 
 
       rotation.y += 0.1f;
 
-      r->render(modelFromGlb, glm::vec3(0.0f, 1.0f, -6.0f),
-        rotation, glm::vec4(0.3f, 1.0f, 1.0f, 1.0f));
+      r->render(modelFromGlb, Vec3(0.0f, 1.0f, -6.0f),
+        rotation, Vec4(0.3f, 1.0f, 1.0f, 1.0f));
 
 
-      r->render(textRect, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-        glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", 0, false);
+      r->render(textRect, Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 0.0f),
+        Vec4(0.0f, 0.0f, 0.0f, 0.0f), "small3dTexture", 0, false);
 
-      r->render(bug, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+      r->render(bug, Vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
       bug.animate();
 
@@ -551,7 +504,7 @@ int BinaryModelTest() {
 
   initRenderer();
 
-  r->setCameraRotation(glm::vec3(0.4f, 0.1f, 0.1f));
+  r->setCameraRotation(Vec3(0.4f, 0.1f, 0.1f));
   const std::string textureName = "goatbintexture";
 
   Model modelFromGlb(GlbFile(resourceDir + "/models/goatWithTexture.glb"), "");
@@ -569,17 +522,17 @@ int BinaryModelTest() {
 
   SceneObject so("goat", modelFromBin);
 
-  so.position = glm::vec3(0.0f, 1.0f, -6.0f);
+  so.position = Vec3(0.0f, 1.0f, -6.0f);
   so.startAnimating();
 
-  glm::vec3 rotation(0.0f, 0.0f, 0.0f);
+  Vec3 rotation(0.0f, 0.0f, 0.0f);
   while (seconds - startSeconds < 5.0) {
     pollEvents();
     seconds = getTimeInSeconds();
     if (seconds - prevSeconds > secondsInterval) {
       prevSeconds = seconds;
 
-      so.rotate(glm::vec3(0.0f, 0.1f, 0.0f));
+      so.rotate(Vec3(0.0f, 0.1f, 0.0f));
       so.animate();
       r->render(so, textureName);
       r->swapBuffers();
@@ -680,11 +633,11 @@ int ScreenCaptureTest() {
   initRenderer();
 
   SceneObject boxes("boxes", Model(GlbFile(resourceDir + "/models/boxes.glb"), ""));
-  boxes.position = glm::vec3(0.0f, 0.0f, -3.0f);
-  r->render(boxes, glm::vec4(0.5f, 0.3f, 0.0f, 1.0f));
+  boxes.position = Vec3(0.0f, 0.0f, -3.0f);
+  r->render(boxes, Vec4(0.5f, 0.3f, 0.0f, 1.0f));
   r->swapBuffers();
   std::this_thread::sleep_for(std::chrono::seconds(1));
-  r->render(boxes, glm::vec4(0.5f, 0.3f, 0.0f, 1.0f));
+  r->render(boxes, Vec4(0.5f, 0.3f, 0.0f, 1.0f));
   r->screenCapture = true;
   r->swapBuffers();
 

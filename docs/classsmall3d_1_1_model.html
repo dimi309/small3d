@@ -115,16 +115,16 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7ae390be2c19fcbd81829341fc8cafa3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a7ae390be2c19fcbd81829341fc8cafa3">setAnimation</a> (uint32_t animationIdx)</td></tr>
 <tr class="memdesc:a7ae390be2c19fcbd81829341fc8cafa3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the current animation.  <a href="classsmall3d_1_1_model.html#a7ae390be2c19fcbd81829341fc8cafa3">More...</a><br /></td></tr>
 <tr class="separator:a7ae390be2c19fcbd81829341fc8cafa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a755291d29ecc8368cf7bfa9247a168ad"><td class="memItemLeft" align="right" valign="top">glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a755291d29ecc8368cf7bfa9247a168ad">getTransform</a> (uint32_t animationIdx, uint64_t currentPose, float seconds=0.0f)</td></tr>
-<tr class="memdesc:a755291d29ecc8368cf7bfa9247a168ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a transform of the model.  <a href="classsmall3d_1_1_model.html#a755291d29ecc8368cf7bfa9247a168ad">More...</a><br /></td></tr>
-<tr class="separator:a755291d29ecc8368cf7bfa9247a168ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6100343932704c5e7a647a13aaae7586"><td class="memItemLeft" align="right" valign="top">glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a6100343932704c5e7a647a13aaae7586">getJointTransform</a> (size_t jointIdx, uint32_t animationIdx, uint64_t currentPose, float seconds=0.0f)</td></tr>
-<tr class="memdesc:a6100343932704c5e7a647a13aaae7586"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a joint transform, also calculating the transorms of the parent joints in the same tree and the animations, if any exist.  <a href="classsmall3d_1_1_model.html#a6100343932704c5e7a647a13aaae7586">More...</a><br /></td></tr>
-<tr class="separator:a6100343932704c5e7a647a13aaae7586"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0595f6078b8bddee06a33a11f46dadc"><td class="memItemLeft" align="right" valign="top"><a id="ac0595f6078b8bddee06a33a11f46dadc"></a>
-glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#ac0595f6078b8bddee06a33a11f46dadc">getOriginalScale</a> ()</td></tr>
-<tr class="memdesc:ac0595f6078b8bddee06a33a11f46dadc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>'s original scale (usually the one read from the file the <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> was loaded from. <br /></td></tr>
-<tr class="separator:ac0595f6078b8bddee06a33a11f46dadc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a422dd9825f785d4d942f2510777d861b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsmall3d_1_1_mat4.html">Mat4</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a422dd9825f785d4d942f2510777d861b">getTransform</a> (uint32_t animationIdx, uint64_t currentPose, float seconds=0.0f)</td></tr>
+<tr class="memdesc:a422dd9825f785d4d942f2510777d861b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a transform of the model.  <a href="classsmall3d_1_1_model.html#a422dd9825f785d4d942f2510777d861b">More...</a><br /></td></tr>
+<tr class="separator:a422dd9825f785d4d942f2510777d861b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52554665754d5decc5318631da0bd708"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsmall3d_1_1_mat4.html">Mat4</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a52554665754d5decc5318631da0bd708">getJointTransform</a> (size_t jointIdx, uint32_t animationIdx, uint64_t currentPose, float seconds=0.0f)</td></tr>
+<tr class="memdesc:a52554665754d5decc5318631da0bd708"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a joint transform, also calculating the transorms of the parent joints in the same tree and the animations, if any exist.  <a href="classsmall3d_1_1_model.html#a52554665754d5decc5318631da0bd708">More...</a><br /></td></tr>
+<tr class="separator:a52554665754d5decc5318631da0bd708"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ae865eac3f3d5625b30b1f0ebf0daca"><td class="memItemLeft" align="right" valign="top"><a id="a9ae865eac3f3d5625b30b1f0ebf0daca"></a>
+<a class="el" href="structsmall3d_1_1_vec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a9ae865eac3f3d5625b30b1f0ebf0daca">getOriginalScale</a> ()</td></tr>
+<tr class="memdesc:a9ae865eac3f3d5625b30b1f0ebf0daca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a>'s original scale (usually the one read from the file the <a class="el" href="classsmall3d_1_1_model.html" title="A 3D model. It can be loaded from a WavefrontFile or GlbFile. It can also be constructed procedurally...">Model</a> was loaded from. <br /></td></tr>
+<tr class="separator:a9ae865eac3f3d5625b30b1f0ebf0daca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa98202f7e33a751570fad8700edc12c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#aa98202f7e33a751570fad8700edc12c2">saveBinary</a> (const std::string &amp;binaryFilePath)</td></tr>
 <tr class="memdesc:aa98202f7e33a751570fad8700edc12c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save model data in binary format.  <a href="classsmall3d_1_1_model.html#aa98202f7e33a751570fad8700edc12c2">More...</a><br /></td></tr>
 <tr class="separator:aa98202f7e33a751570fad8700edc12c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -139,10 +139,10 @@ Public Attributes</h2></td></tr>
 <a class="el" href="classsmall3d_1_1_material.html">Material</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a809cd09097b9e123813565008add1fe6">material</a></td></tr>
 <tr class="memdesc:a809cd09097b9e123813565008add1fe6"><td class="mdescLeft">&#160;</td><td class="mdescRight">The material of the model. <br /></td></tr>
 <tr class="separator:a809cd09097b9e123813565008add1fe6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39352fd779afaef6ee5ef398a0481b31"><td class="memItemLeft" align="right" valign="top"><a id="a39352fd779afaef6ee5ef398a0481b31"></a>
-glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a39352fd779afaef6ee5ef398a0481b31">scale</a> = glm::vec3(1.0f, 1.0f, 1.0f)</td></tr>
-<tr class="memdesc:a39352fd779afaef6ee5ef398a0481b31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use this to scale the model and not origScale. <br /></td></tr>
-<tr class="separator:a39352fd779afaef6ee5ef398a0481b31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1852c83ce14d3d0a43fc8f5b3bc3f4a7"><td class="memItemLeft" align="right" valign="top"><a id="a1852c83ce14d3d0a43fc8f5b3bc3f4a7"></a>
+<a class="el" href="structsmall3d_1_1_vec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#a1852c83ce14d3d0a43fc8f5b3bc3f4a7">scale</a> = <a class="el" href="structsmall3d_1_1_vec3.html">Vec3</a>(1.0f, 1.0f, 1.0f)</td></tr>
+<tr class="memdesc:a1852c83ce14d3d0a43fc8f5b3bc3f4a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use this to scale the model and not origScale. <br /></td></tr>
+<tr class="separator:a1852c83ce14d3d0a43fc8f5b3bc3f4a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0c58e6b9ead5c0ba861d12425a73038"><td class="memItemLeft" align="right" valign="top"><a id="ae0c58e6b9ead5c0ba861d12425a73038"></a>
 std::shared_ptr&lt; <a class="el" href="classsmall3d_1_1_image.html">Image</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_model.html#ae0c58e6b9ead5c0ba861d12425a73038">defaultTextureImage</a></td></tr>
 <tr class="memdesc:ae0c58e6b9ead5c0ba861d12425a73038"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsmall3d_1_1_image.html" title="An image, loaded from a .png file, which can be used for generating textures.">Image</a> found in the file the model was loaded from (empty image if not - check the size). It can be used to generate a texture for the model, but other textures can also be used. <br /></td></tr>
@@ -302,14 +302,14 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a6100343932704c5e7a647a13aaae7586"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6100343932704c5e7a647a13aaae7586">&#9670;&nbsp;</a></span>getJointTransform()</h2>
+<a id="a52554665754d5decc5318631da0bd708"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52554665754d5decc5318631da0bd708">&#9670;&nbsp;</a></span>getJointTransform()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">glm::mat4 small3d::Model::getJointTransform </td>
+          <td class="memname"><a class="el" href="structsmall3d_1_1_mat4.html">Mat4</a> small3d::Model::getJointTransform </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>jointIdx</em>, </td>
@@ -394,14 +394,14 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b></td></t
 
 </div>
 </div>
-<a id="a755291d29ecc8368cf7bfa9247a168ad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a755291d29ecc8368cf7bfa9247a168ad">&#9670;&nbsp;</a></span>getTransform()</h2>
+<a id="a422dd9825f785d4d942f2510777d861b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a422dd9825f785d4d942f2510777d861b">&#9670;&nbsp;</a></span>getTransform()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">glm::mat4 small3d::Model::getTransform </td>
+          <td class="memname"><a class="el" href="structsmall3d_1_1_mat4.html">Mat4</a> small3d::Model::getTransform </td>
           <td>(</td>
           <td class="paramtype">uint32_t&#160;</td>
           <td class="paramname"><em>animationIdx</em>, </td>

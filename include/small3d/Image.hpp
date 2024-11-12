@@ -14,7 +14,7 @@
 #include <vector>
 #include "Logger.hpp"
 #include <png.h>
-#include <glm/vec4.hpp>
+#include "Math.hpp"
 
 namespace small3d {
 
@@ -78,7 +78,7 @@ namespace small3d {
      * @brief Convert to a coloured 10 x 10 pixel image
      * @param colour The colour of the image
      */
-    void toColour(glm::vec4 colour);
+    void toColour(Vec4 colour);
 
     /**
      * @brief Get the image width

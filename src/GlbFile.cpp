@@ -446,14 +446,14 @@ namespace small3d {
     propToken = getChildToken(nodeToken, "scale");
     if (propToken != nullptr) {
       auto values = getChildTokens(propToken);
-      ret.scale = glm::vec3(std::stof(values[0]->value), std::stof(values[1]->value),
+      ret.scale = Vec3(std::stof(values[0]->value), std::stof(values[1]->value),
         std::stof(values[2]->value));
     }
 
     propToken = getChildToken(nodeToken, "translation");
     if (propToken != nullptr) {
       auto values = getChildTokens(propToken);
-      ret.translation = glm::vec3(std::stof(values[0]->value), std::stof(values[1]->value),
+      ret.translation = Vec3(std::stof(values[0]->value), std::stof(values[1]->value),
         std::stof(values[2]->value));
     }
 
@@ -907,7 +907,7 @@ namespace small3d {
             if (baseColorFactorToken != nullptr) {
               auto colourTokens = getChildTokens(baseColorFactorToken);
 
-              model.material.ambientColour = glm::vec3(atof(colourTokens[0]->value.c_str()),
+              model.material.ambientColour = Vec3(atof(colourTokens[0]->value.c_str()),
                 atof(colourTokens[1]->value.c_str()),
                 atof(colourTokens[2]->value.c_str()));
               model.material.alpha = atof(colourTokens[3]->value.c_str());
@@ -1073,22 +1073,26 @@ namespace small3d {
       animations[animationIdx].animationComponents[animIndex].input = sampler.input;
     }
 
+    auto aa = sizeof(Quat);
+    auto bb = sizeof(Vec3);
+
+
     if (channel.target.path == "rotation") {
-      animations[animationIdx].animationComponents[animIndex].rotationAnimation.resize(output.size() / sizeof(Quaternion));
+      animations[animationIdx].animationComponents[animIndex].rotationAnimation.resize(output.size() / sizeof(Quat));
       memcpy(&animations[animationIdx].animationComponents[animIndex].rotationAnimation[0], &output[0], output.size());
       if (model.numPoses[animationIdx] < animations[animationIdx].animationComponents[animIndex].rotationAnimation.size())
         model.numPoses[animationIdx] = animations[animationIdx].animationComponents[animIndex].rotationAnimation.size();
     }
 
     if (channel.target.path == "translation") {
-      animations[animationIdx].animationComponents[animIndex].translationAnimation.resize(output.size() / sizeof(glm::vec3));
+      animations[animationIdx].animationComponents[animIndex].translationAnimation.resize(output.size() / sizeof(Vec3));
       memcpy(&animations[animationIdx].animationComponents[animIndex].translationAnimation[0], &output[0], output.size());
       if (model.numPoses[animationIdx] < animations[animationIdx].animationComponents[animIndex].translationAnimation.size())
         model.numPoses[animationIdx] = animations[animationIdx].animationComponents[animIndex].translationAnimation.size();
     }
 
-    if (channel.target.path == "scale") {
-      animations[animationIdx].animationComponents[animIndex].scaleAnimation.resize(output.size() / sizeof(glm::vec3));
+    if (channel.target.path == "scale") {      
+      animations[animationIdx].animationComponents[animIndex].scaleAnimation.resize(output.size() / sizeof(Vec3));
       memcpy(&animations[animationIdx].animationComponents[animIndex].scaleAnimation[0], &output[0], output.size());
       if (model.numPoses[animationIdx] < animations[animationIdx].animationComponents[animIndex].scaleAnimation.size())
         model.numPoses[animationIdx] = animations[animationIdx].animationComponents[animIndex].scaleAnimation.size();

@@ -13,7 +13,7 @@
 #include <memory>
 #include "Logger.hpp"
 #include <vector>
-#include <glm/glm.hpp>
+#include "Math.hpp"
 #include "Model.hpp"
 
 namespace small3d {
@@ -31,8 +31,8 @@ namespace small3d {
     void triangulate();
     void calcExtremes();
     void generateBoxesFromExtremes();
-    void generateExtremes(const std::vector<float>& vertexData, const glm::vec3& scale, uint32_t subdivisions);
-    void generateSubExtremes(const std::vector<float>& vertexData, const glm::vec3& scale);
+    void generateExtremes(const std::vector<float>& vertexData, const Vec3& scale, uint32_t subdivisions);
+    void generateSubExtremes(const std::vector<float>& vertexData, const Vec3& scale);
 
   public:
 
@@ -73,7 +73,7 @@ namespace small3d {
      *                     at the expense of performance.
      */
 
-    BoundingBoxSet(const std::vector<float>& vertexData, const glm::vec3& scale, uint32_t subdivisions);
+    BoundingBoxSet(const std::vector<float>& vertexData, const Vec3& scale, uint32_t subdivisions);
 
     /**
      * @brief Destructor
@@ -105,8 +105,8 @@ namespace small3d {
      * @return True the point is inside a box, False if not.
      */
 
-    bool contains(const glm::vec3 point, const glm::vec3 thisOffset,
-      const glm::mat4x4 thisRotation) const;
+    bool contains(const Vec3 point, const Vec3 thisOffset,
+      const Mat4 thisRotation) const;
 
     /**
      * @brief Check any of the corners of another set of bounding boxes
@@ -121,10 +121,10 @@ namespace small3d {
      */
 
     bool containsCorners(const BoundingBoxSet& otherBoxSet,
-      const glm::vec3 thisOffset,
-      const glm::mat4x4 thisRotation,
-      const glm::vec3 otherOffset,
-      const glm::mat4x4 otherRotation) const;
+      const Vec3 thisOffset,
+      const Mat4 thisRotation,
+      const Vec3 otherOffset,
+      const Mat4 otherRotation) const;
 
     /**
      * @brief Get the bounding boxes in a set of Models that can be rendered

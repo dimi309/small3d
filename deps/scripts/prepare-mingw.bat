@@ -59,14 +59,6 @@ cd ..
 del glew-2.2.0.tar
 rmdir /Q /S glew-2.2.0
 
-7z x glm-1.0.1.zip
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel% 
-xcopy glm-1.0.1\glm include\glm /i /s
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-copy glm-1.0.1\copying.txt licenses\GLM_LICENSE
-if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-rmdir /Q /S glm-1.0.1
-
 7z x cereal-1.3.2.tar.gz
 7z x cereal-1.3.2.tar
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%

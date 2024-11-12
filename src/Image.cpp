@@ -53,7 +53,7 @@ namespace small3d {
     }
   }
 
-  void Image::toColour(glm::vec4 colour) {
+  void Image::toColour(Vec4 colour) {
     width = 10;
     height = 10;
     imageDataSize = 400;

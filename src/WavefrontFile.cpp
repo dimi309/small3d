@@ -171,16 +171,16 @@ namespace small3d {
                 material.specularExponent = atof(tokens[1].c_str());
               }
               else if (tokens[0] == "Ka") {
-                material.ambientColour = glm::vec3(atof(tokens[1].c_str()), atof(tokens[2].c_str()), atof(tokens[3].c_str()));
+                material.ambientColour = Vec3(atof(tokens[1].c_str()), atof(tokens[2].c_str()), atof(tokens[3].c_str()));
               }
               else if (tokens[0] == "Kd") {
-                material.diffuseColour = glm::vec3(atof(tokens[1].c_str()), atof(tokens[2].c_str()), atof(tokens[3].c_str()));
+                material.diffuseColour = Vec3(atof(tokens[1].c_str()), atof(tokens[2].c_str()), atof(tokens[3].c_str()));
               }
               else if (tokens[0] == "Ks") {
-                material.specularColour = glm::vec3(atof(tokens[1].c_str()), atof(tokens[2].c_str()), atof(tokens[3].c_str()));
+                material.specularColour = Vec3(atof(tokens[1].c_str()), atof(tokens[2].c_str()), atof(tokens[3].c_str()));
               }
               else if (tokens[0] == "Ke") {
-                material.emissiveCoefficient = glm::vec3(atof(tokens[1].c_str()), atof(tokens[2].c_str()), atof(tokens[3].c_str()));
+                material.emissiveCoefficient = Vec3(atof(tokens[1].c_str()), atof(tokens[2].c_str()), atof(tokens[3].c_str()));
               }
               else if (tokens[0] == "Ni") {
                 material.optDensIndexRef = atof(tokens[1].c_str());

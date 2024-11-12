@@ -13,12 +13,12 @@ void pollEvents();
 void initRenderer(uint32_t width = 854, uint32_t height = 480);
 
 int LoggerTest();
+int MathTest();
 int ImageTest();
 int WavefrontFailTest();
 int WavefrontModelTest();
 int ScaleAndTransformTest();
 int GlbTextureTestDefaultShadows();
-int GlbTextureTestLookAtShadows();
 int BoundingBoxesTest();
 int FPStest();
 int GenericSceneObjectConstructorTest();

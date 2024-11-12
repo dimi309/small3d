@@ -23,6 +23,12 @@ int main(int argc, char** argv) {
 
     LOGINFO("LoggerTest OK");
 
+    if (!MathTest()) {
+      LOGINFO("*** Failing MathTest.");
+      return EXIT_FAILURE;
+    }
+    LOGINFO("MathTest OK");
+    
 #ifdef _WIN32
     if (!ScreenCaptureTest()) {
       LOGINFO("*** Failing ScreenCaptureTest.");
@@ -66,12 +72,6 @@ int main(int argc, char** argv) {
       return EXIT_FAILURE;
     }
     LOGINFO("GlbTextureTestDefaultShadows OK");
-    
-    if (!GlbTextureTestLookAtShadows()) {
-      LOGINFO("*** Failing GlbTextureTestLookAtShadows.");
-      return EXIT_FAILURE;
-    }
-    LOGINFO("GlbTextureTestLookAtShadows OK");
     
     if (!BoundingBoxesTest()) {
       LOGINFO("*** Failing BoundingBoxesTest.");
@@ -138,6 +138,7 @@ int main(int argc, char** argv) {
       return EXIT_FAILURE;
     }
     LOGINFO("ModelsTimeToLoad OK");
+    
 
     LOGINFO("All tests have executed successfully.\n\r");
   }

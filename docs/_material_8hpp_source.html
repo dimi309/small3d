@@ -72,7 +72,7 @@ $(function() {
 <a href="_material_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;glm/glm.hpp&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_math_8hpp.html">Math.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacesmall3d.html">small3d</a> {</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
@@ -81,10 +81,10 @@ $(function() {
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordtype">float</span> specularExponent = 0.0f;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    glm::vec3 ambientColour = glm::vec3(0.5f);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    glm::vec3 diffuseColour = glm::vec3(0.0f);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    glm::vec3 specularColour = glm::vec3(0.0f);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    glm::vec3 emissiveCoefficient = glm::vec3(0.0f);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <a class="code" href="structsmall3d_1_1_vec3.html">Vec3</a> ambientColour = <a class="code" href="structsmall3d_1_1_vec3.html">Vec3</a>(0.5f);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <a class="code" href="structsmall3d_1_1_vec3.html">Vec3</a> diffuseColour = <a class="code" href="structsmall3d_1_1_vec3.html">Vec3</a>(0.0f);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="structsmall3d_1_1_vec3.html">Vec3</a> specularColour = <a class="code" href="structsmall3d_1_1_vec3.html">Vec3</a>(0.0f);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="structsmall3d_1_1_vec3.html">Vec3</a> emissiveCoefficient = <a class="code" href="structsmall3d_1_1_vec3.html">Vec3</a>(0.0f);</div>
 <div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classsmall3d_1_1_material.html#a632506ef484dd74239d31121e9817f1c">   36</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classsmall3d_1_1_material.html#a632506ef484dd74239d31121e9817f1c">optDensIndexRef</a> = 0.0f;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">float</span> alpha = 1.0f;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
@@ -98,9 +98,11 @@ $(function() {
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  };</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="a_math_8hpp_html"><div class="ttname"><a href="_math_8hpp.html">Math.hpp</a></div><div class="ttdoc">Vectors, matrices and other math things.</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_material_html_a632506ef484dd74239d31121e9817f1c"><div class="ttname"><a href="classsmall3d_1_1_material.html#a632506ef484dd74239d31121e9817f1c">small3d::Material::optDensIndexRef</a></div><div class="ttdeci">float optDensIndexRef</div><div class="ttdoc">Optical density / index of refraction.</div><div class="ttdef"><b>Definition:</b> Material.hpp:36</div></div>
 <div class="ttc" id="anamespacesmall3d_html"><div class="ttname"><a href="namespacesmall3d.html">small3d</a></div><div class="ttdef"><b>Definition:</b> BinaryFile.hpp:15</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_material_html_a7175f9c32c56c77d467a2c5aa6fa31fb"><div class="ttname"><a href="classsmall3d_1_1_material.html#a7175f9c32c56c77d467a2c5aa6fa31fb">small3d::Material::Material</a></div><div class="ttdeci">Material()</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition:</b> Material.cpp:13</div></div>
+<div class="ttc" id="astructsmall3d_1_1_vec3_html"><div class="ttname"><a href="structsmall3d_1_1_vec3.html">small3d::Vec3</a></div><div class="ttdoc">3 component float vector</div><div class="ttdef"><b>Definition:</b> Math.hpp:19</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_material_html"><div class="ttname"><a href="classsmall3d_1_1_material.html">small3d::Material</a></div><div class="ttdoc">A 3D model material.</div><div class="ttdef"><b>Definition:</b> Material.hpp:23</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

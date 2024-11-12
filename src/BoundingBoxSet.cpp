@@ -11,7 +11,6 @@
 #include <stdexcept>
 #include "BasePath.hpp"
 #include <algorithm>
-#include <glm/gtc/matrix_transform.hpp>
 
 namespace small3d {
 
@@ -20,20 +19,20 @@ namespace small3d {
   }
 
   BoundingBoxSet::BoundingBoxSet(const std::vector<float>& vertexData,
-    const glm::vec3& scale, uint32_t subdivisions) {
+    const Vec3& scale, uint32_t subdivisions) {
     generateExtremes(vertexData, scale, subdivisions);
 
   }
 
-  bool BoundingBoxSet::contains(const glm::vec3 point,
-    const glm::vec3 thisOffset,
-    const glm::mat4x4 thisRotation) const {
+  bool BoundingBoxSet::contains(const Vec3 point,
+    const Vec3 thisOffset,
+    const Mat4 thisRotation) const {
 
     bool doesContain = false;
-    glm::mat4 reverseRotationMatrix = glm::inverse(thisRotation);
+    Mat4 reverseRotationMatrix = inverse(thisRotation);
 
-    glm::vec4 pointInBoxSpace = glm::vec4(point, 1.0f) -
-      glm::vec4(thisOffset, 0.0f);
+    Vec4 pointInBoxSpace = Vec4(point, 1.0f) -
+      Vec4(thisOffset, 0.0f);
 
     pointInBoxSpace = reverseRotationMatrix * pointInBoxSpace;
 
@@ -48,17 +47,17 @@ namespace small3d {
   }
 
   bool BoundingBoxSet::containsCorners(const BoundingBoxSet& otherBoxSet,
-    const glm::vec3 thisOffset,
-    const glm::mat4x4 thisRotation,
-    const glm::vec3 otherOffset,
-    const glm::mat4x4 otherRotation) const {
+    const Vec3 thisOffset,
+    const Mat4 thisRotation,
+    const Vec3 otherOffset,
+    const Mat4 otherRotation) const {
     bool collides = false;
 
     for (auto vertex = otherBoxSet.vertices.begin();
       vertex != otherBoxSet.vertices.end(); ++vertex) {
 
-      glm::vec4 otherCoords(vertex->at(0), vertex->at(1), vertex->at(2), 1.0f);
-      glm::vec4 rotatedOtherCoords;
+      Vec4 otherCoords(vertex->at(0), vertex->at(1), vertex->at(2), 1.0f);
+      Vec4 rotatedOtherCoords;
 
       rotatedOtherCoords = otherRotation * otherCoords;
 
@@ -66,7 +65,7 @@ namespace small3d {
       rotatedOtherCoords.y += otherOffset.y;
       rotatedOtherCoords.z += otherOffset.z;
 
-      if (contains(glm::vec3(rotatedOtherCoords.x, rotatedOtherCoords.y,
+      if (contains(Vec3(rotatedOtherCoords.x, rotatedOtherCoords.y,
         rotatedOtherCoords.z),
         thisOffset, thisRotation)) {
 
@@ -94,7 +93,7 @@ namespace small3d {
 
       extremes ext;
 
-      glm::vec4 coords(vertices[static_cast<unsigned int>(idx * 8)][0],
+      Vec4 coords(vertices[static_cast<unsigned int>(idx * 8)][0],
         vertices[static_cast<unsigned int>(idx * 8)][1],
         vertices[static_cast<unsigned int>(idx * 8)][2], 1);
 
@@ -107,7 +106,7 @@ namespace small3d {
 
       for (size_t checkidx = idx * 8; checkidx < (idx + 1) * 8; ++checkidx) {
 
-        coords = glm::vec4(vertices[static_cast<unsigned int>(checkidx)][0],
+        coords = Vec4(vertices[static_cast<unsigned int>(checkidx)][0],
           vertices[static_cast<unsigned int>(checkidx)][1],
           vertices[static_cast<unsigned int>(checkidx)][2], 1);
 
@@ -161,14 +160,14 @@ namespace small3d {
     triangulate();
   }
 
-  void BoundingBoxSet::generateExtremes(const std::vector<float>& vertexData, const glm::vec3& scale, uint32_t subdivisions) {
+  void BoundingBoxSet::generateExtremes(const std::vector<float>& vertexData, const Vec3& scale, uint32_t subdivisions) {
     vertices.clear();
     facesVertexIndexes.clear();
     facesVertexIndexesTriangulated.clear();
     boxExtremes.clear();
     extremes ex;
 
-    glm::vec4 vertex(0.0f, 0.0f, 0.0f, 0.0f);
+    Vec4 vertex(0.0f, 0.0f, 0.0f, 0.0f);
 
     for (uint32_t idx = 0; idx < vertexData.size(); ++idx) {
       if (idx % 4 == 0) {
@@ -182,7 +181,7 @@ namespace small3d {
       }
       else if (idx % 4 == 3) {
         vertex.w = vertexData[idx];
-        vertex = glm::scale(glm::mat4x4(1.0f), scale) * vertex;
+        vertex = small3d::scale(Mat4(1.0f), scale) * vertex;
 
         if (vertex.x < ex.minX) ex.minX = vertex.x;
         else if (vertex.x > ex.maxX) ex.maxX = vertex.x;
@@ -203,7 +202,7 @@ namespace small3d {
     generateBoxesFromExtremes();
   }
 
-  void BoundingBoxSet::generateSubExtremes(const std::vector<float>& vertexData, const glm::vec3& scale) {
+  void BoundingBoxSet::generateSubExtremes(const std::vector<float>& vertexData, const Vec3& scale) {
 
     // Move all extremes to a temporary buffer
     std::vector<extremes> extBuffer;
@@ -276,7 +275,7 @@ namespace small3d {
       newExtremes[7].minY = ySplit;
       newExtremes[7].maxY = ext.maxY;
 
-      glm::vec4 point;
+      Vec4 point;
 
       // From the newly formed extremes keep only the ones that
       // contain one of the model's vertices
@@ -294,7 +293,7 @@ namespace small3d {
         else if (idx % 4 == 3) {
           point.w = vertexData[idx];
 
-          point = glm::scale(glm::mat4x4(1.0f), scale) * point;
+          point = small3d::scale(Mat4(1.0f), scale) * point;
 
           for (auto& ex : newExtremes) {
 

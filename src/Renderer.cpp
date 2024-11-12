@@ -14,7 +14,6 @@
 
 #include <stdexcept>
 #include <fstream>
-#include <glm/gtc/type_ptr.hpp>
 #include "BasePath.hpp"
 
 unsigned const attrib_position = 0;
@@ -205,28 +204,28 @@ namespace small3d {
     }
   }
 
-  void Renderer::transform(Model& model, const glm::vec3& offset,
-    const glm::mat4x4& rotation, uint64_t currentPose) const {
+  void Renderer::transform(Model& model, Vec3& offset,
+    const Mat4& rotation, uint64_t currentPose) const {
 
     GLint modelTransformationUniformLocation = glGetUniformLocation(shaderProgram,
       "modelTransformation");
 
-    glm::mat4x4 modelTranformation =
+    Mat4 modelTransformation =
       rotation *
-      glm::scale(glm::mat4x4(1.0f), model.scale) *
-      glm::translate(glm::mat4x4(1.0f), model.origTranslation) *
+      scale(Mat4(1.0f), model.scale) *
+      translate(Mat4(1.0f), model.origTranslation) *
       model.origRotation.toMatrix() *
-      glm::scale(glm::mat4x4(1.0f), model.origScale) * model.origTransformation *
+      scale(Mat4(1.0f), model.origScale) * model.origTransformation *
       model.getTransform(model.currentAnimation, currentPose);
 
     glUniformMatrix4fv(modelTransformationUniformLocation, 1, GL_FALSE,
-      glm::value_ptr(modelTranformation));
+      Value_ptr(modelTransformation));
 
     int32_t hasJoints = model.joints.size() > 0 ? 1 : 0;
     GLint hasJointsUniform = glGetUniformLocation(shaderProgram, "hasJoints");
     glUniform1i(hasJointsUniform, hasJoints);
 
-    glm::mat4 jointTransformations[Model::MAX_JOINTS_SUPPORTED];
+    Mat4 jointTransformations[Model::MAX_JOINTS_SUPPORTED];
 
     uint64_t idx = 0;
     for (const auto& joint : model.joints) {
@@ -236,12 +235,11 @@ namespace small3d {
         joint.inverseBindMatrix;
       ++idx;
     }
-
     auto jointTransformationsUniformLocation = glGetUniformLocation(shaderProgram, "jointTransformations");
-    glUniformMatrix4fv(jointTransformationsUniformLocation, Model::MAX_JOINTS_SUPPORTED, GL_FALSE, glm::value_ptr(jointTransformations[0]));
+    glUniformMatrix4fv(jointTransformationsUniformLocation, Model::MAX_JOINTS_SUPPORTED, GL_FALSE, Value_ptr(jointTransformations[0]));
 
     GLint offsetUniform = glGetUniformLocation(shaderProgram, "modelOffset");
-    glUniform3fv(offsetUniform, 1, glm::value_ptr(offset));
+    glUniform3fv(offsetUniform, 1, Value_ptr(offset));
   }
 
   GLuint Renderer::getTextureHandle(const std::string& name) const {
@@ -361,7 +359,7 @@ namespace small3d {
     glUseProgram(0);
 
     Image blankImage("");
-    blankImage.toColour(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+    blankImage.toColour(Vec4(0.0f, 0.0f, 0.0f, 0.0f));
     generateTexture("blank", blankImage);
     LOGDEBUG("Blank image generated");
 
@@ -467,25 +465,25 @@ namespace small3d {
 
   void Renderer::setWorldDetails(bool perspective) {
 
-    auto orthographicMatrix = glm::ortho(-shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize);
+    auto orthographicMatrix = ortho(-shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize);
 
 
     GLint perspectiveMatrixUniform =
       glGetUniformLocation(shaderProgram, "perspectiveMatrix");
 
-    glm::mat4x4 perspectiveMatrix = perspective && realScreenHeight != 0 ?
-      glm::perspective(fieldOfView, static_cast<float>(realScreenWidth / realScreenHeight), zNear, zFar) :
-      renderingDepthMap ? orthographicMatrix : glm::mat4x4(1.0f);
+    Mat4 perspectiveMatrix = perspective && realScreenHeight != 0 ?
+      small3d::perspective(fieldOfView, static_cast<float>(realScreenWidth / realScreenHeight), zNear, zFar) :
+      renderingDepthMap ? orthographicMatrix : Mat4(1.0f);
 
     glUniformMatrix4fv(perspectiveMatrixUniform, 1, GL_FALSE,
-      glm::value_ptr(perspectiveMatrix));
+      Value_ptr(perspectiveMatrix));
 
     GLint lightDirectionUniform = glGetUniformLocation(shaderProgram,
       "lightDirection");
-    glm::vec3 lightDirectionOut = perspective ?
-      lightDirection : glm::vec3(0.0f, 0.0f, 0.0f);
+    Vec3 lightDirectionOut = perspective ?
+      lightDirection : Vec3(0.0f, 0.0f, 0.0f);
     glUniform3fv(lightDirectionUniform, 1,
-      glm::value_ptr(lightDirectionOut));
+      Value_ptr(lightDirectionOut));
 
     GLint lightIntensityUniform = glGetUniformLocation(shaderProgram,
       "lightIntensity");
@@ -495,30 +493,30 @@ namespace small3d {
     GLint cameraTransformationUniform = glGetUniformLocation(shaderProgram,
       "cameraTransformation");
 
-    glm::mat4x4 usedCameraTransformation = perspective || renderingDepthMap ?
+    Mat4 usedCameraTransformation = perspective || renderingDepthMap ?
       this->cameraTransformation :
-      glm::mat4x4(1);
+      Mat4(1);
 
     glUniformMatrix4fv(cameraTransformationUniform, 1, GL_FALSE,
-      glm::value_ptr(usedCameraTransformation));
+      Value_ptr(usedCameraTransformation));
 
     GLint cameraOffsetUniform = glGetUniformLocation(shaderProgram,
       "cameraOffset");
 
-    glm::vec3 cameraPositionOut = perspective || renderingDepthMap ?
-      cameraPosition : glm::vec3(0.0f, 0.0f, 0.0f);
-    glUniform3fv(cameraOffsetUniform, 1, glm::value_ptr(cameraPositionOut));
+    Vec3 cameraPositionOut = perspective || renderingDepthMap ?
+      cameraPosition : Vec3(0.0f, 0.0f, 0.0f);
+    glUniform3fv(cameraOffsetUniform, 1, Value_ptr(cameraPositionOut));
 
     GLint lightSpaceMatrixUniform = glGetUniformLocation(shaderProgram,
       "lightSpaceMatrix");
 
     glUniformMatrix4fv(lightSpaceMatrixUniform, 1, GL_FALSE,
-      glm::value_ptr(lightSpaceMatrix));
+      Value_ptr(lightSpaceMatrix));
 
     GLint orthographicMatrixUniform = glGetUniformLocation(shaderProgram,
       "orthographicMatrix");
     glUniformMatrix4fv(orthographicMatrixUniform, 1, GL_FALSE,
-      glm::value_ptr(orthographicMatrix));
+      Value_ptr(orthographicMatrix));
 
   }
 
@@ -605,42 +603,42 @@ namespace small3d {
 
   }
 
-  void Renderer::setCameraRotation(const glm::vec3& rotation) {
+  void Renderer::setCameraRotation(const Vec3& rotation) {
     cameraRotationByMatrix = false;
     this->cameraRotationXYZ = rotation;
-    this->cameraTransformation = glm::rotate(glm::mat4x4(1.0f), -rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), -rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), -rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+    this->cameraTransformation = rotate(Mat4(1.0f), -rotation.z, Vec3(0.0f, 0.0f, 1.0f)) *
+      rotate(Mat4(1.0f), -rotation.x, Vec3(1.0f, 0.0f, 0.0f)) *
+      rotate(Mat4(1.0f), -rotation.y, Vec3(0.0f, 1.0f, 0.0f));
   }
 
-  void Renderer::rotateCamera(const glm::vec3& rotation) {
+  void Renderer::rotateCamera(const Vec3& rotation) {
     if (cameraRotationByMatrix) {
       throw std::runtime_error("Attempted x, y, z representation camera rotation, while having set the initial rotation by matrix.");
     }
     else {
       this->cameraRotationXYZ += rotation;
-      this->cameraTransformation = glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-        glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-        glm::rotate(glm::mat4x4(1.0f), -this->cameraRotationXYZ.y, glm::vec3(0.0f, 1.0f, 0.0f));
+      this->cameraTransformation = rotate(Mat4(1.0f), -this->cameraRotationXYZ.z, Vec3(0.0f, 0.0f, 1.0f)) *
+        rotate(Mat4(1.0f), -this->cameraRotationXYZ.x, Vec3(1.0f, 0.0f, 0.0f)) *
+        rotate(Mat4(1.0f), -this->cameraRotationXYZ.y, Vec3(0.0f, 1.0f, 0.0f));
     }
   }
 
-  void Renderer::setCameraTransformation(const glm::mat4x4& rotation) {
-    this->cameraTransformation = glm::inverse(rotation);
+  void Renderer::setCameraTransformation(const Mat4& rotation) {
+    this->cameraTransformation = inverse(rotation);
     cameraRotationByMatrix = true;
-    cameraRotationXYZ = glm::vec3(0.0f);
+    cameraRotationXYZ = Vec3(0.0f);
   }
 
-  const glm::vec3 Renderer::getCameraOrientation() const {
-    auto orientationVec4 = glm::inverse(this->cameraTransformation) * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
-    return glm::vec3(orientationVec4.x, orientationVec4.y, orientationVec4.z);
+  const Vec3 Renderer::getCameraOrientation() const {
+    auto orientationVec4 = inverse(this->cameraTransformation) * Vec4(0.0f, 0.0f, -1.0f, 1.0f);
+    return Vec3(orientationVec4.x, orientationVec4.y, orientationVec4.z);
   }
 
-  const glm::mat4x4 Renderer::getCameraRotation() const {
-    return glm::inverse(this->cameraTransformation);
+  const Mat4 Renderer::getCameraRotation() const {
+    return inverse(this->cameraTransformation);
   }
 
-  const glm::vec3 Renderer::getCameraRotationXYZ() const {
+  const Vec3 Renderer::getCameraRotationXYZ() const {
     if (cameraRotationByMatrix) {
       throw std::runtime_error("Attempted x, y, z representation camera rotation retrieval, while having set the rotation by matrix.");
     }
@@ -728,11 +726,11 @@ namespace small3d {
   }
 
   void Renderer::generateTexture(const std::string& name, const std::string& text,
-    const glm::vec3& colour, const int fontSize,
+    const Vec3& colour, const int fontSize,
     const std::string& fontPath,
     const bool replace) {
 
-    glm::ivec3 icolour(colour.r * 255, colour.g * 255, colour.b * 255);
+    Vec3i icolour(colour.x * 255, colour.y * 255, colour.z * 255);
 
     std::string faceId = std::to_string(fontSize) + fontPath;
 
@@ -798,9 +796,9 @@ namespace small3d {
         for (int row = 0; row < static_cast<int>(slot->bitmap.rows); ++row) {
           for (int col = 0; col < static_cast<int>(slot->bitmap.width); ++col) {
 
-            glm::ivec4 colourAlpha = glm::ivec4(icolour, 0);
+            auto colourAlpha = Vec4i(icolour, 0);
 
-            colourAlpha.a = slot->bitmap.buffer[row * slot->bitmap.width + col];
+            colourAlpha.w = slot->bitmap.buffer[row * slot->bitmap.width + col];
 
             auto pos = 4 * (maxTop -
               slot->bitmap_top
@@ -810,10 +808,10 @@ namespace small3d {
                 static_cast<size_t>(col))
               + totalAdvance;
 
-            textMemory[pos] = colourAlpha.r;
-            textMemory[pos + 1] = colourAlpha.g;
-            textMemory[pos + 2] = colourAlpha.b;
-            textMemory[pos + 3] = colourAlpha.a;
+            textMemory[pos] = colourAlpha.x;
+            textMemory[pos + 1] = colourAlpha.y;
+            textMemory[pos + 2] = colourAlpha.z;
+            textMemory[pos + 3] = colourAlpha.w;
 
           }
         }
@@ -834,8 +832,8 @@ namespace small3d {
   }
 
   void Renderer::createRectangle(Model& rect,
-    const glm::vec3& topLeft,
-    const glm::vec3& bottomRight) {
+    const Vec3& topLeft,
+    const Vec3& bottomRight) {
 
     rect.vertexData = {
       bottomRight.x, bottomRight.y, bottomRight.z, 1.0f,
@@ -865,33 +863,33 @@ namespace small3d {
     rect.textureCoordsDataByteSize = 8 * sizeof(float);
   }
 
-  void Renderer::render(Model& model, const glm::vec3& position, const glm::vec3& rotation,
-    const glm::vec4& colour, const std::string& textureName, const uint64_t currentPose,
+  void Renderer::render(Model& model, const Vec3& position, const Vec3& rotation,
+    const Vec4& colour, const std::string& textureName, const uint64_t currentPose,
     const bool perspective) {
 
-    this->render(model, position, glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)),
+    this->render(model, position, rotate(Mat4(1.0f), rotation.y, Vec3(0.0f, 1.0f, 0.0f)) *
+      rotate(Mat4(1.0f), rotation.x, Vec3(1.0f, 0.0f, 0.0f)) *
+      rotate(Mat4(1.0f), rotation.z, Vec3(0.0f, 0.0f, 1.0f)),
       colour, textureName, currentPose, perspective);
 
   }
 
-  void Renderer::render(Model& model, const glm::vec3& position, const glm::vec3& rotation,
+  void Renderer::render(Model& model, const Vec3& position, const Vec3& rotation,
     const std::string& textureName, const uint64_t currentPose) {
 
-    this->render(model, position, glm::rotate(glm::mat4x4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
-      glm::rotate(glm::mat4x4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)),
+    this->render(model, position, rotate(Mat4(1.0f), rotation.y, Vec3(0.0f, 1.0f, 0.0f)) *
+      rotate(Mat4(1.0f), rotation.x, Vec3(1.0f, 0.0f, 0.0f)) *
+      rotate(Mat4(1.0f), rotation.z, Vec3(0.0f, 0.0f, 1.0f)),
       textureName, currentPose);
 
   }
 
-  void Renderer::renderTuple(std::tuple< Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool, uint64_t> tuple) {
+  void Renderer::renderTuple(std::tuple< Model*, Vec3, Mat4, Vec4, std::string, bool, uint64_t> tuple) {
 
     Model* model = std::get<0>(tuple);
-    glm::vec3 offset = std::get<1>(tuple);
-    glm::mat4x4 rotation = std::get<2>(tuple);
-    glm::vec4 colour = std::get<3>(tuple);
+    Vec3 offset = std::get<1>(tuple);
+    Mat4 rotation = std::get<2>(tuple);
+    Vec4 colour = std::get<3>(tuple);
     std::string textureName = std::get<4>(tuple);
     bool perspective = std::get<5>(tuple);
     uint64_t currentPose = std::get<6>(tuple);
@@ -1002,8 +1000,9 @@ namespace small3d {
     if (textureName != "") {
 
       // "Disable" colour since there is a texture
+       Vec4 col0; // (initialised with all 0s by default)
       glUniform4fv(colourUniform, 1,
-        glm::value_ptr(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)));
+        Value_ptr(col0));
 
       bindTexture(textureName);
 
@@ -1023,7 +1022,7 @@ namespace small3d {
     }
     else {
       // If there is no texture, use the given colour
-      glUniform4fv(colourUniform, 1, glm::value_ptr(colour));
+      glUniform4fv(colourUniform, 1, Value_ptr(colour));
       bindTexture("blank");
     }
 
@@ -1062,39 +1061,39 @@ namespace small3d {
     glUseProgram(0);
   }
 
-  void Renderer::render(Model& model, const glm::vec3& position,
-    const glm::mat4x4& rotation,
-    const glm::vec4& colour,
+  void Renderer::render(Model& model, const Vec3& position,
+    const Mat4& rotation,
+    const Vec4& colour,
     const std::string& textureName,
     const uint64_t currentPose,
     const bool perspective) {
 
-    renderList.push_back(std::tuple<Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool, uint64_t>{&model, position, rotation, colour, textureName, perspective, currentPose});
+    renderList.push_back(std::tuple<Model*, Vec3, Mat4, Vec4, std::string, bool, uint64_t>{&model, position, rotation, colour, textureName, perspective, currentPose});
 
   }
 
-  void Renderer::render(Model& model, const glm::vec3& position,
-    const glm::mat4x4& rotation,
+  void Renderer::render(Model& model, const Vec3& position,
+    const Mat4& rotation,
     const std::string& textureName,
     const uint64_t currentPose) {
-    this->render(model, position, rotation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
+    this->render(model, position, rotation, Vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName, currentPose);
   }
 
   void Renderer::render(Model& model, const std::string& textureName, const uint64_t currentPose,
     const bool perspective) {
-    this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
+    this->render(model, Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 0.0f), Vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName, currentPose, perspective);
   }
 
-  void Renderer::render(Model& model, const glm::vec4& colour, const uint64_t currentPose,
+  void Renderer::render(Model& model, const Vec4& colour, const uint64_t currentPose,
     const bool perspective) {
-    this->render(model, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), colour,
+    this->render(model, Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 0.0f), colour,
       "", currentPose, perspective);
   }
 
   void Renderer::render(SceneObject& sceneObject,
-    const glm::vec4& colour) {
+    const Vec4& colour) {
     this->render(sceneObject.getModel(), sceneObject.position,
       sceneObject.transformation, colour, "", sceneObject.getCurrentPose());
   }
@@ -1102,7 +1101,7 @@ namespace small3d {
   void Renderer::render(SceneObject& sceneObject,
     const std::string& textureName) {
     this->render(sceneObject.getModel(), sceneObject.position,
-      sceneObject.transformation, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
+      sceneObject.transformation, Vec4(0.0f, 0.0f, 0.0f, 0.0f),
       textureName, sceneObject.getCurrentPose());
   }
 
@@ -1133,7 +1132,7 @@ namespace small3d {
     }
   }
 
-  void Renderer::setBackgroundColour(const glm::vec4& colour) {
+  void Renderer::setBackgroundColour(const Vec4& colour) {
     clearColour = colour;
     glClearColor(clearColour.x, clearColour.y, clearColour.z, clearColour.w);
 
@@ -1141,7 +1140,7 @@ namespace small3d {
 
   void Renderer::swapBuffers() {
 
-    lightSpaceMatrix = glm::mat4x4(0);
+    lightSpaceMatrix = Mat4(0);
 
     if (shadowsActive) {
       glViewport(0, 0, depthMapTextureWidth, depthMapTextureHeight);
@@ -1153,7 +1152,7 @@ namespace small3d {
       auto tmpCamPos = cameraPosition;
 
       // Position camera at 0. Position (translation) will be stored with transformation.
-      cameraPosition = glm::vec3(0);
+      cameraPosition = Vec3(0);
 
       cameraTransformation = shadowCamTransformation;
 

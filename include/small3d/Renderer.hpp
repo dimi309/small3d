@@ -23,8 +23,7 @@
 #include "Model.hpp"
 #include "SceneObject.hpp"
 #include <unordered_map>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include "Math.h"
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -61,7 +60,7 @@ namespace small3d
     float zNear = 0.0f;
     float zFar = 0.0f;
 
-    glm::vec4 clearColour = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    Vec4 clearColour = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
     std::unordered_map<std::string, uint32_t> textures;
 
@@ -69,8 +68,8 @@ namespace small3d
     std::vector<uint8_t> textMemory;
     std::unordered_map<std::string, FT_Face> fontFaces;
 
-    glm::mat4x4 cameraTransformation = glm::mat4x4(1.0f);
-    glm::vec3 cameraRotationXYZ = glm::vec3(0.0f);
+    Mat4 cameraTransformation = Mat4(1.0f);
+    Vec3 cameraRotationXYZ = Vec3(0.0f);
     bool cameraRotationByMatrix = false;
 
     static void framebufferSizeCallback(GLFWwindow* window, int width,
@@ -84,8 +83,8 @@ namespace small3d
     void initOpenGL();
     void checkForOpenGLErrors(const std::string& when, const bool abort) const;
 
-    void transform(Model& model, const glm::vec3& offset,
-      const glm::mat4x4& rotation, uint64_t currentPose) const;
+    void transform(Model& model, Vec3& offset,
+      const Mat4& rotation, uint64_t currentPose) const;
 
     uint32_t getTextureHandle(const std::string& name) const;
     uint32_t generateTexture(const std::string& name, const uint8_t* data,
@@ -112,16 +111,16 @@ namespace small3d
 
     Renderer();
 
-    std::vector<std::tuple< Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool, uint64_t>> renderList;
+    std::vector<std::tuple< Model*, Vec3, Mat4, Vec4, std::string, bool, uint64_t>> renderList;
 
-    void renderTuple(std::tuple< Model*, glm::vec3, glm::mat4x4, glm::vec4, std::string, bool, uint64_t> tuple);
+    void renderTuple(std::tuple< Model*, Vec3, Mat4, Vec4, std::string, bool, uint64_t> tuple);
 
     GLuint depthMapFramebuffer = 0;
     GLuint depthMapTexture = 0;
 
     const uint32_t depthMapTextureWidth = 2048;
     const uint32_t depthMapTextureHeight = 2048;
-    glm::mat4x4 lightSpaceMatrix = glm::mat4x4(0);
+    Mat4 lightSpaceMatrix = Mat4(0);
     bool renderingDepthMap = false;
 
 
@@ -167,7 +166,7 @@ namespace small3d
      * @brief Vector, indicating the direction of the light in the scene.
      *        It points towards a directional light source.
      */
-    glm::vec3 lightDirection = glm::vec3(0.0f, 0.7f, 0.3f);
+    Vec3 lightDirection = Vec3(0.0f, 0.7f, 0.3f);
 
     /**
      * @brief Size of the shadows space (half-edge of the orthographic projection
@@ -178,43 +177,43 @@ namespace small3d
     /**
      * @brief Shadow camera transformation.
      */
-    glm::mat4x4 shadowCamTransformation =
-      glm::rotate(glm::mat4x4(1.0f), 1.57f, glm::vec3(1.0f, 0.0f, 0.0f)) *
-      glm::translate(glm::mat4x4(1.0f), glm::vec3(0.0f, -10.0f, 0.0f));
+    Mat4 shadowCamTransformation =
+      rotate(Mat4(1.0f), 1.57f, Vec3(1.0f, 0.0f, 0.0f)) *
+      translate(Mat4(1.0f), Vec3(0.0f, -10.0f, 0.0f));
 
     /**
      * @brief The camera position in world space. Ignored for orthographic
      *        rendering.
      */
-    glm::vec3 cameraPosition = glm::vec3(0, 0, 0);
+    Vec3 cameraPosition = Vec3(0, 0, 0);
 
     /**
      * @brief: Set the rotation of the camera
      *
      * @param rotation The rotation (x, y, z)
      */
-    void setCameraRotation(const glm::vec3& rotation);
+    void setCameraRotation(const Vec3& rotation);
 
     /**
      * @brief: Modify the rotation of the camera
      *
      * @param rotation The rotation to modify by (x, y, z)
      */
-    void rotateCamera(const glm::vec3& rotation);
+    void rotateCamera(const Vec3& rotation);
 
     /**
      * @brief: Set the camera by transformation matrix
      *
      * @param transformation The tranformation matrix
      */
-    void setCameraTransformation(const glm::mat4x4& transformation);
+    void setCameraTransformation(const Mat4& transformation);
 
     /**
      * @brief: Get the orientation of the camera
      *
      * @return The orientation of the camera
      */
-    const glm::vec3 getCameraOrientation() const;
+    const Vec3 getCameraOrientation() const;
 
     /**
      * @brief: Get the rotation of the camera
@@ -223,17 +222,17 @@ namespace small3d
      * @return The camera tranformation matrix (this is inversed
      *         when rendering)
      */
-    const glm::mat4x4 getCameraRotation() const;
+    const Mat4 getCameraRotation() const;
 
     /**
      * @brief: Get the rotation of the camera in x, y, z representation.
      *         This will NOT work if the rotation was set via the
-     *         setRotation(mat4x4) function.
+     *         setRotation(Mat4) function.
      *
      * @return The rotation in x, y, z representation (this is negated
      *         when rendering)
      */
-    const glm::vec3 getCameraRotationXYZ() const;
+    const Vec3 getCameraRotationXYZ() const;
 
     /**
      * @brief Get the real screen width
@@ -328,7 +327,7 @@ namespace small3d
      *                 be overwritten.
      */
     void generateTexture(const std::string& name, const std::string& text,
-      const glm::vec3& colour,
+      const Vec3& colour,
       const int fontSize = 48,
       const std::string& fontPath =
 
@@ -351,8 +350,8 @@ namespace small3d
      * @param bottomRight Bottom right corner of the rectangle
      */
     void createRectangle(Model& rect,
-      const glm::vec3& topLeft,
-      const glm::vec3& bottomRight);
+      const Vec3& topLeft,
+      const Vec3& bottomRight);
 
     /**
      * @brief Render a Model
@@ -371,8 +370,8 @@ namespace small3d
      *                    rendering. Perform all the orthographic rendering in the
      *                    end.
      */
-    void render(Model& model, const glm::vec3& position, const glm::vec3& rotation,
-      const glm::vec4& colour, const std::string& textureName = "",
+    void render(Model& model, const Vec3& position, const Vec3& rotation,
+      const Vec4& colour, const std::string& textureName = "",
       const uint64_t currentPose = 0,
       const bool perspective = true);
 
@@ -385,7 +384,7 @@ namespace small3d
      *                    The texture has to have been generated already.
      * @param currentPose The current animation pose
      */
-    void render(Model& model, const glm::vec3& position, const glm::vec3& rotation,
+    void render(Model& model, const Vec3& position, const Vec3& rotation,
       const std::string& textureName, const uint64_t currentPose = 0);
 
     /**
@@ -405,8 +404,8 @@ namespace small3d
      *                    rendering. Perform all the orthographic rendering in the
      *                    end.
      */
-    void render(Model& model, const glm::vec3& position, const glm::mat4x4& rotation,
-      const glm::vec4& colour, const std::string& textureName = "",
+    void render(Model& model, const Vec3& position, const Mat4& rotation,
+      const Vec4& colour, const std::string& textureName = "",
       const uint64_t currentPose = 0,
       const bool perspective = true);
 
@@ -419,7 +418,7 @@ namespace small3d
      *                    The texture has to have been generated already.
      * @param currentPose The current animation pose
      */
-    void render(Model& model, const glm::vec3& position, const glm::mat4x4& rotation,
+    void render(Model& model, const Vec3& position, const Mat4& rotation,
       const std::string& textureName, const uint64_t currentPose = 0);
 
     /**
@@ -448,7 +447,7 @@ namespace small3d
      *                    rendering. Perform all the orthographic rendering in the
      *                    end.
      */
-    void render(Model& model, const glm::vec4& colour, const uint64_t currentPose = 0,
+    void render(Model& model, const Vec4& colour, const uint64_t currentPose = 0,
       const bool perspective = true);
 
     /**
@@ -456,7 +455,7 @@ namespace small3d
      * @param sceneObject The object
      * @param colour The colour the object.
      */
-    void render(SceneObject& sceneObject, const glm::vec4& colour);
+    void render(SceneObject& sceneObject, const Vec4& colour);
 
     /**
      * @brief Render a SceneObject
@@ -484,7 +483,7 @@ namespace small3d
      * @brief Set the background colour of the screen.
      * @param colour The background colour
      */
-    void setBackgroundColour(const glm::vec4& colour);
+    void setBackgroundColour(const Vec4& colour);
 
     /**
      * @brief This is a double buffered system and this command swaps
