@@ -8,6 +8,7 @@
 
 #include "Math.hpp"
 #include <cmath>
+#include <algorithm>
 
 namespace small3d {
   Vec3::Vec3()
@@ -30,6 +31,12 @@ namespace small3d {
     this->z = v;
   }
 
+  Vec3::Vec3(const Vec4& vec) {
+    this->x = vec.x;
+    this->y = vec.y;
+    this->z = vec.z;
+  }
+
   Vec3& Vec3::operator+=(const Vec3& other)
   {
     this->x += other.x;
@@ -38,10 +45,25 @@ namespace small3d {
     return *this;
   }
 
-  Vec3 Vec3::operator+(const Vec3& other)
+  Vec3 Vec3::operator+(const Vec3& other) const
   {
     Vec3 result = *this;
     result += other;
+    return result;
+  }
+
+  Vec3& Vec3::operator-=(const Vec3& other)
+  {
+    this->x -= other.x;
+    this->y -= other.y;
+    this->z -= other.z;
+    return *this;
+  }
+
+  Vec3 Vec3::operator-(const Vec3& other) const
+  {
+    Vec3 result = *this;
+    result -= other;
     return result;
   }
 
@@ -72,6 +94,14 @@ namespace small3d {
     return result;
   }
 
+  Vec3& Vec3::operator/=(const float v)
+  {
+    this->x /= v;
+    this->y /= v;
+    this->z /= v;
+    return *this;
+  }
+
   Vec3& Vec3::operator=(const Vec3& other)
   {
     this->x = other.x;
@@ -79,6 +109,16 @@ namespace small3d {
     this->z = other.z;
 
     return *this;
+  }
+
+  bool Vec3::operator==(const Vec3& other) const
+  {
+    return this->x == other.x && this->y == other.y && this->z == other.z;
+  }
+
+  bool Vec3::operator!=(const Vec3& other) const
+  {
+    return !(*this == other);
   }
 
   Vec4::Vec4()
@@ -368,6 +408,16 @@ namespace small3d {
 
   }
 
+  Vec3 operator*(const float v, const Vec3& vec)
+  {
+    Vec3 result = vec;
+    result.x *= v;
+    result.y *= v;
+    result.z *= v;
+    return result;
+
+  }
+
   Mat4 translate(const Mat4& mat, const Vec3& vec)
   {
     Mat4 result = mat;
@@ -505,6 +555,31 @@ namespace small3d {
 
     return inverse * oneDivDeterminant;
 
+  }
+
+  Vec3 clamp(const Vec3& vec, const Vec3& minv, const Vec3& maxv)
+  {
+    return Vec3(std::max(std::min(vec.x, minv.x), maxv.x),
+      std::max(std::min(vec.y, minv.y), maxv.y),
+      std::max(std::min(vec.z, minv.z), maxv.z));
+  }
+
+  float dot(const Vec3& vec1, const Vec3& vec2)
+  {
+    return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
+  }
+
+  Vec3 cross(const Vec3& vec1, const Vec3& vec2)
+  {
+    return Vec3(
+      vec1.y * vec2.z - vec2.y * vec1.z,
+      vec1.z * vec2.x - vec2.z * vec1.x,
+      vec1.x * vec2.y - vec2.x * vec1.y);
+  }
+
+  float length(const Vec3& vec)
+  {
+      return std::sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
   }
 
   float* Value_ptr(Mat4& mat)

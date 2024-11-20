@@ -11,6 +11,8 @@
 
 namespace small3d {
 
+  struct Vec4;
+
   /**
    * @class	Vec3
    *
@@ -23,17 +25,25 @@ namespace small3d {
     Vec3();
     Vec3(float x, float y, float z);
     Vec3(float v);
+    Vec3(const Vec4& vec);
     Vec3& operator+=(const Vec3& other);
-    Vec3 operator+(const Vec3& other);
+    Vec3 operator+(const Vec3& other) const;
+    Vec3& operator-=(const Vec3& other);
+    Vec3 operator-(const Vec3& other) const;
     Vec3 operator*(const Vec3& other) const;
     Vec3 operator*(const float v) const;
     Vec3 operator/(const float v) const;
+    Vec3& operator/=(const float v);
     Vec3& operator=(const Vec3& other);
+    bool operator==(const Vec3& other) const;
+    bool operator!=(const Vec3& other) const;
     template <class Archive>
     void serialize(Archive& archive) {
       archive(x, y, z);
     }
   };
+
+  Vec3 operator*(const float v, const Vec3& vec);
 
   /**
    * @class	Vec3i
@@ -150,6 +160,14 @@ namespace small3d {
   Mat4 perspective(float fovy, float aspect, float zNear, float zFar);
 
   Mat4 inverse(const Mat4 mat);
+
+  Vec3 clamp(const Vec3& vec, const Vec3& minv, const Vec3& maxv);
+
+  float dot(const Vec3& vec1, const Vec3& vec2);
+
+  Vec3 cross(const Vec3& vec1, const Vec3& vec2);
+
+  float length(const Vec3& vec);
 
   float* Value_ptr(Mat4& mat);
 
