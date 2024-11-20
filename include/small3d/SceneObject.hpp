@@ -126,7 +126,7 @@ namespace small3d
      * @brief Get the name of the object
      * @return The name of the object
      */
-    const std::string getName() const;
+    const std::string& getName() const;
 
     /**
      * Position of the object

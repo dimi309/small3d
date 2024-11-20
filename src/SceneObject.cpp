@@ -96,7 +96,7 @@ namespace small3d {
     return boundingBoxSet->boxExtremes;
   }
 
-  const std::string SceneObject::getName() const {
+  const std::string& SceneObject::getName() const {
     return name;
   }
 

@@ -1073,10 +1073,6 @@ namespace small3d {
       animations[animationIdx].animationComponents[animIndex].input = sampler.input;
     }
 
-    auto aa = sizeof(Quat);
-    auto bb = sizeof(Vec3);
-
-
     if (channel.target.path == "rotation") {
       animations[animationIdx].animationComponents[animIndex].rotationAnimation.resize(output.size() / sizeof(Quat));
       memcpy(&animations[animationIdx].animationComponents[animIndex].rotationAnimation[0], &output[0], output.size());

@@ -24,9 +24,9 @@ namespace small3d {
 
   }
 
-  bool BoundingBoxSet::contains(const Vec3 point,
-    const Vec3 thisOffset,
-    const Mat4 thisRotation) const {
+  bool BoundingBoxSet::contains(const Vec3& point,
+    const Vec3& thisOffset,
+    const Mat4& thisRotation) const {
 
     bool doesContain = false;
     Mat4 reverseRotationMatrix = inverse(thisRotation);
@@ -47,10 +47,10 @@ namespace small3d {
   }
 
   bool BoundingBoxSet::containsCorners(const BoundingBoxSet& otherBoxSet,
-    const Vec3 thisOffset,
-    const Mat4 thisRotation,
-    const Vec3 otherOffset,
-    const Mat4 otherRotation) const {
+    const Vec3& thisOffset,
+    const Mat4& thisRotation,
+    const Vec3& otherOffset,
+    const Mat4& otherRotation) const {
     bool collides = false;
 
     for (auto vertex = otherBoxSet.vertices.begin();

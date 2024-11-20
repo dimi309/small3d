@@ -24,7 +24,7 @@ namespace small3d {
     this->z = z;
   }
 
-  Vec3::Vec3(float v)
+  Vec3::Vec3(float v) 
   {
     this->x = v;
     this->y = v;
@@ -111,6 +111,14 @@ namespace small3d {
     return *this;
   }
 
+  Vec3& Vec3::operator+=(const float v) {
+    this->x += v;
+    this->y += v;
+    this->z += v;
+    return *this;
+
+  }
+
   bool Vec3::operator==(const Vec3& other) const
   {
     return this->x == other.x && this->y == other.y && this->z == other.z;
@@ -171,13 +179,19 @@ namespace small3d {
     return result;
   }
 
+  Vec4& Vec4::operator*=(const float v)
+  {
+    this->x *= v;
+    this->y *= v;
+    this->z *= v;
+    this->w *= v;
+    return *this;
+  }
+
   Vec4 Vec4::operator*(const float v) const
   {
     Vec4 result = *this;
-    result.x *= v;
-    result.y *= v;
-    result.z *= v;
-    result.w *= v;
+    result *= v;
     return result;
   }
 
@@ -367,6 +381,20 @@ namespace small3d {
     return *this;
   }
 
+  Mat4& Mat4::operator*=(const float v) {
+    this->data[0] *= v;
+    this->data[1] *= v;
+    this->data[2] *= v;
+    this->data[3] *= v;
+    return *this;
+  }
+
+  Mat4 Mat4::operator*(const float v) const {
+    Mat4 result = *this;
+    result *= v;
+    return result;
+  }
+
   Mat4& Mat4::operator/=(const float div)
   {
 
@@ -498,7 +526,7 @@ namespace small3d {
 
   }
 
-  Mat4 inverse(const Mat4 mat)
+  Mat4 inverse(const Mat4& mat)
   {
 
     float coef00 = mat.data[2].z * mat.data[3].w - mat.data[3].z * mat.data[2].w;

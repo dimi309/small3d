@@ -24,8 +24,8 @@ namespace small3d {
     float z = 0.0f;
     Vec3();
     Vec3(float x, float y, float z);
-    Vec3(float v);
-    Vec3(const Vec4& vec);
+    explicit Vec3(float v);
+    explicit Vec3(const Vec4& vec);
     Vec3& operator+=(const Vec3& other);
     Vec3 operator+(const Vec3& other) const;
     Vec3& operator-=(const Vec3& other);
@@ -35,6 +35,7 @@ namespace small3d {
     Vec3 operator/(const float v) const;
     Vec3& operator/=(const float v);
     Vec3& operator=(const Vec3& other);
+    Vec3& operator+=(const float v);
     bool operator==(const Vec3& other) const;
     bool operator!=(const Vec3& other) const;
     template <class Archive>
@@ -75,6 +76,7 @@ namespace small3d {
     Vec4& operator+=(const Vec4& other);
     Vec4 operator+(const Vec4& other);
     Vec4 operator-(const Vec4& other);
+    Vec4& operator*=(const float v);
     Vec4 operator*(const float v) const;
     Vec4 operator*(const Vec4& other) const;
     Vec4& operator/=(const float div);
@@ -109,7 +111,7 @@ namespace small3d {
   struct Mat4 {
     Vec4 data[4];
     Mat4();
-    Mat4(float v);
+    explicit Mat4(float v);
     Mat4(Vec4 r0, Vec4 r1, Vec4 r2, Vec4 r3);
     Mat4(float r0x, float r0y, float r0z, float r0w,
       float r1x, float r1y, float r1z, float r1w, 
@@ -120,6 +122,8 @@ namespace small3d {
     Mat4 operator*(const Mat4& other) const;
     Vec4 operator*(const Vec4& vec) const;
     Mat4& operator*=(const Mat4& other);
+    Mat4& operator*=(const float v);
+    Mat4 operator*(const float v) const;
     Mat4& operator/=(const float div);
     Mat4& operator=(const Mat4& other);
     template <class Archive>
@@ -159,7 +163,7 @@ namespace small3d {
 
   Mat4 perspective(float fovy, float aspect, float zNear, float zFar);
 
-  Mat4 inverse(const Mat4 mat);
+  Mat4 inverse(const Mat4& mat);
 
   Vec3 clamp(const Vec3& vec, const Vec3& minv, const Vec3& maxv);
 
