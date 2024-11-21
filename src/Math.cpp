@@ -612,17 +612,17 @@ namespace small3d {
 
   float* Value_ptr(Mat4& mat)
   {
-    return reinterpret_cast<float*>(&mat.data);
+    return &(mat.data[0].x);
   }
 
   float* Value_ptr(Vec3& vec)
   {
-    return reinterpret_cast<float*>(&vec);
+    return &(vec.x);
   }
 
   float* Value_ptr(Vec4& vec)
   {
-    return reinterpret_cast<float*>(&vec);
+    return &(vec.x);
   }
 
   Vec3i::Vec3i()
