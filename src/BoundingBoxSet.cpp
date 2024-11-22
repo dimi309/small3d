@@ -134,7 +134,7 @@ namespace small3d {
     facesVertexIndexesTriangulated.clear();
     numBoxes = 0;
     uint32_t base = 0;
-     
+
     for (auto& ext : boxExtremes) {
 
       vertices.emplace_back(std::vector<float>{ ext.minX, ext.minY, ext.maxZ, 1.0f });
@@ -148,11 +148,11 @@ namespace small3d {
 
 
       facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 4, base + 5, base + 1, base + 0 });
-      facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 5, base + 6, base + 2 ,base + 1 });
-      facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 6, base + 7, base + 3 ,base + 2 });
-      facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 7, base + 4, base + 0 ,base + 3 });
-      facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 0, base + 1, base + 2 ,base + 3 });
-      facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 7, base + 6, base + 5 ,base + 4 });
+      facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 5, base + 6, base + 2, base + 1 });
+      facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 6, base + 7, base + 3, base + 2 });
+      facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 7, base + 4, base + 0, base + 3 });
+      facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 0, base + 1, base + 2, base + 3 });
+      facesVertexIndexes.emplace_back(std::vector<unsigned int>{ base + 7, base + 6, base + 5, base + 4 });
 
       base += 8;
       ++numBoxes;
@@ -170,16 +170,18 @@ namespace small3d {
     Vec4 vertex(0.0f, 0.0f, 0.0f, 0.0f);
 
     for (uint32_t idx = 0; idx < vertexData.size(); ++idx) {
-      if (idx % 4 == 0) {
+
+      switch (idx % 4) {
+      case 0:
         vertex.x = vertexData[idx];
-      }
-      else if (idx % 4 == 1) {
+        break;
+      case 1:
         vertex.y = vertexData[idx];
-      }
-      else if (idx % 4 == 2) {
+        break;
+      case 2:
         vertex.z = vertexData[idx];
-      }
-      else if (idx % 4 == 3) {
+        break;
+      case 3:
         vertex.w = vertexData[idx];
         vertex = small3d::scale(Mat4(1.0f), scale) * vertex;
 
@@ -191,6 +193,7 @@ namespace small3d {
 
         if (vertex.z < ex.minZ) ex.minZ = vertex.z;
         else if (vertex.z > ex.maxZ) ex.maxZ = vertex.z;
+        break;
       }
     }
 
@@ -281,16 +284,18 @@ namespace small3d {
       // contain one of the model's vertices
 
       for (uint32_t idx = 0; idx < vertexData.size(); ++idx) {
-        if (idx % 4 == 0) {
+
+        switch (idx % 4) {
+        case 0:
           point.x = vertexData[idx];
-        }
-        else if (idx % 4 == 1) {
+          break;
+        case 1:
           point.y = vertexData[idx];
-        }
-        else if (idx % 4 == 2) {
+          break;
+        case 2:
           point.z = vertexData[idx];
-        }
-        else if (idx % 4 == 3) {
+          break;
+        case 3:
           point.w = vertexData[idx];
 
           point = small3d::scale(Mat4(1.0f), scale) * point;
@@ -301,6 +306,7 @@ namespace small3d {
               point.y >= ex.minY && point.y <= ex.maxY &&
               point.z >= ex.minZ && point.z <= ex.maxZ) ex.tagged = true;
 
+            break;
           }
         }
       }

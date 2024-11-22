@@ -20,9 +20,9 @@ namespace small3d {
       size_t curPos = 0; 
     int count = 0;
 
-    size_t length = input.length();
+    size_t fileLength = input.length();
 
-    for (size_t idx = 0; idx < length; ++idx) {
+    for (size_t idx = 0; idx < fileLength; ++idx) {
       if (input[idx] == sep) {
         ++count;
       }

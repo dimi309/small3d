@@ -258,7 +258,7 @@ namespace small3d {
     }
 
     std::string magic(4, '\0');
-    uint32_t version = 0, length = 0;
+    uint32_t version = 0, fileLength = 0;
     fileOnDisk.read(&magic[0], 4);
     fileOnDisk.read(reinterpret_cast<char*>(&version), 4);
 
@@ -269,10 +269,10 @@ namespace small3d {
       throw std::runtime_error("Magic number found: '" + magic + "'. File " + fullPath + " cannot be read as glb.");
     }
 
-    fileOnDisk.read(reinterpret_cast<char*>(&length), 4);
+    fileOnDisk.read(reinterpret_cast<char*>(&fileLength), 4);
 
     bool doneReading = false;
-    uint32_t chunkLength, chunkType, bytesLeft = length - 12;
+    uint32_t chunkLength, chunkType, bytesLeft = fileLength - 12;
     std::vector<char> bytes;
 
     while (!doneReading) {

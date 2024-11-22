@@ -399,14 +399,11 @@ int RendererTest() {
   // Here loading the mesh without providing a name is also tested.
   Model modelFromGlb(GlbFile(resourceDir + "/models/goatUnscaled.glb"), "");
 
-
-  WavefrontFile cubef(resourceDir + "/models/Cube/CubeNoTexture.obj");
-  SceneObject object("cube", cubef);
+  SceneObject object("cube", Model(WavefrontFile(resourceDir + "/models/Cube/CubeNoTexture.obj")));
   object.position = Vec3(0.0f, -1.0f, -8.0f);
   r->render(object, Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-  WavefrontFile texcubf(resourceDir + "/models/Cube/Cube.obj");
-  SceneObject object2("texutredCube", texcubf);
+  SceneObject object2("texutredCube", Model(WavefrontFile(resourceDir + "/models/Cube/Cube.obj")));
   object2.position = Vec3(-2.0f, -1.0f, -7.0f);
   object2.setRotation(Vec3(0.3f, 1.3f, 0.0f));
 
