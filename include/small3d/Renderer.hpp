@@ -23,7 +23,7 @@
 #include "Model.hpp"
 #include "SceneObject.hpp"
 #include <unordered_map>
-#include "Math.h"
+#include "Math.hpp"
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
