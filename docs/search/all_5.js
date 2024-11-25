@@ -16,7 +16,7 @@ var searchData=
   ['getmeshnames_39',['getMeshNames',['../classsmall3d_1_1_binary_file.html#a2a14df9465b86d38d00bb58bb4022494',1,'small3d::BinaryFile::getMeshNames()'],['../classsmall3d_1_1_file.html#a1fa8b53546f047cf51793672d1c33bbc',1,'small3d::File::getMeshNames()'],['../classsmall3d_1_1_glb_file.html#aad256dbe342d444e4f53dc534262a51e',1,'small3d::GlbFile::getMeshNames()'],['../classsmall3d_1_1_wavefront_file.html#ac6a927a96e625fcd66f44032bd61176c',1,'small3d::WavefrontFile::getMeshNames()']]],
   ['getmodel_40',['getModel',['../classsmall3d_1_1_scene_object.html#a990a1b6f6f3ab08fd71f5c4a220afc4c',1,'small3d::SceneObject']]],
   ['getmodels_41',['getModels',['../classsmall3d_1_1_bounding_box_set.html#abf45f0d5ed515b0d7e5a9b319ba98f62',1,'small3d::BoundingBoxSet']]],
-  ['getname_42',['getName',['../classsmall3d_1_1_scene_object.html#ae18cf681f49f719fa77f9b83bdb88da8',1,'small3d::SceneObject']]],
+  ['getname_42',['getName',['../classsmall3d_1_1_scene_object.html#a112366b6a0767dbd85337fd7669646ef',1,'small3d::SceneObject']]],
   ['getnumanimations_43',['getNumAnimations',['../classsmall3d_1_1_model.html#a017c394b7f032e79786f043df8ca0fb9',1,'small3d::Model']]],
   ['getnumboxes_44',['getNumBoxes',['../classsmall3d_1_1_bounding_box_set.html#a0d8a4eac5d06e723ae60aef2bc2b0a83',1,'small3d::BoundingBoxSet']]],
   ['getnumposes_45',['getNumPoses',['../classsmall3d_1_1_model.html#ab45b976e6906c2f86ae5d47d90ed3cd6',1,'small3d::Model']]],
