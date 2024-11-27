@@ -1,6 +1,6 @@
 add_library(small3d BasePath.cpp BoundingBoxSet.cpp File.cpp GlbFile.cpp
   WavefrontFile.cpp BinaryFile.cpp Image.cpp Logger.cpp Model.cpp Renderer.cpp
-  SceneObject.cpp  Sound.cpp Time.cpp Material.cpp Math.cpp
+  SceneObject.cpp  Sound.cpp Time.cpp Material.cpp Math.cpp Windowing.cpp
   ../include/small3d/SceneObject.hpp
   ../include/small3d/Sound.hpp ../include/small3d/Time.hpp
   ../include/small3d/BasePath.hpp ../include/small3d/BoundingBoxSet.hpp
@@ -10,6 +10,7 @@ add_library(small3d BasePath.cpp BoundingBoxSet.cpp File.cpp GlbFile.cpp
   ../include/small3d/Model.hpp ../include/small3d/Renderer.hpp
   ../include/small3d/Material.hpp
   ../include/small3d/Math.hpp
+  ../include/small3d/Windowing.hpp
 )
 
 target_include_directories(small3d PUBLIC ../include/small3d)
