@@ -38,10 +38,12 @@ namespace small3d {
     //glfwTerminate();
   }
 
+#ifdef _WIN32
   HWND Windowing::getWin32Window()
   {
     return glfwGetWin32Window(window);
   }
+#endif
 
   void Windowing::framebufferSizeCallback(GLFWwindow* window, int width,
     int height) {
