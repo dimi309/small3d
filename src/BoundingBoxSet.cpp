@@ -193,7 +193,7 @@ namespace small3d {
 
         if (vertex.z < ex.minZ) ex.minZ = vertex.z;
         else if (vertex.z > ex.maxZ) ex.maxZ = vertex.z;
-        break;
+        
       }
     }
 
@@ -306,7 +306,7 @@ namespace small3d {
               point.y >= ex.minY && point.y <= ex.maxY &&
               point.z >= ex.minZ && point.z <= ex.maxZ) ex.tagged = true;
 
-            break;
+            
           }
         }
       }

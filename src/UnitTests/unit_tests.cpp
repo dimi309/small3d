@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     small3d::initLogger();
 
     LOGINFO("LoggerTest OK");
-
+    
     if (!MathTest()) {
       LOGINFO("*** Failing MathTest.");
       return EXIT_FAILURE;
@@ -138,9 +138,10 @@ int main(int argc, char** argv) {
       return EXIT_FAILURE;
     }
     LOGINFO("ModelsTimeToLoad OK");
-    
 
-    LOGINFO("All tests have executed successfully.\n\r");
+    LOGINFO("###################################################");
+    LOGINFO("###### All tests have executed successfully. ######");
+    LOGINFO("###################################################");
   }
   catch (std::exception& e) {
     // Also use printf in case the logger has not been initialised properly

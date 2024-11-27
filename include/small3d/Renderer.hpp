@@ -12,12 +12,8 @@
 
 #define GLEW_NO_GLU
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#ifdef _WIN32
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include <GLFW/glfw3native.h>
-#endif
 
+#include "Windowing.hpp"
 #include "Logger.hpp"
 #include "Image.hpp"
 #include "Model.hpp"
@@ -39,9 +35,7 @@ namespace small3d
 
   private:
 
-    GLFWwindow* window;
-
-    static int realScreenWidth, realScreenHeight;
+    int realScreenWidth = 0, realScreenHeight = 0;
 
     uint32_t shaderProgram = 0;
 
@@ -72,9 +66,6 @@ namespace small3d
     Vec3 cameraRotationXYZ = Vec3(0.0f);
     bool cameraRotationByMatrix = false;
 
-    static void framebufferSizeCallback(GLFWwindow* window, int width,
-      int height);
-
     std::string loadShaderFromFile(const std::string& fileLocation) const;
     uint32_t compileShader(const std::string& shaderSourceFile,
       const uint32_t shaderType) const;
@@ -94,8 +85,6 @@ namespace small3d
 
     void init(const int width, const int height, const std::string& windowTitle,
       const std::string& shadersPath);
-    void initWindow(int& width, int& height,
-      const std::string& windowTitle = "");
 
     void setWorldDetails(bool perspective);
 
@@ -129,25 +118,28 @@ namespace small3d
 #endif
 
   public:
+
+    Windowing windowing;
+
     /**
-    * @brief: Set to the id of the original renderbuffer, in case it
+    * @brief Set to the id of the original renderbuffer, in case it
     *             is temporarily replaced during shadow mapping.
     */
     GLint origRenderbuffer = 0;
 
     /**
-    * @brief: Set to the id of the original framebuffer, in case it
+    * @brief Set to the id of the original framebuffer, in case it
     *             is temporarily replaced during shadow mapping.
     */
     GLint origFramebuffer = 0;
 
     /**
-    * @brief: Render shadows?
+    * @brief Render shadows?
     */
     bool shadowsActive = false;
 
     /**
-     * @brief: Used to re-initialise the Renderer. When Android was supported
+     * @brief Used to re-initialise the Renderer. When Android was supported
      *          it was used in apps after they came back into focus.
      */
     void start(const std::string& windowTitle, const int width, const int height,
@@ -157,7 +149,7 @@ namespace small3d
       const uint32_t objectsPerFrameInc);
 
     /**
-     * @brief: Used to shutdown the renderer. When Android was supported
+     * @brief Used to shutdown the renderer. When Android was supported
      *          it was used in apps when they lost focus.
      */
     void stop();
@@ -235,18 +227,6 @@ namespace small3d
     const Vec3 getCameraRotationXYZ() const;
 
     /**
-     * @brief Get the real screen width
-     * @return The screen width
-     */
-    int getScreenWidth();
-
-    /**
-     * @brief Get the real screen height
-     * @return The screen height
-     */
-    int getScreenHeight();
-
-    /**
      * @brief The light intensity (set to -1.0f if no lighting is to be used).
      */
     float lightIntensity = 1.0f;
@@ -302,11 +282,6 @@ namespace small3d
      * @brief Destructor
      */
     ~Renderer();
-
-    /**
-     * @brief Get the GLFW window object, associated with the Renderer.
-     */
-    GLFWwindow* getWindow() const;
 
     /**
      * @brief Generate a texture on the GPU from the given image

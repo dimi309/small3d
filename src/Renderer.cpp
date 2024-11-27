@@ -24,37 +24,7 @@ unsigned const attrib_uv = 4;
 
 namespace small3d {
 
-  static void error_callback(int error, const char* description)
-  {
-    LOGERROR(std::string(description));
-  }
-
   static std::string openglErrorToString(GLenum error);
-
-  int Renderer::realScreenWidth;
-  int Renderer::realScreenHeight;
-
-
-  void Renderer::framebufferSizeCallback(GLFWwindow* window, int width,
-    int height) {
-    realScreenWidth = width;
-    realScreenHeight = height;
-
-    glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
-      static_cast<GLsizei>(realScreenHeight));
-
-    LOGDEBUG("New framebuffer dimensions " + std::to_string(width) + " x " +
-      std::to_string(height));
-
-  }
-
-  int Renderer::getScreenWidth() {
-    return realScreenWidth;
-  }
-
-  int Renderer::getScreenHeight() {
-    return realScreenHeight;
-  }
 
   std::string Renderer::loadShaderFromFile(const std::string& fileLocation)
     const {
@@ -299,7 +269,7 @@ namespace small3d {
     realScreenWidth = width;
     realScreenHeight = height;
 
-    this->initWindow(realScreenWidth, realScreenHeight, windowTitle);
+    windowing.initWindow(realScreenWidth, realScreenHeight, windowTitle);
 
     this->initOpenGL();
 
@@ -389,80 +359,7 @@ namespace small3d {
 
   }
 
-  void Renderer::initWindow(int& width, int& height,
-    const std::string& windowTitle) {
-
-    glfwSetErrorCallback(error_callback);
-
-    if (!glfwInit()) {
-      throw std::runtime_error("Unable to initialise GLFW");
-    }
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-
-    // This was used as a workaround for an issue I cannot remember
-    // on Mojave but on Monterey it was making the window transparent
-    // when the colour of a rendered mesh was transparent so I have
-    // commented it out.
-    // glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
-#else
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-#endif
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-
-    GLFWmonitor* monitor = nullptr; // If NOT null, a full-screen window will
-    // be created.
-
-    bool fullScreen = false;
-
-    if ((width == 0 && height != 0) || (width != 0 && height == 0)) {
-      throw std::runtime_error("Screen width and height both have to be equal "
-        "or not equal to zero at the same time.");
-    }
-    else if (width == 0) {
-
-      monitor = glfwGetPrimaryMonitor();
-
-      const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-      width = mode->width;
-      height = mode->height;
-
-      LOGINFO("Detected screen width " + std::to_string(width) + " and height " +
-        std::to_string(height));
-
-      fullScreen = true;
-    }
-
-    window = glfwCreateWindow(width, height, windowTitle.c_str(), monitor,
-      nullptr);
-
-    if (!window) {
-      throw std::runtime_error("Unable to create GLFW window");
-    }
-
-    if (fullScreen) {
-      glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-    }
-
-    glfwMakeContextCurrent(window);
-
-    width = 0;
-    height = 0;
-    glfwGetFramebufferSize(window, &width, &height);
-
-    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-
-    LOGINFO("Framebuffer width " + std::to_string(width) + " height " +
-      std::to_string(height));
-
-  }
-
-
+  
   void Renderer::setWorldDetails(bool perspective) {
 
     auto orthographicMatrix = ortho(-shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize, -shadowSpaceSize, shadowSpaceSize);
@@ -672,8 +569,7 @@ namespace small3d {
     stop();
 
 
-    //This was causing crashes on MacOS
-    //glfwTerminate();
+    windowing.terminate();
 
   }
 
@@ -712,10 +608,6 @@ namespace small3d {
       glDeleteProgram(shaderProgram);
     }
 
-  }
-
-  GLFWwindow* Renderer::getWindow() const {
-    return window;
   }
 
   void Renderer::generateTexture(const std::string& name, const Image& image) {
@@ -1200,7 +1092,7 @@ namespace small3d {
     }
 #endif
 
-    glfwSwapBuffers(window);
+    windowing.swapBuffers();
 
     clearScreen();
 
@@ -1255,7 +1147,7 @@ namespace small3d {
 
     HGLOBAL mem = GlobalAlloc(GMEM_MOVEABLE, sizeof(BITMAPINFO) + imgSize);
     if (mem != NULL) {
-      HWND win = glfwGetWin32Window(window);
+      HWND win = windowing.getWin32Window();
       if (OpenClipboard(win)) {
         EmptyClipboard();
         void* memLocked = GlobalLock(mem);

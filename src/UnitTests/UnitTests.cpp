@@ -410,8 +410,6 @@ int RendererTest() {
   Image cubeTexture(resourceDir + "/models/Cube/cubeTexture.png");
   r->generateTexture("cubeTexture", cubeTexture);
 
-  glfwShowWindow(r->getWindow());
-
   Model singleColourRect;
   r->createRectangle(singleColourRect, Vec3(-1.0f, 0.0f, 0.0f),
     Vec3(-0.5f, -0.5f, 0.0f));
