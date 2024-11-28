@@ -10,6 +10,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <cstdint>
 
 #define WORD_SIZE 2
 
