@@ -35,6 +35,8 @@ namespace small3d
 
   private:
 
+    Windowing windowing;
+
     int realScreenWidth = 0, realScreenHeight = 0;
 
     uint32_t shaderProgram = 0;
@@ -118,8 +120,6 @@ namespace small3d
 #endif
 
   public:
-
-    Windowing windowing;
 
     /**
     * @brief Set to the id of the original renderbuffer, in case it
