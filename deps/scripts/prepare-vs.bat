@@ -96,10 +96,10 @@ rmdir /Q /S zlib-1.3.1
 del zlib-1.3.1.tar
 del pax_global_header
 
-7z x libpng-1.6.44.tar.gz
+7z x libpng-1.6.40.tar.gz
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
-7z x libpng-1.6.44.tar
-cd libpng-1.6.44
+7z x libpng-1.6.40.tar
+cd libpng-1.6.40
 mkdir build
 cd build
 cmake .. %VSCONFIG% -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=..\..\lib/zlib.lib -DZLIB_INCLUDE_DIR=..\..\include
@@ -114,8 +114,8 @@ if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 copy ..\LICENSE ..\..\licenses\LIBPNG_LICENSE
 if %errorlevel% neq 0 endlocal & exit /b %errorlevel%
 cd ..\..\
-rmdir /Q /S libpng-1.6.44
-del libpng-1.6.44.tar
+rmdir /Q /S libpng-1.6.40
+del libpng-1.6.40.tar
 del pax_global_header
 
 7z x libogg-1.3.5.tar.gz
