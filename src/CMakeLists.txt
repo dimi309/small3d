@@ -75,4 +75,3 @@ AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
 -framework IOKit -framework CoreVideo")
 endif()
 
-subdirs(UnitTests FormatConverter)
