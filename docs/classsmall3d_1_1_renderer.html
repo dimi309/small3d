@@ -84,11 +84,11 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ab8b6dbd513c16e99f9f673f14e00409b"><td class="memItemLeft" align="right" valign="top"><a id="ab8b6dbd513c16e99f9f673f14e00409b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ab8b6dbd513c16e99f9f673f14e00409b">start</a> (const std::string &amp;windowTitle, const int width, const int height, const float fieldOfView, const float zNear, const float zFar, const std::string &amp;shadersPath, const uint32_t objectsPerFrame, const uint32_t objectsPerFrameInc)</td></tr>
-<tr class="memdesc:ab8b6dbd513c16e99f9f673f14e00409b"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Used to re-initialise the <a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a>. When Android was supported it was used in apps after they came back into focus. <br /></td></tr>
+<tr class="memdesc:ab8b6dbd513c16e99f9f673f14e00409b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to re-initialise the <a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a>. When Android was supported it was used in apps after they came back into focus. <br /></td></tr>
 <tr class="separator:ab8b6dbd513c16e99f9f673f14e00409b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15011351cd2207d0430b0ebb5a65bef8"><td class="memItemLeft" align="right" valign="top"><a id="a15011351cd2207d0430b0ebb5a65bef8"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a15011351cd2207d0430b0ebb5a65bef8">stop</a> ()</td></tr>
-<tr class="memdesc:a15011351cd2207d0430b0ebb5a65bef8"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Used to shutdown the renderer. When Android was supported it was used in apps when they lost focus. <br /></td></tr>
+<tr class="memdesc:a15011351cd2207d0430b0ebb5a65bef8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to shutdown the renderer. When Android was supported it was used in apps when they lost focus. <br /></td></tr>
 <tr class="separator:a15011351cd2207d0430b0ebb5a65bef8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f7b8e68d0dba756fa3fc36d9a443dc5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a3f7b8e68d0dba756fa3fc36d9a443dc5">setCameraRotation</a> (const <a class="el" href="structsmall3d_1_1_vec3.html">Vec3</a> &amp;rotation)</td></tr>
 <tr class="memdesc:a3f7b8e68d0dba756fa3fc36d9a443dc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set the rotation of the camera  <a href="classsmall3d_1_1_renderer.html#a3f7b8e68d0dba756fa3fc36d9a443dc5">More...</a><br /></td></tr>
@@ -108,20 +108,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a8f6471ca576e1a31b856a07938d6535d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structsmall3d_1_1_vec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a8f6471ca576e1a31b856a07938d6535d">getCameraRotationXYZ</a> () const</td></tr>
 <tr class="memdesc:a8f6471ca576e1a31b856a07938d6535d"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Get the rotation of the camera in x, y, z representation. This will NOT work if the rotation was set via the setRotation(Mat4) function.  <a href="classsmall3d_1_1_renderer.html#a8f6471ca576e1a31b856a07938d6535d">More...</a><br /></td></tr>
 <tr class="separator:a8f6471ca576e1a31b856a07938d6535d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc8816c9329595bbe489131cc2bf4495"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#adc8816c9329595bbe489131cc2bf4495">getScreenWidth</a> ()</td></tr>
-<tr class="memdesc:adc8816c9329595bbe489131cc2bf4495"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the real screen width.  <a href="classsmall3d_1_1_renderer.html#adc8816c9329595bbe489131cc2bf4495">More...</a><br /></td></tr>
-<tr class="separator:adc8816c9329595bbe489131cc2bf4495"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aed406b218be5e972d7566a321f893e82"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#aed406b218be5e972d7566a321f893e82">getScreenHeight</a> ()</td></tr>
-<tr class="memdesc:aed406b218be5e972d7566a321f893e82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the real screen height.  <a href="classsmall3d_1_1_renderer.html#aed406b218be5e972d7566a321f893e82">More...</a><br /></td></tr>
-<tr class="separator:aed406b218be5e972d7566a321f893e82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32163440246ed8ea5016e15dfc781775"><td class="memItemLeft" align="right" valign="top"><a id="a32163440246ed8ea5016e15dfc781775"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a32163440246ed8ea5016e15dfc781775">~Renderer</a> ()</td></tr>
 <tr class="memdesc:a32163440246ed8ea5016e15dfc781775"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br /></td></tr>
 <tr class="separator:a32163440246ed8ea5016e15dfc781775"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2065e4645034d538e5bbd40cd5fa3a50"><td class="memItemLeft" align="right" valign="top"><a id="a2065e4645034d538e5bbd40cd5fa3a50"></a>
-GLFWwindow *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a2065e4645034d538e5bbd40cd5fa3a50">getWindow</a> () const</td></tr>
-<tr class="memdesc:a2065e4645034d538e5bbd40cd5fa3a50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the GLFW window object, associated with the <a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a>. <br /></td></tr>
-<tr class="separator:a2065e4645034d538e5bbd40cd5fa3a50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3fc446b4ee64fbb831aa8f08a54dbdc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#aa3fc446b4ee64fbb831aa8f08a54dbdc">generateTexture</a> (const std::string &amp;name, const <a class="el" href="classsmall3d_1_1_image.html">Image</a> &amp;image)</td></tr>
 <tr class="memdesc:aa3fc446b4ee64fbb831aa8f08a54dbdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a texture on the GPU from the given image.  <a href="classsmall3d_1_1_renderer.html#aa3fc446b4ee64fbb831aa8f08a54dbdc">More...</a><br /></td></tr>
 <tr class="separator:aa3fc446b4ee64fbb831aa8f08a54dbdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -194,15 +184,15 @@ Static Public Member Functions</h2></td></tr>
 Public Attributes</h2></td></tr>
 <tr class="memitem:adafec1db077603b5b1c4a12e291fa798"><td class="memItemLeft" align="right" valign="top"><a id="adafec1db077603b5b1c4a12e291fa798"></a>
 GLint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#adafec1db077603b5b1c4a12e291fa798">origRenderbuffer</a> = 0</td></tr>
-<tr class="memdesc:adafec1db077603b5b1c4a12e291fa798"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set to the id of the original renderbuffer, in case it is temporarily replaced during shadow mapping. <br /></td></tr>
+<tr class="memdesc:adafec1db077603b5b1c4a12e291fa798"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set to the id of the original renderbuffer, in case it is temporarily replaced during shadow mapping. <br /></td></tr>
 <tr class="separator:adafec1db077603b5b1c4a12e291fa798"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b939a3e62a9b97bcec47357ca697a94"><td class="memItemLeft" align="right" valign="top"><a id="a9b939a3e62a9b97bcec47357ca697a94"></a>
 GLint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#a9b939a3e62a9b97bcec47357ca697a94">origFramebuffer</a> = 0</td></tr>
-<tr class="memdesc:a9b939a3e62a9b97bcec47357ca697a94"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Set to the id of the original framebuffer, in case it is temporarily replaced during shadow mapping. <br /></td></tr>
+<tr class="memdesc:a9b939a3e62a9b97bcec47357ca697a94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set to the id of the original framebuffer, in case it is temporarily replaced during shadow mapping. <br /></td></tr>
 <tr class="separator:a9b939a3e62a9b97bcec47357ca697a94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae41ab2c06a1a2c768c5a14aafbe79868"><td class="memItemLeft" align="right" valign="top"><a id="ae41ab2c06a1a2c768c5a14aafbe79868"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ae41ab2c06a1a2c768c5a14aafbe79868">shadowsActive</a> = false</td></tr>
-<tr class="memdesc:ae41ab2c06a1a2c768c5a14aafbe79868"><td class="mdescLeft">&#160;</td><td class="mdescRight">: Render shadows? <br /></td></tr>
+<tr class="memdesc:ae41ab2c06a1a2c768c5a14aafbe79868"><td class="mdescLeft">&#160;</td><td class="mdescRight">Render shadows? <br /></td></tr>
 <tr class="separator:ae41ab2c06a1a2c768c5a14aafbe79868"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada28d572ee5ea08494f1fd96fa71f9df"><td class="memItemLeft" align="right" valign="top"><a id="ada28d572ee5ea08494f1fd96fa71f9df"></a>
 <a class="el" href="structsmall3d_1_1_vec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmall3d_1_1_renderer.html#ada28d572ee5ea08494f1fd96fa71f9df">lightDirection</a> = <a class="el" href="structsmall3d_1_1_vec3.html">Vec3</a>(0.0f, 0.7f, 0.3f)</td></tr>
@@ -603,46 +593,6 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The <a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a> object. It can only be assigned to a pointer by its address (<a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a> *r = &amp;Renderer::getInstance(...), since declaring another <a class="el" href="classsmall3d_1_1_renderer.html" title="Renderer class (OpenGL 3.3 / OpenGL ES 3.0)">Renderer</a> variable and assigning to it would invoke the default constructor, which has been deleted. </dd></dl>
-
-</div>
-</div>
-<a id="aed406b218be5e972d7566a321f893e82"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aed406b218be5e972d7566a321f893e82">&#9670;&nbsp;</a></span>getScreenHeight()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int small3d::Renderer::getScreenHeight </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get the real screen height. </p>
-<dl class="section return"><dt>Returns</dt><dd>The screen height </dd></dl>
-
-</div>
-</div>
-<a id="adc8816c9329595bbe489131cc2bf4495"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adc8816c9329595bbe489131cc2bf4495">&#9670;&nbsp;</a></span>getScreenWidth()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int small3d::Renderer::getScreenWidth </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get the real screen width. </p>
-<dl class="section return"><dt>Returns</dt><dd>The screen width </dd></dl>
 
 </div>
 </div>

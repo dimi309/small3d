@@ -23,13 +23,10 @@ var searchData=
   ['getorientation_46',['getOrientation',['../classsmall3d_1_1_scene_object.html#ad69fefa64b075837d6e5dd35cfa7c0b5',1,'small3d::SceneObject']]],
   ['getoriginalscale_47',['getOriginalScale',['../classsmall3d_1_1_model.html#a9ae865eac3f3d5625b30b1f0ebf0daca',1,'small3d::Model']]],
   ['getrotationxyz_48',['getRotationXYZ',['../classsmall3d_1_1_scene_object.html#a57dbbc713581c8080af04e436b0c0333',1,'small3d::SceneObject']]],
-  ['getscreenheight_49',['getScreenHeight',['../classsmall3d_1_1_renderer.html#aed406b218be5e972d7566a321f893e82',1,'small3d::Renderer']]],
-  ['getscreenwidth_50',['getScreenWidth',['../classsmall3d_1_1_renderer.html#adc8816c9329595bbe489131cc2bf4495',1,'small3d::Renderer']]],
-  ['gettimeinseconds_51',['getTimeInSeconds',['../_time_8hpp.html#a79a6c6958f58945d162eade4cc13e32c',1,'Time.cpp']]],
-  ['gettransform_52',['getTransform',['../classsmall3d_1_1_model.html#a422dd9825f785d4d942f2510777d861b',1,'small3d::Model']]],
-  ['gettransformation_53',['getTransformation',['../classsmall3d_1_1_scene_object.html#aaad185a627be71c74faeef63f822d687',1,'small3d::SceneObject']]],
-  ['getwidth_54',['getWidth',['../classsmall3d_1_1_image.html#a335588f99053b1f55c15c60c76c26624',1,'small3d::Image']]],
-  ['getwindow_55',['getWindow',['../classsmall3d_1_1_renderer.html#a2065e4645034d538e5bbd40cd5fa3a50',1,'small3d::Renderer']]],
-  ['glbfile_56',['GlbFile',['../classsmall3d_1_1_glb_file.html',1,'small3d::GlbFile'],['../classsmall3d_1_1_glb_file.html#a864e3d5ca31cd99f5fd87f8533aa5260',1,'small3d::GlbFile::GlbFile()']]],
-  ['glbfile_2ehpp_57',['GlbFile.hpp',['../_glb_file_8hpp.html',1,'']]]
+  ['gettimeinseconds_49',['getTimeInSeconds',['../_time_8hpp.html#a79a6c6958f58945d162eade4cc13e32c',1,'Time.cpp']]],
+  ['gettransform_50',['getTransform',['../classsmall3d_1_1_model.html#a422dd9825f785d4d942f2510777d861b',1,'small3d::Model']]],
+  ['gettransformation_51',['getTransformation',['../classsmall3d_1_1_scene_object.html#aaad185a627be71c74faeef63f822d687',1,'small3d::SceneObject']]],
+  ['getwidth_52',['getWidth',['../classsmall3d_1_1_image.html#a335588f99053b1f55c15c60c76c26624',1,'small3d::Image']]],
+  ['glbfile_53',['GlbFile',['../classsmall3d_1_1_glb_file.html',1,'small3d::GlbFile'],['../classsmall3d_1_1_glb_file.html#a864e3d5ca31cd99f5fd87f8533aa5260',1,'small3d::GlbFile::GlbFile()']]],
+  ['glbfile_2ehpp_54',['GlbFile.hpp',['../_glb_file_8hpp.html',1,'']]]
 ];
