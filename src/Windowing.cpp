@@ -30,6 +30,11 @@ namespace small3d {
     //glfwTerminate();
   }
 
+  GLFWwindow* Windowing::getWindow()
+  {
+    return window;
+  }
+
 #ifdef _WIN32
   HWND Windowing::getWin32Window()
   {

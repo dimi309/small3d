@@ -47,8 +47,16 @@ namespace small3d {
      */
     void terminate();
 
+    /**
+     * @brief Get the GLFW window used
+     * @return The GLFW window
+     */
+    GLFWwindow* getWindow();
+
 #ifdef _WIN32
     HWND getWin32Window();
 #endif
+
+
   };
 }

@@ -1098,6 +1098,11 @@ namespace small3d {
 
   }
 
+  GLFWwindow* Renderer::GetWindow()
+  {
+      return windowing.getWindow();
+  }
+
 #ifdef _WIN32
 
   void Renderer::captureScreen() {

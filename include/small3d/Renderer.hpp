@@ -466,6 +466,12 @@ namespace small3d
      */
     void swapBuffers();
 
+    /**
+     * @brief Get the GLFW window used by the renderer
+     * @return The GLFW window
+     */
+    GLFWwindow* GetWindow();
+
 #ifdef _WIN32
     /**
      * @brief Only for Windows, this can be used to take over screen
