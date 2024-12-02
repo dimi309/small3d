@@ -45,7 +45,8 @@ unzip glfw-3.4.zip
 cd glfw-3.4
 mkdir build
 cd build
-cmake .. -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF $CMAKE_DEFINITIONS
+# Had some issues with Wayland. Switching it off for now...
+cmake .. -DGLFW_BUILD_WAYLAND=0 -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF -DGLFW_INSTALL=OFF $CMAKE_DEFINITIONS
 cmake --build .
 cp -rf ../include/GLFW ../../include/
 cp src/libglfw3.a ../../lib/
