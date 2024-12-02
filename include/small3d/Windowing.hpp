@@ -38,18 +38,6 @@ namespace small3d {
       const std::string& windowTitle = "");
 
     /**
-     * @brief Get the real screen width
-     * @return The screen width
-     */
-    int getScreenWidth();
-
-    /**
-     * @brief Get the real screen height
-     * @return The screen height
-     */
-    int getScreenHeight();
-
-    /**
      * @brief Swap buffers.
      */
     void swapBuffers();

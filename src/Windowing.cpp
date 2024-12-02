@@ -19,14 +19,6 @@ namespace small3d {
   int Windowing::realScreenWidth;
   int Windowing::realScreenHeight;
 
-  int Windowing::getScreenWidth() {
-    return realScreenWidth;
-  }
-
-  int Windowing::getScreenHeight() {
-    return realScreenHeight;
-  }
-
   void Windowing::swapBuffers()
   {
     glfwSwapBuffers(window);
