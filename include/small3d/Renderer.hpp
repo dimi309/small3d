@@ -470,7 +470,7 @@ namespace small3d
      * @brief Get the GLFW window used by the renderer
      * @return The GLFW window
      */
-    GLFWwindow* GetWindow();
+    GLFWwindow* getWindow();
 
 #ifdef _WIN32
     /**

@@ -1098,7 +1098,7 @@ namespace small3d {
 
   }
 
-  GLFWwindow* Renderer::GetWindow()
+  GLFWwindow* Renderer::getWindow()
   {
       return windowing.getWindow();
   }
