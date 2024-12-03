@@ -18,20 +18,7 @@ and the use of cutting edge methods and technologies.
 
 # First Little Games 
 
-## Avoid the Bug
-
-[![AvoidTheBug](img/avoidthebug.png)](https://github.com/dimi309/small3d-first-games/tree/master/avoidthebug)
-
-
-## Chase the Goat
-
-[![ChaseTheGoat](img/chasethegoat.png)](https://github.com/dimi309/small3d-first-games/tree/master/chasethegoat)
-
-## Frog Remixed
-
-[![FrogRemixed](img/frogremixed.png)](https://github.com/dimi309/small3d-first-games/tree/master/frogremixed)
-
-All of the above can be found here: https://github.com/dimi309/small3d-first-games
+[![small3d first games](img/firstgames.png)](https://github.com/dimi309/small3d-first-games)
 
 # More "Evolved" Titles
  
@@ -41,7 +28,7 @@ All of the above can be found here: https://github.com/dimi309/small3d-first-gam
 
 ## Islet Hell (once commercially released, now free of charge)
 
-[![IsletHell](img/islethell.png)](https://store.steampowered.com/app/2069750/Islet_Hell/)
+[![Islet Hell](img/islethell.png)](https://store.steampowered.com/app/2069750/Islet_Hell/)
 
 # Non-game project
 
