@@ -16,7 +16,9 @@ and the use of cutting edge methods and technologies.
 
 *Mobile devices are no longer supported. Please read further below for details.*
 
-# First Little Games 
+# First Little Games
+
+This are games that were developed while the library was being put together for the first time.
 
 [![small3d first games](img/firstgames.png)](https://github.com/dimi309/small3d-first-games)
 
