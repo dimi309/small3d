@@ -62,8 +62,7 @@ if(APPLE)
               -framework IOKit -framework CoreVideo")
 endif()
 
-if(UNIX OR (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT
-      CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10))
+if(UNIX)
   set(small3d_INCLUDE_DIRS ${small3d_INCLUDE_DIRS} ${BZIP2_INCLUDE_DIRS})
   set(small3d_LIBRARIES ${small3d_LIBRARIES} ${BZIP2_LIBRARIES})
 endif()

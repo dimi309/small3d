@@ -41,10 +41,8 @@ find_package(PNG REQUIRED)
 find_package(OGG REQUIRED)
 find_package(VORBIS REQUIRED)
 find_package(Freetype REQUIRED)
-# on windows bzip2 is required for gcc version >= 10, otherwise a freetype associated
-# link error is produced
-if(UNIX OR (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT
-      CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10))
+
+if(UNIX)
   find_package(BZip2 REQUIRED)
 endif()
 
