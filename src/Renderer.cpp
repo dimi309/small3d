@@ -1114,6 +1114,21 @@ namespace small3d {
     GLubyte* pixels = new GLubyte[imgSize];
 
     glReadBuffer(GL_BACK);
+
+    GLint encoding = 0;
+    glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_BACK, GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING, &encoding);
+
+    switch (encoding) {
+    case GL_LINEAR:
+      LOGDEBUG("Capturing screen, GL_BACK buffer encoding detected is GL_LINEAR.");
+      break;
+    case GL_SRGB:
+      LOGDEBUG("Capturing screen, GL_BACK buffer encoding detected is GL_SRGB.");
+      break;
+    default:
+      LOGDEBUG("Capturing sceen, detected unforeseen encoding.");
+    }
+
     glPixelStorei(GL_PACK_ALIGNMENT, 4);
     checkForOpenGLErrors("setting pack alignment", true);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
