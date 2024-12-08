@@ -104,8 +104,12 @@ namespace small3d {
       fullScreen = true;
 
 #ifdef _WIN32
-      // Ensuring borderless window mode with this hack to avoid screen capture issues on some
-      // windows machines.
+      // On some Windows machines, capturing the OpenGL back buffer can produce a skewed image when a game runs in
+      // full screen mode. This "hack" ensures borderless window mode. It is used because the OS can "decide" to 
+      // set a game to full screen mode even when it has not been launched as such. The slight screen width difference 
+      // helps avoid that. Full screen mode can still be activated when a user manually maximises a game
+      // window for a game running in windowed mode. But fortunately that will not be possible for a game that
+      // has been launched in borderless window mode with this hack.
       width+=2;
 #endif
     }
