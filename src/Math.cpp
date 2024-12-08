@@ -231,7 +231,6 @@ namespace small3d {
       break;
     default:
       return w;
-      break;
     }
   }
 
