@@ -1,6 +1,6 @@
 /**
  * @file Windowing.hpp
- * @brief Windowing environment management class
+ * @brief Window management class
  *
  * Created on: 2024/11/27
  *     Author: Dimitri Kourkoulis
@@ -18,17 +18,32 @@
 #include <string>
 
 namespace small3d {
+
+  /**
+   * @class	Windowing
+   *
+   * @brief	Window management class
+   */
   class Windowing {
   private:
     GLFWwindow* window = nullptr;
-    
 
     static void framebufferSizeCallback(GLFWwindow* window, int width,
       int height);
 
   public:
 
-    static int realScreenWidth, realScreenHeight;
+    /**
+     * @brief Real window width. It is exposed as public for speed, but it
+     *        should be treated as read-only.
+     */
+    static int realWindowWidth;
+
+    /**
+     * @brief Real window height. It is exposed as public for speed, but it
+     *        should be treated as read-only.
+     */
+    static int realWindowHeight;
 
     /**
      * @brief Initialise the application window

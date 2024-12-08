@@ -81,39 +81,45 @@ $(function() {
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacesmall3d.html">small3d</a> {</div>
-<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="classsmall3d_1_1_windowing.html">   21</a></span>&#160;  <span class="keyword">class </span><a class="code" href="classsmall3d_1_1_windowing.html">Windowing</a> {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    GLFWwindow* window = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> realScreenWidth, realScreenHeight;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> framebufferSizeCallback(GLFWwindow* window, <span class="keywordtype">int</span> width,</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;      <span class="keywordtype">int</span> height);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classsmall3d_1_1_windowing.html">   27</a></span>&#160;  <span class="keyword">class </span><a class="code" href="classsmall3d_1_1_windowing.html">Windowing</a> {</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    GLFWwindow* window = <span class="keyword">nullptr</span>;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_windowing.html#a5666117fed82e250b1ac1ebb406c68b5">initWindow</a>(<span class="keywordtype">int</span>&amp; width, <span class="keywordtype">int</span>&amp; height,</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;      <span class="keyword">const</span> std::string&amp; windowTitle = <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_windowing.html#ab228b1a953dade116e7a318025d691e3">swapBuffers</a>();</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_windowing.html#a6ca4d1a879a5857286c8cee11da99ba5">terminate</a>();</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    GLFWwindow* <a class="code" href="classsmall3d_1_1_windowing.html#af02b73a71903c10cd9a2a1eae80faa23">getWindow</a>();</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#ifdef _WIN32</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    HWND getWin32Window();</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  };</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> framebufferSizeCallback(GLFWwindow* window, <span class="keywordtype">int</span> width,</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;      <span class="keywordtype">int</span> height);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classsmall3d_1_1_windowing.html#af24dbda75cd3f4909d221d91702b023d">   40</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> <a class="code" href="classsmall3d_1_1_windowing.html#af24dbda75cd3f4909d221d91702b023d">realWindowWidth</a>;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classsmall3d_1_1_windowing.html#a87c0e06f16d50e8d52ef11132a309642">   46</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> <a class="code" href="classsmall3d_1_1_windowing.html#a87c0e06f16d50e8d52ef11132a309642">realWindowHeight</a>;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_windowing.html#a5666117fed82e250b1ac1ebb406c68b5">initWindow</a>(<span class="keywordtype">int</span>&amp; width, <span class="keywordtype">int</span>&amp; height,</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;      <span class="keyword">const</span> std::string&amp; windowTitle = <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_windowing.html#ab228b1a953dade116e7a318025d691e3">swapBuffers</a>();</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classsmall3d_1_1_windowing.html#a6ca4d1a879a5857286c8cee11da99ba5">terminate</a>();</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    GLFWwindow* <a class="code" href="classsmall3d_1_1_windowing.html#af02b73a71903c10cd9a2a1eae80faa23">getWindow</a>();</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">#ifdef _WIN32</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    HWND getWin32Window();</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  };</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclasssmall3d_1_1_windowing_html_ab228b1a953dade116e7a318025d691e3"><div class="ttname"><a href="classsmall3d_1_1_windowing.html#ab228b1a953dade116e7a318025d691e3">small3d::Windowing::swapBuffers</a></div><div class="ttdeci">void swapBuffers()</div><div class="ttdoc">Swap buffers.</div><div class="ttdef"><b>Definition:</b> Windowing.cpp:22</div></div>
-<div class="ttc" id="aclasssmall3d_1_1_windowing_html"><div class="ttname"><a href="classsmall3d_1_1_windowing.html">small3d::Windowing</a></div><div class="ttdef"><b>Definition:</b> Windowing.hpp:21</div></div>
+<div class="ttc" id="aclasssmall3d_1_1_windowing_html"><div class="ttname"><a href="classsmall3d_1_1_windowing.html">small3d::Windowing</a></div><div class="ttdoc">Window management class.</div><div class="ttdef"><b>Definition:</b> Windowing.hpp:27</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_windowing_html_af02b73a71903c10cd9a2a1eae80faa23"><div class="ttname"><a href="classsmall3d_1_1_windowing.html#af02b73a71903c10cd9a2a1eae80faa23">small3d::Windowing::getWindow</a></div><div class="ttdeci">GLFWwindow * getWindow()</div><div class="ttdoc">Get the GLFW window used.</div><div class="ttdef"><b>Definition:</b> Windowing.cpp:33</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_windowing_html_a5666117fed82e250b1ac1ebb406c68b5"><div class="ttname"><a href="classsmall3d_1_1_windowing.html#a5666117fed82e250b1ac1ebb406c68b5">small3d::Windowing::initWindow</a></div><div class="ttdeci">void initWindow(int &amp;width, int &amp;height, const std::string &amp;windowTitle=&quot;&quot;)</div><div class="ttdoc">Initialise the application window.</div><div class="ttdef"><b>Definition:</b> Windowing.cpp:58</div></div>
 <div class="ttc" id="aclasssmall3d_1_1_windowing_html_a6ca4d1a879a5857286c8cee11da99ba5"><div class="ttname"><a href="classsmall3d_1_1_windowing.html#a6ca4d1a879a5857286c8cee11da99ba5">small3d::Windowing::terminate</a></div><div class="ttdeci">void terminate()</div><div class="ttdoc">Perform any necessary cleanup actions.</div><div class="ttdef"><b>Definition:</b> Windowing.cpp:27</div></div>
 <div class="ttc" id="anamespacesmall3d_html"><div class="ttname"><a href="namespacesmall3d.html">small3d</a></div><div class="ttdef"><b>Definition:</b> BinaryFile.hpp:15</div></div>
+<div class="ttc" id="aclasssmall3d_1_1_windowing_html_a87c0e06f16d50e8d52ef11132a309642"><div class="ttname"><a href="classsmall3d_1_1_windowing.html#a87c0e06f16d50e8d52ef11132a309642">small3d::Windowing::realWindowHeight</a></div><div class="ttdeci">static int realWindowHeight</div><div class="ttdoc">Real window height. It is exposed as public for speed, but it should be treated as read-only.</div><div class="ttdef"><b>Definition:</b> Windowing.hpp:46</div></div>
+<div class="ttc" id="aclasssmall3d_1_1_windowing_html_af24dbda75cd3f4909d221d91702b023d"><div class="ttname"><a href="classsmall3d_1_1_windowing.html#af24dbda75cd3f4909d221d91702b023d">small3d::Windowing::realWindowWidth</a></div><div class="ttdeci">static int realWindowWidth</div><div class="ttdoc">Real window width. It is exposed as public for speed, but it should be treated as read-only.</div><div class="ttdef"><b>Definition:</b> Windowing.hpp:40</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20

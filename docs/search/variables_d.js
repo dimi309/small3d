@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['texturecoordsdata_302',['textureCoordsData',['../classsmall3d_1_1_model.html#a3dc1c38f06ad7bd19126933197e7b443',1,'small3d::Model']]],
-  ['texturecoordsdatabytesize_303',['textureCoordsDataByteSize',['../classsmall3d_1_1_model.html#a3351123ddee47d7b81b9a020ca828061',1,'small3d::Model']]]
+  ['scale_302',['scale',['../classsmall3d_1_1_model.html#a1852c83ce14d3d0a43fc8f5b3bc3f4a7',1,'small3d::Model']]],
+  ['shadowcamtransformation_303',['shadowCamTransformation',['../classsmall3d_1_1_renderer.html#a14cbcaf1910bbd230893ae72e7075da8',1,'small3d::Renderer']]],
+  ['shadowsactive_304',['shadowsActive',['../classsmall3d_1_1_renderer.html#ae41ab2c06a1a2c768c5a14aafbe79868',1,'small3d::Renderer']]],
+  ['shadowspacesize_305',['shadowSpaceSize',['../classsmall3d_1_1_renderer.html#a405fc8a2a37c88cec17aa49641cf50af',1,'small3d::Renderer']]]
 ];

@@ -134,7 +134,7 @@ namespace small3d {
   };
 
   /**
-   * @class	Vec3
+   * @class	Quat
    *
    * @brief	Quaternion
    */

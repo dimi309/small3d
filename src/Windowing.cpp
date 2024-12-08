@@ -16,8 +16,8 @@ namespace small3d {
     LOGERROR(std::string(description));
   }
 
-  int Windowing::realScreenWidth;
-  int Windowing::realScreenHeight;
+  int Windowing::realWindowWidth;
+  int Windowing::realWindowHeight;
 
   void Windowing::swapBuffers()
   {
@@ -44,11 +44,11 @@ namespace small3d {
 
   void Windowing::framebufferSizeCallback(GLFWwindow* window, int width,
     int height) {
-    realScreenWidth = width;
-    realScreenHeight = height;
+    realWindowWidth = width;
+    realWindowHeight = height;
 
-    glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
-      static_cast<GLsizei>(realScreenHeight));
+    glViewport(0, 0, static_cast<GLsizei>(realWindowWidth),
+      static_cast<GLsizei>(realWindowHeight));
 
     LOGDEBUG("New framebuffer dimensions " + std::to_string(width) + " x " +
       std::to_string(height));
@@ -125,8 +125,8 @@ namespace small3d {
     }
 #endif
     
-    realScreenWidth = width;
-    realScreenHeight = height;
+    realWindowWidth = width;
+    realWindowHeight = height;
     
 
     if (!window) {

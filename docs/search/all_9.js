@@ -1,7 +1,7 @@
 var searchData=
 [
   ['mat4_75',['Mat4',['../structsmall3d_1_1_mat4.html',1,'small3d']]],
-  ['material_76',['Material',['../classsmall3d_1_1_material.html',1,'small3d::Material'],['../classsmall3d_1_1_model.html#a809cd09097b9e123813565008add1fe6',1,'small3d::Model::material()'],['../classsmall3d_1_1_material.html#a7175f9c32c56c77d467a2c5aa6fa31fb',1,'small3d::Material::Material()']]],
+  ['material_76',['Material',['../classsmall3d_1_1_material.html',1,'small3d::Material'],['../classsmall3d_1_1_material.html#a7175f9c32c56c77d467a2c5aa6fa31fb',1,'small3d::Material::Material()'],['../classsmall3d_1_1_model.html#a809cd09097b9e123813565008add1fe6',1,'small3d::Model::material()']]],
   ['material_2ehpp_77',['Material.hpp',['../_material_8hpp.html',1,'']]],
   ['math_2ehpp_78',['Math.hpp',['../_math_8hpp.html',1,'']]],
   ['max_5fjoints_5fsupported_79',['MAX_JOINTS_SUPPORTED',['../classsmall3d_1_1_model.html#ad2b52d176f49562bca07f9b238b84854',1,'small3d::Model']]],
