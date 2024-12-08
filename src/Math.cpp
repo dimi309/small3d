@@ -586,9 +586,9 @@ namespace small3d {
 
   Vec3 clamp(const Vec3& vec, const Vec3& minv, const Vec3& maxv)
   {
-    return Vec3(std::max(std::min(vec.x, minv.x), maxv.x),
-      std::max(std::min(vec.y, minv.y), maxv.y),
-      std::max(std::min(vec.z, minv.z), maxv.z));
+    return Vec3(std::min(std::max(vec.x, minv.x), maxv.x),
+      std::min(std::max(vec.y, minv.y), maxv.y),
+      std::min(std::max(vec.z, minv.z), maxv.z));
   }
 
   float dot(const Vec3& vec1, const Vec3& vec2)

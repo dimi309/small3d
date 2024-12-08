@@ -26,6 +26,7 @@ namespace small3d {
     Vec3(float x, float y, float z);
     explicit Vec3(float v);
     explicit Vec3(const Vec4& vec);
+
     Vec3& operator+=(const Vec3& other);
     Vec3 operator+(const Vec3& other) const;
     Vec3& operator-=(const Vec3& other);
