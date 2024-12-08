@@ -1107,17 +1107,9 @@ namespace small3d {
 
   void Renderer::captureScreen() {
 
-    auto imgSizeRGBA = 4 * windowing.realScreenWidth * windowing.realScreenHeight;
-    GLubyte* pixelsRGBA = new GLubyte[imgSizeRGBA];
-    memset(pixelsRGBA, 255, imgSizeRGBA);
-    auto imgSize = 3 * windowing.realScreenWidth * windowing.realScreenHeight;
-    GLubyte* pixels = new GLubyte[imgSize];
-
-    glReadBuffer(GL_BACK);
-
     GLint encoding = 0;
-    glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_BACK, GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING, &encoding);
-
+    glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_BACK_LEFT, GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING, &encoding);
+    checkForOpenGLErrors("detecting back buffer encoding", false);
     switch (encoding) {
     case GL_LINEAR:
       LOGDEBUG("Capturing screen, GL_BACK buffer encoding detected is GL_LINEAR.");
@@ -1126,8 +1118,16 @@ namespace small3d {
       LOGDEBUG("Capturing screen, GL_BACK buffer encoding detected is GL_SRGB.");
       break;
     default:
-      LOGDEBUG("Capturing sceen, detected unforeseen encoding.");
+      LOGDEBUG("Capturing sceen, detected unforeseen encoding: " + std::to_string(encoding));
     }
+
+    auto imgSizeRGBA = 4 * windowing.realScreenWidth * windowing.realScreenHeight;
+    GLubyte* pixelsRGBA = new GLubyte[imgSizeRGBA];
+    memset(pixelsRGBA, 255, imgSizeRGBA);
+    auto imgSize = 3 * windowing.realScreenWidth * windowing.realScreenHeight;
+    GLubyte* pixels = new GLubyte[imgSize];
+
+    glReadBuffer(GL_BACK);
 
     glPixelStorei(GL_PACK_ALIGNMENT, 4);
     checkForOpenGLErrors("setting pack alignment", true);
@@ -1249,4 +1249,3 @@ namespace small3d {
   }
 
 }
-

@@ -102,11 +102,25 @@ namespace small3d {
         std::to_string(height));
 
       fullScreen = true;
+
+#ifdef _WIN32
+      // Ensuring borderless window mode with this hack to avoid screen capture issues on some
+      // windows machines.
+      width+=2;
+#endif
     }
 
     window = glfwCreateWindow(width, height, windowTitle.c_str(), monitor,
       nullptr);
-
+    
+#ifdef _WIN32
+    // Full screen hack continued (see above)
+    if (fullScreen) {
+      glfwSetWindowAttrib(window, GLFW_RESIZABLE, GLFW_FALSE);
+      glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);
+    }
+#endif
+    
     realScreenWidth = width;
     realScreenHeight = height;
     
