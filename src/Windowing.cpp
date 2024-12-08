@@ -107,6 +107,10 @@ namespace small3d {
     window = glfwCreateWindow(width, height, windowTitle.c_str(), monitor,
       nullptr);
 
+    realScreenWidth = width;
+    realScreenHeight = height;
+    
+
     if (!window) {
       throw std::runtime_error("Unable to create GLFW window");
     }

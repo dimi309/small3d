@@ -21,12 +21,14 @@ namespace small3d {
   class Windowing {
   private:
     GLFWwindow* window = nullptr;
-    static int realScreenWidth, realScreenHeight;
+    
 
     static void framebufferSizeCallback(GLFWwindow* window, int width,
       int height);
 
   public:
+
+    static int realScreenWidth, realScreenHeight;
 
     /**
      * @brief Initialise the application window

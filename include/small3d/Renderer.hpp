@@ -37,8 +37,6 @@ namespace small3d
 
     Windowing windowing;
 
-    int realScreenWidth = 0, realScreenHeight = 0;
-
     uint32_t shaderProgram = 0;
 
     uint32_t vao = 0;

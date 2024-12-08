@@ -266,15 +266,15 @@ namespace small3d {
     const std::string& windowTitle,
     const std::string& shadersPath) {
 
-    realScreenWidth = width;
-    realScreenHeight = height;
+    int tmpWidth = width;
+    int tmpHeight = height;
 
-    windowing.initWindow(realScreenWidth, realScreenHeight, windowTitle);
+    windowing.initWindow(tmpWidth, tmpHeight, windowTitle);
 
     this->initOpenGL();
 
-    glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
-      static_cast<GLsizei>(realScreenHeight));
+    glViewport(0, 0, static_cast<GLsizei>(tmpWidth),
+      static_cast<GLsizei>(tmpHeight));
 
     glEnable(GL_DEPTH_TEST);
 
@@ -368,8 +368,8 @@ namespace small3d {
     GLint perspectiveMatrixUniform =
       glGetUniformLocation(shaderProgram, "perspectiveMatrix");
 
-    Mat4 perspectiveMatrix = perspective && realScreenHeight != 0 ?
-      small3d::perspective(fieldOfView, static_cast<float>(realScreenWidth / realScreenHeight), zNear, zFar) :
+    Mat4 perspectiveMatrix = perspective && windowing.realScreenHeight != 0 ?
+      small3d::perspective(fieldOfView, static_cast<float>(windowing.realScreenWidth / windowing.realScreenHeight), zNear, zFar) :
       renderingDepthMap ? orthographicMatrix : Mat4(1.0f);
 
     glUniformMatrix4fv(perspectiveMatrixUniform, 1, GL_FALSE,
@@ -1076,8 +1076,8 @@ namespace small3d {
 
       glBindFramebuffer(GL_FRAMEBUFFER, origFramebuffer);
 
-      glViewport(0, 0, static_cast<GLsizei>(realScreenWidth),
-        static_cast<GLsizei>(realScreenHeight));
+      glViewport(0, 0, static_cast<GLsizei>(windowing.realScreenWidth),
+		 static_cast<GLsizei>(windowing.realScreenHeight));
     }
 
     for (const auto& tuple : renderList) {
@@ -1107,16 +1107,18 @@ namespace small3d {
 
   void Renderer::captureScreen() {
 
-    auto imgSizeRGBA = 4 * realScreenWidth * realScreenHeight;
+    auto imgSizeRGBA = 4 * windowing.realScreenWidth * windowing.realScreenHeight;
     GLubyte* pixelsRGBA = new GLubyte[imgSizeRGBA];
     memset(pixelsRGBA, 255, imgSizeRGBA);
-    auto imgSize = 3 * realScreenWidth * realScreenHeight;
+    auto imgSize = 3 * windowing.realScreenWidth * windowing.realScreenHeight;
     GLubyte* pixels = new GLubyte[imgSize];
 
     glReadBuffer(GL_BACK);
     glPixelStorei(GL_PACK_ALIGNMENT, 4);
+    checkForOpenGLErrors("setting pack alignment", true);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-    glReadPixels(0, 0, realScreenWidth, realScreenHeight, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, pixelsRGBA);
+    checkForOpenGLErrors("setting unpack alignment", true);
+    glReadPixels(0, 0, windowing.realScreenWidth, windowing.realScreenHeight, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, pixelsRGBA);
     checkForOpenGLErrors("capturing screen", true);
 
     uint32_t idxRGBA = 0, idxRGB = 0;
@@ -1137,8 +1139,8 @@ namespace small3d {
     BITMAPINFOHEADER biheader;
     memset(&biheader, 0, sizeof(BITMAPINFOHEADER));
     biheader.biSize = sizeof(BITMAPINFOHEADER);
-    biheader.biWidth = realScreenWidth;
-    biheader.biHeight = realScreenHeight;
+    biheader.biWidth = windowing.realScreenWidth;
+    biheader.biHeight = windowing.realScreenHeight;
     biheader.biPlanes = 1;
     biheader.biBitCount = 24;
     biheader.biCompression = BI_RGB;
