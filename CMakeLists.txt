@@ -41,12 +41,19 @@ find_package(PNG REQUIRED)
 find_package(OGG REQUIRED)
 find_package(VORBIS REQUIRED)
 find_package(Freetype REQUIRED)
-# on windows bzip2 is required for gcc version >= 10, otherwise a freetype associated
-# link error is produced
-if(UNIX OR (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT
-      CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10))
+
+if(UNIX)
   find_package(BZip2 REQUIRED)
 endif()
+
+# On windows bzip2 is required for gcc version >= 10, otherwise a freetype associated
+# link error is produced. Not using REQUIRED in find_package though, because sometimes
+# the compilation works without BZip2 while it can be blocked if cmake cannot find it.
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT
+    CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10)
+    find_package(BZip2)
+endif()
+
 
 if(APPLE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++")
