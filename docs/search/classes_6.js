@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['logger_164',['Logger',['../classsmall3d_1_1_logger.html',1,'small3d']]]
+  ['joint_0',['Joint',['../structsmall3d_1_1_model_1_1_joint.html',1,'small3d::Model']]]
 ];

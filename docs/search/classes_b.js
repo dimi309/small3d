@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['vec3_172',['Vec3',['../structsmall3d_1_1_vec3.html',1,'small3d']]],
-  ['vec3i_173',['Vec3i',['../structsmall3d_1_1_vec3i.html',1,'small3d']]],
-  ['vec4_174',['Vec4',['../structsmall3d_1_1_vec4.html',1,'small3d']]],
-  ['vec4i_175',['Vec4i',['../structsmall3d_1_1_vec4i.html',1,'small3d']]]
+  ['sceneobject_0',['SceneObject',['../classsmall3d_1_1_scene_object.html',1,'small3d']]],
+  ['sound_1',['Sound',['../classsmall3d_1_1_sound.html',1,'small3d']]]
 ];

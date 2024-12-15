@@ -1,9 +1,11 @@
 var searchData=
 [
-  ['_7eboundingboxset_147',['~BoundingBoxSet',['../classsmall3d_1_1_bounding_box_set.html#a60b57cda9c3d783c7d88f306ceda3060',1,'small3d::BoundingBoxSet']]],
-  ['_7eimage_148',['~Image',['../classsmall3d_1_1_image.html#afd4336c0afa2ec91f144da3bb17dc9ef',1,'small3d::Image']]],
-  ['_7elogger_149',['~Logger',['../classsmall3d_1_1_logger.html#ad88b624f27b457aa61d605f046e39757',1,'small3d::Logger']]],
-  ['_7erenderer_150',['~Renderer',['../classsmall3d_1_1_renderer.html#a32163440246ed8ea5016e15dfc781775',1,'small3d::Renderer']]],
-  ['_7esceneobject_151',['~SceneObject',['../classsmall3d_1_1_scene_object.html#a6ec4802e84b93ec67e858998e6ae2773',1,'small3d::SceneObject']]],
-  ['_7esound_152',['~Sound',['../classsmall3d_1_1_sound.html#ad099eea274cd698016aa32e40abc1b00',1,'small3d::Sound']]]
+  ['wavefrontfile_0',['WavefrontFile',['../classsmall3d_1_1_wavefront_file.html',1,'small3d::WavefrontFile'],['../classsmall3d_1_1_wavefront_file.html#a249e3ce25f371e68910f231ffbb24531',1,'small3d::WavefrontFile::WavefrontFile()']]],
+  ['wavefrontfile_2ehpp_1',['WavefrontFile.hpp',['../_wavefront_file_8hpp.html',1,'']]],
+  ['weightdata_2',['weightData',['../classsmall3d_1_1_model.html#a41ca4152abcc719e9048258925999f10',1,'small3d::Model']]],
+  ['weightdatabytesize_3',['weightDataByteSize',['../classsmall3d_1_1_model.html#a0f8f0d5bf988d89b3cf7c6c16bc2871e',1,'small3d::Model']]],
+  ['windowing_4',['Windowing',['../classsmall3d_1_1_windowing.html',1,'small3d']]],
+  ['windowing_2ehpp_5',['Windowing.hpp',['../_windowing_8hpp.html',1,'']]],
+  ['with_20visual_20studio_6',['Setting up small3d with Visual Studio',['../vs.html',1,'']]],
+  ['with_20xcode_7',['Setting up small3d with Xcode',['../xcode.html',1,'']]]
 ];

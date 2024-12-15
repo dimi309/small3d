@@ -1,10 +1,12 @@
 var searchData=
 [
-  ['topics_128',['topics',['../md_docs-source_topics.html',1,'(Global Namespace)'],['../topics.html',1,'(Global Namespace)']]],
-  ['tutorial_129',['tutorial',['../md_docs-source_tutorial.html',1,'']]],
-  ['terminate_130',['terminate',['../classsmall3d_1_1_windowing.html#a6ca4d1a879a5857286c8cee11da99ba5',1,'small3d::Windowing']]],
-  ['texturecoordsdata_131',['textureCoordsData',['../classsmall3d_1_1_model.html#a3dc1c38f06ad7bd19126933197e7b443',1,'small3d::Model']]],
-  ['texturecoordsdatabytesize_132',['textureCoordsDataByteSize',['../classsmall3d_1_1_model.html#a3351123ddee47d7b81b9a020ca828061',1,'small3d::Model']]],
-  ['time_2ehpp_133',['Time.hpp',['../_time_8hpp.html',1,'']]],
-  ['tocolour_134',['toColour',['../classsmall3d_1_1_image.html#af9b93b4b995174f9c392db29c7b7d628',1,'small3d::Image']]]
+  ['realwindowheight_0',['realWindowHeight',['../classsmall3d_1_1_windowing.html#a87c0e06f16d50e8d52ef11132a309642',1,'small3d::Windowing']]],
+  ['realwindowwidth_1',['realWindowWidth',['../classsmall3d_1_1_windowing.html#af24dbda75cd3f4909d221d91702b023d',1,'small3d::Windowing']]],
+  ['referenced_20libraries_2',['Referenced libraries',['../index.html#autotoc_md13',1,'']]],
+  ['render_3',['render',['../classsmall3d_1_1_renderer.html#a80f32c5297e061431b4c0b5f7f347016',1,'small3d::Renderer::render(Model &amp;model, const Vec3 &amp;position, const Vec3 &amp;rotation, const Vec4 &amp;colour, const std::string &amp;textureName=&quot;&quot;, const uint64_t currentPose=0, const bool perspective=true)'],['../classsmall3d_1_1_renderer.html#a4672f92a76830ea8538d4199d000e4a4',1,'small3d::Renderer::render(Model &amp;model, const Vec3 &amp;position, const Vec3 &amp;rotation, const std::string &amp;textureName, const uint64_t currentPose=0)'],['../classsmall3d_1_1_renderer.html#afe01ec56e806cec38efdf3f6bf52f7ac',1,'small3d::Renderer::render(Model &amp;model, const Vec3 &amp;position, const Mat4 &amp;rotation, const Vec4 &amp;colour, const std::string &amp;textureName=&quot;&quot;, const uint64_t currentPose=0, const bool perspective=true)'],['../classsmall3d_1_1_renderer.html#ade0485fb33d83ebb10422c145787d8fc',1,'small3d::Renderer::render(Model &amp;model, const Vec3 &amp;position, const Mat4 &amp;rotation, const std::string &amp;textureName, const uint64_t currentPose=0)'],['../classsmall3d_1_1_renderer.html#a6e3c3df6ebf19a7f9232cf82fb83fcff',1,'small3d::Renderer::render(Model &amp;model, const std::string &amp;textureName, const uint64_t currentPose=0, const bool perspective=true)'],['../classsmall3d_1_1_renderer.html#a6847817ff1abe41a8b981fcdc33338ea',1,'small3d::Renderer::render(Model &amp;model, const Vec4 &amp;colour, const uint64_t currentPose=0, const bool perspective=true)'],['../classsmall3d_1_1_renderer.html#a03bbc39940244bbfe37a6e3316a94a0b',1,'small3d::Renderer::render(SceneObject &amp;sceneObject, const Vec4 &amp;colour)'],['../classsmall3d_1_1_renderer.html#a8ad10fd0f0546566c6022931b6b54bed',1,'small3d::Renderer::render(SceneObject &amp;sceneObject, const std::string &amp;textureName)']]],
+  ['renderer_4',['Renderer',['../classsmall3d_1_1_renderer.html',1,'small3d']]],
+  ['renderer_2ehpp_5',['Renderer.hpp',['../_renderer_8hpp.html',1,'']]],
+  ['resetanimation_6',['resetAnimation',['../classsmall3d_1_1_scene_object.html#a5df12246f187a1660fc54a14e6d7c96d',1,'small3d::SceneObject']]],
+  ['rotate_7',['rotate',['../classsmall3d_1_1_scene_object.html#a931c8d2a6e4f8265ebec8a95c67e953a',1,'small3d::SceneObject']]],
+  ['rotatecamera_8',['rotateCamera',['../classsmall3d_1_1_renderer.html#ada1a644acf6ae49cbc0eb0301904bab1',1,'small3d::Renderer']]]
 ];

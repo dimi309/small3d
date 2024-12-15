@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['renderer_169',['Renderer',['../classsmall3d_1_1_renderer.html',1,'small3d']]]
+  ['quat_0',['Quat',['../structsmall3d_1_1_quat.html',1,'small3d']]]
 ];

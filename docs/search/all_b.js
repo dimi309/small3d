@@ -1,7 +1,12 @@
 var searchData=
 [
-  ['operator_3d_86',['operator=',['../classsmall3d_1_1_sound.html#ac78234ea0c3d579ae047fa68d915d50a',1,'small3d::Sound::operator=(const Sound &amp;other)'],['../classsmall3d_1_1_sound.html#a7088862814f15b6ba71f4c40ce421ebd',1,'small3d::Sound::operator=(const Sound &amp;&amp;other)']]],
-  ['optdensindexref_87',['optDensIndexRef',['../classsmall3d_1_1_material.html#a632506ef484dd74239d31121e9817f1c',1,'small3d::Material']]],
-  ['origframebuffer_88',['origFramebuffer',['../classsmall3d_1_1_renderer.html#a9b939a3e62a9b97bcec47357ca697a94',1,'small3d::Renderer']]],
-  ['origrenderbuffer_89',['origRenderbuffer',['../classsmall3d_1_1_renderer.html#adafec1db077603b5b1c4a12e291fa798',1,'small3d::Renderer']]]
+  ['mat4_0',['Mat4',['../structsmall3d_1_1_mat4.html',1,'small3d']]],
+  ['material_1',['Material',['../classsmall3d_1_1_material.html',1,'small3d::Material'],['../classsmall3d_1_1_material.html#a7175f9c32c56c77d467a2c5aa6fa31fb',1,'small3d::Material::Material()']]],
+  ['material_2',['material',['../classsmall3d_1_1_model.html#a809cd09097b9e123813565008add1fe6',1,'small3d::Model']]],
+  ['material_2ehpp_3',['Material.hpp',['../_material_8hpp.html',1,'']]],
+  ['math_2ehpp_4',['Math.hpp',['../_math_8hpp.html',1,'']]],
+  ['max_5fjoints_5fsupported_5',['MAX_JOINTS_SUPPORTED',['../classsmall3d_1_1_model.html#ad2b52d176f49562bca07f9b238b84854',1,'small3d::Model']]],
+  ['model_6',['Model',['../classsmall3d_1_1_model.html',1,'small3d::Model'],['../classsmall3d_1_1_model.html#aa116b5b0c66b9e7f4dfd401ab5233a79',1,'small3d::Model::Model()'],['../classsmall3d_1_1_model.html#a0c2157a917298623136e6eea94ac67bd',1,'small3d::Model::Model(File &amp;file, const std::string &amp;meshName=&quot;&quot;)'],['../classsmall3d_1_1_model.html#acc694ba2760a1a3fa8775e6abe1a0d0e',1,'small3d::Model::Model(File &amp;&amp;file, const std::string &amp;meshName=&quot;&quot;)']]],
+  ['model_2ehpp_7',['Model.hpp',['../_model_8hpp.html',1,'']]],
+  ['more_20evolved_20titles_8',['More &quot;Evolved&quot; Titles',['../index.html#autotoc_md2',1,'']]]
 ];

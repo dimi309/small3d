@@ -6,7 +6,7 @@
 
 Minimalistic, open source library for making 3D games in C++
 
-![small3dlogo](img/logo.png)
+![](img/logo.png)
 
 This library provides a sufficient level of game development functionalities 
 for C++ developers to be able to build cross-platform games based on a single 
@@ -20,7 +20,7 @@ and the use of cutting edge methods and technologies.
 
 These are games that were developed while the library was being put together for the first time.
 
-[![small3d first games](img/firstgames.png)](https://github.com/dimi309/small3d-first-games)
+[![](img/firstgames.png)](https://github.com/dimi309/small3d-first-games)
 
 # More "Evolved" Titles
  
@@ -28,13 +28,13 @@ These are games that were developed while the library was being put together for
 
 An open source 3D shooter
 
-[![Gloom](img/gloom.png)](https://github.com/dimi309/gloom)
+[![](img/gloom.png)](https://github.com/dimi309/gloom)
 
 ## Islet Hell
 
 A flight simulator, once commercially released, now availale free of charge
 
-[![Islet Hell](img/islethell.png)](https://store.steampowered.com/app/2069750/Islet_Hell/)
+[![](img/islethell.png)](https://store.steampowered.com/app/2069750/Islet_Hell/)
 
 # Non-game project
 

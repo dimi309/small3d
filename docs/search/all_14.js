@@ -1,9 +1,13 @@
 var searchData=
 [
-  ['_7eboundingboxset_150',['~BoundingBoxSet',['../classsmall3d_1_1_bounding_box_set.html#a60b57cda9c3d783c7d88f306ceda3060',1,'small3d::BoundingBoxSet']]],
-  ['_7eimage_151',['~Image',['../classsmall3d_1_1_image.html#afd4336c0afa2ec91f144da3bb17dc9ef',1,'small3d::Image']]],
-  ['_7elogger_152',['~Logger',['../classsmall3d_1_1_logger.html#ad88b624f27b457aa61d605f046e39757',1,'small3d::Logger']]],
-  ['_7erenderer_153',['~Renderer',['../classsmall3d_1_1_renderer.html#a32163440246ed8ea5016e15dfc781775',1,'small3d::Renderer']]],
-  ['_7esceneobject_154',['~SceneObject',['../classsmall3d_1_1_scene_object.html#a6ec4802e84b93ec67e858998e6ae2773',1,'small3d::SceneObject']]],
-  ['_7esound_155',['~Sound',['../classsmall3d_1_1_sound.html#ad099eea274cd698016aa32e40abc1b00',1,'small3d::Sound']]]
+  ['vec3_0',['Vec3',['../structsmall3d_1_1_vec3.html',1,'small3d']]],
+  ['vec3i_1',['Vec3i',['../structsmall3d_1_1_vec3i.html',1,'small3d']]],
+  ['vec4_2',['Vec4',['../structsmall3d_1_1_vec4.html',1,'small3d']]],
+  ['vec4i_3',['Vec4i',['../structsmall3d_1_1_vec4i.html',1,'small3d']]],
+  ['version_4',['changes per version',['../changelog.html',1,'']]],
+  ['vertexdata_5',['vertexData',['../classsmall3d_1_1_model.html#adf9422b7594956d857bc9da9da7b13e4',1,'small3d::Model']]],
+  ['vertexdatabytesize_6',['vertexDataByteSize',['../classsmall3d_1_1_model.html#a06b724ca272d632f25098e25ab0137a4',1,'small3d::Model']]],
+  ['vertices_7',['vertices',['../classsmall3d_1_1_bounding_box_set.html#ad6565272cb69deaf226f4ae892975f93',1,'small3d::BoundingBoxSet']]],
+  ['visual_20studio_8',['Setting up small3d with Visual Studio',['../vs.html',1,'']]],
+  ['vs_9',['vs',['../md_docs-source_2vs.html',1,'']]]
 ];
