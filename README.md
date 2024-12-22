@@ -70,7 +70,6 @@ A flight simulator, once commercially released, now availale free of charge
 - Windows
 - MacOS
 - Linux (Tested on Debian, Ubuntu, Fedora and Arch) 
-- FreeBSD
 
 There used to be Vulkan support too, but it has been discontinued. Here is
 an article on the reasons for this:
