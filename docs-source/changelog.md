@@ -5,6 +5,7 @@ v1.8017 (still open)
 - Dropped mobile device (Android and iOS) support.
 - [BREAKING] Stopped using the glm library. Vectors and other math elements
   are now developed and maintained "in-house".
+- Dropped FreeBSD support.
 
 v1.8016 2024-08-10
 
