@@ -15,11 +15,6 @@ add_library(small3d BasePath.cpp BoundingBoxSet.cpp File.cpp GlbFile.cpp
 
 target_include_directories(small3d PUBLIC ../include/small3d)
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
-  target_include_directories(small3d PUBLIC /usr/local/include)
-endif()
-
-
 target_include_directories(small3d PUBLIC
   ${PNG_INCLUDE_DIRS}
   ${OGG_INCLUDE_DIRS}
@@ -59,14 +54,9 @@ if(WIN32) # Windows
   target_link_libraries(small3d PUBLIC winmm)
 endif()
 
-if(UNIX AND NOT APPLE) # FreeBSD or Linux
+if(UNIX AND NOT APPLE) # Linux
   message(STATUS "System: ${CMAKE_SYSTEM_NAME}")
-  if(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
-    link_directories(/usr/local/lib)
-    target_link_libraries(small3d PUBLIC m pthread rt jack X11 dl)
-  else() 
-    target_link_libraries(small3d PUBLIC m pthread rt asound X11 dl)
-  endif()
+  target_link_libraries(small3d PUBLIC m pthread rt asound X11 dl)
 endif()
 
 if(APPLE) # MacOS
