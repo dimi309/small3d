@@ -6,6 +6,5 @@ var searchData=
   ['weightdatabytesize_3',['weightDataByteSize',['../classsmall3d_1_1_model.html#a0f8f0d5bf988d89b3cf7c6c16bc2871e',1,'small3d::Model']]],
   ['windowing_4',['Windowing',['../classsmall3d_1_1_windowing.html',1,'small3d']]],
   ['windowing_2ehpp_5',['Windowing.hpp',['../_windowing_8hpp.html',1,'']]],
-  ['with_20visual_20studio_6',['Setting up small3d with Visual Studio',['../vs.html',1,'']]],
-  ['with_20xcode_7',['Setting up small3d with Xcode',['../xcode.html',1,'']]]
+  ['with_20visual_20studio_6',['Setting up small3d with Visual Studio',['../vs.html',1,'']]]
 ];
