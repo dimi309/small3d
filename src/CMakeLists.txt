@@ -54,14 +54,8 @@ if(WIN32) # Windows
   target_link_libraries(small3d PUBLIC winmm)
 endif()
 
-if(UNIX AND NOT APPLE) # Linux
+if(UNIX) # Linux
   message(STATUS "System: ${CMAKE_SYSTEM_NAME}")
   target_link_libraries(small3d PUBLIC m pthread rt asound X11 dl)
-endif()
-
-if(APPLE) # MacOS
-  target_link_libraries(small3d PUBLIC "-framework \
-AudioUnit -framework AudioToolbox -framework CoreAudio -framework Cocoa \
--framework IOKit -framework CoreVideo")
 endif()
 

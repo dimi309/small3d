@@ -26,8 +26,7 @@ namespace small3d {
 
   void Windowing::terminate()
   {
-    //This was causing crashes on MacOS
-    //glfwTerminate();
+    glfwTerminate();
   }
 
   GLFWwindow* Windowing::getWindow()
@@ -63,19 +62,9 @@ namespace small3d {
     if (!glfwInit()) {
       throw std::runtime_error("Unable to initialise GLFW");
     }
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-    // This was used as a workaround for an issue I cannot remember
-    // on Mojave but on Monterey it was making the window transparent
-    // when the colour of a rendered mesh was transparent so I have
-    // commented it out.
-    // glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
-#else
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-#endif
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 

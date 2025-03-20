@@ -7,28 +7,25 @@ if [ "$1" != "Debug" ] && [ "$1" != "Release" ]; then
     exit 1
 fi
 
-if [ $(uname) == 'Linux' ]; then
+CMAKE_PORTAUDIO_DEFINITIONS="-DPA_USE_JACK=OFF"
 
-    CMAKE_PORTAUDIO_DEFINITIONS="-DPA_USE_JACK=OFF"
-
-    if type -p "apt" > /dev/null ; then
-	sudo apt update
-	# Without Install-Recommends libvulkan-dev does not get installed on travis-ci...
-	sudo apt install -y -o APT::Install-Recommends=1 libgl1-mesa-dev libxinerama-dev glslang-tools libxcursor-dev libxi-dev libxrandr-dev libasound2-dev libbz2-dev
-	
-    elif type -p "dnf" > /dev/null ; then
-	sudo dnf install -y mesa-libGL-devel
-	
-    elif type -p "yum" > /dev/null ; then
-	sudo yum install -y mesa-libGL-devel
-	
-    elif type -p "pacman" > /dev/null ; then
-	sudo pacman -S libxcb libfontenc libice libsm libxaw libxcomposite libxcursor libxss libxvmc mesa
-	
-    else
-	echo "No package manager found! Cannot install preprequisites."
-	exit 1
-    fi
+if type -p "apt" > /dev/null ; then
+    sudo apt update
+    # Without Install-Recommends libvulkan-dev does not get installed on travis-ci...
+    sudo apt install -y -o APT::Install-Recommends=1 libgl1-mesa-dev libxinerama-dev glslang-tools libxcursor-dev libxi-dev libxrandr-dev libasound2-dev libbz2-dev
+    
+elif type -p "dnf" > /dev/null ; then
+    sudo dnf install -y mesa-libGL-devel
+    
+elif type -p "yum" > /dev/null ; then
+    sudo yum install -y mesa-libGL-devel
+    
+elif type -p "pacman" > /dev/null ; then
+    sudo pacman -S libxcb libfontenc libice libsm libxaw libxcomposite libxcursor libxss libxvmc mesa
+    
+else
+    echo "No package manager found! Cannot install preprequisites."
+    exit 1
 fi
 
 CMAKE_DEFINITIONS=-DCMAKE_BUILD_TYPE=$1 
@@ -59,7 +56,7 @@ cp -rf include/GL ../include/
 # if [ "$1" == "Debug" ]; then
 #    cp lib/libGLEWd.a ../lib/libGLEW.a
 # else
-    cp lib/libGLEW.a ../lib/libGLEW.a
+cp lib/libGLEW.a ../lib/libGLEW.a
 # fi
 cp LICENSE.txt ../licenses/GLEW_LICENSE
 cd ..
@@ -86,9 +83,7 @@ tar xvf libpng-1.6.40.tar.gz
 cd libpng-1.6.40
 mkdir build
 cd build
-# Disabling PNG_ARM_NEON because on macOS arm64 it produces the error
-# "PNG_ARM_NEON_FILE undefined: no support for run-time ARM NEON checks
-cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DPNG_ARM_NEON=off -DZLIB_LIBRARY=$(pwd)/../../lib/libza -DZLIB_INCLUDE_DIR=$(pwd)/../../include $CMAKE_DEFINITIONS
+cmake .. -DPNG_SHARED=OFF -DPNG_STATIC=ON -DPNG_TESTS=OFF -DZLIB_LIBRARY=$(pwd)/../../lib/libza -DZLIB_INCLUDE_DIR=$(pwd)/../../include $CMAKE_DEFINITIONS
 cmake --build .
 cp ../*.h ../../include/
 cp pnglibconf.h ../../include/

@@ -6,9 +6,6 @@ environment:
     - job_name: Windows VS 2022 builds
       appveyor_build_worker_image: Visual Studio 2022
       
-    - job_name: MacOS builds
-      appveyor_build_worker_image: macos-bigsur
-      
     - job_name: Windows MinGW builds
       appveyor_build_worker_image: Visual Studio 2015
       
@@ -37,16 +34,6 @@ for:
   - cd scripts && .\build-vs.bat Debug && cd ..
   - git clean -fdx
   - cd scripts && .\build-vs.bat Release && cd ..
-
--
-  matrix:
-    only:
-      - job_name: MacOS builds
-  
-  test_script:
-  - cd scripts && ./build.sh Debug && cd ..
-  - git clean -fdx
-  - cd scripts && ./build.sh Release && cd ..
 
 -
   matrix:

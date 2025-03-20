@@ -135,17 +135,6 @@ namespace small3d {
       std::string(reinterpret_cast<char*>
         (const_cast<GLubyte*>(glGetString(GL_VERSION)))));
 
-#if defined(__APPLE__) 
-    GLboolean clientStorage = 0;
-    glGetBooleanv(GL_APPLE_client_storage, &clientStorage);
-    if (clientStorage == GL_TRUE) {
-      LOGDEBUG("GL_APPLE_client_storage is activated.");
-    }
-    else {
-      LOGDEBUG("GL_APPLE_client_storage is not activated.");
-    }
-#endif
-
   }
 
   void Renderer::checkForOpenGLErrors(const std::string& when, const bool abort)
@@ -435,13 +424,6 @@ namespace small3d {
   }
 
   void Renderer::clearScreen() const {
-#if defined(__APPLE__) 
-    // Needed to avoid transparent rendering in Mojave by default
-    // (caused by the transparency hint in initWindow, which is
-    // a workaround for a GLFW problem on that platform)
-    // This used to be 0,0,0,1. Hopefully it still works.
-    glClearColor(clearColour.x, clearColour.y, clearColour.z, clearColour.w);
-#endif
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 
@@ -588,7 +570,6 @@ namespace small3d {
 
     glDeleteTextures(0, &depthMapTexture);
 
-    //At times, this has caused crashes on MacOS
     for (auto it = textures.begin();
       it != textures.end(); ++it) {
       LOGDEBUG("Deleting texture " + it->first);
@@ -844,8 +825,8 @@ namespace small3d {
       }
       else {
         // The normals buffer is created with 0 values if the corresponding
-        // data does not exist, otherwise there can be a EXC_BAD_ACCESS
-        // when running glDrawElements on MacOS.
+        // data does not exist, when MacOS was supported this helped avoid
+        // EXC_BAD_ACCESS errors.
         size_t ns = (model->vertexDataByteSize / 4) * 3;
         std::unique_ptr<char[]> data = std::make_unique<char[]>(ns);
         glBufferData(GL_ARRAY_BUFFER,

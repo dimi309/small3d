@@ -148,8 +148,6 @@ namespace small3d {
     --numInstances;
     if (numInstances == 0) {
 
-
-      //At times, this has caused crashes on MacOS
       Pa_Terminate();
 
     }
