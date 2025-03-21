@@ -1,6 +1,10 @@
 /*! \page changelog changes per version
 
-v1.8017 (still open)
+v1.8018 (still open)
+
+- Dropped MacOS support.
+
+v1.8017 2025-03-21
 
 - Dropped mobile device (Android and iOS) support.
 - [BREAKING] Stopped using the glm library. Vectors and other math elements

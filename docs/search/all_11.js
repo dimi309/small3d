@@ -15,7 +15,7 @@ var searchData=
   ['shadowcamtransformation_12',['shadowCamTransformation',['../classsmall3d_1_1_renderer.html#a14cbcaf1910bbd230893ae72e7075da8',1,'small3d::Renderer']]],
   ['shadowsactive_13',['shadowsActive',['../classsmall3d_1_1_renderer.html#ae41ab2c06a1a2c768c5a14aafbe79868',1,'small3d::Renderer']]],
   ['shadowspacesize_14',['shadowSpaceSize',['../classsmall3d_1_1_renderer.html#a405fc8a2a37c88cec17aa49641cf50af',1,'small3d::Renderer']]],
-  ['small3d_15',['small3d',['../index.html#autotoc_md12',1,'Deploying small3d'],['../namespacesmall3d.html',1,'small3d'],['../index.html',1,'small3d']]],
+  ['small3d_15',['small3d',['../index.html#autotoc_md13',1,'Deploying small3d'],['../namespacesmall3d.html',1,'small3d'],['../index.html',1,'small3d']]],
   ['small3d_20tutorial_16',['small3d Tutorial',['../tutorial.html',1,'']]],
   ['small3d_20with_20visual_20studio_17',['Setting up small3d with Visual Studio',['../vs.html',1,'']]],
   ['sound_18',['Sound',['../classsmall3d_1_1_sound.html',1,'small3d::Sound'],['../classsmall3d_1_1_sound.html#a3bf41af25f517dc9489d795402b18219',1,'small3d::Sound::Sound()'],['../classsmall3d_1_1_sound.html#a557b0d23184250c623178ee1103bb56d',1,'small3d::Sound::Sound(const std::string &amp;soundFilePath)'],['../classsmall3d_1_1_sound.html#a045b1b9083cec2e0f0c6ea481ba9dd70',1,'small3d::Sound::Sound(const Sound &amp;other)'],['../classsmall3d_1_1_sound.html#a666bfa8808b7435cfdfbc8920cf10786',1,'small3d::Sound::Sound(const Sound &amp;&amp;other)']]],
@@ -25,6 +25,7 @@ var searchData=
   ['stop_22',['stop',['../classsmall3d_1_1_renderer.html#a15011351cd2207d0430b0ebb5a65bef8',1,'small3d::Renderer::stop()'],['../classsmall3d_1_1_sound.html#a3b239ef468eae9e89c48351127b329f3',1,'small3d::Sound::stop()']]],
   ['stopanimating_23',['stopAnimating',['../classsmall3d_1_1_scene_object.html#a005d922b169d1922f2f28402cd7a0cf6',1,'small3d::SceneObject']]],
   ['studio_24',['Setting up small3d with Visual Studio',['../vs.html',1,'']]],
-  ['supported_20platforms_25',['Supported platforms',['../index.html#autotoc_md8',1,'']]],
-  ['swapbuffers_26',['swapBuffers',['../classsmall3d_1_1_renderer.html#acdc83f2aaaf3f41f35e99c1eabc6ac98',1,'small3d::Renderer::swapBuffers()'],['../classsmall3d_1_1_windowing.html#ab228b1a953dade116e7a318025d691e3',1,'small3d::Windowing::swapBuffers()']]]
+  ['support_25',['Discontinued support',['../index.html#autotoc_md9',1,'']]],
+  ['supported_20platforms_26',['Supported platforms',['../index.html#autotoc_md8',1,'']]],
+  ['swapbuffers_27',['swapBuffers',['../classsmall3d_1_1_renderer.html#acdc83f2aaaf3f41f35e99c1eabc6ac98',1,'small3d::Renderer::swapBuffers()'],['../classsmall3d_1_1_windowing.html#ab228b1a953dade116e7a318025d691e3',1,'small3d::Windowing::swapBuffers()']]]
 ];

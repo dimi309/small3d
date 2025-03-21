@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['libraries_0',['Referenced libraries',['../index.html#autotoc_md13',1,'']]],
+  ['libraries_0',['Referenced libraries',['../index.html#autotoc_md14',1,'']]],
   ['lightdirection_1',['lightDirection',['../classsmall3d_1_1_renderer.html#ada28d572ee5ea08494f1fd96fa71f9df',1,'small3d::Renderer']]],
   ['lightintensity_2',['lightIntensity',['../classsmall3d_1_1_renderer.html#a16cad6462cacc418e9d470fa90677c40',1,'small3d::Renderer']]],
   ['limitations_3',['Limitations',['../index.html#autotoc_md7',1,'']]],

@@ -97,8 +97,7 @@ $(function(){ initResizable(false); });
 <div class="image">
 <img src="logo.png" alt=""/>
 </div>
-    <p>This library provides a sufficient level of game development functionalities for C++ developers to be able to build cross-platform games based on a single code-base. Supporting as many platforms as possible while minimising the amount of code and time needed for maintenance is favoured over richness of features and the use of cutting edge methods and technologies.</p>
-<p><em>Mobile devices are no longer supported. Please read further below for details.</em></p>
+    <p>This library provides a sufficient level of game development functionalities for C++ developers to be able to build cross-platform games based on a single code-base. Keeping the codebase easy to master and minimising the amount of effort needed for maintenance is favoured over richness of features and the use of cutting edge methods and technologies.</p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 First Little Games</h1>
 <p>These are games that were developed while the library was being put together for the first time.</p>
@@ -156,19 +155,23 @@ Supported platforms</h1>
 <li>Windows</li>
 <li>Linux (Tested on Debian, Ubuntu, Fedora and Arch)</li>
 </ul>
-<p>This is the last version that supported MacOS: (put version here)</p>
-<p>There used to be Vulkan support too, but it has been discontinued. Here is an article on the reasons for this:</p>
-<p><a href="https://www.gamedev.net/blogs/entry/2275791-abandoning-vulkan/">https://www.gamedev.net/blogs/entry/2275791-abandoning-vulkan/</a></p>
-<p>And here is the last Vulkan commit before the Vulkan renderer got removed:</p>
-<p><a href="https://github.com/dimi309/small3d/releases/tag/1.8015.last.vulkan">https://github.com/dimi309/small3d/releases/tag/1.8015.last.vulkan</a></p>
-<p>There used to be iOS and Android support as well. As a matter of fact the game Islet Hell mentioned above had also been released for these two platforms. However, it was getting a little complicated maintaining my presence on the respective app stores (costs, new legislation) and I decided to stop publishing there. So I also thought to make this project more manageable by removing support for mobile platforms altogether. If you would like to use it for mobile, you can download the last release in which that was possible:</p>
-<p><a href="https://github.com/dimi309/small3d/releases/tag/1.8016.last.mobile">https://github.com/dimi309/small3d/releases/tag/1.8016.last.mobile</a></p>
 <h1><a class="anchor" id="autotoc_md9"></a>
+Discontinued support</h1>
+<p>At a time this library was also supporting MacOS, as well as Android and Apple mobile devices, and it would even run on Vulkan. All that has now been discontinued as I have decided at some point to no longer own a Macbook and to no longer publish games for mobile, as it was getting a little complicated maintaining my presence on the respective app stores (costs, new legislation).</p>
+<p>In case you would like to use it, this is the last version supporting MacOS:</p>
+<p><a href="https://github.com/dimi309/small3d/releases/tag/1.8017.last.macos">https://github.com/dimi309/small3d/releases/tag/1.8017.last.macos</a></p>
+<p>Here is an article on the reasons for abandoning Vulkan:</p>
+<p><a href="https://www.gamedev.net/blogs/entry/2275791-abandoning-vulkan/">https://www.gamedev.net/blogs/entry/2275791-abandoning-vulkan/</a></p>
+<p>And here is the last commit before the Vulkan renderer got removed:</p>
+<p><a href="https://github.com/dimi309/small3d/releases/tag/1.8015.last.vulkan">https://github.com/dimi309/small3d/releases/tag/1.8015.last.vulkan</a></p>
+<p>Finally, this is the last version supporting mobile devices:</p>
+<p><a href="https://github.com/dimi309/small3d/releases/tag/1.8016.last.mobile">https://github.com/dimi309/small3d/releases/tag/1.8016.last.mobile</a></p>
+<h1><a class="anchor" id="autotoc_md10"></a>
 Tutorial</h1>
 <p><a href="https://www.gamedev.net/tutorials/programming/engines-and-middleware/small3d-tutorial-r5655/">https://www.gamedev.net/tutorials/programming/engines-and-middleware/small3d-tutorial-r5655/</a></p>
-<h1><a class="anchor" id="autotoc_md10"></a>
+<h1><a class="anchor" id="autotoc_md11"></a>
 Building and deploying</h1>
-<h2><a class="anchor" id="autotoc_md11"></a>
+<h2><a class="anchor" id="autotoc_md12"></a>
 Prerequisites</h2>
 <p>The following need to be installed, with the relevant environment variables and tools accessible via the command line:</p>
 <ul>
@@ -176,7 +179,7 @@ Prerequisites</h2>
 <li>7zip (only on Windows)</li>
 <li>CMake</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md12"></a>
+<h2><a class="anchor" id="autotoc_md13"></a>
 Deploying small3d</h2>
 <p>Run the build script which is suitable to your platform from the <code>scripts</code> directory (<code>build-vs.bat</code>, <code>build-mingw.bat</code> or <code>build.sh</code>).</p>
 <p>Then, the unit tests are executed by running <code>unittests</code> binary from <code>build/bin</code>.</p>
@@ -190,7 +193,7 @@ Deploying small3d</h2>
 </ul>
 <p>You can also deploy using <a href="https://conan.io">conan</a>. The conan package is provided in a <a href="https://github.com/dimi309/small3d-conan">separate repository</a>.</p>
 <p>A <a href="https://github.com/dimi309/small3d-boilerplate">boilerplate project</a> is also available. It provides a basic setup of a game loop with user inputs so that you start coding your game right away.</p>
-<h1><a class="anchor" id="autotoc_md13"></a>
+<h1><a class="anchor" id="autotoc_md14"></a>
 Referenced libraries</h1>
 <p>The following dependencies' <em>source code</em> repositories (not binaries) are distributed in this same repository (in the <code>deps</code> directory). They can be built by executing a single script (see "Building", above) and they can also be used directly in your application / game code.</p>
 <ul>

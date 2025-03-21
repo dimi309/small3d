@@ -8,6 +8,6 @@ var searchData=
   ['tocolour_5',['toColour',['../classsmall3d_1_1_image.html#af9b93b4b995174f9c392db29c7b7d628',1,'small3d::Image']]],
   ['topics_6',['Topics',['../topics.html',1,'']]],
   ['topics_7',['topics',['../md_docs-source_2topics.html',1,'']]],
-  ['tutorial_8',['Tutorial',['../tutorial.html',1,'small3d Tutorial'],['../index.html#autotoc_md9',1,'Tutorial']]],
+  ['tutorial_8',['Tutorial',['../tutorial.html',1,'small3d Tutorial'],['../index.html#autotoc_md10',1,'Tutorial']]],
   ['tutorial_9',['tutorial',['../md_docs-source_2tutorial.html',1,'']]]
 ];

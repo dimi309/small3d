@@ -10,11 +10,9 @@ Minimalistic, open source library for making 3D games in C++
 
 This library provides a sufficient level of game development functionalities 
 for C++ developers to be able to build cross-platform games based on a single 
-code-base. Supporting as many platforms as possible while minimising the amount 
-of code and time needed for maintenance is favoured over richness of features 
+code-base. Keeping the codebase easy to master and  minimising the amount 
+of effort needed for maintenance is favoured over richness of features 
 and the use of cutting edge methods and technologies.
-
-*Mobile devices are no longer supported. Please read further below for details.*
 
 # First Little Games
 
@@ -70,25 +68,27 @@ A flight simulator, once commercially released, now availale free of charge
 - Windows
 - Linux (Tested on Debian, Ubuntu, Fedora and Arch) 
 
-This is the last version that supported MacOS:
-(put version here)
+# Discontinued support
 
-There used to be Vulkan support too, but it has been discontinued. Here is
-an article on the reasons for this:
+At a time this library was also supporting MacOS, as well as  Android and Apple 
+mobile devices, and it would even run on Vulkan. All that has now been 
+discontinued as I have decided at some point to no longer own a Macbook and to 
+no longer publish games for mobile, as it was getting a little complicated 
+maintaining my presence on the respective app stores (costs, new legislation).
+
+In case you would like to use it, this is the last version supporting MacOS:
+
+https://github.com/dimi309/small3d/releases/tag/1.8017.last.macos
+
+Here is an article on the reasons for abandoning Vulkan:
 
 https://www.gamedev.net/blogs/entry/2275791-abandoning-vulkan/
 
-And here is the last Vulkan commit before the Vulkan renderer got removed:
+And here is the last commit before the Vulkan renderer got removed:
 
 https://github.com/dimi309/small3d/releases/tag/1.8015.last.vulkan
 
-There used to be iOS and Android support as well. As a matter of fact the game
-Islet Hell mentioned above had also been released for these two platforms.
-However, it was getting a little complicated maintaining my presence on the
-respective app stores (costs, new legislation) and I decided to stop publishing
-there. So I also thought to make this project more manageable by removing support 
-for mobile platforms altogether. If you would like to use it for mobile, you 
-can download the last release in which that was possible:
+Finally, this is the last version supporting mobile devices:
 
 https://github.com/dimi309/small3d/releases/tag/1.8016.last.mobile
 
